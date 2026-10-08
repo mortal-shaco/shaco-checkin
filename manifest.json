@@ -631,6 +631,98 @@
         "evidence": "projects/checkin/validation/e608052390d250da",
         "candidateSha256": "c19c152b7240df266352493f048f0580710c5c2d1f7c2a62a52922025064d912"
       }
+    },
+    {
+      "catalogId": "82616d06df4e5f53",
+      "displayName": "塔斯汀汉堡签到",
+      "path": "scripts/tsthb_checkin.py",
+      "sha256": "f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "agluo/ql-script-hub",
+        "branch": "master",
+        "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
+        "originalPath": "tsthb_checkin.py"
+      },
+      "cron": "55 9 * * *",
+      "command": "python3 scripts/tsthb_checkin.py",
+      "environment": [
+        {
+          "name": "tsthbck",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在微信塔斯汀小程序登录，用本人授权的抓包工具查看 sss-web.tastientech.com 请求头中的 user-token；仅复制该字段值，过期后重新获取。",
+          "format": "每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 & 或 @ 分隔账号，字段内部字符保持原样。"
+        },
+        {
+          "name": "TSTHB_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 启用完全断网预演；默认 0。",
+          "format": "1、true、yes、on 表示启用。预演不执行等待、HTTP 或通知模块，仅展示通知摘要。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置；保留维护版默认 true。限时验证和需要立即执行时设置 false。",
+          "format": "忽略大小写，只有 true 启用随机延迟，其他值关闭。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置随机等待上限；保留维护版默认 3600 秒。",
+          "format": "非负整数，单位秒；随机延迟开启时在 0 至该值之间随机选择并显示倒计时。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置青龙通知开关；默认 1。通知不可用不影响业务退出码。",
+          "format": "0、false、no、off 关闭，忽略大小写。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已有青龙 notify.py 所在目录；未配置时尝试导入 notify，并查找 /ql/data/scripts 和 /ql/scripts。签到本身不依赖通知文件。",
+          "format": "可选目录路径；不会下载安装通知组件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "从官方活动列表查询当前签到活动，优先每日签到入口",
+        "校验账号并展示官方返回的非敏感身份，隐藏手机号",
+        "每日签到并展示奖励名称或积分",
+        "每行一个账号，账号独立执行与失败汇总",
+        "可配置的随机延迟及倒计时，保留每天 09:55 调度",
+        "完整断网预演、分阶段日志、任务统计及单行结构化汇总",
+        "青龙脱敏通知及全局开关，通知失败保留业务退出码",
+        "每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试"
+      ],
+      "sideEffects": [
+        "向官方签到接口提交每日签到，可能获得积分或奖励",
+        "正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": true,
+        "humanAccepted": true,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "passed",
+        "evidence": "projects/checkin/validation/82616d06df4e5f53",
+        "candidateSha256": "f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c"
+      }
     }
   ]
 }

@@ -38,6 +38,7 @@
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `31 8 * * *` |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `23 8 * * *` |
+| 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `55 9 * * *` |
 
 依赖安装任务会读取本仓库的 `requirements.txt`、`package-lock.json` 或 `package.json`；没有额外依赖时安全退出，不会执行远程安装脚本。
 
@@ -49,6 +50,7 @@
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
 - `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总。
 - `scripts/tieba_checkin.py`：验证百度贴吧登录状态并获取签到所需的 TBS；显示登录接口可取得的账号昵称、用户名或公开 UID，方便核对账号；读取账号关注的贴吧列表并识别当日已签到项目；为尚未签到的关注贴吧执行每日签到；支持每行一个账号的多账号独立处理和统一脱敏通知；提供完全断网、不会产生账号副作用的配置预演；输出逐阶段时间轴、账号统计和单行结构化任务汇总。
+- `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 
 ## 环境变量与参数
 
@@ -65,6 +67,7 @@
 <tr><td rowspan="1"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_COOKIE</code></td><td>是</td><td>格式：每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 &amp; 或 @ 分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个账号一行，格式为 sk|完整Cookie；只在第一个竖线处分隔，因此 Cookie 后续内容会完整保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tieba_checkin.py</code></td><td><code>TIEBA_COOKIE</code></td><td>是</td><td>格式：每个账号占一个非空行；单行填写 BDUSS 值，或填写形如 BDUSS=&lt;值&gt;; STOKEN=&lt;值&gt; 的完整 Cookie。同一账号的 Cookie 字段保留在同一行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -106,6 +109,11 @@
 <tr><td><code>TIEBA_DELAY_MS</code></td><td>否</td><td>格式：整数毫秒，脚本会限制在 500 至 10000 之间，默认 1200。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no 或 off 表示关闭，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径，目录内应包含 notify.py。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/tsthb_checkin.py</code></td><td><code>TSTHB_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 表示启用。预演不执行等待、HTTP 或通知模块，仅展示通知摘要。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：忽略大小写，只有 true 启用随机延迟，其他值关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：非负整数，单位秒；随机延迟开启时在 0 至该值之间随机选择并显示倒计时。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，忽略大小写。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录路径；不会下载安装通知组件。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -117,6 +125,7 @@
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
 - `scripts/smzdm_checkin.js`：SMZDM_ACCOUNT 每个非空行表示一个账号；各账号独立处理，任一账号失败时进程以非零状态退出。。
 - `scripts/tieba_checkin.py`：每个非空行表示一个账号；同一账号的全部 Cookie 字段必须写在同一行，脚本不会使用 &、@ 等字符拆分账号。账号逐个独立处理，任一账号失败都会使进程以非零状态退出。。
+- `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 
 ## 参数获取方法
 
@@ -162,6 +171,13 @@
 - 所属脚本：`scripts/tieba_checkin.py`
 - 获取或设置：在浏览器登录百度贴吧后，从 tieba.baidu.com 的请求 Cookie 中复制 BDUSS；可只填写 BDUSS 的值，也可填写包含 BDUSS 的完整 Cookie。请仅在自己的青龙环境中保存。
 - 填写格式：`每个账号占一个非空行；单行填写 BDUSS 值，或填写形如 BDUSS=<值>; STOKEN=<值> 的完整 Cookie。同一账号的 Cookie 字段保留在同一行。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `tsthbck`
+
+- 所属脚本：`scripts/tsthb_checkin.py`
+- 获取或设置：在微信塔斯汀小程序登录，用本人授权的抓包工具查看 sss-web.tastientech.com 请求头中的 user-token；仅复制该字段值，过期后重新获取。
+- 填写格式：`每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 & 或 @ 分隔账号，字段内部字符保持原样。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 
@@ -353,6 +369,36 @@
 - 获取或设置：仅在青龙通知脚本不位于标准目录时填写 notify.py 所在目录。
 - 填写格式：`本机目录路径，目录内应包含 notify.py。`
 
+#### `TSTHB_DRY_RUN`
+
+- 所属脚本：`scripts/tsthb_checkin.py`
+- 获取或设置：自行设置为 1 启用完全断网预演；默认 0。
+- 填写格式：`1、true、yes、on 表示启用。预演不执行等待、HTTP 或通知模块，仅展示通知摘要。`
+
+#### `RANDOM_SIGNIN`
+
+- 所属脚本：`scripts/tsthb_checkin.py`
+- 获取或设置：自行设置；保留维护版默认 true。限时验证和需要立即执行时设置 false。
+- 填写格式：`忽略大小写，只有 true 启用随机延迟，其他值关闭。`
+
+#### `MAX_RANDOM_DELAY`
+
+- 所属脚本：`scripts/tsthb_checkin.py`
+- 获取或设置：自行设置随机等待上限；保留维护版默认 3600 秒。
+- 填写格式：`非负整数，单位秒；随机延迟开启时在 0 至该值之间随机选择并显示倒计时。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/tsthb_checkin.py`
+- 获取或设置：自行设置青龙通知开关；默认 1。通知不可用不影响业务退出码。
+- 填写格式：`0、false、no、off 关闭，忽略大小写。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/tsthb_checkin.py`
+- 获取或设置：可选，填写已有青龙 notify.py 所在目录；未配置时尝试导入 notify，并查找 /ql/data/scripts 和 /ql/scripts。签到本身不依赖通知文件。
+- 填写格式：`可选目录路径；不会下载安装通知组件。`
+
 
 ## 验证与兼容性
 
@@ -362,6 +408,7 @@
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
 - `scripts/smzdm_checkin.js`：SHA-256 `f63ce76cdd5c9e61e5316ec4282a9d9bde130dac10bded05bb3b175ac2a1879f`；live 业务成功证据位于 `projects/checkin/validation/621df252c315f2d1`。
 - `scripts/tieba_checkin.py`：SHA-256 `c19c152b7240df266352493f048f0580710c5c2d1f7c2a62a52922025064d912`；live 业务成功证据位于 `projects/checkin/validation/e608052390d250da`。
+- `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。
 
@@ -373,6 +420,7 @@
 - `scripts/kuaishou_reward_status.py`：。
 - `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态。
 - `scripts/tieba_checkin.py`：正式执行时向百度贴吧提交签到请求，改变对应贴吧的当日签到状态；通知开启且青龙通知组件可用时发送脱敏任务汇总。
+- `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
 
 使用测试账号先行验证。停止使用时应禁用任务、删除订阅和敏感环境变量；怀疑凭据泄漏时立即在对应平台撤销会话。
 
@@ -386,3 +434,4 @@
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
 - `scripts/smzdm_checkin.js`：上游 `ump45nose/smzdm-checkin-ql` / `checkin.js` / `6b9eaced964c348efb46d2c13a45ab5c66caaea8`。
 - `scripts/tieba_checkin.py`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_tieba.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
+- `scripts/tsthb_checkin.py`：上游 `agluo/ql-script-hub` / `tsthb_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "82616d06df4e5f53",
+  "candidateSha256": "f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c",
+  "source": {
+    "repository": "agluo/ql-script-hub",
+    "branch": "master",
+    "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
+    "path": "tsthb_checkin.py",
+    "sha256": "66b26e72b858f3648d0ea7d26b75a497443ed349e9238ab3827de890ac4a0207",
+    "related": []
+  },
+  "testedAt": "2026-09-30T08:04:56.739692+00:00",
+  "finishedAt": "2026-09-30T08:04:57.778095+00:00",
+  "mode": "live",
+  "runner": "local-sandbox-validator",
+  "runtime": {
+    "command": "python3.14"
+  },
+  "accountType": "local-user-configured",
+  "exitCode": 0,
+  "timedOut": false,
+  "businessResult": "success",
+  "failureDiagnosis": null,
+  "sideEffectsObserved": [
+    "向官方签到接口提交每日签到，可能获得积分或奖励",
+    "正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果"
+  ],
+  "log": "redacted.log",
+  "machineDecision": {
+    "status": "passed",
+    "decidedAt": "2026-09-30T08:04:58.028918+00:00",
+    "matchedSuccessEvidence": [
+      "TASK_SUMMARY"
+    ],
+    "failureDiagnosis": null
+  },
+  "humanDecision": {
+    "status": "passed",
+    "decidedBy": "mortal-shaco",
+    "decidedAt": "2026-09-30T08:35:53.883027+00:00"
+  }
+}
