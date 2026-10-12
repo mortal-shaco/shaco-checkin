@@ -1399,6 +1399,269 @@
       }
     },
     {
+      "catalogId": "397f602c2c364fad",
+      "applicationKey": "hlyl",
+      "checkProfile": {
+        "requiredEnv": [
+          "hlylck"
+        ],
+        "optionalEnv": [
+          "HLYL_DRY_RUN",
+          "HLYL_LOTTERY_ATTEMPTS",
+          "HLYL_LOTTERY_ACTIVITY_ID",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HLYL_DRY_RUN": "1",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "liveEnv": {
+          "HLYL_DRY_RUN": "0",
+          "HLYL_LOTTERY_ATTEMPTS": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "活力伊利任务成功：所有账号业务已核验"
+        ],
+        "features": [
+          "查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据",
+          "查询当日签到状态、周任务进度和月签到天数",
+          "每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励",
+          "显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖",
+          "查询积分余额",
+          "逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出",
+          "完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录",
+          "通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知"
+        ],
+        "sideEffects": [
+          "未签到时提交每日签到，可能获得积分和成长积分",
+          "显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品",
+          "通知开启且正式运行时通过青龙组件发送任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "活力伊利",
+      "path": "scripts/hlyl.py",
+      "sha256": "ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "hlyl.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/hlyl.py",
+      "environment": [
+        {
+          "name": "hlylck",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人授权设备登录活力伊利微信小程序，查看发往 https://msmarket.msx.digitalyili.com 的请求头 access-token；失效后重新登录获取。不要分享凭据。",
+          "format": "每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &、@ 分隔账号。"
+        },
+        {
+          "name": "HLYL_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中自行设置；断网预演不代表真实业务成功。",
+          "format": "1、true、yes、on 开启，默认 0。"
+        },
+        {
+          "name": "HLYL_LOTTERY_ATTEMPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认活动可用及可能消耗次数或积分后自行设置；默认关闭抽奖。",
+          "format": "0 至 10 的整数；0 关闭，正数为每账号最大抽奖请求数，失败立即停止该账号抽奖，不自动重试。"
+        },
+        {
+          "name": "HLYL_LOTTERY_ACTIVITY_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在本人小程序目标活动的 luckDraw 请求查询参数 activityId 中核对；默认保留上游编号，无法离线确认活动是否仍有效。",
+          "format": "1 至 30 位数字，默认 1796131190130262018。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙统一通知开关，默认开启。",
+          "format": "0、false、no、off 关闭，其余值开启；通知不可用不改变业务退出码。断网预演仅在封锁套接字的 Python 通知环境中尝试，不进行远程投递。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写本人青龙 notify.py 或 sendNotify.js 所在目录；未设置时自动查找标准目录和 notify 模块。",
+          "format": "本地目录路径，仅用于可选通知，不是业务运行依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，Token 与可选备注仅按首个 # 分隔。账号独立处理；任一账号配置、查询或已启用操作失败时整体非零退出。备注不展示。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据",
+        "查询当日签到状态、周任务进度和月签到天数",
+        "每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励",
+        "显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖",
+        "查询积分余额",
+        "逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出",
+        "完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录",
+        "通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知"
+      ],
+      "sideEffects": [
+        "未签到时提交每日签到，可能获得积分和成长积分",
+        "显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品",
+        "通知开启且正式运行时通过青龙组件发送任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/397f602c2c364fad",
+        "candidateSha256": "ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d"
+      }
+    },
+    {
+      "catalogId": "1a646b7bbddbaa7d",
+      "applicationKey": "hsay",
+      "checkProfile": {
+        "requiredEnv": [
+          "hsayCookie"
+        ],
+        "optionalEnv": [
+          "HSAYCookie",
+          "HSAY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HSAY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "HSAY_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "查询并显示官方返回的用户昵称，隐藏手机号及凭据",
+          "从积分流水获取签到所需的公开用户 ID",
+          "查询连续签到天数",
+          "按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数",
+          "逐行多账号独立运行，失败闭合与断网预演",
+          "青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出"
+        ],
+        "sideEffects": [
+          "向沪上阿姨签到接口提交每日签到，领取活动奖励",
+          "实际模式下通过青龙通知模块发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "沪上阿姨签到",
+      "path": "scripts/hsay.py",
+      "sha256": "334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "hsay.py"
+      },
+      "cron": "0 9,18 * * *",
+      "command": "python3 scripts/hsay.py",
+      "environment": [
+        {
+          "name": "hsayCookie",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录自己的沪上阿姨微信小程序，在本地抓包工具中查看 webapi.qmai.cn 请求头 Qm-User-Token 的完整值；过期后重新登录获取。不要填写整段 Cookie 或将凭据公开。可使用上游文档别名 HSAYCookie，优先使用 hsayCookie。",
+          "format": "每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 & 分隔。"
+        },
+        {
+          "name": "HSAYCookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 hsayCookie 相同，仅在 hsayCookie 为空时读取；两者任选其一。",
+          "format": "每个非空行一个完整 Token。"
+        },
+        {
+          "name": "HSAY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 开启完全断网预演。",
+          "format": "1、true、yes、on 开启；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙环境变量中设置；默认开启。",
+          "format": "0、false、no、off 关闭，其余值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如通知模块不在标准青龙脚本目录，填写包含 notify.py 的现有本地目录。仅通知可选，业务不依赖该文件。",
+          "format": "本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，逐账号独立运行；任何账号失败均非零退出。账号凭据保留完整内容，不按 @ 或 & 拆分。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询并显示官方返回的用户昵称，隐藏手机号及凭据",
+        "从积分流水获取签到所需的公开用户 ID",
+        "查询连续签到天数",
+        "按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数",
+        "逐行多账号独立运行，失败闭合与断网预演",
+        "青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出"
+      ],
+      "sideEffects": [
+        "向沪上阿姨签到接口提交每日签到，领取活动奖励",
+        "实际模式下通过青龙通知模块发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1a646b7bbddbaa7d",
+        "candidateSha256": "334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7"
+      }
+    },
+    {
       "catalogId": "7ea70c9e9d579efb",
       "applicationKey": "ikuuu",
       "checkProfile": {
@@ -10020,6 +10283,121 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/70f2505a78eb7276",
         "candidateSha256": "c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7"
+      }
+    },
+    {
+      "catalogId": "aa7303325b9bca16",
+      "applicationKey": "wps",
+      "checkProfile": {
+        "requiredEnv": [
+          "wps_ck"
+        ],
+        "optionalEnv": [
+          "WPS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WPS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WPS_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "活动信息查询成功",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询并显示官方返回的账号昵称，隐藏凭据和手机号。",
+          "查询打卡活动首条奖励名称，兼容sku_name与mb_name。",
+          "查询持续打卡天数，明确空奖励不能证明今日打卡成功。",
+          "保留wps_ck参数与每日09:10调度，支持换行多账号。",
+          "支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。"
+        ],
+        "sideEffects": []
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "WPS打卡活动信息",
+      "path": "scripts/wps_clock_in.py",
+      "sha256": "bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "invalid/wps_clock_in.py"
+      },
+      "cron": "10 9 * * *",
+      "command": "python3 scripts/wps_clock_in.py",
+      "environment": [
+        {
+          "name": "wps_ck",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在WPS主页或微信小程序【我的WPS超级会员】登录，从本人授权的 *.wps.cn 请求Cookie中取得wps_sid参数的值。不要填写整个Cookie。",
+          "format": "每个非空行一个wps_sid值；只按换行分隔账号，不使用&或@分隔账号。"
+        },
+        {
+          "name": "WPS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置为1启用完全断网预演。",
+          "format": "1、true、yes、on启用，默认0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认启用；断网预演仅模拟通知。",
+          "format": "0、false、no、off关闭；默认1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "若青龙notify.py不在标准目录，可设置其所在目录；不需要私有项目仓库。",
+          "format": "本地青龙通知模块所在目录，可不填写。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询并显示官方返回的账号昵称，隐藏凭据和手机号。",
+        "查询打卡活动首条奖励名称，兼容sku_name与mb_name。",
+        "查询持续打卡天数，明确空奖励不能证明今日打卡成功。",
+        "保留wps_ck参数与每日09:10调度，支持换行多账号。",
+        "支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。"
+      ],
+      "sideEffects": [],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/aa7303325b9bca16",
+        "candidateSha256": "b514c271a0f10eb8b6fd19a420df0b243379aade9cfce8966d6785d2acc0d902"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "b514c271a0f10eb8b6fd19a420df0b243379aade9cfce8966d6785d2acc0d902",
+        "releaseSha256": "bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     }
   ]

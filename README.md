@@ -42,6 +42,8 @@
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `30 9 * * *` |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `9 9 * * *` |
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `0 8 * * *` |
+| 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `0 8 * * *` |
+| 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `0 9,18 * * *` |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `0 21 * * *` |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `0 3 * * *` |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
@@ -108,6 +110,7 @@
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `23 8 * * *` |
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `55 9 * * *` |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `1 16 * * *` |
+| WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
 
 依赖安装任务会读取本仓库的 `requirements.txt`、`package-lock.json` 或 `package.json`；没有额外依赖时安全退出，不会执行远程安装脚本。
 
@@ -123,6 +126,8 @@
 - `scripts/ddnsto.py`：申请 product_id=2 七天免费套餐并查询订单；把新套餐绑定到指定路由器；重新读取官方套餐并确认到期时间延长后才报告续费成功；识别本周免费套餐申请次数限制；只有现有套餐尚未过期才视为已完成；显示北京时间到期时间；官方返回非敏感昵称或用户名时原样显示；保留每天 09:30 的上游计划和 ddns_cookie、ddns_userid 单账号兼容参数；多账号按行独立执行，失败账号不阻断其他账号；任一失败整体非零退出；无网络预演、青龙脱敏汇总通知和带时间戳的分阶段日志；输出唯一 TASK_SUMMARY 单行 JSON 汇总。
 - `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
 - `scripts/fxh.js`：每日查询当前积分；每日执行芬享汇签到，显示可解析的奖励积分与已签到状态；官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示；逐行多账号独立执行和失败退出；完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总；实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网。
+- `scripts/hlyl.py`：查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据；查询当日签到状态、周任务进度和月签到天数；每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励；显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖；查询积分余额；逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出；完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录；通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知。
+- `scripts/hsay.py`：查询并显示官方返回的用户昵称，隐藏手机号及凭据；从积分流水获取签到所需的公开用户 ID；查询连续签到天数；按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数；逐行多账号独立运行，失败闭合与断网预演；青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出。
 - `scripts/ikuuu_checkin.py`：使用邮箱和密码登录 ikuuu；执行每日签到并识别今日已签到；从成功消息中报告流量奖励；按每行一个邮箱|密码账号处理并输出脱敏结构化汇总；可选随机错峰执行；按青龙通知策略发送汇总；完全断网的配置预演。
 - `scripts/index.js`：根据官方收藏页面重定向自动识别公开 UID，或使用显式指定的公开 UID。；分页读取公开收藏插画，获取全部图片页并下载原始图片。；按作品整理图片目录，跳过已有有效图片，兼容旧版标题目录。；兼容旧版 config.json 的 cookie、output 与 proxy 字段，代理使用 axios 公开接口。；多账号独立执行；请求超时、明确业务成功检查、图片头和长度校验及原子写入。；断网预演、分阶段脱敏日志、单行 TASK_SUMMARY 统计与青龙通知。。
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
@@ -189,6 +194,7 @@
 - `scripts/tieba_checkin.py`：验证百度贴吧登录状态并获取签到所需的 TBS；显示登录接口可取得的账号昵称、用户名或公开 UID，方便核对账号；读取账号关注的贴吧列表并识别当日已签到项目；为尚未签到的关注贴吧执行每日签到；支持每行一个账号的多账号独立处理和统一脱敏通知；提供完全断网、不会产生账号副作用的配置预演；输出逐阶段时间轴、账号统计和单行结构化任务汇总。
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
+- `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
 
 ## 环境变量与参数
 
@@ -209,6 +215,8 @@
 <tr><td rowspan="1"><code>scripts/ddnsto.py</code></td><td><code>DDNSTO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 路由器ID|完整Cookie；仅在首个 | 分隔，同一行内 Cookie 原样保留，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/durex.py</code></td><td><code>dlshyzx</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fxh.js</code></td><td><code>fxhOpenId</code></td><td>是</td><td>格式：每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/hlyl.py</code></td><td><code>hlylck</code></td><td>是</td><td>格式：每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/hsay.py</code></td><td><code>hsayCookie</code></td><td>是</td><td>格式：每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 &amp; 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：邮箱|密码；只用第一个竖线分隔，密码中的后续竖线会保留；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="2"><code>scripts/index.js</code></td><td><code>PIXIV_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：公开UID|完整Cookie；只在首个竖线处分割，保留后续 Cookie 文本。不使用 &amp; 或 @ 分隔账号。兼容当前工作目录 config.json 的 cookie 字段。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PIXIV_OUTPUT</code></td><td>否</td><td>格式：绝对或相对目录路径；正式执行必须明确指定。；多账号格式以该脚本文档为准</td></tr>
@@ -278,6 +286,7 @@
 <tr><td rowspan="1"><code>scripts/tieba_checkin.py</code></td><td><code>TIEBA_COOKIE</code></td><td>是</td><td>格式：每个账号占一个非空行；单行填写 BDUSS 值，或填写形如 BDUSS=&lt;值&gt;; STOKEN=&lt;值&gt; 的完整 Cookie。同一账号的 Cookie 字段保留在同一行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -350,6 +359,15 @@
 <tr><td rowspan="3"><code>scripts/fxh.js</code></td><td><code>FXH_DRY_RUN</code></td><td>否</td><td>格式：1 表示完全断网预演；其他值表示实际执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 sendNotify.js 或 notify.py 的目录，不是业务依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/hlyl.py</code></td><td><code>HLYL_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>HLYL_LOTTERY_ATTEMPTS</code></td><td>否</td><td>格式：0 至 10 的整数；0 关闭，正数为每账号最大抽奖请求数，失败立即停止该账号抽奖，不自动重试。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>HLYL_LOTTERY_ACTIVITY_ID</code></td><td>否</td><td>格式：1 至 30 位数字，默认 1796131190130262018。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余值开启；通知不可用不改变业务退出码。断网预演仅在封锁套接字的 Python 通知环境中尝试，不进行远程投递。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于可选通知，不是业务运行依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/hsay.py</code></td><td><code>HSAYCookie</code></td><td>是</td><td>格式：每个非空行一个完整 Token。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>HSAY_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余值开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0 到 3600 的整数秒，默认 0（不延迟）。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IKUUU_DRY_RUN</code></td><td>否</td><td>格式：1 启用；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启。；多账号格式以该脚本文档为准</td></tr>
@@ -609,6 +627,9 @@
 <tr><td><code>TY_ACCOUNT_TIMEOUT</code></td><td>否</td><td>格式：10～600的整数；单次请求另有15秒超时，不自动重试；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭通知；其余启用；预演只生成摘要而不传输；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知目录路径；不可用或发送失败不改变业务退出码；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/wps_clock_in.py</code></td><td><code>WPS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on启用，默认0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭；默认1。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地青龙通知模块所在目录，可不填写。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -624,6 +645,8 @@
 - `scripts/ddnsto.py`：每个非空行一个账号，使用 路由器ID|完整Cookie，仅按首个 | 拆分；各账号独立执行，任一账号失败整体非零退出。兼容旧变量仅支持单账号。。
 - `scripts/durex.py`：每个非空行一个账号的 Access-Token；各账号独立处理；任何账号失败则整体非零退出。。
 - `scripts/fxh.js`：fxhOpenId 每个非空行一个账号，逐个独立执行；任一账号失败整体非零退出，不使用 @ 或 & 分隔。。
+- `scripts/hlyl.py`：每个非空行一个账号，Token 与可选备注仅按首个 # 分隔。账号独立处理；任一账号配置、查询或已启用操作失败时整体非零退出。备注不展示。。
+- `scripts/hsay.py`：每个非空行一个账号，逐账号独立运行；任何账号失败均非零退出。账号凭据保留完整内容，不按 @ 或 & 拆分。。
 - `scripts/ikuuu_checkin.py`：IKUUU_ACCOUNT 每个非空行表示一个账号，行内格式为邮箱|密码；账号之间只使用换行。。
 - `scripts/index.js`：每个非空行一个账号，首个竖线分隔 UID 与 Cookie；账号独立处理，任何账号失败则整体非零退出。。
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
@@ -689,6 +712,7 @@
 - `scripts/tieba_checkin.py`：每个非空行表示一个账号；同一账号的全部 Cookie 字段必须写在同一行，脚本不会使用 &、@ 等字符拆分账号。账号逐个独立处理，任一账号失败都会使进程以非零状态退出。。
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
+- `scripts/wps_clock_in.py`：每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。。
 
 ## 参数获取方法
 
@@ -762,6 +786,20 @@
 - 所属脚本：`scripts/fxh.js`
 - 获取或设置：打开芬享汇微信小程序，用自己的合法抓包工具查看 scrm.ocheng.me/v2/api/member/info 请求的 miniProgramOpenId 参数，或签到请求路径中的 OpenId。仅复制自己的 OpenId，不要复制整条请求、Cookie 或手机号。
 - 填写格式：`每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `hlylck`
+
+- 所属脚本：`scripts/hlyl.py`
+- 获取或设置：在本人授权设备登录活力伊利微信小程序，查看发往 https://msmarket.msx.digitalyili.com 的请求头 access-token；失效后重新登录获取。不要分享凭据。
+- 填写格式：`每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &、@ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `hsayCookie`
+
+- 所属脚本：`scripts/hsay.py`
+- 获取或设置：登录自己的沪上阿姨微信小程序，在本地抓包工具中查看 webapi.qmai.cn 请求头 Qm-User-Token 的完整值；过期后重新登录获取。不要填写整段 Cookie 或将凭据公开。可使用上游文档别名 HSAYCookie，优先使用 hsayCookie。
+- 填写格式：`每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 & 分隔。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `IKUUU_ACCOUNT`
@@ -1245,6 +1283,13 @@
 - 填写格式：`每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `wps_ck`
+
+- 所属脚本：`scripts/wps_clock_in.py`
+- 获取或设置：在WPS主页或微信小程序【我的WPS超级会员】登录，从本人授权的 *.wps.cn 请求Cookie中取得wps_sid参数的值。不要填写整个Cookie。
+- 填写格式：`每个非空行一个wps_sid值；只按换行分隔账号，不使用&或@分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 
 ### 可选参数说明
 
@@ -1620,6 +1665,61 @@
 - 所属脚本：`scripts/fxh.js`
 - 获取或设置：可选，填写青龙现有通知模块所在目录；默认查找 /ql/data/scripts 与 /ql/scripts。
 - 填写格式：`包含 sendNotify.js 或 notify.py 的目录，不是业务依赖。`
+
+#### `HLYL_DRY_RUN`
+
+- 所属脚本：`scripts/hlyl.py`
+- 获取或设置：在青龙环境变量中自行设置；断网预演不代表真实业务成功。
+- 填写格式：`1、true、yes、on 开启，默认 0。`
+
+#### `HLYL_LOTTERY_ATTEMPTS`
+
+- 所属脚本：`scripts/hlyl.py`
+- 获取或设置：确认活动可用及可能消耗次数或积分后自行设置；默认关闭抽奖。
+- 填写格式：`0 至 10 的整数；0 关闭，正数为每账号最大抽奖请求数，失败立即停止该账号抽奖，不自动重试。`
+
+#### `HLYL_LOTTERY_ACTIVITY_ID`
+
+- 所属脚本：`scripts/hlyl.py`
+- 获取或设置：在本人小程序目标活动的 luckDraw 请求查询参数 activityId 中核对；默认保留上游编号，无法离线确认活动是否仍有效。
+- 填写格式：`1 至 30 位数字，默认 1796131190130262018。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/hlyl.py`
+- 获取或设置：使用青龙统一通知开关，默认开启。
+- 填写格式：`0、false、no、off 关闭，其余值开启；通知不可用不改变业务退出码。断网预演仅在封锁套接字的 Python 通知环境中尝试，不进行远程投递。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/hlyl.py`
+- 获取或设置：可选，填写本人青龙 notify.py 或 sendNotify.js 所在目录；未设置时自动查找标准目录和 notify 模块。
+- 填写格式：`本地目录路径，仅用于可选通知，不是业务运行依赖。`
+
+#### `HSAYCookie`
+
+- 所属脚本：`scripts/hsay.py`
+- 获取或设置：与 hsayCookie 相同，仅在 hsayCookie 为空时读取；两者任选其一。
+- 填写格式：`每个非空行一个完整 Token。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `HSAY_DRY_RUN`
+
+- 所属脚本：`scripts/hsay.py`
+- 获取或设置：自行设置为 1 开启完全断网预演。
+- 填写格式：`1、true、yes、on 开启；默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/hsay.py`
+- 获取或设置：青龙环境变量中设置；默认开启。
+- 填写格式：`0、false、no、off 关闭，其余值开启。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/hsay.py`
+- 获取或设置：如通知模块不在标准青龙脚本目录，填写包含 notify.py 的现有本地目录。仅通知可选，业务不依赖该文件。
+- 填写格式：`本地目录路径。`
 
 #### `IKUUU_MAX_RANDOM_DELAY`
 
@@ -3176,6 +3276,24 @@
 - 获取或设置：可选：填写青龙现有 notify.py 所在目录；也会尝试导入 notify 及青龙标准目录。
 - 填写格式：`本机通知目录路径；不可用或发送失败不改变业务退出码`
 
+#### `WPS_DRY_RUN`
+
+- 所属脚本：`scripts/wps_clock_in.py`
+- 获取或设置：在青龙环境变量中设置为1启用完全断网预演。
+- 填写格式：`1、true、yes、on启用，默认0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/wps_clock_in.py`
+- 获取或设置：青龙全局通知开关，默认启用；断网预演仅模拟通知。
+- 填写格式：`0、false、no、off关闭；默认1。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/wps_clock_in.py`
+- 获取或设置：若青龙notify.py不在标准目录，可设置其所在目录；不需要私有项目仓库。
+- 填写格式：`本地青龙通知模块所在目录，可不填写。`
+
 
 ## 验证与兼容性
 
@@ -3189,6 +3307,8 @@
 - `scripts/ddnsto.py`：SHA-256 `a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
 - `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 - `scripts/fxh.js`：SHA-256 `228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
+- `scripts/hlyl.py`：SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
+- `scripts/hsay.py`：SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
 - `scripts/ikuuu_checkin.py`：SHA-256 `6b8a4428f238d9a1476562c1f347804ee0bc55a58ea399fd14fa334ac86f9ed7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 - `scripts/index.js`：SHA-256 `4fd17eede5a19456fe2de88761ad30bedf802fba468cfcf67e0929dc16d345fd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
@@ -3255,6 +3375,7 @@
 - `scripts/tieba_checkin.py`：SHA-256 `c19c152b7240df266352493f048f0580710c5c2d1f7c2a62a52922025064d912`；live 业务成功证据位于 `projects/checkin/validation/e608052390d250da`。
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
+- `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。
 
@@ -3270,6 +3391,8 @@
 - `scripts/ddnsto.py`：真实执行时创建七天免费套餐订单；真实执行时将订单套餐绑定到指定路由器并延长套餐到期时间；启用通知且青龙模块可用时发送脱敏任务通知。
 - `scripts/durex.py`：每日签到改变签到状态并可能获得积分；开启分享后上报活动分享记录并可能获得奖励；开启抽奖后参与活动并可能消耗抽奖机会或积分。
 - `scripts/fxh.js`：实际执行每日签到，改变签到状态并由服务端发放积分；启用通知时调用青龙通知模块发送任务总结。
+- `scripts/hlyl.py`：未签到时提交每日签到，可能获得积分和成长积分；显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品；通知开启且正式运行时通过青龙组件发送任务总结。
+- `scripts/hsay.py`：向沪上阿姨签到接口提交每日签到，领取活动奖励；实际模式下通过青龙通知模块发送脱敏任务总结。
 - `scripts/ikuuu_checkin.py`：登录 ikuuu 并创建会话；提交每日签到，可能增加账号流量；实时运行时可能通过青龙通知渠道发送脱敏汇总。
 - `scripts/index.js`：正式运行在指定目录创建作品目录、写入图片、替换未通过基本校验的目标文件并清理本次临时文件。；正式运行通知启用且青龙模块可用时发送脱敏结果通知。。
 - `scripts/kuaishou_reward_status.py`：。
@@ -3336,6 +3459,7 @@
 - `scripts/tieba_checkin.py`：正式执行时向百度贴吧提交签到请求，改变对应贴吧的当日签到状态；通知开启且青龙通知组件可用时发送脱敏任务汇总。
 - `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
 - `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
+- `scripts/wps_clock_in.py`：。
 
 使用测试账号先行验证。停止使用时应禁用任务、删除订阅和敏感环境变量；怀疑凭据泄漏时立即在对应平台撤销会话。
 
@@ -3353,6 +3477,8 @@
 - `scripts/ddnsto.py`：上游 `cloudcranes/some_scripts` / `ddnsto.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/durex.py`：上游 `Rookie-wb-WH/ql_scripts` / `durex.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/fxh.js`：上游 `xingly-cn/QLPanelScript` / `fxh.js` / `8c0323999253b7a0d8e47ff1136a562fedb3c980`。
+- `scripts/hlyl.py`：上游 `cloudcranes/some_scripts` / `hlyl.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
+- `scripts/hsay.py`：上游 `Rookie-wb-WH/ql_scripts` / `hsay.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/ikuuu_checkin.py`：上游 `agluo/ql-script-hub` / `ikuuu_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/index.js`：上游 `cloudcranes/some_scripts` / `Download_pixiv/index.js` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
@@ -3419,3 +3545,4 @@
 - `scripts/tieba_checkin.py`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_tieba.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/tsthb_checkin.py`：上游 `agluo/ql-script-hub` / `tsthb_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/ty_netdisk_checkin.py`：上游 `agluo/ql-script-hub` / `ty_netdisk_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
