@@ -1,40 +1,15 @@
 {
-  "schemaVersion": 1,
   "catalogId": "e608052390d250da",
-  "candidateSha256": "c19c152b7240df266352493f048f0580710c5c2d1f7c2a62a52922025064d912",
-  "source": {
-    "repository": "sudojia/AutoTaskScript",
-    "branch": "script",
-    "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
-    "path": "src/web/sudojia_tieba.js",
-    "sha256": "26fa12b3fb1cacad85e936bd8b7fe02d75c53289540a9ca04f6c058abba1bbc3",
-    "related": [
-      {
-        "catalogId": "38ff8ca6c57173b4",
-        "sha256": "aeed0087a0da42d6bafffa5d2b7ecc05c401035701b6c9aedb7299db91025baf"
-      }
-    ]
-  },
-  "testedAt": "2026-09-29T09:46:11.999180+00:00",
-  "finishedAt": "2026-09-29T09:46:12.272908+00:00",
-  "mode": "live",
-  "runner": "local-sandbox-validator",
-  "runtime": {
-    "command": "python3.14"
-  },
-  "accountType": "local-user-configured",
+  "candidateSha256": "2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e",
+  "mode": "basic",
   "exitCode": 0,
-  "timedOut": false,
-  "businessResult": "success",
-  "failureDiagnosis": null,
-  "sideEffectsObserved": [
-    "正式执行时向百度贴吧提交签到请求，改变对应贴吧的当日签到状态",
-    "通知开启且青龙通知组件可用时发送脱敏任务汇总"
-  ],
-  "log": "redacted.log",
-  "humanDecision": {
-    "status": "passed",
-    "decidedBy": "mortal-shaco",
-    "decidedAt": "2026-09-29T09:46:40.041741+00:00"
-  }
+  "businessResult": "not-verified",
+  "testedAt": "2026-10-12T09:24:36.131198+00:00",
+  "checks": [
+    "exact-hash",
+    "syntax",
+    "provenance",
+    "license",
+    "usage-documentation"
+  ]
 }

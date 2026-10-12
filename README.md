@@ -108,7 +108,6 @@
 | SSPANEL面板签到 | `scripts/sudojia_sspanel.js` | `node scripts/sudojia_sspanel.js` | `35 9 * * *` |
 | 星妈优选 | `scripts/sudojia_starmom.js` | `node scripts/sudojia_starmom.js` | `39 2 * * *` |
 | 特步会员中心 | `scripts/sudojia_tebu.js` | `node scripts/sudojia_tebu.js` | `26 10 * * *` |
-| 百度贴吧成长任务签到 | `scripts/sudojia_tieba_tasksign.js` | `node scripts/sudojia_tieba_tasksign.js` | `19 7 * * *` |
 | TILTA影像城 | `scripts/sudojia_tilta.js` | `node scripts/sudojia_tilta.js` | `5 10 * * *` |
 | 图虫每日签到 | `scripts/sudojia_tuchong.js` | `node scripts/sudojia_tuchong.js` | `38 5 * * *` |
 | V2EX每日签到 | `scripts/sudojia_v2ex.js` | `node scripts/sudojia_v2ex.js` | `0 9 * * *` |
@@ -210,7 +209,6 @@
 - `scripts/sudojia_sspanel.js`：通过邮箱和密码登录各账号的 SSPANEL 站点；每日签到并严格验证登录和签到业务成功码；展示接口提供的总套餐、已用流量及剩余流量；展示接口提供的非敏感账号身份；逐行多账号、独立会话及失败汇总；断网演练、阶段日志、结构化汇总及青龙脱敏通知。
 - `scripts/sudojia_starmom.js`：每日签到及签到积分校验；浏览主会场、热销爆品、优惠券、视频和粮油专场并领取任务积分；显示官方昵称、等级和积分；换行多账号及独立失败处理；断网预演、分阶段日志和结构化任务汇总；青龙脱敏通知与全局开关。
 - `scripts/sudojia_tebu.js`：查询并显示官方返回的非敏感账号身份；为每个账号独立发现签到活动；每日签到并显示获得积分；查询当前积分；支持换行多账号、独立失败处理和非零失败退出码；支持完全断网预演、分阶段日志与单行结构化汇总；通过青龙发送脱敏汇总，通知不可用时保留业务退出码。
-- `scripts/sudojia_tieba_tasksign.js`：通过成长接口验证登录状态并取得签到所需 TBS，显示接口返回的昵称、用户名或公开身份；执行贴吧APP成长任务每日签到，要求接口明确返回业务码 0；查询并显示当前成长值、贴贝余额、等级及距离下一等级所需成长值；沿用 TIE_BA_COOKIE 完整 Cookie 参数和每日 07:19 计划，支持每行一个账号独立处理；提供完全断网的配置预演，不加载通知组件且不产生账号副作用；输出逐阶段时间轴、账号及任务统计、最终状态和单行 TASK_SUMMARY 结构化汇总；正式运行后通过可用的青龙通知组件发送脱敏汇总，支持全局关闭；通知失败保留业务退出码。
 - `scripts/sudojia_tilta.js`：获取官方昵称用于账号核对，抑制凭据及手机号输出；每日签到并复查今日日历状态；可选社区文章点赞，默认关闭；浏览两件商品及查询对应商品活动信息；提交社区、新闻中心、配件研究所三类阅读任务，保留阅读等待时间；复查任务完成状态并查询当前积分；排除订单评价，未知任务不自动执行且标记失败；支持每行一个账号及完全断网预演；分阶段脱敏日志、账号统计、单行结构化汇总和青龙通知。
 - `scripts/sudojia_tuchong.js`：手机号密码登录，沿用上游 AES-128-ECB 手机号加密与请求头。；查询并展示官方昵称及公开 UID。；每日签到获取积分。；查询当前积分与等级。；每行一个账号，账号独立处理，任一失败整体非零退出。；完全断网预演与配置格式校验。；限时请求、响应大小限制、业务结果校验和脱敏日志。；正式运行通过青龙发送脱敏通知；通知失败不改变业务退出码；断网预演仅生成本地通知摘要。；带时间戳的分阶段结果、每账号及总体统计，输出唯一单行 TASK_SUMMARY。。
 - `scripts/sudojia_v2ex.js`：校验登录状态并显示页面返回的公开用户名；领取每日登录奖励，识别当天已领取状态；展示页面提供的连续登录天数；查询金币、银币、铜币余额，无法解析时明确失败；每天 09:00 执行，支持逐行多账号和单账号失败隔离；完全断网预演，包含通知模拟；青龙脱敏汇总通知，可全局关闭；通知失败保留业务退出码；带时间戳和阶段耗时的日志、账号统计与单行 TASK_SUMMARY 汇总。
@@ -223,7 +221,7 @@
 - `scripts/sudojia_znds.js`：验证登录状态并显示官方公开 UID；每日签到并区分签到成功和今日已完成；显式配置后访问指定用户空间；查询积分、威望、金币及Z币，要求四项均可解析；逐行多账号独立运行并汇总失败退出码；完全断网预演与通知模拟；青龙脱敏通知、分阶段耗时与单行结构化汇总。
 - `scripts/sudojia_zxice.js`：校验账号登录状态并展示官方返回的非敏感昵称；查询今日签到状态，已签到时避免重复操作；每日签到并展示接口确认的奶滴奖励；查询当前奶滴值；支持每行一个账号，独立处理并汇总失败退出码；完全断网预演、分阶段时间轴日志、账号统计和单行 TASK_SUMMARY 汇总；通过青龙 sendNotify.js 发送脱敏结果通知，支持全局开关；完全断网预演生成本地通知摘要。
 - `scripts/synspoint.py`：查询官方昵称并显示非敏感身份；查询任务前后积分；执行会员签到；执行浏览会员商城积分任务（任务编号 38）；显式开启上播预约后取消，保留原活动、商品列表和等待时间，可配置活动及商品；按原定时执行，支持每行一个账号及账号间失败隔离；断网预演、脱敏通知、分阶段日志及单行结构化任务汇总。
-- `scripts/tieba_checkin.py`：验证百度贴吧登录状态并获取签到所需的 TBS；显示登录接口可取得的账号昵称、用户名或公开 UID，方便核对账号；读取账号关注的贴吧列表并识别当日已签到项目；为尚未签到的关注贴吧执行每日签到；支持每行一个账号的多账号独立处理和统一脱敏通知；提供完全断网、不会产生账号副作用的配置预演；输出逐阶段时间轴、账号统计和单行结构化任务汇总。
+- `scripts/tieba_checkin.py`：保留登录验证和 TBS 获取、读取关注贴吧、识别当日已签到项目、为未签到贴吧逐吧签到，沿用明确成功码和已签到判断。；直接显示官方接口返回的昵称、用户名或公开 UID，方便核对账号。；显式开启后通过 APP 成长接口验证登录、取得独立 TBS，并执行成长任务每日签到，要求业务码明确为 0。；显式开启后查询当前成长值、贴贝余额、当前等级及距离下一等级所需成长值，保留上游等级差值算法。；沿用 TIEBA_COOKIE，兼容 TIE_BA_COOKIE 的完整 Cookie 或 BDUSS 单值，每行一个账号；成长字段在同一账号 Cookie 中提供。；保留规范任务每日 08:23 计划、逐吧详情开关与可配置请求间隔；成长任务默认关闭。；完全断网预演校验账号必要字段、不加载通知组件、不产生账号副作用，并展示脱敏通知汇总。；正式执行、配置失败、部分失败或成功后尝试青龙脱敏通知，支持全局关闭，通知失败保持业务退出码。；输出逐阶段时间轴、账号及任务统计、最终状态和恰好一个单行 TASK_SUMMARY 结构化汇总。；逐吧流程和成长任务独立处理，任一任务或账号失败返回非零退出码；HTTP 有超时、响应大小限制及同主机 HTTPS 重定向限制。。
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
 - `scripts/tyqhdraw.py`：登录并校验业务成功码与有效会话；查询调料包和番茄资产；打印官方返回的非秘密账号身份；显式开启后执行活动 58 集市兑换抽奖，每轮最多 10 次并检查奖品字段；使用本地透明掩膜图像匹配识别滑块并验证官方业务成功码；低置信度停止；查询实物礼品名称及非实物礼品数量；每行一个账号，账号独立失败隔离与整体非零退出；完全断网预演、青龙脱敏通知、逐阶段日志及单行任务汇总。
@@ -319,7 +317,6 @@
 <tr><td rowspan="1"><code>scripts/sudojia_sspanel.js</code></td><td><code>SITE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：HTTPS站点地址,邮箱:密码。仅在第一个逗号和之后的第一个冒号处分割，密码中的后续标点完整保留；不支持换行密码。禁止以 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_starmom.js</code></td><td><code>STAR_MOM_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整 token，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_tebu.js</code></td><td><code>TEBU_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的完整 token，不使用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/sudojia_tieba_tasksign.js</code></td><td><code>TIE_BA_COOKIE</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie，至少包含 BDUSS=&lt;账号凭据&gt;; CUID=&lt;同账号设备凭据&gt;。字段用分号分隔，每个字段仅按首个等号拆分，保留值内后续等号。兼容原变量名与完整 Cookie，不再以 &amp; 或 @ 分隔账号；单独 BDUSS 不足以执行成长签到。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_tilta.js</code></td><td><code>TILTA_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的完整 authorization 值；不使用 &amp; 或 @ 分隔账号，无需添加额外前缀。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_tuchong.js</code></td><td><code>TUC_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：手机号#密码。仅在第一个 # 分割，其后密码原样保留，包括 #、&amp;、@；不支持用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_v2ex.js</code></td><td><code>V2EX_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留值中的 &amp;、@ 和分号，不用这些字符分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -332,7 +329,7 @@
 <tr><td rowspan="1"><code>scripts/sudojia_znds.js</code></td><td><code>ZNDS_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 Cookie，保留分号、等号与 &amp;；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_zxice.js</code></td><td><code>ZX_ICE_TOKEN</code></td><td>是</td><td>格式：每个非空行填写一个账号的 access-token 原值；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/synspoint.py</code></td><td><code>synshd</code></td><td>是</td><td>格式：每个非空行一个账号凭据，可带 Bearer 前缀；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/tieba_checkin.py</code></td><td><code>TIEBA_COOKIE</code></td><td>是</td><td>格式：每个账号占一个非空行；单行填写 BDUSS 值，或填写形如 BDUSS=&lt;值&gt;; STOKEN=&lt;值&gt; 的完整 Cookie。同一账号的 Cookie 字段保留在同一行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/tieba_checkin.py</code></td><td><code>TIEBA_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；支持 BDUSS 单值或完整 Cookie。成长任务要求同一行含 BDUSS=值; CUID=值，字段值按首个等号分割，后续等号保留；不能按 &amp; 或 @ 分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tyqhdraw.py</code></td><td><code>tyqhCookie</code></td><td>是</td><td>格式：每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -714,9 +711,6 @@
 <tr><td rowspan="3"><code>scripts/sudojia_tebu.js</code></td><td><code>TEBU_DRY_RUN</code></td><td>否</td><td>格式：1 为预演，其他值为正式执行；预演不签到，不加载通知模块，只生成通知摘要。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，其他值启用。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块所在目录的绝对路径，仅通知使用，业务不依赖此文件。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="3"><code>scripts/sudojia_tieba_tasksign.js</code></td><td><code>TIEBA_GROWTH_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全离线预演，默认正式执行。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知，不影响业务退出码。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；未设置时尝试 /ql/data/scripts/sendNotify.js 和 /ql/scripts/sendNotify.js。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/sudojia_tilta.js</code></td><td><code>TILTA_ALLOW_LIKE</code></td><td>否</td><td>格式：0或1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>TILTA_DRY_RUN</code></td><td>否</td><td>格式：0或1；预演包含通知模拟且完全不联网。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off（不区分大小写）关闭，其他值开启。；多账号格式以该脚本文档为准</td></tr>
@@ -768,12 +762,13 @@
 <tr><td><code>SYNSPOINT_GOODS_ID</code></td><td>否</td><td>格式：正整数；可选，不影响默认关闭预约。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；断网预演只模拟通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，不作为业务运行依赖。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="6"><code>scripts/tieba_checkin.py</code></td><td><code>TIE_BA_COOKIE</code></td><td>是</td><td>格式：每个账号占一个非空行；单行填写 BDUSS 值或包含 BDUSS 的完整 Cookie。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TIEBA_DRY_RUN</code></td><td>否</td><td>格式：启用值为 1、true、yes 或 on，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TIEBA_VERBOSE</code></td><td>否</td><td>格式：启用值为 1、true、yes 或 on，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TIEBA_DELAY_MS</code></td><td>否</td><td>格式：整数毫秒，脚本会限制在 500 至 10000 之间，默认 1200。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no 或 off 表示关闭，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径，目录内应包含 notify.py。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/tieba_checkin.py</code></td><td><code>TIE_BA_COOKIE</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie 或 BDUSS 单值；成长任务需包含 BDUSS 与 CUID。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TIEBA_GROWTH_TASKS</code></td><td>否</td><td>格式：1、true、yes、on 开启，其他值关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TIEBA_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启；默认关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TIEBA_VERBOSE</code></td><td>否</td><td>格式：1、true、yes、on 开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TIEBA_DELAY_MS</code></td><td>否</td><td>格式：整数毫秒；限制在 500 至 10000；格式错误沿用默认值。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；仅作为可选通知组件位置，业务功能不依赖此文件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/tsthb_checkin.py</code></td><td><code>TSTHB_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 表示启用。预演不执行等待、HTTP 或通知模块，仅展示通知摘要。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：忽略大小写，只有 true 启用随机延迟，其他值关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：非负整数，单位秒；随机延迟开启时在 0 至该值之间随机选择并显示倒计时。；多账号格式以该脚本文档为准</td></tr>
@@ -894,7 +889,6 @@
 - `scripts/sudojia_sspanel.js`：每个非空行一个账号，各账号独立登录、签到和统计；任一账号失败则整体非零退出。。
 - `scripts/sudojia_starmom.js`：每个非空行一个账号，独立执行；任一账号失败则整体非零退出。。
 - `scripts/sudojia_tebu.js`：每个非空行一个账号，顺序独立处理；任一账号失败整体非零退出。。
-- `scripts/sudojia_tieba_tasksign.js`：每个非空行一个账号，BDUSS 与 CUID 合并在同一 Cookie 行，按分号拆字段且仅在首个等号拆字段值；各账号独立处理，任一账号失败时整体非零退出。。
 - `scripts/sudojia_tilta.js`：每行一个账号，忽略空行，各账号独立执行，任意账号失败时整体非零退出。。
 - `scripts/sudojia_tuchong.js`：每个非空行一个账号，仅以第一个 # 分割手机号和密码；账号顺序执行，相互隔离，任一账号失败时整体非零退出。。
 - `scripts/sudojia_v2ex.js`：每个非空行一个账号，逐个独立执行，任一账号失败则进程非零退出。。
@@ -907,7 +901,7 @@
 - `scripts/sudojia_znds.js`：每个非空行一个账号，配套认证字段包含在同一完整 Cookie 中，不按 & 或 @ 拆分；账号独立执行，任一失败则整体非零退出。。
 - `scripts/sudojia_zxice.js`：每行一个非空账号凭据，按顺序独立运行；任何账号失败均以非零状态退出。。
 - `scripts/synspoint.py`：synshd 每个非空行一个账号，移除完整 Bearer 前缀后保留整行凭据；逐账号独立处理，任一账号失败则整体非零退出。。
-- `scripts/tieba_checkin.py`：每个非空行表示一个账号；同一账号的全部 Cookie 字段必须写在同一行，脚本不会使用 &、@ 等字符拆分账号。账号逐个独立处理，任一账号失败都会使进程以非零状态退出。。
+- `scripts/tieba_checkin.py`：每个非空行一个账号，整行保留为 Cookie；重复行去重，不按 & 或 @ 拆分。账号独立执行，任一账号失败则进程非零退出。。
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
 - `scripts/tyqhdraw.py`：每个非空行一个账号；同一账号的 thirdId 与 wid 写在同一行，保留原字段顺序。逐账号独立处理，任一账号失败则整体非零退出。。
@@ -1464,13 +1458,6 @@
 - 填写格式：`每个非空行一个账号的完整 token，不使用 &、@ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `TIE_BA_COOKIE`
-
-- 所属脚本：`scripts/sudojia_tieba_tasksign.js`
-- 获取或设置：在自己设备上登录百度贴吧APP，使用本机抓包工具查看发往 https://tieba.baidu.com 的请求，复制包含 BDUSS 和 CUID 的 Cookie。两个字段必须属于同一账号，获取后请妥善保管，不要公开或发送给他人。
-- 填写格式：`每个非空行一个完整 Cookie，至少包含 BDUSS=<账号凭据>; CUID=<同账号设备凭据>。字段用分号分隔，每个字段仅按首个等号拆分，保留值内后续等号。兼容原变量名与完整 Cookie，不再以 & 或 @ 分隔账号；单独 BDUSS 不足以执行成长签到。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
 #### `TILTA_TOKEN`
 
 - 所属脚本：`scripts/sudojia_tilta.js`
@@ -1558,8 +1545,8 @@
 #### `TIEBA_COOKIE`
 
 - 所属脚本：`scripts/tieba_checkin.py`
-- 获取或设置：在浏览器登录百度贴吧后，从 tieba.baidu.com 的请求 Cookie 中复制 BDUSS；可只填写 BDUSS 的值，也可填写包含 BDUSS 的完整 Cookie。请仅在自己的青龙环境中保存。
-- 填写格式：`每个账号占一个非空行；单行填写 BDUSS 值，或填写形如 BDUSS=<值>; STOKEN=<值> 的完整 Cookie。同一账号的 Cookie 字段保留在同一行。`
+- 获取或设置：在百度贴吧网站登录本人账号，从浏览器开发者工具请求头复制完整 Cookie，或其中 BDUSS 的值；开启成长任务时，从本人贴吧 APP 发往 tieba.baidu.com 的请求取得同一账号的 BDUSS 和 CUID。可改用兼容变量 TIE_BA_COOKIE。
+- 填写格式：`每个非空行一个账号；支持 BDUSS 单值或完整 Cookie。成长任务要求同一行含 BDUSS=值; CUID=值，字段值按首个等号分割，后续等号保留；不能按 & 或 @ 分账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `tsthbck`
@@ -3811,24 +3798,6 @@
 - 获取或设置：可填写已有青龙 sendNotify.js 所在目录；未设置时依次检查 /ql/data/scripts、/ql/scripts。
 - 填写格式：`本机通知模块所在目录的绝对路径，仅通知使用，业务不依赖此文件。`
 
-#### `TIEBA_GROWTH_DRY_RUN`
-
-- 所属脚本：`scripts/sudojia_tieba_tasksign.js`
-- 获取或设置：自行设置；离线测试时设置为 1。
-- 填写格式：`1、true、yes、on 启用完全离线预演，默认正式执行。`
-
-#### `QINGLONG_NOTIFY`
-
-- 所属脚本：`scripts/sudojia_tieba_tasksign.js`
-- 获取或设置：使用青龙全局通知开关，按需要自行设置。
-- 填写格式：`默认 1；0、false、no、off 关闭通知，不影响业务退出码。`
-
-#### `QINGLONG_NOTIFY_DIR`
-
-- 所属脚本：`scripts/sudojia_tieba_tasksign.js`
-- 获取或设置：如果青龙的 sendNotify.js 位于自定义目录，填写该目录；标准安装可省略。
-- 填写格式：`本机目录路径；未设置时尝试 /ql/data/scripts/sendNotify.js 和 /ql/scripts/sendNotify.js。`
-
 #### `TILTA_ALLOW_LIKE`
 
 - 所属脚本：`scripts/sudojia_tilta.js`
@@ -4139,39 +4108,45 @@
 #### `TIE_BA_COOKIE`
 
 - 所属脚本：`scripts/tieba_checkin.py`
-- 获取或设置：旧版兼容变量，获取方法与 TIEBA_COOKIE 相同；仅当未设置 TIEBA_COOKIE 时读取。
-- 填写格式：`每个账号占一个非空行；单行填写 BDUSS 值或包含 BDUSS 的完整 Cookie。`
+- 获取或设置：旧变量兼容入口，获取方式同 TIEBA_COOKIE；TIEBA_COOKIE 非空时优先使用它。
+- 填写格式：`每个非空行一个完整 Cookie 或 BDUSS 单值；成长任务需包含 BDUSS 与 CUID。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TIEBA_GROWTH_TASKS`
+
+- 所属脚本：`scripts/tieba_checkin.py`
+- 获取或设置：按需手动设置；默认关闭。只有明确开启并具有同账号 BDUSS 与 CUID 时提交成长任务，启用后字段缺失计为账号失败，逐吧签到仍独立执行。
+- 填写格式：`1、true、yes、on 开启，其他值关闭。`
 
 #### `TIEBA_DRY_RUN`
 
 - 所属脚本：`scripts/tieba_checkin.py`
-- 获取或设置：无需获取；设为 1 可进行完全断网的配置预演。
-- 填写格式：`启用值为 1、true、yes 或 on，不区分大小写。`
+- 获取或设置：手动设为 1 开启完全断网配置预演。
+- 填写格式：`1、true、yes、on 开启；默认关闭。`
 
 #### `TIEBA_VERBOSE`
 
 - 所属脚本：`scripts/tieba_checkin.py`
-- 获取或设置：无需获取；按需设为 1，可在正式执行时显示贴吧名称和脱敏错误详情。
-- 填写格式：`启用值为 1、true、yes 或 on，不区分大小写。`
+- 获取或设置：手动开启逐吧名称及结果日志，默认关闭。
+- 填写格式：`1、true、yes、on 开启。`
 
 #### `TIEBA_DELAY_MS`
 
 - 所属脚本：`scripts/tieba_checkin.py`
-- 获取或设置：无需获取；用于调整连续签到请求之间的固定间隔。
-- 填写格式：`整数毫秒，脚本会限制在 500 至 10000 之间，默认 1200。`
+- 获取或设置：按需设置逐吧请求间隔，默认 1200 毫秒。
+- 填写格式：`整数毫秒；限制在 500 至 10000；格式错误沿用默认值。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/tieba_checkin.py`
-- 获取或设置：无需获取；青龙通知默认开启，设为 0 可关闭。
-- 填写格式：`0、false、no 或 off 表示关闭，不区分大小写。`
+- 获取或设置：青龙全局通知开关，默认开启。断网预演仅生成并展示脱敏通知汇总，不加载可能联网的通知组件。
+- 填写格式：`0、false、no、off 关闭，其他值开启。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/tieba_checkin.py`
-- 获取或设置：仅在青龙通知脚本不位于标准目录时填写 notify.py 所在目录。
-- 填写格式：`本机目录路径，目录内应包含 notify.py。`
+- 获取或设置：可选填写青龙 notify.py 所在目录；自动尝试导入 notify.send 及标准青龙目录。
+- 填写格式：`本地目录路径；仅作为可选通知组件位置，业务功能不依赖此文件。`
 
 #### `TSTHB_DRY_RUN`
 
@@ -4499,7 +4474,6 @@
 - `scripts/sudojia_sspanel.js`：SHA-256 `1055ccec4def07a28137aee50d995f6650d6918197b0d9ff7be7508ed5281ca2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ab685f53b0a5cc0`。
 - `scripts/sudojia_starmom.js`：SHA-256 `bc2b70cfb62513c69d904e375dce06bbc55b7592b9131cea78a2a1e894bc1b29`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4506301c45293563`。
 - `scripts/sudojia_tebu.js`：SHA-256 `25c0e6a616e7945d13727f2326b14a059c89cece3405730c8999a16480024428`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a2b79c7df4dc31e7`。
-- `scripts/sudojia_tieba_tasksign.js`：SHA-256 `4c0e56159676847aa219dd7b1eb4e82d983071826aa4266d9e1905210218d8e7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed94837684d76d06`。
 - `scripts/sudojia_tilta.js`：SHA-256 `ca9c192577ffee68ddc1083e55704065dac8f6f756f2d3af1f4fc99e03565d22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8a2853d90ebdcb0c`。
 - `scripts/sudojia_tuchong.js`：SHA-256 `cdc3e24cb80e5424179994733a38c773a31e05e91eb357a0d54e1fd47d32e270`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0554aeea00a7519f`。
 - `scripts/sudojia_v2ex.js`：SHA-256 `3bab10b2632bd44e16b758b07d75b859e82710d14b6b5236be377a829c57f4ab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/705cf315f5da6907`。
@@ -4512,7 +4486,7 @@
 - `scripts/sudojia_znds.js`：SHA-256 `e642ddf42719ca2ac4e37a94856f3c35e08307bc0b47d993bd5a1a83eb13eba1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e69a67d8a3d7b7a9`。
 - `scripts/sudojia_zxice.js`：SHA-256 `eb50f784e85263452ae010edf81d6b0e1d6c864532f2c6f1a170aa168ddc8c5d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4b0810d476bc5e`。
 - `scripts/synspoint.py`：SHA-256 `f343af6c80ac9ca40e51f0fb72a81d41acb2af51233623d6fa2f1fca4e636f7f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8060442233509c9a`。
-- `scripts/tieba_checkin.py`：SHA-256 `c19c152b7240df266352493f048f0580710c5c2d1f7c2a62a52922025064d912`；live 业务成功证据位于 `projects/checkin/validation/e608052390d250da`。
+- `scripts/tieba_checkin.py`：SHA-256 `2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 - `scripts/tyqhdraw.py`：SHA-256 `c2c1115b60fd085034eb55d28ffb8fd3cb6476263eeff23f53f5bea8ad892b7e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
@@ -4601,7 +4575,6 @@
 - `scripts/sudojia_sspanel.js`：登录创建站点会话；执行每日签到并可能获得站点流量奖励；开启通知时通过青龙已配置渠道发送任务汇总。
 - `scripts/sudojia_starmom.js`：每日签到及获取积分；提交五项浏览任务的开始和完成记录并领取积分；正式执行时发送青龙任务通知。
 - `scripts/sudojia_tebu.js`：正式执行时提交每日签到并可能获得积分；启用通知且模块可用时发送任务汇总通知。
-- `scripts/sudojia_tieba_tasksign.js`：正式执行时提交成长任务每日签到，改变账号当日成长签到状态及可能产生的成长奖励；正式执行且通知开启、青龙组件可用时发送脱敏任务通知。
 - `scripts/sudojia_tilta.js`：未签到时提交每日签到并可能获得积分；浏览商品及提交阅读任务会改变任务进度并可能获得积分；显式设置 TILTA_ALLOW_LIKE=1 时点赞随机社区文章；正式运行且通知开启时通过青龙配置渠道发送脱敏任务总结。
 - `scripts/sudojia_tuchong.js`：正式运行登录会建立服务端会话。；正式运行每日签到会改变签到状态并可能增加积分。；正式运行在启用通知且青龙模块可用时向已配置通知渠道发送脱敏摘要。。
 - `scripts/sudojia_v2ex.js`：领取 V2EX 每日登录奖励并增加账户奖励余额；正式运行时通过已有青龙通知模块发送脱敏任务汇总，可配置关闭。
@@ -4614,7 +4587,7 @@
 - `scripts/sudojia_znds.js`：正式运行执行每日签到，可能获得积分或奖励；仅配置 ZNDS_VISIT_UID 时访问指定他人空间，可能产生足迹或访问奖励；正式运行且通知启用时发送脱敏任务通知。
 - `scripts/sudojia_zxice.js`：未签到时提交每日签到并领取奶滴奖励；正式模式按通知配置发送任务结果通知。
 - `scripts/synspoint.py`：会员签到及接口对应积分变化；提交浏览会员商城任务并可能获取积分；显式开启后创建商品上播预约，再取消本次成功创建的预约；正式运行时按全局开关发送脱敏总结通知。
-- `scripts/tieba_checkin.py`：正式执行时向百度贴吧提交签到请求，改变对应贴吧的当日签到状态；通知开启且青龙通知组件可用时发送脱敏任务汇总。
+- `scripts/tieba_checkin.py`：正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态及可能产生签到奖励。；仅显式开启成长任务且 Cookie 同时含 BDUSS 和 CUID 时提交 APP 成长每日签到，改变当日成长签到状态及可能产生的成长奖励。；正式执行且通知开启、青龙组件可用时发送脱敏任务汇总通知。。
 - `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
 - `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
 - `scripts/tyqhdraw.py`：登录创建账号会话；显式开启时兑换抽奖，可能消耗资产或抽奖机会并获得奖品；抽奖遇到滑块时提交验证码验证；启用通知时通过青龙通知渠道发送脱敏任务统计。
@@ -4705,7 +4678,6 @@
 - `scripts/sudojia_sspanel.js`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_sspanel.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_starmom.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_starMom.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_tebu.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_tebu.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
-- `scripts/sudojia_tieba_tasksign.js`：上游 `sudojia/AutoTaskScript` / `src/client/sudojia_tieba_taskSign.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_tilta.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_tilta.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_tuchong.js`：上游 `sudojia/AutoTaskScript` / `src/client/sudojia_tuchong.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_v2ex.js`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_v2ex.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。

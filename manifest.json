@@ -114,7 +114,8 @@
           "successCriteriaUnchanged": true,
           "sideEffectsUnchanged": true
         }
-      }
+      },
+      "applicationKey": "aliyun-drive"
     },
     {
       "catalogId": "6b6ae91490051bce",
@@ -438,7 +439,8 @@
         "validatedSha256": "93bf4735b84783510eac5eba003a1ca482cfa25770c3021c940e80d9c07d6b13",
         "releaseSha256": "e9c658f4544427bd94ab4da74a724038d1f849c8b9665464ded6e8a1c4dd2c18",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
-      }
+      },
+      "applicationKey": "baiduwangpan"
     },
     {
       "catalogId": "28b170786df4dff2",
@@ -989,7 +991,8 @@
         "validatedSha256": "1cf5f435d392df5014712a1955a0123ce86b90384a640c170b2a6ca5735f0250",
         "releaseSha256": "15ecc5e482af800b18360374359667392176fe88ab77c7950509da115f09f07a",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
-      }
+      },
+      "applicationKey": "cfmoto"
     },
     {
       "catalogId": "e7b851436459bf8f",
@@ -3348,7 +3351,8 @@
         "validatedSha256": "484a16b450e0d60eead2d0f626449d231c9b342ae841f2a3a46fe6438dc8a57a",
         "releaseSha256": "b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
-      }
+      },
+      "applicationKey": "kuaishou"
     },
     {
       "catalogId": "12e44eccee922041",
@@ -10517,130 +10521,6 @@
       }
     },
     {
-      "catalogId": "ed94837684d76d06",
-      "applicationKey": "tieba",
-      "checkProfile": {
-        "requiredEnv": [
-          "TIE_BA_COOKIE"
-        ],
-        "optionalEnv": [
-          "TIEBA_GROWTH_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "TIEBA_GROWTH_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "成长签到成功（业务码为 0）",
-          "\"status\":\"success\"",
-          "TASK_SUMMARY="
-        ],
-        "features": [
-          "通过成长接口验证登录状态并取得签到所需 TBS，显示接口返回的昵称、用户名或公开身份",
-          "执行贴吧APP成长任务每日签到，要求接口明确返回业务码 0",
-          "查询并显示当前成长值、贴贝余额、等级及距离下一等级所需成长值",
-          "沿用 TIE_BA_COOKIE 完整 Cookie 参数和每日 07:19 计划，支持每行一个账号独立处理",
-          "提供完全断网的配置预演，不加载通知组件且不产生账号副作用",
-          "输出逐阶段时间轴、账号及任务统计、最终状态和单行 TASK_SUMMARY 结构化汇总",
-          "正式运行后通过可用的青龙通知组件发送脱敏汇总，支持全局关闭；通知失败保留业务退出码"
-        ],
-        "sideEffects": [
-          "正式执行时提交成长任务每日签到，改变账号当日成长签到状态及可能产生的成长奖励",
-          "正式执行且通知开启、青龙组件可用时发送脱敏任务通知"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "百度贴吧成长任务签到",
-      "path": "scripts/sudojia_tieba_tasksign.js",
-      "sha256": "4c0e56159676847aa219dd7b1eb4e82d983071826aa4266d9e1905210218d8e7",
-      "stage": "released",
-      "license": "GPL-3.0",
-      "licenseGate": "allowed-copyleft",
-      "source": {
-        "repository": "sudojia/AutoTaskScript",
-        "branch": "script",
-        "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
-        "originalPath": "src/client/sudojia_tieba_taskSign.js"
-      },
-      "cron": "19 7 * * *",
-      "command": "node scripts/sudojia_tieba_tasksign.js",
-      "environment": [
-        {
-          "name": "TIE_BA_COOKIE",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "在自己设备上登录百度贴吧APP，使用本机抓包工具查看发往 https://tieba.baidu.com 的请求，复制包含 BDUSS 和 CUID 的 Cookie。两个字段必须属于同一账号，获取后请妥善保管，不要公开或发送给他人。",
-          "format": "每个非空行一个完整 Cookie，至少包含 BDUSS=<账号凭据>; CUID=<同账号设备凭据>。字段用分号分隔，每个字段仅按首个等号拆分，保留值内后续等号。兼容原变量名与完整 Cookie，不再以 & 或 @ 分隔账号；单独 BDUSS 不足以执行成长签到。"
-        },
-        {
-          "name": "TIEBA_GROWTH_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置；离线测试时设置为 1。",
-          "format": "1、true、yes、on 启用完全离线预演，默认正式执行。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "使用青龙全局通知开关，按需要自行设置。",
-          "format": "默认 1；0、false、no、off 关闭通知，不影响业务退出码。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "如果青龙的 sendNotify.js 位于自定义目录，填写该目录；标准安装可省略。",
-          "format": "本机目录路径；未设置时尝试 /ql/data/scripts/sendNotify.js 和 /ql/scripts/sendNotify.js。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "每个非空行一个账号，BDUSS 与 CUID 合并在同一 Cookie 行，按分号拆字段且仅在首个等号拆字段值；各账号独立处理，任一账号失败时整体非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "通过成长接口验证登录状态并取得签到所需 TBS，显示接口返回的昵称、用户名或公开身份",
-        "执行贴吧APP成长任务每日签到，要求接口明确返回业务码 0",
-        "查询并显示当前成长值、贴贝余额、等级及距离下一等级所需成长值",
-        "沿用 TIE_BA_COOKIE 完整 Cookie 参数和每日 07:19 计划，支持每行一个账号独立处理",
-        "提供完全断网的配置预演，不加载通知组件且不产生账号副作用",
-        "输出逐阶段时间轴、账号及任务统计、最终状态和单行 TASK_SUMMARY 结构化汇总",
-        "正式运行后通过可用的青龙通知组件发送脱敏汇总，支持全局关闭；通知失败保留业务退出码"
-      ],
-      "sideEffects": [
-        "正式执行时提交成长任务每日签到，改变账号当日成长签到状态及可能产生的成长奖励",
-        "正式执行且通知开启、青龙组件可用时发送脱敏任务通知"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/ed94837684d76d06",
-        "candidateSha256": "8ee098853a84133ce333f84d2952c6193f4a4a9d45096ab21345bc25207363a7"
-      },
-      "packaging": {
-        "type": "qinglong-discovery-metadata",
-        "validatedSha256": "8ee098853a84133ce333f84d2952c6193f4a4a9d45096ab21345bc25207363a7",
-        "releaseSha256": "4c0e56159676847aa219dd7b1eb4e82d983071826aa4266d9e1905210218d8e7",
-        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
-      }
-    },
-    {
       "catalogId": "8a2853d90ebdcb0c",
       "applicationKey": "tilta",
       "checkProfile": {
@@ -12295,9 +12175,57 @@
     },
     {
       "catalogId": "e608052390d250da",
+      "applicationKey": "tieba",
+      "checkProfile": {
+        "requiredEnv": [
+          "TIEBA_COOKIE"
+        ],
+        "optionalEnv": [
+          "TIE_BA_COOKIE",
+          "TIEBA_GROWTH_TASKS",
+          "TIEBA_DRY_RUN",
+          "TIEBA_VERBOSE",
+          "TIEBA_DELAY_MS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TIEBA_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TIEBA_GROWTH_TASKS": "0",
+          "TIEBA_DELAY_MS": "1200",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态  全部成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "保留登录验证和 TBS 获取、读取关注贴吧、识别当日已签到项目、为未签到贴吧逐吧签到，沿用明确成功码和已签到判断。",
+          "直接显示官方接口返回的昵称、用户名或公开 UID，方便核对账号。",
+          "显式开启后通过 APP 成长接口验证登录、取得独立 TBS，并执行成长任务每日签到，要求业务码明确为 0。",
+          "显式开启后查询当前成长值、贴贝余额、当前等级及距离下一等级所需成长值，保留上游等级差值算法。",
+          "沿用 TIEBA_COOKIE，兼容 TIE_BA_COOKIE 的完整 Cookie 或 BDUSS 单值，每行一个账号；成长字段在同一账号 Cookie 中提供。",
+          "保留规范任务每日 08:23 计划、逐吧详情开关与可配置请求间隔；成长任务默认关闭。",
+          "完全断网预演校验账号必要字段、不加载通知组件、不产生账号副作用，并展示脱敏通知汇总。",
+          "正式执行、配置失败、部分失败或成功后尝试青龙脱敏通知，支持全局关闭，通知失败保持业务退出码。",
+          "输出逐阶段时间轴、账号及任务统计、最终状态和恰好一个单行 TASK_SUMMARY 结构化汇总。",
+          "逐吧流程和成长任务独立处理，任一任务或账号失败返回非零退出码；HTTP 有超时、响应大小限制及同主机 HTTPS 重定向限制。"
+        ],
+        "sideEffects": [
+          "正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态及可能产生签到奖励。",
+          "仅显式开启成长任务且 Cookie 同时含 BDUSS 和 CUID 时提交 APP 成长每日签到，改变当日成长签到状态及可能产生的成长奖励。",
+          "正式执行且通知开启、青龙组件可用时发送脱敏任务汇总通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
       "displayName": "百度贴吧签到",
       "path": "scripts/tieba_checkin.py",
-      "sha256": "c19c152b7240df266352493f048f0580710c5c2d1f7c2a62a52922025064d912",
+      "sha256": "2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e",
       "stage": "released",
       "license": "GPL-3.0-only",
       "licenseGate": "allowed-copyleft",
@@ -12305,7 +12233,29 @@
         "repository": "sudojia/AutoTaskScript",
         "branch": "script",
         "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
-        "originalPath": "src/web/sudojia_tieba.js"
+        "originalPath": "src/web/sudojia_tieba.js",
+        "related": [
+          {
+            "catalogId": "38ff8ca6c57173b4",
+            "sha256": "aeed0087a0da42d6bafffa5d2b7ecc05c401035701b6c9aedb7299db91025baf",
+            "repository": "agluo/ql-script-hub",
+            "url": "https://github.com/agluo/ql-script-hub.git",
+            "branch": "master",
+            "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
+            "originalPath": "tieba_checkin.py",
+            "license": "MIT"
+          },
+          {
+            "repository": "sudojia/AutoTaskScript",
+            "url": "https://github.com/sudojia/AutoTaskScript.git",
+            "branch": "script",
+            "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
+            "originalPath": "src/client/sudojia_tieba_taskSign.js",
+            "catalogId": "ed94837684d76d06",
+            "sha256": "c10c41c1e4249ba49da84bf69d0f4d0920ee5d2a4622253ab012caa42dcfd24e",
+            "license": "GPL-3.0"
+          }
+        ]
       },
       "cron": "23 8 * * *",
       "command": "python3 scripts/tieba_checkin.py",
@@ -12314,81 +12264,94 @@
           "name": "TIEBA_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "在浏览器登录百度贴吧后，从 tieba.baidu.com 的请求 Cookie 中复制 BDUSS；可只填写 BDUSS 的值，也可填写包含 BDUSS 的完整 Cookie。请仅在自己的青龙环境中保存。",
-          "format": "每个账号占一个非空行；单行填写 BDUSS 值，或填写形如 BDUSS=<值>; STOKEN=<值> 的完整 Cookie。同一账号的 Cookie 字段保留在同一行。"
+          "howToGet": "在百度贴吧网站登录本人账号，从浏览器开发者工具请求头复制完整 Cookie，或其中 BDUSS 的值；开启成长任务时，从本人贴吧 APP 发往 tieba.baidu.com 的请求取得同一账号的 BDUSS 和 CUID。可改用兼容变量 TIE_BA_COOKIE。",
+          "format": "每个非空行一个账号；支持 BDUSS 单值或完整 Cookie。成长任务要求同一行含 BDUSS=值; CUID=值，字段值按首个等号分割，后续等号保留；不能按 & 或 @ 分账号。"
         },
         {
           "name": "TIE_BA_COOKIE",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧版兼容变量，获取方法与 TIEBA_COOKIE 相同；仅当未设置 TIEBA_COOKIE 时读取。",
-          "format": "每个账号占一个非空行；单行填写 BDUSS 值或包含 BDUSS 的完整 Cookie。"
+          "howToGet": "旧变量兼容入口，获取方式同 TIEBA_COOKIE；TIEBA_COOKIE 非空时优先使用它。",
+          "format": "每个非空行一个完整 Cookie 或 BDUSS 单值；成长任务需包含 BDUSS 与 CUID。"
+        },
+        {
+          "name": "TIEBA_GROWTH_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需手动设置；默认关闭。只有明确开启并具有同账号 BDUSS 与 CUID 时提交成长任务，启用后字段缺失计为账号失败，逐吧签到仍独立执行。",
+          "format": "1、true、yes、on 开启，其他值关闭。"
         },
         {
           "name": "TIEBA_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；设为 1 可进行完全断网的配置预演。",
-          "format": "启用值为 1、true、yes 或 on，不区分大小写。"
+          "howToGet": "手动设为 1 开启完全断网配置预演。",
+          "format": "1、true、yes、on 开启；默认关闭。"
         },
         {
           "name": "TIEBA_VERBOSE",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；按需设为 1，可在正式执行时显示贴吧名称和脱敏错误详情。",
-          "format": "启用值为 1、true、yes 或 on，不区分大小写。"
+          "howToGet": "手动开启逐吧名称及结果日志，默认关闭。",
+          "format": "1、true、yes、on 开启。"
         },
         {
           "name": "TIEBA_DELAY_MS",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；用于调整连续签到请求之间的固定间隔。",
-          "format": "整数毫秒，脚本会限制在 500 至 10000 之间，默认 1200。"
+          "howToGet": "按需设置逐吧请求间隔，默认 1200 毫秒。",
+          "format": "整数毫秒；限制在 500 至 10000；格式错误沿用默认值。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；青龙通知默认开启，设为 0 可关闭。",
-          "format": "0、false、no 或 off 表示关闭，不区分大小写。"
+          "howToGet": "青龙全局通知开关，默认开启。断网预演仅生成并展示脱敏通知汇总，不加载可能联网的通知组件。",
+          "format": "0、false、no、off 关闭，其他值开启。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "仅在青龙通知脚本不位于标准目录时填写 notify.py 所在目录。",
-          "format": "本机目录路径，目录内应包含 notify.py。"
+          "howToGet": "可选填写青龙 notify.py 所在目录；自动尝试导入 notify.send 及标准青龙目录。",
+          "format": "本地目录路径；仅作为可选通知组件位置，业务功能不依赖此文件。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行表示一个账号；同一账号的全部 Cookie 字段必须写在同一行，脚本不会使用 &、@ 等字符拆分账号。账号逐个独立处理，任一账号失败都会使进程以非零状态退出。"
+        "rule": "每个非空行一个账号，整行保留为 Cookie；重复行去重，不按 & 或 @ 拆分。账号独立执行，任一账号失败则进程非零退出。"
       },
       "dependencies": [],
       "features": [
-        "验证百度贴吧登录状态并获取签到所需的 TBS",
-        "显示登录接口可取得的账号昵称、用户名或公开 UID，方便核对账号",
-        "读取账号关注的贴吧列表并识别当日已签到项目",
-        "为尚未签到的关注贴吧执行每日签到",
-        "支持每行一个账号的多账号独立处理和统一脱敏通知",
-        "提供完全断网、不会产生账号副作用的配置预演",
-        "输出逐阶段时间轴、账号统计和单行结构化任务汇总"
+        "保留登录验证和 TBS 获取、读取关注贴吧、识别当日已签到项目、为未签到贴吧逐吧签到，沿用明确成功码和已签到判断。",
+        "直接显示官方接口返回的昵称、用户名或公开 UID，方便核对账号。",
+        "显式开启后通过 APP 成长接口验证登录、取得独立 TBS，并执行成长任务每日签到，要求业务码明确为 0。",
+        "显式开启后查询当前成长值、贴贝余额、当前等级及距离下一等级所需成长值，保留上游等级差值算法。",
+        "沿用 TIEBA_COOKIE，兼容 TIE_BA_COOKIE 的完整 Cookie 或 BDUSS 单值，每行一个账号；成长字段在同一账号 Cookie 中提供。",
+        "保留规范任务每日 08:23 计划、逐吧详情开关与可配置请求间隔；成长任务默认关闭。",
+        "完全断网预演校验账号必要字段、不加载通知组件、不产生账号副作用，并展示脱敏通知汇总。",
+        "正式执行、配置失败、部分失败或成功后尝试青龙脱敏通知，支持全局关闭，通知失败保持业务退出码。",
+        "输出逐阶段时间轴、账号及任务统计、最终状态和恰好一个单行 TASK_SUMMARY 结构化汇总。",
+        "逐吧流程和成长任务独立处理，任一任务或账号失败返回非零退出码；HTTP 有超时、响应大小限制及同主机 HTTPS 重定向限制。"
       ],
       "sideEffects": [
-        "正式执行时向百度贴吧提交签到请求，改变对应贴吧的当日签到状态",
-        "通知开启且青龙通知组件可用时发送脱敏任务汇总"
+        "正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态及可能产生签到奖励。",
+        "仅显式开启成长任务且 Cookie 同时含 BDUSS 和 CUID 时提交 APP 成长每日签到，改变当日成长签到状态及可能产生的成长奖励。",
+        "正式执行且通知开启、青龙组件可用时发送脱敏任务汇总通知。"
       ],
       "review": {
         "staticPassed": true,
-        "sandboxPassed": true,
-        "humanAccepted": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
         "sideEffectsReviewed": true
       },
       "validation": {
-        "status": "passed",
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
         "evidence": "projects/checkin/validation/e608052390d250da",
-        "candidateSha256": "c19c152b7240df266352493f048f0580710c5c2d1f7c2a62a52922025064d912"
+        "candidateSha256": "2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e"
       }
     },
     {
@@ -12481,7 +12444,8 @@
         "status": "passed",
         "evidence": "projects/checkin/validation/82616d06df4e5f53",
         "candidateSha256": "f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c"
-      }
+      },
+      "applicationKey": "tsthb"
     },
     {
       "catalogId": "70f2505a78eb7276",
