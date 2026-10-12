@@ -1460,6 +1460,189 @@
       }
     },
     {
+      "catalogId": "bec8a601d5a51b0a",
+      "applicationKey": "enshan",
+      "checkProfile": {
+        "requiredEnv": [
+          "ENSHAN_COOKIE"
+        ],
+        "optionalEnv": [
+          "enshan_cookie",
+          "ENSHAN_DRY_RUN",
+          "ENSHAN_HTTP_TIMEOUT",
+          "ENSHAN_MAX_RANDOM_DELAY",
+          "MAX_RANDOM_DELAY",
+          "RANDOM_SIGNIN",
+          "ENSHAN_PRIVACY_MODE",
+          "PRIVACY_MODE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ENSHAN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ENSHAN_HTTP_TIMEOUT": "20",
+          "ENSHAN_MAX_RANDOM_DELAY": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到"
+        ],
+        "features": [
+          "Cookie 登录验证、WAF 解码及论坛页回退",
+          "每日签到，严格识别成功和今日已签到",
+          "签到前后读取恩山币及积分，保留积分页地址回退和临时错误重试",
+          "展示官方公开用户名、用户组、贡献及余额变化",
+          "每行一个账号，独立执行且失败非零退出",
+          "可选随机启动延迟，默认关闭等待，兼容上游参数和定时",
+          "完全断网配置预演",
+          "青龙通知及带时间戳分阶段日志，账号和任务统计，保留 SUMMARY_JSON 并追加 TASK_SUMMARY"
+        ],
+        "sideEffects": [
+          "提交每日签到，可能增加恩山币和积分",
+          "正式运行且通知开启时通过青龙发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "恩山论坛签到",
+      "path": "scripts/enshan_checkin.py",
+      "sha256": "c564768903f243711988991d3a8883c99b189a04708c3b8d89660b5988c0d47e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "agluo/ql-script-hub",
+        "branch": "master",
+        "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
+        "originalPath": "enshan_checkin.py"
+      },
+      "cron": "39 12 * * *",
+      "command": "python3 scripts/enshan_checkin.py",
+      "environment": [
+        {
+          "name": "ENSHAN_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录恩山论坛后，在开发者工具网络面板复制本人已登录请求的完整 Cookie 请求头。青龙面板每行填写一个账号，切勿公开。",
+          "format": "每个非空行一个完整 Cookie 请求头；字段用分号分隔，不用 && 或 @ 分隔账号"
+        },
+        {
+          "name": "enshan_cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游凭据变量，获取方式同 ENSHAN_COOKIE；仅在 ENSHAN_COOKIE 未设置时采用。",
+          "format": "每个非空行一个完整 Cookie"
+        },
+        {
+          "name": "ENSHAN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙面板自行设置，启用后不发送任何网络请求、执行等待或调用通知模块。",
+          "format": "1、true、yes、on 启用；默认关闭"
+        },
+        {
+          "name": "ENSHAN_HTTP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙面板按网络情况设置。",
+          "format": "5 至 120 的整数秒，默认 20"
+        },
+        {
+          "name": "ENSHAN_MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙面板自行设置随机启动延迟，默认不等待。",
+          "format": "0 至 3600 的整数秒，默认 0；优先于 MAX_RANDOM_DELAY"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游延迟变量；仅在 ENSHAN_MAX_RANDOM_DELAY 未设置时使用。",
+          "format": "0 至 3600 的整数秒，默认 0"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游随机延迟开关；关闭会停用已配置的随机启动延迟。",
+          "format": "1、true、yes、on 启用；默认启用，但延迟上限默认 0"
+        },
+        {
+          "name": "ENSHAN_PRIVACY_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "保留上一版维护契约参数兼容；依当前要求公开用户名直接显示，凭据始终隐藏。",
+          "format": "布尔值，默认 true；优先于 PRIVACY_MODE，不再遮蔽公开身份"
+        },
+        {
+          "name": "PRIVACY_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "保留上游参数兼容，官方公开用户名直接显示，凭据始终隐藏。",
+          "format": "布尔值，默认 true"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙面板设置全局通知开关；缺失通知模块或发送失败不改变业务退出码。",
+          "format": "默认 1；0、false、no、off 关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写 notify.py 所在目录；也尝试导入 notify 及青龙标准脚本目录。",
+          "format": "本地目录路径，默认不设置"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个完整 Cookie，各账号独立执行，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "Cookie 登录验证、WAF 解码及论坛页回退",
+        "每日签到，严格识别成功和今日已签到",
+        "签到前后读取恩山币及积分，保留积分页地址回退和临时错误重试",
+        "展示官方公开用户名、用户组、贡献及余额变化",
+        "每行一个账号，独立执行且失败非零退出",
+        "可选随机启动延迟，默认关闭等待，兼容上游参数和定时",
+        "完全断网配置预演",
+        "青龙通知及带时间戳分阶段日志，账号和任务统计，保留 SUMMARY_JSON 并追加 TASK_SUMMARY"
+      ],
+      "sideEffects": [
+        "提交每日签到，可能增加恩山币和积分",
+        "正式运行且通知开启时通过青龙发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/bec8a601d5a51b0a",
+        "candidateSha256": "eae7d2d880160e42f4df36672ef2e598fa1142879fa88d6bb688a3e3810f6a3e"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "eae7d2d880160e42f4df36672ef2e598fa1142879fa88d6bb688a3e3810f6a3e",
+        "releaseSha256": "c564768903f243711988991d3a8883c99b189a04708c3b8d89660b5988c0d47e",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "825e404e9590b589",
       "applicationKey": "fxh",
       "checkProfile": {
