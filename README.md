@@ -42,7 +42,6 @@
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `30 9 * * *` |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `33 14 * * *` |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `9 9 * * *` |
-| 恩山无线论坛积分查询 | `scripts/enshan.py` | `python3 scripts/enshan.py` | `0 2 * * *` |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `39 12 * * *` |
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `0 8 * * *` |
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `0 9 * * 0` |
@@ -144,7 +143,6 @@
 - `scripts/ddnsto.py`：申请 product_id=2 七天免费套餐并查询订单；把新套餐绑定到指定路由器；重新读取官方套餐并确认到期时间延长后才报告续费成功；识别本周免费套餐申请次数限制；只有现有套餐尚未过期才视为已完成；显示北京时间到期时间；官方返回非敏感昵称或用户名时原样显示；保留每天 09:30 的上游计划和 ddns_cookie、ddns_userid 单账号兼容参数；多账号按行独立执行，失败账号不阻断其他账号；任一失败整体非零退出；无网络预演、青龙脱敏汇总通知和带时间戳的分阶段日志；输出唯一 TASK_SUMMARY 单行 JSON 汇总。
 - `scripts/deepflood_checkin.py`：执行 DeepFlood 每日签到并验证接口业务结果，支持识别已完成签到；查询并汇总可配置时间窗口内的签到鸡腿收益，保留总量、次数及平均收益；支持换行分隔的多账号独立执行和汇总状态；可选的随机延迟执行，保持原每日计划及既有参数兼容；完全断网且无等待、无副作用的预演；正式运行通过青龙 notify.py 发送脱敏汇总，支持全局通知开关，预演显示同内容通知预览；显示官方返回的非敏感账号身份、编号阶段、耗时与账号及任务统计；保留 SUMMARY_JSON 并追加唯一单行 TASK_SUMMARY，配置或业务失败非零退出。
 - `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
-- `scripts/enshan.py`：使用已登录 Cookie 查询恩山币和积分，同时提取两项数值才视为业务成功。；按行支持多个账号，逐个处理，任一失败非零退出。；识别积分页账号区域的官方用户名并显示，凭据和手机号不输出。；每天 02:00 运行，与上游含秒字段定时等价。；断网预演校验配置，不访问论坛或其他网络服务。；时间轴阶段日志、账号与任务统计及唯一单行 TASK_SUMMARY 结构化摘要。；正式运行通过青龙 notify.py 发送脱敏汇总，通知不可用不改变业务退出码。。
 - `scripts/enshan_checkin.py`：Cookie 登录验证、WAF 解码及论坛页回退；每日签到，严格识别成功和今日已签到；签到前后读取恩山币及积分，保留积分页地址回退和临时错误重试；展示官方公开用户名、用户组、贡献及余额变化；每行一个账号，独立执行且失败非零退出；可选随机启动延迟，默认关闭等待，兼容上游参数和定时；完全断网配置预演；青龙通知及带时间戳分阶段日志，账号和任务统计，保留 SUMMARY_JSON 并追加 TASK_SUMMARY。
 - `scripts/fxh.js`：每日查询当前积分；每日执行芬享汇签到，显示可解析的奖励积分与已签到状态；官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示；逐行多账号独立执行和失败退出；完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总；实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网。
 - `scripts/get_yys_imagelinks.py`：读取阴阳师官网原画页面，保留首个 tab-cont 内六个链接的第三个原画链接选择规则。；默认仅核验并列出素材；显式开启后保存原画，保留数字路径命名与原画目录默认值，修复未知文件名及同名碰撞。；通过任务开关读取全部官网 CG 视频分组，保存标题命名的 MP4 视频并记录 downloaded_videos.txt 标题历史。；校验已有素材文件格式并跳过下载；视频新下载数量限制与默认两秒间隔均保留。；独立实现带超时和 HTTPS 重定向校验的 HTTP 请求；检查状态码、页面结构、素材格式、大小及已知响应长度；原子落盘且不覆盖已有文件。；每种素材及每个下载项独立处理，任一失败即整体非零退出；输出中文分阶段耗时、子任务统计和唯一 TASK_SUMMARY JSON。；提供无账号、无网络、无文件写入的断网预演，覆盖原画和视频解析。；所有结果发送脱敏青龙通知；预演输出通知摘要且不调用通知服务，通知失败保留业务退出码。。
@@ -251,7 +249,6 @@
 <tr><td rowspan="1"><code>scripts/ddnsto.py</code></td><td><code>DDNSTO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 路由器ID|完整Cookie；仅在首个 | 分隔，同一行内 Cookie 原样保留，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/deepflood_checkin.py</code></td><td><code>DEEPFLOOD_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号完整 Cookie；不按 &amp;、@ 或分号拆分账号，Cookie 中的这些字符原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/durex.py</code></td><td><code>dlshyzx</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/enshan.py</code></td><td><code>enshanck</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie 键值对；行内分号原样保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/enshan_checkin.py</code></td><td><code>ENSHAN_COOKIE</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie 请求头；字段用分号分隔，不用 &amp;&amp; 或 @ 分隔账号；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fxh.js</code></td><td><code>fxhOpenId</code></td><td>是</td><td>格式：每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hifiti_checkin.py</code></td><td><code>HiFiTi_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；填写完整 Cookie（字段之间使用分号），兼容旧版仅填写 cloudmusic.net 的值；字段值中的等号完整保留。；多账号格式以该脚本文档为准</td></tr>
@@ -417,9 +414,6 @@
 <tr><td><code>dlshyzx_drawid</code></td><td>否</td><td>格式：数字活动编号；所有账号参与同一活动；仅 DUREX_DRAW=1 时必填。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；断网预演仅生成本地通知预览。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录路径；否则查找可导入的 notify 和 /ql/data/scripts、/ql/scripts。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="3"><code>scripts/enshan.py</code></td><td><code>ENSHAN_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启断网预演；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0/false/no/off 关闭，其他值开启；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于可选通知功能；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="10"><code>scripts/enshan_checkin.py</code></td><td><code>enshan_cookie</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ENSHAN_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ENSHAN_HTTP_TIMEOUT</code></td><td>否</td><td>格式：5 至 120 的整数秒，默认 20；多账号格式以该脚本文档为准</td></tr>
@@ -826,7 +820,6 @@
 - `scripts/ddnsto.py`：每个非空行一个账号，使用 路由器ID|完整Cookie，仅按首个 | 拆分；各账号独立执行，任一账号失败整体非零退出。兼容旧变量仅支持单账号。。
 - `scripts/deepflood_checkin.py`：每个非空行填写一个账号完整 Cookie；忽略空行并兼容换行格式，各账号独立执行，任一账号签到或收益查询失败则整体非零退出。。
 - `scripts/durex.py`：每个非空行一个账号的 Access-Token；各账号独立处理；任何账号失败则整体非零退出。。
-- `scripts/enshan.py`：每个非空行一个完整 Cookie；独立查询并继续处理其余账号，任一账号失败整体非零退出。。
 - `scripts/enshan_checkin.py`：每个非空行一个完整 Cookie，各账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/fxh.js`：fxhOpenId 每个非空行一个账号，逐个独立执行；任一账号失败整体非零退出，不使用 @ 或 & 分隔。。
 - `scripts/hifiti_checkin.py`：HiFiTi_COOKIE 和 HIFIHI_COOKIE 各自每个非空行一个账号，账号独立会话并顺序处理。两者至少一项非空；单个账号失败不阻止其他账号，任一失败整体非零退出。。
@@ -984,13 +977,6 @@
 - 所属脚本：`scripts/durex.py`
 - 获取或设置：在微信杜蕾斯会员中心小程序登录，用本人授权的抓包工具读取 vip.ixiliu.cn 请求头 Access-Token；失效时重新登录获取。
 - 填写格式：`每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
-#### `enshanck`
-
-- 所属脚本：`scripts/enshan.py`
-- 获取或设置：浏览器登录恩山无线论坛，打开个人积分页，在开发者工具网络面板复制发往 www.right.com.cn 的请求头 Cookie 完整值。不要复制响应头 Set-Cookie，不要公开凭据。
-- 填写格式：`每个非空行一个账号的完整 Cookie 键值对；行内分号原样保留，不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `ENSHAN_COOKIE`
@@ -2012,24 +1998,6 @@
 - 所属脚本：`scripts/durex.py`
 - 获取或设置：填写已安装青龙 notify.py 所在目录；不需要下载其他仓库。
 - 填写格式：`可选目录路径；否则查找可导入的 notify 和 /ql/data/scripts、/ql/scripts。`
-
-#### `ENSHAN_DRY_RUN`
-
-- 所属脚本：`scripts/enshan.py`
-- 获取或设置：在青龙环境变量中设置，断网预演设为 1，正式查询设为 0 或不设置。
-- 填写格式：`1/true/yes/on 开启断网预演`
-
-#### `QINGLONG_NOTIFY`
-
-- 所属脚本：`scripts/enshan.py`
-- 获取或设置：在青龙环境变量中设置，默认开启；通知模块由青龙提供。
-- 填写格式：`0/false/no/off 关闭，其他值开启`
-
-#### `QINGLONG_NOTIFY_DIR`
-
-- 所属脚本：`scripts/enshan.py`
-- 获取或设置：可选，填写青龙 notify.py 所在目录；不设置时自动寻找标准路径和可导入的 notify 模块。
-- 填写格式：`本地目录路径，仅用于可选通知功能`
 
 #### `enshan_cookie`
 
@@ -4404,7 +4372,6 @@
 - `scripts/ddnsto.py`：SHA-256 `a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
 - `scripts/deepflood_checkin.py`：SHA-256 `1743ea3da4f0ef463f70619fb5a49d375dc48e5817d867ea080875a12b3f68c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01d51606a735260a`。
 - `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
-- `scripts/enshan.py`：SHA-256 `059b80f9dc6c81e0715731b2b4017734b62d6b0118f2c498e95d3fa4681d557a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9d4185091cb305c2`。
 - `scripts/enshan_checkin.py`：SHA-256 `c564768903f243711988991d3a8883c99b189a04708c3b8d89660b5988c0d47e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
 - `scripts/fxh.js`：SHA-256 `228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
 - `scripts/get_yys_imagelinks.py`：SHA-256 `ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21c2272d2f618e0f`。
@@ -4506,7 +4473,6 @@
 - `scripts/ddnsto.py`：真实执行时创建七天免费套餐订单；真实执行时将订单套餐绑定到指定路由器并延长套餐到期时间；启用通知且青龙模块可用时发送脱敏任务通知。
 - `scripts/deepflood_checkin.py`：正式运行向 DeepFlood 提交每日签到，可能获得鸡腿并改变账号签到及积分状态；正式运行通知启用且模块可用时，通过青龙已配置渠道发送脱敏任务汇总。
 - `scripts/durex.py`：每日签到改变签到状态并可能获得积分；开启分享后上报活动分享记录并可能获得奖励；开启抽奖后参与活动并可能消耗抽奖机会或积分。
-- `scripts/enshan.py`：访问登录积分页可能触发论坛自身的登录奖励或访问记录；脚本不额外调用签到或资料修改接口。；正式运行且通知开启时，通过青龙通知模块发送任务汇总。。
 - `scripts/enshan_checkin.py`：提交每日签到，可能增加恩山币和积分；正式运行且通知开启时通过青龙发送脱敏任务总结。
 - `scripts/fxh.js`：实际执行每日签到，改变签到状态并由服务端发放积分；启用通知时调用青龙通知模块发送任务总结。
 - `scripts/get_yys_imagelinks.py`：仅在 YYS_DOWNLOAD 显式开启时创建素材目录并保存原画或视频文件；视频同时维护标题历史记录。；正式运行且通知开启时调用青龙通知模块发送脱敏任务结果。。
@@ -4610,7 +4576,6 @@
 - `scripts/ddnsto.py`：上游 `cloudcranes/some_scripts` / `ddnsto.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/deepflood_checkin.py`：上游 `agluo/ql-script-hub` / `deepflood_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/durex.py`：上游 `Rookie-wb-WH/ql_scripts` / `durex.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
-- `scripts/enshan.py`：上游 `cloudcranes/some_scripts` / `enshan.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/enshan_checkin.py`：上游 `agluo/ql-script-hub` / `enshan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/fxh.js`：上游 `xingly-cn/QLPanelScript` / `fxh.js` / `8c0323999253b7a0d8e47ff1136a562fedb3c980`。
 - `scripts/get_yys_imagelinks.py`：上游 `cloudcranes/some_scripts` / `阴阳师/get_yys_imagelinks.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
