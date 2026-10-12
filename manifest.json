@@ -1928,6 +1928,145 @@
       }
     },
     {
+      "catalogId": "dff518c351ef674e",
+      "applicationKey": "jissbon",
+      "checkProfile": {
+        "requiredEnv": [
+          "jsbaxfls"
+        ],
+        "optionalEnv": [
+          "JSB_DRY_RUN",
+          "JSB_LOTTERY",
+          "JSB_LOTTERY_COUNT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "JSB_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "JSB_DRY_RUN": "0",
+          "JSB_LOTTERY": "0",
+          "JSB_LOTTERY_COUNT": "10",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询官方昵称与当前积分",
+          "每日签到",
+          "分享奖励登记，不发布分享文字",
+          "显式开启后最多执行十次活动抽奖",
+          "换行多账号独立处理与失败非零退出",
+          "完全断网预演、脱敏通知和时间轴任务统计"
+        ],
+        "sideEffects": [
+          "实际执行时提交每日签到",
+          "实际执行时登记分享奖励",
+          "显式开启抽奖时消耗抽奖机会，可能消耗积分并获得奖品",
+          "启用通知时通过青龙通知模块发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "杰士邦安心福利社",
+      "path": "scripts/jissbon.py",
+      "sha256": "6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "jissbon.py"
+      },
+      "cron": "9 9 * * *",
+      "command": "python3 scripts/jissbon.py",
+      "environment": [
+        {
+          "name": "jsbaxfls",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录微信小程序“杰士邦安心福利社”，仅抓取自己访问vip.ixiliu.cn请求头中的Access-Token完整值；失效后重新登录并获取。",
+          "format": "每个非空行填写一个完整Access-Token；保留原变量名，旧#分隔须改为换行；不使用&或@分隔。"
+        },
+        {
+          "name": "JSB_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中配置；预演不会验证真实业务。",
+          "format": "1启用断网预演；0实际执行，默认0。"
+        },
+        {
+          "name": "JSB_LOTTERY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认活动仍开放并接受消耗积分或抽奖机会后自行配置。",
+          "format": "1启用抽奖；默认0关闭。"
+        },
+        {
+          "name": "JSB_LOTTERY_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据期望的最大抽奖次数配置。",
+          "format": "1至10的整数，默认10；次数已用完或失败立即停止抽奖。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙现有通知设置；通知缺失或失败不改变业务退出码。",
+          "format": "默认1；0、false、no、off关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙notify.py所在目录；未配置时尝试导入及标准青龙路径。",
+          "format": "本地目录路径；只用于可选通知，不是业务运行依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号Access-Token，逐账号独立执行；任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询官方昵称与当前积分",
+        "每日签到",
+        "分享奖励登记，不发布分享文字",
+        "显式开启后最多执行十次活动抽奖",
+        "换行多账号独立处理与失败非零退出",
+        "完全断网预演、脱敏通知和时间轴任务统计"
+      ],
+      "sideEffects": [
+        "实际执行时提交每日签到",
+        "实际执行时登记分享奖励",
+        "显式开启抽奖时消耗抽奖机会，可能消耗积分并获得奖品",
+        "启用通知时通过青龙通知模块发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/dff518c351ef674e",
+        "candidateSha256": "6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf"
+      }
+    },
+    {
       "catalogId": "ks_cleanroom_v1",
       "displayName": "快手奖励任务",
       "path": "scripts/kuaishou_reward_status.py",
