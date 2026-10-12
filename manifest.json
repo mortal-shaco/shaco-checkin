@@ -3665,6 +3665,144 @@
       }
     },
     {
+      "catalogId": "551a306ac75780f1",
+      "applicationKey": "shuyi",
+      "checkProfile": {
+        "requiredEnv": [
+          "sysxc_auth"
+        ],
+        "optionalEnv": [
+          "SHUYI_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSH_PLUS_TOKEN"
+        ],
+        "dryRunEnv": {
+          "SHUYI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "SHUYI_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功：",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "获取书亦烧仙草滑块验证码",
+          "使用 OpenCV 模板匹配识别滑块位置",
+          "使用 AES 加密并校验滑块，校验成功后签到",
+          "展示签到天数和所得积分",
+          "显示官方返回的非敏感昵称、用户名或公开账号标识",
+          "保留 sysxc_auth 参数名，支持每行一个账号独立执行",
+          "完全断网预演，不导入通知模块或发送任何推送",
+          "青龙通知和可选 PushPlus 脱敏推送",
+          "带时间戳的分阶段日志、账号统计和单行 TASK_SUMMARY 汇总"
+        ],
+        "sideEffects": [
+          "在书亦烧仙草账号执行签到并领取服务端发放的积分",
+          "实际执行时向青龙通知渠道发送脱敏任务总结",
+          "配置 PUSH_PLUS_TOKEN 时向 PushPlus 发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "书亦烧仙草签到",
+      "path": "scripts/shuyi.py",
+      "sha256": "947ec405caf0bacdc1f2b823552425d882c3510d733c99c8a1801bf7a739870c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "shuyi.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/shuyi.py",
+      "environment": [
+        {
+          "name": "sysxc_auth",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录自己的书亦烧仙草小程序，用已授权的抓包工具查看 scrm-prod.shuyi.org.cn 请求头的 auth 原值；失效后重新登录获取。不要填写整个请求头或公开凭据。",
+          "format": "每个非空行一个账号的 auth 原值；保留变量名，不再以 # 分隔账号，凭据内部的 # 原样保留。"
+        },
+        {
+          "name": "SHUYI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；验证时填 1，实际执行填 0 或不设置。",
+          "format": "1、true、yes、on 表示完全断网预演，其他值表示实际执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知默认开启；需要关闭时设置为 0。",
+          "format": "0、false、no、off 关闭；默认 1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写自己青龙实例中 notify.py 所在目录；默认尝试导入 notify 并查找青龙标准脚本目录。",
+          "format": "本机通知模块目录路径；业务功能不依赖此目录。"
+        },
+        {
+          "name": "PUSH_PLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，登录自己的 PushPlus 控制台获取推送令牌；仅用于既有可选通知，不作为业务凭据。",
+          "format": "单个 PushPlus 令牌；不设置则不请求该推送接口。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "sysxc_auth 每个非空行一个账号，逐个独立处理；任一账号失败则整体非零退出。账号间不能使用 #、& 或 @ 分隔。"
+      },
+      "dependencies": [
+        "opencv-python-headless",
+        "numpy",
+        "Pillow",
+        "pycryptodome"
+      ],
+      "features": [
+        "获取书亦烧仙草滑块验证码",
+        "使用 OpenCV 模板匹配识别滑块位置",
+        "使用 AES 加密并校验滑块，校验成功后签到",
+        "展示签到天数和所得积分",
+        "显示官方返回的非敏感昵称、用户名或公开账号标识",
+        "保留 sysxc_auth 参数名，支持每行一个账号独立执行",
+        "完全断网预演，不导入通知模块或发送任何推送",
+        "青龙通知和可选 PushPlus 脱敏推送",
+        "带时间戳的分阶段日志、账号统计和单行 TASK_SUMMARY 汇总"
+      ],
+      "sideEffects": [
+        "在书亦烧仙草账号执行签到并领取服务端发放的积分",
+        "实际执行时向青龙通知渠道发送脱敏任务总结",
+        "配置 PUSH_PLUS_TOKEN 时向 PushPlus 发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/551a306ac75780f1",
+        "candidateSha256": "947ec405caf0bacdc1f2b823552425d882c3510d733c99c8a1801bf7a739870c"
+      }
+    },
+    {
       "catalogId": "621df252c315f2d1",
       "applicationKey": "smzdm",
       "checkProfile": {
