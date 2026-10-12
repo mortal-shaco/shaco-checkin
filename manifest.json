@@ -567,6 +567,150 @@
       }
     },
     {
+      "catalogId": "0367e0709855a394",
+      "applicationKey": "bwcj",
+      "checkProfile": {
+        "requiredEnv": [
+          "bwcjCookie"
+        ],
+        "optionalEnv": [
+          "BWCJ_TASKS",
+          "BWCJ_ACTIVITY_ID",
+          "BWCJ_STORE_ID",
+          "BWCJ_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BWCJ_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BWCJ_TASKS": "new"
+        },
+        "successPatterns": [
+          "✅[新版签到]:",
+          "✅[旧版签到]:",
+          "最终状态：success"
+        ],
+        "features": [
+          "读取并展示官方非秘密账号身份，禁止输出手机号和凭据。",
+          "读取积分流水获取签到用户 ID，支持同账号手动补充用户 ID 并核验一致性。",
+          "查询新版签到天数，使用上游签名算法执行新版签到并核验业务状态和奖励明细。",
+          "显式开启旧版签到后查询旧版活动及连续天数并执行旧版签到。",
+          "保留每天 9 点和 18 点定时及 bwcjCookie 变量名，换行多账号独立执行。",
+          "完全断网预演、脱敏分阶段日志、账号及任务统计、唯一 TASK_SUMMARY 结构化记录。",
+          "青龙通知发送脱敏总结，支持全局开关，通知失败不改变业务退出码。"
+        ],
+        "sideEffects": [
+          "新版签到产生签到记录及服务端发放的积分或奖励。",
+          "显式开启旧版签到后产生旧版签到记录及服务端奖励。",
+          "正式运行时通过青龙配置的通知渠道发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "霸王茶姬签到",
+      "path": "scripts/bwcj.py",
+      "sha256": "ae20e692177d7102468ed3ddc462576f39fd2c81ea51a9dad626e138700ac4af",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "bwcj.py"
+      },
+      "cron": "0 9,18 * * *",
+      "command": "python3 scripts/bwcj.py",
+      "environment": [
+        {
+          "name": "bwcjCookie",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人微信霸王茶姬小程序登录后，从本人授权的业务请求头获取 Qm-User-Token；可选 customerId 从积分流水接口 data.data 项获取，仅在流水为空时补充。不要使用手机号或设备标识代替。",
+          "format": "每个非空行一个 Token，或 Token|customerId；仅在首个 | 分割。同账号配套字段，账号仅用换行分隔，不支持原 @ 分隔。"
+        },
+        {
+          "name": "BWCJ_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需选择；默认新版签到，旧版需显式开启。",
+          "format": "new、old 或 new,old；默认 new。"
+        },
+        {
+          "name": "BWCJ_ACTIVITY_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人小程序新版签到请求中的 activityId 获取；默认保留上游历史值，活动失效时核对当前请求。",
+          "format": "数字字符串，默认 947079313798000641。"
+        },
+        {
+          "name": "BWCJ_STORE_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人小程序签到请求中的 storeId 或 store_id 获取。",
+          "format": "正整数，默认 49006。"
+        },
+        {
+          "name": "BWCJ_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1，无需从服务获取。",
+          "format": "1、true、yes、on 开启完全断网预演，默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关，默认开启；需在青龙配置通知渠道。",
+          "format": "0、false、no、off 关闭，其余值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；默认尝试导入 notify 及青龙标准目录。",
+          "format": "目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；同账号 Token 与可选 customerId 使用首个 | 分割。各账号独立处理，任一失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "读取并展示官方非秘密账号身份，禁止输出手机号和凭据。",
+        "读取积分流水获取签到用户 ID，支持同账号手动补充用户 ID 并核验一致性。",
+        "查询新版签到天数，使用上游签名算法执行新版签到并核验业务状态和奖励明细。",
+        "显式开启旧版签到后查询旧版活动及连续天数并执行旧版签到。",
+        "保留每天 9 点和 18 点定时及 bwcjCookie 变量名，换行多账号独立执行。",
+        "完全断网预演、脱敏分阶段日志、账号及任务统计、唯一 TASK_SUMMARY 结构化记录。",
+        "青龙通知发送脱敏总结，支持全局开关，通知失败不改变业务退出码。"
+      ],
+      "sideEffects": [
+        "新版签到产生签到记录及服务端发放的积分或奖励。",
+        "显式开启旧版签到后产生旧版签到记录及服务端奖励。",
+        "正式运行时通过青龙配置的通知渠道发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0367e0709855a394",
+        "candidateSha256": "ae20e692177d7102468ed3ddc462576f39fd2c81ea51a9dad626e138700ac4af"
+      }
+    },
+    {
       "catalogId": "7389d13167df31b6",
       "applicationKey": "cdrail",
       "checkProfile": {
@@ -836,6 +980,150 @@
         "type": "qinglong-discovery-metadata",
         "validatedSha256": "1cf5f435d392df5014712a1955a0123ce86b90384a640c170b2a6ca5735f0250",
         "releaseSha256": "15ecc5e482af800b18360374359667392176fe88ab77c7950509da115f09f07a",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "e7b851436459bf8f",
+      "applicationKey": "ddnsto",
+      "checkProfile": {
+        "requiredEnv": [
+          "DDNSTO_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ddns_userid",
+          "ddns_cookie",
+          "DDNSTO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DDNSTO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "DDNSTO_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "****白嫖成功*****",
+          "超出本周免费套餐购买次数；已验证现有套餐仍有效"
+        ],
+        "features": [
+          "申请 product_id=2 七天免费套餐并查询订单",
+          "把新套餐绑定到指定路由器；重新读取官方套餐并确认到期时间延长后才报告续费成功",
+          "识别本周免费套餐申请次数限制；只有现有套餐尚未过期才视为已完成",
+          "显示北京时间到期时间；官方返回非敏感昵称或用户名时原样显示",
+          "保留每天 09:30 的上游计划和 ddns_cookie、ddns_userid 单账号兼容参数",
+          "多账号按行独立执行，失败账号不阻断其他账号；任一失败整体非零退出",
+          "无网络预演、青龙脱敏汇总通知和带时间戳的分阶段日志",
+          "输出唯一 TASK_SUMMARY 单行 JSON 汇总"
+        ],
+        "sideEffects": [
+          "真实执行时创建七天免费套餐订单",
+          "真实执行时将订单套餐绑定到指定路由器并延长套餐到期时间",
+          "启用通知且青龙模块可用时发送脱敏任务通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "DDNSTO七天免费续费",
+      "path": "scripts/ddnsto.py",
+      "sha256": "a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "ddnsto.py"
+      },
+      "cron": "30 9 * * *",
+      "command": "python3 scripts/ddnsto.py",
+      "environment": [
+        {
+          "name": "DDNSTO_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 DDNSTO 官网设备页面，在浏览器开发者工具网络面板复制 www.ddnsto.com 请求的完整 Cookie（含 csrftoken）。先申请一次七天免费套餐，从 /api/user/routers/路由器ID/ 请求路径取路由器ID；该值不是登录用户ID。可用兼容旧变量代替。",
+          "format": "每个非空行填写 路由器ID|完整Cookie；仅在首个 | 分隔，同一行内 Cookie 原样保留，不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "ddns_userid",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号参数；从官网设备页面的 /api/user/routers/路由器ID/ 请求路径获取，与 ddns_cookie 配套使用。配置 DDNSTO_ACCOUNTS 时忽略此变量。",
+          "format": "单个路由器ID，仅字母、数字、下划线或连字符；不接受多行。"
+        },
+        {
+          "name": "ddns_cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号参数；登录官网后在开发者工具网络面板复制 Cookie 请求头，与 ddns_userid 配套使用。",
+          "format": "单行完整 Cookie，含唯一且非空的 csrftoken；末尾不必带分号。"
+        },
+        {
+          "name": "DDNSTO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "1 启用断网预演，0 执行真实续费；默认 0；也支持 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置；通知调用使用青龙 notify.py。",
+          "format": "默认 1；0、false、no、off 关闭通知。预演尝试通知时封锁网络，因此远程通知不会送达。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如青龙通知模块不在默认脚本目录，可填写已有 notify.py 所在目录；此配置不影响续费接口。",
+          "format": "已有通知模块目录的路径，不执行下载或安装。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，使用 路由器ID|完整Cookie，仅按首个 | 拆分；各账号独立执行，任一账号失败整体非零退出。兼容旧变量仅支持单账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "申请 product_id=2 七天免费套餐并查询订单",
+        "把新套餐绑定到指定路由器；重新读取官方套餐并确认到期时间延长后才报告续费成功",
+        "识别本周免费套餐申请次数限制；只有现有套餐尚未过期才视为已完成",
+        "显示北京时间到期时间；官方返回非敏感昵称或用户名时原样显示",
+        "保留每天 09:30 的上游计划和 ddns_cookie、ddns_userid 单账号兼容参数",
+        "多账号按行独立执行，失败账号不阻断其他账号；任一失败整体非零退出",
+        "无网络预演、青龙脱敏汇总通知和带时间戳的分阶段日志",
+        "输出唯一 TASK_SUMMARY 单行 JSON 汇总"
+      ],
+      "sideEffects": [
+        "真实执行时创建七天免费套餐订单",
+        "真实执行时将订单套餐绑定到指定路由器并延长套餐到期时间",
+        "启用通知且青龙模块可用时发送脱敏任务通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e7b851436459bf8f",
+        "candidateSha256": "94ef34c1999a01e130c1241b1825e6a795755e4f48104a3f52f5147b47f3b748"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "94ef34c1999a01e130c1241b1825e6a795755e4f48104a3f52f5147b47f3b748",
+        "releaseSha256": "a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
