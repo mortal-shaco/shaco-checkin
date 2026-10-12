@@ -43,6 +43,7 @@
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `33 14 * * *` |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `9 9 * * *` |
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `0 8 * * *` |
+| 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `0 9 * * 0` |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `30 6 * * *` |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `0 8 * * *` |
 | 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `0 9,18 * * *` |
@@ -141,6 +142,7 @@
 - `scripts/deepflood_checkin.py`：执行 DeepFlood 每日签到并验证接口业务结果，支持识别已完成签到；查询并汇总可配置时间窗口内的签到鸡腿收益，保留总量、次数及平均收益；支持换行分隔的多账号独立执行和汇总状态；可选的随机延迟执行，保持原每日计划及既有参数兼容；完全断网且无等待、无副作用的预演；正式运行通过青龙 notify.py 发送脱敏汇总，支持全局通知开关，预演显示同内容通知预览；显示官方返回的非敏感账号身份、编号阶段、耗时与账号及任务统计；保留 SUMMARY_JSON 并追加唯一单行 TASK_SUMMARY，配置或业务失败非零退出。
 - `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
 - `scripts/fxh.js`：每日查询当前积分；每日执行芬享汇签到，显示可解析的奖励积分与已签到状态；官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示；逐行多账号独立执行和失败退出；完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总；实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网。
+- `scripts/get_yys_imagelinks.py`：读取阴阳师官网原画页面，保留首个 tab-cont 内六个链接的第三个原画链接选择规则。；默认仅核验并列出素材；显式开启后保存原画，保留数字路径命名与原画目录默认值，修复未知文件名及同名碰撞。；通过任务开关读取全部官网 CG 视频分组，保存标题命名的 MP4 视频并记录 downloaded_videos.txt 标题历史。；校验已有素材文件格式并跳过下载；视频新下载数量限制与默认两秒间隔均保留。；独立实现带超时和 HTTPS 重定向校验的 HTTP 请求；检查状态码、页面结构、素材格式、大小及已知响应长度；原子落盘且不覆盖已有文件。；每种素材及每个下载项独立处理，任一失败即整体非零退出；输出中文分阶段耗时、子任务统计和唯一 TASK_SUMMARY JSON。；提供无账号、无网络、无文件写入的断网预演，覆盖原画和视频解析。；所有结果发送脱敏青龙通知；预演输出通知摘要且不调用通知服务，通知失败保留业务退出码。。
 - `scripts/hifiti_checkin.py`：HiFiTi 每日签到与明确业务结果核验；HiFiHi 每日签到与明确业务结果核验；兼容原凭据参数和旧版值格式，完整 Cookie 不截断；每行一个账号，两个站点与不同账号之间隔离会话；保留每天 06:30 的计划、随机启动等待和同站点账号间等待；读取官方非敏感昵称、用户名或公开身份字段并显示，禁止凭据片段充当身份；完全断网预演、配置检查、按账号阶段日志与单行结构化任务汇总；成功、部分失败、失败、配置错误和预演均生成脱敏通知摘要，真实模式通过可用青龙通知模块发送，预演仅模拟发送。
 - `scripts/hlyl.py`：查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据；查询当日签到状态、周任务进度和月签到天数；每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励；显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖；查询积分余额；逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出；完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录；通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知。
 - `scripts/hsay.py`：查询并显示官方返回的用户昵称，隐藏手机号及凭据；从积分流水获取签到所需的公开用户 ID；查询连续签到天数；按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数；逐行多账号独立运行，失败闭合与断网预演；青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出。
@@ -409,6 +411,15 @@
 <tr><td rowspan="3"><code>scripts/fxh.js</code></td><td><code>FXH_DRY_RUN</code></td><td>否</td><td>格式：1 表示完全断网预演；其他值表示实际执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 sendNotify.js 或 notify.py 的目录，不是业务依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="9"><code>scripts/get_yys_imagelinks.py</code></td><td><code>YYS_TASKS</code></td><td>否</td><td>格式：images（默认）、videos 或 images,videos；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_DOWNLOAD</code></td><td>否</td><td>格式：1 开启下载；0 默认仅解析并列出素材；兼容 true/false、yes/no、on/off；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_IMAGE_DIR</code></td><td>否</td><td>格式：目录路径，默认 ./yys原画；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_VIDEO_DIR</code></td><td>否</td><td>格式：目录路径，默认 ./yys视频；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_VIDEO_LIMIT</code></td><td>否</td><td>格式：非负整数，默认 0 表示全部；已有文件不计入上限；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_VIDEO_INTERVAL</code></td><td>否</td><td>格式：0 至 3600 的秒数，默认 2；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_DRY_RUN</code></td><td>否</td><td>格式：1 使用内置页面样本且不联网、不写素材、不调用通知服务；默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；通知模块不可用不改变任务退出码；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="6"><code>scripts/hifiti_checkin.py</code></td><td><code>HIFIHI_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；完整 Cookie 或旧版 cloudmusic.net 的值，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>HIFITI_DRY_RUN</code></td><td>否</td><td>格式：1/0、true/false、yes/no 或 on/off；默认 0。预演不请求站点或通知服务，不等待。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：1/0、true/false、yes/no 或 on/off；多个账号时生效。；多账号格式以该脚本文档为准</td></tr>
@@ -1965,6 +1976,60 @@
 - 所属脚本：`scripts/fxh.js`
 - 获取或设置：可选，填写青龙现有通知模块所在目录；默认查找 /ql/data/scripts 与 /ql/scripts。
 - 填写格式：`包含 sendNotify.js 或 notify.py 的目录，不是业务依赖。`
+
+#### `YYS_TASKS`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：无需账号。在青龙环境变量中选择原画、CG视频或两者。
+- 填写格式：`images（默认）、videos 或 images,videos`
+
+#### `YYS_DOWNLOAD`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：无需从官网获取。确认下载目录与磁盘空间后自行显式开启。
+- 填写格式：`1 开启下载；0 默认仅解析并列出素材；兼容 true/false、yes/no、on/off`
+
+#### `YYS_IMAGE_DIR`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：自行选择有写入权限的原画保存目录。
+- 填写格式：`目录路径，默认 ./yys原画`
+
+#### `YYS_VIDEO_DIR`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：自行选择有写入权限的视频保存目录，标题历史也保存在该目录。
+- 填写格式：`目录路径，默认 ./yys视频`
+
+#### `YYS_VIDEO_LIMIT`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：自行设置本次成功下载的新视频数量上限。
+- 填写格式：`非负整数，默认 0 表示全部；已有文件不计入上限`
+
+#### `YYS_VIDEO_INTERVAL`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：自行设置每个新视频成功下载后的等待时间。
+- 填写格式：`0 至 3600 的秒数，默认 2`
+
+#### `YYS_DRY_RUN`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：自行设置断网预演开关；无需任何凭据。
+- 填写格式：`1 使用内置页面样本且不联网、不写素材、不调用通知服务；默认 0`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：青龙全局通知开关，自行设置。
+- 填写格式：`默认 1；0、false、no、off 关闭`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/get_yys_imagelinks.py`
+- 获取或设置：选填青龙自带 notify.py 所在目录；未设置则自动发现 notify 模块及青龙常用目录。
+- 填写格式：`目录路径；通知模块不可用不改变任务退出码`
 
 #### `HIFIHI_COOKIE`
 
@@ -4158,6 +4223,7 @@
 - `scripts/deepflood_checkin.py`：SHA-256 `1743ea3da4f0ef463f70619fb5a49d375dc48e5817d867ea080875a12b3f68c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01d51606a735260a`。
 - `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 - `scripts/fxh.js`：SHA-256 `228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
+- `scripts/get_yys_imagelinks.py`：SHA-256 `ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21c2272d2f618e0f`。
 - `scripts/hifiti_checkin.py`：SHA-256 `ae18f25d6d7ad768ae64880761732b510e7bc3e75179bb9d66790f8203e4faf9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
 - `scripts/hlyl.py`：SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
 - `scripts/hsay.py`：SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
@@ -4256,6 +4322,7 @@
 - `scripts/deepflood_checkin.py`：正式运行向 DeepFlood 提交每日签到，可能获得鸡腿并改变账号签到及积分状态；正式运行通知启用且模块可用时，通过青龙已配置渠道发送脱敏任务汇总。
 - `scripts/durex.py`：每日签到改变签到状态并可能获得积分；开启分享后上报活动分享记录并可能获得奖励；开启抽奖后参与活动并可能消耗抽奖机会或积分。
 - `scripts/fxh.js`：实际执行每日签到，改变签到状态并由服务端发放积分；启用通知时调用青龙通知模块发送任务总结。
+- `scripts/get_yys_imagelinks.py`：仅在 YYS_DOWNLOAD 显式开启时创建素材目录并保存原画或视频文件；视频同时维护标题历史记录。；正式运行且通知开启时调用青龙通知模块发送脱敏任务结果。。
 - `scripts/hifiti_checkin.py`：向 HiFiTi 提交每日签到；向 HiFiHi 提交每日签到；真实模式按全局通知开关向青龙配置的渠道发送脱敏任务通知。
 - `scripts/hlyl.py`：未签到时提交每日签到，可能获得积分和成长积分；显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品；通知开启且正式运行时通过青龙组件发送任务总结。
 - `scripts/hsay.py`：向沪上阿姨签到接口提交每日签到，领取活动奖励；实际模式下通过青龙通知模块发送脱敏任务总结。
@@ -4356,6 +4423,7 @@
 - `scripts/deepflood_checkin.py`：上游 `agluo/ql-script-hub` / `deepflood_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/durex.py`：上游 `Rookie-wb-WH/ql_scripts` / `durex.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/fxh.js`：上游 `xingly-cn/QLPanelScript` / `fxh.js` / `8c0323999253b7a0d8e47ff1136a562fedb3c980`。
+- `scripts/get_yys_imagelinks.py`：上游 `cloudcranes/some_scripts` / `阴阳师/get_yys_imagelinks.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/hifiti_checkin.py`：上游 `agluo/ql-script-hub` / `HiFiti_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/hlyl.py`：上游 `cloudcranes/some_scripts` / `hlyl.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/hsay.py`：上游 `Rookie-wb-WH/ql_scripts` / `hsay.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。

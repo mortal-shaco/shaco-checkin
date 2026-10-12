@@ -1576,6 +1576,181 @@
       }
     },
     {
+      "catalogId": "21c2272d2f618e0f",
+      "applicationKey": "get",
+      "checkProfile": {
+        "requiredEnv": [],
+        "optionalEnv": [
+          "YYS_TASKS",
+          "YYS_DOWNLOAD",
+          "YYS_IMAGE_DIR",
+          "YYS_VIDEO_DIR",
+          "YYS_VIDEO_LIMIT",
+          "YYS_VIDEO_INTERVAL",
+          "YYS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "YYS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "YYS_TASKS": "images",
+          "YYS_DOWNLOAD": "0",
+          "YYS_VIDEO_LIMIT": "0",
+          "YYS_VIDEO_INTERVAL": "2",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态 success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "读取阴阳师官网原画页面，保留首个 tab-cont 内六个链接的第三个原画链接选择规则。",
+          "默认仅核验并列出素材；显式开启后保存原画，保留数字路径命名与原画目录默认值，修复未知文件名及同名碰撞。",
+          "通过任务开关读取全部官网 CG 视频分组，保存标题命名的 MP4 视频并记录 downloaded_videos.txt 标题历史。",
+          "校验已有素材文件格式并跳过下载；视频新下载数量限制与默认两秒间隔均保留。",
+          "独立实现带超时和 HTTPS 重定向校验的 HTTP 请求；检查状态码、页面结构、素材格式、大小及已知响应长度；原子落盘且不覆盖已有文件。",
+          "每种素材及每个下载项独立处理，任一失败即整体非零退出；输出中文分阶段耗时、子任务统计和唯一 TASK_SUMMARY JSON。",
+          "提供无账号、无网络、无文件写入的断网预演，覆盖原画和视频解析。",
+          "所有结果发送脱敏青龙通知；预演输出通知摘要且不调用通知服务，通知失败保留业务退出码。"
+        ],
+        "sideEffects": [
+          "仅在 YYS_DOWNLOAD 显式开启时创建素材目录并保存原画或视频文件；视频同时维护标题历史记录。",
+          "正式运行且通知开启时调用青龙通知模块发送脱敏任务结果。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "阴阳师官网原画与CG素材",
+      "path": "scripts/get_yys_imagelinks.py",
+      "sha256": "ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "阴阳师/get_yys_imagelinks.py",
+        "related": [
+          {
+            "catalogId": "193af5169726ae8a",
+            "sha256": "6675757aa620e0e383871848e97b782b4ef77c41e2549c22084227a9bf42a793",
+            "repository": "cloudcranes/some_scripts",
+            "url": "https://github.com/cloudcranes/some_scripts.git",
+            "branch": "main",
+            "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+            "originalPath": "阴阳师/get_yys_cgvideo.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 9 * * 0",
+      "command": "python3 scripts/get_yys_imagelinks.py",
+      "environment": [
+        {
+          "name": "YYS_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需账号。在青龙环境变量中选择原画、CG视频或两者。",
+          "format": "images（默认）、videos 或 images,videos"
+        },
+        {
+          "name": "YYS_DOWNLOAD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需从官网获取。确认下载目录与磁盘空间后自行显式开启。",
+          "format": "1 开启下载；0 默认仅解析并列出素材；兼容 true/false、yes/no、on/off"
+        },
+        {
+          "name": "YYS_IMAGE_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择有写入权限的原画保存目录。",
+          "format": "目录路径，默认 ./yys原画"
+        },
+        {
+          "name": "YYS_VIDEO_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择有写入权限的视频保存目录，标题历史也保存在该目录。",
+          "format": "目录路径，默认 ./yys视频"
+        },
+        {
+          "name": "YYS_VIDEO_LIMIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置本次成功下载的新视频数量上限。",
+          "format": "非负整数，默认 0 表示全部；已有文件不计入上限"
+        },
+        {
+          "name": "YYS_VIDEO_INTERVAL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置每个新视频成功下载后的等待时间。",
+          "format": "0 至 3600 的秒数，默认 2"
+        },
+        {
+          "name": "YYS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置断网预演开关；无需任何凭据。",
+          "format": "1 使用内置页面样本且不联网、不写素材、不调用通知服务；默认 0"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，自行设置。",
+          "format": "默认 1；0、false、no、off 关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "选填青龙自带 notify.py 所在目录；未设置则自动发现 notify 模块及青龙常用目录。",
+          "format": "目录路径；通知模块不可用不改变任务退出码"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": "",
+        "rule": "公开官网素材任务，无需账号或凭据；每次运行处理所选素材类型。",
+        "unsupportedReason": "服务功能不涉及账号登录，多个账号没有对应的业务含义。"
+      },
+      "dependencies": [],
+      "features": [
+        "读取阴阳师官网原画页面，保留首个 tab-cont 内六个链接的第三个原画链接选择规则。",
+        "默认仅核验并列出素材；显式开启后保存原画，保留数字路径命名与原画目录默认值，修复未知文件名及同名碰撞。",
+        "通过任务开关读取全部官网 CG 视频分组，保存标题命名的 MP4 视频并记录 downloaded_videos.txt 标题历史。",
+        "校验已有素材文件格式并跳过下载；视频新下载数量限制与默认两秒间隔均保留。",
+        "独立实现带超时和 HTTPS 重定向校验的 HTTP 请求；检查状态码、页面结构、素材格式、大小及已知响应长度；原子落盘且不覆盖已有文件。",
+        "每种素材及每个下载项独立处理，任一失败即整体非零退出；输出中文分阶段耗时、子任务统计和唯一 TASK_SUMMARY JSON。",
+        "提供无账号、无网络、无文件写入的断网预演，覆盖原画和视频解析。",
+        "所有结果发送脱敏青龙通知；预演输出通知摘要且不调用通知服务，通知失败保留业务退出码。"
+      ],
+      "sideEffects": [
+        "仅在 YYS_DOWNLOAD 显式开启时创建素材目录并保存原画或视频文件；视频同时维护标题历史记录。",
+        "正式运行且通知开启时调用青龙通知模块发送脱敏任务结果。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/21c2272d2f618e0f",
+        "candidateSha256": "ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3"
+      }
+    },
+    {
       "catalogId": "7e9bef2404a0d5b3",
       "applicationKey": "hifiti",
       "checkProfile": {
