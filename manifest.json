@@ -12201,6 +12201,191 @@
         "releaseSha256": "bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
+    },
+    {
+      "catalogId": "e4af0e04fafedbd8",
+      "applicationKey": "yht",
+      "checkProfile": {
+        "requiredEnv": [
+          "Yht_token"
+        ],
+        "optionalEnv": [
+          "YHT_DRY_RUN",
+          "YHT_HELP",
+          "YHT_SIGN",
+          "YHT_PLANT_ACTIVITY_ID",
+          "YHT_SIGN_ACTIVITY_ID",
+          "YHT_TIMEOUT",
+          "YHT_FERTILIZE_LIMIT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "YHT_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "YHT_HELP": "0",
+          "YHT_SIGN": "0",
+          "YHT_TIMEOUT": "15",
+          "YHT_FERTILIZE_LIMIT": "100"
+        },
+        "successPatterns": [
+          "业务成功已核验",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询官方账号昵称等非敏感身份，不输出手机号",
+          "查询种植活动标题",
+          "参与种植活动",
+          "连续施肥，保留上游默认最多一百次请求并允许调低上限",
+          "查询当前等级、下一等级和剩余施肥次数",
+          "施肥接口返回当前不存在进行中的活动时尝试领取奖励，核验奖励名称与数量",
+          "可选每日签到及奖励详情查询，默认保持未启用",
+          "可选本次配置账号之间互助及互助身份查询",
+          "每行一个账号、独立执行、任一业务失败整体失败",
+          "完全断网预演、时间轴阶段日志、账号统计及单行结构化任务汇总",
+          "通过青龙通知适配器发送脱敏总结，通知异常保留业务退出码"
+        ],
+        "sideEffects": [
+          "参加种植活动",
+          "消耗活动肥料进行施肥",
+          "满足条件时领取活动奖励",
+          "开启 YHT_SIGN 后提交每日签到并领取签到奖励",
+          "开启 YHT_HELP 后为本次配置的其他账号助力",
+          "通知开启时调用青龙通知发送总结；断网预演阻止联网和派生进程"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "益禾堂手机点单",
+      "path": "scripts/yht.py",
+      "sha256": "041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "yht.py"
+      },
+      "cron": "8 6 * * *",
+      "command": "python3 scripts/yht.py",
+      "environment": [
+        {
+          "name": "Yht_token",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在微信益禾堂手机点单小程序登录，用自己的授权抓包工具查看发往 webapi.qmai.cn 的请求头 qm-user-token；只复制该字段值，不复制手机号、Cookie 或整段请求头。失效后重新登录获取。",
+          "format": "每个非空行一个完整令牌；保留大小写；不使用 #、&、@ 分隔账号。"
+        },
+        {
+          "name": "YHT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；预演无需有效凭据。",
+          "format": "1 完全断网预演，0 实跑；默认 0。"
+        },
+        {
+          "name": "YHT_HELP",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认要在本次配置的账号之间互助后设置；不读取远端作者名单。",
+          "format": "1 开启，0 关闭；默认 0；至少两个可取得用户标识的账号；排除自己。"
+        },
+        {
+          "name": "YHT_SIGN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要每日签到时设置；原主流程未调用签到，因此保持默认关闭。",
+          "format": "1 开启，0 关闭；默认 0。"
+        },
+        {
+          "name": "YHT_PLANT_ACTIVITY_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认来自上游种植活动；活动变更时在小程序种植请求的 activityId 字段核实。禁止猜测新活动。",
+          "format": "数字字符串；默认 1025694534292430849。"
+        },
+        {
+          "name": "YHT_SIGN_ACTIVITY_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认使用上游签到请求实际提交的 activityId；开启签到前在小程序对应请求中核实。",
+          "format": "数字字符串；默认 992065397145317377；不使用上游未被调用的 dailySignId 属性。"
+        },
+        {
+          "name": "YHT_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置请求超时。",
+          "format": "1～60 秒，默认 15。"
+        },
+        {
+          "name": "YHT_FERTILIZE_LIMIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可在青龙环境变量中调低单次施肥请求数量；施肥会消耗活动肥料。",
+          "format": "1～100 的整数，默认 100；任何未确认成功的响应立即停止施肥。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关；由 notify.py 读取平台通知配置。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写已有青龙 notify.py 所在目录；也尝试脚本目录及青龙标准目录；不可用只记录通知失败。",
+          "format": "本地目录路径；不是业务必需依赖；预演通知适配器运行于禁网子进程。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号的完整 qm-user-token；逐账号执行，互助仅限本次配置的其他账号；任何账号业务失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询官方账号昵称等非敏感身份，不输出手机号",
+        "查询种植活动标题",
+        "参与种植活动",
+        "连续施肥，保留上游默认最多一百次请求并允许调低上限",
+        "查询当前等级、下一等级和剩余施肥次数",
+        "施肥接口返回当前不存在进行中的活动时尝试领取奖励，核验奖励名称与数量",
+        "可选每日签到及奖励详情查询，默认保持未启用",
+        "可选本次配置账号之间互助及互助身份查询",
+        "每行一个账号、独立执行、任一业务失败整体失败",
+        "完全断网预演、时间轴阶段日志、账号统计及单行结构化任务汇总",
+        "通过青龙通知适配器发送脱敏总结，通知异常保留业务退出码"
+      ],
+      "sideEffects": [
+        "参加种植活动",
+        "消耗活动肥料进行施肥",
+        "满足条件时领取活动奖励",
+        "开启 YHT_SIGN 后提交每日签到并领取签到奖励",
+        "开启 YHT_HELP 后为本次配置的其他账号助力",
+        "通知开启时调用青龙通知发送总结；断网预演阻止联网和派生进程"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e4af0e04fafedbd8",
+        "candidateSha256": "041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d"
+      }
     }
   ]
 }
