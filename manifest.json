@@ -1460,6 +1460,131 @@
       }
     },
     {
+      "catalogId": "9d4185091cb305c2",
+      "applicationKey": "cloudcranes/some_scripts::enshan",
+      "checkProfile": {
+        "requiredEnv": [
+          "enshanck"
+        ],
+        "optionalEnv": [
+          "ENSHAN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ENSHAN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ENSHAN_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "积分查询成功",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用已登录 Cookie 查询恩山币和积分，同时提取两项数值才视为业务成功。",
+          "按行支持多个账号，逐个处理，任一失败非零退出。",
+          "识别积分页账号区域的官方用户名并显示，凭据和手机号不输出。",
+          "每天 02:00 运行，与上游含秒字段定时等价。",
+          "断网预演校验配置，不访问论坛或其他网络服务。",
+          "时间轴阶段日志、账号与任务统计及唯一单行 TASK_SUMMARY 结构化摘要。",
+          "正式运行通过青龙 notify.py 发送脱敏汇总，通知不可用不改变业务退出码。"
+        ],
+        "sideEffects": [
+          "访问登录积分页可能触发论坛自身的登录奖励或访问记录；脚本不额外调用签到或资料修改接口。",
+          "正式运行且通知开启时，通过青龙通知模块发送任务汇总。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "恩山无线论坛积分查询",
+      "path": "scripts/enshan.py",
+      "sha256": "059b80f9dc6c81e0715731b2b4017734b62d6b0118f2c498e95d3fa4681d557a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "enshan.py"
+      },
+      "cron": "0 2 * * *",
+      "command": "python3 scripts/enshan.py",
+      "environment": [
+        {
+          "name": "enshanck",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录恩山无线论坛，打开个人积分页，在开发者工具网络面板复制发往 www.right.com.cn 的请求头 Cookie 完整值。不要复制响应头 Set-Cookie，不要公开凭据。",
+          "format": "每个非空行一个账号的完整 Cookie 键值对；行内分号原样保留，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "ENSHAN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，断网预演设为 1，正式查询设为 0 或不设置。",
+          "format": "1/true/yes/on 开启断网预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，默认开启；通知模块由青龙提供。",
+          "format": "0/false/no/off 关闭，其他值开启"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；不设置时自动寻找标准路径和可导入的 notify 模块。",
+          "format": "本地目录路径，仅用于可选通知功能"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个完整 Cookie；独立查询并继续处理其余账号，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用已登录 Cookie 查询恩山币和积分，同时提取两项数值才视为业务成功。",
+        "按行支持多个账号，逐个处理，任一失败非零退出。",
+        "识别积分页账号区域的官方用户名并显示，凭据和手机号不输出。",
+        "每天 02:00 运行，与上游含秒字段定时等价。",
+        "断网预演校验配置，不访问论坛或其他网络服务。",
+        "时间轴阶段日志、账号与任务统计及唯一单行 TASK_SUMMARY 结构化摘要。",
+        "正式运行通过青龙 notify.py 发送脱敏汇总，通知不可用不改变业务退出码。"
+      ],
+      "sideEffects": [
+        "访问登录积分页可能触发论坛自身的登录奖励或访问记录；脚本不额外调用签到或资料修改接口。",
+        "正式运行且通知开启时，通过青龙通知模块发送任务汇总。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/9d4185091cb305c2",
+        "candidateSha256": "0442603c59258dcade000c3408b111c6ec4eb825575f596ac5052be228b094d2"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "0442603c59258dcade000c3408b111c6ec4eb825575f596ac5052be228b094d2",
+        "releaseSha256": "059b80f9dc6c81e0715731b2b4017734b62d6b0118f2c498e95d3fa4681d557a",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "bec8a601d5a51b0a",
       "applicationKey": "enshan",
       "checkProfile": {
