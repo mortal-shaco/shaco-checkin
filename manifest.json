@@ -465,21 +465,22 @@
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "抽奖成功：获得",
+          "✅ 抽奖成功：获得",
           "\"status\": \"success\"",
           "\"exitCode\": 0"
         ],
         "features": [
-          "百事乐元账号抽奖，显式开启后可按设置的上限连续执行",
-          "展示脱敏后的奖品名称和提示，并展示接口返回的非敏感官方账号身份",
-          "兼容原 bsly 变量及 token、User-Agent、账号备注字段，支持每行一个账号",
-          "完全断网预演、配置校验、账号独立处理和失败非零退出",
-          "分阶段日志、每账号和全任务统计、单行 TASK_SUMMARY 结构化摘要",
-          "实跑所有结果调用可用的青龙公共通知模块发送脱敏摘要；预演仅本地模拟通知"
+          "百事乐元抽奖，保留原 GET 接口、Token、User-Agent 和微信 Referer 请求头。",
+          "每行多账号及旧账号字段兼容，保留 User-Agent 内的 #，账号独立处理。",
+          "显式开启抽奖及每账号可配置次数上限，数字业务码 0 和有效奖品名称双重校验。",
+          "超时、限制响应大小、禁止重定向和副作用请求重试，网络与业务失败均非零退出。",
+          "完全断网预演、脱敏时间轴日志、编号阶段与耗时、逐账号及全任务统计、单行 TASK_SUMMARY。",
+          "官方返回昵称、用户名、显示名称或公开 UID 时展示非凭据身份，抑制手机号及凭据。",
+          "通过青龙 notify.py 或 sendNotify.js 发送脱敏任务总结，支持全局关闭，通知失败保留业务退出码；预演仅本地模拟。"
         ],
         "sideEffects": [
-          "实跑抽奖会消耗抽奖机会，并可能产生奖品或奖励记录",
-          "实跑开启通知时向青龙配置的通知渠道发送脱敏任务摘要"
+          "显式开启实跑后消耗抽奖机会并可能获得奖品。",
+          "实跑启用通知且桥接可用时向青龙配置的通知渠道发送脱敏总结。"
         ]
       },
       "postReview": {
@@ -488,7 +489,7 @@
       },
       "displayName": "百事乐元抽奖",
       "path": "scripts/bsly_draw.py",
-      "sha256": "21ee297f54d13d8f725fc2419d1eeba7d34873fd9e321d5431dcbce9cb352664",
+      "sha256": "ae1d0fe072b35fe9c22ad02ebc04ca2b0571c7cf0e60c3ad68e2c8cca58925a3",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -496,7 +497,19 @@
         "repository": "cloudcranes/some_scripts",
         "branch": "main",
         "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
-        "originalPath": "bsly_draw.py"
+        "originalPath": "bsly_draw.py",
+        "related": [
+          {
+            "repository": "qluser-alan/some_scripts",
+            "url": "https://github.com/qluser-alan/some_scripts.git",
+            "branch": "main",
+            "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+            "originalPath": "bsly_draw.py",
+            "catalogId": "b4f54a5f1aff8f48",
+            "sha256": "f7eabc513f2dad34bed20117e1c0377fdf2675882acb6487deb61490ceb0ef1e",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "0 9 * * *",
       "command": "python3 scripts/bsly_draw.py",
@@ -505,62 +518,63 @@
           "name": "bsly",
           "required": true,
           "sensitive": true,
-          "howToGet": "在本人授权的微信小程序 wx1a72addb7ee74f67 中抓取抽奖请求，读取 token 与 User-Agent 请求头；账号备注自行填写，不应包含敏感信息。不要分享凭据。",
-          "format": "每个非空行一个账号：token#User-Agent#账号备注。先按第一个 # 拆出 token，再按最后一个 # 拆出备注；User-Agent 内的 # 保留，备注不可包含 #。不支持 & 或 @ 分隔账号。"
+          "howToGet": "在本人授权的微信小程序 wx1a72addb7ee74f67 中捕获百事乐元抽奖请求 https://pepcoinbhhpre.pepcoinbypepsico.com.cn/mp/draw，读取 token 和 User-Agent 请求头；账号备注自行填写。不要分享抓包文件或凭据。",
+          "format": "每个非空行一个账号：token#User-Agent#账号备注。第一个 # 分隔 token，最后一个 # 分隔备注，中间的 # 保留在 User-Agent 中；备注不可含 #。不使用 & 或 @ 分隔账号。"
         },
         {
           "name": "BSLY_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量中设置；预演时设为 1。",
-          "format": "1 为完全断网预演，其他值为实跑，默认 0。"
+          "howToGet": "自行设置；离线测试时设置为 1。",
+          "format": "1 为完全断网预演，其他值为实跑；预演仅在本地展示通知摘要。"
         },
         {
           "name": "BSLY_ENABLE_DRAW",
           "required": false,
           "sensitive": false,
-          "howToGet": "确认允许消耗抽奖机会后在青龙环境变量中设置为 1。",
-          "format": "仅 1 允许实跑抽奖，默认 0；未开启的实跑以配置错误非零退出。"
+          "howToGet": "确认允许消耗抽奖机会后自行设置为 1；默认 0，实跑未开启时作为配置错误非零退出。",
+          "format": "仅 1 允许实际抽奖；预演无需开启。"
         },
         {
           "name": "BSLY_MAX_DRAWS",
           "required": false,
           "sensitive": false,
-          "howToGet": "根据活动规则和希望消耗的机会数量自行设置。",
-          "format": "1 至 100 的整数，每账号请求次数上限，默认 1。"
+          "howToGet": "按活动规则自行设置单账号请求次数上限；默认 1。",
+          "format": "1 至 100 的整数；达到上限即停止，任何未验证成功的请求立即停止该账号，不自动重试。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙全局通知开关，默认开启。",
-          "format": "0、false、no、off 关闭，不区分大小写；预演仅本地模拟通知，保证断网。"
+          "howToGet": "使用青龙既有通知配置；默认 1。",
+          "format": "0、false、no、off（忽略大小写）关闭通知；其他值开启。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用自定义青龙公共通知模块时，设置 notify.py 所在目录；通常无需设置。",
-          "format": "可选的本地目录；通知不可用不改变业务退出码。"
+          "howToGet": "可选填写青龙公共 notify.py 或 sendNotify.js 所在目录；留空自动发现。",
+          "format": "本地目录路径；优先 notify.py，失败后尝试其他可用桥接及 sendNotify.js，后者需要青龙环境已有 Node.js。业务 HTTP 不依赖这些桥接。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，账号独立处理；任一账号格式错误或执行失败时整体非零退出。"
+        "rule": "每个非空行一个账号，保留旧 token#User-Agent#备注字段。账号独立执行，任一账号失败整体非零退出。"
       },
       "dependencies": [],
       "features": [
-        "百事乐元账号抽奖，显式开启后可按设置的上限连续执行",
-        "展示脱敏后的奖品名称和提示，并展示接口返回的非敏感官方账号身份",
-        "兼容原 bsly 变量及 token、User-Agent、账号备注字段，支持每行一个账号",
-        "完全断网预演、配置校验、账号独立处理和失败非零退出",
-        "分阶段日志、每账号和全任务统计、单行 TASK_SUMMARY 结构化摘要",
-        "实跑所有结果调用可用的青龙公共通知模块发送脱敏摘要；预演仅本地模拟通知"
+        "百事乐元抽奖，保留原 GET 接口、Token、User-Agent 和微信 Referer 请求头。",
+        "每行多账号及旧账号字段兼容，保留 User-Agent 内的 #，账号独立处理。",
+        "显式开启抽奖及每账号可配置次数上限，数字业务码 0 和有效奖品名称双重校验。",
+        "超时、限制响应大小、禁止重定向和副作用请求重试，网络与业务失败均非零退出。",
+        "完全断网预演、脱敏时间轴日志、编号阶段与耗时、逐账号及全任务统计、单行 TASK_SUMMARY。",
+        "官方返回昵称、用户名、显示名称或公开 UID 时展示非凭据身份，抑制手机号及凭据。",
+        "通过青龙 notify.py 或 sendNotify.js 发送脱敏任务总结，支持全局关闭，通知失败保留业务退出码；预演仅本地模拟。"
       ],
       "sideEffects": [
-        "实跑抽奖会消耗抽奖机会，并可能产生奖品或奖励记录",
-        "实跑开启通知时向青龙配置的通知渠道发送脱敏任务摘要"
+        "显式开启实跑后消耗抽奖机会并可能获得奖品。",
+        "实跑启用通知且桥接可用时向青龙配置的通知渠道发送脱敏总结。"
       ],
       "review": {
         "staticPassed": true,
@@ -573,7 +587,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/28b170786df4dff2",
-        "candidateSha256": "21ee297f54d13d8f725fc2419d1eeba7d34873fd9e321d5431dcbce9cb352664"
+        "candidateSha256": "ae1d0fe072b35fe9c22ad02ebc04ca2b0571c7cf0e60c3ad68e2c8cca58925a3"
       }
     },
     {
