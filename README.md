@@ -124,6 +124,7 @@
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `23 8 * * *` |
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `55 9 * * *` |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `1 16 * * *` |
+| 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `2 8 * * *` |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `8 6 * * *` |
@@ -224,6 +225,7 @@
 - `scripts/tieba_checkin.py`：验证百度贴吧登录状态并获取签到所需的 TBS；显示登录接口可取得的账号昵称、用户名或公开 UID，方便核对账号；读取账号关注的贴吧列表并识别当日已签到项目；为尚未签到的关注贴吧执行每日签到；支持每行一个账号的多账号独立处理和统一脱敏通知；提供完全断网、不会产生账号副作用的配置预演；输出逐阶段时间轴、账号统计和单行结构化任务汇总。
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
+- `scripts/tyqhdraw.py`：登录并校验业务成功码与有效会话；查询调料包和番茄资产；打印官方返回的非秘密账号身份；显式开启后执行活动 58 集市兑换抽奖，每轮最多 10 次并检查奖品字段；使用本地透明掩膜图像匹配识别滑块并验证官方业务成功码；低置信度停止；查询实物礼品名称及非实物礼品数量；每行一个账号，账号独立失败隔离与整体非零退出；完全断网预演、青龙脱敏通知、逐阶段日志及单行任务汇总。
 - `scripts/wangchao.py`：手机号与密码登录，展示官方返回的非敏感昵称或公开账号标识；保留上游随机客户端标识、RSA 密码加密、HMAC 登录认证、应用请求签名和 SM2 阅读参数加密；进入 App，获取每日阅读任务、识别已读文章、浏览未读文章、提交阅读记录并复查完成进度；显式开关控制同应用活动入口浏览，不伪造或重放随机阅读记录；显式开关控制每日一次抽奖，检查会话、阅读进度及官方资格，展示上游奖品名称；查询最近十条抽奖记录及时间；换行多账号、独立失败处理、完全断网预演、业务失败非零退出；限时 HTTP 请求、严格业务码与必要字段校验、禁止携带凭据重定向；时间轴阶段日志、每账号及全局统计、唯一单行 TASK_SUMMARY 汇总、青龙脱敏通知。
 - `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
 - `scripts/yht.py`：查询官方账号昵称等非敏感身份，不输出手机号；查询种植活动标题；参与种植活动；连续施肥，保留上游默认最多一百次请求并允许调低上限；查询当前等级、下一等级和剩余施肥次数；施肥接口返回当前不存在进行中的活动时尝试领取奖励，核验奖励名称与数量；可选每日签到及奖励详情查询，默认保持未启用；可选本次配置账号之间互助及互助身份查询；每行一个账号、独立执行、任一业务失败整体失败；完全断网预演、时间轴阶段日志、账号统计及单行结构化任务汇总；通过青龙通知适配器发送脱敏总结，通知异常保留业务退出码。
@@ -331,6 +333,7 @@
 <tr><td rowspan="1"><code>scripts/tieba_checkin.py</code></td><td><code>TIEBA_COOKIE</code></td><td>是</td><td>格式：每个账号占一个非空行；单行填写 BDUSS 值，或填写形如 BDUSS=&lt;值&gt;; STOKEN=&lt;值&gt; 的完整 Cookie。同一账号的 Cookie 字段保留在同一行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/tyqhdraw.py</code></td><td><code>tyqhCookie</code></td><td>是</td><td>格式：每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wangchao.py</code></td><td><code>WangChao</code></td><td>是</td><td>格式：每个非空行一个“登录手机号#密码”。仅按第一个 # 切分，密码中的后续 #、&amp;、@ 等字符完整保留。密码 UTF-8 长度不超过 117 字节。旧版 &amp;&amp; 多账号分隔须手动迁移为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/yht.py</code></td><td><code>Yht_token</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留大小写；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -777,6 +780,12 @@
 <tr><td><code>TY_ACCOUNT_TIMEOUT</code></td><td>否</td><td>格式：10～600的整数；单次请求另有15秒超时，不自动重试；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭通知；其余启用；预演只生成摘要而不传输；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知目录路径；不可用或发送失败不改变业务退出码；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="6"><code>scripts/tyqhdraw.py</code></td><td><code>TYQH_DRAW_ENABLE</code></td><td>否</td><td>格式：0 或 1；默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TYQH_DRAW_LIMIT</code></td><td>否</td><td>格式：1 至 10 的整数；默认 10；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TYQH_DRY_RUN</code></td><td>否</td><td>格式：0 或 1；默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭，不区分大小写；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ocr_url</code></td><td>否</td><td>格式：已废弃，设置后也不使用；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/wangchao.py</code></td><td><code>WANGCHAO_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1/0、true/false、yes/no、on/off。预演不代表真实业务成功。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WANGCHAO_LOTTERY</code></td><td>否</td><td>格式：默认 0；设为 1 时仅在阅读进度和官方资格都通过后抽奖一次，不自动重试。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WANGCHAO_BONUS</code></td><td>否</td><td>格式：默认 0；设为 1 时按接口提供的入口浏览，不重放随机文章阅读或承诺增加次数，不运行诗词答题及红包。；多账号格式以该脚本文档为准</td></tr>
@@ -889,6 +898,7 @@
 - `scripts/tieba_checkin.py`：每个非空行表示一个账号；同一账号的全部 Cookie 字段必须写在同一行，脚本不会使用 &、@ 等字符拆分账号。账号逐个独立处理，任一账号失败都会使进程以非零状态退出。。
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
+- `scripts/tyqhdraw.py`：每个非空行一个账号；同一账号的 thirdId 与 wid 写在同一行，保留原字段顺序。逐账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/wangchao.py`：每个非空行一个账号，只按第一个 # 切分配套手机号与密码。忽略空行；各账号独立处理，任一账号配置或业务失败则整体非零退出。。
 - `scripts/wps_clock_in.py`：每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。。
 - `scripts/yht.py`：每个非空行一个账号的完整 qm-user-token；逐账号执行，互助仅限本次配置的其他账号；任何账号业务失败整体非零退出。。
@@ -1551,6 +1561,13 @@
 - 所属脚本：`scripts/ty_netdisk_checkin.py`
 - 获取或设置：在天翼云盘官方客户端或官方网站确认账号及登录密码；忘记密码请使用官方找回流程，出现验证码或风控时先人工处理。旧 TY_USERNAME/TY_PASSWORD 须将同账号配对后合为本变量；不要修改密码中的特殊字符。
 - 填写格式：`每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `tyqhCookie`
+
+- 所属脚本：`scripts/tyqhdraw.py`
+- 获取或设置：登录统一茄皇小程序，使用本机 HTTPS 抓包查看官方 public/api/login 请求 JSON 的 thirdId 和 wid；必须使用同一账号的配套字段，不要分享抓包。
+- 填写格式：`每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WangChao`
@@ -4189,6 +4206,42 @@
 - 获取或设置：可选：填写青龙现有 notify.py 所在目录；也会尝试导入 notify 及青龙标准目录。
 - 填写格式：`本机通知目录路径；不可用或发送失败不改变业务退出码`
 
+#### `TYQH_DRAW_ENABLE`
+
+- 所属脚本：`scripts/tyqhdraw.py`
+- 获取或设置：默认 0，仅查询资产与奖品。确认官方活动规则和兑换成本后自行设为 1 开启抽奖。
+- 填写格式：`0 或 1；默认 0`
+
+#### `TYQH_DRAW_LIMIT`
+
+- 所属脚本：`scripts/tyqhdraw.py`
+- 获取或设置：自行设置本轮抽奖次数上限；仅在抽奖开关开启时执行。
+- 填写格式：`1 至 10 的整数；默认 10`
+
+#### `TYQH_DRY_RUN`
+
+- 所属脚本：`scripts/tyqhdraw.py`
+- 获取或设置：验证配置时设为 1，所有接口和通知完全断网模拟。
+- 填写格式：`0 或 1；默认 0`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/tyqhdraw.py`
+- 获取或设置：默认启用青龙通知；可按需关闭。
+- 填写格式：`默认 1；0、false、no、off 关闭，不区分大小写`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/tyqhdraw.py`
+- 获取或设置：可选，填写青龙 notify.py 所在目录；未设置时尝试导入 notify 及标准青龙目录。
+- 填写格式：`本地目录路径`
+
+#### `ocr_url`
+
+- 所属脚本：`scripts/tyqhdraw.py`
+- 获取或设置：旧版参数，无需获取或设置；维护版通过本地图像匹配识别，不连接外部 OCR 服务。
+- 填写格式：`已废弃，设置后也不使用`
+
 #### `WANGCHAO_DRY_RUN`
 
 - 所属脚本：`scripts/wangchao.py`
@@ -4386,6 +4439,7 @@
 - `scripts/tieba_checkin.py`：SHA-256 `c19c152b7240df266352493f048f0580710c5c2d1f7c2a62a52922025064d912`；live 业务成功证据位于 `projects/checkin/validation/e608052390d250da`。
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
+- `scripts/tyqhdraw.py`：SHA-256 `c2c1115b60fd085034eb55d28ffb8fd3cb6476263eeff23f53f5bea8ad892b7e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
 - `scripts/wangchao.py`：SHA-256 `487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
 - `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
 - `scripts/yht.py`：SHA-256 `041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e4af0e04fafedbd8`。
@@ -4486,6 +4540,7 @@
 - `scripts/tieba_checkin.py`：正式执行时向百度贴吧提交签到请求，改变对应贴吧的当日签到状态；通知开启且青龙通知组件可用时发送脱敏任务汇总。
 - `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
 - `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
+- `scripts/tyqhdraw.py`：登录创建账号会话；显式开启时兑换抽奖，可能消耗资产或抽奖机会并获得奖品；抽奖遇到滑块时提交验证码验证；启用通知时通过青龙通知渠道发送脱敏任务统计。
 - `scripts/wangchao.py`：实时登录会建立账号及活动服务会话；默认浏览未读文章并提交阅读记录，改变每日阅读进度；启用 WANGCHAO_BONUS 时浏览活动文章入口，可能改变浏览记录；启用 WANGCHAO_LOTTERY 时抽奖一次，消耗次数并产生中奖或参与记录；启用 QINGLONG_NOTIFY 时通过青龙通知渠道发送脱敏任务总结；预演通知禁止网络。
 - `scripts/wps_clock_in.py`：。
 - `scripts/yht.py`：参加种植活动；消耗活动肥料进行施肥；满足条件时领取活动奖励；开启 YHT_SIGN 后提交每日签到并领取签到奖励；开启 YHT_HELP 后为本次配置的其他账号助力；通知开启时调用青龙通知发送总结；断网预演阻止联网和派生进程。
@@ -4588,6 +4643,7 @@
 - `scripts/tieba_checkin.py`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_tieba.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/tsthb_checkin.py`：上游 `agluo/ql-script-hub` / `tsthb_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/ty_netdisk_checkin.py`：上游 `agluo/ql-script-hub` / `ty_netdisk_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/tyqhdraw.py`：上游 `Rookie-wb-WH/ql_scripts` / `tyqhDraw.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/wangchao.py`：上游 `Rookie-wb-WH/ql_scripts` / `wangchao.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/yht.py`：上游 `Rookie-wb-WH/ql_scripts` / `yht.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
