@@ -4002,7 +4002,7 @@
     },
     {
       "catalogId": "38602005c4e13646",
-      "applicationKey": "jlc",
+      "applicationKey": "oshwhub",
       "checkProfile": {
         "requiredEnv": [
           "JLC_COOKIE"
