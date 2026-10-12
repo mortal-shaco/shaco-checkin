@@ -2531,10 +2531,10 @@
       "applicationKey": "index",
       "checkProfile": {
         "requiredEnv": [
-          "PIXIV_ACCOUNTS",
-          "PIXIV_OUTPUT"
+          "PIXIV_ACCOUNTS"
         ],
         "optionalEnv": [
+          "PIXIV_OUTPUT",
           "PIXIV_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
@@ -2546,20 +2546,24 @@
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "所有图片下载已完成或已存在有效文件",
+          "获取收藏成功，共",
           "\"status\":\"success\""
         ],
         "features": [
-          "根据官方收藏页面重定向自动识别公开 UID，或使用显式指定的公开 UID。",
-          "分页读取公开收藏插画，获取全部图片页并下载原始图片。",
-          "按作品整理图片目录，跳过已有有效图片，兼容旧版标题目录。",
-          "兼容旧版 config.json 的 cookie、output 与 proxy 字段，代理使用 axios 公开接口。",
-          "多账号独立执行；请求超时、明确业务成功检查、图片头和长度校验及原子写入。",
-          "断网预演、分阶段脱敏日志、单行 TASK_SUMMARY 统计与青龙通知。"
+          "通过官方收藏页跳转获取并原样显示公开 UID，也支持手动指定公开 UID",
+          "分页获取全部公开收藏，校验明确业务成功、总数稳定、无重复以及分页完整性",
+          "读取每个作品全部原图页；图片页查询与图片下载分别限制为三个并发任务",
+          "以标题加作品 ID 建目录、标题加页码命名图片，保留规范候选保存路径及旧目录兼容检查",
+          "跳过已有有效图片，修复无效普通图片文件；原子创建下载结果以避免并发覆盖",
+          "原图仅接受 HTTPS 图片域，隔离账号 Cookie，校验图片类型、文件头、大小和完整性，设置请求超时",
+          "支持逐行多账号、旧版 cookie/output/proxy 配置和完全断网预演，逐账号隔离失败",
+          "按编号阶段打印带时间戳的脱敏结果及耗时、账号和任务统计，保留收藏成功日志并输出唯一单行 TASK_SUMMARY",
+          "调用青龙通知组件发送脱敏总结，支持全局通知开关；预演禁止外部投递，通知失败或缺失不改变业务退出码"
         ],
         "sideEffects": [
-          "正式运行在指定目录创建作品目录、写入图片、替换未通过基本校验的目标文件并清理本次临时文件。",
-          "正式运行通知启用且青龙模块可用时发送脱敏结果通知。"
+          "正式运行时创建明确指定的图片目录并保存收藏原图；替换未通过校验的普通图片文件",
+          "下载过程中创建临时文件并在结束时清理",
+          "通知开启且组件可用时发送脱敏任务结果通知，断网预演不外部投递"
         ]
       },
       "postReview": {
@@ -2568,7 +2572,7 @@
       },
       "displayName": "Pixiv 收藏图片下载",
       "path": "scripts/index.js",
-      "sha256": "4fd17eede5a19456fe2de88761ad30bedf802fba468cfcf67e0929dc16d345fd",
+      "sha256": "b0f670de5353137cb479251c75283cf6960207864f98a92c687c46147f7db3d7",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -2576,7 +2580,19 @@
         "repository": "cloudcranes/some_scripts",
         "branch": "main",
         "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
-        "originalPath": "Download_pixiv/index.js"
+        "originalPath": "Download_pixiv/index.js",
+        "related": [
+          {
+            "repository": "qluser-alan/some_scripts",
+            "url": "https://github.com/qluser-alan/some_scripts.git",
+            "branch": "main",
+            "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+            "originalPath": "Download_pixiv/index.js",
+            "catalogId": "85879e4031f2e1be",
+            "sha256": "e37db9d3db5f5f5b1fc5038837678dcc430f1c3b0a997d9efe3547e929da9b99",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "0 3 * * *",
       "command": "node scripts/index.js",
@@ -2585,57 +2601,61 @@
           "name": "PIXIV_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录本人 Pixiv，在浏览器开发者工具网络面板复制 www.pixiv.net 请求的完整 Cookie；公开 UID 从本人主页 /users/数字 中取得。UID 可留空以自动识别。不要分享 Cookie。",
-          "format": "每个非空行一个账号：公开UID|完整Cookie；只在首个竖线处分割，保留后续 Cookie 文本。不使用 & 或 @ 分隔账号。兼容当前工作目录 config.json 的 cookie 字段。"
+          "howToGet": "登录本人 Pixiv 账号，在浏览器开发者工具的网络面板中复制 www.pixiv.net 请求的完整 Cookie；公开 UID 从个人主页网址 /users/ 后获取，也可留空由官方收藏跳转获取。兼容当前工作目录 config.json 的 cookie 字段。",
+          "format": "每行一个账号：公开UID|完整Cookie；只按第一个 | 拆分，后续 Cookie 内容保留；UID 留空时使用 |完整Cookie。禁止用 & 或 @ 分隔账号。"
         },
         {
           "name": "PIXIV_OUTPUT",
-          "required": true,
+          "required": false,
           "sensitive": false,
-          "howToGet": "填写有写权限的图片保存目录，或使用当前工作目录旧版 config.json 的 output 字段。预演无需此项。",
-          "format": "绝对或相对目录路径；正式执行必须明确指定。"
+          "howToGet": "自行指定本地可写图片目录；正式下载必须明确设置本变量或当前工作目录 config.json 的 output 字段。预演无需设置。",
+          "format": "目录路径；新图片保存为 标题_作品ID/标题_页码.扩展名，兼容检查旧版 标题/标题_页码.扩展名。"
         },
         {
           "name": "PIXIV_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量中设置为 1 开启完全断网预演。",
-          "format": "1 表示预演，其余值表示正式执行。"
+          "howToGet": "在青龙环境变量中设为 1 开启完全断网预演；不创建下载目录或图片文件。",
+          "format": "1 为预演，其他值为正式运行。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "通知默认启用；设置为 0、false、no 或 off 关闭。",
-          "format": "默认 1；预演仅发送本地日志通知，避免外部通知模块联网。"
+          "howToGet": "使用青龙已有通知配置；默认开启，可主动关闭。预演调用可用通知组件时阻断网络，不进行外部投递。",
+          "format": "0、false、no、off 关闭，大小写不敏感；其他值开启。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选：指定青龙 sendNotify.js 所在目录；未配置时检查 /ql/data/scripts 和 /ql/scripts。",
-          "format": "本地目录路径；通知失败不改变业务退出码。"
+          "howToGet": "可选，指定青龙 sendNotify.js 所在目录；未设置时依次检查 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本地通知组件目录路径。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，首个竖线分隔 UID 与 Cookie；账号独立处理，任何账号失败则整体非零退出。"
+        "rule": "每个非空行表示一个独立账号，按第一个 | 分隔公开 UID 与完整 Cookie；账号顺序处理，任一账号失败使整体非零退出。旧版 config.json 单账号 cookie/output/proxy 继续兼容；代理使用 host、port、protocol 等 axios 代理字段，无默认代理。"
       },
       "dependencies": [
         "axios"
       ],
       "features": [
-        "根据官方收藏页面重定向自动识别公开 UID，或使用显式指定的公开 UID。",
-        "分页读取公开收藏插画，获取全部图片页并下载原始图片。",
-        "按作品整理图片目录，跳过已有有效图片，兼容旧版标题目录。",
-        "兼容旧版 config.json 的 cookie、output 与 proxy 字段，代理使用 axios 公开接口。",
-        "多账号独立执行；请求超时、明确业务成功检查、图片头和长度校验及原子写入。",
-        "断网预演、分阶段脱敏日志、单行 TASK_SUMMARY 统计与青龙通知。"
+        "通过官方收藏页跳转获取并原样显示公开 UID，也支持手动指定公开 UID",
+        "分页获取全部公开收藏，校验明确业务成功、总数稳定、无重复以及分页完整性",
+        "读取每个作品全部原图页；图片页查询与图片下载分别限制为三个并发任务",
+        "以标题加作品 ID 建目录、标题加页码命名图片，保留规范候选保存路径及旧目录兼容检查",
+        "跳过已有有效图片，修复无效普通图片文件；原子创建下载结果以避免并发覆盖",
+        "原图仅接受 HTTPS 图片域，隔离账号 Cookie，校验图片类型、文件头、大小和完整性，设置请求超时",
+        "支持逐行多账号、旧版 cookie/output/proxy 配置和完全断网预演，逐账号隔离失败",
+        "按编号阶段打印带时间戳的脱敏结果及耗时、账号和任务统计，保留收藏成功日志并输出唯一单行 TASK_SUMMARY",
+        "调用青龙通知组件发送脱敏总结，支持全局通知开关；预演禁止外部投递，通知失败或缺失不改变业务退出码"
       ],
       "sideEffects": [
-        "正式运行在指定目录创建作品目录、写入图片、替换未通过基本校验的目标文件并清理本次临时文件。",
-        "正式运行通知启用且青龙模块可用时发送脱敏结果通知。"
+        "正式运行时创建明确指定的图片目录并保存收藏原图；替换未通过校验的普通图片文件",
+        "下载过程中创建临时文件并在结束时清理",
+        "通知开启且组件可用时发送脱敏任务结果通知，断网预演不外部投递"
       ],
       "review": {
         "staticPassed": true,
@@ -2648,12 +2668,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/b4b3175bb52c98a5",
-        "candidateSha256": "a70afff5f833f74c1cde05dc597360e471b8612d285cc6aea97d524a2ccc7bcd"
+        "candidateSha256": "6443c210e183777c13c8ff309ab839dec0608037ac6288268d090bf7bb734f2b"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "a70afff5f833f74c1cde05dc597360e471b8612d285cc6aea97d524a2ccc7bcd",
-        "releaseSha256": "4fd17eede5a19456fe2de88761ad30bedf802fba468cfcf67e0929dc16d345fd",
+        "validatedSha256": "6443c210e183777c13c8ff309ab839dec0608037ac6288268d090bf7bb734f2b",
+        "releaseSha256": "b0f670de5353137cb479251c75283cf6960207864f98a92c687c46147f7db3d7",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
