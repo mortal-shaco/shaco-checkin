@@ -1133,6 +1133,178 @@
       }
     },
     {
+      "catalogId": "01d51606a735260a",
+      "applicationKey": "deepflood",
+      "checkProfile": {
+        "requiredEnv": [
+          "DEEPFLOOD_COOKIE"
+        ],
+        "optionalEnv": [
+          "DEEPFLOOD_DRY_RUN",
+          "DF_RANDOM",
+          "RANDOM_SIGNIN",
+          "MAX_RANDOM_DELAY",
+          "DEEPFLOOD_STATS_DAYS",
+          "DEEPFLOOD_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DEEPFLOOD_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "DEEPFLOOD_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1",
+          "RANDOM_SIGNIN": "false",
+          "MAX_RANDOM_DELAY": "3600",
+          "DF_RANDOM": "true",
+          "DEEPFLOOD_STATS_DAYS": "30",
+          "DEEPFLOOD_TIMEOUT": "15"
+        },
+        "successPatterns": [
+          "签到已验证",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "执行 DeepFlood 每日签到并验证接口业务结果，支持识别已完成签到",
+          "查询并汇总可配置时间窗口内的签到鸡腿收益，保留总量、次数及平均收益",
+          "支持换行分隔的多账号独立执行和汇总状态",
+          "可选的随机延迟执行，保持原每日计划及既有参数兼容",
+          "完全断网且无等待、无副作用的预演",
+          "正式运行通过青龙 notify.py 发送脱敏汇总，支持全局通知开关，预演显示同内容通知预览",
+          "显示官方返回的非敏感账号身份、编号阶段、耗时与账号及任务统计",
+          "保留 SUMMARY_JSON 并追加唯一单行 TASK_SUMMARY，配置或业务失败非零退出"
+        ],
+        "sideEffects": [
+          "正式运行向 DeepFlood 提交每日签到，可能获得鸡腿并改变账号签到及积分状态",
+          "正式运行通知启用且模块可用时，通过青龙已配置渠道发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "DeepFlood 签到",
+      "path": "scripts/deepflood_checkin.py",
+      "sha256": "1743ea3da4f0ef463f70619fb5a49d375dc48e5817d867ea080875a12b3f68c4",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "agluo/ql-script-hub",
+        "branch": "master",
+        "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
+        "originalPath": "deepflood_checkin.py"
+      },
+      "cron": "33 14 * * *",
+      "command": "python3 scripts/deepflood_checkin.py",
+      "environment": [
+        {
+          "name": "DEEPFLOOD_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://www.deepflood.com 后打开浏览器开发者工具的网络面板，选择本站已登录请求，复制请求头 Cookie 的完整值；不要复制 Cookie: 前缀，不要公开凭据。",
+          "format": "每个非空行填写一个账号完整 Cookie；不按 &、@ 或分号拆分账号，Cookie 中的这些字符原样保留。"
+        },
+        {
+          "name": "DEEPFLOOD_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设为 1 进行完全断网预演；正式运行设为 0 或不设置。",
+          "format": "1/true/yes/on 开启，0/false/no/off 关闭；默认关闭。"
+        },
+        {
+          "name": "DF_RANDOM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容原脚本的签到接口 random 查询参数；无需获取额外凭据。",
+          "format": "字符串，默认 true；仅传给签到接口，不控制本地等待。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要随机延迟时手动启用；维护版本默认关闭。",
+          "format": "1/true/yes/on 开启，0/false/no/off 关闭；预演不等待。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动配置随机等待的最大秒数。",
+          "format": "0 至 86400 的整数，默认 3600；仅 RANDOM_SIGNIN 开启时等待。"
+        },
+        {
+          "name": "DEEPFLOOD_STATS_DAYS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置收益查询时间窗口。",
+          "format": "1 至 365 的整数，默认 30；以北京时间计算滚动窗口，最多查询 10 页。"
+        },
+        {
+          "name": "DEEPFLOOD_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置每次 HTTP 请求超时秒数。",
+          "format": "1 至 120 的整数，默认 15。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙全局通知开关；通知渠道在青龙面板配置。",
+          "format": "默认 1；0/false/no/off 关闭通知。预演仅显示脱敏通知预览，不加载模块、不发送网络通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 notify.py 所在目录；优先使用可导入的 notify.send，其次此目录，再尝试青龙标准目录。",
+          "format": "本地目录路径；不安装或下载通知模块，通知不可用不影响业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行填写一个账号完整 Cookie；忽略空行并兼容换行格式，各账号独立执行，任一账号签到或收益查询失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "执行 DeepFlood 每日签到并验证接口业务结果，支持识别已完成签到",
+        "查询并汇总可配置时间窗口内的签到鸡腿收益，保留总量、次数及平均收益",
+        "支持换行分隔的多账号独立执行和汇总状态",
+        "可选的随机延迟执行，保持原每日计划及既有参数兼容",
+        "完全断网且无等待、无副作用的预演",
+        "正式运行通过青龙 notify.py 发送脱敏汇总，支持全局通知开关，预演显示同内容通知预览",
+        "显示官方返回的非敏感账号身份、编号阶段、耗时与账号及任务统计",
+        "保留 SUMMARY_JSON 并追加唯一单行 TASK_SUMMARY，配置或业务失败非零退出"
+      ],
+      "sideEffects": [
+        "正式运行向 DeepFlood 提交每日签到，可能获得鸡腿并改变账号签到及积分状态",
+        "正式运行通知启用且模块可用时，通过青龙已配置渠道发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/01d51606a735260a",
+        "candidateSha256": "979078e4c63c3f346d79925899824f00302bec3ed00cbc8faba96cbef985d1d6"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "979078e4c63c3f346d79925899824f00302bec3ed00cbc8faba96cbef985d1d6",
+        "releaseSha256": "1743ea3da4f0ef463f70619fb5a49d375dc48e5817d867ea080875a12b3f68c4",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "5bc8db2e6a36d14b",
       "applicationKey": "durex",
       "checkProfile": {
