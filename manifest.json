@@ -3399,6 +3399,129 @@
       }
     },
     {
+      "catalogId": "89f2e9b460331a75",
+      "applicationKey": "rainyun",
+      "checkProfile": {
+        "requiredEnv": [
+          "rainyun_ck"
+        ],
+        "optionalEnv": [
+          "RAINYUN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "RAINYUN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "RAINYUN_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "成功签到并领取积分",
+          "积分查询成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用雨云用户名和密码登录，保持登录 Cookie 与 CSRF 令牌。",
+          "执行每日签到并领取积分，仅以 HTTP 状态和结构化业务码确认成功。",
+          "查询并展示账号积分，展示接口返回的非敏感昵称、用户名或公开 UID。",
+          "业务步骤完成或失败后，在已成功登录的情况下执行退出登录并核验结果。",
+          "支持每行一个账号的独立会话和失败隔离。",
+          "提供完全断网预演、分阶段脱敏日志、账号与任务统计及单行 TASK_SUMMARY 汇总。",
+          "通过青龙 notify.py 发送脱敏统计通知，支持全局开关；配置错误和部分失败同样汇总，预演跳过实际发送。"
+        ],
+        "sideEffects": [
+          "登录创建账号会话。",
+          "每日签到改变当日签到状态并领取积分。",
+          "退出登录结束当前账号会话。",
+          "正式运行时向已配置的青龙通知渠道发送任务汇总。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "雨云服务器签到",
+      "path": "scripts/rainyun.py",
+      "sha256": "15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "rainyun.py"
+      },
+      "cron": "0 2 * * *",
+      "command": "python3 scripts/rainyun.py",
+      "environment": [
+        {
+          "name": "rainyun_ck",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用雨云官网注册的账号用户名和登录密码；不需要抓取 Cookie，也不使用开放接口密钥。若账号需要验证码且接口拒绝空验证码，本脚本会报告失败，请先在官网核对账号登录要求。",
+          "format": "每个非空行一个账号：用户名#密码。仅在第一个 # 处分隔，密码后续的 # 和空格完整保留；用户名按上游规则转换为小写。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "RAINYUN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中自行设置，预演时设置为 1。",
+          "format": "默认 0；设置 1 开启完全断网预演，仅验证参数与执行计划，跳过业务请求和通知实际发送。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙的全局通知开关，默认开启。",
+          "format": "默认 1；0、false、no、off 关闭通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如通知模块不在默认路径，将本机青龙 notify.py 所在目录填入此变量；未配置则尝试导入 notify 并搜索 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本机目录路径，可选。业务脚本不依赖通知模块存在，通知失败保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，格式为用户名#密码，仅在第一个 # 处分隔。账号独立使用会话，单账号失败不阻止后续账号；任一账号失败或配置无效时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用雨云用户名和密码登录，保持登录 Cookie 与 CSRF 令牌。",
+        "执行每日签到并领取积分，仅以 HTTP 状态和结构化业务码确认成功。",
+        "查询并展示账号积分，展示接口返回的非敏感昵称、用户名或公开 UID。",
+        "业务步骤完成或失败后，在已成功登录的情况下执行退出登录并核验结果。",
+        "支持每行一个账号的独立会话和失败隔离。",
+        "提供完全断网预演、分阶段脱敏日志、账号与任务统计及单行 TASK_SUMMARY 汇总。",
+        "通过青龙 notify.py 发送脱敏统计通知，支持全局开关；配置错误和部分失败同样汇总，预演跳过实际发送。"
+      ],
+      "sideEffects": [
+        "登录创建账号会话。",
+        "每日签到改变当日签到状态并领取积分。",
+        "退出登录结束当前账号会话。",
+        "正式运行时向已配置的青龙通知渠道发送任务汇总。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/89f2e9b460331a75",
+        "candidateSha256": "15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a"
+      }
+    },
+    {
       "catalogId": "19b2285cc7b8a82e",
       "applicationKey": "sfsu",
       "checkProfile": {
