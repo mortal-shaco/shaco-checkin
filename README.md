@@ -46,7 +46,9 @@
 | 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `0 9,18 * * *` |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `0 21 * * *` |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `0 3 * * *` |
+| jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `0 9 * * *` |
 | 杰士邦安心福利社 | `scripts/jissbon.py` | `python3 scripts/jissbon.py` | `9 9 * * *` |
+| 劲友家日常任务 | `scripts/jyj.py` | `python3 scripts/jyj.py` | `0 8 * * *` |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
@@ -131,7 +133,9 @@
 - `scripts/hsay.py`：查询并显示官方返回的用户昵称，隐藏手机号及凭据；从积分流水获取签到所需的公开用户 ID；查询连续签到天数；按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数；逐行多账号独立运行，失败闭合与断网预演；青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出。
 - `scripts/ikuuu_checkin.py`：使用邮箱和密码登录 ikuuu；执行每日签到并识别今日已签到；从成功消息中报告流量奖励；按每行一个邮箱|密码账号处理并输出脱敏结构化汇总；可选随机错峰执行；按青龙通知策略发送汇总；完全断网的配置预演。
 - `scripts/index.js`：根据官方收藏页面重定向自动识别公开 UID，或使用显式指定的公开 UID。；分页读取公开收藏插画，获取全部图片页并下载原始图片。；按作品整理图片目录，跳过已有有效图片，兼容旧版标题目录。；兼容旧版 config.json 的 cookie、output 与 proxy 字段，代理使用 axios 公开接口。；多账号独立执行；请求超时、明确业务成功检查、图片头和长度校验及原子写入。；断网预演、分阶段脱敏日志、单行 TASK_SUMMARY 统计与青龙通知。。
+- `scripts/jcqd.py`：默认 ikuuu 官方导航域名发现、登录及每日签到；通过明确任务开关保留上游可选 v2free 和 gw树洞登录签到，各站独立会话；多账号逐行配置、旧单账号参数兼容、账号及站点失败隔离；HTTPS 证书校验、超时、响应大小限制、拒绝重定向和登录失败闭合；官方非凭据昵称、用户名、显示名称或公开 UID 核对；断网预演、逐阶段日志、账号统计、单行 TASK_SUMMARY 汇总及青龙通知。
 - `scripts/jissbon.py`：查询官方昵称与当前积分；每日签到；分享奖励登记，不发布分享文字；显式开启后最多执行十次活动抽奖；换行多账号独立处理与失败非零退出；完全断网预演、脱敏通知和时间轴任务统计。
+- `scripts/jyj.py`：查询官方昵称及可用积分、历史使用和历史总积分；每日签到和每日水滴领取；显式开启三轮拍一拍实际计时游戏和三次幸运转盘；显式开启文章点赞、订阅、调研、分享任务奖励；分享接口不发布文本；兼容jyjRun健康运动领取开关，默认关闭；查询庄园种植状态及可种植药材，显式指定种植和浇水上限；独立活动开关支持本人照片上传、AI识别、春日活动拍照打卡及打卡查询；独立活动开关支持酒柜抽奖和红包雨；显式提供本人真实成绩后执行一轮药材游戏；换行多账号、断网预演、脱敏日志、业务失败退出与青龙通知。
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
 - `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
@@ -222,7 +226,9 @@
 <tr><td rowspan="1"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：邮箱|密码；只用第一个竖线分隔，密码中的后续竖线会保留；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="2"><code>scripts/index.js</code></td><td><code>PIXIV_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：公开UID|完整Cookie；只在首个竖线处分割，保留后续 Cookie 文本。不使用 &amp; 或 @ 分隔账号。兼容当前工作目录 config.json 的 cookie 字段。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PIXIV_OUTPUT</code></td><td>否</td><td>格式：绝对或相对目录路径；正式执行必须明确指定。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/jcqd.py</code></td><td><code>JCQD_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：登录邮箱|密码；只在第一个 | 分割，密码后续字符保持原样；不使用 &amp; 或 @ 分隔账号；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/jissbon.py</code></td><td><code>jsbaxfls</code></td><td>是</td><td>格式：每个非空行填写一个完整Access-Token；保留原变量名，旧#分隔须改为换行；不使用&amp;或@分隔。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/jyj.py</code></td><td><code>jyjck</code></td><td>是</td><td>格式：每个非空行一个账号：authorization#userid；只按第一个#分割，后续字段原样保留，不支持@@、&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_COOKIE</code></td><td>是</td><td>格式：每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 &amp; 或 @ 分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/main.py</code></td><td><code>WALLHAVEN_SAVE_DIR</code></td><td>否</td><td>格式：绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
@@ -378,11 +384,28 @@
 <tr><td rowspan="3"><code>scripts/index.js</code></td><td><code>PIXIV_DRY_RUN</code></td><td>否</td><td>格式：1 表示预演，其余值表示正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；预演仅发送本地日志通知，避免外部通知模块联网。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/jcqd.py</code></td><td><code>jcuname</code></td><td>是</td><td>格式：单账号登录邮箱；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>jcpasswd</code></td><td>是</td><td>格式：单账号完整密码；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JCQD_TASKS</code></td><td>否</td><td>格式：ikuuu、v2free、gw，可用逗号组合；默认 ikuuu；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IKUUU_BASE_URL</code></td><td>否</td><td>格式：仅 HTTPS 域名，无路径、查询参数、用户信息或非标准端口；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JCQD_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0/false/no/off 关闭，默认 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/jissbon.py</code></td><td><code>JSB_DRY_RUN</code></td><td>否</td><td>格式：1启用断网预演；0实际执行，默认0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>JSB_LOTTERY</code></td><td>否</td><td>格式：1启用抽奖；默认0关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>JSB_LOTTERY_COUNT</code></td><td>否</td><td>格式：1至10的整数，默认10；次数已用完或失败立即停止抽奖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认1；0、false、no、off关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；只用于可选通知，不是业务运行依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="10"><code>scripts/jyj.py</code></td><td><code>jyjlatlon</code></td><td>是</td><td>格式：纬度#经度；分别在[-90,90]和[-180,180]内，所有账号共用本人授权位置。沿用原执行代码顺序，修正原说明文字错误。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JYJ_TASKS</code></td><td>否</td><td>格式：逗号分隔：info,sign,beat,turntable,like,subscribe,survey,share,run,garden,daily-water,photo,photo-query,health-draw,red-rain,herb-game。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>jyjRun</code></td><td>否</td><td>格式：1开启运动奖励领取；其他值关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JYJ_PLANT_TYPE</code></td><td>否</td><td>格式：正整数；留空不自动种植。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JYJ_WATER_LIMIT</code></td><td>否</td><td>格式：0至100整数，默认0，不自动消耗水滴。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JYJ_PHOTO_PATH</code></td><td>是</td><td>格式：已有JPEG照片路径，非空且不超过10MB。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JYJ_HERB_SCORE</code></td><td>否</td><td>格式：非负整数；未设置则不允许执行herb-game。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JYJ_DRY_RUN</code></td><td>否</td><td>格式：1开启；0、false、no、off关闭，默认0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认1；0、false、no、off关闭。预演调用本地适配器但阻断网络。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含notify.py或sendNotify.js的目录路径；通知失败保留业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启断网预演；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
@@ -657,7 +680,9 @@
 - `scripts/hsay.py`：每个非空行一个账号，逐账号独立运行；任何账号失败均非零退出。账号凭据保留完整内容，不按 @ 或 & 拆分。。
 - `scripts/ikuuu_checkin.py`：IKUUU_ACCOUNT 每个非空行表示一个账号，行内格式为邮箱|密码；账号之间只使用换行。。
 - `scripts/index.js`：每个非空行一个账号，首个竖线分隔 UID 与 Cookie；账号独立处理，任何账号失败则整体非零退出。。
+- `scripts/jcqd.py`：每个非空行一个账号，登录邮箱|密码，仅按首个 | 分割；各账号和站点独立会话，任一账号失败整体非零退出。旧变量保留单账号兼容。。
 - `scripts/jissbon.py`：每个非空行一个账号Access-Token，逐账号独立执行；任一账号失败整体非零退出。。
+- `scripts/jyj.py`：每个非空行一个账号，authorization#userid，只分割第一个#；逐账号独立处理，任一失败整体非零退出。。
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
 - `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
@@ -831,11 +856,25 @@
 - 获取或设置：填写有写权限的图片保存目录，或使用当前工作目录旧版 config.json 的 output 字段。预演无需此项。
 - 填写格式：`绝对或相对目录路径；正式执行必须明确指定。`
 
+#### `JCQD_ACCOUNTS`
+
+- 所属脚本：`scripts/jcqd.py`
+- 获取或设置：在所选站点官网注册后使用本人登录邮箱和密码。上游提供的 ikuuu 官网为 https://ikuuu.art，v2free 为 https://w1.v2free.top，gw树洞接口源站为 https://m.mmomm.io，均未在线核实。发布后的 Check 使用本变量；独立运行仍可用旧单账号变量 jcuname 与 jcpasswd 组合。同一行须适用于所选站点，凭据不同的站点请分别建立任务。
+- 填写格式：`每个非空行一个账号：登录邮箱|密码；只在第一个 | 分割，密码后续字符保持原样；不使用 & 或 @ 分隔账号`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `jsbaxfls`
 
 - 所属脚本：`scripts/jissbon.py`
 - 获取或设置：登录微信小程序“杰士邦安心福利社”，仅抓取自己访问vip.ixiliu.cn请求头中的Access-Token完整值；失效后重新登录并获取。
 - 填写格式：`每个非空行填写一个完整Access-Token；保留原变量名，旧#分隔须改为换行；不使用&或@分隔。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `jyjck`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：进入本人微信劲友家小程序及活动页，使用本人授权的抓包工具查看 https://jjw.jingjiu.com/app-jingyoujia/app/jingyoujia/promoteCode/scanUserPromoteCode 请求头 authorization 和请求体 userid，将同账号两项合并，不分享抓包内容。
+- 填写格式：`每个非空行一个账号：authorization#userid；只按第一个#分割，后续字段原样保留，不支持@@、&或@分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `KUAISHOU_COOKIE`
@@ -1779,6 +1818,50 @@
 - 获取或设置：可选：指定青龙 sendNotify.js 所在目录；未配置时检查 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：`本地目录路径；通知失败不改变业务退出码。`
 
+#### `jcuname`
+
+- 所属脚本：`scripts/jcqd.py`
+- 获取或设置：兼容上游单账号登录邮箱；未设置 JCQD_ACCOUNTS 时必须与 jcpasswd 一起提供。
+- 填写格式：`单账号登录邮箱`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `jcpasswd`
+
+- 所属脚本：`scripts/jcqd.py`
+- 获取或设置：本人站点登录密码，与 jcuname 配套。
+- 填写格式：`单账号完整密码`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JCQD_TASKS`
+
+- 所属脚本：`scripts/jcqd.py`
+- 获取或设置：按需配置，仅选择本人授权签到的站点，默认只执行 ikuuu。
+- 填写格式：`ikuuu、v2free、gw，可用逗号组合；默认 ikuuu`
+
+#### `IKUUU_BASE_URL`
+
+- 所属脚本：`scripts/jcqd.py`
+- 获取或设置：导航失效或官方更换域名时，人工核实官方 HTTPS 域名后填写；该地址会接收登录凭据。默认从 ikuuu.club 导航页仅接受 ikuuu.art 或 ikuuu.club。
+- 填写格式：`仅 HTTPS 域名，无路径、查询参数、用户信息或非标准端口`
+
+#### `JCQD_DRY_RUN`
+
+- 所属脚本：`scripts/jcqd.py`
+- 获取或设置：离线检查时设置为 1，业务请求与通知模块均不调用。
+- 填写格式：`1/true/yes/on 开启，默认 0`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/jcqd.py`
+- 获取或设置：青龙全局通知开关，默认开启。
+- 填写格式：`0/false/no/off 关闭，默认 1`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/jcqd.py`
+- 获取或设置：可选填写现有青龙 notify.py 所在目录；也自动尝试导入 notify 和青龙标准目录。
+- 填写格式：`本机通知模块目录路径`
+
 #### `JSB_DRY_RUN`
 
 - 所属脚本：`scripts/jissbon.py`
@@ -1808,6 +1891,68 @@
 - 所属脚本：`scripts/jissbon.py`
 - 获取或设置：可选填写青龙notify.py所在目录；未配置时尝试导入及标准青龙路径。
 - 填写格式：`本地目录路径；只用于可选通知，不是业务运行依赖。`
+
+#### `jyjlatlon`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：从本人小程序请求取得真实位置。默认每日水滴及庄园、运动和活动任务必需；仅查询、签到、拍一拍、转盘、点赞或打卡查询时可不设置。
+- 填写格式：`纬度#经度；分别在[-90,90]和[-180,180]内，所有账号共用本人授权位置。沿用原执行代码顺序，修正原说明文字错误。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JYJ_TASKS`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：按需选择动作；默认sign,daily-water。历史活动仅在确认仍开放后显式开启。
+- 填写格式：`逗号分隔：info,sign,beat,turntable,like,subscribe,survey,share,run,garden,daily-water,photo,photo-query,health-draw,red-rain,herb-game。`
+
+#### `jyjRun`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：仅在本人完成健康运动后设置，兼容原字段，默认关闭。
+- 填写格式：`1开启运动奖励领取；其他值关闭。`
+
+#### `JYJ_PLANT_TYPE`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：从劲友家game/medicineType响应选择想种植的medicineType，程序核对use=true且未种植；仅garden使用。
+- 填写格式：`正整数；留空不自动种植。`
+
+#### `JYJ_WATER_LIMIT`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：自行决定本轮最多消耗水滴的次数；仅garden使用。
+- 填写格式：`0至100整数，默认0，不自动消耗水滴。`
+
+#### `JYJ_PHOTO_PATH`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：提供本人真实活动照片的本地路径；photo任务必需，不下载照片或使用固定私有文件。
+- 填写格式：`已有JPEG照片路径，非空且不超过10MB。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JYJ_HERB_SCORE`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：填写本人本次药材游戏实际成绩；herb-game任务必需，禁止伪造成绩。
+- 填写格式：`非负整数；未设置则不允许执行herb-game。`
+
+#### `JYJ_DRY_RUN`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：维护和导入验证时设置1，全程禁止网络，不验证真实业务。
+- 填写格式：`1开启；0、false、no、off关闭，默认0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：青龙通知配置完成后默认启用，需要关闭时设0。
+- 填写格式：`默认1；0、false、no、off关闭。预演调用本地适配器但阻断网络。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/jyj.py`
+- 获取或设置：可选填写青龙通知模块所在目录，也自动查找脚本同目录和青龙标准目录。
+- 填写格式：`包含notify.py或sendNotify.js的目录路径；通知失败保留业务退出码。`
 
 #### `KUAISHOU_DRY_RUN`
 
@@ -3357,7 +3502,9 @@
 - `scripts/hsay.py`：SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
 - `scripts/ikuuu_checkin.py`：SHA-256 `6b8a4428f238d9a1476562c1f347804ee0bc55a58ea399fd14fa334ac86f9ed7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 - `scripts/index.js`：SHA-256 `4fd17eede5a19456fe2de88761ad30bedf802fba468cfcf67e0929dc16d345fd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
+- `scripts/jcqd.py`：SHA-256 `ddbc8159cadbfeb3332e7ecfed3200f268bc1950c4fd4a6f6597b461ac7ad731`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/757bc6292780fb17`。
 - `scripts/jissbon.py`：SHA-256 `6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dff518c351ef674e`。
+- `scripts/jyj.py`：SHA-256 `28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d484be6cd2a617db`。
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 - `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
@@ -3442,7 +3589,9 @@
 - `scripts/hsay.py`：向沪上阿姨签到接口提交每日签到，领取活动奖励；实际模式下通过青龙通知模块发送脱敏任务总结。
 - `scripts/ikuuu_checkin.py`：登录 ikuuu 并创建会话；提交每日签到，可能增加账号流量；实时运行时可能通过青龙通知渠道发送脱敏汇总。
 - `scripts/index.js`：正式运行在指定目录创建作品目录、写入图片、替换未通过基本校验的目标文件并清理本次临时文件。；正式运行通知启用且青龙模块可用时发送脱敏结果通知。。
+- `scripts/jcqd.py`：向所选站点提交登录并建立会话；向所选站点提交每日签到，可能获得流量或站点签到奖励；正式运行通过青龙通知模块发送脱敏任务摘要。
 - `scripts/jissbon.py`：实际执行时提交每日签到；实际执行时登记分享奖励；显式开启抽奖时消耗抽奖机会，可能消耗积分并获得奖品；启用通知时通过青龙通知模块发送脱敏总结。
+- `scripts/jyj.py`：签到并领取积分或水滴奖励；创建及提交拍一拍和药材游戏记录，领取游戏奖励；转盘、酒柜及红包雨抽奖，可能消耗活动次数或积分；点赞文章及记录订阅、调研、分享和运动任务；种植指定药材及消耗水滴浇水；上传本人照片至官方授权存储，提交AI识别及活动拍照打卡；通知启用且适配器可用时向青龙通知渠道发送脱敏结果。
 - `scripts/kuaishou_reward_status.py`：。
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
 - `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
@@ -3529,7 +3678,9 @@
 - `scripts/hsay.py`：上游 `Rookie-wb-WH/ql_scripts` / `hsay.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/ikuuu_checkin.py`：上游 `agluo/ql-script-hub` / `ikuuu_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/index.js`：上游 `cloudcranes/some_scripts` / `Download_pixiv/index.js` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
+- `scripts/jcqd.py`：上游 `Rookie-wb-WH/ql_scripts` / `jcqd.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/jissbon.py`：上游 `Rookie-wb-WH/ql_scripts` / `jissbon.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
+- `scripts/jyj.py`：上游 `Rookie-wb-WH/ql_scripts` / `jingyoujia/jyj.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。

@@ -1928,6 +1928,159 @@
       }
     },
     {
+      "catalogId": "757bc6292780fb17",
+      "applicationKey": "jcqd",
+      "checkProfile": {
+        "requiredEnv": [
+          "JCQD_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "jcuname",
+          "jcpasswd",
+          "JCQD_TASKS",
+          "IKUUU_BASE_URL",
+          "JCQD_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "JCQD_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "JCQD_TASKS": "ikuuu",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到业务成功",
+          "☑️ 今日已签到",
+          "\"status\": \"success\""
+        ],
+        "features": [
+          "默认 ikuuu 官方导航域名发现、登录及每日签到",
+          "通过明确任务开关保留上游可选 v2free 和 gw树洞登录签到，各站独立会话",
+          "多账号逐行配置、旧单账号参数兼容、账号及站点失败隔离",
+          "HTTPS 证书校验、超时、响应大小限制、拒绝重定向和登录失败闭合",
+          "官方非凭据昵称、用户名、显示名称或公开 UID 核对",
+          "断网预演、逐阶段日志、账号统计、单行 TASK_SUMMARY 汇总及青龙通知"
+        ],
+        "sideEffects": [
+          "向所选站点提交登录并建立会话",
+          "向所选站点提交每日签到，可能获得流量或站点签到奖励",
+          "正式运行通过青龙通知模块发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "jcqd 多站签到",
+      "path": "scripts/jcqd.py",
+      "sha256": "ddbc8159cadbfeb3332e7ecfed3200f268bc1950c4fd4a6f6597b461ac7ad731",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "jcqd.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/jcqd.py",
+      "environment": [
+        {
+          "name": "JCQD_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在所选站点官网注册后使用本人登录邮箱和密码。上游提供的 ikuuu 官网为 https://ikuuu.art，v2free 为 https://w1.v2free.top，gw树洞接口源站为 https://m.mmomm.io，均未在线核实。发布后的 Check 使用本变量；独立运行仍可用旧单账号变量 jcuname 与 jcpasswd 组合。同一行须适用于所选站点，凭据不同的站点请分别建立任务。",
+          "format": "每个非空行一个账号：登录邮箱|密码；只在第一个 | 分割，密码后续字符保持原样；不使用 & 或 @ 分隔账号"
+        },
+        {
+          "name": "jcuname",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号登录邮箱；未设置 JCQD_ACCOUNTS 时必须与 jcpasswd 一起提供。",
+          "format": "单账号登录邮箱"
+        },
+        {
+          "name": "jcpasswd",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人站点登录密码，与 jcuname 配套。",
+          "format": "单账号完整密码"
+        },
+        {
+          "name": "JCQD_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需配置，仅选择本人授权签到的站点，默认只执行 ikuuu。",
+          "format": "ikuuu、v2free、gw，可用逗号组合；默认 ikuuu"
+        },
+        {
+          "name": "IKUUU_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "导航失效或官方更换域名时，人工核实官方 HTTPS 域名后填写；该地址会接收登录凭据。默认从 ikuuu.club 导航页仅接受 ikuuu.art 或 ikuuu.club。",
+          "format": "仅 HTTPS 域名，无路径、查询参数、用户信息或非标准端口"
+        },
+        {
+          "name": "JCQD_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置为 1，业务请求与通知模块均不调用。",
+          "format": "1/true/yes/on 开启，默认 0"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启。",
+          "format": "0/false/no/off 关闭，默认 1"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写现有青龙 notify.py 所在目录；也自动尝试导入 notify 和青龙标准目录。",
+          "format": "本机通知模块目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，登录邮箱|密码，仅按首个 | 分割；各账号和站点独立会话，任一账号失败整体非零退出。旧变量保留单账号兼容。"
+      },
+      "dependencies": [
+        "requests"
+      ],
+      "features": [
+        "默认 ikuuu 官方导航域名发现、登录及每日签到",
+        "通过明确任务开关保留上游可选 v2free 和 gw树洞登录签到，各站独立会话",
+        "多账号逐行配置、旧单账号参数兼容、账号及站点失败隔离",
+        "HTTPS 证书校验、超时、响应大小限制、拒绝重定向和登录失败闭合",
+        "官方非凭据昵称、用户名、显示名称或公开 UID 核对",
+        "断网预演、逐阶段日志、账号统计、单行 TASK_SUMMARY 汇总及青龙通知"
+      ],
+      "sideEffects": [
+        "向所选站点提交登录并建立会话",
+        "向所选站点提交每日签到，可能获得流量或站点签到奖励",
+        "正式运行通过青龙通知模块发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/757bc6292780fb17",
+        "candidateSha256": "ddbc8159cadbfeb3332e7ecfed3200f268bc1950c4fd4a6f6597b461ac7ad731"
+      }
+    },
+    {
       "catalogId": "dff518c351ef674e",
       "applicationKey": "jissbon",
       "checkProfile": {
@@ -2064,6 +2217,199 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/dff518c351ef674e",
         "candidateSha256": "6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf"
+      }
+    },
+    {
+      "catalogId": "d484be6cd2a617db",
+      "applicationKey": "jyj",
+      "checkProfile": {
+        "requiredEnv": [
+          "jyjck"
+        ],
+        "optionalEnv": [
+          "jyjlatlon",
+          "JYJ_TASKS",
+          "jyjRun",
+          "JYJ_PLANT_TYPE",
+          "JYJ_WATER_LIMIT",
+          "JYJ_PHOTO_PATH",
+          "JYJ_HERB_SCORE",
+          "JYJ_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "JYJ_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "JYJ_TASKS": "sign,daily-water",
+          "JYJ_WATER_LIMIT": "0",
+          "jyjRun": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "TASK_SUMMARY=.*\"status\":\"success\""
+        ],
+        "features": [
+          "查询官方昵称及可用积分、历史使用和历史总积分",
+          "每日签到和每日水滴领取",
+          "显式开启三轮拍一拍实际计时游戏和三次幸运转盘",
+          "显式开启文章点赞、订阅、调研、分享任务奖励；分享接口不发布文本",
+          "兼容jyjRun健康运动领取开关，默认关闭",
+          "查询庄园种植状态及可种植药材，显式指定种植和浇水上限",
+          "独立活动开关支持本人照片上传、AI识别、春日活动拍照打卡及打卡查询",
+          "独立活动开关支持酒柜抽奖和红包雨",
+          "显式提供本人真实成绩后执行一轮药材游戏",
+          "换行多账号、断网预演、脱敏日志、业务失败退出与青龙通知"
+        ],
+        "sideEffects": [
+          "签到并领取积分或水滴奖励",
+          "创建及提交拍一拍和药材游戏记录，领取游戏奖励",
+          "转盘、酒柜及红包雨抽奖，可能消耗活动次数或积分",
+          "点赞文章及记录订阅、调研、分享和运动任务",
+          "种植指定药材及消耗水滴浇水",
+          "上传本人照片至官方授权存储，提交AI识别及活动拍照打卡",
+          "通知启用且适配器可用时向青龙通知渠道发送脱敏结果"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "劲友家日常任务",
+      "path": "scripts/jyj.py",
+      "sha256": "28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "jingyoujia/jyj.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/jyj.py",
+      "environment": [
+        {
+          "name": "jyjck",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "进入本人微信劲友家小程序及活动页，使用本人授权的抓包工具查看 https://jjw.jingjiu.com/app-jingyoujia/app/jingyoujia/promoteCode/scanUserPromoteCode 请求头 authorization 和请求体 userid，将同账号两项合并，不分享抓包内容。",
+          "format": "每个非空行一个账号：authorization#userid；只按第一个#分割，后续字段原样保留，不支持@@、&或@分隔账号。"
+        },
+        {
+          "name": "jyjlatlon",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人小程序请求取得真实位置。默认每日水滴及庄园、运动和活动任务必需；仅查询、签到、拍一拍、转盘、点赞或打卡查询时可不设置。",
+          "format": "纬度#经度；分别在[-90,90]和[-180,180]内，所有账号共用本人授权位置。沿用原执行代码顺序，修正原说明文字错误。"
+        },
+        {
+          "name": "JYJ_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需选择动作；默认sign,daily-water。历史活动仅在确认仍开放后显式开启。",
+          "format": "逗号分隔：info,sign,beat,turntable,like,subscribe,survey,share,run,garden,daily-water,photo,photo-query,health-draw,red-rain,herb-game。"
+        },
+        {
+          "name": "jyjRun",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在本人完成健康运动后设置，兼容原字段，默认关闭。",
+          "format": "1开启运动奖励领取；其他值关闭。"
+        },
+        {
+          "name": "JYJ_PLANT_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从劲友家game/medicineType响应选择想种植的medicineType，程序核对use=true且未种植；仅garden使用。",
+          "format": "正整数；留空不自动种植。"
+        },
+        {
+          "name": "JYJ_WATER_LIMIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行决定本轮最多消耗水滴的次数；仅garden使用。",
+          "format": "0至100整数，默认0，不自动消耗水滴。"
+        },
+        {
+          "name": "JYJ_PHOTO_PATH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "提供本人真实活动照片的本地路径；photo任务必需，不下载照片或使用固定私有文件。",
+          "format": "已有JPEG照片路径，非空且不超过10MB。"
+        },
+        {
+          "name": "JYJ_HERB_SCORE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写本人本次药材游戏实际成绩；herb-game任务必需，禁止伪造成绩。",
+          "format": "非负整数；未设置则不允许执行herb-game。"
+        },
+        {
+          "name": "JYJ_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "维护和导入验证时设置1，全程禁止网络，不验证真实业务。",
+          "format": "1开启；0、false、no、off关闭，默认0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知配置完成后默认启用，需要关闭时设0。",
+          "format": "默认1；0、false、no、off关闭。预演调用本地适配器但阻断网络。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙通知模块所在目录，也自动查找脚本同目录和青龙标准目录。",
+          "format": "包含notify.py或sendNotify.js的目录路径；通知失败保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，authorization#userid，只分割第一个#；逐账号独立处理，任一失败整体非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome"
+      ],
+      "features": [
+        "查询官方昵称及可用积分、历史使用和历史总积分",
+        "每日签到和每日水滴领取",
+        "显式开启三轮拍一拍实际计时游戏和三次幸运转盘",
+        "显式开启文章点赞、订阅、调研、分享任务奖励；分享接口不发布文本",
+        "兼容jyjRun健康运动领取开关，默认关闭",
+        "查询庄园种植状态及可种植药材，显式指定种植和浇水上限",
+        "独立活动开关支持本人照片上传、AI识别、春日活动拍照打卡及打卡查询",
+        "独立活动开关支持酒柜抽奖和红包雨",
+        "显式提供本人真实成绩后执行一轮药材游戏",
+        "换行多账号、断网预演、脱敏日志、业务失败退出与青龙通知"
+      ],
+      "sideEffects": [
+        "签到并领取积分或水滴奖励",
+        "创建及提交拍一拍和药材游戏记录，领取游戏奖励",
+        "转盘、酒柜及红包雨抽奖，可能消耗活动次数或积分",
+        "点赞文章及记录订阅、调研、分享和运动任务",
+        "种植指定药材及消耗水滴浇水",
+        "上传本人照片至官方授权存储，提交AI识别及活动拍照打卡",
+        "通知启用且适配器可用时向青龙通知渠道发送脱敏结果"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d484be6cd2a617db",
+        "candidateSha256": "28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042"
       }
     },
     {
