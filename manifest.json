@@ -10996,9 +10996,13 @@
           "XINXI_TOKEN"
         ],
         "optionalEnv": [
+          "xx_sso",
           "XINXI_DRY_RUN",
           "XINXI_FREE_DRAW",
           "XINXI_REWARD_TASKS",
+          "XINXI_DAILY_TASKS",
+          "XINXI_MEMBER_BENEFITS",
+          "xx_del_topic",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
@@ -11007,7 +11011,10 @@
         },
         "liveEnv": {
           "XINXI_FREE_DRAW": "0",
-          "XINXI_REWARD_TASKS": "0"
+          "XINXI_REWARD_TASKS": "0",
+          "XINXI_DAILY_TASKS": "0",
+          "XINXI_MEMBER_BENEFITS": "0",
+          "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
           "\"status\":\"success\""
@@ -11018,12 +11025,17 @@
           "显式启用后查询免费次数并最多执行一次免费抽奖，禁止积分抽奖",
           "显式启用分享任务及商城浏览奖励，各最多两次，浏览提交前等待三十秒",
           "逐行多账号独立处理、请求超时、业务状态和响应字段校验",
-          "完全断网预演、青龙脱敏通知、分阶段日志及单行结构化汇总"
+          "完全断网预演、青龙脱敏通知、分阶段日志及单行结构化汇总",
+          "显示官方返回的历史喜点，不显示手机号",
+          "显式启用后查询每日任务列表",
+          "显式启用后查看会员权益奖励并识别已完成",
+          "兼容旧 xx_sso 凭据变量，统一换行多账号，拒绝旧批量删帖设置"
         ],
         "sideEffects": [
           "每日签到并可能获得喜点",
           "启用免费抽奖后消耗一次免费机会并可能获得奖励",
-          "启用奖励任务后提交分享任务记录与商城浏览完成记录并可能获得喜点"
+          "启用奖励任务后提交分享任务记录与商城浏览完成记录并可能获得喜点",
+          "启用会员权益任务后提交查看记录并可能获得喜点"
         ]
       },
       "postReview": {
@@ -11032,7 +11044,7 @@
       },
       "displayName": "心喜签到",
       "path": "scripts/sudojia_xinxi.js",
-      "sha256": "d1124649c529854997bf2db59808f7e756510e5ed4e0d69a3d727f9b6c8d47f8",
+      "sha256": "fcdb27ec00935e010ddc68dcaae974b36d3d5effd2de4cf408cd1971f28d6a3d",
       "stage": "released",
       "license": "GPL-3.0",
       "licenseGate": "allowed-copyleft",
@@ -11040,7 +11052,19 @@
         "repository": "sudojia/AutoTaskScript",
         "branch": "script",
         "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
-        "originalPath": "src/wx_mini/sudojia_xinxi.js"
+        "originalPath": "src/wx_mini/sudojia_xinxi.js",
+        "related": [
+          {
+            "repository": "Rookie-wb-WH/ql_scripts",
+            "url": "https://github.com/Rookie-wb-WH/ql_scripts.git",
+            "branch": "main",
+            "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+            "originalPath": "xinxi.py",
+            "catalogId": "91d77c34a213594a",
+            "sha256": "96a71a8c2828540cdcb1c854f1d274423f3cdd07e547bd468fee8e7b7a2410cd",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "43 12 * * *",
       "command": "node scripts/sudojia_xinxi.js",
@@ -11049,49 +11073,77 @@
           "name": "XINXI_TOKEN",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录心喜微信小程序，使用自己的抓包工具查看发往 https://api.xinc818.com 的请求，复制请求头 sso 的完整值；失效后重新登录获取。",
-          "format": "每个非空行填写一个完整 sso 值；不添加变量名或引号，不使用 & 或 @ 分隔账号。"
+          "howToGet": "在心喜微信小程序登录后，使用自己的抓包工具查看 api.xinc818.com 请求头 sso；仅使用自己的账号。未设置本变量时可使用旧变量 xx_sso。",
+          "format": "每个非空行填写一个完整 sso，不使用 #、& 或 @ 分隔账号；值不可含空白或控制字符。"
+        },
+        {
+          "name": "xx_sso",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧脚本凭据变量，获取方式与 XINXI_TOKEN 相同；仅当 XINXI_TOKEN 未设置时生效。",
+          "format": "每个非空行一个完整 sso；旧 # 分隔需迁移为换行。"
         },
         {
           "name": "XINXI_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "设置为 1 进行完全断网预演；默认 0。",
-          "format": "0 或 1"
+          "howToGet": "设为 1 启用完全断网预演，通知仅生成预览。",
+          "format": "0 或 1，默认 0。"
         },
         {
           "name": "XINXI_FREE_DRAW",
           "required": false,
           "sensitive": false,
-          "howToGet": "愿意参加活动 71 的免费抽奖时设置为 1；默认关闭，每次最多抽一次，免费次数为零时不抽奖。",
-          "format": "0 或 1"
+          "howToGet": "设为 1 启用最多一次免费抽奖，不执行积分抽奖。",
+          "format": "0 或 1，默认 0。"
         },
         {
           "name": "XINXI_REWARD_TASKS",
           "required": false,
           "sensitive": false,
-          "howToGet": "同意提交分享任务记录和商城浏览奖励时设置为 1；默认关闭；分享接口仅记账，不发布文本。",
-          "format": "0 或 1"
+          "howToGet": "设为 1 启用分享任务记账和商城浏览奖励，各最多两次，浏览提交前等待三十秒。",
+          "format": "0 或 1，默认 0。"
+        },
+        {
+          "name": "XINXI_DAILY_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 查询每日任务，不自动执行返回的任务。",
+          "format": "0 或 1，默认 0。"
+        },
+        {
+          "name": "XINXI_MEMBER_BENEFITS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 查看会员权益并领取任务奖励。",
+          "format": "0 或 1，默认 0。"
+        },
+        {
+          "name": "xx_del_topic",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧批量删除开关；本维护版禁止批量删帖，设为 1 时以配置错误退出。",
+          "format": "移除该变量或设为 0。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙已有通知配置；默认开启。预演只显示通知摘要，确保不联网。",
-          "format": "0、false、no、off 关闭；其他值开启"
+          "howToGet": "青龙全局通知开关，默认开启。",
+          "format": "0、false、no、off 关闭，其他值开启。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选：填写本机青龙 sendNotify.js 所在目录；否则自动查找 /ql/data/scripts 和 /ql/scripts。",
-          "format": "本机目录路径，仅用于通知，业务逻辑无需此模块"
+          "howToGet": "可选，填写青龙已有 sendNotify.js 所在目录；不配置时使用青龙标准目录。",
+          "format": "本地通知模块目录路径。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "XINXI_TOKEN 每个非空行一个账号，逐账号独立执行，任一账号失败则进程非零退出。"
+        "rule": "每个非空行一个账号，按行独立处理；任一账号失败时整体非零退出。XINXI_TOKEN 优先于 xx_sso，不合并两个变量。"
       },
       "dependencies": [],
       "features": [
@@ -11100,12 +11152,17 @@
         "显式启用后查询免费次数并最多执行一次免费抽奖，禁止积分抽奖",
         "显式启用分享任务及商城浏览奖励，各最多两次，浏览提交前等待三十秒",
         "逐行多账号独立处理、请求超时、业务状态和响应字段校验",
-        "完全断网预演、青龙脱敏通知、分阶段日志及单行结构化汇总"
+        "完全断网预演、青龙脱敏通知、分阶段日志及单行结构化汇总",
+        "显示官方返回的历史喜点，不显示手机号",
+        "显式启用后查询每日任务列表",
+        "显式启用后查看会员权益奖励并识别已完成",
+        "兼容旧 xx_sso 凭据变量，统一换行多账号，拒绝旧批量删帖设置"
       ],
       "sideEffects": [
         "每日签到并可能获得喜点",
         "启用免费抽奖后消耗一次免费机会并可能获得奖励",
-        "启用奖励任务后提交分享任务记录与商城浏览完成记录并可能获得喜点"
+        "启用奖励任务后提交分享任务记录与商城浏览完成记录并可能获得喜点",
+        "启用会员权益任务后提交查看记录并可能获得喜点"
       ],
       "review": {
         "staticPassed": true,
@@ -11118,12 +11175,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/83f21cfa63eab18f",
-        "candidateSha256": "12609747ae82405ffd30591bcbd9648ea392688966ad7068a16bdff180226f17"
+        "candidateSha256": "8eece5d6182cea2cbd2ddb589d34eeddbc61200d9d7c912702bb45833f4b5ecc"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "12609747ae82405ffd30591bcbd9648ea392688966ad7068a16bdff180226f17",
-        "releaseSha256": "d1124649c529854997bf2db59808f7e756510e5ed4e0d69a3d727f9b6c8d47f8",
+        "validatedSha256": "8eece5d6182cea2cbd2ddb589d34eeddbc61200d9d7c912702bb45833f4b5ecc",
+        "releaseSha256": "fcdb27ec00935e010ddc68dcaae974b36d3d5effd2de4cf408cd1971f28d6a3d",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },

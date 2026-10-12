@@ -208,7 +208,7 @@
 - `scripts/sudojia_xhn.js`：使用抓包表单登录并检查授权令牌；每日签到并核验业务成功码；查询当前可用积分并验证响应字段；逐行多账号独立执行，任一失败整体非零退出；完全断网预演及参数检查；带时间戳的分阶段日志、账号统计和单行结构化总结；通过青龙发送脱敏汇总；预演只输出通知摘要，不联网；显示官方返回的非敏感昵称、显示名或公开账号身份。
 - `scripts/sudojia_xiangwan.js`：每日登录并签到，显示本次签到玩豆奖励；查询当前玩豆余额，显示官方返回的昵称；可选受限权限 Token 缓存、有效性验证与密码登录回退；每行一个账号，逐账号隔离处理及失败退出；完全断网参数与流程预演；青龙脱敏通知、分阶段日志及单行结构化任务汇总。
 - `scripts/sudojia_xiaomi_community.js`：查询并展示官方返回的公开用户名和用户编号，抑制敏感字段；每天执行微信小程序签到，展示接口确认的增加积分；查询成长值明细并按上游规则汇总展示当前成长值；支持每行一个账号、账号独立处理、失败非零退出；支持无网络预演、分阶段日志、账号统计和单行结构化汇总；通过青龙通知模块发送脱敏结果，通知失败保留业务退出码；失败时输出有限数字业务码、固定错误分类和响应类型，帮助脱敏诊断且不放宽成功条件。
-- `scripts/sudojia_xinxi.js`：查询官方昵称并原样显示非凭据身份，查询执行前后喜点；每日签到并显示奖励与连续签到天数，识别今日已签到；显式启用后查询免费次数并最多执行一次免费抽奖，禁止积分抽奖；显式启用分享任务及商城浏览奖励，各最多两次，浏览提交前等待三十秒；逐行多账号独立处理、请求超时、业务状态和响应字段校验；完全断网预演、青龙脱敏通知、分阶段日志及单行结构化汇总。
+- `scripts/sudojia_xinxi.js`：查询官方昵称并原样显示非凭据身份，查询执行前后喜点；每日签到并显示奖励与连续签到天数，识别今日已签到；显式启用后查询免费次数并最多执行一次免费抽奖，禁止积分抽奖；显式启用分享任务及商城浏览奖励，各最多两次，浏览提交前等待三十秒；逐行多账号独立处理、请求超时、业务状态和响应字段校验；完全断网预演、青龙脱敏通知、分阶段日志及单行结构化汇总；显示官方返回的历史喜点，不显示手机号；显式启用后查询每日任务列表；显式启用后查看会员权益奖励并识别已完成；兼容旧 xx_sso 凭据变量，统一换行多账号，拒绝旧批量删帖设置。
 - `scripts/sudojia_xpfarm.js`：获取官方账号昵称并展示以核对账号；每日签到，已签到时跳过；按显式配置的任务编号完成任务并领取奖励；查询当前积分；按显式配置的次数上限施肥和浇水；查询种树类型、成长进度、水滴和肥力；换行多账号独立处理与失败退出码；完全断网预演、分阶段日志、结构化统计和青龙脱敏通知。
 - `scripts/sudojia_znds.js`：验证登录状态并显示官方公开 UID；每日签到并区分签到成功和今日已完成；显式配置后访问指定用户空间；查询积分、威望、金币及Z币，要求四项均可解析；逐行多账号独立运行并汇总失败退出码；完全断网预演与通知模拟；青龙脱敏通知、分阶段耗时与单行结构化汇总。
 - `scripts/sudojia_zxice.js`：校验账号登录状态并展示官方返回的非敏感昵称；查询今日签到状态，已签到时避免重复操作；每日签到并展示接口确认的奶滴奖励；查询当前奶滴值；支持每行一个账号，独立处理并汇总失败退出码；完全断网预演、分阶段时间轴日志、账号统计和单行 TASK_SUMMARY 汇总；通过青龙 sendNotify.js 发送脱敏结果通知，支持全局开关；完全断网预演生成本地通知摘要。
@@ -311,7 +311,7 @@
 <tr><td rowspan="1"><code>scripts/sudojia_xhn.js</code></td><td><code>XHN_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号的 URL 编码表单，包含 password、logintype、RegistrationID、appid、type、username；保留全部原始字段与编码，&amp; 仅分隔表单字段，不分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_xiangwan.js</code></td><td><code>XWGAME_ACCOUNTS</code></td><td>是</td><td>格式：手机号#密码，每个非空行一个账号；仅在第一个 # 处分割，后续密码字符完整保留。不再使用 &amp; 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_xiaomi_community.js</code></td><td><code>XIAOMI_COMM_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；字段以分号分隔，字段值按第一个等号之后的全部内容保留；不按 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/sudojia_xinxi.js</code></td><td><code>XINXI_TOKEN</code></td><td>是</td><td>格式：每个非空行填写一个完整 sso 值；不添加变量名或引号，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/sudojia_xinxi.js</code></td><td><code>XINXI_TOKEN</code></td><td>是</td><td>格式：每个非空行填写一个完整 sso，不使用 #、&amp; 或 @ 分隔账号；值不可含空白或控制字符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_xpfarm.js</code></td><td><code>XPFARM_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的完整 authorization 值；仅按换行分隔，不使用 &amp; 或 @ 分隔账号，不添加变量赋值语句。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_znds.js</code></td><td><code>ZNDS_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 Cookie，保留分号、等号与 &amp;；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_zxice.js</code></td><td><code>ZX_ICE_TOKEN</code></td><td>是</td><td>格式：每个非空行填写一个账号的 access-token 原值；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -693,11 +693,15 @@
 <tr><td rowspan="3"><code>scripts/sudojia_xiaomi_community.js</code></td><td><code>XIAOMI_COMM_DRY_RUN</code></td><td>否</td><td>格式：1 为预演，其他值为正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，忽略大小写；默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：通知模块目录路径。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="5"><code>scripts/sudojia_xinxi.js</code></td><td><code>XINXI_DRY_RUN</code></td><td>否</td><td>格式：0 或 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>XINXI_FREE_DRAW</code></td><td>否</td><td>格式：0 或 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>XINXI_REWARD_TASKS</code></td><td>否</td><td>格式：0 或 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；其他值开启；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径，仅用于通知，业务逻辑无需此模块；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="9"><code>scripts/sudojia_xinxi.js</code></td><td><code>xx_sso</code></td><td>是</td><td>格式：每个非空行一个完整 sso；旧 # 分隔需迁移为换行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>XINXI_DRY_RUN</code></td><td>否</td><td>格式：0 或 1，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>XINXI_FREE_DRAW</code></td><td>否</td><td>格式：0 或 1，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>XINXI_REWARD_TASKS</code></td><td>否</td><td>格式：0 或 1，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>XINXI_DAILY_TASKS</code></td><td>否</td><td>格式：0 或 1，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>XINXI_MEMBER_BENEFITS</code></td><td>否</td><td>格式：0 或 1，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>xx_del_topic</code></td><td>否</td><td>格式：移除该变量或设为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="6"><code>scripts/sudojia_xpfarm.js</code></td><td><code>XPFARM_TASK_IDS</code></td><td>否</td><td>格式：1–16 的整数，英文逗号分隔；默认空，不自动执行或领取未知任务。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>XPFARM_FERTILIZER_LIMIT</code></td><td>否</td><td>格式：0–100 整数，默认 0；启用后可能立即消耗肥料。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>XPFARM_WATER_LIMIT</code></td><td>否</td><td>格式：0–100 整数，默认 0；启用后可能立即消耗水滴和肥力。；多账号格式以该脚本文档为准</td></tr>
@@ -822,7 +826,7 @@
 - `scripts/sudojia_xhn.js`：每个非空行一个完整登录表单，忽略空行；账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/sudojia_xiangwan.js`：每个非空行一个手机号#密码；首个 # 后均为密码，不以 & 或 @ 分隔账号。逐账号独立处理，任一账号失败整体非零退出。。
 - `scripts/sudojia_xiaomi_community.js`：每个非空行一个账号，完整 Cookie 配套字段属于同一账号；独立执行，任一账号失败时整体非零退出。。
-- `scripts/sudojia_xinxi.js`：XINXI_TOKEN 每个非空行一个账号，逐账号独立执行，任一账号失败则进程非零退出。。
+- `scripts/sudojia_xinxi.js`：每个非空行一个账号，按行独立处理；任一账号失败时整体非零退出。XINXI_TOKEN 优先于 xx_sso，不合并两个变量。。
 - `scripts/sudojia_xpfarm.js`：每个非空行一个账号，顺序独立执行；任一账号失败时整体非零退出。。
 - `scripts/sudojia_znds.js`：每个非空行一个账号，配套认证字段包含在同一完整 Cookie 中，不按 & 或 @ 拆分；账号独立执行，任一失败则整体非零退出。。
 - `scripts/sudojia_zxice.js`：每行一个非空账号凭据，按顺序独立运行；任何账号失败均以非零状态退出。。
@@ -1425,8 +1429,8 @@
 #### `XINXI_TOKEN`
 
 - 所属脚本：`scripts/sudojia_xinxi.js`
-- 获取或设置：登录心喜微信小程序，使用自己的抓包工具查看发往 https://api.xinc818.com 的请求，复制请求头 sso 的完整值；失效后重新登录获取。
-- 填写格式：`每个非空行填写一个完整 sso 值；不添加变量名或引号，不使用 & 或 @ 分隔账号。`
+- 获取或设置：在心喜微信小程序登录后，使用自己的抓包工具查看 api.xinc818.com 请求头 sso；仅使用自己的账号。未设置本变量时可使用旧变量 xx_sso。
+- 填写格式：`每个非空行填写一个完整 sso，不使用 #、& 或 @ 分隔账号；值不可含空白或控制字符。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `XPFARM_TOKEN`
@@ -3676,35 +3680,60 @@
 - 获取或设置：可选，填写青龙已有 sendNotify.js 所在目录；未设置时查找 /ql/data/scripts 和 /ql/scripts，缺少模块不影响业务退出码。
 - 填写格式：`通知模块目录路径。`
 
+#### `xx_sso`
+
+- 所属脚本：`scripts/sudojia_xinxi.js`
+- 获取或设置：旧脚本凭据变量，获取方式与 XINXI_TOKEN 相同；仅当 XINXI_TOKEN 未设置时生效。
+- 填写格式：`每个非空行一个完整 sso；旧 # 分隔需迁移为换行。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `XINXI_DRY_RUN`
 
 - 所属脚本：`scripts/sudojia_xinxi.js`
-- 获取或设置：设置为 1 进行完全断网预演；默认 0。
-- 填写格式：`0 或 1`
+- 获取或设置：设为 1 启用完全断网预演，通知仅生成预览。
+- 填写格式：`0 或 1，默认 0。`
 
 #### `XINXI_FREE_DRAW`
 
 - 所属脚本：`scripts/sudojia_xinxi.js`
-- 获取或设置：愿意参加活动 71 的免费抽奖时设置为 1；默认关闭，每次最多抽一次，免费次数为零时不抽奖。
-- 填写格式：`0 或 1`
+- 获取或设置：设为 1 启用最多一次免费抽奖，不执行积分抽奖。
+- 填写格式：`0 或 1，默认 0。`
 
 #### `XINXI_REWARD_TASKS`
 
 - 所属脚本：`scripts/sudojia_xinxi.js`
-- 获取或设置：同意提交分享任务记录和商城浏览奖励时设置为 1；默认关闭；分享接口仅记账，不发布文本。
-- 填写格式：`0 或 1`
+- 获取或设置：设为 1 启用分享任务记账和商城浏览奖励，各最多两次，浏览提交前等待三十秒。
+- 填写格式：`0 或 1，默认 0。`
+
+#### `XINXI_DAILY_TASKS`
+
+- 所属脚本：`scripts/sudojia_xinxi.js`
+- 获取或设置：设为 1 查询每日任务，不自动执行返回的任务。
+- 填写格式：`0 或 1，默认 0。`
+
+#### `XINXI_MEMBER_BENEFITS`
+
+- 所属脚本：`scripts/sudojia_xinxi.js`
+- 获取或设置：设为 1 查看会员权益并领取任务奖励。
+- 填写格式：`0 或 1，默认 0。`
+
+#### `xx_del_topic`
+
+- 所属脚本：`scripts/sudojia_xinxi.js`
+- 获取或设置：旧批量删除开关；本维护版禁止批量删帖，设为 1 时以配置错误退出。
+- 填写格式：`移除该变量或设为 0。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/sudojia_xinxi.js`
-- 获取或设置：使用青龙已有通知配置；默认开启。预演只显示通知摘要，确保不联网。
-- 填写格式：`0、false、no、off 关闭；其他值开启`
+- 获取或设置：青龙全局通知开关，默认开启。
+- 填写格式：`0、false、no、off 关闭，其他值开启。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/sudojia_xinxi.js`
-- 获取或设置：可选：填写本机青龙 sendNotify.js 所在目录；否则自动查找 /ql/data/scripts 和 /ql/scripts。
-- 填写格式：`本机目录路径，仅用于通知，业务逻辑无需此模块`
+- 获取或设置：可选，填写青龙已有 sendNotify.js 所在目录；不配置时使用青龙标准目录。
+- 填写格式：`本地通知模块目录路径。`
 
 #### `XPFARM_TASK_IDS`
 
@@ -4025,7 +4054,7 @@
 - `scripts/sudojia_xhn.js`：SHA-256 `b0131f2d77c0d1f5ae6271d2a7604798ee3313db307e23390343d2d5e316abbd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b86681a8e89e05c0`。
 - `scripts/sudojia_xiangwan.js`：SHA-256 `692566ebd5403b42b7671029cf12e1d993ebc6199d8ae704fd3bc489b9069ed7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d59346ef3ccb8591`。
 - `scripts/sudojia_xiaomi_community.js`：SHA-256 `2426f49711019ec8e7fe8dc664362df99aa478c1828bd5d5f48c331dbb2a88dd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b06f8c5b53252cf`。
-- `scripts/sudojia_xinxi.js`：SHA-256 `d1124649c529854997bf2db59808f7e756510e5ed4e0d69a3d727f9b6c8d47f8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/83f21cfa63eab18f`。
+- `scripts/sudojia_xinxi.js`：SHA-256 `fcdb27ec00935e010ddc68dcaae974b36d3d5effd2de4cf408cd1971f28d6a3d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/83f21cfa63eab18f`。
 - `scripts/sudojia_xpfarm.js`：SHA-256 `ffa9878cc55005e28061ca97009b8ffa7c48ce01144b325d0354d499c28a897d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9705540ac69a7c3e`。
 - `scripts/sudojia_znds.js`：SHA-256 `e642ddf42719ca2ac4e37a94856f3c35e08307bc0b47d993bd5a1a83eb13eba1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e69a67d8a3d7b7a9`。
 - `scripts/sudojia_zxice.js`：SHA-256 `eb50f784e85263452ae010edf81d6b0e1d6c864532f2c6f1a170aa168ddc8c5d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4b0810d476bc5e`。
@@ -4120,7 +4149,7 @@
 - `scripts/sudojia_xhn.js`：登录产生授权会话；每日签到可能增加账号积分。
 - `scripts/sudojia_xiangwan.js`：正式运行使用账号密码登录，可能创建服务端会话；正式运行每日签到并领取玩豆；显式启用缓存后写入受限权限的本地 Token 文件；通知开启且模块可用时发送脱敏任务结果。
 - `scripts/sudojia_xiaomi_community.js`：每日调用微信签到接口增加成长值；启用通知且正式执行时，通过青龙已配置通知渠道发送脱敏结果。
-- `scripts/sudojia_xinxi.js`：每日签到并可能获得喜点；启用免费抽奖后消耗一次免费机会并可能获得奖励；启用奖励任务后提交分享任务记录与商城浏览完成记录并可能获得喜点。
+- `scripts/sudojia_xinxi.js`：每日签到并可能获得喜点；启用免费抽奖后消耗一次免费机会并可能获得奖励；启用奖励任务后提交分享任务记录与商城浏览完成记录并可能获得喜点；启用会员权益任务后提交查看记录并可能获得喜点。
 - `scripts/sudojia_xpfarm.js`：每日签到及其奖励入账；显式启用后变更所选任务完成状态并领取奖励；显式启用后消耗肥料以增加肥力；显式启用后消耗水滴及肥力并推进种树成长；正式运行时通过青龙已配置渠道发送脱敏总结。
 - `scripts/sudojia_znds.js`：正式运行执行每日签到，可能获得积分或奖励；仅配置 ZNDS_VISIT_UID 时访问指定他人空间，可能产生足迹或访问奖励；正式运行且通知启用时发送脱敏任务通知。
 - `scripts/sudojia_zxice.js`：未签到时提交每日签到并领取奶滴奖励；正式模式按通知配置发送任务结果通知。

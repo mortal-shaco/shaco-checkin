@@ -7,7 +7,13 @@
  * 基于 sudojia/AutoTaskScript src/wx_mini/sudojia_xinxi.js
  * 作者 Telegram@sudojia · https://blog.imzjw.cn · 2024/07/21
  * 上游提交 4a55327baed0321bdf95802a75cc8363cae118b0；维护版保留 GPL-3.0。
+ * 合并参考 Rookie-wb-WH/ql_scripts xinxi.py，作者 清风（MIT）。
+ * 原来源 cron: 15 5 * * *；兼容每日运行，保留维护目标 cron: 43 12 * * *。
+ * 原来源更新记录：20224-09-03 修复抽奖问题；2024-09-18 修复问题,增加BUG。
  * Node.js >=18，无第三方业务依赖。
+ * XINXI_TOKEN 未设置时兼容 xx_sso，仍为每行一个账号，禁止旧 # 分隔。
+ * XINXI_DAILY_TASKS=1 查询每日任务；XINXI_MEMBER_BENEFITS=1 查看会员权益领取奖励。
+ * xx_del_topic=1 不再执行批量删帖，报配置错误，避免删除既有内容。
  * 在心喜微信小程序登录，使用自己的抓包工具查看 api.xinc818.com
  * 请求头 sso，将完整值填入 XINXI_TOKEN，每个非空行一个账号。
  * XINXI_DRY_RUN=1 完全断网预演；XINXI_FREE_DRAW=1 启用一次免费抽奖；
@@ -22,7 +28,8 @@ const fs = require('node:fs');
 const { spawn } = require('node:child_process');
 const started = Date.now();
 const dry = process.env.XINXI_DRY_RUN === '1';
-const accounts = (process.env.XINXI_TOKEN || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+const credentialInput = process.env.XINXI_TOKEN !== undefined ? process.env.XINXI_TOKEN : (process.env.xx_sso || '');
+const accounts = credentialInput.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
 const totals = { total: 0, success: 0, alreadyComplete: 0, skipped: 0, failure: 0 };
 const results = [];
 let configError = false;
@@ -75,14 +82,26 @@ async function runAccount(token, index) {
     if (!dry && !disabled) await wait(1500);
     return state;
   }
-  await step('凭据格式校验', async () => { expect(!/[\s\x00-\x1f\x7f]/.test(token)); log('✅ 凭据格式通过'); }, false, true);
+  await step('凭据格式校验', async () => { expect(!/[#\s\x00-\x1f\x7f]/.test(token)); log('✅ 凭据格式通过'); }, false, true);
   await step('查询账号身份', async () => {
     user = await request(token, '/mini/user');
     expect(user && validNumber(user.integral));
     if (typeof user.nickname === 'string' && user.nickname) console.log(`[${stamp()}] 账号 ${index} 昵称：${JSON.stringify(user.nickname)}`);
     log(`✅ 当前喜点：${user.integral}`);
+    if (validNumber(user.historyIntegral)) log(`✅ 历史喜点：${user.historyIntegral}`);
   }, stats.failure > 0);
-  const unavailable = !dry && (!user || stats.failure > 0);
+  const unavailable = stats.failure > 0 || (!dry && !user);
+  await step('查询每日任务', async () => {
+    const d = await request(token, '/mini/dailyTask/daily');
+    expect(d !== null && typeof d === 'object');
+    log(Array.isArray(d) ? `✅ 每日任务查询成功，返回 ${d.length} 项任务` : '✅ 每日任务查询成功');
+  }, unavailable || process.env.XINXI_DAILY_TASKS !== '1');
+  await step('查看会员权益奖励', async () => {
+    const d = await request(token, '/mini/dailyTask/benefits/2');
+    if (d === null || d === false) { log('☑️ 会员权益任务已完成'); return 'alreadyComplete'; }
+    expect(d && validNumber(d.singleReward));
+    log(`✅ 查看会员权益成功，奖励 ${d.singleReward} 喜点`);
+  }, unavailable || process.env.XINXI_MEMBER_BENEFITS !== '1');
   await step('每日签到', async () => {
     const d = await request(token, '/mini/sign/in?dailyTaskId=');
     expect(d && validNumber(d.integral));
@@ -137,9 +156,11 @@ async function notify(summary) {
 async function main() {
   log('========== 心喜签到 ==========');
   log(`开始时间：${new Date(started).toISOString()}；模式：${dry ? '断网预演' : '正式执行'}；账号数：${accounts.length}`);
-  for (const key of ['XINXI_DRY_RUN', 'XINXI_FREE_DRAW', 'XINXI_REWARD_TASKS']) {
+  for (const key of ['XINXI_DRY_RUN', 'XINXI_FREE_DRAW', 'XINXI_REWARD_TASKS', 'XINXI_DAILY_TASKS', 'XINXI_MEMBER_BENEFITS']) {
     if (process.env[key] !== undefined && !['0', '1'].includes(process.env[key])) { configError = true; log(`❌ ${key} 仅支持 0 或 1`); }
   }
+  if (process.env.xx_del_topic === '1') { configError = true; log('❌ 不支持旧批量删帖设置 xx_del_topic=1，请移除该设置'); }
+  if (credentialInput.includes('#')) { configError = true; log('❌ 不支持旧 # 账号分隔，请改为每行一个账号'); }
   if (!accounts.length) { configError = true; log('❌ 未配置 XINXI_TOKEN，请每行填写一个账号的 sso'); }
   if (!configError) for (let i = 0; i < accounts.length; i++) await runAccount(accounts[i], i + 1);
   const failed = configError ? accounts.length : results.filter(r => r.status === 'failure').length;
@@ -148,6 +169,7 @@ async function main() {
   const summary = `状态：${status}；账号总数 ${accounts.length}，成功 ${success}，失败 ${failed}，预演 ${results.filter(r => r.status === 'dry-run').length}；子任务成功 ${totals.success}，已完成 ${totals.alreadyComplete}，跳过 ${totals.skipped}，失败 ${totals.failure}`;
   let notification;
   try { notification = await notify(summary); } catch { notification = 'failed'; }
+  if (notification === 'failed') log('⚠️ 青龙通知发送失败，保留业务退出码');
   log('--------------------------------'); log(summary);
   log(`完成时间：${new Date().toISOString()}；总耗时：${Date.now() - started}ms；通知状态：${notification}；最终状态：${status}`);
   console.log('TASK_SUMMARY=' + JSON.stringify({ status, accounts: accounts.length, success, failed, tasks: totals, results, notification, durationMs: Date.now() - started }));
