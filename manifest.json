@@ -433,6 +433,140 @@
       }
     },
     {
+      "catalogId": "28b170786df4dff2",
+      "applicationKey": "bsly",
+      "checkProfile": {
+        "requiredEnv": [
+          "bsly"
+        ],
+        "optionalEnv": [
+          "BSLY_DRY_RUN",
+          "BSLY_ENABLE_DRAW",
+          "BSLY_MAX_DRAWS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BSLY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BSLY_ENABLE_DRAW": "0",
+          "BSLY_MAX_DRAWS": "1",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "抽奖成功：获得",
+          "\"status\": \"success\"",
+          "\"exitCode\": 0"
+        ],
+        "features": [
+          "百事乐元账号抽奖，显式开启后可按设置的上限连续执行",
+          "展示脱敏后的奖品名称和提示，并展示接口返回的非敏感官方账号身份",
+          "兼容原 bsly 变量及 token、User-Agent、账号备注字段，支持每行一个账号",
+          "完全断网预演、配置校验、账号独立处理和失败非零退出",
+          "分阶段日志、每账号和全任务统计、单行 TASK_SUMMARY 结构化摘要",
+          "实跑所有结果调用可用的青龙公共通知模块发送脱敏摘要；预演仅本地模拟通知"
+        ],
+        "sideEffects": [
+          "实跑抽奖会消耗抽奖机会，并可能产生奖品或奖励记录",
+          "实跑开启通知时向青龙配置的通知渠道发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "百事乐元抽奖",
+      "path": "scripts/bsly_draw.py",
+      "sha256": "21ee297f54d13d8f725fc2419d1eeba7d34873fd9e321d5431dcbce9cb352664",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "bsly_draw.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/bsly_draw.py",
+      "environment": [
+        {
+          "name": "bsly",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人授权的微信小程序 wx1a72addb7ee74f67 中抓取抽奖请求，读取 token 与 User-Agent 请求头；账号备注自行填写，不应包含敏感信息。不要分享凭据。",
+          "format": "每个非空行一个账号：token#User-Agent#账号备注。先按第一个 # 拆出 token，再按最后一个 # 拆出备注；User-Agent 内的 # 保留，备注不可包含 #。不支持 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "BSLY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；预演时设为 1。",
+          "format": "1 为完全断网预演，其他值为实跑，默认 0。"
+        },
+        {
+          "name": "BSLY_ENABLE_DRAW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认允许消耗抽奖机会后在青龙环境变量中设置为 1。",
+          "format": "仅 1 允许实跑抽奖，默认 0；未开启的实跑以配置错误非零退出。"
+        },
+        {
+          "name": "BSLY_MAX_DRAWS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据活动规则和希望消耗的机会数量自行设置。",
+          "format": "1 至 100 的整数，每账号请求次数上限，默认 1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启。",
+          "format": "0、false、no、off 关闭，不区分大小写；预演仅本地模拟通知，保证断网。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用自定义青龙公共通知模块时，设置 notify.py 所在目录；通常无需设置。",
+          "format": "可选的本地目录；通知不可用不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，账号独立处理；任一账号格式错误或执行失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "百事乐元账号抽奖，显式开启后可按设置的上限连续执行",
+        "展示脱敏后的奖品名称和提示，并展示接口返回的非敏感官方账号身份",
+        "兼容原 bsly 变量及 token、User-Agent、账号备注字段，支持每行一个账号",
+        "完全断网预演、配置校验、账号独立处理和失败非零退出",
+        "分阶段日志、每账号和全任务统计、单行 TASK_SUMMARY 结构化摘要",
+        "实跑所有结果调用可用的青龙公共通知模块发送脱敏摘要；预演仅本地模拟通知"
+      ],
+      "sideEffects": [
+        "实跑抽奖会消耗抽奖机会，并可能产生奖品或奖励记录",
+        "实跑开启通知时向青龙配置的通知渠道发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/28b170786df4dff2",
+        "candidateSha256": "21ee297f54d13d8f725fc2419d1eeba7d34873fd9e321d5431dcbce9cb352664"
+      }
+    },
+    {
       "catalogId": "7389d13167df31b6",
       "applicationKey": "cdrail",
       "checkProfile": {
