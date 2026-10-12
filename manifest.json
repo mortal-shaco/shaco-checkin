@@ -1779,6 +1779,165 @@
       }
     },
     {
+      "catalogId": "8edbbefea99ad1fb",
+      "applicationKey": "qluser-alan/some_scripts::get",
+      "checkProfile": {
+        "requiredEnv": [
+          "YYS_OUTPUT_DIR"
+        ],
+        "optionalEnv": [
+          "YYS_TASKS",
+          "YYS_DOWNLOAD",
+          "YYS_LIMIT",
+          "YYS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "YYS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "YYS_TASKS": "video",
+          "YYS_DOWNLOAD": "0",
+          "YYS_LIMIT": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "官网 CG 视频目录解析、按标题去重",
+          "显式开启后的媒体下载和校验清单",
+          "新增下载数量限制及视频下载成功后两秒间隔",
+          "可选官网原画首分组六链接条目的第三链接下载",
+          "已有文件经大小及摘要验证后跳过",
+          "安全文件名和链接摘要防碰撞、拒绝覆盖文件",
+          "断网预演、超时、媒体签名和传输完整性校验",
+          "任务独立处理，任一资源失败均非零退出",
+          "时间轴日志、结构化统计和脱敏青龙通知"
+        ],
+        "sideEffects": [
+          "显式下载且非预演时创建保存目录、媒体文件和校验清单",
+          "实际运行且通知开启时调用青龙通知发送摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "阴阳师官网视频与原画",
+      "path": "scripts/get_yys_cgvideo.py",
+      "sha256": "5acaf38a721b681a7ea5a7ac0240d4116214d54ea3dde624435202a040af09cd",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "qluser-alan/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "阴阳师/get_yys_cgvideo.py",
+        "related": [
+          {
+            "catalogId": "1bb7294fc18c10a1",
+            "sha256": "340abc514d9c5b724d5a32f4efa9437ac7c96cd2c861d1c61c1e4411a1a24109",
+            "repository": "qluser-alan/some_scripts",
+            "url": "https://github.com/qluser-alan/some_scripts.git",
+            "branch": "main",
+            "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+            "originalPath": "阴阳师/get_yys_imagelinks.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 9 * * 0",
+      "command": "python3 scripts/get_yys_cgvideo.py",
+      "environment": [
+        {
+          "name": "YYS_OUTPUT_DIR",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "自行选择本地保存目录；无需登录或凭据。原脚本的固定盘符已移除。",
+          "format": "一个本地目录路径；预演也必须提供占位目录"
+        },
+        {
+          "name": "YYS_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据资源需求选择任务，默认仅视频。",
+          "format": "video、image 或 video,image；默认 video"
+        },
+        {
+          "name": "YYS_DOWNLOAD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要下载并写入资源时主动设置为 1；默认只解析资源。",
+          "format": "1 开启下载；其他值仅列出，默认 0"
+        },
+        {
+          "name": "YYS_LIMIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置每项任务本次最大新增下载数量；已验证文件不占限额。",
+          "format": "非负整数；0 表示全部，默认 0"
+        },
+        {
+          "name": "YYS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证参数及内置页面解析时设置；不联网、不写资源、不调用外部通知模块。",
+          "format": "1 开启断网预演，默认 0"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关。实际运行发送摘要；预演模拟通知。",
+          "format": "0、false、no、off 关闭，默认 1"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通知模块不在常规青龙路径时指定含 notify.py 的目录。",
+          "format": "可选本地目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": "",
+        "rule": "官网公开媒体任务，无需登录或账号；资源任务独立处理。",
+        "unsupportedReason": "公开页面没有账号契约，不能虚构多账号参数。"
+      },
+      "dependencies": [],
+      "features": [
+        "官网 CG 视频目录解析、按标题去重",
+        "显式开启后的媒体下载和校验清单",
+        "新增下载数量限制及视频下载成功后两秒间隔",
+        "可选官网原画首分组六链接条目的第三链接下载",
+        "已有文件经大小及摘要验证后跳过",
+        "安全文件名和链接摘要防碰撞、拒绝覆盖文件",
+        "断网预演、超时、媒体签名和传输完整性校验",
+        "任务独立处理，任一资源失败均非零退出",
+        "时间轴日志、结构化统计和脱敏青龙通知"
+      ],
+      "sideEffects": [
+        "显式下载且非预演时创建保存目录、媒体文件和校验清单",
+        "实际运行且通知开启时调用青龙通知发送摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/8edbbefea99ad1fb",
+        "candidateSha256": "5acaf38a721b681a7ea5a7ac0240d4116214d54ea3dde624435202a040af09cd"
+      }
+    },
+    {
       "catalogId": "21c2272d2f618e0f",
       "applicationKey": "get",
       "checkProfile": {

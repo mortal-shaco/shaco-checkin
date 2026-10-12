@@ -44,6 +44,7 @@
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `9 9 * * *` |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `39 12 * * *` |
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `0 8 * * *` |
+| 阴阳师官网视频与原画 | `scripts/get_yys_cgvideo.py` | `python3 scripts/get_yys_cgvideo.py` | `0 9 * * 0` |
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `0 9 * * 0` |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `30 6 * * *` |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `0 8 * * *` |
@@ -145,6 +146,7 @@
 - `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
 - `scripts/enshan_checkin.py`：Cookie 登录验证、WAF 解码及论坛页回退；每日签到，严格识别成功和今日已签到；签到前后读取恩山币及积分，保留积分页地址回退和临时错误重试；展示官方公开用户名、用户组、贡献及余额变化；每行一个账号，独立执行且失败非零退出；可选随机启动延迟，默认关闭等待，兼容上游参数和定时；完全断网配置预演；青龙通知及带时间戳分阶段日志，账号和任务统计，保留 SUMMARY_JSON 并追加 TASK_SUMMARY。
 - `scripts/fxh.js`：每日查询当前积分；每日执行芬享汇签到，显示可解析的奖励积分与已签到状态；官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示；逐行多账号独立执行和失败退出；完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总；实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网。
+- `scripts/get_yys_cgvideo.py`：官网 CG 视频目录解析、按标题去重；显式开启后的媒体下载和校验清单；新增下载数量限制及视频下载成功后两秒间隔；可选官网原画首分组六链接条目的第三链接下载；已有文件经大小及摘要验证后跳过；安全文件名和链接摘要防碰撞、拒绝覆盖文件；断网预演、超时、媒体签名和传输完整性校验；任务独立处理，任一资源失败均非零退出；时间轴日志、结构化统计和脱敏青龙通知。
 - `scripts/get_yys_imagelinks.py`：读取阴阳师官网原画页面，保留首个 tab-cont 内六个链接的第三个原画链接选择规则。；默认仅核验并列出素材；显式开启后保存原画，保留数字路径命名与原画目录默认值，修复未知文件名及同名碰撞。；通过任务开关读取全部官网 CG 视频分组，保存标题命名的 MP4 视频并记录 downloaded_videos.txt 标题历史。；校验已有素材文件格式并跳过下载；视频新下载数量限制与默认两秒间隔均保留。；独立实现带超时和 HTTPS 重定向校验的 HTTP 请求；检查状态码、页面结构、素材格式、大小及已知响应长度；原子落盘且不覆盖已有文件。；每种素材及每个下载项独立处理，任一失败即整体非零退出；输出中文分阶段耗时、子任务统计和唯一 TASK_SUMMARY JSON。；提供无账号、无网络、无文件写入的断网预演，覆盖原画和视频解析。；所有结果发送脱敏青龙通知；预演输出通知摘要且不调用通知服务，通知失败保留业务退出码。。
 - `scripts/hifiti_checkin.py`：HiFiTi 每日签到与明确业务结果核验；HiFiHi 每日签到与明确业务结果核验；兼容原凭据参数和旧版值格式，完整 Cookie 不截断；每行一个账号，两个站点与不同账号之间隔离会话；保留每天 06:30 的计划、随机启动等待和同站点账号间等待；读取官方非敏感昵称、用户名或公开身份字段并显示，禁止凭据片段充当身份；完全断网预演、配置检查、按账号阶段日志与单行结构化任务汇总；成功、部分失败、失败、配置错误和预演均生成脱敏通知摘要，真实模式通过可用青龙通知模块发送，预演仅模拟发送。
 - `scripts/hlyl.py`：查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据；查询当日签到状态、周任务进度和月签到天数；每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励；显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖；查询积分余额；逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出；完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录；通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知。
@@ -251,6 +253,7 @@
 <tr><td rowspan="1"><code>scripts/durex.py</code></td><td><code>dlshyzx</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/enshan_checkin.py</code></td><td><code>ENSHAN_COOKIE</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie 请求头；字段用分号分隔，不用 &amp;&amp; 或 @ 分隔账号；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fxh.js</code></td><td><code>fxhOpenId</code></td><td>是</td><td>格式：每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/get_yys_cgvideo.py</code></td><td><code>YYS_OUTPUT_DIR</code></td><td>否</td><td>格式：一个本地目录路径；预演也必须提供占位目录；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hifiti_checkin.py</code></td><td><code>HiFiTi_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；填写完整 Cookie（字段之间使用分号），兼容旧版仅填写 cloudmusic.net 的值；字段值中的等号完整保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hlyl.py</code></td><td><code>hlylck</code></td><td>是</td><td>格式：每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hsay.py</code></td><td><code>hsayCookie</code></td><td>是</td><td>格式：每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 &amp; 分隔。；多账号格式以该脚本文档为准</td></tr>
@@ -426,6 +429,12 @@
 <tr><td rowspan="3"><code>scripts/fxh.js</code></td><td><code>FXH_DRY_RUN</code></td><td>否</td><td>格式：1 表示完全断网预演；其他值表示实际执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 sendNotify.js 或 notify.py 的目录，不是业务依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="6"><code>scripts/get_yys_cgvideo.py</code></td><td><code>YYS_TASKS</code></td><td>否</td><td>格式：video、image 或 video,image；默认 video；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_DOWNLOAD</code></td><td>否</td><td>格式：1 开启下载；其他值仅列出，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_LIMIT</code></td><td>否</td><td>格式：非负整数；0 表示全部，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YYS_DRY_RUN</code></td><td>否</td><td>格式：1 开启断网预演，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，默认 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选本地目录路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="9"><code>scripts/get_yys_imagelinks.py</code></td><td><code>YYS_TASKS</code></td><td>否</td><td>格式：images（默认）、videos 或 images,videos；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>YYS_DOWNLOAD</code></td><td>否</td><td>格式：1 开启下载；0 默认仅解析并列出素材；兼容 true/false、yes/no、on/off；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>YYS_IMAGE_DIR</code></td><td>否</td><td>格式：目录路径，默认 ./yys原画；多账号格式以该脚本文档为准</td></tr>
@@ -997,6 +1006,12 @@
 - 获取或设置：打开芬享汇微信小程序，用自己的合法抓包工具查看 scrm.ocheng.me/v2/api/member/info 请求的 miniProgramOpenId 参数，或签到请求路径中的 OpenId。仅复制自己的 OpenId，不要复制整条请求、Cookie 或手机号。
 - 填写格式：`每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `YYS_OUTPUT_DIR`
+
+- 所属脚本：`scripts/get_yys_cgvideo.py`
+- 获取或设置：自行选择本地保存目录；无需登录或凭据。原脚本的固定盘符已移除。
+- 填写格式：`一个本地目录路径；预演也必须提供占位目录`
 
 #### `HiFiTi_COOKIE`
 
@@ -2076,6 +2091,42 @@
 - 所属脚本：`scripts/fxh.js`
 - 获取或设置：可选，填写青龙现有通知模块所在目录；默认查找 /ql/data/scripts 与 /ql/scripts。
 - 填写格式：`包含 sendNotify.js 或 notify.py 的目录，不是业务依赖。`
+
+#### `YYS_TASKS`
+
+- 所属脚本：`scripts/get_yys_cgvideo.py`
+- 获取或设置：根据资源需求选择任务，默认仅视频。
+- 填写格式：`video、image 或 video,image；默认 video`
+
+#### `YYS_DOWNLOAD`
+
+- 所属脚本：`scripts/get_yys_cgvideo.py`
+- 获取或设置：需要下载并写入资源时主动设置为 1；默认只解析资源。
+- 填写格式：`1 开启下载；其他值仅列出，默认 0`
+
+#### `YYS_LIMIT`
+
+- 所属脚本：`scripts/get_yys_cgvideo.py`
+- 获取或设置：自行设置每项任务本次最大新增下载数量；已验证文件不占限额。
+- 填写格式：`非负整数；0 表示全部，默认 0`
+
+#### `YYS_DRY_RUN`
+
+- 所属脚本：`scripts/get_yys_cgvideo.py`
+- 获取或设置：验证参数及内置页面解析时设置；不联网、不写资源、不调用外部通知模块。
+- 填写格式：`1 开启断网预演，默认 0`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/get_yys_cgvideo.py`
+- 获取或设置：青龙全局通知开关。实际运行发送摘要；预演模拟通知。
+- 填写格式：`0、false、no、off 关闭，默认 1`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/get_yys_cgvideo.py`
+- 获取或设置：通知模块不在常规青龙路径时指定含 notify.py 的目录。
+- 填写格式：`可选本地目录路径`
 
 #### `YYS_TASKS`
 
@@ -4410,6 +4461,7 @@
 - `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 - `scripts/enshan_checkin.py`：SHA-256 `c564768903f243711988991d3a8883c99b189a04708c3b8d89660b5988c0d47e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
 - `scripts/fxh.js`：SHA-256 `228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
+- `scripts/get_yys_cgvideo.py`：SHA-256 `5acaf38a721b681a7ea5a7ac0240d4116214d54ea3dde624435202a040af09cd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8edbbefea99ad1fb`。
 - `scripts/get_yys_imagelinks.py`：SHA-256 `ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21c2272d2f618e0f`。
 - `scripts/hifiti_checkin.py`：SHA-256 `ae18f25d6d7ad768ae64880761732b510e7bc3e75179bb9d66790f8203e4faf9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
 - `scripts/hlyl.py`：SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
@@ -4511,6 +4563,7 @@
 - `scripts/durex.py`：每日签到改变签到状态并可能获得积分；开启分享后上报活动分享记录并可能获得奖励；开启抽奖后参与活动并可能消耗抽奖机会或积分。
 - `scripts/enshan_checkin.py`：提交每日签到，可能增加恩山币和积分；正式运行且通知开启时通过青龙发送脱敏任务总结。
 - `scripts/fxh.js`：实际执行每日签到，改变签到状态并由服务端发放积分；启用通知时调用青龙通知模块发送任务总结。
+- `scripts/get_yys_cgvideo.py`：显式下载且非预演时创建保存目录、媒体文件和校验清单；实际运行且通知开启时调用青龙通知发送摘要。
 - `scripts/get_yys_imagelinks.py`：仅在 YYS_DOWNLOAD 显式开启时创建素材目录并保存原画或视频文件；视频同时维护标题历史记录。；正式运行且通知开启时调用青龙通知模块发送脱敏任务结果。。
 - `scripts/hifiti_checkin.py`：向 HiFiTi 提交每日签到；向 HiFiHi 提交每日签到；真实模式按全局通知开关向青龙配置的渠道发送脱敏任务通知。
 - `scripts/hlyl.py`：未签到时提交每日签到，可能获得积分和成长积分；显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品；通知开启且正式运行时通过青龙组件发送任务总结。
@@ -4614,6 +4667,7 @@
 - `scripts/durex.py`：上游 `Rookie-wb-WH/ql_scripts` / `durex.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/enshan_checkin.py`：上游 `agluo/ql-script-hub` / `enshan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/fxh.js`：上游 `xingly-cn/QLPanelScript` / `fxh.js` / `8c0323999253b7a0d8e47ff1136a562fedb3c980`。
+- `scripts/get_yys_cgvideo.py`：上游 `qluser-alan/some_scripts` / `阴阳师/get_yys_cgvideo.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/get_yys_imagelinks.py`：上游 `cloudcranes/some_scripts` / `阴阳师/get_yys_imagelinks.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/hifiti_checkin.py`：上游 `agluo/ql-script-hub` / `HiFiti_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/hlyl.py`：上游 `cloudcranes/some_scripts` / `hlyl.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
