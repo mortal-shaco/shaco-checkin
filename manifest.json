@@ -117,6 +117,224 @@
       }
     },
     {
+      "catalogId": "6b6ae91490051bce",
+      "applicationKey": "atxyq",
+      "checkProfile": {
+        "requiredEnv": [
+          "atxyqs"
+        ],
+        "optionalEnv": [
+          "ATXYQ_DRY_RUN",
+          "atxyqDel",
+          "ATXYQ_LIKE",
+          "ATXYQ_POST",
+          "ATXYQ_LOCAL_TEXT",
+          "ATXYQ_IMAGE_NAME",
+          "ATXYQ_IMAGE_DIR",
+          "ATXYQ_HELP_LIKE",
+          "ATXYQ_INVITE",
+          "ATXYQ_ASSIST",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ATXYQ_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ATXYQ_DRY_RUN": "0",
+          "atxyqDel": "0",
+          "ATXYQ_LIKE": "0",
+          "ATXYQ_POST": "0",
+          "ATXYQ_HELP_LIKE": "0",
+          "ATXYQ_INVITE": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功：连续",
+          "当前可用积分",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询并直接展示官方昵称，查询学校启用状态与积分任务列表。",
+          "每日签到，核验连续天数与获得积分。",
+          "领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。",
+          "查询当前可用积分。",
+          "显式开启最多两篇校园文章的点赞与取消点赞。",
+          "显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。",
+          "显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。",
+          "使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。",
+          "逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。"
+        ],
+        "sideEffects": [
+          "默认每日签到，记录签到并可能增加积分。",
+          "默认领取普通任务奖励，可能增加积分。",
+          "开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。",
+          "开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。",
+          "atxyqDel 非零时删除本人最近十篇列表内帖子。",
+          "开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。",
+          "开启 ATXYQ_INVITE 后创建所选邀请关系。",
+          "正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。"
+        ]
+      },
+      "postReview": {
+        "catalogId": "6b6ae91490051bce",
+        "releaseSha256": "6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1",
+        "decision": "withdrawn",
+        "decidedAt": "2026-10-12T05:42:36.128852+00:00",
+        "approvedBy": "mortal-shaco",
+        "applicationKey": "atxyq"
+      },
+      "displayName": "艾特校园圈",
+      "path": "scripts/atxyq.py",
+      "sha256": "6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "atxyq.py"
+      },
+      "cron": "9 10,23 * * *",
+      "command": "python3 scripts/atxyq.py",
+      "environment": [
+        {
+          "name": "atxyqs",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在微信艾特校园圈小程序登录后，抓取自己发往 api.atxz.cool 的请求头 Authorization 与 Uid；失效后重新登录抓取。",
+          "format": "每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。"
+        },
+        {
+          "name": "ATXYQ_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中开启完全断网预演。",
+          "format": "默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。"
+        },
+        {
+          "name": "atxyqDel",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容原上游变量，仅在确认愿意删除本人最近帖子时开启。",
+          "format": "整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。"
+        },
+        {
+          "name": "ATXYQ_LIKE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中显式开启校园文章互动。",
+          "format": "默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。"
+        },
+        {
+          "name": "ATXYQ_POST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中显式开启公开发帖。",
+          "format": "默认 0；1 发布一篇动态，优先一言并保留作者来源署名，失败回退本地正文。"
+        },
+        {
+          "name": "ATXYQ_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行填写愿意公开发布的非敏感校园文字，作为一言失败时的回退。",
+          "format": "可选，空白折叠后 1 至 280 字；默认本地校园正文。"
+        },
+        {
+          "name": "ATXYQ_IMAGE_NAME",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人小程序已上传图片的服务响应取得文件名，不填写凭据或伪造图片。",
+          "format": "可选图片文件名，必须与 ATXYQ_IMAGE_DIR 同时填写；不会上传或自动生成图片。"
+        },
+        {
+          "name": "ATXYQ_IMAGE_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从同一张本人已上传图片的服务响应取得目录；上游动态目录形式为 @senior/dynamic/。",
+          "format": "可选图片服务目录，与 ATXYQ_IMAGE_NAME 配套；启用发帖时登记已有图片。"
+        },
+        {
+          "name": "ATXYQ_HELP_LIKE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在确认 ATXYQ_ASSIST 为本人选择的目标后开启。",
+          "format": "默认 0；1 为指定帖子点赞一次，不读取远程助力名单。"
+        },
+        {
+          "name": "ATXYQ_INVITE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在愿意绑定所选邀请关系并确认目标后开启。",
+          "format": "默认 0；1 创建 ATXYQ_ASSIST 指定邀请关系，未知业务响应按失败处理。"
+        },
+        {
+          "name": "ATXYQ_ASSIST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从自己确认的目标帖子与邀请请求取得公开帖子编号、原正文、目标用户编号和学校编号；不得包含凭据。",
+          "format": "可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙全局通知开关。",
+          "format": "默认 1；0、false、no、off 禁用；其他值启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定已有青龙 notify.py 或 sendNotify.js 所在目录；默认查找脚本目录、可导入通知模块和青龙常见目录。",
+          "format": "本地目录路径，通知不可用或失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 # 拆分；后续字段不再次拆分。各账号独立执行，任一账号失败整体非零退出；不再使用 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询并直接展示官方昵称，查询学校启用状态与积分任务列表。",
+        "每日签到，核验连续天数与获得积分。",
+        "领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。",
+        "查询当前可用积分。",
+        "显式开启最多两篇校园文章的点赞与取消点赞。",
+        "显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。",
+        "显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。",
+        "使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。",
+        "逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。"
+      ],
+      "sideEffects": [
+        "默认每日签到，记录签到并可能增加积分。",
+        "默认领取普通任务奖励，可能增加积分。",
+        "开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。",
+        "开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。",
+        "atxyqDel 非零时删除本人最近十篇列表内帖子。",
+        "开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。",
+        "开启 ATXYQ_INVITE 后创建所选邀请关系。",
+        "正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "mode": "basic",
+        "businessResult": "not-verified",
+        "candidateSha256": "6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1",
+        "evidence": "evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1"
+      },
+      "releasePath": "scripts/atxyq.py"
+    },
+    {
       "catalogId": "d9230b69d9462c7c",
       "displayName": "百度网盘签到",
       "path": "scripts/baiduwangpan_checkin.py",
@@ -3729,6 +3947,9 @@
           "SMZDM_ACCOUNT"
         ],
         "optionalEnv": [
+          "SMZDM_COOKIE",
+          "SMZDM_ACTION",
+          "SMZDM_LOTTERY_LIFE",
           "SMZDM_USER_AGENT_APP",
           "SMZDM_DRY_RUN",
           "QINGLONG_NOTIFY",
@@ -3738,6 +3959,7 @@
           "SMZDM_DRY_RUN": "1"
         },
         "liveEnv": {
+          "SMZDM_ACTION": "checkin",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
@@ -3756,11 +3978,16 @@
           "输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON",
           "按青龙通知策略发送脱敏汇总",
           "展示签到天数、补签卡、普通奖励和礼包明细",
-          "查询值会员总经验、等级经验及有效期"
+          "查询值会员总经验、等级经验及有效期",
+          "通过显式任务开关查询两处会员转盘活动并各执行一次抽奖",
+          "可显式启用原上游未默认运行的生活频道转盘入口",
+          "仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk",
+          "保留原抽奖独立调度说明及请求间等待"
         ],
         "sideEffects": [
           "在什么值得买账号上执行每日签到并改变当日签到状态",
-          "满足条件时领取连续签到额外奖励并改变账号奖励状态"
+          "满足条件时领取连续签到额外奖励并改变账号奖励状态",
+          "显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励"
         ]
       },
       "postReview": {
@@ -3769,7 +3996,7 @@
       },
       "displayName": "什么值得买签到",
       "path": "scripts/smzdm_checkin.js",
-      "sha256": "80bd84a5e3551cc10e43d22bcaef72a7d799ca7754ce934f0f93217ce83300d4",
+      "sha256": "4cb72b6ec2328cde8fe50751191a5d0a7ab57423b77f1ddd7180df99150bbe06",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -3798,6 +4025,16 @@
             "commit": "eff365b2a44e9fe01e2ca2cdb3aa9a74d83cc649",
             "originalPath": "smzdm_checkin.js",
             "license": "MIT"
+          },
+          {
+            "repository": "hex-ci/smzdm_script",
+            "url": "https://github.com/hex-ci/smzdm_script.git",
+            "branch": "main",
+            "commit": "eff365b2a44e9fe01e2ca2cdb3aa9a74d83cc649",
+            "originalPath": "smzdm_lottery.js",
+            "catalogId": "01407af9e6b789da",
+            "sha256": "0f415f1c12c84dff9e19a8c1cef3691b0c82ab1b7cd325c12544a01b044a72ad",
+            "license": "MIT"
           }
         ]
       },
@@ -3808,42 +4045,63 @@
           "name": "SMZDM_ACCOUNT",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录什么值得买手机客户端，使用本人授权的抓包工具查看签到请求；取请求表单 sk 和同一次请求的完整 Cookie（必须含 sess）。二者必须属于同一账号，不使用其他人的凭据。",
-          "format": "每个非空行一个账号，格式 sk|完整 Cookie；只在第一个 | 处分割，保留后续 Cookie 文本。不使用 & 或 @ 分隔账号。"
+          "howToGet": "登录本人什么值得买客户端，查看本人签到请求的 sk 参数与包含 sess 的完整 Cookie；配套凭据必须来自同一账号。只执行抽奖时可改用 SMZDM_COOKIE。",
+          "format": "每个非空行一个账号：sk|完整 Cookie；只在第一个竖线分割，后续内容完整保留。仅抽奖时 sk 可为空。"
+        },
+        {
+          "name": "SMZDM_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人已登录什么值得买网页请求头取得包含 sess 的完整 Cookie；仅在 SMZDM_ACTION=lottery 且未配置 SMZDM_ACCOUNT 时使用。",
+          "format": "每个非空行一个账号的完整 Cookie，不使用其他账号分隔符。"
+        },
+        {
+          "name": "SMZDM_ACTION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙自行选择任务；默认仅签到。抽奖请先核对官方活动规则，再单独创建 20 8 * * * 调度并设为 lottery；all 显式执行签到和抽奖。",
+          "format": "checkin、lottery 或 all；默认 checkin。"
+        },
+        {
+          "name": "SMZDM_LOTTERY_LIFE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "原上游生活频道入口默认未启用；确认活动可用后自行启用。",
+          "format": "1 启用；默认不启用。"
         },
         {
           "name": "SMZDM_USER_AGENT_APP",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，从本人手机客户端请求头获取 User-Agent；不配置时根据 Cookie 的安卓版本字段生成，缺失时使用维护版默认值。",
-          "format": "单行客户端 User-Agent"
+          "howToGet": "可从本人客户端请求头取得；不含账号凭据和设备唯一标识。不配置时沿用 Cookie 版本识别及默认客户端标识。",
+          "format": "客户端 User-Agent 字符串。"
         },
         {
           "name": "SMZDM_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "离线验证时设为 1；正式执行时删除或设为 0。",
-          "format": "1、true、yes、on 启用离线预演"
+          "howToGet": "离线检查时设置为 1；不会请求业务接口或通知网络组件。",
+          "format": "1、true、yes 或 on 启用。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "默认开启青龙汇总通知；按需设为 0、false、no 或 off 关闭。预演仅生成脱敏通知，不调用联网通知组件。",
-          "format": "默认 1"
+          "howToGet": "青龙全局通知开关，默认启用；离线模式生成脱敏通知摘要。",
+          "format": "0、false、no 或 off 关闭；默认 1。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，填写青龙 sendNotify.js 所在目录；未配置时检查 /ql/data/scripts 和 /ql/scripts。通知不可用不改变业务退出码。",
-          "format": "本机通知组件目录路径"
+          "howToGet": "可填青龙 sendNotify.js 所在目录；未设置则查找青龙标准脚本目录。通知组件缺失或失败不改变业务退出码。",
+          "format": "本机目录路径。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号；同账号 sk 和 Cookie 用首个 | 配对。逐账号独立执行，任意账号配置或业务失败时整体非零退出。"
+        "rule": "每个非空行一个账号，配套 sk 与 Cookie 写在同一行；只在首个竖线分割。各账号独立处理，任一账号失败整体非零退出。"
       },
       "dependencies": [],
       "features": [
@@ -3858,11 +4116,16 @@
         "输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON",
         "按青龙通知策略发送脱敏汇总",
         "展示签到天数、补签卡、普通奖励和礼包明细",
-        "查询值会员总经验、等级经验及有效期"
+        "查询值会员总经验、等级经验及有效期",
+        "通过显式任务开关查询两处会员转盘活动并各执行一次抽奖",
+        "可显式启用原上游未默认运行的生活频道转盘入口",
+        "仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk",
+        "保留原抽奖独立调度说明及请求间等待"
       ],
       "sideEffects": [
         "在什么值得买账号上执行每日签到并改变当日签到状态",
-        "满足条件时领取连续签到额外奖励并改变账号奖励状态"
+        "满足条件时领取连续签到额外奖励并改变账号奖励状态",
+        "显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励"
       ],
       "review": {
         "staticPassed": true,
@@ -3875,12 +4138,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/621df252c315f2d1",
-        "candidateSha256": "30d02496a9878ae599d71cfb9f5d16f748d1159a43fdb04b87fecb89af424b01"
+        "candidateSha256": "a9137a25378d4487a6b80614a88c7cc675699820d670a9e52269149397ca9125"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "30d02496a9878ae599d71cfb9f5d16f748d1159a43fdb04b87fecb89af424b01",
-        "releaseSha256": "80bd84a5e3551cc10e43d22bcaef72a7d799ca7754ce934f0f93217ce83300d4",
+        "validatedSha256": "a9137a25378d4487a6b80614a88c7cc675699820d670a9e52269149397ca9125",
+        "releaseSha256": "4cb72b6ec2328cde8fe50751191a5d0a7ab57423b77f1ddd7180df99150bbe06",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
@@ -11185,224 +11448,6 @@
         "releaseSha256": "bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
-    },
-    {
-      "catalogId": "6b6ae91490051bce",
-      "applicationKey": "atxyq",
-      "checkProfile": {
-        "requiredEnv": [
-          "atxyqs"
-        ],
-        "optionalEnv": [
-          "ATXYQ_DRY_RUN",
-          "atxyqDel",
-          "ATXYQ_LIKE",
-          "ATXYQ_POST",
-          "ATXYQ_LOCAL_TEXT",
-          "ATXYQ_IMAGE_NAME",
-          "ATXYQ_IMAGE_DIR",
-          "ATXYQ_HELP_LIKE",
-          "ATXYQ_INVITE",
-          "ATXYQ_ASSIST",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "ATXYQ_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "ATXYQ_DRY_RUN": "0",
-          "atxyqDel": "0",
-          "ATXYQ_LIKE": "0",
-          "ATXYQ_POST": "0",
-          "ATXYQ_HELP_LIKE": "0",
-          "ATXYQ_INVITE": "0",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "签到成功：连续",
-          "当前可用积分",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
-        ],
-        "features": [
-          "查询并直接展示官方昵称，查询学校启用状态与积分任务列表。",
-          "每日签到，核验连续天数与获得积分。",
-          "领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。",
-          "查询当前可用积分。",
-          "显式开启最多两篇校园文章的点赞与取消点赞。",
-          "显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。",
-          "显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。",
-          "使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。",
-          "逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。"
-        ],
-        "sideEffects": [
-          "默认每日签到，记录签到并可能增加积分。",
-          "默认领取普通任务奖励，可能增加积分。",
-          "开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。",
-          "开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。",
-          "atxyqDel 非零时删除本人最近十篇列表内帖子。",
-          "开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。",
-          "开启 ATXYQ_INVITE 后创建所选邀请关系。",
-          "正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。"
-        ]
-      },
-      "postReview": {
-        "catalogId": "6b6ae91490051bce",
-        "releaseSha256": "6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1",
-        "decision": "withdrawn",
-        "decidedAt": "2026-10-12T05:42:36.128852+00:00",
-        "approvedBy": "mortal-shaco",
-        "applicationKey": "atxyq"
-      },
-      "displayName": "艾特校园圈",
-      "path": "scripts/atxyq.py",
-      "sha256": "6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "Rookie-wb-WH/ql_scripts",
-        "branch": "main",
-        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
-        "originalPath": "atxyq.py"
-      },
-      "cron": "9 10,23 * * *",
-      "command": "python3 scripts/atxyq.py",
-      "environment": [
-        {
-          "name": "atxyqs",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "在微信艾特校园圈小程序登录后，抓取自己发往 api.atxz.cool 的请求头 Authorization 与 Uid；失效后重新登录抓取。",
-          "format": "每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。"
-        },
-        {
-          "name": "ATXYQ_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中开启完全断网预演。",
-          "format": "默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。"
-        },
-        {
-          "name": "atxyqDel",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "兼容原上游变量，仅在确认愿意删除本人最近帖子时开启。",
-          "format": "整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。"
-        },
-        {
-          "name": "ATXYQ_LIKE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中显式开启校园文章互动。",
-          "format": "默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。"
-        },
-        {
-          "name": "ATXYQ_POST",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中显式开启公开发帖。",
-          "format": "默认 0；1 发布一篇动态，优先一言并保留作者来源署名，失败回退本地正文。"
-        },
-        {
-          "name": "ATXYQ_LOCAL_TEXT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行填写愿意公开发布的非敏感校园文字，作为一言失败时的回退。",
-          "format": "可选，空白折叠后 1 至 280 字；默认本地校园正文。"
-        },
-        {
-          "name": "ATXYQ_IMAGE_NAME",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "从本人小程序已上传图片的服务响应取得文件名，不填写凭据或伪造图片。",
-          "format": "可选图片文件名，必须与 ATXYQ_IMAGE_DIR 同时填写；不会上传或自动生成图片。"
-        },
-        {
-          "name": "ATXYQ_IMAGE_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "从同一张本人已上传图片的服务响应取得目录；上游动态目录形式为 @senior/dynamic/。",
-          "format": "可选图片服务目录，与 ATXYQ_IMAGE_NAME 配套；启用发帖时登记已有图片。"
-        },
-        {
-          "name": "ATXYQ_HELP_LIKE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "仅在确认 ATXYQ_ASSIST 为本人选择的目标后开启。",
-          "format": "默认 0；1 为指定帖子点赞一次，不读取远程助力名单。"
-        },
-        {
-          "name": "ATXYQ_INVITE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "仅在愿意绑定所选邀请关系并确认目标后开启。",
-          "format": "默认 0；1 创建 ATXYQ_ASSIST 指定邀请关系，未知业务响应按失败处理。"
-        },
-        {
-          "name": "ATXYQ_ASSIST",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "从自己确认的目标帖子与邀请请求取得公开帖子编号、原正文、目标用户编号和学校编号；不得包含凭据。",
-          "format": "可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "使用青龙全局通知开关。",
-          "format": "默认 1；0、false、no、off 禁用；其他值启用。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选指定已有青龙 notify.py 或 sendNotify.js 所在目录；默认查找脚本目录、可导入通知模块和青龙常见目录。",
-          "format": "本地目录路径，通知不可用或失败不改变业务退出码。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 # 拆分；后续字段不再次拆分。各账号独立执行，任一账号失败整体非零退出；不再使用 @ 分隔账号。"
-      },
-      "dependencies": [],
-      "features": [
-        "查询并直接展示官方昵称，查询学校启用状态与积分任务列表。",
-        "每日签到，核验连续天数与获得积分。",
-        "领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。",
-        "查询当前可用积分。",
-        "显式开启最多两篇校园文章的点赞与取消点赞。",
-        "显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。",
-        "显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。",
-        "使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。",
-        "逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。"
-      ],
-      "sideEffects": [
-        "默认每日签到，记录签到并可能增加积分。",
-        "默认领取普通任务奖励，可能增加积分。",
-        "开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。",
-        "开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。",
-        "atxyqDel 非零时删除本人最近十篇列表内帖子。",
-        "开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。",
-        "开启 ATXYQ_INVITE 后创建所选邀请关系。",
-        "正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "mode": "basic",
-        "businessResult": "not-verified",
-        "candidateSha256": "6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1",
-        "evidence": "evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1"
-      },
-      "releasePath": "scripts/atxyq.py"
     }
   ]
 }

@@ -33,6 +33,7 @@
 | --- | --- | --- | --- |
 | 依赖安装 | `scripts/install_dependencies.sh` | `task scripts/install_dependencies.sh` | `23 4 * * 1` |
 | 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `3 11 * * *` |
+| 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `9 10,23 * * *` |
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `0 9 * * *` |
 | 百事乐元抽奖 | `scripts/bsly_draw.py` | `python3 scripts/bsly_draw.py` | `0 9 * * *` |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `0 9,18 * * *` |
@@ -117,13 +118,13 @@
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `55 9 * * *` |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `1 16 * * *` |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
-| 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `9 10,23 * * *` |
 
 依赖安装任务会读取本仓库的 `requirements.txt`、`package-lock.json` 或 `package.json`；没有额外依赖时安全退出，不会执行远程安装脚本。
 
 ## 脚本功能
 
 - `scripts/aliyunpan_checkin.py`：执行阿里云盘每日会员签到并明确验证接口结果；按换行多账号独立处理并汇总退出状态；提供完全断网且结果确定的预演模拟；检测刷新令牌轮换并可选安全写入本地文件。
+- `scripts/atxyq.py`：查询并直接展示官方昵称，查询学校启用状态与积分任务列表。；每日签到，核验连续天数与获得积分。；领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。；查询当前可用积分。；显式开启最多两篇校园文章的点赞与取消点赞。；显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。；显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。；使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。；逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。。
 - `scripts/baiduwangpan_checkin.py`：每日百度网盘会员签到，明确验证积分或已完成状态；获取并提交每日会员成长问题答案；读取并报告脱敏用户名、会员等级、成长值和会员类型；逐行多账号独立处理与结构化 JSON 汇总；完全断网的配置预演；成功、部分失败、失败、配置错误和预演状态的青龙脱敏汇总通知。
 - `scripts/bsly_draw.py`：百事乐元账号抽奖，显式开启后可按设置的上限连续执行；展示脱敏后的奖品名称和提示，并展示接口返回的非敏感官方账号身份；兼容原 bsly 变量及 token、User-Agent、账号备注字段，支持每行一个账号；完全断网预演、配置校验、账号独立处理和失败非零退出；分阶段日志、每账号和全任务统计、单行 TASK_SUMMARY 结构化摘要；实跑所有结果调用可用的青龙公共通知模块发送脱敏摘要；预演仅本地模拟通知。
 - `scripts/bwcj.py`：读取并展示官方非秘密账号身份，禁止输出手机号和凭据。；读取积分流水获取签到用户 ID，支持同账号手动补充用户 ID 并核验一致性。；查询新版签到天数，使用上游签名算法执行新版签到并核验业务状态和奖励明细。；显式开启旧版签到后查询旧版活动及连续天数并执行旧版签到。；保留每天 9 点和 18 点定时及 bwcjCookie 变量名，换行多账号独立执行。；完全断网预演、脱敏分阶段日志、账号及任务统计、唯一 TASK_SUMMARY 结构化记录。；青龙通知发送脱敏总结，支持全局开关，通知失败不改变业务退出码。。
@@ -150,7 +151,7 @@
 - `scripts/sfsu_checkin.py`：验证顺丰速运登录会话；每日签到并识别已签到状态；查询积分、完成安全的积分任务并领取奖励；查询丰蜜、完成丰蜜任务、执行大冒险和容量扩充并领取奖励；经显式授权后领取生活特权券；每月 26 至 28 日执行会员日非消费任务、免费抽奖、红包合成和 8 级红包提取；支持多账号独立执行、完全断网预演、脱敏汇总和青龙通知。
 - `scripts/sgs.py`：获取官方账号姓名与积分，展示非秘密身份；每日签到并检查业务成功；显式开启后随机检索未读文章并阅读最多五篇，限制分页次数；显式开启后执行五次工社服务访问计数；显式开启后执行五次热门活动浏览计数；换行多账号、失败非零退出；完全断网预演、青龙脱敏通知与单行结构化汇总。
 - `scripts/shuyi.py`：获取书亦烧仙草滑块验证码；使用 OpenCV 模板匹配识别滑块位置；使用 AES 加密并校验滑块，校验成功后签到；展示签到天数和所得积分；显示官方返回的非敏感昵称、用户名或公开账号标识；保留 sysxc_auth 参数名，支持每行一个账号独立执行；完全断网预演，不导入通知模块或发送任何推送；青龙通知和可选 PushPlus 脱敏推送；带时间戳的分阶段日志、账号统计和单行 TASK_SUMMARY 汇总。
-- `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总；展示签到天数、补签卡、普通奖励和礼包明细；查询值会员总经验、等级经验及有效期。
+- `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总；展示签到天数、补签卡、普通奖励和礼包明细；查询值会员总经验、等级经验及有效期；通过显式任务开关查询两处会员转盘活动并各执行一次抽奖；可显式启用原上游未默认运行的生活频道转盘入口；仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk；保留原抽奖独立调度说明及请求间等待。
 - `scripts/sudojia_33agilestudio.js`：邮箱密码登录并获取会话令牌；查询账户信息，显示返回的非敏感昵称、用户名、显示名称或公开 UID；每日签到获得积分；查询当前积分；按换行配置多账号，失败独立统计并非零退出；完全断网预演及配置校验；青龙脱敏通知、分阶段日志和单行结构化汇总。
 - `scripts/sudojia_allgirls.js`：获取并显示官方昵称；查询每日签到状态，已签到时避免重复请求；未签到时执行签到并复查已签到状态；查询当前积分；支持逐行多账号、请求超时与账号独立失败统计；支持完全断网预演、青龙通知和单行结构化汇总。
 - `scripts/sudojia_amx.js`：查询账号信息并显示接口返回的昵称，不输出手机号；查询今日签到状态，已签到则跳过重复签到；未签到时执行每日签到，并再次查询签到状态核验结果，显示可用的奖励积分；查询当前积分；按非空行支持多账号，逐账号统计，失败时非零退出；完全断网预演、阶段日志和单行 TASK_SUMMARY 结构化汇总；通过青龙 sendNotify.js 发送脱敏总结；支持全局开关、通知超时和失败隔离。
@@ -208,7 +209,6 @@
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
 - `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
-- `scripts/atxyq.py`：查询并直接展示官方昵称，查询学校启用状态与积分任务列表。；每日签到，核验连续天数与获得积分。；领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。；查询当前可用积分。；显式开启最多两篇校园文章的点赞与取消点赞。；显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。；显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。；使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。；逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。。
 
 ## 环境变量与参数
 
@@ -220,6 +220,7 @@
 <thead><tr><th>脚本</th><th>变量</th><th>敏感</th><th>填写格式</th></tr></thead>
 <tbody>
 <tr><td rowspan="1"><code>scripts/aliyunpan_checkin.py</code></td><td><code>ALIYUN_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行填写一个刷新令牌，空行会被忽略。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/atxyq.py</code></td><td><code>atxyqs</code></td><td>是</td><td>格式：每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/baiduwangpan_checkin.py</code></td><td><code>BAIDU_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行；每行是包含 key=value 的完整 Cookie 请求头；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/bsly_draw.py</code></td><td><code>bsly</code></td><td>是</td><td>格式：每个非空行一个账号：token#User-Agent#账号备注。先按第一个 # 拆出 token，再按最后一个 # 拆出备注；User-Agent 内的 # 保留，备注不可包含 #。不支持 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/bwcj.py</code></td><td><code>bwcjCookie</code></td><td>是</td><td>格式：每个非空行一个 Token，或 Token|customerId；仅在首个 | 分割。同账号配套字段，账号仅用换行分隔，不支持原 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
@@ -247,7 +248,7 @@
 <tr><td rowspan="1"><code>scripts/sfsu_checkin.py</code></td><td><code>sfsyUrl</code></td><td>是</td><td>格式：每个非空行一个完整的 URL 编码登录/分享 URL；整行作为同一账号凭据，不使用 &amp;、@ 等字符分隔账号；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sgs.py</code></td><td><code>sgs</code></td><td>是</td><td>格式：每个非空行一个完整 Token；保留小写变量名 sgs，原版 # 多账号分隔改为换行，单账号参数兼容。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/shuyi.py</code></td><td><code>sysxc_auth</code></td><td>是</td><td>格式：每个非空行一个账号的 auth 原值；保留变量名，不再以 # 分隔账号，凭据内部的 # 原样保留。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号，格式 sk|完整 Cookie；只在第一个 | 处分割，保留后续 Cookie 文本。不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号：sk|完整 Cookie；只在第一个竖线分割，后续内容完整保留。仅抽奖时 sk 可为空。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_33agilestudio.js</code></td><td><code>AGILE_STUDIO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个邮箱#密码，只按第一个 # 分隔，密码中的后续 #、&amp; 和 @ 均保留；禁止使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_allgirls.js</code></td><td><code>ALL_GIRLS_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的 AccessToken；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_amx.js</code></td><td><code>AMX_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整 Token；不使用 &amp; 或 @ 分隔账号，行内字符保持不变，首尾空白忽略。；多账号格式以该脚本文档为准</td></tr>
@@ -307,7 +308,6 @@
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/atxyq.py</code></td><td><code>atxyqs</code></td><td>是</td><td>格式：每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -324,6 +324,18 @@
 <tr><td><code>ALIYUN_TOKEN_OUTPUT_FILE</code></td><td>否</td><td>格式：本地绝对文件路径；文件以 0600 权限原子替换，每行一个令牌。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="12"><code>scripts/atxyq.py</code></td><td><code>ATXYQ_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>atxyqDel</code></td><td>否</td><td>格式：整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_LIKE</code></td><td>否</td><td>格式：默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_POST</code></td><td>否</td><td>格式：默认 0；1 发布一篇动态，优先一言并保留作者来源署名，失败回退本地正文。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_LOCAL_TEXT</code></td><td>否</td><td>格式：可选，空白折叠后 1 至 280 字；默认本地校园正文。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_IMAGE_NAME</code></td><td>否</td><td>格式：可选图片文件名，必须与 ATXYQ_IMAGE_DIR 同时填写；不会上传或自动生成图片。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_IMAGE_DIR</code></td><td>否</td><td>格式：可选图片服务目录，与 ATXYQ_IMAGE_NAME 配套；启用发帖时登记已有图片。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_HELP_LIKE</code></td><td>否</td><td>格式：默认 0；1 为指定帖子点赞一次，不读取远程助力名单。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_INVITE</code></td><td>否</td><td>格式：默认 0；1 创建 ATXYQ_ASSIST 指定邀请关系，未知业务响应按失败处理。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_ASSIST</code></td><td>否</td><td>格式：可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用；其他值启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/baiduwangpan_checkin.py</code></td><td><code>BAIDUWANGPAN_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 启用；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>BAIDUWANGPAN_DELAY_MAX</code></td><td>否</td><td>格式：非负整数；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：1/0 或常见布尔值；多账号格式以该脚本文档为准</td></tr>
@@ -461,10 +473,13 @@
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径；业务功能不依赖此目录。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PUSH_PLUS_TOKEN</code></td><td>是</td><td>格式：单个 PushPlus 令牌；不设置则不请求该推送接口。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="4"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_USER_AGENT_APP</code></td><td>否</td><td>格式：单行客户端 User-Agent；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用离线预演；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知组件目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，不使用其他账号分隔符。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_ACTION</code></td><td>否</td><td>格式：checkin、lottery 或 all；默认 checkin。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_LOTTERY_LIFE</code></td><td>否</td><td>格式：1 启用；默认不启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_USER_AGENT_APP</code></td><td>否</td><td>格式：客户端 User-Agent 字符串。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes 或 on 启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no 或 off 关闭；默认 1。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/sudojia_33agilestudio.js</code></td><td><code>AGILE_STUDIO_DRY_RUN</code></td><td>否</td><td>格式：1 为断网预演，其他值为正式运行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，不区分大小写；预演始终只生成摘要，不联网投递。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径，仅用于可选通知，业务无此依赖。；多账号格式以该脚本文档为准</td></tr>
@@ -675,24 +690,13 @@
 <tr><td rowspan="3"><code>scripts/wps_clock_in.py</code></td><td><code>WPS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on启用，默认0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭；默认1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地青龙通知模块所在目录，可不填写。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="12"><code>scripts/atxyq.py</code></td><td><code>ATXYQ_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>atxyqDel</code></td><td>否</td><td>格式：整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>ATXYQ_LIKE</code></td><td>否</td><td>格式：默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>ATXYQ_POST</code></td><td>否</td><td>格式：默认 0；1 发布一篇动态，优先一言并保留作者来源署名，失败回退本地正文。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>ATXYQ_LOCAL_TEXT</code></td><td>否</td><td>格式：可选，空白折叠后 1 至 280 字；默认本地校园正文。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>ATXYQ_IMAGE_NAME</code></td><td>否</td><td>格式：可选图片文件名，必须与 ATXYQ_IMAGE_DIR 同时填写；不会上传或自动生成图片。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>ATXYQ_IMAGE_DIR</code></td><td>否</td><td>格式：可选图片服务目录，与 ATXYQ_IMAGE_NAME 配套；启用发帖时登记已有图片。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>ATXYQ_HELP_LIKE</code></td><td>否</td><td>格式：默认 0；1 为指定帖子点赞一次，不读取远程助力名单。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>ATXYQ_INVITE</code></td><td>否</td><td>格式：默认 0；1 创建 ATXYQ_ASSIST 指定邀请关系，未知业务响应按失败处理。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>ATXYQ_ASSIST</code></td><td>否</td><td>格式：可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用；其他值启用。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
 多账号统一规则：每行一个账号；需要多个凭据变量时按相同非空行号配对，行数必须一致。
 
 - `scripts/aliyunpan_checkin.py`：ALIYUN_REFRESH_TOKEN 每个非空行填写一个账号；忽略空行并独立处理各账号。。
+- `scripts/atxyq.py`：atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 # 拆分；后续字段不再次拆分。各账号独立执行，任一账号失败整体非零退出；不再使用 @ 分隔账号。。
 - `scripts/baiduwangpan_checkin.py`：BAIDU_COOKIE 中每个非空行是一个独立账号；依次处理，任一账号失败时进程整体非零退出。。
 - `scripts/bsly_draw.py`：每个非空行一个账号，账号独立处理；任一账号格式错误或执行失败时整体非零退出。。
 - `scripts/bwcj.py`：每个非空行一个账号；同账号 Token 与可选 customerId 使用首个 | 分割。各账号独立处理，任一失败整体非零退出。。
@@ -718,7 +722,7 @@
 - `scripts/sfsu_checkin.py`：sfsyUrl 中每个非空行是一个独立账号的完整 URL；逐账号隔离处理，任一账号失败则进程非零退出。。
 - `scripts/sgs.py`：每个非空行一个账号 Token，独立处理；任一账号或子任务失败，整体非零退出。。
 - `scripts/shuyi.py`：sysxc_auth 每个非空行一个账号，逐个独立处理；任一账号失败则整体非零退出。账号间不能使用 #、& 或 @ 分隔。。
-- `scripts/smzdm_checkin.js`：每个非空行一个账号；同账号 sk 和 Cookie 用首个 | 配对。逐账号独立执行，任意账号配置或业务失败时整体非零退出。。
+- `scripts/smzdm_checkin.js`：每个非空行一个账号，配套 sk 与 Cookie 写在同一行；只在首个竖线分割。各账号独立处理，任一账号失败整体非零退出。。
 - `scripts/sudojia_33agilestudio.js`：每个非空行一个邮箱#密码，仅第一个 # 为字段分隔符，各账号独立执行；任一账号失败则整体非零退出。。
 - `scripts/sudojia_allgirls.js`：每个非空行一个账号；按行独立处理，任一账号失败则整体非零退出。。
 - `scripts/sudojia_amx.js`：每个非空行一个账号的 access-token，按行独立处理；任一账号失败时整体非零退出。。
@@ -776,7 +780,6 @@
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
 - `scripts/wps_clock_in.py`：每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。。
-- `scripts/atxyq.py`：atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 # 拆分；后续字段不再次拆分。各账号独立执行，任一账号失败整体非零退出；不再使用 @ 分隔账号。。
 
 ## 参数获取方法
 
@@ -787,6 +790,13 @@
 - 所属脚本：`scripts/aliyunpan_checkin.py`
 - 获取或设置：登录阿里云盘网页版，从本人已认证会话的浏览器存储中复制 refresh_token；切勿分享。
 - 填写格式：`每个非空行填写一个刷新令牌，空行会被忽略。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `atxyqs`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：在微信艾特校园圈小程序登录后，抓取自己发往 api.atxz.cool 的请求头 Authorization 与 Uid；失效后重新登录抓取。
+- 填写格式：`每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `BAIDU_COOKIE`
@@ -979,8 +989,8 @@
 #### `SMZDM_ACCOUNT`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：登录什么值得买手机客户端，使用本人授权的抓包工具查看签到请求；取请求表单 sk 和同一次请求的完整 Cookie（必须含 sess）。二者必须属于同一账号，不使用其他人的凭据。
-- 填写格式：`每个非空行一个账号，格式 sk|完整 Cookie；只在第一个 | 处分割，保留后续 Cookie 文本。不使用 & 或 @ 分隔账号。`
+- 获取或设置：登录本人什么值得买客户端，查看本人签到请求的 sk 参数与包含 sess 的完整 Cookie；配套凭据必须来自同一账号。只执行抽奖时可改用 SMZDM_COOKIE。
+- 填写格式：`每个非空行一个账号：sk|完整 Cookie；只在第一个竖线分割，后续内容完整保留。仅抽奖时 sk 可为空。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `AGILE_STUDIO_ACCOUNTS`
@@ -1396,13 +1406,6 @@
 - 填写格式：`每个非空行一个wps_sid值；只按换行分隔账号，不使用&或@分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `atxyqs`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：在微信艾特校园圈小程序登录后，抓取自己发往 api.atxz.cool 的请求头 Authorization 与 Uid；失效后重新登录抓取。
-- 填写格式：`每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
 
 ### 可选参数说明
 
@@ -1441,6 +1444,78 @@
 - 所属脚本：`scripts/aliyunpan_checkin.py`
 - 获取或设置：仅当 notify.py 不在青龙标准路径时，填写其所在目录。
 - 填写格式：`本地目录路径`
+
+#### `ATXYQ_DRY_RUN`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：在青龙环境变量中开启完全断网预演。
+- 填写格式：`默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。`
+
+#### `atxyqDel`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：兼容原上游变量，仅在确认愿意删除本人最近帖子时开启。
+- 填写格式：`整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。`
+
+#### `ATXYQ_LIKE`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：在青龙环境变量中显式开启校园文章互动。
+- 填写格式：`默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。`
+
+#### `ATXYQ_POST`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：在青龙环境变量中显式开启公开发帖。
+- 填写格式：`默认 0；1 发布一篇动态，优先一言并保留作者来源署名，失败回退本地正文。`
+
+#### `ATXYQ_LOCAL_TEXT`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：自行填写愿意公开发布的非敏感校园文字，作为一言失败时的回退。
+- 填写格式：`可选，空白折叠后 1 至 280 字；默认本地校园正文。`
+
+#### `ATXYQ_IMAGE_NAME`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：从本人小程序已上传图片的服务响应取得文件名，不填写凭据或伪造图片。
+- 填写格式：`可选图片文件名，必须与 ATXYQ_IMAGE_DIR 同时填写；不会上传或自动生成图片。`
+
+#### `ATXYQ_IMAGE_DIR`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：从同一张本人已上传图片的服务响应取得目录；上游动态目录形式为 @senior/dynamic/。
+- 填写格式：`可选图片服务目录，与 ATXYQ_IMAGE_NAME 配套；启用发帖时登记已有图片。`
+
+#### `ATXYQ_HELP_LIKE`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：仅在确认 ATXYQ_ASSIST 为本人选择的目标后开启。
+- 填写格式：`默认 0；1 为指定帖子点赞一次，不读取远程助力名单。`
+
+#### `ATXYQ_INVITE`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：仅在愿意绑定所选邀请关系并确认目标后开启。
+- 填写格式：`默认 0；1 创建 ATXYQ_ASSIST 指定邀请关系，未知业务响应按失败处理。`
+
+#### `ATXYQ_ASSIST`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：从自己确认的目标帖子与邀请请求取得公开帖子编号、原正文、目标用户编号和学校编号；不得包含凭据。
+- 填写格式：`可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：使用青龙全局通知开关。
+- 填写格式：`默认 1；0、false、no、off 禁用；其他值启用。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：可选指定已有青龙 notify.py 或 sendNotify.js 所在目录；默认查找脚本目录、可导入通知模块和青龙常见目录。
+- 填写格式：`本地目录路径，通知不可用或失败不改变业务退出码。`
 
 #### `BAIDUWANGPAN_DRY_RUN`
 
@@ -2271,29 +2346,48 @@
 - 填写格式：`单个 PushPlus 令牌；不设置则不请求该推送接口。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `SMZDM_COOKIE`
+
+- 所属脚本：`scripts/smzdm_checkin.js`
+- 获取或设置：从本人已登录什么值得买网页请求头取得包含 sess 的完整 Cookie；仅在 SMZDM_ACTION=lottery 且未配置 SMZDM_ACCOUNT 时使用。
+- 填写格式：`每个非空行一个账号的完整 Cookie，不使用其他账号分隔符。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SMZDM_ACTION`
+
+- 所属脚本：`scripts/smzdm_checkin.js`
+- 获取或设置：在青龙自行选择任务；默认仅签到。抽奖请先核对官方活动规则，再单独创建 20 8 * * * 调度并设为 lottery；all 显式执行签到和抽奖。
+- 填写格式：`checkin、lottery 或 all；默认 checkin。`
+
+#### `SMZDM_LOTTERY_LIFE`
+
+- 所属脚本：`scripts/smzdm_checkin.js`
+- 获取或设置：原上游生活频道入口默认未启用；确认活动可用后自行启用。
+- 填写格式：`1 启用；默认不启用。`
+
 #### `SMZDM_USER_AGENT_APP`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：可选，从本人手机客户端请求头获取 User-Agent；不配置时根据 Cookie 的安卓版本字段生成，缺失时使用维护版默认值。
-- 填写格式：`单行客户端 User-Agent`
+- 获取或设置：可从本人客户端请求头取得；不含账号凭据和设备唯一标识。不配置时沿用 Cookie 版本识别及默认客户端标识。
+- 填写格式：`客户端 User-Agent 字符串。`
 
 #### `SMZDM_DRY_RUN`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：离线验证时设为 1；正式执行时删除或设为 0。
-- 填写格式：`1、true、yes、on 启用离线预演`
+- 获取或设置：离线检查时设置为 1；不会请求业务接口或通知网络组件。
+- 填写格式：`1、true、yes 或 on 启用。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：默认开启青龙汇总通知；按需设为 0、false、no 或 off 关闭。预演仅生成脱敏通知，不调用联网通知组件。
-- 填写格式：`默认 1`
+- 获取或设置：青龙全局通知开关，默认启用；离线模式生成脱敏通知摘要。
+- 填写格式：`0、false、no 或 off 关闭；默认 1。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：可选，填写青龙 sendNotify.js 所在目录；未配置时检查 /ql/data/scripts 和 /ql/scripts。通知不可用不改变业务退出码。
-- 填写格式：`本机通知组件目录路径`
+- 获取或设置：可填青龙 sendNotify.js 所在目录；未设置则查找青龙标准脚本目录。通知组件缺失或失败不改变业务退出码。
+- 填写格式：`本机目录路径。`
 
 #### `AGILE_STUDIO_DRY_RUN`
 
@@ -3556,82 +3650,11 @@
 - 获取或设置：若青龙notify.py不在标准目录，可设置其所在目录；不需要私有项目仓库。
 - 填写格式：`本地青龙通知模块所在目录，可不填写。`
 
-#### `ATXYQ_DRY_RUN`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：在青龙环境变量中开启完全断网预演。
-- 填写格式：`默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。`
-
-#### `atxyqDel`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：兼容原上游变量，仅在确认愿意删除本人最近帖子时开启。
-- 填写格式：`整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。`
-
-#### `ATXYQ_LIKE`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：在青龙环境变量中显式开启校园文章互动。
-- 填写格式：`默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。`
-
-#### `ATXYQ_POST`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：在青龙环境变量中显式开启公开发帖。
-- 填写格式：`默认 0；1 发布一篇动态，优先一言并保留作者来源署名，失败回退本地正文。`
-
-#### `ATXYQ_LOCAL_TEXT`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：自行填写愿意公开发布的非敏感校园文字，作为一言失败时的回退。
-- 填写格式：`可选，空白折叠后 1 至 280 字；默认本地校园正文。`
-
-#### `ATXYQ_IMAGE_NAME`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：从本人小程序已上传图片的服务响应取得文件名，不填写凭据或伪造图片。
-- 填写格式：`可选图片文件名，必须与 ATXYQ_IMAGE_DIR 同时填写；不会上传或自动生成图片。`
-
-#### `ATXYQ_IMAGE_DIR`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：从同一张本人已上传图片的服务响应取得目录；上游动态目录形式为 @senior/dynamic/。
-- 填写格式：`可选图片服务目录，与 ATXYQ_IMAGE_NAME 配套；启用发帖时登记已有图片。`
-
-#### `ATXYQ_HELP_LIKE`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：仅在确认 ATXYQ_ASSIST 为本人选择的目标后开启。
-- 填写格式：`默认 0；1 为指定帖子点赞一次，不读取远程助力名单。`
-
-#### `ATXYQ_INVITE`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：仅在愿意绑定所选邀请关系并确认目标后开启。
-- 填写格式：`默认 0；1 创建 ATXYQ_ASSIST 指定邀请关系，未知业务响应按失败处理。`
-
-#### `ATXYQ_ASSIST`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：从自己确认的目标帖子与邀请请求取得公开帖子编号、原正文、目标用户编号和学校编号；不得包含凭据。
-- 填写格式：`可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。`
-
-#### `QINGLONG_NOTIFY`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：使用青龙全局通知开关。
-- 填写格式：`默认 1；0、false、no、off 禁用；其他值启用。`
-
-#### `QINGLONG_NOTIFY_DIR`
-
-- 所属脚本：`scripts/atxyq.py`
-- 获取或设置：可选指定已有青龙 notify.py 或 sendNotify.js 所在目录；默认查找脚本目录、可导入通知模块和青龙常见目录。
-- 填写格式：`本地目录路径，通知不可用或失败不改变业务退出码。`
-
 
 ## 验证与兼容性
 
 - `scripts/aliyunpan_checkin.py`：SHA-256 `4b1884c921accb1fe4555d1eca158f6ab1acbea919d95c32e0fa1d92df7a3c00`；live 业务成功证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
+- `scripts/atxyq.py`：SHA-256 `6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
 - `scripts/baiduwangpan_checkin.py`：SHA-256 `e9c658f4544427bd94ab4da74a724038d1f849c8b9665464ded6e8a1c4dd2c18`；live 业务成功证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
 - `scripts/bsly_draw.py`：SHA-256 `21ee297f54d13d8f725fc2419d1eeba7d34873fd9e321d5431dcbce9cb352664`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28b170786df4dff2`。
 - `scripts/bwcj.py`：SHA-256 `ae20e692177d7102468ed3ddc462576f39fd2c81ea51a9dad626e138700ac4af`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0367e0709855a394`。
@@ -3658,7 +3681,7 @@
 - `scripts/sfsu_checkin.py`：SHA-256 `d48a9999e72bbea15c0de43dc537ab4f37f63c5a6fb38708098482f92761affb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/19b2285cc7b8a82e`。
 - `scripts/sgs.py`：SHA-256 `af3d44c77a409fccb89cdf36a8282bb311c17463a559c544c114d78b253efce7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/45e40e4a3ee37968`。
 - `scripts/shuyi.py`：SHA-256 `947ec405caf0bacdc1f2b823552425d882c3510d733c99c8a1801bf7a739870c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/551a306ac75780f1`。
-- `scripts/smzdm_checkin.js`：SHA-256 `80bd84a5e3551cc10e43d22bcaef72a7d799ca7754ce934f0f93217ce83300d4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
+- `scripts/smzdm_checkin.js`：SHA-256 `4cb72b6ec2328cde8fe50751191a5d0a7ab57423b77f1ddd7180df99150bbe06`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
 - `scripts/sudojia_33agilestudio.js`：SHA-256 `7677c43b5720b0556f6d0b2949405b7c91d218dbc5d020ad6be0dd46ce2308d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
 - `scripts/sudojia_allgirls.js`：SHA-256 `c553619d6534fdf01df62c381df54bfb5557104402a27aa037bf381b075d8934`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e8776198aafad33e`。
 - `scripts/sudojia_amx.js`：SHA-256 `74c9e4adc427ad5b11fa3790b55857eb5a928af78cabc6c0d7c7d04ee8694c65`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2afe8ef7e443b92b`。
@@ -3716,13 +3739,13 @@
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 - `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
-- `scripts/atxyq.py`：SHA-256 `6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。
 
 ## 副作用与风险
 
 - `scripts/aliyunpan_checkin.py`：正式执行时为每个账号完成阿里云盘会员签到；正式执行时刷新账号访问令牌，并可能轮换刷新令牌；明确启用持久化时，将当前刷新令牌原子写入配置的本地文件。
+- `scripts/atxyq.py`：默认每日签到，记录签到并可能增加积分。；默认领取普通任务奖励，可能增加积分。；开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。；开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。；atxyqDel 非零时删除本人最近十篇列表内帖子。；开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。；开启 ATXYQ_INVITE 后创建所选邀请关系。；正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。。
 - `scripts/baiduwangpan_checkin.py`：为每个已配置的百度网盘账号执行每日会员签到；为每个已配置的百度网盘账号提交每日会员问题答案；在通知开启且青龙通知模块可用时发送一条脱敏任务汇总通知。
 - `scripts/bsly_draw.py`：实跑抽奖会消耗抽奖机会，并可能产生奖品或奖励记录；实跑开启通知时向青龙配置的通知渠道发送脱敏任务摘要。
 - `scripts/bwcj.py`：新版签到产生签到记录及服务端发放的积分或奖励。；显式开启旧版签到后产生旧版签到记录及服务端奖励。；正式运行时通过青龙配置的通知渠道发送脱敏任务总结。。
@@ -3749,7 +3772,7 @@
 - `scripts/sfsu_checkin.py`：执行每日签到；完成符合安全规则的积分及丰蜜任务并领取奖励；进行丰蜜大冒险并在容量不足时扩容；在 SF_AUTO_COUPON=1 时创建一笔生活特权券领取订单；在会员日窗口领取可用邀请奖励、消耗免费抽奖次数、领取任务奖励、合成并提取红包。
 - `scripts/sgs.py`：每日签到；显式开启时写入文章阅读记录；显式开启时写入工社服务访问计数；显式开启时写入热门活动浏览计数；开启通知时向青龙配置的渠道发送脱敏汇总。
 - `scripts/shuyi.py`：在书亦烧仙草账号执行签到并领取服务端发放的积分；实际执行时向青龙通知渠道发送脱敏任务总结；配置 PUSH_PLUS_TOKEN 时向 PushPlus 发送脱敏总结。
-- `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态。
+- `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态；显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励。
 - `scripts/sudojia_33agilestudio.js`：登录建立账户会话；提交每日签到，按服务端规则获得积分；正式运行且启用通知时，通过青龙通知模块发送脱敏任务摘要。
 - `scripts/sudojia_allgirls.js`：未签到时执行每日签到，可能获得平台签到积分。
 - `scripts/sudojia_amx.js`：未签到时执行每日签到，可能获得积分。
@@ -3807,7 +3830,6 @@
 - `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
 - `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
 - `scripts/wps_clock_in.py`：。
-- `scripts/atxyq.py`：默认每日签到，记录签到并可能增加积分。；默认领取普通任务奖励，可能增加积分。；开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。；开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。；atxyqDel 非零时删除本人最近十篇列表内帖子。；开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。；开启 ATXYQ_INVITE 后创建所选邀请关系。；正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。。
 
 使用测试账号先行验证。停止使用时应禁用任务、删除订阅和敏感环境变量；怀疑凭据泄漏时立即在对应平台撤销会话。
 
@@ -3816,6 +3838,7 @@
 仓库发布许可证：`GPL-3.0-only`。每个脚本仍保留准确来源：
 
 - `scripts/aliyunpan_checkin.py`：上游 `agluo/ql-script-hub` / `aliyunpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/atxyq.py`：上游 `Rookie-wb-WH/ql_scripts` / `atxyq.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/baiduwangpan_checkin.py`：上游 `agluo/ql-script-hub` / `baiduwangpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/bsly_draw.py`：上游 `cloudcranes/some_scripts` / `bsly_draw.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/bwcj.py`：上游 `Rookie-wb-WH/ql_scripts` / `bwcj.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
@@ -3900,4 +3923,3 @@
 - `scripts/tsthb_checkin.py`：上游 `agluo/ql-script-hub` / `tsthb_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/ty_netdisk_checkin.py`：上游 `agluo/ql-script-hub` / `ty_netdisk_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
-- `scripts/atxyq.py`：上游 `Rookie-wb-WH/ql_scripts` / `atxyq.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。

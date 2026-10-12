@@ -21,6 +21,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// Lottery source: hex-ci/smzdm_script, smzdm_lottery.js (MIT).
+// 参数：SMZDM_ACCOUNT 每行 sk|完整 Cookie；只在第一个 | 分割。
+// 获取：登录自己的什么值得买客户端，从本人 /checkin 请求取得 sk 和 Cookie 的 sess。
+// 默认 SMZDM_ACTION=checkin，保留签到 31 8 * * *；抽奖单独调度 20 8 * * *，设为 lottery。
+// 抽奖兼容 SMZDM_COOKIE，每行完整 Cookie；从本人已登录网页请求头获取，不要公开。
+// SMZDM_ACTION=all 显式同时执行；抽奖可能消耗机会或活动资产，请先核对官方活动规则。
+// SMZDM_LOTTERY_LIFE=1 显式启用原上游未默认执行的生活频道；不自动重试抽奖。
+// SMZDM_DRY_RUN=1 完全离线；QINGLONG_NOTIFY=0 关闭通知。
 // Maintained standalone derivative; no private repository or external executable required.
 
 const crypto = require('crypto');
@@ -50,14 +58,18 @@ function accountLines(value) {
 }
 
 function parseAccounts(env = process.env) {
-  const lines = accountLines(env.SMZDM_ACCOUNT);
+  const action = taskAction(env);
+  const legacy = action === 'lottery' && !accountLines(env.SMZDM_ACCOUNT).length;
+  const lines = accountLines(legacy ? env.SMZDM_COOKIE : env.SMZDM_ACCOUNT);
+  if (legacy && lines.length) return lines.map((cookie, i) => cookieValue(cookie, 'sess')
+    ? {sk: '', cookie} : {configurationError: `第 ${i + 1} 行 Cookie 缺少 sess`});
   if (!lines.length) throw new Error('未配置 SMZDM_ACCOUNT');
   return lines.map((line, i) => {
     const split = line.indexOf('|');
-    if (split < 1 || split === line.length - 1) return {configurationError: `invalid_SMZDM_ACCOUNT_format_at_line_${i + 1}：第 ${i + 1} 行应为 sk|Cookie`};
+    if ((split < 1 && action !== 'lottery') || split < 0 || split === line.length - 1) return {configurationError: `invalid_SMZDM_ACCOUNT_format_at_line_${i + 1}：第 ${i + 1} 行应为 sk|Cookie`};
     const sk = line.slice(0, split).trim();
     const cookie = line.slice(split + 1).trim();
-    if (!sk || !cookieValue(cookie, 'sess')) return {configurationError: `第 ${i + 1} 行缺少 sk 或 sess`};
+    if ((!sk && action !== 'lottery') || !cookieValue(cookie, 'sess')) return {configurationError: `第 ${i + 1} 行缺少 sk 或 sess`};
     return {sk, cookie};
   });
 }
@@ -319,6 +331,86 @@ async function runAccount(account, userAgentOverride = '') {
     ...(result.ok ? {} : {error_class: 'business_failure'})};
 }
 
+
+function taskAction(env = process.env) {
+  const action = String(env.SMZDM_ACTION || 'checkin').trim().toLowerCase();
+  if (!['checkin', 'lottery', 'all'].includes(action)) throw new Error('SMZDM_ACTION 必须为 checkin、lottery 或 all');
+  return action;
+}
+
+// JSONP 不使用 eval。未知业务码、缺失活动和失效页面均失败闭合。
+function lotteryPayload(text, callback) {
+  const escaped = callback.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = String(text).trim().match(new RegExp(`^${escaped}\\s*\\(([\\s\\S]*)\\)\\s*;?$`));
+  if (!match) throw new Error('抽奖 JSONP 无效');
+  const data = JSON.parse(match[1]);
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('抽奖响应无效');
+  return data;
+}
+
+function activityId(text, life = false) {
+  const normalized = String(text).replace(/\\"/g, '"').replace(/&quot;/g, '"');
+  const match = life
+    ? normalized.match(/name\s*=\s*["']lottery_activity_id["']\s+value\s*=\s*["']([a-zA-Z0-9_-]+)["']/i)
+    : normalized.match(/"hashId"\s*:\s*"([a-zA-Z0-9_-]+)"/i);
+  if (!match || match[1].length > 128) throw new Error('未取得活动 ID');
+  return match[1];
+}
+
+async function runLottery(account, env, report = () => {}) {
+  const campaigns = [
+    {name: '会员转盘一', url: 'https://m.smzdm.com/topic/bwrzf5/516lft'},
+    {name: '会员转盘二', url: 'https://m.smzdm.com/topic/zhyzhuanpan/cjzp/'},
+  ];
+  if (truthy(env.SMZDM_LOTTERY_LIFE)) campaigns.push({name: '生活频道转盘', url: 'https://m.smzdm.com/zhuanti/life/choujiang/', life: true});
+  const counts = {total: 0, success: 0, already: 0, skipped: 0, failed: 0};
+  const headers = {Cookie: account.cookie, 'User-Agent': profile(account.cookie, env.SMZDM_USER_AGENT_APP).userAgent,
+    'x-requested-with': 'com.smzdm.client.android', Referer: 'https://m.smzdm.com/'};
+  for (const campaign of campaigns) {
+    let id;
+    let started = Date.now();
+    counts.total++;
+    report(`[${counts.total}/${campaigns.length * 2}] ${campaign.name}：查询活动`);
+    try {
+      const response = await fetchLimited(campaign.url, {method: 'GET', headers});
+      if (response.status !== 200) throw new Error('HTTP 失败');
+      id = activityId(response.text, campaign.life);
+      counts.success++;
+      report(`${campaign.name}：活动 ID 已取得，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '✅');
+    } catch {
+      counts.failed++; counts.total++; counts.skipped++;
+      report(`${campaign.name}：活动查询或字段校验失败，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '❌');
+      report(`[${counts.total}/${campaigns.length * 2}] ${campaign.name}：跳过抽奖，用时 0.0 秒`, '⏭️');
+      continue;
+    }
+    // 保留上游请求间隔，避免快速连续抽奖。
+    await new Promise((resolve) => setTimeout(resolve, 3000 + crypto.randomInt(7001)));
+    counts.total++;
+    started = Date.now();
+    report(`[${counts.total}/${campaigns.length * 2}] ${campaign.name}：执行一次抽奖`);
+    try {
+      const callback = `jQuery34107538452897131465_${Date.now()}`;
+      const url = new URL('https://zhiyou.smzdm.com/user/lottery/jsonp_draw');
+      url.search = new URLSearchParams({active_id: id, callback}).toString();
+      const response = await fetchLimited(url, {method: 'GET', headers});
+      if (response.status !== 200) throw new Error('HTTP 失败');
+      const data = lotteryPayload(response.text, callback);
+      if (String(data.error_code) !== '0') {
+        report(`${campaign.name}：业务未成功，业务码 ${safeCode(data.error_code)}`, '❌');
+        throw new Error('业务失败');
+      }
+      if (typeof data.error_msg !== 'string' || !data.error_msg.trim()) throw new Error('结果字段缺失');
+      counts.success++;
+      report(`${campaign.name}：抽奖已验证，${display(data.error_msg, account)}，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '✅');
+    } catch {
+      counts.failed++;
+      report(`${campaign.name}：抽奖未验证成功，不自动重试，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '❌');
+    }
+    if (campaign !== campaigns[campaigns.length - 1]) await new Promise((resolve) => setTimeout(resolve, 5000 + crypto.randomInt(10001)));
+  }
+  return {ok: counts.failed === 0, state: counts.failed ? '抽奖任务失败' : '抽奖全部已验证', counts};
+}
+
 function notifier(env = process.env) {
   const roots = [env.QINGLONG_NOTIFY_DIR, '/ql/data/scripts', '/ql/scripts'].filter(Boolean);
   for (const root of roots) {
@@ -371,8 +463,8 @@ async function finish(summary, code, started, env) {
 async function run(env = process.env) {
   const started = Date.now();
   const dryRun = truthy(env.SMZDM_DRY_RUN);
-  let accounts;
-  try { accounts = parseAccounts(env); } catch (error) {
+  let accounts, action;
+  try { action = taskAction(env); accounts = parseAccounts(env); } catch (error) {
     console.log(NAME); console.log('═'.repeat(62));
     console.log(`开始时间  ${now()}\n运行模式  配置检查\n账号数量  0`);
     log(`[1/1] 参数校验失败：${error.message}`, '❌');
@@ -394,10 +486,25 @@ async function run(env = process.env) {
     } else if (dryRun) {
       log(`${label}：[2/4] 规划签到请求`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       log(`${label}：[3/4] 规划奖励、概览与经验查询`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
-      result = {ok: true, state: '预演通过', planned_requests: 7, skipped: 6};
+      const planned = (action === 'lottery' ? 0 : 7) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
+      log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤；抽奖仅在显式选择后执行`, '└─');
+      result = {ok: true, state: '预演通过', planned_requests: planned,
+        counts: {total: planned + 1, success: 1, already: 0, skipped: planned, failed: 0}};
     } else {
       log(`${label}：[2/4] 执行签到`);
-      try { result = await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, (message, icon) => log(`${label}：${message}`, icon)); } catch (error) {
+      try {
+        const report = (message, icon) => log(`${label}：${message}`, icon);
+        if (action === 'lottery') result = await runLottery(accounts[i], env, report);
+        else {
+          result = await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, report);
+          if (action === 'all') {
+            const lottery = await runLottery(accounts[i], env, report);
+            result.ok = result.ok && lottery.ok;
+            result.state = result.ok ? '签到与抽奖均已验证' : '部分任务失败';
+            for (const key of Object.keys(result.counts)) result.counts[key] += lottery.counts[key];
+          }
+        }
+      } catch (error) {
         result = {ok: false, state: error?.name === 'AbortError' ? '请求超时' : '网络或处理异常'};
       }
       log(`${label}：${result.state}`, result.ok ? '✅' : '❌');
@@ -434,4 +541,4 @@ if (require.main === module) run().catch(async () => {
   await finish({execution: 'failed', mode: 'live', accounts_total: 0, accounts_success: 0, accounts_failed: 1, tasks_total: 1, tasks_success: 0, tasks_already: 0, tasks_skipped: 0, tasks_failed: 1}, 1, started, process.env);
 });
 
-module.exports = {accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};
+module.exports = {activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};
