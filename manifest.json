@@ -989,6 +989,130 @@
       }
     },
     {
+      "catalogId": "198b4feb377da679",
+      "applicationKey": "cloudcranes/some_scripts::ikuuu",
+      "checkProfile": {
+        "requiredEnv": [
+          "ikuuu"
+        ],
+        "optionalEnv": [
+          "IKUUU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "IKUUU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "IKUUU_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 登录成功（ret=1）",
+          "✅ 个人资料读取完成",
+          "✅ 签到成功（ret=1）",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "邮箱密码登录，要求官方 ret=1",
+          "读取个人资料并确认非空响应，不输出页面内容",
+          "每日签到，要求官方 ret=1 才计为成功",
+          "换行多账号，配套凭据合并并保留密码后续分隔字符",
+          "接口返回安全的昵称、用户名、显示名称或公开 UID 时直接展示",
+          "每账号阶段日志、耗时、统计与唯一 TASK_SUMMARY JSON 记录",
+          "通过青龙 notify.py 发送脱敏总结，通知失败不改变业务退出码",
+          "完全断网预演参数及请求计划，展示通知摘要"
+        ],
+        "sideEffects": [
+          "登录并建立账号会话",
+          "提交每日签到，可能获得服务端奖励",
+          "实际运行时通过青龙已配置渠道发送任务通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "ikuuu每日签到",
+      "path": "scripts/checkin_ikuuu.py",
+      "sha256": "6225a3f584b4a36a93b35c8e57955aa8920739d54cf4dfc8db507ec184e94b62",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "ikuuu/checkin_ikuuu.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/checkin_ikuuu.py",
+      "environment": [
+        {
+          "name": "ikuuu",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 ikuuu 官方网站注册并确认能登录，将登录邮箱和密码填写到青龙环境变量中，不要分享凭据。",
+          "format": "每个非空行填写邮箱#密码，只按首个 # 分隔，密码中的后续 # 和 & 保留；旧 & 多账号列表须迁移为换行。"
+        },
+        {
+          "name": "IKUUU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 开启完全断网预演。",
+          "format": "1、true、yes、on 开启，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认启用。",
+          "format": "0、false、no、off 关闭，其余启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；默认导入 notify 或搜索 /ql/data/scripts 与 /ql/scripts。",
+          "format": "本机目录路径，仅用于通知，不是业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，邮箱#密码，仅按首个 # 分隔。账号独立执行，任一账号失败或配置错误时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "邮箱密码登录，要求官方 ret=1",
+        "读取个人资料并确认非空响应，不输出页面内容",
+        "每日签到，要求官方 ret=1 才计为成功",
+        "换行多账号，配套凭据合并并保留密码后续分隔字符",
+        "接口返回安全的昵称、用户名、显示名称或公开 UID 时直接展示",
+        "每账号阶段日志、耗时、统计与唯一 TASK_SUMMARY JSON 记录",
+        "通过青龙 notify.py 发送脱敏总结，通知失败不改变业务退出码",
+        "完全断网预演参数及请求计划，展示通知摘要"
+      ],
+      "sideEffects": [
+        "登录并建立账号会话",
+        "提交每日签到，可能获得服务端奖励",
+        "实际运行时通过青龙已配置渠道发送任务通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/198b4feb377da679",
+        "candidateSha256": "6225a3f584b4a36a93b35c8e57955aa8920739d54cf4dfc8db507ec184e94b62"
+      }
+    },
+    {
       "catalogId": "e7b851436459bf8f",
       "applicationKey": "ddnsto",
       "checkProfile": {
