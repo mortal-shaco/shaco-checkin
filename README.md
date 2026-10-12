@@ -40,8 +40,10 @@
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `0 9 * * *` |
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `17 8 * * *` |
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `30 9 * * *` |
+| 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `9 9 * * *` |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `0 21 * * *` |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
+| Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
@@ -117,8 +119,10 @@
 - `scripts/cdrail.py`：每日签到与积分增量展示；基于明确业务码确认签到成功或今日已签到；每行一个账号，支持 JSON、查询字符串及自定义请求头；签到前随机等待、账号间间隔及超时控制；完全断网预演、青龙脱敏通知及单行结构化汇总；展示接口返回的非敏感昵称、用户名、显示名或公开账号标识。
 - `scripts/cfmoto_checkin.py`：执行每日签到；发帖和评论优先使用接口随机文本，返回出处时拼接作者与作品信息，接口异常时使用本地文案兜底；按配置发布帖子、评论、点赞并完成分享积分任务。
 - `scripts/ddnsto.py`：申请 product_id=2 七天免费套餐并查询订单；把新套餐绑定到指定路由器；重新读取官方套餐并确认到期时间延长后才报告续费成功；识别本周免费套餐申请次数限制；只有现有套餐尚未过期才视为已完成；显示北京时间到期时间；官方返回非敏感昵称或用户名时原样显示；保留每天 09:30 的上游计划和 ddns_cookie、ddns_userid 单账号兼容参数；多账号按行独立执行，失败账号不阻断其他账号；任一失败整体非零退出；无网络预演、青龙脱敏汇总通知和带时间戳的分阶段日志；输出唯一 TASK_SUMMARY 单行 JSON 汇总。
+- `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
 - `scripts/ikuuu_checkin.py`：使用邮箱和密码登录 ikuuu；执行每日签到并识别今日已签到；从成功消息中报告流量奖励；按每行一个邮箱|密码账号处理并输出脱敏结构化汇总；可选随机错峰执行；按青龙通知策略发送汇总；完全断网的配置预演。
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
+- `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
 - `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
@@ -199,8 +203,10 @@
 <tr><td rowspan="1"><code>scripts/cdrail.py</code></td><td><code>CDRAIL_DATA</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象或 URL 编码查询字符串；必填 token、app-token，Cookie 和设备请求头按本人抓包提供。支持 appToken/app_token 及 device-id/device_id 别名和其他自定义请求头；传输控制头忽略。查询字符串用 &amp; 分字段，各字段仅在第一个 = 处分割，值中的 &amp; 编码为 %26；推荐 JSON 保留复杂凭据。不得以 @ 或 &amp; 分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/cfmoto_checkin.py</code></td><td><code>CFMOTO_COOKIE</code></td><td>是</td><td>格式：ticket=&lt;value&gt; 或裸 ticket；多账号每行一个；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ddnsto.py</code></td><td><code>DDNSTO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 路由器ID|完整Cookie；仅在首个 | 分隔，同一行内 Cookie 原样保留，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/durex.py</code></td><td><code>dlshyzx</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：邮箱|密码；只用第一个竖线分隔，密码中的后续竖线会保留；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_COOKIE</code></td><td>是</td><td>格式：每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 &amp; 或 @ 分隔；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/main.py</code></td><td><code>WALLHAVEN_SAVE_DIR</code></td><td>否</td><td>格式：绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
@@ -327,6 +333,13 @@
 <tr><td><code>DDNSTO_DRY_RUN</code></td><td>否</td><td>格式：1 启用断网预演，0 执行真实续费；默认 0；也支持 true/false、yes/no、on/off。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。预演尝试通知时封锁网络，因此远程通知不会送达。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：已有通知模块目录的路径，不执行下载或安装。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/durex.py</code></td><td><code>DUREX_DRY_RUN</code></td><td>否</td><td>格式：1 开启断网预演，0 正式执行；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DUREX_SHARE</code></td><td>否</td><td>格式：1 开启分享记录上报，0 关闭；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DUREX_SHARE_ACT_ID</code></td><td>否</td><td>格式：数字活动编号；默认沿用上游 343766308960192；仅开启分享时使用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DUREX_DRAW</code></td><td>否</td><td>格式：1 开启抽奖，0 关闭；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>dlshyzx_drawid</code></td><td>否</td><td>格式：数字活动编号；所有账号参与同一活动；仅 DUREX_DRAW=1 时必填。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；断网预演仅生成本地通知预览。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录路径；否则查找可导入的 notify 和 /ql/data/scripts、/ql/scripts。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0 到 3600 的整数秒，默认 0（不延迟）。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IKUUU_DRY_RUN</code></td><td>否</td><td>格式：1 启用；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启。；多账号格式以该脚本文档为准</td></tr>
@@ -334,6 +347,10 @@
 <tr><td rowspan="3"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启断网预演；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/main.py</code></td><td><code>WALLHAVEN_PAGES</code></td><td>否</td><td>格式：1 至 100 的整数，默认 5。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WALLHAVEN_DRY_RUN</code></td><td>否</td><td>格式：0、false、no、off 表示正式运行；其他值表示断网预演。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。断网预演仅生成通知摘要，不调用通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="12"><code>scripts/nga_checkin.py</code></td><td><code>NGA_UA</code></td><td>否</td><td>格式：单行 User-Agent，默认 Nga_Official/90409；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NGA_ENABLE_DAILY_MISSIONS</code></td><td>否</td><td>格式：布尔值，默认 0；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NGA_ENABLE_VIDEO_MISSIONS</code></td><td>否</td><td>格式：布尔值，默认 0；多账号格式以该脚本文档为准</td></tr>
@@ -592,6 +609,7 @@
 - `scripts/cdrail.py`：每个非空行一个账号，同一账号的配套凭据集中在该行；各账号独立处理，任一账号失败整体非零退出。。
 - `scripts/cfmoto_checkin.py`：CFMOTO_COOKIE 每行一个账号。
 - `scripts/ddnsto.py`：每个非空行一个账号，使用 路由器ID|完整Cookie，仅按首个 | 拆分；各账号独立执行，任一账号失败整体非零退出。兼容旧变量仅支持单账号。。
+- `scripts/durex.py`：每个非空行一个账号的 Access-Token；各账号独立处理；任何账号失败则整体非零退出。。
 - `scripts/ikuuu_checkin.py`：IKUUU_ACCOUNT 每个非空行表示一个账号，行内格式为邮箱|密码；账号之间只使用换行。。
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
 - `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
@@ -717,6 +735,13 @@
 - 填写格式：`每个非空行填写 路由器ID|完整Cookie；仅在首个 | 分隔，同一行内 Cookie 原样保留，不用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `dlshyzx`
+
+- 所属脚本：`scripts/durex.py`
+- 获取或设置：在微信杜蕾斯会员中心小程序登录，用本人授权的抓包工具读取 vip.ixiliu.cn 请求头 Access-Token；失效时重新登录获取。
+- 填写格式：`每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `IKUUU_ACCOUNT`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
@@ -730,6 +755,12 @@
 - 获取或设置：在本人已登录的快手或快手极速版中打开“积分换好礼”页面，从本人控制的本地网络调试记录里找到 accelerate/info 请求，复制 Cookie 请求头；至少保留 kuaishou.api_st。不要绕过证书固定或使用第三方提取网站。
 - 填写格式：`每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 & 或 @ 分隔`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WALLHAVEN_SAVE_DIR`
+
+- 所属脚本：`scripts/main.py`
+- 获取或设置：在青龙中设置自己有写权限的壁纸保存目录。原脚本使用 /ql/data/downloads/local-website/img；本版必须显式设置以避免默认写入。无需账号或凭据。
+- 填写格式：`绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。`
 
 #### `NGA_ACCOUNT`
 
@@ -1495,6 +1526,48 @@
 - 获取或设置：如青龙通知模块不在默认脚本目录，可填写已有 notify.py 所在目录；此配置不影响续费接口。
 - 填写格式：`已有通知模块目录的路径，不执行下载或安装。`
 
+#### `DUREX_DRY_RUN`
+
+- 所属脚本：`scripts/durex.py`
+- 获取或设置：在青龙环境变量中设置；断网预演使用 1。
+- 填写格式：`1 开启断网预演，0 正式执行；默认 0。`
+
+#### `DUREX_SHARE`
+
+- 所属脚本：`scripts/durex.py`
+- 获取或设置：本人确实完成活动分享并确认需要上报记录后设置。
+- 填写格式：`1 开启分享记录上报，0 关闭；默认 0。`
+
+#### `DUREX_SHARE_ACT_ID`
+
+- 所属脚本：`scripts/durex.py`
+- 获取或设置：从本人小程序分享请求的 act_id 参数获取并核对活动仍有效。
+- 填写格式：`数字活动编号；默认沿用上游 343766308960192；仅开启分享时使用。`
+
+#### `DUREX_DRAW`
+
+- 所属脚本：`scripts/durex.py`
+- 获取或设置：在小程序查看抽奖规则，明确同意可能消耗机会或积分后设置。
+- 填写格式：`1 开启抽奖，0 关闭；默认 0。`
+
+#### `dlshyzx_drawid`
+
+- 所属脚本：`scripts/durex.py`
+- 获取或设置：从本人小程序抽奖接口 /mp/activity.lottery/draw 的 snId 参数获取；开启抽奖时必须填写，不使用过期示例。
+- 填写格式：`数字活动编号；所有账号参与同一活动；仅 DUREX_DRAW=1 时必填。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/durex.py`
+- 获取或设置：青龙全局通知开关；通知模块由青龙提供。
+- 填写格式：`默认 1；0、false、no、off 关闭；断网预演仅生成本地通知预览。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/durex.py`
+- 获取或设置：填写已安装青龙 notify.py 所在目录；不需要下载其他仓库。
+- 填写格式：`可选目录路径；否则查找可导入的 notify 和 /ql/data/scripts、/ql/scripts。`
+
 #### `IKUUU_MAX_RANDOM_DELAY`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
@@ -1536,6 +1609,30 @@
 - 所属脚本：`scripts/kuaishou_reward_status.py`
 - 获取或设置：仅当 notify.py 不在青龙标准路径时，填写其所在目录。
 - 填写格式：`本地目录路径`
+
+#### `WALLHAVEN_PAGES`
+
+- 所属脚本：`scripts/main.py`
+- 获取或设置：按需在青龙环境变量中设置抓取页数；默认保留上游的最新第 1 至 5 页。
+- 填写格式：`1 至 100 的整数，默认 5。`
+
+#### `WALLHAVEN_DRY_RUN`
+
+- 所属脚本：`scripts/main.py`
+- 获取或设置：断网核验时设置为 1；正式运行设为 0 或不设置。
+- 填写格式：`0、false、no、off 表示正式运行；其他值表示断网预演。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/main.py`
+- 获取或设置：使用青龙已有的通知设置；本脚本不需要配置通知凭据。
+- 填写格式：`默认 1；0、false、no、off 关闭通知。断网预演仅生成通知摘要，不调用通知模块。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/main.py`
+- 获取或设置：仅当青龙 notify.py 未位于标准脚本目录或模块搜索路径时，指定其所在目录。通知不可用不影响下载退出码。
+- 填写格式：`包含 notify.py 的本地目录路径。`
 
 #### `NGA_UA`
 
@@ -3019,8 +3116,10 @@
 - `scripts/cdrail.py`：SHA-256 `5caed175e6b1ff5b1033fbbd59105a71dfb952c8dd79bc9b92f3d354a69e5225`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7389d13167df31b6`。
 - `scripts/cfmoto_checkin.py`：SHA-256 `15ecc5e482af800b18360374359667392176fe88ab77c7950509da115f09f07a`；live 业务成功证据位于 `projects/checkin/validation/0ba7bb41fd4c339c`。
 - `scripts/ddnsto.py`：SHA-256 `a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
+- `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 - `scripts/ikuuu_checkin.py`：SHA-256 `6b8a4428f238d9a1476562c1f347804ee0bc55a58ea399fd14fa334ac86f9ed7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
+- `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 - `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
@@ -3096,8 +3195,10 @@
 - `scripts/cdrail.py`：调用签到接口，完成每日签到并可能增加积分；正式模式通过青龙通知模块发送脱敏结果摘要。
 - `scripts/cfmoto_checkin.py`：改变账号的当日签到和积分状态；最多发布三个公开帖子并留下可见内容；最多产生三次公开评论、三次点赞和三次分享任务记录；发帖和评论前访问第三方一言接口获取公开随机文本，不发送春风动力账号凭据。
 - `scripts/ddnsto.py`：真实执行时创建七天免费套餐订单；真实执行时将订单套餐绑定到指定路由器并延长套餐到期时间；启用通知且青龙模块可用时发送脱敏任务通知。
+- `scripts/durex.py`：每日签到改变签到状态并可能获得积分；开启分享后上报活动分享记录并可能获得奖励；开启抽奖后参与活动并可能消耗抽奖机会或积分。
 - `scripts/ikuuu_checkin.py`：登录 ikuuu 并创建会话；提交每日签到，可能增加账号流量；实时运行时可能通过青龙通知渠道发送脱敏汇总。
 - `scripts/kuaishou_reward_status.py`：。
+- `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
 - `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
@@ -3175,8 +3276,10 @@
 - `scripts/cdrail.py`：上游 `agluo/ql-script-hub` / `CDRail.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/cfmoto_checkin.py`：作者自有来源 `shaco_autowork/cf_sign.py`。
 - `scripts/ddnsto.py`：上游 `cloudcranes/some_scripts` / `ddnsto.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
+- `scripts/durex.py`：上游 `Rookie-wb-WH/ql_scripts` / `durex.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/ikuuu_checkin.py`：上游 `agluo/ql-script-hub` / `ikuuu_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
+- `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。

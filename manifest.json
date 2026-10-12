@@ -1128,6 +1128,161 @@
       }
     },
     {
+      "catalogId": "5bc8db2e6a36d14b",
+      "applicationKey": "durex",
+      "checkProfile": {
+        "requiredEnv": [
+          "dlshyzx"
+        ],
+        "optionalEnv": [
+          "DUREX_DRY_RUN",
+          "DUREX_SHARE",
+          "DUREX_SHARE_ACT_ID",
+          "DUREX_DRAW",
+          "dlshyzx_drawid",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DUREX_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "DUREX_DRY_RUN": "0",
+          "DUREX_SHARE": "0",
+          "DUREX_DRAW": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "用户信息与积分",
+          "每日签到成功，业务 status=200",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "查询并直接显示官方昵称与当前积分",
+          "每日签到",
+          "显式开启活动分享记录上报（不发布文本）",
+          "显式开启活动抽奖并验证奖品结果",
+          "每行一个账号、独立执行与失败退出",
+          "完全断网预演及本地通知预览",
+          "青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总"
+        ],
+        "sideEffects": [
+          "每日签到改变签到状态并可能获得积分",
+          "开启分享后上报活动分享记录并可能获得奖励",
+          "开启抽奖后参与活动并可能消耗抽奖机会或积分"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "杜蕾斯会员中心",
+      "path": "scripts/durex.py",
+      "sha256": "dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "durex.py"
+      },
+      "cron": "9 9 * * *",
+      "command": "python3 scripts/durex.py",
+      "environment": [
+        {
+          "name": "dlshyzx",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在微信杜蕾斯会员中心小程序登录，用本人授权的抓包工具读取 vip.ixiliu.cn 请求头 Access-Token；失效时重新登录获取。",
+          "format": "每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。"
+        },
+        {
+          "name": "DUREX_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；断网预演使用 1。",
+          "format": "1 开启断网预演，0 正式执行；默认 0。"
+        },
+        {
+          "name": "DUREX_SHARE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本人确实完成活动分享并确认需要上报记录后设置。",
+          "format": "1 开启分享记录上报，0 关闭；默认 0。"
+        },
+        {
+          "name": "DUREX_SHARE_ACT_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人小程序分享请求的 act_id 参数获取并核对活动仍有效。",
+          "format": "数字活动编号；默认沿用上游 343766308960192；仅开启分享时使用。"
+        },
+        {
+          "name": "DUREX_DRAW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在小程序查看抽奖规则，明确同意可能消耗机会或积分后设置。",
+          "format": "1 开启抽奖，0 关闭；默认 0。"
+        },
+        {
+          "name": "dlshyzx_drawid",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人小程序抽奖接口 /mp/activity.lottery/draw 的 snId 参数获取；开启抽奖时必须填写，不使用过期示例。",
+          "format": "数字活动编号；所有账号参与同一活动；仅 DUREX_DRAW=1 时必填。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关；通知模块由青龙提供。",
+          "format": "默认 1；0、false、no、off 关闭；断网预演仅生成本地通知预览。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写已安装青龙 notify.py 所在目录；不需要下载其他仓库。",
+          "format": "可选目录路径；否则查找可导入的 notify 和 /ql/data/scripts、/ql/scripts。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号的 Access-Token；各账号独立处理；任何账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询并直接显示官方昵称与当前积分",
+        "每日签到",
+        "显式开启活动分享记录上报（不发布文本）",
+        "显式开启活动抽奖并验证奖品结果",
+        "每行一个账号、独立执行与失败退出",
+        "完全断网预演及本地通知预览",
+        "青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总"
+      ],
+      "sideEffects": [
+        "每日签到改变签到状态并可能获得积分",
+        "开启分享后上报活动分享记录并可能获得奖励",
+        "开启抽奖后参与活动并可能消耗抽奖机会或积分"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/5bc8db2e6a36d14b",
+        "candidateSha256": "dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c"
+      }
+    },
+    {
       "catalogId": "7ea70c9e9d579efb",
       "applicationKey": "ikuuu",
       "checkProfile": {
@@ -1350,6 +1505,133 @@
         "validatedSha256": "484a16b450e0d60eead2d0f626449d231c9b342ae841f2a3a46fe6438dc8a57a",
         "releaseSha256": "b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "c0137ce8eaf72832",
+      "applicationKey": "main",
+      "checkProfile": {
+        "requiredEnv": [
+          "WALLHAVEN_SAVE_DIR"
+        ],
+        "optionalEnv": [
+          "WALLHAVEN_PAGES",
+          "WALLHAVEN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WALLHAVEN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WALLHAVEN_PAGES": "5",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\": \"success\"",
+          "\"exitCode\": 0"
+        ],
+        "features": [
+          "抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。",
+          "按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。",
+          "按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。",
+          "支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。",
+          "各页面及图片独立处理，任何失败使整体非零退出。",
+          "完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。",
+          "通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。"
+        ],
+        "sideEffects": [
+          "正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。",
+          "正式运行且启用通知时，调用青龙通知模块发送脱敏总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Wallhaven最新壁纸下载",
+      "path": "scripts/main.py",
+      "sha256": "ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cloudcranes/some_scripts",
+        "branch": "main",
+        "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
+        "originalPath": "Download_wallhaven/main.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/main.py",
+      "environment": [
+        {
+          "name": "WALLHAVEN_SAVE_DIR",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "在青龙中设置自己有写权限的壁纸保存目录。原脚本使用 /ql/data/downloads/local-website/img；本版必须显式设置以避免默认写入。无需账号或凭据。",
+          "format": "绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。"
+        },
+        {
+          "name": "WALLHAVEN_PAGES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需在青龙环境变量中设置抓取页数；默认保留上游的最新第 1 至 5 页。",
+          "format": "1 至 100 的整数，默认 5。"
+        },
+        {
+          "name": "WALLHAVEN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "断网核验时设置为 1；正式运行设为 0 或不设置。",
+          "format": "0、false、no、off 表示正式运行；其他值表示断网预演。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有的通知设置；本脚本不需要配置通知凭据。",
+          "format": "默认 1；0、false、no、off 关闭通知。断网预演仅生成通知摘要，不调用通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当青龙 notify.py 未位于标准脚本目录或模块搜索路径时，指定其所在目录。通知不可用不影响下载退出码。",
+          "format": "包含 notify.py 的本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": null,
+        "rule": "下载公共 Wallhaven 壁纸，无账号、无配套凭据；账号总数固定为零。",
+        "unsupportedReason": "上游仅访问公开页面和图片地址，没有账号服务契约。"
+      },
+      "dependencies": [],
+      "features": [
+        "抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。",
+        "按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。",
+        "按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。",
+        "支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。",
+        "各页面及图片独立处理，任何失败使整体非零退出。",
+        "完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。",
+        "通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。"
+      ],
+      "sideEffects": [
+        "正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。",
+        "正式运行且启用通知时，调用青龙通知模块发送脱敏总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c0137ce8eaf72832",
+        "candidateSha256": "ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17"
       }
     },
     {
