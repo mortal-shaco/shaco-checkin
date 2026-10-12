@@ -13231,6 +13231,168 @@
         "evidence": "projects/checkin/validation/e4af0e04fafedbd8",
         "candidateSha256": "041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d"
       }
+    },
+    {
+      "catalogId": "60f9d3538e9f8470",
+      "applicationKey": "rookie-wb-wh/ql_scripts::zippo",
+      "checkProfile": {
+        "requiredEnv": [
+          "zippoCookie"
+        ],
+        "optionalEnv": [
+          "ZIPPO_TASKS",
+          "ZIPPO_COMMENT_STAR",
+          "ZIPPO_COMMENT_TAG",
+          "ZIPPO_INTRODUCER",
+          "ZIPPO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ZIPPO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ZIPPO_TASKS": "points,sign",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "积分余额查询",
+          "每日签到及奖励核验",
+          "商品分类7前两页检索",
+          "显式收藏及领取奖励，可选择取消本轮收藏",
+          "显式记录分享任务及领取奖励，不发布文本",
+          "使用指定星级和官方标签评价一个未评价商品并领取奖励，已评价时跳过提交",
+          "显式绑定指定推荐人，回显不足时失败闭合",
+          "多账号独立执行、断网预演、时间轴日志、结构化汇总及青龙通知"
+        ],
+        "sideEffects": [
+          "签到增加积分",
+          "收藏商品及领取积分",
+          "显式取消本轮收藏",
+          "记录分享任务及领取积分",
+          "提交标签和星级评价及领取积分",
+          "显式绑定指定推荐人",
+          "真实运行向青龙配置的通知渠道发送摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Zippo会员中心",
+      "path": "scripts/zippo.py",
+      "sha256": "db87391467bd1a78afea9e1725cf8a5a06a4f78373821128a20dcb98ed03b338",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "zippo.py"
+      },
+      "cron": "9 9 * * *",
+      "command": "python3 scripts/zippo.py",
+      "environment": [
+        {
+          "name": "zippoCookie",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录微信小程序 Zippo会员中心，用自己的抓包工具获取 wx-center.zippo.com.cn 请求头 authorization 完整值，保留授权前缀。",
+          "format": "每个非空行一个账号；不使用 #、& 或 @ 分隔账号。"
+        },
+        {
+          "name": "ZIPPO_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需选择任务，默认仅积分查询与签到。",
+          "format": "逗号分隔 points,sign,goods,favorite,unfavorite,share,comment,invite；默认 points,sign；unfavorite 必须同时选择 favorite。"
+        },
+        {
+          "name": "ZIPPO_COMMENT_STAR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "选择 comment 时必填，填写自己认可的评价星级。",
+          "format": "1至5的整数。"
+        },
+        {
+          "name": "ZIPPO_COMMENT_TAG",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "选择 comment 时必填，从小程序商品评价页面获取自己认可的官方候选标签。",
+          "format": "一个完整标签，必须与官方候选完全一致；仅提交标签，不发布自由文本。"
+        },
+        {
+          "name": "ZIPPO_INTRODUCER",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "选择 invite 时必填，向自己认可的推荐人获取推荐码，绑定可能不可撤销。",
+          "format": "单个推荐码，不从远程获取；回显不足时报告失败并提示人工核对。"
+        },
+        {
+          "name": "ZIPPO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为1执行完全断网预演。",
+          "format": "1、true、yes、on 启用，默认0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启；预演只生成摘要以保证断网。",
+          "format": "0、false、no、off 关闭，默认1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙自带 notify.py 所在目录；未配置时尝试导入 notify 和青龙标准目录。",
+          "format": "本地目录路径，仅用于通知适配器；业务运行不依赖此目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个完整 authorization，保留凭据正文；账号独立处理，任一失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "积分余额查询",
+        "每日签到及奖励核验",
+        "商品分类7前两页检索",
+        "显式收藏及领取奖励，可选择取消本轮收藏",
+        "显式记录分享任务及领取奖励，不发布文本",
+        "使用指定星级和官方标签评价一个未评价商品并领取奖励，已评价时跳过提交",
+        "显式绑定指定推荐人，回显不足时失败闭合",
+        "多账号独立执行、断网预演、时间轴日志、结构化汇总及青龙通知"
+      ],
+      "sideEffects": [
+        "签到增加积分",
+        "收藏商品及领取积分",
+        "显式取消本轮收藏",
+        "记录分享任务及领取积分",
+        "提交标签和星级评价及领取积分",
+        "显式绑定指定推荐人",
+        "真实运行向青龙配置的通知渠道发送摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/60f9d3538e9f8470",
+        "candidateSha256": "db87391467bd1a78afea9e1725cf8a5a06a4f78373821128a20dcb98ed03b338"
+      }
     }
   ]
 }

@@ -128,6 +128,7 @@
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `2 8 * * *` |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `8 6 * * *` |
+| Zippo会员中心 | `scripts/zippo.py` | `python3 scripts/zippo.py` | `9 9 * * *` |
 
 依赖安装任务会读取本仓库的 `requirements.txt`、`package-lock.json` 或 `package.json`；没有额外依赖时安全退出，不会执行远程安装脚本。
 
@@ -229,6 +230,7 @@
 - `scripts/wangchao.py`：手机号与密码登录，展示官方返回的非敏感昵称或公开账号标识；保留上游随机客户端标识、RSA 密码加密、HMAC 登录认证、应用请求签名和 SM2 阅读参数加密；进入 App，获取每日阅读任务、识别已读文章、浏览未读文章、提交阅读记录并复查完成进度；显式开关控制同应用活动入口浏览，不伪造或重放随机阅读记录；显式开关控制每日一次抽奖，检查会话、阅读进度及官方资格，展示上游奖品名称；查询最近十条抽奖记录及时间；换行多账号、独立失败处理、完全断网预演、业务失败非零退出；限时 HTTP 请求、严格业务码与必要字段校验、禁止携带凭据重定向；时间轴阶段日志、每账号及全局统计、唯一单行 TASK_SUMMARY 汇总、青龙脱敏通知。
 - `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
 - `scripts/yht.py`：查询官方账号昵称等非敏感身份，不输出手机号；查询种植活动标题；参与种植活动；连续施肥，保留上游默认最多一百次请求并允许调低上限；查询当前等级、下一等级和剩余施肥次数；施肥接口返回当前不存在进行中的活动时尝试领取奖励，核验奖励名称与数量；可选每日签到及奖励详情查询，默认保持未启用；可选本次配置账号之间互助及互助身份查询；每行一个账号、独立执行、任一业务失败整体失败；完全断网预演、时间轴阶段日志、账号统计及单行结构化任务汇总；通过青龙通知适配器发送脱敏总结，通知异常保留业务退出码。
+- `scripts/zippo.py`：积分余额查询；每日签到及奖励核验；商品分类7前两页检索；显式收藏及领取奖励，可选择取消本轮收藏；显式记录分享任务及领取奖励，不发布文本；使用指定星级和官方标签评价一个未评价商品并领取奖励，已评价时跳过提交；显式绑定指定推荐人，回显不足时失败闭合；多账号独立执行、断网预演、时间轴日志、结构化汇总及青龙通知。
 
 ## 环境变量与参数
 
@@ -337,6 +339,7 @@
 <tr><td rowspan="1"><code>scripts/wangchao.py</code></td><td><code>WangChao</code></td><td>是</td><td>格式：每个非空行一个“登录手机号#密码”。仅按第一个 # 切分，密码中的后续 #、&amp;、@ 等字符完整保留。密码 UTF-8 长度不超过 117 字节。旧版 &amp;&amp; 多账号分隔须手动迁移为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/yht.py</code></td><td><code>Yht_token</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留大小写；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/zippo.py</code></td><td><code>zippoCookie</code></td><td>是</td><td>格式：每个非空行一个账号；不使用 #、&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -805,6 +808,13 @@
 <tr><td><code>YHT_FERTILIZE_LIMIT</code></td><td>否</td><td>格式：1～100 的整数，默认 100；任何未确认成功的响应立即停止施肥。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；不是业务必需依赖；预演通知适配器运行于禁网子进程。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/zippo.py</code></td><td><code>ZIPPO_TASKS</code></td><td>否</td><td>格式：逗号分隔 points,sign,goods,favorite,unfavorite,share,comment,invite；默认 points,sign；unfavorite 必须同时选择 favorite。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ZIPPO_COMMENT_STAR</code></td><td>否</td><td>格式：1至5的整数。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ZIPPO_COMMENT_TAG</code></td><td>否</td><td>格式：一个完整标签，必须与官方候选完全一致；仅提交标签，不发布自由文本。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ZIPPO_INTRODUCER</code></td><td>是</td><td>格式：单个推荐码，不从远程获取；回显不足时报告失败并提示人工核对。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ZIPPO_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用，默认0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，默认1。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于通知适配器；业务运行不依赖此目录。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -904,6 +914,7 @@
 - `scripts/wangchao.py`：每个非空行一个账号，只按第一个 # 切分配套手机号与密码。忽略空行；各账号独立处理，任一账号配置或业务失败则整体非零退出。。
 - `scripts/wps_clock_in.py`：每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。。
 - `scripts/yht.py`：每个非空行一个账号的完整 qm-user-token；逐账号执行，互助仅限本次配置的其他账号；任何账号业务失败整体非零退出。。
+- `scripts/zippo.py`：每个非空行一个完整 authorization，保留凭据正文；账号独立处理，任一失败则整体非零退出。。
 
 ## 参数获取方法
 
@@ -1591,6 +1602,13 @@
 - 所属脚本：`scripts/yht.py`
 - 获取或设置：在微信益禾堂手机点单小程序登录，用自己的授权抓包工具查看发往 webapi.qmai.cn 的请求头 qm-user-token；只复制该字段值，不复制手机号、Cookie 或整段请求头。失效后重新登录获取。
 - 填写格式：`每个非空行一个完整令牌；保留大小写；不使用 #、&、@ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `zippoCookie`
+
+- 所属脚本：`scripts/zippo.py`
+- 获取或设置：登录微信小程序 Zippo会员中心，用自己的抓包工具获取 wx-center.zippo.com.cn 请求头 authorization 完整值，保留授权前缀。
+- 填写格式：`每个非空行一个账号；不使用 #、& 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 
@@ -4359,6 +4377,49 @@
 - 获取或设置：可选填写已有青龙 notify.py 所在目录；也尝试脚本目录及青龙标准目录；不可用只记录通知失败。
 - 填写格式：`本地目录路径；不是业务必需依赖；预演通知适配器运行于禁网子进程。`
 
+#### `ZIPPO_TASKS`
+
+- 所属脚本：`scripts/zippo.py`
+- 获取或设置：按需选择任务，默认仅积分查询与签到。
+- 填写格式：`逗号分隔 points,sign,goods,favorite,unfavorite,share,comment,invite；默认 points,sign；unfavorite 必须同时选择 favorite。`
+
+#### `ZIPPO_COMMENT_STAR`
+
+- 所属脚本：`scripts/zippo.py`
+- 获取或设置：选择 comment 时必填，填写自己认可的评价星级。
+- 填写格式：`1至5的整数。`
+
+#### `ZIPPO_COMMENT_TAG`
+
+- 所属脚本：`scripts/zippo.py`
+- 获取或设置：选择 comment 时必填，从小程序商品评价页面获取自己认可的官方候选标签。
+- 填写格式：`一个完整标签，必须与官方候选完全一致；仅提交标签，不发布自由文本。`
+
+#### `ZIPPO_INTRODUCER`
+
+- 所属脚本：`scripts/zippo.py`
+- 获取或设置：选择 invite 时必填，向自己认可的推荐人获取推荐码，绑定可能不可撤销。
+- 填写格式：`单个推荐码，不从远程获取；回显不足时报告失败并提示人工核对。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ZIPPO_DRY_RUN`
+
+- 所属脚本：`scripts/zippo.py`
+- 获取或设置：设置为1执行完全断网预演。
+- 填写格式：`1、true、yes、on 启用，默认0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/zippo.py`
+- 获取或设置：青龙全局通知开关，默认开启；预演只生成摘要以保证断网。
+- 填写格式：`0、false、no、off 关闭，默认1。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/zippo.py`
+- 获取或设置：可选，填写青龙自带 notify.py 所在目录；未配置时尝试导入 notify 和青龙标准目录。
+- 填写格式：`本地目录路径，仅用于通知适配器；业务运行不依赖此目录。`
+
 
 ## 验证与兼容性
 
@@ -4458,6 +4519,7 @@
 - `scripts/wangchao.py`：SHA-256 `487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
 - `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
 - `scripts/yht.py`：SHA-256 `041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e4af0e04fafedbd8`。
+- `scripts/zippo.py`：SHA-256 `db87391467bd1a78afea9e1725cf8a5a06a4f78373821128a20dcb98ed03b338`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/60f9d3538e9f8470`。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。
 
@@ -4559,6 +4621,7 @@
 - `scripts/wangchao.py`：实时登录会建立账号及活动服务会话；默认浏览未读文章并提交阅读记录，改变每日阅读进度；启用 WANGCHAO_BONUS 时浏览活动文章入口，可能改变浏览记录；启用 WANGCHAO_LOTTERY 时抽奖一次，消耗次数并产生中奖或参与记录；启用 QINGLONG_NOTIFY 时通过青龙通知渠道发送脱敏任务总结；预演通知禁止网络。
 - `scripts/wps_clock_in.py`：。
 - `scripts/yht.py`：参加种植活动；消耗活动肥料进行施肥；满足条件时领取活动奖励；开启 YHT_SIGN 后提交每日签到并领取签到奖励；开启 YHT_HELP 后为本次配置的其他账号助力；通知开启时调用青龙通知发送总结；断网预演阻止联网和派生进程。
+- `scripts/zippo.py`：签到增加积分；收藏商品及领取积分；显式取消本轮收藏；记录分享任务及领取积分；提交标签和星级评价及领取积分；显式绑定指定推荐人；真实运行向青龙配置的通知渠道发送摘要。
 
 使用测试账号先行验证。停止使用时应禁用任务、删除订阅和敏感环境变量；怀疑凭据泄漏时立即在对应平台撤销会话。
 
@@ -4662,3 +4725,4 @@
 - `scripts/wangchao.py`：上游 `Rookie-wb-WH/ql_scripts` / `wangchao.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/yht.py`：上游 `Rookie-wb-WH/ql_scripts` / `yht.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
+- `scripts/zippo.py`：上游 `Rookie-wb-WH/ql_scripts` / `zippo.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
