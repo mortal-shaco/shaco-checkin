@@ -52,6 +52,7 @@
 | 劲友家日常任务 | `scripts/jyj.py` | `python3 scripts/jyj.py` | `0 8 * * *` |
 | 科技玩家签到 | `scripts/kjwj.py` | `python3 scripts/kjwj.py` | `30 7 * * *` |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
+| Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
@@ -144,6 +145,7 @@
 - `scripts/jyj.py`：查询官方昵称及可用积分、历史使用和历史总积分；每日签到和每日水滴领取；显式开启三轮拍一拍实际计时游戏和三次幸运转盘；显式开启文章点赞、订阅、调研、分享任务奖励；分享接口不发布文本；兼容jyjRun健康运动领取开关，默认关闭；查询庄园种植状态及可种植药材，显式指定种植和浇水上限；独立活动开关支持本人照片上传、AI识别、春日活动拍照打卡及打卡查询；独立活动开关支持酒柜抽奖和红包雨；显式提供本人真实成绩后执行一轮药材游戏；换行多账号、断网预演、脱敏日志、业务失败退出与青龙通知。
 - `scripts/kjwj.py`：使用邮箱密码登录科技玩家，获取签到令牌；查询当日签到状态、当日获得积分和总积分；未签到时自动签到，并复查当日状态确认完成；已签到时跳过写操作并显示积分；显示官方返回的非秘密账号身份，屏蔽凭据和手机号；每行一个账号独立执行，失败返回非零退出码；完全断网预演、分阶段日志、每账号统计和单行结构化任务总结；正式执行后通过青龙通知发送脱敏总结，预演时显示通知摘要；通知失败保留业务退出码。
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
+- `scripts/leaflow_checkin_pyleaflow_checkin.py`：使用 Cookie 执行 Leaflow 每日签到；自动识别 CSRF 隐藏字段并提交签到表单；明确识别成功、今日已完成、会话失效和失败结果；在服务返回时提取当日签到奖励；支持换行多账号独立处理并生成结构化汇总；提供有限重试、请求超时和可选随机执行窗口；提供完全断网的预演配置校验；在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份；支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码；输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY；兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小。
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
 - `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
@@ -242,6 +244,7 @@
 <tr><td rowspan="1"><code>scripts/jyj.py</code></td><td><code>jyjck</code></td><td>是</td><td>格式：每个非空行一个账号：authorization#userid；只按第一个#分割，后续字段原样保留，不支持@@、&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kjwj.py</code></td><td><code>kjwj_info</code></td><td>是</td><td>格式：邮箱#密码，每行一个账号，仅首个 # 为分隔符，密码中后续字符原样保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_COOKIE</code></td><td>是</td><td>格式：每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 &amp; 或 @ 分隔；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、&amp; 和 @ 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/main.py</code></td><td><code>WALLHAVEN_SAVE_DIR</code></td><td>否</td><td>格式：绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
@@ -435,6 +438,24 @@
 <tr><td rowspan="3"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启断网预演；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="18"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启；默认关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LEAFLOW_BASE</code></td><td>否</td><td>格式：HTTPS 根地址，无用户名、密码、路径、查询或片段；默认 https://checkin.leaflow.net。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LEAFLOW_TIMEOUT</code></td><td>否</td><td>格式：1 至 120 的整数秒，默认 20；维护参数优先。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LEAFLOW_RETRIES</code></td><td>否</td><td>格式：1 至 5 的整数，默认 3；维护参数优先。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LEAFLOW_RETRY_DELAY</code></td><td>否</td><td>格式：0 至 60 的整数秒，默认 3；维护参数优先。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LEAFLOW_MAX_DELAY</code></td><td>否</td><td>格式：0 至 3600 的整数秒，维护版默认 0；维护参数优先。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LEAFFLOW_BASE</code></td><td>否</td><td>格式：与 LEAFLOW_BASE 相同；新参数未设置时生效。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TIMEOUT</code></td><td>否</td><td>格式：1 至 120 的整数秒；新参数未设置时生效。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>RETRY_TIMES</code></td><td>否</td><td>格式：1 至 5 的整数；新参数未设置时生效。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>RETRY_DELAY</code></td><td>否</td><td>格式：0 至 60 的整数秒；新参数未设置时生效。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0 至 3600 的整数秒；新参数未设置时生效。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：显式 true 开启旧随机窗口，窗口未设置时为 3600 秒；显式其他值关闭；新窗口参数优先。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NOTIFY_ON_ALREADY</code></td><td>否</td><td>格式：默认 true；其他值关闭此类明细，仍发送任务总数汇总。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DEBUG_MODE</code></td><td>否</td><td>格式：接受旧值但不保存原始响应，也不显示页面片段。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭；预演只生成本地通知内容，不加载或调用通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录，可选；亦支持 import notify.send、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>HTTP_PROXY</code></td><td>是</td><td>格式：标准库支持的代理地址；兼容 http_proxy。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>HTTPS_PROXY</code></td><td>是</td><td>格式：标准库支持的代理地址；兼容 https_proxy。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/main.py</code></td><td><code>WALLHAVEN_PAGES</code></td><td>否</td><td>格式：1 至 100 的整数，默认 5。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WALLHAVEN_DRY_RUN</code></td><td>否</td><td>格式：0、false、no、off 表示正式运行；其他值表示断网预演。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。断网预演仅生成通知摘要，不调用通知模块。；多账号格式以该脚本文档为准</td></tr>
@@ -726,6 +747,7 @@
 - `scripts/jyj.py`：每个非空行一个账号，authorization#userid，只分割第一个#；逐账号独立处理，任一失败整体非零退出。。
 - `scripts/kjwj.py`：每个非空行表示一个账号，仅按首个 # 拆分邮箱和密码；逐账号独立执行，任一账号失败整体返回非零退出码。。
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
+- `scripts/leaflow_checkin_pyleaflow_checkin.py`：每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
@@ -941,6 +963,13 @@
 - 所属脚本：`scripts/kuaishou_reward_status.py`
 - 获取或设置：在本人已登录的快手或快手极速版中打开“积分换好礼”页面，从本人控制的本地网络调试记录里找到 accelerate/info 请求，复制 Cookie 请求头；至少保留 kuaishou.api_st。不要绕过证书固定或使用第三方提取网站。
 - 填写格式：`每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 & 或 @ 分隔`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LEAFLOW_COOKIE`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：浏览器登录 https://checkin.leaflow.net，打开开发者工具的网络面板，刷新页面后选择本站请求，复制请求头 Cookie 的完整值；不要复制响应头 Set-Cookie，不要公开。
+- 填写格式：`每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、& 和 @ 原样保留。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WALLHAVEN_SAVE_DIR`
@@ -2117,6 +2146,116 @@
 - 所属脚本：`scripts/kuaishou_reward_status.py`
 - 获取或设置：仅当 notify.py 不在青龙标准路径时，填写其所在目录。
 - 填写格式：`本地目录路径`
+
+#### `LEAFLOW_DRY_RUN`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：需要断网预演时设置为 1。
+- 填写格式：`1/true/yes/on 开启；默认关闭。`
+
+#### `LEAFLOW_BASE`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：默认使用原站点，仅在确认可信部署的情况下修改；兼容旧名 LEAFFLOW_BASE。
+- 填写格式：`HTTPS 根地址，无用户名、密码、路径、查询或片段；默认 https://checkin.leaflow.net。`
+
+#### `LEAFLOW_TIMEOUT`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：按需要设置单次请求超时，兼容 TIMEOUT。
+- 填写格式：`1 至 120 的整数秒，默认 20；维护参数优先。`
+
+#### `LEAFLOW_RETRIES`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：按需要设置每账号最大尝试次数，兼容 RETRY_TIMES。
+- 填写格式：`1 至 5 的整数，默认 3；维护参数优先。`
+
+#### `LEAFLOW_RETRY_DELAY`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：按需要设置重试间隔，兼容 RETRY_DELAY。
+- 填写格式：`0 至 60 的整数秒，默认 3；维护参数优先。`
+
+#### `LEAFLOW_MAX_DELAY`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：按需要设置本轮随机执行窗口，兼容 MAX_RANDOM_DELAY 与 RANDOM_SIGNIN。
+- 填写格式：`0 至 3600 的整数秒，维护版默认 0；维护参数优先。`
+
+#### `LEAFFLOW_BASE`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：旧脚本基础地址参数，推荐使用 LEAFLOW_BASE。
+- 填写格式：`与 LEAFLOW_BASE 相同；新参数未设置时生效。`
+
+#### `TIMEOUT`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：旧脚本超时参数，推荐使用 LEAFLOW_TIMEOUT。
+- 填写格式：`1 至 120 的整数秒；新参数未设置时生效。`
+
+#### `RETRY_TIMES`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：旧脚本重试次数参数，推荐使用 LEAFLOW_RETRIES。
+- 填写格式：`1 至 5 的整数；新参数未设置时生效。`
+
+#### `RETRY_DELAY`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：旧脚本重试间隔参数，推荐使用 LEAFLOW_RETRY_DELAY。
+- 填写格式：`0 至 60 的整数秒；新参数未设置时生效。`
+
+#### `MAX_RANDOM_DELAY`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：旧脚本随机窗口参数，推荐使用 LEAFLOW_MAX_DELAY。
+- 填写格式：`0 至 3600 的整数秒；新参数未设置时生效。`
+
+#### `RANDOM_SIGNIN`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：沿用旧脚本随机签到开关，推荐直接设置 LEAFLOW_MAX_DELAY。
+- 填写格式：`显式 true 开启旧随机窗口，窗口未设置时为 3600 秒；显式其他值关闭；新窗口参数优先。`
+
+#### `NOTIFY_ON_ALREADY`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：按需要控制已签到账号是否加入通知明细。
+- 填写格式：`默认 true；其他值关闭此类明细，仍发送任务总数汇总。`
+
+#### `DEBUG_MODE`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：兼容旧参数；本维护版始终提供脱敏阶段日志。
+- 填写格式：`接受旧值但不保存原始响应，也不显示页面片段。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：通过青龙环境变量控制任务汇总通知。
+- 填写格式：`默认 1；0/false/no/off 关闭；预演只生成本地通知内容，不加载或调用通知模块。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：如通知模块不在默认目录，填写青龙 notify.py 的所在目录。
+- 填写格式：`本机目录，可选；亦支持 import notify.send、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。`
+
+#### `HTTP_PROXY`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：需要代理时按运行环境配置，脚本不记录代理值。
+- 填写格式：`标准库支持的代理地址；兼容 http_proxy。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `HTTPS_PROXY`
+
+- 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
+- 获取或设置：需要代理时按运行环境配置，脚本不记录代理值。
+- 填写格式：`标准库支持的代理地址；兼容 https_proxy。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WALLHAVEN_PAGES`
 
@@ -3740,6 +3879,7 @@
 - `scripts/jyj.py`：SHA-256 `28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d484be6cd2a617db`。
 - `scripts/kjwj.py`：SHA-256 `6867c355c23ccfdd7deafbcbeef48865c1001d7e274c9b9e265dced5047eaaab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f4e13633e05b6a28`。
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
+- `scripts/leaflow_checkin_pyleaflow_checkin.py`：SHA-256 `1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 - `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
@@ -3832,6 +3972,7 @@
 - `scripts/jyj.py`：签到并领取积分或水滴奖励；创建及提交拍一拍和药材游戏记录，领取游戏奖励；转盘、酒柜及红包雨抽奖，可能消耗活动次数或积分；点赞文章及记录订阅、调研、分享和运动任务；种植指定药材及消耗水滴浇水；上传本人照片至官方授权存储，提交AI识别及活动拍照打卡；通知启用且适配器可用时向青龙通知渠道发送脱敏结果。
 - `scripts/kjwj.py`：未签到时提交每日签到并获得积分；正式执行时按通知开关发送青龙任务通知。
 - `scripts/kuaishou_reward_status.py`：。
+- `scripts/leaflow_checkin_pyleaflow_checkin.py`：正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励；正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总。
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
 - `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
@@ -3926,6 +4067,7 @@
 - `scripts/jyj.py`：上游 `Rookie-wb-WH/ql_scripts` / `jingyoujia/jyj.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/kjwj.py`：上游 `cloudcranes/some_scripts` / `kjwj.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
+- `scripts/leaflow_checkin_pyleaflow_checkin.py`：上游 `agluo/ql-script-hub` / `archive/leaflow_checkin.pyleaflow_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。

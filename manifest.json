@@ -2801,6 +2801,258 @@
       }
     },
     {
+      "catalogId": "12e44eccee922041",
+      "applicationKey": "leaflow",
+      "checkProfile": {
+        "requiredEnv": [
+          "LEAFLOW_COOKIE"
+        ],
+        "optionalEnv": [
+          "LEAFLOW_DRY_RUN",
+          "LEAFLOW_BASE",
+          "LEAFLOW_TIMEOUT",
+          "LEAFLOW_RETRIES",
+          "LEAFLOW_RETRY_DELAY",
+          "LEAFLOW_MAX_DELAY",
+          "LEAFFLOW_BASE",
+          "TIMEOUT",
+          "RETRY_TIMES",
+          "RETRY_DELAY",
+          "MAX_RANDOM_DELAY",
+          "RANDOM_SIGNIN",
+          "NOTIFY_ON_ALREADY",
+          "DEBUG_MODE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "HTTP_PROXY",
+          "HTTPS_PROXY"
+        ],
+        "dryRunEnv": {
+          "LEAFLOW_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LEAFLOW_MAX_DELAY": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "status=success message=check-in succeeded",
+          "status=already message=already checked in today"
+        ],
+        "features": [
+          "使用 Cookie 执行 Leaflow 每日签到",
+          "自动识别 CSRF 隐藏字段并提交签到表单",
+          "明确识别成功、今日已完成、会话失效和失败结果",
+          "在服务返回时提取当日签到奖励",
+          "支持换行多账号独立处理并生成结构化汇总",
+          "提供有限重试、请求超时和可选随机执行窗口",
+          "提供完全断网的预演配置校验",
+          "在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份",
+          "支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码",
+          "输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY",
+          "兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小"
+        ],
+        "sideEffects": [
+          "正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励",
+          "正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Leaflow 签到",
+      "path": "scripts/leaflow_checkin_pyleaflow_checkin.py",
+      "sha256": "1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "agluo/ql-script-hub",
+        "branch": "master",
+        "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
+        "originalPath": "archive/leaflow_checkin.pyleaflow_checkin.py"
+      },
+      "cron": "34 18 * * *",
+      "command": "python3 scripts/leaflow_checkin_pyleaflow_checkin.py",
+      "environment": [
+        {
+          "name": "LEAFLOW_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://checkin.leaflow.net，打开开发者工具的网络面板，刷新页面后选择本站请求，复制请求头 Cookie 的完整值；不要复制响应头 Set-Cookie，不要公开。",
+          "format": "每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、& 和 @ 原样保留。"
+        },
+        {
+          "name": "LEAFLOW_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网预演时设置为 1。",
+          "format": "1/true/yes/on 开启；默认关闭。"
+        },
+        {
+          "name": "LEAFLOW_BASE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认使用原站点，仅在确认可信部署的情况下修改；兼容旧名 LEAFFLOW_BASE。",
+          "format": "HTTPS 根地址，无用户名、密码、路径、查询或片段；默认 https://checkin.leaflow.net。"
+        },
+        {
+          "name": "LEAFLOW_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要设置单次请求超时，兼容 TIMEOUT。",
+          "format": "1 至 120 的整数秒，默认 20；维护参数优先。"
+        },
+        {
+          "name": "LEAFLOW_RETRIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要设置每账号最大尝试次数，兼容 RETRY_TIMES。",
+          "format": "1 至 5 的整数，默认 3；维护参数优先。"
+        },
+        {
+          "name": "LEAFLOW_RETRY_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要设置重试间隔，兼容 RETRY_DELAY。",
+          "format": "0 至 60 的整数秒，默认 3；维护参数优先。"
+        },
+        {
+          "name": "LEAFLOW_MAX_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要设置本轮随机执行窗口，兼容 MAX_RANDOM_DELAY 与 RANDOM_SIGNIN。",
+          "format": "0 至 3600 的整数秒，维护版默认 0；维护参数优先。"
+        },
+        {
+          "name": "LEAFFLOW_BASE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧脚本基础地址参数，推荐使用 LEAFLOW_BASE。",
+          "format": "与 LEAFLOW_BASE 相同；新参数未设置时生效。"
+        },
+        {
+          "name": "TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧脚本超时参数，推荐使用 LEAFLOW_TIMEOUT。",
+          "format": "1 至 120 的整数秒；新参数未设置时生效。"
+        },
+        {
+          "name": "RETRY_TIMES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧脚本重试次数参数，推荐使用 LEAFLOW_RETRIES。",
+          "format": "1 至 5 的整数；新参数未设置时生效。"
+        },
+        {
+          "name": "RETRY_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧脚本重试间隔参数，推荐使用 LEAFLOW_RETRY_DELAY。",
+          "format": "0 至 60 的整数秒；新参数未设置时生效。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧脚本随机窗口参数，推荐使用 LEAFLOW_MAX_DELAY。",
+          "format": "0 至 3600 的整数秒；新参数未设置时生效。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "沿用旧脚本随机签到开关，推荐直接设置 LEAFLOW_MAX_DELAY。",
+          "format": "显式 true 开启旧随机窗口，窗口未设置时为 3600 秒；显式其他值关闭；新窗口参数优先。"
+        },
+        {
+          "name": "NOTIFY_ON_ALREADY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要控制已签到账号是否加入通知明细。",
+          "format": "默认 true；其他值关闭此类明细，仍发送任务总数汇总。"
+        },
+        {
+          "name": "DEBUG_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容旧参数；本维护版始终提供脱敏阶段日志。",
+          "format": "接受旧值但不保存原始响应，也不显示页面片段。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通过青龙环境变量控制任务汇总通知。",
+          "format": "默认 1；0/false/no/off 关闭；预演只生成本地通知内容，不加载或调用通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如通知模块不在默认目录，填写青龙 notify.py 的所在目录。",
+          "format": "本机目录，可选；亦支持 import notify.send、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。"
+        },
+        {
+          "name": "HTTP_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "需要代理时按运行环境配置，脚本不记录代理值。",
+          "format": "标准库支持的代理地址；兼容 http_proxy。"
+        },
+        {
+          "name": "HTTPS_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "需要代理时按运行环境配置，脚本不记录代理值。",
+          "format": "标准库支持的代理地址；兼容 https_proxy。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 Cookie 执行 Leaflow 每日签到",
+        "自动识别 CSRF 隐藏字段并提交签到表单",
+        "明确识别成功、今日已完成、会话失效和失败结果",
+        "在服务返回时提取当日签到奖励",
+        "支持换行多账号独立处理并生成结构化汇总",
+        "提供有限重试、请求超时和可选随机执行窗口",
+        "提供完全断网的预演配置校验",
+        "在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份",
+        "支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码",
+        "输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY",
+        "兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小"
+      ],
+      "sideEffects": [
+        "正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励",
+        "正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/12e44eccee922041",
+        "candidateSha256": "2bdaf86c5f8021407596e8cbe4d3ee6fc5c18a9625720c6f11e17ce782f02c09"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "2bdaf86c5f8021407596e8cbe4d3ee6fc5c18a9625720c6f11e17ce782f02c09",
+        "releaseSha256": "1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "c0137ce8eaf72832",
       "applicationKey": "main",
       "checkProfile": {
