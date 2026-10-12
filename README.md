@@ -1,6 +1,6 @@
 # shaco-checkin
 
-通用签到类青龙脚本发布仓库。脚本经来源、许可证和基础检查后发布；真实账号检查和人工保留、下架在发布后进行。各脚本验证状态见下文。
+通用签到类青龙脚本发布仓库。脚本经来源、许可证和基础检查后发布；真实账号人工核验和上架、下架在发布后进行。各脚本验证状态见下文。
 
 ## 青龙面板安装
 
@@ -117,6 +117,7 @@
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `55 9 * * *` |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `1 16 * * *` |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
+| 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `9 10,23 * * *` |
 
 依赖安装任务会读取本仓库的 `requirements.txt`、`package-lock.json` 或 `package.json`；没有额外依赖时安全退出，不会执行远程安装脚本。
 
@@ -207,6 +208,7 @@
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
 - `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
+- `scripts/atxyq.py`：查询并直接展示官方昵称，查询学校启用状态与积分任务列表。；每日签到，核验连续天数与获得积分。；领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。；查询当前可用积分。；显式开启最多两篇校园文章的点赞与取消点赞。；显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。；显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。；使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。；逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。。
 
 ## 环境变量与参数
 
@@ -305,6 +307,7 @@
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/atxyq.py</code></td><td><code>atxyqs</code></td><td>是</td><td>格式：每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -672,6 +675,18 @@
 <tr><td rowspan="3"><code>scripts/wps_clock_in.py</code></td><td><code>WPS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on启用，默认0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭；默认1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地青龙通知模块所在目录，可不填写。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="12"><code>scripts/atxyq.py</code></td><td><code>ATXYQ_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>atxyqDel</code></td><td>否</td><td>格式：整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_LIKE</code></td><td>否</td><td>格式：默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_POST</code></td><td>否</td><td>格式：默认 0；1 发布一篇动态，优先一言并保留作者来源署名，失败回退本地正文。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_LOCAL_TEXT</code></td><td>否</td><td>格式：可选，空白折叠后 1 至 280 字；默认本地校园正文。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_IMAGE_NAME</code></td><td>否</td><td>格式：可选图片文件名，必须与 ATXYQ_IMAGE_DIR 同时填写；不会上传或自动生成图片。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_IMAGE_DIR</code></td><td>否</td><td>格式：可选图片服务目录，与 ATXYQ_IMAGE_NAME 配套；启用发帖时登记已有图片。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_HELP_LIKE</code></td><td>否</td><td>格式：默认 0；1 为指定帖子点赞一次，不读取远程助力名单。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_INVITE</code></td><td>否</td><td>格式：默认 0；1 创建 ATXYQ_ASSIST 指定邀请关系，未知业务响应按失败处理。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ATXYQ_ASSIST</code></td><td>否</td><td>格式：可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用；其他值启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
 
@@ -761,6 +776,7 @@
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
 - `scripts/wps_clock_in.py`：每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。。
+- `scripts/atxyq.py`：atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 # 拆分；后续字段不再次拆分。各账号独立执行，任一账号失败整体非零退出；不再使用 @ 分隔账号。。
 
 ## 参数获取方法
 
@@ -1378,6 +1394,13 @@
 - 所属脚本：`scripts/wps_clock_in.py`
 - 获取或设置：在WPS主页或微信小程序【我的WPS超级会员】登录，从本人授权的 *.wps.cn 请求Cookie中取得wps_sid参数的值。不要填写整个Cookie。
 - 填写格式：`每个非空行一个wps_sid值；只按换行分隔账号，不使用&或@分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `atxyqs`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：在微信艾特校园圈小程序登录后，抓取自己发往 api.atxz.cool 的请求头 Authorization 与 Uid；失效后重新登录抓取。
+- 填写格式：`每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 
@@ -3533,6 +3556,78 @@
 - 获取或设置：若青龙notify.py不在标准目录，可设置其所在目录；不需要私有项目仓库。
 - 填写格式：`本地青龙通知模块所在目录，可不填写。`
 
+#### `ATXYQ_DRY_RUN`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：在青龙环境变量中开启完全断网预演。
+- 填写格式：`默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。`
+
+#### `atxyqDel`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：兼容原上游变量，仅在确认愿意删除本人最近帖子时开启。
+- 填写格式：`整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。`
+
+#### `ATXYQ_LIKE`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：在青龙环境变量中显式开启校园文章互动。
+- 填写格式：`默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。`
+
+#### `ATXYQ_POST`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：在青龙环境变量中显式开启公开发帖。
+- 填写格式：`默认 0；1 发布一篇动态，优先一言并保留作者来源署名，失败回退本地正文。`
+
+#### `ATXYQ_LOCAL_TEXT`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：自行填写愿意公开发布的非敏感校园文字，作为一言失败时的回退。
+- 填写格式：`可选，空白折叠后 1 至 280 字；默认本地校园正文。`
+
+#### `ATXYQ_IMAGE_NAME`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：从本人小程序已上传图片的服务响应取得文件名，不填写凭据或伪造图片。
+- 填写格式：`可选图片文件名，必须与 ATXYQ_IMAGE_DIR 同时填写；不会上传或自动生成图片。`
+
+#### `ATXYQ_IMAGE_DIR`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：从同一张本人已上传图片的服务响应取得目录；上游动态目录形式为 @senior/dynamic/。
+- 填写格式：`可选图片服务目录，与 ATXYQ_IMAGE_NAME 配套；启用发帖时登记已有图片。`
+
+#### `ATXYQ_HELP_LIKE`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：仅在确认 ATXYQ_ASSIST 为本人选择的目标后开启。
+- 填写格式：`默认 0；1 为指定帖子点赞一次，不读取远程助力名单。`
+
+#### `ATXYQ_INVITE`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：仅在愿意绑定所选邀请关系并确认目标后开启。
+- 填写格式：`默认 0；1 创建 ATXYQ_ASSIST 指定邀请关系，未知业务响应按失败处理。`
+
+#### `ATXYQ_ASSIST`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：从自己确认的目标帖子与邀请请求取得公开帖子编号、原正文、目标用户编号和学校编号；不得包含凭据。
+- 填写格式：`可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：使用青龙全局通知开关。
+- 填写格式：`默认 1；0、false、no、off 禁用；其他值启用。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/atxyq.py`
+- 获取或设置：可选指定已有青龙 notify.py 或 sendNotify.js 所在目录；默认查找脚本目录、可导入通知模块和青龙常见目录。
+- 填写格式：`本地目录路径，通知不可用或失败不改变业务退出码。`
+
 
 ## 验证与兼容性
 
@@ -3621,6 +3716,7 @@
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 - `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
+- `scripts/atxyq.py`：SHA-256 `6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。
 
@@ -3711,6 +3807,7 @@
 - `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
 - `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
 - `scripts/wps_clock_in.py`：。
+- `scripts/atxyq.py`：默认每日签到，记录签到并可能增加积分。；默认领取普通任务奖励，可能增加积分。；开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。；开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。；atxyqDel 非零时删除本人最近十篇列表内帖子。；开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。；开启 ATXYQ_INVITE 后创建所选邀请关系。；正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。。
 
 使用测试账号先行验证。停止使用时应禁用任务、删除订阅和敏感环境变量；怀疑凭据泄漏时立即在对应平台撤销会话。
 
@@ -3803,3 +3900,4 @@
 - `scripts/tsthb_checkin.py`：上游 `agluo/ql-script-hub` / `tsthb_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/ty_netdisk_checkin.py`：上游 `agluo/ql-script-hub` / `ty_netdisk_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
+- `scripts/atxyq.py`：上游 `Rookie-wb-WH/ql_scripts` / `atxyq.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
