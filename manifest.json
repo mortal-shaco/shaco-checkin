@@ -12088,6 +12088,154 @@
       }
     },
     {
+      "catalogId": "d0c1751256314943",
+      "applicationKey": "wangchao",
+      "checkProfile": {
+        "requiredEnv": [
+          "WangChao"
+        ],
+        "optionalEnv": [
+          "WANGCHAO_DRY_RUN",
+          "WANGCHAO_LOTTERY",
+          "WANGCHAO_BONUS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WANGCHAO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WANGCHAO_DRY_RUN": "0",
+          "WANGCHAO_LOTTERY": "0",
+          "WANGCHAO_BONUS": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "望潮任务成功：所有启用的业务步骤已验证"
+        ],
+        "features": [
+          "手机号与密码登录，展示官方返回的非敏感昵称或公开账号标识",
+          "保留上游随机客户端标识、RSA 密码加密、HMAC 登录认证、应用请求签名和 SM2 阅读参数加密",
+          "进入 App，获取每日阅读任务、识别已读文章、浏览未读文章、提交阅读记录并复查完成进度",
+          "显式开关控制同应用活动入口浏览，不伪造或重放随机阅读记录",
+          "显式开关控制每日一次抽奖，检查会话、阅读进度及官方资格，展示上游奖品名称",
+          "查询最近十条抽奖记录及时间",
+          "换行多账号、独立失败处理、完全断网预演、业务失败非零退出",
+          "限时 HTTP 请求、严格业务码与必要字段校验、禁止携带凭据重定向",
+          "时间轴阶段日志、每账号及全局统计、唯一单行 TASK_SUMMARY 汇总、青龙脱敏通知"
+        ],
+        "sideEffects": [
+          "实时登录会建立账号及活动服务会话",
+          "默认浏览未读文章并提交阅读记录，改变每日阅读进度",
+          "启用 WANGCHAO_BONUS 时浏览活动文章入口，可能改变浏览记录",
+          "启用 WANGCHAO_LOTTERY 时抽奖一次，消耗次数并产生中奖或参与记录",
+          "启用 QINGLONG_NOTIFY 时通过青龙通知渠道发送脱敏任务总结；预演通知禁止网络"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "望潮阅读有礼",
+      "path": "scripts/wangchao.py",
+      "sha256": "487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Rookie-wb-WH/ql_scripts",
+        "branch": "main",
+        "commit": "08e5c06461c4a0112ea3735f48fe671734bb7707",
+        "originalPath": "wangchao.py"
+      },
+      "cron": "2 8 * * *",
+      "command": "python3 scripts/wangchao.py",
+      "environment": [
+        {
+          "name": "WangChao",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在官方望潮 App 注册并设置登录密码，填写本人登录手机号与密码。进入首页“阅读有礼”，按官方要求点击右下角抽奖并绑定本人支付宝账号；脚本不会自动绑定或修改支付信息。",
+          "format": "每个非空行一个“登录手机号#密码”。仅按第一个 # 切分，密码中的后续 #、&、@ 等字符完整保留。密码 UTF-8 长度不超过 117 字节。旧版 && 多账号分隔须手动迁移为换行。"
+        },
+        {
+          "name": "WANGCHAO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网检查参数、账号隔离、阶段计划和汇总时设置为 1。",
+          "format": "默认 0；1/0、true/false、yes/no、on/off。预演不代表真实业务成功。"
+        },
+        {
+          "name": "WANGCHAO_LOTTERY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认允许消耗抽奖次数后手动设置为 1；先在官方页面完成必要绑定。",
+          "format": "默认 0；设为 1 时仅在阅读进度和官方资格都通过后抽奖一次，不自动重试。"
+        },
+        {
+          "name": "WANGCHAO_BONUS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要浏览推荐频道中的“阅读有礼”“诗韵望潮”活动文章入口时设置为 1。",
+          "format": "默认 0；设为 1 时按接口提供的入口浏览，不重放随机文章阅读或承诺增加次数，不运行诗词答题及红包。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙通知模块现有渠道配置；设为 0 可关闭。",
+          "format": "默认 1；0、false、no、off 关闭。总结含账号总数、成功数、失败数及预演状态。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当 notify.py 不在 Python 导入路径或青龙标准脚本目录时，填写其所在目录。",
+          "format": "可选本地目录路径；用于通知，不参与业务请求。通知不可用、失败或超时均保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，只按第一个 # 切分配套手机号与密码。忽略空行；各账号独立处理，任一账号配置或业务失败则整体非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome",
+        "gmssl"
+      ],
+      "features": [
+        "手机号与密码登录，展示官方返回的非敏感昵称或公开账号标识",
+        "保留上游随机客户端标识、RSA 密码加密、HMAC 登录认证、应用请求签名和 SM2 阅读参数加密",
+        "进入 App，获取每日阅读任务、识别已读文章、浏览未读文章、提交阅读记录并复查完成进度",
+        "显式开关控制同应用活动入口浏览，不伪造或重放随机阅读记录",
+        "显式开关控制每日一次抽奖，检查会话、阅读进度及官方资格，展示上游奖品名称",
+        "查询最近十条抽奖记录及时间",
+        "换行多账号、独立失败处理、完全断网预演、业务失败非零退出",
+        "限时 HTTP 请求、严格业务码与必要字段校验、禁止携带凭据重定向",
+        "时间轴阶段日志、每账号及全局统计、唯一单行 TASK_SUMMARY 汇总、青龙脱敏通知"
+      ],
+      "sideEffects": [
+        "实时登录会建立账号及活动服务会话",
+        "默认浏览未读文章并提交阅读记录，改变每日阅读进度",
+        "启用 WANGCHAO_BONUS 时浏览活动文章入口，可能改变浏览记录",
+        "启用 WANGCHAO_LOTTERY 时抽奖一次，消耗次数并产生中奖或参与记录",
+        "启用 QINGLONG_NOTIFY 时通过青龙通知渠道发送脱敏任务总结；预演通知禁止网络"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d0c1751256314943",
+        "candidateSha256": "487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067"
+      }
+    },
+    {
       "catalogId": "aa7303325b9bca16",
       "applicationKey": "wps",
       "checkProfile": {
