@@ -180,13 +180,10 @@
       "postReview": {
         "catalogId": "6b6ae91490051bce",
         "releaseSha256": "6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1",
-        "decision": "pending",
-        "decidedAt": "2026-10-12T05:56:00.411213+00:00",
+        "decision": "withdrawn",
+        "decidedAt": "2026-10-12T05:42:36.128852+00:00",
         "approvedBy": "mortal-shaco",
-        "applicationKey": "atxyq",
-        "archivePath": "projects/checkin/withdrawn/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1",
-        "relisted": true,
-        "restorationReason": "所有者明确要求撤销测试操作造成的误下架；未核验状态保留"
+        "applicationKey": "atxyq"
       },
       "displayName": "艾特校园圈",
       "path": "scripts/atxyq.py",
