@@ -1283,6 +1283,122 @@
       }
     },
     {
+      "catalogId": "825e404e9590b589",
+      "applicationKey": "fxh",
+      "checkProfile": {
+        "requiredEnv": [
+          "fxhOpenId"
+        ],
+        "optionalEnv": [
+          "FXH_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "FXH_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功！",
+          "今日已签到！",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "每日查询当前积分",
+          "每日执行芬享汇签到，显示可解析的奖励积分与已签到状态",
+          "官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示",
+          "逐行多账号独立执行和失败退出",
+          "完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总",
+          "实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网"
+        ],
+        "sideEffects": [
+          "实际执行每日签到，改变签到状态并由服务端发放积分",
+          "启用通知时调用青龙通知模块发送任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "芬享汇每日签到",
+      "path": "scripts/fxh.js",
+      "sha256": "228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "xingly-cn/QLPanelScript",
+        "branch": "main",
+        "commit": "8c0323999253b7a0d8e47ff1136a562fedb3c980",
+        "originalPath": "fxh.js"
+      },
+      "cron": "0 8 * * *",
+      "command": "node scripts/fxh.js",
+      "environment": [
+        {
+          "name": "fxhOpenId",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "打开芬享汇微信小程序，用自己的合法抓包工具查看 scrm.ocheng.me/v2/api/member/info 请求的 miniProgramOpenId 参数，或签到请求路径中的 OpenId。仅复制自己的 OpenId，不要复制整条请求、Cookie 或手机号。",
+          "format": "每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。"
+        },
+        {
+          "name": "FXH_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "1 表示完全断网预演；其他值表示实际执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置，默认启用。",
+          "format": "0、false、no、off 关闭通知，不区分大小写。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙现有通知模块所在目录；默认查找 /ql/data/scripts 与 /ql/scripts。",
+          "format": "包含 sendNotify.js 或 notify.py 的目录，不是业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "fxhOpenId 每个非空行一个账号，逐个独立执行；任一账号失败整体非零退出，不使用 @ 或 & 分隔。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日查询当前积分",
+        "每日执行芬享汇签到，显示可解析的奖励积分与已签到状态",
+        "官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示",
+        "逐行多账号独立执行和失败退出",
+        "完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总",
+        "实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网"
+      ],
+      "sideEffects": [
+        "实际执行每日签到，改变签到状态并由服务端发放积分",
+        "启用通知时调用青龙通知模块发送任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/825e404e9590b589",
+        "candidateSha256": "228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081"
+      }
+    },
+    {
       "catalogId": "7ea70c9e9d579efb",
       "applicationKey": "ikuuu",
       "checkProfile": {
