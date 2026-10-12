@@ -1,40 +1,15 @@
 {
-  "schemaVersion": 1,
   "catalogId": "621df252c315f2d1",
-  "candidateSha256": "c4a6a8488ffc3fb76c96c43a848d39e331531a1a7dd1b9806bdf9cce3a11f645",
-  "source": {
-    "repository": "ump45nose/smzdm-checkin-ql",
-    "branch": "main",
-    "commit": "6b9eaced964c348efb46d2c13a45ab5c66caaea8",
-    "path": "checkin.js",
-    "sha256": "29d4c94b23693ebcb438cfaa35775237c77bc9413dd92469594e8087e97b49db",
-    "related": [
-      {
-        "catalogId": "40fb720883a0a263",
-        "sha256": "4d648340e01ef3f8c7bcc0abf5afd07b6e0eb8b1f4dd06e08ddc6827aa5de5f0"
-      }
-    ]
-  },
-  "testedAt": "2026-09-29T09:44:06.695910+00:00",
-  "finishedAt": "2026-09-29T09:44:08.426780+00:00",
-  "mode": "live",
-  "runner": "local-sandbox-validator",
-  "runtime": {
-    "command": "node"
-  },
-  "accountType": "local-user-configured",
+  "candidateSha256": "30d02496a9878ae599d71cfb9f5d16f748d1159a43fdb04b87fecb89af424b01",
+  "mode": "basic",
   "exitCode": 0,
-  "timedOut": false,
-  "businessResult": "success",
-  "failureDiagnosis": null,
-  "sideEffectsObserved": [
-    "在什么值得买账号上执行每日签到并改变当日签到状态",
-    "满足条件时领取连续签到额外奖励并改变账号奖励状态"
-  ],
-  "log": "redacted.log",
-  "humanDecision": {
-    "status": "passed",
-    "decidedBy": "mortal-shaco",
-    "decidedAt": "2026-09-29T09:45:00.690952+00:00"
-  }
+  "businessResult": "not-verified",
+  "testedAt": "2026-10-12T03:33:14.369333+00:00",
+  "checks": [
+    "exact-hash",
+    "syntax",
+    "provenance",
+    "license",
+    "usage-documentation"
+  ]
 }
