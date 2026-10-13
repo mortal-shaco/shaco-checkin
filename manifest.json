@@ -14789,6 +14789,218 @@
       }
     },
     {
+      "catalogId": "a0a7b04503bfb900",
+      "applicationKey": "zcode",
+      "checkProfile": {
+        "requiredEnv": [
+          "ZCODE_CN_TOKENS"
+        ],
+        "optionalEnv": [
+          "ZCODE_PLAN_ID",
+          "ZCODE_APP_VERSION",
+          "ZCODE_CAPTCHA_PARAM",
+          "ZCODE_ACTIVATION",
+          "ZCODE_CN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "BARK_URL",
+          "WECOM_WEBHOOK",
+          "DINGTALK_WEBHOOK",
+          "DINGTALK_SECRET",
+          "QL_URL",
+          "QL_TOKEN"
+        ],
+        "dryRunEnv": {
+          "ZCODE_CN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ZCODE_APP_VERSION": "3.14.0",
+          "ZCODE_ACTIVATION": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "CLAIM_SUCCESS",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询可领取套餐、权益及有效期，并按北京时间显示。",
+          "优先级最高套餐自动领取，同优先级保持上游顺序；可指定套餐。",
+          "支持每账号验证码及全局补齐参数、客户端版本和固定设备参数。",
+          "支持 --preview 只读预览、--only 账号筛选和 --no-notify 通知关闭。",
+          "支持显式激活事件补报，默认关闭。",
+          "支持每行一个账号、账号独立处理和失败非零退出。",
+          "支持完全断网预演、时间轴日志、账号统计及唯一 TASK_SUMMARY 记录。",
+          "发送青龙脱敏总结，兼容原推送通道，通知失败保留业务退出码。"
+        ],
+        "sideEffects": [
+          "实际领取时发放或变更账号套餐权益。",
+          "仅 ZCODE_ACTIVATION=1 且非只读、非预演时补报启动和日活事件，可能影响套餐资格。",
+          "实际模式且通知启用时发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "ZCode 国内版领套餐",
+      "path": "scripts/zcode_cn_daily.py",
+      "sha256": "034e35d8409bc5df080b77e66e375588821da20ca2fe6f537920190284749666",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/ZCode-Daily",
+        "branch": "main",
+        "commit": "68e3adf4b5deb036f2a992a5aca24f02f3a64ade",
+        "originalPath": "zcode_cn_daily.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/zcode_cn_daily.py",
+      "environment": [
+        {
+          "name": "ZCODE_CN_TOKENS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录官方 ZCode 国内版，在浏览器开发者工具网络面板读取 billing/preview 或 billing/claim 请求。Authorization 的 Bearer 后内容为套餐 JWT，X-Device-Mid 为设备参数，X-Aliyun-Captcha-Verify-Param 为验证码参数。不要使用国际版 JWT 或推理 API Key。验证码可能短时一次性，业务码 3007 时重新获取。",
+          "format": "每行一个账号；支持 jwt、jwt|device_mid、jwt|device_mid|captcha、备注|jwt|device_mid|captcha；备注前缀后的字段必须可识别为 JWT。仅逐个拆分首个 |，验证码剩余内容完整保留；不使用 & 或 @ 分隔账号。设备为空时优先读取已有设备记录，否则确定性生成；JWT 更换会改变生成值，建议显式固定设备值。"
+        },
+        {
+          "name": "ZCODE_PLAN_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从官方套餐预览响应或只读 --preview 日志对应的套餐获取 plan_id。",
+          "format": "指定套餐标识；不填则最高优先级，同优先取首项；指定项不存在时失败。"
+        },
+        {
+          "name": "ZCODE_APP_VERSION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从实际官方客户端版本或领取请求头 X-ZCode-App-Version 获取。",
+          "format": "版本字符串，默认 3.14.0。"
+        },
+        {
+          "name": "ZCODE_CAPTCHA_PARAM",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从官方领取页面 claim 请求头 X-Aliyun-Captcha-Verify-Param 获取，建议放入同账号行。",
+          "format": "仅补齐未配置验证码的账号；不同账号优先分别配置。"
+        },
+        {
+          "name": "ZCODE_ACTIVATION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需手动开启；补报事件可能影响套餐资格。",
+          "format": "0 或 1，默认 0；1 显式上报 app_launch 和 app_daily_active；--preview 和预演均不发送。"
+        },
+        {
+          "name": "ZCODE_CN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置为 1 启用完全断网预演。",
+          "format": "1/true/yes/on 启用；仅验证参数和执行结构，不验证真实账号或业务。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有通知配置；手动设置可关闭本任务推送。",
+          "format": "默认 1；0/false/no/off 关闭；--no-notify 同样关闭；预演只模拟。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写青龙现有 notify.py 所在目录；默认自动发现脚本目录和标准青龙目录。",
+          "format": "本地目录路径；不下载或安装通知模块。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 PushPlus 官方账号通知配置获取，作为青龙通知不可用时的兼容通道。",
+          "format": "单个推送令牌。"
+        },
+        {
+          "name": "BARK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 Bark 官方应用复制自己的推送地址。",
+          "format": "包含推送密钥的 HTTPS 地址。"
+        },
+        {
+          "name": "WECOM_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从企业微信机器人配置获取。",
+          "format": "HTTPS 机器人地址或单个机器人密钥。"
+        },
+        {
+          "name": "DINGTALK_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从钉钉群机器人配置获取。",
+          "format": "HTTPS 机器人地址。"
+        },
+        {
+          "name": "DINGTALK_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从同一钉钉机器人的加签配置获取，与其地址配套。",
+          "format": "机器人签名密钥；可不填。"
+        },
+        {
+          "name": "QL_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "原有青龙接口通知兼容配置，优先使用 notify.py。",
+          "format": "青龙面板 HTTPS 地址，不带结尾斜线。"
+        },
+        {
+          "name": "QL_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "使用已有青龙通知接口授权配置；不需要为本脚本额外创建。",
+          "format": "与 QL_URL 配套的授权令牌。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个国内版账号；配套 JWT、设备和验证码放在同一行。注释行忽略。各账号独立运行，任一账号失败时整体非零退出；--only 可选择账号序号。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询可领取套餐、权益及有效期，并按北京时间显示。",
+        "优先级最高套餐自动领取，同优先级保持上游顺序；可指定套餐。",
+        "支持每账号验证码及全局补齐参数、客户端版本和固定设备参数。",
+        "支持 --preview 只读预览、--only 账号筛选和 --no-notify 通知关闭。",
+        "支持显式激活事件补报，默认关闭。",
+        "支持每行一个账号、账号独立处理和失败非零退出。",
+        "支持完全断网预演、时间轴日志、账号统计及唯一 TASK_SUMMARY 记录。",
+        "发送青龙脱敏总结，兼容原推送通道，通知失败保留业务退出码。"
+      ],
+      "sideEffects": [
+        "实际领取时发放或变更账号套餐权益。",
+        "仅 ZCODE_ACTIVATION=1 且非只读、非预演时补报启动和日活事件，可能影响套餐资格。",
+        "实际模式且通知启用时发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a0a7b04503bfb900",
+        "candidateSha256": "034e35d8409bc5df080b77e66e375588821da20ca2fe6f537920190284749666"
+      }
+    },
+    {
       "catalogId": "60f9d3538e9f8470",
       "applicationKey": "rookie-wb-wh/ql_scripts::zippo",
       "checkProfile": {

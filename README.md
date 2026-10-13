@@ -136,6 +136,7 @@
 | Trae CN 每日签到 | `scripts/web_checkin.py` | `python3 scripts/web_checkin.py` | `30 8 * * *` |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `8 6 * * *` |
+| ZCode 国内版领套餐 | `scripts/zcode_cn_daily.py` | `python3 scripts/zcode_cn_daily.py` | `0 9 * * *` |
 | Zippo会员中心 | `scripts/zippo.py` | `python3 scripts/zippo.py` | `9 9 * * *` |
 
 依赖安装任务会读取本仓库的 `requirements.txt`、`package-lock.json` 或 `package.json`；没有额外依赖时安全退出，不会执行远程安装脚本。
@@ -246,6 +247,7 @@
 - `scripts/web_checkin.py`：网页会话换取令牌并查询每日签到状态；长效 Cookie 自动续期，会话失败时使用已有会话或桌面令牌；网页令牌失效时重新换取一次，认证仍失败时回退同账号桌面令牌；桌面令牌到期预检与账号注册设备校验；每日按需领取签到积分，显示本次奖励，已签到不重复领取；领取未确认成功后复查账号签到状态；只查询任务开关，明确报告未开放活动；完整显示官方公开 UserID，按已验证成功的身份识别重复账号；每行一个账号，隔离失败并汇总非零退出；完全断网预演、时间轴日志与单行结构化汇总；青龙脱敏通知与全局关闭开关，通知故障不改变业务退出码。
 - `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
 - `scripts/yht.py`：查询官方账号昵称等非敏感身份，不输出手机号；查询种植活动标题；参与种植活动；连续施肥，保留上游默认最多一百次请求并允许调低上限；查询当前等级、下一等级和剩余施肥次数；施肥接口返回当前不存在进行中的活动时尝试领取奖励，核验奖励名称与数量；可选每日签到及奖励详情查询，默认保持未启用；可选本次配置账号之间互助及互助身份查询；每行一个账号、独立执行、任一业务失败整体失败；完全断网预演、时间轴阶段日志、账号统计及单行结构化任务汇总；通过青龙通知适配器发送脱敏总结，通知异常保留业务退出码。
+- `scripts/zcode_cn_daily.py`：查询可领取套餐、权益及有效期，并按北京时间显示。；优先级最高套餐自动领取，同优先级保持上游顺序；可指定套餐。；支持每账号验证码及全局补齐参数、客户端版本和固定设备参数。；支持 --preview 只读预览、--only 账号筛选和 --no-notify 通知关闭。；支持显式激活事件补报，默认关闭。；支持每行一个账号、账号独立处理和失败非零退出。；支持完全断网预演、时间轴日志、账号统计及唯一 TASK_SUMMARY 记录。；发送青龙脱敏总结，兼容原推送通道，通知失败保留业务退出码。。
 - `scripts/zippo.py`：积分余额查询；每日签到及奖励核验；商品分类7前两页检索；显式收藏及领取奖励，可选择取消本轮收藏；显式记录分享任务及领取奖励，不发布文本；使用指定星级和官方标签评价一个未评价商品并领取奖励，已评价时跳过提交；显式绑定指定推荐人，回显不足时失败闭合；多账号独立执行、断网预演、时间轴日志、结构化汇总及青龙通知。
 
 ## 环境变量与参数
@@ -362,6 +364,7 @@
 <tr><td rowspan="1"><code>scripts/web_checkin.py</code></td><td><code>TRAE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；device_id 为必填的 16 位数字字符串；session、sessionid、access_token 至少填写一个，可同时配置供续期和回退。expires_at 可选，为桌面令牌到期秒级时间戳。不得解码 Cookie 的百分号或复制整段 Cookie，不得共用设备。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/yht.py</code></td><td><code>Yht_token</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留大小写；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/zcode_cn_daily.py</code></td><td><code>ZCODE_CN_TOKENS</code></td><td>是</td><td>格式：每行一个账号；支持 jwt、jwt|device_mid、jwt|device_mid|captcha、备注|jwt|device_mid|captcha；备注前缀后的字段必须可识别为 JWT。仅逐个拆分首个 |，验证码剩余内容完整保留；不使用 &amp; 或 @ 分隔账号。设备为空时优先读取已有设备记录，否则确定性生成；JWT 更换会改变生成值，建议显式固定设备值。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/zippo.py</code></td><td><code>zippoCookie</code></td><td>是</td><td>格式：每个非空行一个账号；不使用 #、&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 </tbody>
 </table>
@@ -898,6 +901,20 @@
 <tr><td><code>YHT_FERTILIZE_LIMIT</code></td><td>否</td><td>格式：1～100 的整数，默认 100；任何未确认成功的响应立即停止施肥。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；不是业务必需依赖；预演通知适配器运行于禁网子进程。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="14"><code>scripts/zcode_cn_daily.py</code></td><td><code>ZCODE_PLAN_ID</code></td><td>否</td><td>格式：指定套餐标识；不填则最高优先级，同优先取首项；指定项不存在时失败。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ZCODE_APP_VERSION</code></td><td>否</td><td>格式：版本字符串，默认 3.14.0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ZCODE_CAPTCHA_PARAM</code></td><td>是</td><td>格式：仅补齐未配置验证码的账号；不同账号优先分别配置。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ZCODE_ACTIVATION</code></td><td>否</td><td>格式：0 或 1，默认 0；1 显式上报 app_launch 和 app_daily_active；--preview 和预演均不发送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ZCODE_CN_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 启用；仅验证参数和执行结构，不验证真实账号或业务。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭；--no-notify 同样关闭；预演只模拟。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；不下载或安装通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：单个推送令牌。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>BARK_URL</code></td><td>是</td><td>格式：包含推送密钥的 HTTPS 地址。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WECOM_WEBHOOK</code></td><td>是</td><td>格式：HTTPS 机器人地址或单个机器人密钥。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DINGTALK_WEBHOOK</code></td><td>是</td><td>格式：HTTPS 机器人地址。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DINGTALK_SECRET</code></td><td>是</td><td>格式：机器人签名密钥；可不填。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QL_URL</code></td><td>否</td><td>格式：青龙面板 HTTPS 地址，不带结尾斜线。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QL_TOKEN</code></td><td>是</td><td>格式：与 QL_URL 配套的授权令牌。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="7"><code>scripts/zippo.py</code></td><td><code>ZIPPO_TASKS</code></td><td>否</td><td>格式：逗号分隔 points,sign,goods,favorite,unfavorite,share,comment,invite；默认 points,sign；unfavorite 必须同时选择 favorite。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ZIPPO_COMMENT_STAR</code></td><td>否</td><td>格式：1至5的整数。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ZIPPO_COMMENT_TAG</code></td><td>否</td><td>格式：一个完整标签，必须与官方候选完全一致；仅提交标签，不发布自由文本。；多账号格式以该脚本文档为准</td></tr>
@@ -1011,6 +1028,7 @@
 - `scripts/web_checkin.py`：TRAE_ACCOUNTS 每个非空行一个 JSON 对象，合并同账号凭据及设备；账号独立处理，任何账号失败整体非零退出。不得使用 & 或 @ 分隔账号。。
 - `scripts/wps_clock_in.py`：每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。。
 - `scripts/yht.py`：每个非空行一个账号的完整 qm-user-token；逐账号执行，互助仅限本次配置的其他账号；任何账号业务失败整体非零退出。。
+- `scripts/zcode_cn_daily.py`：每个非空行一个国内版账号；配套 JWT、设备和验证码放在同一行。注释行忽略。各账号独立运行，任一账号失败时整体非零退出；--only 可选择账号序号。。
 - `scripts/zippo.py`：每个非空行一个完整 authorization，保留凭据正文；账号独立处理，任一失败则整体非零退出。。
 
 ## 参数获取方法
@@ -1748,6 +1766,13 @@
 - 所属脚本：`scripts/yht.py`
 - 获取或设置：在微信益禾堂手机点单小程序登录，用自己的授权抓包工具查看发往 webapi.qmai.cn 的请求头 qm-user-token；只复制该字段值，不复制手机号、Cookie 或整段请求头。失效后重新登录获取。
 - 填写格式：`每个非空行一个完整令牌；保留大小写；不使用 #、&、@ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ZCODE_CN_TOKENS`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：登录官方 ZCode 国内版，在浏览器开发者工具网络面板读取 billing/preview 或 billing/claim 请求。Authorization 的 Bearer 后内容为套餐 JWT，X-Device-Mid 为设备参数，X-Aliyun-Captcha-Verify-Param 为验证码参数。不要使用国际版 JWT 或推理 API Key。验证码可能短时一次性，业务码 3007 时重新获取。
+- 填写格式：`每行一个账号；支持 jwt、jwt|device_mid、jwt|device_mid|captcha、备注|jwt|device_mid|captcha；备注前缀后的字段必须可识别为 JWT。仅逐个拆分首个 |，验证码剩余内容完整保留；不使用 & 或 @ 分隔账号。设备为空时优先读取已有设备记录，否则确定性生成；JWT 更换会改变生成值，建议显式固定设备值。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `zippoCookie`
@@ -4951,6 +4976,97 @@
 - 获取或设置：可选填写已有青龙 notify.py 所在目录；也尝试脚本目录及青龙标准目录；不可用只记录通知失败。
 - 填写格式：`本地目录路径；不是业务必需依赖；预演通知适配器运行于禁网子进程。`
 
+#### `ZCODE_PLAN_ID`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：从官方套餐预览响应或只读 --preview 日志对应的套餐获取 plan_id。
+- 填写格式：`指定套餐标识；不填则最高优先级，同优先取首项；指定项不存在时失败。`
+
+#### `ZCODE_APP_VERSION`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：从实际官方客户端版本或领取请求头 X-ZCode-App-Version 获取。
+- 填写格式：`版本字符串，默认 3.14.0。`
+
+#### `ZCODE_CAPTCHA_PARAM`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：从官方领取页面 claim 请求头 X-Aliyun-Captcha-Verify-Param 获取，建议放入同账号行。
+- 填写格式：`仅补齐未配置验证码的账号；不同账号优先分别配置。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ZCODE_ACTIVATION`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：按需手动开启；补报事件可能影响套餐资格。
+- 填写格式：`0 或 1，默认 0；1 显式上报 app_launch 和 app_daily_active；--preview 和预演均不发送。`
+
+#### `ZCODE_CN_DRY_RUN`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：手动设置为 1 启用完全断网预演。
+- 填写格式：`1/true/yes/on 启用；仅验证参数和执行结构，不验证真实账号或业务。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：使用青龙已有通知配置；手动设置可关闭本任务推送。
+- 填写格式：`默认 1；0/false/no/off 关闭；--no-notify 同样关闭；预演只模拟。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：填写青龙现有 notify.py 所在目录；默认自动发现脚本目录和标准青龙目录。
+- 填写格式：`本地目录路径；不下载或安装通知模块。`
+
+#### `PUSHPLUS_TOKEN`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：从 PushPlus 官方账号通知配置获取，作为青龙通知不可用时的兼容通道。
+- 填写格式：`单个推送令牌。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `BARK_URL`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：从 Bark 官方应用复制自己的推送地址。
+- 填写格式：`包含推送密钥的 HTTPS 地址。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WECOM_WEBHOOK`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：从企业微信机器人配置获取。
+- 填写格式：`HTTPS 机器人地址或单个机器人密钥。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `DINGTALK_WEBHOOK`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：从钉钉群机器人配置获取。
+- 填写格式：`HTTPS 机器人地址。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `DINGTALK_SECRET`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：从同一钉钉机器人的加签配置获取，与其地址配套。
+- 填写格式：`机器人签名密钥；可不填。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `QL_URL`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：原有青龙接口通知兼容配置，优先使用 notify.py。
+- 填写格式：`青龙面板 HTTPS 地址，不带结尾斜线。`
+
+#### `QL_TOKEN`
+
+- 所属脚本：`scripts/zcode_cn_daily.py`
+- 获取或设置：使用已有青龙通知接口授权配置；不需要为本脚本额外创建。
+- 填写格式：`与 QL_URL 配套的授权令牌。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `ZIPPO_TASKS`
 
 - 所属脚本：`scripts/zippo.py`
@@ -5101,6 +5217,7 @@
 - `scripts/web_checkin.py`：SHA-256 `510f24fc55c7aaba9199b6b7325b0cdf40aae7f1dc7a8b40c87d2c77ad0bf0b8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dfbc26c082218297`。
 - `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
 - `scripts/yht.py`：SHA-256 `041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e4af0e04fafedbd8`。
+- `scripts/zcode_cn_daily.py`：SHA-256 `034e35d8409bc5df080b77e66e375588821da20ca2fe6f537920190284749666`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a0a7b04503bfb900`。
 - `scripts/zippo.py`：SHA-256 `db87391467bd1a78afea9e1725cf8a5a06a4f78373821128a20dcb98ed03b338`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/60f9d3538e9f8470`。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。
@@ -5211,6 +5328,7 @@
 - `scripts/web_checkin.py`：正式签到模式领取当日签到积分；配置 sessionid 时刷新网页登录会话；开启通知时调用青龙发送任务汇总；预演禁止通知网络发送。
 - `scripts/wps_clock_in.py`：。
 - `scripts/yht.py`：参加种植活动；消耗活动肥料进行施肥；满足条件时领取活动奖励；开启 YHT_SIGN 后提交每日签到并领取签到奖励；开启 YHT_HELP 后为本次配置的其他账号助力；通知开启时调用青龙通知发送总结；断网预演阻止联网和派生进程。
+- `scripts/zcode_cn_daily.py`：实际领取时发放或变更账号套餐权益。；仅 ZCODE_ACTIVATION=1 且非只读、非预演时补报启动和日活事件，可能影响套餐资格。；实际模式且通知启用时发送脱敏任务总结。。
 - `scripts/zippo.py`：签到增加积分；收藏商品及领取积分；显式取消本轮收藏；记录分享任务及领取积分；提交标签和星级评价及领取积分；显式绑定指定推荐人；真实运行向青龙配置的通知渠道发送摘要。
 
 使用测试账号先行验证。停止使用时应禁用任务、删除订阅和敏感环境变量；怀疑凭据泄漏时立即在对应平台撤销会话。
@@ -5323,4 +5441,5 @@
 - `scripts/web_checkin.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/trae/web_checkin.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/yht.py`：上游 `Rookie-wb-WH/ql_scripts` / `yht.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
+- `scripts/zcode_cn_daily.py`：上游 `L0NE-6/ZCode-Daily` / `zcode_cn_daily.py` / `68e3adf4b5deb036f2a992a5aca24f02f3a64ade`。
 - `scripts/zippo.py`：上游 `Rookie-wb-WH/ql_scripts` / `zippo.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
