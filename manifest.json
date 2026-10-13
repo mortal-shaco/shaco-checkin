@@ -972,6 +972,175 @@
       }
     },
     {
+      "catalogId": "48ce92fe72bec5fa",
+      "applicationKey": "ggbondhere/qinglongscripts::akile",
+      "checkProfile": {
+        "requiredEnv": [
+          "AKILE_TOKEN"
+        ],
+        "optionalEnv": [
+          "AKILE_DRY_RUN",
+          "AKILE_REFRESH_TOKEN",
+          "CLIENT_ID",
+          "CLIENT_SECRET",
+          "AKILE_STATE_FILE",
+          "DAILY_ALL_CHILD",
+          "DAILY_ALL_DISABLED",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AKILE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "AKILE_REFRESH_TOKEN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到：签到成功",
+          "签到：今日已签到",
+          "签到：签到结果已确认"
+        ],
+        "features": [
+          "AK 币签到，先查今日流水以避免重复提交，提交后复核实际流水。",
+          "查询余额、今日所得、连续天数与累计签到收益，分页校准及增量同步。",
+          "显式开启 Token 保活，验证新凭据后唯一匹配回写青龙多行变量。",
+          "支持 --check-only 只读查询、08:45 合集调用和每天 22:00 独立定时。",
+          "多账号独立执行、完全断网预演、脱敏日志、官方公开身份展示、合集 JSON 与单行任务汇总。",
+          "按通知开关发送脱敏总结，通知故障保留业务退出码；缺参及未确认结果失败闭合。"
+        ],
+        "sideEffects": [
+          "未完成今日签到时提交一次 AK 币签到。",
+          "实际执行保存本地连续签到及累计收益统计；只读和预演不写入。",
+          "显式开启保活时刷新登录 Token 并回写唯一匹配的青龙 AKILE_TOKEN 变量。",
+          "实际执行按通知开关调用青龙通知模块发送总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AkileCloud 签到与保活",
+      "path": "scripts/akile_checkin.py",
+      "sha256": "414598a6cc00cd6d0f804fb48bb2bed84dc8b9a64ca5fad8687925799c3e85be",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "GGBondHere/QingLongScripts",
+        "branch": "main",
+        "commit": "79238495c2489b52a6cc001ba9d6703ae6d57955",
+        "originalPath": "scripts/akile_checkin.py"
+      },
+      "cron": "0 22 * * *",
+      "command": "python3 scripts/akile_checkin.py",
+      "environment": [
+        {
+          "name": "AKILE_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://akile.ai/console/ak-coin-shop，浏览器开发者工具→应用→本地存储→https://akile.ai，复制 akile-token 原始 JWT。",
+          "format": "每个非空行一个完整 JWT，包含有效 exp；不加 Bearer，不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "AKILE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时手动设为 1。",
+          "format": "1 开启断网预演，默认 0。"
+        },
+        {
+          "name": "AKILE_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要保活时手动开启，并先配置青龙应用凭证。",
+          "format": "1 开启刷新及回写，默认 0；仅查询模式不刷新。"
+        },
+        {
+          "name": "CLIENT_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "青龙系统设置→应用设置创建应用并授予环境变量权限；开启保活时必填。",
+          "format": "青龙应用标识。"
+        },
+        {
+          "name": "CLIENT_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 CLIENT_ID 同一青龙应用的密钥；开启保活时必填。",
+          "format": "青龙应用密钥。"
+        },
+        {
+          "name": "AKILE_STATE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需指定可写统计文件路径。",
+          "format": "默认同目录 state.json；保存时保留其他分区，禁止符号链接。"
+        },
+        {
+          "name": "DAILY_ALL_CHILD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "合集调用时设为 1。",
+          "format": "1 输出兼容的 __DAILY_ALL_RESULT__ JSON。"
+        },
+        {
+          "name": "DAILY_ALL_DISABLED",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要停用时配置。",
+          "format": "包含 akile、akile_checkin 或 akilecloud 时跳过；用逗号、分号、竖线或换行列出服务。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置通知开关。",
+          "format": "默认 1；0、false、no、off 关闭；预演只模拟通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用自定义青龙通知目录时填写。",
+          "format": "包含 notify.py 或 sendNotify.js 的目录；通知不可用不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号的原始 JWT，顺序独立处理，任一失败或未确认则整体非零退出；配套青龙应用凭证为共享管理配置。"
+      },
+      "dependencies": [],
+      "features": [
+        "AK 币签到，先查今日流水以避免重复提交，提交后复核实际流水。",
+        "查询余额、今日所得、连续天数与累计签到收益，分页校准及增量同步。",
+        "显式开启 Token 保活，验证新凭据后唯一匹配回写青龙多行变量。",
+        "支持 --check-only 只读查询、08:45 合集调用和每天 22:00 独立定时。",
+        "多账号独立执行、完全断网预演、脱敏日志、官方公开身份展示、合集 JSON 与单行任务汇总。",
+        "按通知开关发送脱敏总结，通知故障保留业务退出码；缺参及未确认结果失败闭合。"
+      ],
+      "sideEffects": [
+        "未完成今日签到时提交一次 AK 币签到。",
+        "实际执行保存本地连续签到及累计收益统计；只读和预演不写入。",
+        "显式开启保活时刷新登录 Token 并回写唯一匹配的青龙 AKILE_TOKEN 变量。",
+        "实际执行按通知开关调用青龙通知模块发送总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/48ce92fe72bec5fa",
+        "candidateSha256": "414598a6cc00cd6d0f804fb48bb2bed84dc8b9a64ca5fad8687925799c3e85be"
+      }
+    },
+    {
       "catalogId": "bd7e90cbb255e115",
       "applicationKey": "aliyundrive",
       "checkProfile": {

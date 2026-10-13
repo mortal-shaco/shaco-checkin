@@ -38,6 +38,7 @@
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `0 8 * * *` |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `20 9 * * *` |
 | 机场签到（速鹰666） | `scripts/airport.py` | `python3 scripts/airport.py` | `0 0 * * *` |
+| AkileCloud 签到与保活 | `scripts/akile_checkin.py` | `python3 scripts/akile_checkin.py` | `0 22 * * *` |
 | 阿里云盘每日签到 | `scripts/aliyundrive_checkin.js` | `node scripts/aliyundrive_checkin.js` | `0 8 * * *` |
 | 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `3 11 * * *` |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `0 8 * * *` |
@@ -216,6 +217,7 @@
 - `scripts/acfun.py`：手机号密码登录及多账号独立执行；每日签到及等级、香蕉余额查询；显示官方返回的非秘密昵称、用户名或公开用户标识；排行榜选择视频，支持显式点赞、点赞后取消和投一根香蕉；读取实际视频及分区信息后显式发布弹幕；禁止硬编码目标回退；弹幕优先使用独立无凭据的一言请求，保留正文与作者、来源署名；各类失败均回退本地文案；使用配套 App 登录凭据显式上报分享任务；完全断网预演、通知入口、带时间戳的分阶段统计和单行机器可读汇总。
 - `scripts/agentrouter.py`：通过 GitHub OAuth 重新登录触发每日签到，以服务端 checked_in 严格确认为成功。；查询并展示官方账号身份、当前余额美元换算及已用额度。；保留站点公开客户端配置、已知客户端编号和额度换算比例兜底。；支持每行一个账号、原 JSON 配置格式、账号站点与用户编号配置、代理与可信 CA 证书。；支持显式启用首次 GitHub OAuth 授权；默认要求浏览器手动授权。；每天 09:20 运行，多账号间隔五秒。；完全断网预演、分阶段日志、账号与子任务统计、单行 TASK_SUMMARY 汇总及青龙脱敏通知。。
 - `scripts/airport.py`：使用邮箱和密码登录速鹰666，保留原有登录地址与表单字段。；每日签到并核验明确的业务成功结果；明确已签到结果视为已完成。；查询剩余流量，保留原 XPath 与 originBody Base64 页面解码及原始页面回退。；逐行多账号及旧版单账号参数兼容，失败账号不阻止后续账号执行。；脱敏的逐账号报告、统计、单行 TASK_SUMMARY 和青龙通知。；完全断网预演验证参数与执行计划，预演不代表真实账号业务成功。。
+- `scripts/akile_checkin.py`：AK 币签到，先查今日流水以避免重复提交，提交后复核实际流水。；查询余额、今日所得、连续天数与累计签到收益，分页校准及增量同步。；显式开启 Token 保活，验证新凭据后唯一匹配回写青龙多行变量。；支持 --check-only 只读查询、08:45 合集调用和每天 22:00 独立定时。；多账号独立执行、完全断网预演、脱敏日志、官方公开身份展示、合集 JSON 与单行任务汇总。；按通知开关发送脱敏总结，通知故障保留业务退出码；缺参及未确认结果失败闭合。。
 - `scripts/aliyundrive_checkin.js`：通过刷新令牌获取访问令牌并展示官方返回的昵称、用户名或公开用户标识；每日签到并展示本月累计签到天数；领取当日奖励并识别已领取状态；查询并展示本月签到日历；展示当日签到奖励和任务奖励概览；每行一个账号，独立执行并汇总失败；完全断网预演，模拟通知并明确未验证真实业务；青龙脱敏通知及可选 HTTPS PushPlus 推送，支持全局关闭；分阶段时间轴日志、逐账号统计和单行 TASK_SUMMARY 结构化汇总。
 - `scripts/aliyunpan_checkin.py`：刷新登录凭据并识别令牌轮换，全程不输出凭据；查询官方公开身份与存储容量；查询失败继续签到与领奖，最终非零退出；每日签到并输出本月累计签到天数；输出逐日签到状态、奖励名称及说明、已领奖与待领奖天数；默认领取当日奖励并识别已领取状态，支持显式关闭领奖；显式开启后补领本月全部已签到未领奖励，单日失败仍继续其余奖励，最终失败退出；保留可选设备会话及设备签名；ecdsa 仅在正式启用时导入；保留随机延迟、新旧参数兼容和多账号独立执行；显式开启时安全持久化轮换令牌文件；完全断网预演、青龙脱敏总结通知、分阶段时间轴日志及原机器汇总。
 - `scripts/aolaxing.py`：查询每日任务列表、今日任务总数及完成数。；按显式指定任务 ID 执行未完成任务，执行后重新读取列表核验已完成状态；已完成任务不重复执行。；查询当前积分、累计获得积分和累计签到次数。；官方响应返回昵称、用户名、显示名称或公开 UID 时显示非敏感身份；抑制手机号和凭据。；逐行多账号、上游配置键名兼容、断网预演、独立 HTTPS 请求、超时和失败非零退出。；时间轴阶段日志、账号与任务统计、单行机器汇总和青龙脱敏通知。。
@@ -399,6 +401,7 @@
 <tr><td rowspan="1"><code>scripts/acfun.py</code></td><td><code>ACFUN_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为 手机号|密码；仅在第一个 | 分割，密码中的后续 | 和首尾空格原样保留。手机号两侧空格忽略；不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/agentrouter.py</code></td><td><code>AGENTROUTER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 user_session 值或 JSON 对象；对象必填 github_session，可填 account_name、base_url、user_id、proxy、verify；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/airport.py</code></td><td><code>SUYING_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行：登录邮箱|密码。只按第一个 | 分割，后续密码内容保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/akile_checkin.py</code></td><td><code>AKILE_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整 JWT，包含有效 exp；不加 Bearer，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aliyundrive_checkin.js</code></td><td><code>refreshToken</code></td><td>是</td><td>格式：每个非空行填写一个账号的 refresh_token；仅按换行分隔，不支持 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aliyunpan_checkin.py</code></td><td><code>ALIYUN_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的刷新令牌；不用 &amp;、@ 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aolaxing.py</code></td><td><code>AOLAXING_COOKIE</code></td><td>是</td><td>格式：每行一个账号的完整 Cookie；不按 &amp;、@ 或分号拆分账号。；多账号格式以该脚本文档为准</td></tr>
@@ -626,6 +629,15 @@
 <tr><td><code>SUYING_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；其他值开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机青龙通知模块所在目录。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="9"><code>scripts/akile_checkin.py</code></td><td><code>AKILE_DRY_RUN</code></td><td>否</td><td>格式：1 开启断网预演，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>AKILE_REFRESH_TOKEN</code></td><td>否</td><td>格式：1 开启刷新及回写，默认 0；仅查询模式不刷新。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CLIENT_ID</code></td><td>是</td><td>格式：青龙应用标识。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CLIENT_SECRET</code></td><td>是</td><td>格式：青龙应用密钥。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>AKILE_STATE_FILE</code></td><td>否</td><td>格式：默认同目录 state.json；保存时保留其他分区，禁止符号链接。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DAILY_ALL_CHILD</code></td><td>否</td><td>格式：1 输出兼容的 __DAILY_ALL_RESULT__ JSON。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DAILY_ALL_DISABLED</code></td><td>否</td><td>格式：包含 akile、akile_checkin 或 akilecloud 时跳过；用逗号、分号、竖线或换行列出服务。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；预演只模拟通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 或 sendNotify.js 的目录；通知不可用不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/aliyundrive_checkin.js</code></td><td><code>ALIYUNDRIVE_DRY_RUN</code></td><td>否</td><td>格式：1 表示完全断网预演，其他值或未设置表示正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ALIYUN_PUSH_PLUS</code></td><td>是</td><td>格式：单个 PushPlus 推送令牌；未设置时只使用青龙通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭全部通知，大小写不敏感。；多账号格式以该脚本文档为准</td></tr>
@@ -1830,6 +1842,7 @@
 - `scripts/acfun.py`：每个非空行一个 手机号|密码；仅拆分第一个 |，逐账号独立登录和执行任务；任一账号失败则整个进程非零退出。。
 - `scripts/agentrouter.py`：每个非空行一个账号；每行可为独立 GitHub user_session 值或包含 github_session 的 JSON 对象，配套账号配置在同一对象中；账号独立处理，任一失败整体非零退出。。
 - `scripts/airport.py`：SUYING_ACCOUNTS 每个非空行一个账号，以第一个 | 分隔同一账号的邮箱和密码。逐账号独立处理，任一账号配置、登录、签到或流量查询失败时整体非零退出。旧版参数支持单账号。。
+- `scripts/akile_checkin.py`：每个非空行一个账号的原始 JWT，顺序独立处理，任一失败或未确认则整体非零退出；配套青龙应用凭证为共享管理配置。。
 - `scripts/aliyundrive_checkin.js`：refreshToken 每个非空行一个账号；账号顺序独立执行，任一账号失败则进程非零退出。。
 - `scripts/aliyunpan_checkin.py`：每个非空行一个账号；ALIYUN_REFRESH_TOKEN 为规范变量，未设置时兼容 refreshToken；账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/aolaxing.py`：每个非空行对应一个账号，整行保留；逐账号独立处理，任何账号失败则整体非零退出。兼容变量 AOLAXING 使用原 JSON 数组。。
@@ -2034,6 +2047,13 @@
 - 所属脚本：`scripts/airport.py`
 - 获取或设置：从本人速鹰666网站注册或账户资料取得登录邮箱，密码使用本人网站登录密码。在青龙环境变量中填写每行一个账号。旧版单账号可改用 SUYING_USERNAME 与 SUYING_PASSWORD，两项必须同时设置；新变量存在时优先使用新变量。
 - 填写格式：`每个非空行：登录邮箱|密码。只按第一个 | 分割，后续密码内容保留；不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `AKILE_TOKEN`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：登录 https://akile.ai/console/ak-coin-shop，浏览器开发者工具→应用→本地存储→https://akile.ai，复制 akile-token 原始 JWT。
+- 填写格式：`每个非空行一个完整 JWT，包含有效 exp；不加 Bearer，不用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `refreshToken`
@@ -3516,6 +3536,62 @@
 - 所属脚本：`scripts/airport.py`
 - 获取或设置：可选：填写青龙现有 notify.py 所在目录；默认尝试导入 notify.send 及青龙标准脚本目录。缺失或投递失败不会改变业务退出码。
 - 填写格式：`本机青龙通知模块所在目录。`
+
+#### `AKILE_DRY_RUN`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：预演时手动设为 1。
+- 填写格式：`1 开启断网预演，默认 0。`
+
+#### `AKILE_REFRESH_TOKEN`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：需要保活时手动开启，并先配置青龙应用凭证。
+- 填写格式：`1 开启刷新及回写，默认 0；仅查询模式不刷新。`
+
+#### `CLIENT_ID`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：青龙系统设置→应用设置创建应用并授予环境变量权限；开启保活时必填。
+- 填写格式：`青龙应用标识。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CLIENT_SECRET`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：与 CLIENT_ID 同一青龙应用的密钥；开启保活时必填。
+- 填写格式：`青龙应用密钥。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `AKILE_STATE_FILE`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：按需指定可写统计文件路径。
+- 填写格式：`默认同目录 state.json；保存时保留其他分区，禁止符号链接。`
+
+#### `DAILY_ALL_CHILD`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：合集调用时设为 1。
+- 填写格式：`1 输出兼容的 __DAILY_ALL_RESULT__ JSON。`
+
+#### `DAILY_ALL_DISABLED`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：需要停用时配置。
+- 填写格式：`包含 akile、akile_checkin 或 akilecloud 时跳过；用逗号、分号、竖线或换行列出服务。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：在青龙环境变量中设置通知开关。
+- 填写格式：`默认 1；0、false、no、off 关闭；预演只模拟通知。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/akile_checkin.py`
+- 获取或设置：使用自定义青龙通知目录时填写。
+- 填写格式：`包含 notify.py 或 sendNotify.js 的目录；通知不可用不改变业务退出码。`
 
 #### `ALIYUNDRIVE_DRY_RUN`
 
@@ -10982,6 +11058,7 @@
 - `scripts/acfun.py`：SHA-256 `006ac42bec4fba6c9e41599da022e9b425b4ca5b6617bcd66c0403ab8917ed65`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
 - `scripts/agentrouter.py`：SHA-256 `a22e06bb7c32b2ce57c1dbbea73b86dac505381bde53a818ec84254669f4c888`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/81684dd327c48211`。
 - `scripts/airport.py`：SHA-256 `751d2835e39d2431905eacf72fc64a9cddfb4fac8032eaa83bc7af4632e7983d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8cd72e9849a3c893`。
+- `scripts/akile_checkin.py`：SHA-256 `414598a6cc00cd6d0f804fb48bb2bed84dc8b9a64ca5fad8687925799c3e85be`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/48ce92fe72bec5fa`。
 - `scripts/aliyundrive_checkin.js`：SHA-256 `e247d342c3624bc2e7cc9da6f1808d8dfeffe19f1df4a64d3a410b2b87a4ac0b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd7e90cbb255e115`。
 - `scripts/aliyunpan_checkin.py`：SHA-256 `ed1ba9f840e3411c993266ae1b29c1db3cd968bf49f318d682fea69aab37815c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
 - `scripts/aolaxing.py`：SHA-256 `5e2e40940a4bd132b7f240273fe1e6850ace43aa93856a8ee9871aa263ee7b46`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ca8984737c9322f`。
@@ -11160,6 +11237,7 @@
 - `scripts/acfun.py`：默认执行每日签到，更新签到状态；选择 like 时新增点赞；选择 like-cycle 时新增点赞后取消；选择 danmu 时向所选视频公开发布一条弹幕；选择 banana 时向所选视频投出一根香蕉，消耗余额；选择 share 时上报分享任务完成状态；开启通知时尝试发送脱敏任务总结，预演阻止网络传输。
 - `scripts/agentrouter.py`：重新登录 AgentRouter，创建登录会话并可能发放当日签到额度。；仅显式启用 AGENTROUTER_ALLOW_AUTHORIZE 后可提交 GitHub 首次应用授权。；正式运行按 QINGLONG_NOTIFY 设置发送青龙通知。。
 - `scripts/airport.py`：正式模式通过登录建立网站会话。；正式模式执行每日签到，可能增加网站赠送流量或签到记录。；正式模式调用青龙通知渠道发送脱敏任务总结，可通过 QINGLONG_NOTIFY 关闭。。
+- `scripts/akile_checkin.py`：未完成今日签到时提交一次 AK 币签到。；实际执行保存本地连续签到及累计收益统计；只读和预演不写入。；显式开启保活时刷新登录 Token 并回写唯一匹配的青龙 AKILE_TOKEN 变量。；实际执行按通知开关调用青龙通知模块发送总结。。
 - `scripts/aliyundrive_checkin.js`：刷新账号访问令牌；执行每日签到；领取当日签到奖励；向青龙通知渠道和可选 PushPlus 渠道发送脱敏任务总结（预演不发送）。
 - `scripts/aliyunpan_checkin.py`：执行账号每日签到；默认领取当日奖励，显式全量模式下补领其他已签到未领奖励；ENABLE_DEVICE_SESSION=1 时注册设备会话；ALIYUN_PERSIST_ROTATED_TOKENS=1 且令牌轮换时写入安全凭据文件；正式执行且通知启用时发送脱敏任务通知。
 - `scripts/aolaxing.py`：配置 AOLAXING_TASK_IDS 时触发对应每日任务完成及服务端关联积分或签到状态变更，具体效果以用户审阅的任务为准。；在线运行且通知开启时发送青龙任务汇总通知。。
@@ -11340,6 +11418,7 @@
 - `scripts/acfun.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/acfun/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/agentrouter.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/agentrouter/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/airport.py`：上游 `CN-Grace/QinglongScripts` / `Airport.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
+- `scripts/akile_checkin.py`：上游 `GGBondHere/QingLongScripts` / `scripts/akile_checkin.py` / `79238495c2489b52a6cc001ba9d6703ae6d57955`。
 - `scripts/aliyundrive_checkin.js`：上游 `huwangkeji/aliyundrive_checkin` / `aliyundrive_checkin.js` / `267ee025840c5b55dce5b5e1e365fb52ac500fce`。
 - `scripts/aliyunpan_checkin.py`：上游 `agluo/ql-script-hub` / `aliyunpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/aolaxing.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/aolaxing/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
