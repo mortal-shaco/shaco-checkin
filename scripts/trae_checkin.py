@@ -15,6 +15,13 @@
 兼容 TRAE_SESSION、TRAE_SESSIONID（各按行对应同一账号），--session 单账号；
 设备号用同账号 TRAE_DEVICE_ID[_2.._9] 或 JSON deviceId，禁止随机生成及风控换号。
 网页会话过期时用 sessionid 换新会话，以 0600 权限缓存；领取后复查今日状态。
+主来源 Cat-zaizai/ZaiZaiCat-Checkin script/trae/main.py（MIT），Author: Assistant，Date: 2026-09-07。
+主来源原定时 30 8 * * * 可继续为同一脚本配置；默认维护定时保持不变。
+兼容主来源 JSON 字段 account_name、expires_at；不扫描客户端、不自动生成或轮换设备号。
+只用官方成功响应的公开 UserID 识别重复配置；保留每账号状态核验和真实余额查询。
+重复配置单独统计，不将其误报为新领取；任一账号失败仍整体非零退出。
+网页鉴权失效时保留同账号显式桌面令牌回退；领取报错时复查官方状态，确认完成才成功。
+凭据失效单独统计，方便更新；不记录异常详情或服务端原文。
 原定时：23 0 * * * 主签，7,37 * * * * 补签；可分别创建青龙任务。
 Trae Work 原定时 0 8,20 * * * 可继续使用同一脚本 checkin 命令。
 TRAE_ACCOUNTS：每个非空行一个 JSON 对象，配套凭据放在同一对象中。
@@ -37,6 +44,7 @@ TRAE_AUTH_DIR 默认为脚本同目录 auths（只用于显式 login 的写入�
 复制客户端的刷新凭据会共用轮换链，建议交互登录建立单独会话。
 上游 RANDOM_SIGNIN/MAX_RANDOM_DELAY 显式设置时兼容每账号随机等待；
 未设置时保持规范脚本原有启动及账号间错峰，不增加默认一小时等待。
+兼容 TRAE_JITTER_MAX 显式设置启动错峰上限；维护默认仍为 20 秒，上游原默认 600 秒不迁移。
 TRAE_DRY_RUN=1：只验证配置及列出动作；禁止所有联网和文件写入。
 本脚本不会发布帖子、评论或分享。不会自动切换其他账号设备或改写账号源文件。
 令牌续期会轮换服务端 refreshToken，并以 0600 权限缓存最新凭据。
@@ -92,7 +100,7 @@ EP_ENTITLE = UgHost + '/trae/api/v2/pay/user_current_entitlement_list'
 EP_USAGE = UgHost + '/trae/api/v2/pay/ide_user_ent_usage'
 EP_EXCHANGE = OAuthHost + '/cloudide/api/v3/trae/oauth/ExchangeToken'
 EP_EXCHANGE_PROOF = UgHost + '/trae/api/v3/oauth/ExchangeToken'
-AUTH_FAIL_CODES = (1001, 1002, 401, 403)
+AUTH_FAIL_CODES = (1001, 1002, 1003, 10085, 401, 403)
 RATE_HTTP_CODES = (429, 500, 502, 503, 504)
 DISABLED = ('0', 'false', 'no', 'off')
 DRY = os.getenv('TRAE_DRY_RUN', '0').lower() not in DISABLED
@@ -167,6 +175,33 @@ def root_of(data):
 
 def checked_success(status, data):
     return 200 <= status < 300 and code_of(data) == 0
+
+
+def observe_uid(acc, data):
+    # 仅使用成功官方响应的公开身份，不从未核验的 JWT 或配置猜测账号归属。
+    for obj in (data, root_of(data), root_of(data).get('user_info', {})):
+        if not isinstance(obj, dict):
+            continue
+        for field in ('UserID', 'userId', 'uid'):
+            value = obj.get(field)
+            if isinstance(value, (str, int)) and not isinstance(value, bool) and value != '':
+                text = str(value)
+                if re.fullmatch(r'(?:\+?86)?1[3-9]\d{9}', text):
+                    continue
+                if any(secret and secret in text for secret in SECRETS):
+                    continue
+                acc['_officialUid'] = text
+                return
+
+
+def identify_duplicate(acc, seen):
+    uid = acc.get('_officialUid')
+    if not uid:
+        return
+    owner = seen.setdefault(uid, acc['_index'])
+    if owner != acc['_index'] and not acc.get('_duplicateOf'):
+        acc['_duplicateOf'] = owner
+        log('⚠️ 重复配置：官方公开 UID 与账号%d 相同；仍独立核验状态和余额，不重复领取已完成签到' % owner)
 
 
 def identity(data):
@@ -423,6 +458,8 @@ def exchange(acc, cache, cache_path):
         if error_code in (10101, 20403, '10101', '20403') and platform_code:
             continue
         if not 200 <= status < 300 or error or ('code' in data and code_of(data) != 0):
+            if error_code in (20101, '20101') or status in (401, 403):
+                acc['_credentialError'] = True
             hint = {20405: '需要同设备证明', 20403: '设备与凭据不匹配', 10101: '客户端与凭据不匹配',
                     20101: '刷新凭据已失效'}.get(error_code, '接口未确认成功')
             raise TaskError('令牌续期失败：' + hint)
@@ -437,11 +474,13 @@ def exchange(acc, cache, cache_path):
         SECRETS.extend([token, new_refresh])
         expiry = expiry_seconds(result.get('TokenExpireAt') or result.get('expiresAt')) or jwt_exp(token)
         acc['expiresAt'] = expiry
-        cache[acc['_key']] = {'accessToken': token, 'refreshToken': new_refresh,
+        observe_uid(acc, result)
+        cache[acc['_key']] = {'officialUid': acc.get('_officialUid', ''), 'accessToken': token, 'refreshToken': new_refresh,
                               'expiresAt': expiry}
         # 轮换后立即落盘，后续任何业务失败都不能丢掉刷新链。
         write_json(cache_path, cache)
         log('✅ 令牌续期并安全保存成功')
+        observe_uid(acc, result)
         identity(result)
         return
     raise TaskError('令牌续期失败：参考支持的客户端组合均不匹配')
@@ -487,6 +526,8 @@ def web_exchange(acc, cache, cache_path):
         metadata = data.get('ResponseMetadata')
         error = metadata.get('Error') if isinstance(metadata, dict) else None
         if status != 200 or error or ('code' in data and code_of(data) != 0):
+            if status in (401, 403) or error or ('code' in data and code_of(data) in AUTH_FAIL_CODES):
+                raise WebSessionError('长效 Cookie 鉴权失败，请更新本账号 Cookie')
             raise TaskError('长效 Cookie 续期未确认成功')
         new_session = ''
         for header in cookies:
@@ -509,22 +550,50 @@ def web_exchange(acc, cache, cache_path):
     acc['expiresAt'] = expiry_seconds(result.get('TokenExpireAt')) or jwt_exp(result['Token'])
     SECRETS.append(result['Token'])
     entry = cache.setdefault(acc['_key'], {})
-    entry.update(accessToken=acc['accessToken'], expiresAt=acc['expiresAt'], session=acc.get('session', ''))
+    observe_uid(acc, result)
+    entry.update(accessToken=acc['accessToken'], expiresAt=acc['expiresAt'], session=acc.get('session', ''),
+                 officialUid=acc.get('_officialUid', ''))
     write_json(cache_path, cache)
     log('✅ 网页会话换取令牌成功')
+    observe_uid(acc, result)
     identity(result)
+
+
+def renew_access(acc, cache, cache_path):
+    if not acc.get('_web'):
+        return exchange(acc, cache, cache_path)
+    try:
+        return web_exchange(acc, cache, cache_path)
+    except WebSessionError:
+        access = acc.get('_desktopAccessToken', '')
+        refresh = acc.get('_desktopRefreshToken', '')
+        if not access and not refresh:
+            acc['_credentialError'] = True
+            raise
+        acc['_web'] = False
+        acc['accessToken'] = access
+        acc['refreshToken'] = refresh
+        acc['expiresAt'] = acc.get('_desktopExpiresAt', 0)
+        log('⚠️ 网页鉴权失效，回退本账号显式桌面凭据；保留绑定设备，不借用其他账号')
+        expiry = jwt_exp(access) or expiry_seconds(acc['expiresAt'])
+        if not access or (expiry and expiry <= time.time() + 60):
+            return exchange(acc, cache, cache_path)
 
 
 def request_account(acc, url, body, cache, cache_path, refresh_allowed=True):
     expiry = jwt_exp(acc.get('accessToken', '')) or expiry_seconds(acc.get('expiresAt'))
     if not acc.get('accessToken') or (expiry and expiry <= time.time() + 60):
-        (web_exchange if acc.get('_web') else exchange)(acc, cache, cache_path)
+        renew_access(acc, cache, cache_path)
     status, data = http(url, ug_headers(acc['accessToken'], acc['deviceId'], acc), body, 20)
     if refresh_allowed and (status in (401, 403) or code_of(data) in AUTH_FAIL_CODES
                             or (acc.get('_web') and code_of(data) in (1003, 10085))) and (acc.get('_web') or acc.get('refreshToken')):
-        (web_exchange if acc.get('_web') else exchange)(acc, cache, cache_path)
+        renew_access(acc, cache, cache_path)
         status, data = http(url, ug_headers(acc['accessToken'], acc['deviceId'], acc), body, 20)
+    if status in (401, 403) or code_of(data) in AUTH_FAIL_CODES:
+        acc['_credentialError'] = True
     log('请求结果：HTTP %d，业务码 %s' % (status, code_of(data) if code_of(data) is not None else '未提供'))
+    if checked_success(status, data):
+        observe_uid(acc, data)
     identity(data)
     return status, data
 
@@ -550,10 +619,22 @@ def parse_accounts(session_override=None):
             raise TaskError('TRAE_ACCOUNTS 配置格式错误') from None
     else:
         entries = []
-        for i in range(1, 10):
+        # 显式列出兼容名称，让导入契约与真实执行器识别同一组环境变量。
+        token_names = (
+            ('TRAE_ACCESS_TOKEN', 'TRAE_REFRESH_TOKEN'),
+            ('TRAE_ACCESS_TOKEN_2', 'TRAE_REFRESH_TOKEN_2'),
+            ('TRAE_ACCESS_TOKEN_3', 'TRAE_REFRESH_TOKEN_3'),
+            ('TRAE_ACCESS_TOKEN_4', 'TRAE_REFRESH_TOKEN_4'),
+            ('TRAE_ACCESS_TOKEN_5', 'TRAE_REFRESH_TOKEN_5'),
+            ('TRAE_ACCESS_TOKEN_6', 'TRAE_REFRESH_TOKEN_6'),
+            ('TRAE_ACCESS_TOKEN_7', 'TRAE_REFRESH_TOKEN_7'),
+            ('TRAE_ACCESS_TOKEN_8', 'TRAE_REFRESH_TOKEN_8'),
+            ('TRAE_ACCESS_TOKEN_9', 'TRAE_REFRESH_TOKEN_9'),
+        )
+        for i, (access_name, refresh_name) in enumerate(token_names, 1):
             suffix = '' if i == 1 else '_' + str(i)
-            access = os.getenv('TRAE_ACCESS_TOKEN' + suffix, '').strip()
-            refresh = os.getenv('TRAE_REFRESH_TOKEN' + suffix, '').strip()
+            access = os.getenv(access_name, '').strip()
+            refresh = os.getenv(refresh_name, '').strip()
             if access or refresh:
                 entries.append({'accessToken': access, 'refreshToken': refresh,
                                 'deviceId': os.getenv('TRAE_DEVICE_ID' + suffix, ''),
@@ -598,7 +679,8 @@ def parse_accounts(session_override=None):
         aliases = {'accessToken': ('token', 'access_token'), 'refreshToken': ('refresh_token',),
                    'deviceId': ('claimDeviceId', 'realDeviceId', 'device_id'), 'deviceKeyPem': ('device_key_pem', 'privateKeyPem'),
                    'devicePubPem': ('device_pub_pem', 'publicKeyPem'), 'machineId': ('machine_id',),
-                   'uid': ('userId', 'user_id'), 'session': ('X-Cloudide-Session',)}
+                   'uid': ('userId', 'user_id'), 'session': ('X-Cloudide-Session',),
+                   'name': ('account_name', 'screenName'), 'expiresAt': ('expires_at',)}
         for canonical, alternatives in aliases.items():
             if not acc.get(canonical):
                 acc[canonical] = next((acc[k] for k in alternatives if acc.get(k)), '')
@@ -615,6 +697,10 @@ def parse_accounts(session_override=None):
             acc['deviceId'] = os.getenv('TRAE_DEVICE_ID', '').strip()
             SECRETS.append(acc['deviceId'])
         acc['_web'] = bool(acc.get('session') or acc.get('sessionid'))
+        if acc['_web']:
+            acc['_desktopAccessToken'] = acc.get('accessToken', '')
+            acc['_desktopRefreshToken'] = acc.get('refreshToken', '')
+            acc['_desktopExpiresAt'] = acc.get('expiresAt', 0)
         for field in ('session', 'sessionid'):
             if any(c in acc.get(field, '') for c in '\r\n;'):
                 acc['_error'] = 'Cookie 字段仅填单个 Value，不得包含换行或分号'
@@ -709,19 +795,28 @@ m.send(v['title'], v['body'])
 '''
     payload = {'dryRun': DRY, 'path': str(py_path) if py_path else '', 'title': 'Trae 每日签到与积分查询', 'body': body}
     try:
-        result = subprocess.run([sys.executable, '-c', program], input=json.dumps(payload), text=True,
+        result = subprocess.run([sys.executable, '-B', '-c', program], input=json.dumps(payload), text=True,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20)
         if result.returncode == 0:
             return '已发送'
     except Exception:
         pass
-    if DRY:
-        log('⚠️ 已尝试向青龙通知器提交预演摘要；断网保护禁止网络投递')
-        return '预演摘要提交；网络投递已阻止或通知器不可用'
     js_paths = ([Path(directory) / 'sendNotify.js'] if directory else []) + [Path('/ql/data/scripts/sendNotify.js'), Path('/ql/scripts/sendNotify.js')]
     js_path = next((p for p in js_paths if p.is_file()), None)
     if js_path:
-        program_js = "const fs=require('fs');const p=JSON.parse(fs.readFileSync(0,'utf8'));Promise.resolve(require(p.path).sendNotify(p.title,p.body)).catch(()=>{process.exitCode=1});"
+        program_js = """const fs=require('fs');const p=JSON.parse(fs.readFileSync(0,'utf8'));
+if(p.dryRun){
+ const deny=()=>{throw new Error('dry-run network disabled')};
+ require('net').Socket.prototype.connect=deny;
+ require('net').connect=deny;require('net').createConnection=deny;
+ require('tls').connect=deny;require('dns').lookup=deny;require('dns').resolve=deny;
+ require('dgram').Socket.prototype.send=deny;
+ for(const n of ['http','https']){require(n).request=deny;require(n).get=deny;}
+ globalThis.fetch=deny;
+ const cp=require('child_process');
+ for(const n of ['exec','execFile','spawn','fork','execSync','execFileSync','spawnSync'])cp[n]=deny;
+}
+Promise.resolve(require(p.path).sendNotify(p.title,p.body)).catch(()=>{process.exitCode=1});"""
         payload['path'] = str(js_path)
         try:
             result = subprocess.run(['node', '-e', program_js], input=json.dumps(payload), text=True,
@@ -730,12 +825,15 @@ m.send(v['title'], v['body'])
                 return '已发送'
         except Exception:
             pass
+    if DRY:
+        log('⚠️ 已尝试向青龙通知器提交预演摘要；断网保护禁止网络投递')
+        return '预演摘要提交；网络投递已阻止或通知器不可用'
     log('⚠️ 青龙通知不可用或发送失败，保留业务退出码')
     return '不可用或失败'
 
 
 def direct_push(body):
-    if DRY or os.getenv('QINGLONG_NOTIFY', '1').lower() in DISABLED:
+    if DRY or os.getenv('QINGLONG_NOTIFY', '1').strip().lower() in DISABLED:
         return
     key = os.getenv('QYWX_TOKEN') or os.getenv('WECHAT_WEBHOOK')
     if key:
@@ -815,6 +913,10 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
                     remaining -= step
             run.stage('显式随机错峰', wait_random)
     saved = cache.get(acc['_key'], {})
+    if isinstance(saved, dict) and isinstance(saved.get('officialUid'), str) and saved['officialUid']:
+        # 复用上次官方成功响应的公开 UID，兼容没有身份字段的状态接口。
+        acc['_officialUid'] = saved['officialUid']
+    identify_duplicate(acc, options['seen'])
     if acc.get('_web') and isinstance(saved, dict):
         for field in ('session', 'accessToken', 'expiresAt'):
             if saved.get(field):
@@ -851,6 +953,7 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
             log('签到状态：今日已签=%s，开放=%s' % ('是' if checked else '否', '是' if enabled else '否'))
             return checked, enabled
         checked, enabled = run.stage('查询签到状态', query_status)
+        identify_duplicate(acc, options['seen'])
         if checked:
             run.counts['alreadyComplete'] += 1
         elif not enabled:
@@ -876,8 +979,19 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
                             continue
                         state['cooldown'][key] = time.time() + options['cooldown'] * 60
                         write_json(state_path, state)
-                        raise TaskError('领取限流，已记冷却，交给后续定时重试')
-                    raise TaskError('领取接口未确认业务成功')
+                        failure_message = '领取限流，已记冷却，交给后续定时重试'
+                    else:
+                        failure_message = '领取接口未确认业务成功'
+                    log('⚠️ 领取报错，复查本账号今日状态；不会再次发送领取')
+                    try:
+                        completed, _ = query_status()
+                    except TaskError:
+                        raise TaskError(failure_message) from None
+                    if completed:
+                        run.counts['alreadyComplete'] += 1
+                        log('☑️ 领取报错但官方复查确认今日已签')
+                        return
+                    raise TaskError(failure_message)
             run.stage('按需领取签到积分', claim)
             def verify_claim():
                 checked_after, _ = query_status()
@@ -889,6 +1003,7 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
         state['cooldown'].pop(key, None)
         write_json(state_path, state)
     values = run.stage('查询真实积分余额', lambda: balance(acc, cache, cache_path))
+    identify_duplicate(acc, options['seen'])
     log('积分：总额 %s，已用 %s，剩余 %s' % (values['total'], values['used'], values['remain']))
     return 'success'
 
@@ -1204,7 +1319,7 @@ def main():
         log('任务动作：' + {'checkin': '每日签到与余额', 'credits': '只查积分余额', 'login': '显式交互登录'}[task])
         peak = datetime.datetime.now(BJ).hour in parse_hours(os.getenv('TRAE_PEAK_HOURS', '0'))
         options = {'cooldown': integer_env('TRAE_PEAK_COOLDOWN_MIN' if peak else 'TRAE_COOLDOWN_MIN', 12 if peak else 55, 1, 1440),
-                   'tries': integer_env('CLAIM_TRIES', 1, 1, 5)}
+                   'tries': integer_env('CLAIM_TRIES', 1, 1, 5), 'seen': {}}
         raw_batch = os.getenv('TRAE_BATCH', 'all').strip().lower()
         size = len(accounts) if raw_batch in ('', 'all', '0') else integer_env('TRAE_BATCH', len(accounts), 1, 9999)
         cache_path = Path(os.getenv('TRAE_TOKEN_CACHE') or str(Path(__file__).parent / '.trae_token_cache.json'))
@@ -1224,7 +1339,7 @@ def main():
         else:
             selected = {a['_index'] for a in accounts}
         if not DRY and task == 'checkin' and os.getenv('TRAE_JITTER', '1').lower() not in DISABLED:
-            wait = random.randint(0, 20)
+            wait = random.randint(0, integer_env('TRAE_JITTER_MAX', 20, 0, 86400))
             log('启动错峰等待 %d 秒' % wait)
             time.sleep(wait)
         circuit = False
@@ -1256,7 +1371,7 @@ def main():
                     run.counts['failure'] += 1
                 log('❌ 账号%d：处理异常（详情已脱敏）' % acc['_index'])
             elapsed = round(time.monotonic() - run.started, 2)
-            results.append({'account': acc['_index'], 'status': status, 'tasks': run.counts, 'elapsedSeconds': elapsed})
+            results.append({'account': acc['_index'], 'status': status, 'tasks': run.counts, 'elapsedSeconds': elapsed, 'duplicateOf': acc.get('_duplicateOf'), 'credentialError': bool(acc.get('_credentialError'))})
             log('账号%d统计：总任务 %d，成功 %d，已完成 %d，跳过 %d，失败 %d，耗时 %.2f 秒' %
                 (acc['_index'], sum(run.counts.values()), run.counts['success'], run.counts['alreadyComplete'],
                  run.counts['skipped'], run.counts['failure'], elapsed))
@@ -1265,16 +1380,21 @@ def main():
                 circuit = True
     except TaskError as error:
         config_error = True
+        log('账号数量：%d（配置核验未完成）' % account_count)
         log('❌ 配置错误：' + str(error))
     except Exception:
         config_error = True
+        log('账号数量：%d（初始化未完成）' % account_count)
         log('❌ 初始化异常（详情已脱敏）')
     good = sum(r['status'] in ('success', 'already-complete', 'dry-run') for r in results)
     skipped = sum(r['status'] == 'skipped' for r in results)
     failed = sum(r['status'] == 'failure' for r in results)
+    duplicates = sum(r.get('duplicateOf') is not None for r in results)
+    credential_errors = sum(bool(r.get('credentialError')) for r in results)
     exit_code = 1 if config_error or failed or skipped or good != account_count else 0
     final_status = 'configuration-error' if config_error else ('partial-failure' if exit_code and good else 'failure' if exit_code else 'dry-run' if DRY else 'success')
     body = 'Trae 任务：%s；账号总数 %d，成功 %d，失败 %d，跳过 %d。' % (final_status, account_count, good, failed, skipped)
+    body += '其中重复配置 %d，需更新凭据 %d。' % (duplicates, credential_errors)
     if config_error:
         body += '配置核验失败。'
     log('通知摘要：' + body)
@@ -1285,12 +1405,14 @@ def main():
     elapsed = round(time.monotonic() - started, 2)
     log('----------------------------------------')
     log('任务统计：账号总数 %d，成功 %d，失败 %d，跳过 %d；总耗时 %.2f 秒' % (account_count, good, failed, skipped, elapsed))
+    log('重复配置统计：%d（已独立核验，不算作新增领取）' % duplicates)
+    log('需更新凭据账号：%d' % credential_errors)
     log('子任务统计：' + json.dumps(task_counts, ensure_ascii=False))
     log('通知状态：' + notify_status)
     log('完成时间：' + finished + '；最终状态：' + final_status)
     summary = {'applicationKey': 'trae', 'mode': 'dry-run' if DRY else 'live', 'status': final_status,
                'accountCount': account_count, 'success': good, 'failure': failed, 'skipped': skipped,
-               'configurationError': config_error, 'accounts': results, 'tasks': task_counts,
+               'configurationError': config_error, 'duplicateAccounts': duplicates, 'credentialErrors': credential_errors, 'accounts': results, 'tasks': task_counts,
                'startTime': start_time, 'finishTime': finished, 'elapsedSeconds': elapsed,
                'notification': notify_status, 'exitCode': exit_code}
     print('TASK_SUMMARY=' + json.dumps(summary, ensure_ascii=False, separators=(',', ':')))

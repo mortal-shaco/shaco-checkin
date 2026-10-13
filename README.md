@@ -119,6 +119,7 @@
 | 书亦烧仙草签到 | `scripts/shuyi.py` | `python3 scripts/shuyi.py` | `0 9 * * *` |
 | 看雪论坛签到 | `scripts/sign_in.py` | `python3 scripts/sign_in.py` | `1 1 1 1 1` |
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `0 8 * * *` |
+| 森空岛双游戏签到 | `scripts/skland_demo.py` | `python3 scripts/skland_demo.py` | `0 8 * * *` |
 | 森空岛签到 | `scripts/skyland.py` | `python3 scripts/skyland.py` | `0 8 * * *` |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `31 8 * * *` |
 | SSL证书检查 | `scripts/ssl.py` | `python3 scripts/ssl.py` | `0 0 * * *` |
@@ -192,6 +193,7 @@
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `8 6 * * *` |
 | 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `0 8 * * *` |
+| 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `0 0 * * *` |
 | ZCode 国内版领套餐 | `scripts/zcode_cn_daily.py` | `python3 scripts/zcode_cn_daily.py` | `0 9 * * *` |
 | Zippo会员中心 | `scripts/zippo.py` | `python3 scripts/zippo.py` | `9 9 * * *` |
 | Zodgame签到与广告任务 | `scripts/zodgame_test.py` | `python3 scripts/zodgame_test.py` | `0 8 * * *` |
@@ -287,6 +289,7 @@
 - `scripts/shuyi.py`：获取书亦烧仙草滑块验证码；使用 OpenCV 模板匹配识别滑块位置；使用 AES 加密并校验滑块，校验成功后签到；展示签到天数和所得积分；显示官方返回的非敏感昵称、用户名或公开账号标识；保留 sysxc_auth 参数名，支持每行一个账号独立执行；完全断网预演，不导入通知模块或发送任何推送；青龙通知和可选 PushPlus 脱敏推送；带时间戳的分阶段日志、账号统计和单行 TASK_SUMMARY 汇总。
 - `scripts/sign_in.py`：多账号看雪论坛签到，支持同账号 Cookie、CSRF token 和可选 User-Agent；兼容显式指定的旧配置文件及嵌套账号结构；使用独立标准库 HTTP 请求，固定原签到端点，限制超时及响应大小并核验业务码 0；显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，并展示纯数字奖励积分；完全离线参数预演、按阶段脱敏日志及单行结构化任务汇总；青龙通知及全局通知开关，通知不可用不改变业务退出码。
 - `scripts/skland_daily.py`：通行证 Token、森空岛 cred/token 和手机号密码登录，保留官方授权换取及请求签名；自动获取临时设备标识或使用用户指定标识；获取版区及今日检票状态、版区筛选、每日检票及避免重复检票；配置数量的帖子浏览、显式开启的点赞和分享任务，保留帖子分页；保留 --dry-run、--actions、--zones、--version 命令行参数及旧序号账号输入；多账号独立执行、HTTP 超时、禁止重定向、业务码核验和失败闭合退出；完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知。
+- `scripts/skland_demo.py`：鹰角通行证登录，兼容旧版 TOKEN 和官网单行 JSON 响应输入；手机号密码或已有短信验证码登录；显式动作发送登录验证码；内置数美设备标识计算，也可使用同账号显式提供的设备标识；读取绑定角色，显示官方昵称或公开角色编号；明日方舟所有绑定角色签到并显示奖励；终末地所有绑定角色签到并显示奖励；可选游戏任务开关和签名令牌刷新；多账号独立处理、超时和严格业务成功码校验；完全断网预演、分阶段日志、账号及任务统计、单行结构化汇总；通过青龙通知模块发送脱敏总结，通知失败保留业务退出码。
 - `scripts/skyland.py`：保留数美设备指纹协议及进程内设备凭据缓存；服务器时间校准，失败时使用本地时间；鹰角 Token 授权并登录森空岛；查询账号绑定的明日方舟与终末地角色并显示官方昵称或公开角色标识；遍历全部明日方舟绑定角色每日签到并显示奖励；遍历全部终末地角色每日签到并显示奖励；每行一个账号，独立处理账号与角色，汇总失败并非零退出；完全断网预演、分阶段耗时日志与唯一 TASK_SUMMARY 结构化汇总；通过青龙通知模块发送脱敏统计，支持全局关闭及通知失败保持业务退出码。
 - `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总；展示签到天数、补签卡、普通奖励和礼包明细；查询值会员总经验、等级经验及有效期；通过显式任务开关查询两处会员转盘活动并各执行一次抽奖；可显式启用原上游未默认运行的生活频道转盘入口；仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk；保留原抽奖独立调度说明及请求间等待；可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应；兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk；按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果；通过显式开关执行好价点值与好文点赞，每类最多七条且逐项验证业务结果；互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化；查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟；显式网页 Cookie 签到无需 sk，已签到跳过写入，写入后重新核对账号身份、签到状态和天数；网页模式展示官方账号身份、积分、经验、金币、碎银、威望、等级及签到天数。
 - `scripts/ssl.py`：支持 Cloudflare API Token 和邮箱配套 Global API Key 两种认证，兼容原有环境变量；按区域分页读取 A 记录，多个区域合并去重，检查业务成功及完整分页，单个区域失败继续检查其余区域；多个账号逐行独立运行，配置错误、区域读取失败、无 A 记录、过期或证书检查失败均返回非零；依次尝试443、8443、4443、4433、9443端口，并保留指定端口检查函数；使用系统信任库校验主机名和证书；输出证书到期时间、剩余天数及颁发者，按正常、警告、过期、失败分类并按主域名报告；保留每日零点计划及默认30天警告阈值；仅到期警告且验证成功时可返回零；完全断网预演、带时间戳的分阶段日志、逐账号与整体统计及单行 TASK_SUMMARY JSON；成功、部分失败、失败及配置错误均尝试通过青龙 notify.py 发送脱敏报告；支持全局开关及通知超时，预演仅记录摘要预览。
@@ -348,7 +351,7 @@
 - `scripts/tencent_video_checkin.py`：每日签到获取 V力值；领取每日观看任务奖励（不自动播放视频）；查询会员积分、等级和 V力值，保留零值展示；查询 VIP 到期时间；多账号逐行处理、兼容旧单账号变量、独立校验与失败汇总；返回官方非敏感昵称、用户名、显示名称或公开 UID 时显示身份；青龙通知及 PushPlus、Server酱顺序回退，支持全局通知开关；完全断网预演、分阶段日志和单行 TASK_SUMMARY 结构化总结。
 - `scripts/tieba_checkin.py`：保留登录验证和 TBS 获取、读取关注贴吧、识别当日已签到项目、为未签到贴吧逐吧签到，沿用明确成功码和已签到判断。；直接显示官方接口返回的昵称、用户名或公开 UID，方便核对账号。；显式开启后通过 APP 成长接口验证登录、取得独立 TBS，并执行成长任务每日签到，要求业务码明确为 0。；显式开启后查询当前成长值、贴贝余额、当前等级及距离下一等级所需成长值，保留上游等级差值算法。；沿用 TIEBA_COOKIE，兼容 TIE_BA_COOKIE 的完整 Cookie 或 BDUSS 单值，每行一个账号；成长字段在同一账号 Cookie 中提供。；保留规范任务每日 08:23 计划、逐吧详情开关与可配置请求间隔；成长任务默认关闭。；完全断网预演校验账号必要字段、不加载通知组件、不产生账号副作用，并展示脱敏通知汇总。；正式执行、配置失败、部分失败或成功后尝试青龙脱敏通知，支持全局关闭，通知失败保持业务退出码。；输出逐阶段时间轴、账号及任务统计、最终状态和恰好一个单行 TASK_SUMMARY 结构化汇总。；逐吧流程和成长任务独立处理，任一任务或账号失败返回非零退出码；HTTP 有超时、响应大小限制及同主机 HTTPS 重定向限制。。
 - `scripts/tjd_daily.py`：社区每日签到并复核服务端任务进度；浏览推荐帖子，按服务端剩余次数执行和复核；显式启用帖子点赞，跳过已点赞帖子并复核进度；显式启用帖子分享回调，保留平台参数并复核进度；查询绑定游戏角色昵称、等级和服务器；绑定游戏每日签到，保留 H5 鉴权及已签到业务码 5052，执行后查询确认；查询任务进度、今日及累计金币、游戏签到状态；凭据失效时用可选账号密码自动重登一次，内置 AES 加密和签名，凭据仅在内存更新；支持 --only、--account、--config、--no-notify 和 --loop；预演只运行一轮；换行多账号及旧变量兼容、断网预演、阶段日志、青龙脱敏通知和单行机器汇总。
-- `scripts/trae_checkin.py`：每日查询签到状态、按需签到，官方已签不重复领取；签到后查询真实积分余额；独立 credits 模式显示总额、已用及余额，保留权益接口到用量接口的回退链；访问凭据复用、过期或鉴权失败自动续期，保留新版设备证明、IDE_PC、SOLO_PC 与旧客户端兼容链；即时安全缓存轮换后的凭据，后续复用最新访问及刷新凭据；多账号独立处理、指定账号筛选、北京时间小时轮签及早窗全签；北京时间当日去重、账号独立限流冷却、可选熔断、启动及账号间错峰；青龙通知、可选企业微信与 PushPlus，通知失败保留业务退出码；完全断网预演、编号时间轴、官方非敏感身份展示、分账号统计和唯一单行 TASK_SUMMARY；兼容显式明文及加密凭据、storage 文件和旧参数，无需桌面端或私有仓库；显式 login 交互登录，自带本机 HTTP 授权回调及隐藏粘贴表单，有限等待并通过续期接口核验；显式兼容 Trae Work auth 文件及 auth 目录，优先使用绑定 claimDeviceId 和同设备 fingerprint；兼容显式 RANDOM_SIGNIN、MAX_RANDOM_DELAY，保留规范脚本默认错峰及上游 8 点、20 点定时配置能力；网页会话换取访问令牌，长效 sessionid 在会话失效时续期并复用安全缓存；领取后复查今日签到状态，明确完成才写入去重状态。
+- `scripts/trae_checkin.py`：每日查询签到状态、按需签到，官方已签不重复领取；签到后查询真实积分余额；独立 credits 模式显示总额、已用及余额，保留权益接口到用量接口的回退链；访问凭据复用、过期或鉴权失败自动续期，保留新版设备证明、IDE_PC、SOLO_PC 与旧客户端兼容链；即时安全缓存轮换后的凭据，后续复用最新访问及刷新凭据；多账号独立处理、指定账号筛选、北京时间小时轮签及早窗全签；北京时间当日去重、账号独立限流冷却、可选熔断、启动及账号间错峰；青龙通知、可选企业微信与 PushPlus，通知失败保留业务退出码；完全断网预演、编号时间轴、官方非敏感身份展示、分账号统计和唯一单行 TASK_SUMMARY；兼容显式明文及加密凭据、storage 文件和旧参数，无需桌面端或私有仓库；显式 login 交互登录，自带本机 HTTP 授权回调及隐藏粘贴表单，有限等待并通过续期接口核验；显式兼容 Trae Work auth 文件及 auth 目录，优先使用绑定 claimDeviceId 和同设备 fingerprint；兼容显式 RANDOM_SIGNIN、MAX_RANDOM_DELAY，保留规范脚本默认错峰及上游 8 点、20 点定时配置能力；网页会话换取访问令牌，长效 sessionid 在会话失效时续期并复用安全缓存；领取后复查今日签到状态，明确完成才写入去重状态；使用官方成功响应及安全缓存中的公开 UID 识别多个会话对应同一账号，单列重复配置统计；各条目仍独立核验签到状态和余额，不重复领取已经完成的签到；兼容主来源 account_name、expires_at 字段及显式 TRAE_JITTER_MAX，保留维护默认错峰和主来源 8 点 30 分定时配置能力；网页会话鉴权失效且已显式提供同账号桌面凭据时自动回退，不因网络错误切换账号或设备；领取接口报错后只读复查官方当日状态，确认已完成才能成功，未确认时保持失败及冷却；需更新凭据账号单独统计；逐字引用的 TRAE_ACCESS_TOKEN_2 至 _9 与实际解析一致，修正上次导入失败。
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
 - `scripts/tyqhdraw.py`：登录并校验业务成功码与有效会话；查询调料包和番茄资产；打印官方返回的非秘密账号身份；显式开启后执行活动 58 集市兑换抽奖，每轮最多 10 次并检查奖品字段；使用本地透明掩膜图像匹配识别滑块并验证官方业务成功码；低置信度停止；查询实物礼品名称及非实物礼品数量；每行一个账号，账号独立失败隔离与整体非零退出；完全断网预演、青龙脱敏通知、逐阶段日志及单行任务汇总。
@@ -360,6 +363,7 @@
 - `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
 - `scripts/yht.py`：查询官方账号昵称等非敏感身份，不输出手机号；查询种植活动标题；参与种植活动；连续施肥，保留上游默认最多一百次请求并允许调低上限；查询当前等级、下一等级和剩余施肥次数；施肥接口返回当前不存在进行中的活动时尝试领取奖励，核验奖励名称与数量；可选每日签到及奖励详情查询，默认保持未启用；可选本次配置账号之间互助及互助身份查询；每行一个账号、独立执行、任一业务失败整体失败；完全断网预演、时间轴阶段日志、账号统计及单行结构化任务汇总；通过青龙通知适配器发送脱敏总结，通知异常保留业务退出码。
 - `scripts/youdao.py`：刷新登录会话，保留已有 Cookie 并接收服务端更新。；每日同步空间奖励，验证 rewardSpace 字段。；每日签到，验证 space 字段。；连续领取三次广告空间奖励，分别验证 space 字段。；显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，不从 Cookie 提取身份。；多账号独立处理，统计已确认奖励、阶段耗时及账号结果，输出单行结构化任务总结。；完全断网预演及青龙脱敏通知，通知失败不改变业务退出码。。
+- `scripts/yyshuijuantime.py`：每天读取阴阳师官网最新五条维护更新公告；支持原有三种正文容器，并保留嵌套正文内容；提取追忆绘卷活动名称、维护后开始日期及结束时间，支持跨年并验证日期；保留原 JSON 字段及同名同开始日期去重的活动历史；报告活动时间与已结束活动状态；通过青龙通知模块发送脱敏运行摘要，支持全局通知开关；无网络、无文件读写的内置公告预演；带时间戳的分阶段日志和单行结构化任务统计，失败非零退出。
 - `scripts/zcode_cn_daily.py`：保留国内版默认任务，新增显式国际版及跨区域账号选择；两类凭据独立处理。；查询可领取套餐、权益及有效期，并按北京时间显示。；优先级最高套餐自动领取，同优先级保持上游顺序；可指定套餐。；支持每账号验证码及全局补齐参数、客户端版本和固定设备参数。；支持 --preview 只读预览、--only 账号筛选和 --no-notify 通知关闭。；支持显式激活事件补报，默认关闭。；支持每行一个账号、账号独立处理和失败非零退出。；支持完全断网预演、时间轴日志、账号统计及唯一 TASK_SUMMARY 记录。；发送青龙脱敏总结，兼容原推送通道及青龙接口，通知失败保留业务退出码。。
 - `scripts/zippo.py`：积分余额查询；每日签到及奖励核验；商品分类7前两页检索；显式收藏及领取奖励，可选择取消本轮收藏；显式记录分享任务及领取奖励，不发布文本；使用指定星级和官方标签评价一个未评价商品并领取奖励，已评价时跳过提交；显式绑定指定推荐人，回显不足时失败闭合；多账号独立执行、断网预演、时间轴日志、结构化汇总及青龙通知。
 - `scripts/zodgame_test.py`：每日签到及今日已签到识别；Bux 首次加入、广告观看读秒、观看完成更新与积分领取；领取结果重试一次并核验已知业务成功提示；点币余额查询；签到与广告任务选择开关；逐行多账号独立处理及失败非零退出；HTTP 超时、Cloudflare 拦截识别和脱敏诊断；断网参数与流程预演；分账号阶段日志、任务统计及单行 TASK_SUMMARY 汇总；正式运行通过青龙 notify.py 发送脱敏总结，断网预演生成通知摘要。
@@ -465,6 +469,7 @@
 <tr><td rowspan="1"><code>scripts/shuyi.py</code></td><td><code>sysxc_auth</code></td><td>是</td><td>格式：每个非空行一个账号的 auth 原值；保留变量名，不再以 # 分隔账号，凭据内部的 # 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sign_in.py</code></td><td><code>KANXUE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必填 cookie、csrf_token 字符串，可选 user_agent、account_name；JSON 内保留完整凭据，不用任何分隔符拆分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/skland_daily.py</code></td><td><code>SKLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号；通行证 token、cred:token、单行 JSON 对象 {&quot;cred&quot;:&quot;本人凭据&quot;,&quot;token&quot;:&quot;本人签名凭据&quot;}、{&quot;data&quot;:{&quot;content&quot;:&quot;本人通行证凭据&quot;}} 或 {&quot;phone&quot;:&quot;本人手机号&quot;,&quot;password&quot;:&quot;本人密码&quot;}；cred:token 仅在第一个冒号处分割；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/skland_demo.py</code></td><td><code>SKLAND_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：通行证原文、含 data.content 的单行 JSON，或单行 JSON 对象，字段 token；也可字段 phone 与 password，或 phone 与 code；可在同一 JSON 添加 did（由本人官方登录请求的 dId 头获取）。send-code 动作仅需 phone。账号不能使用逗号、&amp; 或 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/skyland.py</code></td><td><code>SKYLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整账号 Token；禁止用逗号、&amp; 或 @ 分隔多个账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号，默认和 robot 模式为 sk|完整 Cookie；web 和仅抽奖可为 |完整 Cookie。只在首个 | 分割，完整保留后续 Cookie 内容，不以 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ssl.py</code></td><td><code>SSL_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；token 或 email/key 配套认证；zone_ids 和 domains 为一一对应的非空数组，区域标识为32位十六进制；例如字段结构 {&quot;token&quot;:&quot;占位凭据&quot;,&quot;zone_ids&quot;:[&quot;区域标识&quot;],&quot;domains&quot;:[&quot;主域名&quot;]}。凭据文本由 JSON 解析完整保留，不使用符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -528,7 +533,7 @@
 <tr><td rowspan="1"><code>scripts/tencent_video_checkin.py</code></td><td><code>TENCENT_VIDEO_COOKIES</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie，字段以分号分隔，仅按第一个等号拆分字段值。必需非空字段 vqq_openid、vqq_access_token、main_login；建议保留 vqq_vuserid、vqq_appid、vdevice_qimei36 和 ip。支持空行及 # 开头注释，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tieba_checkin.py</code></td><td><code>TIEBA_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；支持 BDUSS 单值或完整 Cookie。成长任务要求同一行含 BDUSS=值; CUID=值，字段值按首个等号分割，后续等号保留；不能按 &amp; 或 @ 分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tjd_daily.py</code></td><td><code>TJD_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必含 token、deviceid 字符串；可选 uid（默认 0）、name、phone、password、openudid、vendorid、account_uid。兼容旧 JSON 对象或数组，不以 &amp; 或 @ 分账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/trae_checkin.py</code></td><td><code>TRAE_ACCOUNTS</code></td><td>是</td><td>格式：每行一个 JSON 对象，必需同账号真实 deviceId（12～20 位数字）和 session/sessionid、accessToken/refreshToken 或显式凭据文件之一；同账号配套字段合并，不以 &amp; 或 @ 分隔。兼容旧 JSON 数组与 token、access_token、refresh_token、claimDeviceId、realDeviceId、X-Cloudide-Session；可选 uid、name 和同设备 fingerprint。显式 login 改为必需 TRAE_DEVICE_ID。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/trae_checkin.py</code></td><td><code>TRAE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；accessToken 或 refreshToken 或 session/sessionid 至少一种，配套 deviceId 为同账号真实 12 至 20 位数字。可选 deviceKeyPem、devicePubPem、machineId、uid、name、expiresAt、fingerprint；兼容 access_token、refresh_token、device_id、account_name、expires_at。显式 icubeAuth、storagePath 或 authPath 可替代明文凭据；旧 JSON 数组仅作兼容。预演只用占位明文，不读凭据文件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tyqhdraw.py</code></td><td><code>tyqhCookie</code></td><td>是</td><td>格式：每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -541,6 +546,7 @@
 <tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/yht.py</code></td><td><code>Yht_token</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留大小写；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/youdao.py</code></td><td><code>YOUDAO_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；Cookie 字段用分号分隔，字段仅按第一个等号拆分，保留值中的后续等号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/yyshuijuantime.py</code></td><td><code>YYS_HUIJUAN_OUTPUT</code></td><td>否</td><td>格式：以 .json 结尾的绝对文件路径；每次运行使用一个路径，不按账号拆分；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/zcode_cn_daily.py</code></td><td><code>ZCODE_CN_TOKENS</code></td><td>是</td><td>格式：每行一个账号：jwt、jwt|device_mid、jwt|device_mid|captcha_param 或 备注|jwt|device_mid|captcha_param。验证码保留后续竖线，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/zippo.py</code></td><td><code>zippoCookie</code></td><td>是</td><td>格式：每个非空行一个账号；不使用 #、&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/zodgame_test.py</code></td><td><code>ZODGAME_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，行内为完整 Cookie 请求头值，字段用分号分隔，字段仅在第一个等号处分割，保留值中后续等号。账号间只用换行。；多账号格式以该脚本文档为准</td></tr>
@@ -1145,6 +1151,14 @@
 <tr><td><code>SKLAND_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启，默认关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0/false/no/off 关闭，其余值开启；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径，仅用于可选通知，不是业务运行依赖；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="8"><code>scripts/skland_demo.py</code></td><td><code>TOKEN</code></td><td>是</td><td>格式：每个非空行一个通行证或单行 JSON；旧版逗号分隔需改为换行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_ACTION</code></td><td>否</td><td>格式：sign：登录并签到；send-code：显式发送短信，不签到。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKYLAND_TYPE</code></td><td>否</td><td>格式：sign 或 send-code；add_account 已移除，不再保存凭据文件。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_GAMES</code></td><td>否</td><td>格式：arknights,endfield，或其中任意一个；逗号仅用于游戏选项。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_REFRESH</code></td><td>否</td><td>格式：1 开启；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_DRY_RUN</code></td><td>否</td><td>格式：1 开启断网预演；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；默认 1。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知不可用不影响业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/skyland.py</code></td><td><code>SKYLAND_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录路径。；多账号格式以该脚本文档为准</td></tr>
@@ -1443,43 +1457,60 @@
 <tr><td><code>TJD_DRY_RUN</code></td><td>否</td><td>格式：1 启用；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，通知失败保留业务退出码。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="37"><code>scripts/trae_checkin.py</code></td><td><code>TRAE_SESSION</code></td><td>是</td><td>格式：每行一个账号 Value，配套 TRAE_DEVICE_ID[_2.._9]；两变量并用须行数一致。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_SESSIONID</code></td><td>是</td><td>格式：每行一个账号 Value，配套 TRAE_DEVICE_ID[_2.._9]；两变量并用须行数一致。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_ACCESS_TOKEN</code></td><td>是</td><td>格式：对应序号账号的访问令牌字符串。；兼容同名前缀加 _2～_9 的编号账号参数。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_REFRESH_TOKEN</code></td><td>是</td><td>格式：对应序号账号的刷新令牌字符串。；兼容同名前缀加 _2～_9 的编号账号参数。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_DEVICE_ID</code></td><td>是</td><td>格式：对应序号账号的字符串。设备号必须为真实注册的 12～20 位数字，禁止随机号。；兼容同名前缀加 _2～_9 的编号账号参数。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_UID</code></td><td>否</td><td>格式：对应序号账号的公开账号标识字符串。；兼容同名前缀加 _2～_9 的编号账号参数。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_NAME</code></td><td>否</td><td>格式：对应序号账号的账号备注字符串。；兼容同名前缀加 _2～_9 的编号账号参数。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_DEVICE_KEY_PEM</code></td><td>是</td><td>格式：字符串；公私钥须配套，PEM 支持实际换行或字面量反斜杠 n。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_DEVICE_PUB_PEM</code></td><td>是</td><td>格式：字符串；公私钥须配套，PEM 支持实际换行或字面量反斜杠 n。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_MACHINE_ID</code></td><td>是</td><td>格式：字符串；公私钥须配套，PEM 支持实际换行或字面量反斜杠 n。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_ICUBE_AUTH</code></td><td>是</td><td>格式：明文 JSON 或加密串；加密模式需公共包 cryptography，另提供真实设备号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_STORAGE_PATH</code></td><td>否</td><td>格式：本地路径；缓存和状态默认脚本目录并按 0600 写入；auth 目录仅显式 login 默认写到脚本目录 auths。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_AUTH_DIR</code></td><td>否</td><td>格式：本地路径；缓存和状态默认脚本目录并按 0600 写入；auth 目录仅显式 login 默认写到脚本目录 auths。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_TOKEN_CACHE</code></td><td>否</td><td>格式：本地路径；缓存和状态默认脚本目录并按 0600 写入；auth 目录仅显式 login 默认写到脚本目录 auths。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_STATE_FILE</code></td><td>否</td><td>格式：本地路径；缓存和状态默认脚本目录并按 0600 写入；auth 目录仅显式 login 默认写到脚本目录 auths。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_DRY_RUN</code></td><td>否</td><td>格式：0 或 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_TASK</code></td><td>否</td><td>格式：checkin 签到及余额；credits 只查积分；login 显式本机交互授权；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_ONLY</code></td><td>否</td><td>格式：账号序号、uid 或 name；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_BATCH</code></td><td>否</td><td>格式：all 或 1～9999；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_JITTER</code></td><td>否</td><td>格式：0 关闭或 1 开启；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_PEAK_HOURS</code></td><td>否</td><td>格式：0～23，可用逗号或区间，例如 0-1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_COOLDOWN_MIN</code></td><td>否</td><td>格式：1～1440 分钟整数；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_PEAK_COOLDOWN_MIN</code></td><td>否</td><td>格式：1～1440 分钟整数；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_CIRCUIT</code></td><td>否</td><td>格式：0 或 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>CLAIM_TRIES</code></td><td>否</td><td>格式：1～5 次整数；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：false 关闭或 true 开启；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0～86400 秒整数；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_LOGIN_TIMEOUT</code></td><td>否</td><td>格式：30～900 秒整数；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_CLIENT_ID</code></td><td>否</td><td>格式：应用标识字符串；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_DEVICE_BRAND</code></td><td>否</td><td>格式：设备品牌字符串；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_DEVICE_NAME</code></td><td>否</td><td>格式：设备名称字符串；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TRAE_DEVICE_MODEL</code></td><td>否</td><td>格式：设备型号字符串；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：含 notify.py 或 sendNotify.js 的目录路径；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QYWX_TOKEN</code></td><td>是</td><td>格式：单个字符串，只发送脱敏摘要，受 QINGLONG_NOTIFY 控制。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>WECHAT_WEBHOOK</code></td><td>是</td><td>格式：单个字符串，只发送脱敏摘要，受 QINGLONG_NOTIFY 控制。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>PLUSPLUS_TOKEN</code></td><td>是</td><td>格式：单个字符串，只发送脱敏摘要，受 QINGLONG_NOTIFY 控制。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="54"><code>scripts/trae_checkin.py</code></td><td><code>TRAE_ACCESS_TOKEN</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN_2</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN_2</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN_3</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN_3</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN_4</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN_4</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN_5</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN_5</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN_6</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN_6</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN_7</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN_7</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN_8</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN_8</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN_9</code></td><td>是</td><td>格式：单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_REFRESH_TOKEN_9</code></td><td>是</td><td>格式：单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_SESSION</code></td><td>是</td><td>格式：每行一个账号的单个 Cookie Value；与 TRAE_SESSIONID 行数相同且同账号对应，不填整个 Cookie 请求头。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_SESSIONID</code></td><td>是</td><td>格式：每行一个账号的长效 Cookie Value；与 TRAE_SESSION 同行配对，不填请求头。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_ID</code></td><td>是</td><td>格式：真实 12 至 20 位数字；单账号无后缀，多账号兼容 _2 至 _9 与令牌对应，禁止生成或共享其他账号设备。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_UID</code></td><td>否</td><td>格式：单个公开用户编号；兼容 _2 至 _9 的账号后缀。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_NAME</code></td><td>否</td><td>格式：单个名称；兼容 _2 至 _9 的账号后缀。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ICUBE_AUTH</code></td><td>是</td><td>格式：单账号明文 JSON 或原始加密值；加密值需要公共包 cryptography。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_STORAGE_PATH</code></td><td>是</td><td>格式：单个文件路径；仅读取，不改写源文件；预演禁止读取。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_AUTH_DIR</code></td><td>是</td><td>格式：目录路径；签到只有显式设置时读取；login 默认脚本目录 auths；预演禁止读取。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_KEY_PEM</code></td><td>是</td><td>格式：PEM 字符串，支持字面量换行转义；与公钥及设备号配套。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_PUB_PEM</code></td><td>是</td><td>格式：PEM 字符串；须与私钥配套，不能仅设置一个。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_MACHINE_ID</code></td><td>是</td><td>格式：单个设备绑定标识；显式 login 未设置时为本次授权生成，不输出。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_BRAND</code></td><td>否</td><td>格式：单个字符串；未设置保留维护版本自动探测及空值行为。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_NAME</code></td><td>是</td><td>格式：单个字符串；未设置保留维护版本自动探测及空值行为。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_MODEL</code></td><td>是</td><td>格式：单个字符串；未设置保留维护版本自动探测及空值行为。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_CLIENT_ID</code></td><td>否</td><td>格式：字符串；默认 ono9krqynydwx5，保留 IDE_PC、SOLO_PC 与旧客户端回退。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_TASK</code></td><td>否</td><td>格式：checkin 默认签到和余额；credits 仅查询余额；login 显式交互登录。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_LOGIN_TIMEOUT</code></td><td>否</td><td>格式：30 至 900 的整数秒，默认 300。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DRY_RUN</code></td><td>否</td><td>格式：默认 0；0、false、no、off 为正式模式，1 为完全断网预演。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ONLY</code></td><td>否</td><td>格式：账号原始序号、uid 或 name；无匹配时报错，默认全部。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_BATCH</code></td><td>否</td><td>格式：默认 all；0 或 all 为全签，正整数为按北京时间小时轮签；早窗仍全签。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_PEAK_HOURS</code></td><td>否</td><td>格式：默认 0；逗号分隔小时或范围，如 0-2；仅用于小时配置，不用于账号分隔。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_COOLDOWN_MIN</code></td><td>否</td><td>格式：1 至 1440 的整数分钟，默认 55。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_PEAK_COOLDOWN_MIN</code></td><td>否</td><td>格式：1 至 1440 的整数分钟，默认 12。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CLAIM_TRIES</code></td><td>否</td><td>格式：1 至 5 的整数，默认 1；不轮换设备。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_CIRCUIT</code></td><td>否</td><td>格式：默认 0；1 为某账号限流后跳过其余未处理账号，未完成仍非零退出。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_JITTER</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_JITTER_MAX</code></td><td>否</td><td>格式：0 至 86400 的整数秒，默认 20；设 600 可使用上游原错峰上限；预演不等待。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：维护默认 false；0、false、no、off 关闭，其他值启用；预演不等待。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0 至 86400 的整数秒，默认 3600；未启用时不增加等待。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_TOKEN_CACHE</code></td><td>是</td><td>格式：文件路径；默认脚本目录 .trae_token_cache.json；以 0600 权限原子保存轮换凭据和官方公开 UID，预演不读写。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_STATE_FILE</code></td><td>否</td><td>格式：文件路径；默认脚本目录 .trae_checkin_state.json；北京时间每日状态，0600 原子写入，预演不读写。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭，通知失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；也自动查找 /ql/data/scripts、/ql/scripts 或导入 notify；预演仅提交本地摘要并阻止网络投递。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QYWX_TOKEN</code></td><td>是</td><td>格式：机器人 key 或官方 webhook；只向固定官方主机发送脱敏摘要，预演不发送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WECHAT_WEBHOOK</code></td><td>是</td><td>格式：含 key 的官方 webhook 或 key；QYWX_TOKEN 优先，预演不发送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PLUSPLUS_TOKEN</code></td><td>是</td><td>格式：单个令牌；仅发送脱敏汇总，预演不发送。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/tsthb_checkin.py</code></td><td><code>TSTHB_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 表示启用。预演不执行等待、HTTP 或通知模块，仅展示通知摘要。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：忽略大小写，只有 true 启用随机延迟，其他值关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：非负整数，单位秒；随机延迟开启时在 0 至该值之间随机选择并显示倒计时。；多账号格式以该脚本文档为准</td></tr>
@@ -1545,6 +1576,9 @@
 <tr><td rowspan="3"><code>scripts/youdao.py</code></td><td><code>YOUDAO_DRY_RUN</code></td><td>否</td><td>格式：1 启用；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/yyshuijuantime.py</code></td><td><code>YYS_HUIJUAN_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用断网预演；默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选绝对目录路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="17"><code>scripts/zcode_cn_daily.py</code></td><td><code>ZCODE_INTL_TOKENS</code></td><td>是</td><td>格式：每行一个账号，格式与 ZCODE_CN_TOKENS 相同。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ZCODE_REGION</code></td><td>否</td><td>格式：cn（默认）、intl 或 all；all 按国内、国际顺序处理已配置账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ZCODE_PLAN_ID</code></td><td>否</td><td>格式：套餐标识，留空按最高优先级选择，同优先级取首项。；多账号格式以该脚本文档为准</td></tr>
@@ -1659,6 +1693,7 @@
 - `scripts/shuyi.py`：sysxc_auth 每个非空行一个账号，逐个独立处理；任一账号失败则整体非零退出。账号间不能使用 #、& 或 @ 分隔。。
 - `scripts/sign_in.py`：每个非空行一个账号 JSON 对象，同一对象组合 Cookie 与 CSRF token；逐个独立执行，任一失败时整体非零退出。旧配置使用账号数组。。
 - `scripts/skland_daily.py`：每个非空行一个账号，禁止用 &、@、逗号或分号分隔账号；同账号配套凭据合并为 JSON 或 cred:token，仅在第一个冒号处分割。兼容旧序号及账密变量，重复凭据去重，账号独立执行，任一失败整体非零退出。。
+- `scripts/skland_demo.py`：每个非空行一个账号；同一账号的通行证、手机号、密码、验证码和可选设备标识以单行 JSON 配套保存；各账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/skyland.py`：SKYLAND_TOKEN 每个非空行一个账号，忽略空行；账号与角色独立执行，任一失败整体非零退出。。
 - `scripts/smzdm_checkin.js`：每个非空行一个账号，用首个 | 组合本人 sk 与完整 Cookie，不以 & 或 @ 分隔账号；逐账号独立处理，任一失败整体非零退出。旧 Cookie 与 sk 输入按行配套。。
 - `scripts/ssl.py`：SSL_ACCOUNTS 每个非空行一个完整 JSON 账号对象，认证与区域配置放在同一行；逐账号独立处理，任一账号失败整体非零。旧版 CF_* 变量仅兼容一个账号。。
@@ -1720,7 +1755,7 @@
 - `scripts/tencent_video_checkin.py`：每个非空行一个完整账号 Cookie，同账号字段组合在同一行；忽略空行和 # 开头注释。规范变量优先，兼容旧单账号变量；独立处理账号，任一账号或步骤失败整体非零退出。。
 - `scripts/tieba_checkin.py`：每个非空行一个账号，整行保留为 Cookie；重复行去重，不按 & 或 @ 拆分。账号独立执行，任一账号失败则进程非零退出。。
 - `scripts/tjd_daily.py`：每个非空行一个账号 JSON 对象，同账号凭据组合在一行。兼容旧 JSON 数组和换行对齐的旧变量。各账号独立执行，任一失败整体非零退出。。
-- `scripts/trae_checkin.py`：每个非空行一个账号 JSON，同账号配套凭据合并；兼容旧 JSON 数组及编号参数，不以 & 或 @ 分隔。各账号独立处理，任一失败、冷却或未处理则整体非零退出。。
+- `scripts/trae_checkin.py`：TRAE_ACCOUNTS 每个非空行一个账号 JSON 对象，同账号令牌、Cookie、设备号和证明放在同一对象中；不使用 &、@ 或其他字符分隔账号。兼容旧 JSON 数组及带 _2 至 _9 后缀的旧令牌变量。账号独立处理，任一账号失败、未完成或配置错误时整体非零退出；重复会话单列统计，仍独立核验官方状态和余额。。
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
 - `scripts/tyqhdraw.py`：每个非空行一个账号；同一账号的 thirdId 与 wid 写在同一行，保留原字段顺序。逐账号独立处理，任一账号失败则整体非零退出。。
@@ -2374,6 +2409,13 @@
 - 填写格式：`每个非空行一个账号；通行证 token、cred:token、单行 JSON 对象 {"cred":"本人凭据","token":"本人签名凭据"}、{"data":{"content":"本人通行证凭据"}} 或 {"phone":"本人手机号","password":"本人密码"}；cred:token 仅在第一个冒号处分割`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `SKLAND_ACCOUNTS`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：登录森空岛官网后，在同一浏览器访问 https://web-api.skland.com/account/info/hg，复制 data.content 的鹰角通行证；也可使用本人手机号与密码，或通过显式 send-code 动作获取短信验证码。不要分享接口响应。
+- 填写格式：`每个非空行一个账号：通行证原文、含 data.content 的单行 JSON，或单行 JSON 对象，字段 token；也可字段 phone 与 password，或 phone 与 code；可在同一 JSON 添加 did（由本人官方登录请求的 dId 头获取）。send-code 动作仅需 phone。账号不能使用逗号、& 或 @ 分隔。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `SKYLAND_TOKEN`
 
 - 所属脚本：`scripts/skyland.py`
@@ -2818,8 +2860,8 @@
 #### `TRAE_ACCOUNTS`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：在青龙配置每行一个账号 JSON。网页凭据：本人登录 https://www.trae.cn，F12→应用→Cookie→www.trae.cn，将 X-Cloudide-Session 的 Value 填 session，将 sessionid 的 Value 填 sessionid，两者须属同账号且原样保留百分号编码。桌面凭据：从本人官方客户端登录响应取 accessToken/refreshToken，storage.json 的 iCubeAuthInfo://icube-dc:<数字> 键取真实 deviceId；同设备证明取 deviceKeyPem/devicePubPem/machineId。也可显式上传本人 auth/storage 文件后填 authPath/storagePath，或复制 icubeAuth 加密串；不需要青龙安装客户端。
-- 填写格式：`每行一个 JSON 对象，必需同账号真实 deviceId（12～20 位数字）和 session/sessionid、accessToken/refreshToken 或显式凭据文件之一；同账号配套字段合并，不以 & 或 @ 分隔。兼容旧 JSON 数组与 token、access_token、refresh_token、claimDeviceId、realDeviceId、X-Cloudide-Session；可选 uid、name 和同设备 fingerprint。显式 login 改为必需 TRAE_DEVICE_ID。`
+- 获取或设置：规范账号变量：在本人官方 Trae 中国版客户端登录响应或显式上传的 storage/auth 文件取得配套凭据；网页登录 https://www.trae.cn 后在浏览器开发者工具的应用、Cookie 中复制 X-Cloudide-Session 和 sessionid 的单个 Value，保留百分号编码。设备号从本人同账号客户端 storage.json 的 iCubeAuthInfo://icube-dc:<数字> 键取得；设备密钥和 machineId 必须来自同一设备。不要生成设备号、借用其他账号设备或分享凭据。
+- 填写格式：`每个非空行一个 JSON 对象；accessToken 或 refreshToken 或 session/sessionid 至少一种，配套 deviceId 为同账号真实 12 至 20 位数字。可选 deviceKeyPem、devicePubPem、machineId、uid、name、expiresAt、fingerprint；兼容 access_token、refresh_token、device_id、account_name、expires_at。显式 icubeAuth、storagePath 或 authPath 可替代明文凭据；旧 JSON 数组仅作兼容。预演只用占位明文，不读凭据文件。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `tsthbck`
@@ -2905,6 +2947,12 @@
 - 获取或设置：浏览器登录 https://note.youdao.com 后打开开发者工具网络面板，复制发往 note.youdao.com 已登录请求的完整 Cookie 请求头，不含 Cookie: 前缀。必须包含 YNOTE_PERS；过期后重新登录获取，勿公开凭据。
 - 填写格式：`每个非空行一个账号；Cookie 字段用分号分隔，字段仅按第一个等号拆分，保留值中的后续等号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `YYS_HUIJUAN_OUTPUT`
+
+- 所属脚本：`scripts/yyshuijuantime.py`
+- 获取或设置：在青龙环境变量中自行填写授权写入的 JSON 绝对路径。无需登录、抓包或账号凭据。兼容原数据时填写原脚本目录下的 config/yys_huijuan_time.json 绝对路径。请使用独立文件，已有文件须符合原脚本数据结构。
+- 填写格式：`以 .json 结尾的绝对文件路径；每次运行使用一个路径，不按账号拆分`
 
 #### `ZCODE_CN_TOKENS`
 
@@ -6580,6 +6628,55 @@
 - 获取或设置：可选，设置青龙 notify.py 所在目录；默认尝试 import notify 和青龙标准脚本目录。
 - 填写格式：`本机目录路径，仅用于可选通知，不是业务运行依赖`
 
+#### `TOKEN`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：旧版通行证环境变量兼容入口，获取方法同 SKLAND_ACCOUNTS；仅在规范变量为空时采用。
+- 填写格式：`每个非空行一个通行证或单行 JSON；旧版逗号分隔需改为换行。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SKLAND_ACTION`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：按需要设置；定时任务默认 sign。
+- 填写格式：`sign：登录并签到；send-code：显式发送短信，不签到。`
+
+#### `SKYLAND_TYPE`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：旧版动作变量兼容，仅在 SKLAND_ACTION 未设置时采用。
+- 填写格式：`sign 或 send-code；add_account 已移除，不再保存凭据文件。`
+
+#### `SKLAND_GAMES`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：根据绑定游戏选择，默认同时签到两款游戏。
+- 填写格式：`arknights,endfield，或其中任意一个；逗号仅用于游戏选项。`
+
+#### `SKLAND_REFRESH`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：需要主动刷新签名令牌时设置，默认关闭。
+- 填写格式：`1 开启；0、false、no、off 关闭。`
+
+#### `SKLAND_DRY_RUN`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：验证配置时设置为 1，预演不代表真实业务成功。
+- 填写格式：`1 开启断网预演；默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：青龙全局通知开关，默认启用；预演也准备并尝试发送脱敏总结，但网络连接被禁止。
+- 填写格式：`0、false、no、off 关闭；默认 1。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/skland_demo.py`
+- 获取或设置：仅当青龙通知模块不在默认路径或导入路径时，填写现有 notify.py 所在目录。
+- 填写格式：`本地目录路径；通知不可用不影响业务退出码。`
+
 #### `SKYLAND_DRY_RUN`
 
 - 所属脚本：`scripts/skyland.py`
@@ -8422,238 +8519,361 @@
 - 获取或设置：填写青龙 notify.py 所在目录，也自动查找标准青龙目录。
 - 填写格式：`本地目录路径，通知失败保留业务退出码。`
 
-#### `TRAE_SESSION`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选兼容输入，从本人 www.trae.cn 浏览器 Cookie 中复制 X-Cloudide-Session 的 Value；推荐并入 TRAE_ACCOUNTS。
-- 填写格式：`每行一个账号 Value，配套 TRAE_DEVICE_ID[_2.._9]；两变量并用须行数一致。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
-#### `TRAE_SESSIONID`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选兼容输入，从本人 www.trae.cn 浏览器 Cookie 中复制 sessionid 的 Value；推荐并入 TRAE_ACCOUNTS。
-- 填写格式：`每行一个账号 Value，配套 TRAE_DEVICE_ID[_2.._9]；两变量并用须行数一致。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
 #### `TRAE_ACCESS_TOKEN`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选旧参数，从本人官方客户端登录响应或存储取得访问令牌，推荐合并到 TRAE_ACCOUNTS。
-- 填写格式：`对应序号账号的访问令牌字符串。；兼容同名前缀加 _2～_9 的编号账号参数。`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TRAE_REFRESH_TOKEN`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选旧参数，从本人官方客户端登录响应或存储取得刷新令牌，推荐合并到 TRAE_ACCOUNTS。
-- 填写格式：`对应序号账号的刷新令牌字符串。；兼容同名前缀加 _2～_9 的编号账号参数。`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN_2`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_REFRESH_TOKEN_2`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN_3`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_REFRESH_TOKEN_3`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN_4`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_REFRESH_TOKEN_4`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN_5`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_REFRESH_TOKEN_5`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN_6`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_REFRESH_TOKEN_6`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN_7`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_REFRESH_TOKEN_7`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN_8`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_REFRESH_TOKEN_8`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN_9`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号访问令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个访问令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_REFRESH_TOKEN_9`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：从本人官方客户端取得同账号刷新令牌；未设置 TRAE_ACCOUNTS 时读取，与相同后缀的配套凭据对应。建议迁移到每行一个 JSON 的 TRAE_ACCOUNTS。
+- 填写格式：`单个刷新令牌；账号后缀为无后缀或 _2 至 _9；不使用分隔符拼接多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_SESSION`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：在本人网页登录后的开发者工具中复制 X-Cloudide-Session 的 Value；优先使用 TRAE_ACCOUNTS 的 session 字段。
+- 填写格式：`每行一个账号的单个 Cookie Value；与 TRAE_SESSIONID 行数相同且同账号对应，不填整个 Cookie 请求头。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_SESSIONID`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧参数兼容：在本人网页登录后的开发者工具中复制 sessionid 的 Value；优先使用 TRAE_ACCOUNTS 的 sessionid 字段。
+- 填写格式：`每行一个账号的长效 Cookie Value；与 TRAE_SESSION 同行配对，不填请求头。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TRAE_DEVICE_ID`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选旧参数，从本人官方客户端登录响应或存储取得注册设备号，推荐合并到 TRAE_ACCOUNTS。显式 login 必需配置此项。
-- 填写格式：`对应序号账号的字符串。设备号必须为真实注册的 12～20 位数字，禁止随机号。；兼容同名前缀加 _2～_9 的编号账号参数。`
+- 获取或设置：可选旧参数兼容或显式 login 必需：从本人同账号客户端 storage.json 的 iCubeAuthInfo://icube-dc:<数字> 键取得。多账号优先在 TRAE_ACCOUNTS 中配置独立 deviceId。
+- 填写格式：`真实 12 至 20 位数字；单账号无后缀，多账号兼容 _2 至 _9 与令牌对应，禁止生成或共享其他账号设备。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TRAE_UID`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选旧参数，从本人官方客户端登录响应或存储取得公开账号标识，推荐合并到 TRAE_ACCOUNTS。
-- 填写格式：`对应序号账号的公开账号标识字符串。；兼容同名前缀加 _2～_9 的编号账号参数。`
+- 获取或设置：可选旧参数兼容：从本人官方登录响应取得公开用户编号；优先填账号 JSON 的 uid。
+- 填写格式：`单个公开用户编号；兼容 _2 至 _9 的账号后缀。`
 
 #### `TRAE_NAME`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选旧参数，从本人官方客户端登录响应或存储取得账号备注，推荐合并到 TRAE_ACCOUNTS。
-- 填写格式：`对应序号账号的账号备注字符串。；兼容同名前缀加 _2～_9 的编号账号参数。`
-
-#### `TRAE_DEVICE_KEY_PEM`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人官方客户端取得同设备 P-256 私钥；推荐合并到每账号 JSON 中。
-- 填写格式：`字符串；公私钥须配套，PEM 支持实际换行或字面量反斜杠 n。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
-#### `TRAE_DEVICE_PUB_PEM`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人官方客户端取得同设备 P-256 公钥；推荐合并到每账号 JSON 中。
-- 填写格式：`字符串；公私钥须配套，PEM 支持实际换行或字面量反斜杠 n。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
-#### `TRAE_MACHINE_ID`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人官方客户端取得同设备 machineId；推荐合并到每账号 JSON 中。
-- 填写格式：`字符串；公私钥须配套，PEM 支持实际换行或字面量反斜杠 n。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+- 获取或设置：可选旧参数兼容：本人自定义非敏感账号名称，用于筛选；不填写手机号或凭据。
+- 填写格式：`单个名称；兼容 _2 至 _9 的账号后缀。`
 
 #### `TRAE_ICUBE_AUTH`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：从本人 storage.json 复制 iCubeAuthInfo://icube.cloudide 值，推荐并入账号 JSON。
-- 填写格式：`明文 JSON 或加密串；加密模式需公共包 cryptography，另提供真实设备号。`
+- 获取或设置：可选旧参数兼容：本人客户端 storage.json 的 iCubeAuthInfo://icube.cloudide 值；仅显式提供时解密，不扫描客户端。
+- 填写格式：`单账号明文 JSON 或原始加密值；加密值需要公共包 cryptography。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TRAE_STORAGE_PATH`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，显式配置容器内本人上传的 storage.json路径，不扫描桌面目录。
-- 填写格式：`本地路径；缓存和状态默认脚本目录并按 0600 写入；auth 目录仅显式 login 默认写到脚本目录 auths。`
+- 获取或设置：可选旧参数兼容：本人主动上传的 storage.json 的明确路径；无需安装桌面客户端。
+- 填写格式：`单个文件路径；仅读取，不改写源文件；预演禁止读取。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TRAE_AUTH_DIR`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，显式配置容器内本人上传的 auth-*.json 所在目录路径，不扫描桌面目录。
-- 填写格式：`本地路径；缓存和状态默认脚本目录并按 0600 写入；auth 目录仅显式 login 默认写到脚本目录 auths。`
+- 获取或设置：可选：主动上传本人 auth-*.json 文件的目录；或显式 login 保存的位置。
+- 填写格式：`目录路径；签到只有显式设置时读取；login 默认脚本目录 auths；预演禁止读取。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `TRAE_TOKEN_CACHE`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，显式配置容器内令牌及网页会话缓存文件路径，不扫描桌面目录。
-- 填写格式：`本地路径；缓存和状态默认脚本目录并按 0600 写入；auth 目录仅显式 login 默认写到脚本目录 auths。`
-
-#### `TRAE_STATE_FILE`
+#### `TRAE_DEVICE_KEY_PEM`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，显式配置容器内当日签到和冷却状态文件路径，不扫描桌面目录。
-- 填写格式：`本地路径；缓存和状态默认脚本目录并按 0600 写入；auth 目录仅显式 login 默认写到脚本目录 auths。`
+- 获取或设置：可选：本人设备配套 P-256 私钥；多账号建议放账号 JSON 的 deviceKeyPem。
+- 填写格式：`PEM 字符串，支持字面量换行转义；与公钥及设备号配套。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `TRAE_DRY_RUN`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：1 开启完全断网预演，不读写凭据文件或缓存，默认 0。
-- 填写格式：`0 或 1`
-
-#### `TRAE_TASK`
+#### `TRAE_DEVICE_PUB_PEM`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：选择任务，默认 checkin，命令行同名动作优先。
-- 填写格式：`checkin 签到及余额；credits 只查积分；login 显式本机交互授权`
+- 获取或设置：可选：本人同设备 P-256 公钥；建议放账号 JSON 的 devicePubPem。
+- 填写格式：`PEM 字符串；须与私钥配套，不能仅设置一个。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `TRAE_ONLY`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选单账号筛选，默认全部。
-- 填写格式：`账号序号、uid 或 name`
-
-#### `TRAE_BATCH`
+#### `TRAE_MACHINE_ID`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：非早窗轮签数量，默认 all。
-- 填写格式：`all 或 1～9999`
-
-#### `TRAE_JITTER`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：启动错峰开关，默认 1，等待 0～20 秒。
-- 填写格式：`0 关闭或 1 开启`
-
-#### `TRAE_PEAK_HOURS`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：北京时间早窗，默认 0，早窗全签。
-- 填写格式：`0～23，可用逗号或区间，例如 0-1`
-
-#### `TRAE_COOLDOWN_MIN`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：平时限流冷却，默认 55 分钟。
-- 填写格式：`1～1440 分钟整数`
-
-#### `TRAE_PEAK_COOLDOWN_MIN`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：早窗限流冷却，默认 12 分钟。
-- 填写格式：`1～1440 分钟整数`
-
-#### `TRAE_CIRCUIT`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：显式限流熔断，默认 0，各账号独立。
-- 填写格式：`0 或 1`
-
-#### `CLAIM_TRIES`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：同设备领取尝试次数，默认 1，不自动换号。
-- 填写格式：`1～5 次整数`
-
-#### `RANDOM_SIGNIN`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：兼容 Trae Work 显式每账号随机延时，默认关闭。
-- 填写格式：`false 关闭或 true 开启`
-
-#### `MAX_RANDOM_DELAY`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：显式随机延时上限，默认 3600 秒。
-- 填写格式：`0～86400 秒整数`
-
-#### `TRAE_LOGIN_TIMEOUT`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：交互登录等待时长，默认 300 秒。
-- 填写格式：`30～900 秒整数`
-
-#### `TRAE_CLIENT_ID`
-
-- 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：仅本人客户端明确使用不同应用标识时配置，默认保留规范脚本新版标识。
-- 填写格式：`应用标识字符串`
+- 获取或设置：可选：从本人同设备登录信息取得；多账号建议放账号 JSON 的 machineId。
+- 填写格式：`单个设备绑定标识；显式 login 未设置时为本次授权生成，不输出。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TRAE_DEVICE_BRAND`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人官方设备指纹取得。
-- 填写格式：`设备品牌字符串`
+- 获取或设置：可选：从本人同设备官方登录请求取得设备品牌；设备指纹需与凭据一致。
+- 填写格式：`单个字符串；未设置保留维护版本自动探测及空值行为。`
 
 #### `TRAE_DEVICE_NAME`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人官方设备信息取得。
-- 填写格式：`设备名称字符串`
+- 获取或设置：可选：从本人同设备官方登录请求取得设备名称；设备指纹需与凭据一致。
+- 填写格式：`单个字符串；未设置保留维护版本自动探测及空值行为。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TRAE_DEVICE_MODEL`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人官方设备信息取得。
-- 填写格式：`设备型号字符串`
+- 获取或设置：可选：从本人同设备官方登录请求取得设备型号；设备指纹需与凭据一致。
+- 填写格式：`单个字符串；未设置保留维护版本自动探测及空值行为。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_CLIENT_ID`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：与本人凭据配套的官方 IDE 客户端编号；一般保持默认。
+- 填写格式：`字符串；默认 ono9krqynydwx5，保留 IDE_PC、SOLO_PC 与旧客户端回退。`
+
+#### `TRAE_TASK`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：按本次目的选择；命令行动作优先。
+- 填写格式：`checkin 默认签到和余额；credits 仅查询余额；login 显式交互登录。`
+
+#### `TRAE_LOGIN_TIMEOUT`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：按本机交互登录所需时间设置。
+- 填写格式：`30 至 900 的整数秒，默认 300。`
+
+#### `TRAE_DRY_RUN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：测试配置时设为 1；不会联网、读取凭据/缓存文件或写入业务文件。
+- 填写格式：`默认 0；0、false、no、off 为正式模式，1 为完全断网预演。`
+
+#### `TRAE_ONLY`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：指定本人要处理的账号，避免误操作其他账号。
+- 填写格式：`账号原始序号、uid 或 name；无匹配时报错，默认全部。`
+
+#### `TRAE_BATCH`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：在维护计划中设置每轮处理数。
+- 填写格式：`默认 all；0 或 all 为全签，正整数为按北京时间小时轮签；早窗仍全签。`
+
+#### `TRAE_PEAK_HOURS`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：指定北京时间早窗小时。
+- 填写格式：`默认 0；逗号分隔小时或范围，如 0-2；仅用于小时配置，不用于账号分隔。`
+
+#### `TRAE_COOLDOWN_MIN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：设置普通时段账号独立限流冷却。
+- 填写格式：`1 至 1440 的整数分钟，默认 55。`
+
+#### `TRAE_PEAK_COOLDOWN_MIN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：设置早窗账号独立限流冷却。
+- 填写格式：`1 至 1440 的整数分钟，默认 12。`
+
+#### `CLAIM_TRIES`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：显式调整领取次数；一般保留默认一次，冷却后由定时重试。
+- 填写格式：`1 至 5 的整数，默认 1；不轮换设备。`
+
+#### `TRAE_CIRCUIT`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：启用旧版全局熔断。
+- 填写格式：`默认 0；1 为某账号限流后跳过其余未处理账号，未完成仍非零退出。`
+
+#### `TRAE_JITTER`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：控制维护版本启动错峰。
+- 填写格式：`默认 1；0、false、no、off 关闭。`
+
+#### `TRAE_JITTER_MAX`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：兼容主来源启动错峰上限，不改变维护默认。
+- 填写格式：`0 至 86400 的整数秒，默认 20；设 600 可使用上游原错峰上限；预演不等待。`
+
+#### `RANDOM_SIGNIN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：兼容 Trae Work 每账号随机等待；一般保持未设置。
+- 填写格式：`维护默认 false；0、false、no、off 关闭，其他值启用；预演不等待。`
+
+#### `MAX_RANDOM_DELAY`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：启用 RANDOM_SIGNIN 后设置每账号等待上限。
+- 填写格式：`0 至 86400 的整数秒，默认 3600；未启用时不增加等待。`
+
+#### `TRAE_TOKEN_CACHE`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：指定本脚本安全缓存位置。
+- 填写格式：`文件路径；默认脚本目录 .trae_token_cache.json；以 0600 权限原子保存轮换凭据和官方公开 UID，预演不读写。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_STATE_FILE`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选：指定签到去重和账号冷却状态位置。
+- 填写格式：`文件路径；默认脚本目录 .trae_checkin_state.json；北京时间每日状态，0600 原子写入，预演不读写。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：青龙通知全局开关，默认开启；不可用不改变业务退出码。
-- 填写格式：`0、false、no、off 关闭，其他值开启`
+- 获取或设置：青龙全局通知开关；默认所有结果均尝试发送脱敏汇总。
+- 填写格式：`默认 1；0、false、no、off 关闭，通知失败不改变业务退出码。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，指定青龙通知器目录；否则查找已安装 notify 以及 /ql/data/scripts、/ql/scripts。
-- 填写格式：`含 notify.py 或 sendNotify.js 的目录路径`
+- 获取或设置：可选：指向青龙自带 notify.py 或 sendNotify.js 所在目录。
+- 填写格式：`目录路径；也自动查找 /ql/data/scripts、/ql/scripts 或导入 notify；预演仅提交本地摘要并阻止网络投递。`
 
 #### `QYWX_TOKEN`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人企业微信群机器人 Webhook 的 key取得，默认空值不启用。
-- 填写格式：`单个字符串，只发送脱敏摘要，受 QINGLONG_NOTIFY 控制。`
+- 获取或设置：可选：本人企业微信群机器人的密钥；优先于 WECHAT_WEBHOOK。
+- 填写格式：`机器人 key 或官方 webhook；只向固定官方主机发送脱敏摘要，预演不发送。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WECHAT_WEBHOOK`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人企业微信群机器人完整 Webhook，兼容旧参数取得，默认空值不启用。
-- 填写格式：`单个字符串，只发送脱敏摘要，受 QINGLONG_NOTIFY 控制。`
+- 获取或设置：可选：本人企业微信群机器人的官方 webhook，兼容旧参数。
+- 填写格式：`含 key 的官方 webhook 或 key；QYWX_TOKEN 优先，预演不发送。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `PLUSPLUS_TOKEN`
 
 - 所属脚本：`scripts/trae_checkin.py`
-- 获取或设置：可选，从本人 PushPlus 后台 token取得，默认空值不启用。
-- 填写格式：`单个字符串，只发送脱敏摘要，受 QINGLONG_NOTIFY 控制。`
+- 获取或设置：可选：本人 PushPlus 通知令牌，兼容原变量拼写。
+- 填写格式：`单个令牌；仅发送脱敏汇总，预演不发送。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TSTHB_DRY_RUN`
@@ -9051,6 +9271,24 @@
 - 获取或设置：可选，填写已有青龙通知模块所在目录。未设置时自动发现青龙标准目录。
 - 填写格式：`本地目录路径。`
 
+#### `YYS_HUIJUAN_DRY_RUN`
+
+- 所属脚本：`scripts/yyshuijuantime.py`
+- 获取或设置：测试时在青龙环境变量中设置为 1；正式运行删除该变量或设置为 0。
+- 填写格式：`1、true、yes、on 启用断网预演；默认 0`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/yyshuijuantime.py`
+- 获取或设置：青龙全局通知开关；默认开启，使用青龙已有 notify.py 通知配置。
+- 填写格式：`默认 1；0、false、no、off 关闭`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/yyshuijuantime.py`
+- 获取或设置：可填写青龙 notify.py 所在目录；否则尝试可导入的 notify 模块及 /ql/data/scripts、/ql/scripts。通知失败不改变业务退出码。
+- 填写格式：`可选绝对目录路径`
+
 #### `ZCODE_INTL_TOKENS`
 
 - 所属脚本：`scripts/zcode_cn_daily.py`
@@ -9324,6 +9562,7 @@
 - `scripts/shuyi.py`：SHA-256 `947ec405caf0bacdc1f2b823552425d882c3510d733c99c8a1801bf7a739870c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/551a306ac75780f1`。
 - `scripts/sign_in.py`：SHA-256 `d2d3f6610f0aaf4c6866b93fc47751f18a8004bf53c9eae43b560cde380d6cef`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01041a1995eb1f55`。
 - `scripts/skland_daily.py`：SHA-256 `e46b829e655d9d987efe00d72fd5f57e5c7819ef62d1df4b1e96f603bab09f9a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
+- `scripts/skland_demo.py`：SHA-256 `6630751a2fdb3b62947ba9dd9b33187db05cbf4dcdd859fe9f60da9e9dda5c2b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d82ea23b9575791b`。
 - `scripts/skyland.py`：SHA-256 `4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
 - `scripts/smzdm_checkin.js`：SHA-256 `130423b3d90981b4302fd5a9b6b845531d805a7b4230f021f2a23b7668cfaefb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
 - `scripts/ssl.py`：SHA-256 `6fc3c3040959c04d815c2ba897050e99994e591f34fbdd4ab6ca2b894ed54766`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cf6fb60f0d69e9ed`。
@@ -9385,7 +9624,7 @@
 - `scripts/tencent_video_checkin.py`：SHA-256 `22ae305cd2e4196c0574785ab58f4dc0fb54266676ba599ea71971c4dc973ec6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
 - `scripts/tieba_checkin.py`：SHA-256 `2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
 - `scripts/tjd_daily.py`：SHA-256 `95bb1d686b6e91e37c588601be134a99e9715c943ea99b63f6fda75fd0d51943`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e096ba77bcda7172`。
-- `scripts/trae_checkin.py`：SHA-256 `e9a1c1436a6348e22ef00771474773da33442062436207f7792d9dcc158d7c02`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71de90498a3a6ded`。
+- `scripts/trae_checkin.py`：SHA-256 `45962500ef7a2bad52fda864d421f76bf3639e6ee0fb6dee695b394eb34199b8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71de90498a3a6ded`。
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 - `scripts/tyqhdraw.py`：SHA-256 `c2c1115b60fd085034eb55d28ffb8fd3cb6476263eeff23f53f5bea8ad892b7e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
@@ -9397,6 +9636,7 @@
 - `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
 - `scripts/yht.py`：SHA-256 `041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e4af0e04fafedbd8`。
 - `scripts/youdao.py`：SHA-256 `0c740bfa5e0616e362c80e44bb42aedacc6cf7785d7a0665f4f9be29f4ddb799`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4cc5f70c13c67bbd`。
+- `scripts/yyshuijuantime.py`：SHA-256 `ed7e4a6e165c239056135e84d3f2a0825a5fcfded2a1f0961d11b37172069cf6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/efe42c0f180ce822`。
 - `scripts/zcode_cn_daily.py`：SHA-256 `7085cd0c4eeef4e5c9bc6f38f03e752e4e253b341c6fdb25334537e6ceceb8e5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a0a7b04503bfb900`。
 - `scripts/zippo.py`：SHA-256 `db87391467bd1a78afea9e1725cf8a5a06a4f78373821128a20dcb98ed03b338`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/60f9d3538e9f8470`。
 - `scripts/zodgame_test.py`：SHA-256 `1e51c1301d3f6930103407ee55631084359d11244ffb4b40e9bc149eb0fb3ef9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4bfbfde0f17e39`。
@@ -9492,6 +9732,7 @@
 - `scripts/shuyi.py`：在书亦烧仙草账号执行签到并领取服务端发放的积分；实际执行时向青龙通知渠道发送脱敏任务总结；配置 PUSH_PLUS_TOKEN 时向 PushPlus 发送脱敏总结。
 - `scripts/sign_in.py`：正式执行时向看雪论坛提交签到，可能增加账号积分；正式执行且通知开启时通过青龙发送脱敏任务总结。
 - `scripts/skland_daily.py`：未配置 SKLAND_DID 时向上游设备服务注册临时设备标识；账密或通行证登录时换取授权和账号会话凭据；版区每日检票改变签到状态；浏览帖子可能增加任务浏览进度；显式启用 like 时点赞帖子；显式启用 share 时增加分享任务计数，不发布文案；正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要。
+- `scripts/skland_demo.py`：实际模式下明日方舟角色每日签到并领取奖励；实际模式下终末地角色每日签到并领取奖励；仅 send-code 动作向本人手机号发送登录短信验证码；实际模式下向数美服务登记生成设备标识；传入 did 时不执行；登录时签发账号授权凭据，可选刷新签名令牌；启用通知且模块可用时发送脱敏任务通知。
 - `scripts/skyland.py`：向数美服务提交模拟浏览器指纹并生成设备凭据；通过鹰角授权接口生成登录授权并取得森空岛会话凭据；为明日方舟绑定角色每日签到并领取签到奖励；为终末地绑定角色每日签到并领取签到奖励；正式运行时通过青龙通知渠道发送脱敏任务统计。
 - `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态；显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励；显式启用 value 或 both 后对好价提交点值，改变账号投票状态；显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态。
 - `scripts/ssl.py`：实际模式下通过青龙通知通道发送证书检查报告；不修改 Cloudflare DNS、证书或账号数据。
@@ -9565,6 +9806,7 @@
 - `scripts/wps_clock_in.py`：。
 - `scripts/yht.py`：参加种植活动；消耗活动肥料进行施肥；满足条件时领取活动奖励；开启 YHT_SIGN 后提交每日签到并领取签到奖励；开启 YHT_HELP 后为本次配置的其他账号助力；通知开启时调用青龙通知发送总结；断网预演阻止联网和派生进程。
 - `scripts/youdao.py`：刷新账号登录会话。；领取每日同步奖励并增加账号空间。；提交每日签到并领取空间奖励。；提交三次广告奖励请求并增加账号空间。；实际运行时通过青龙发送脱敏通知。。
+- `scripts/yyshuijuantime.py`：正式运行在显式配置路径创建或更新活动 JSON 文件，必要时创建其父目录；正式运行通知开启时，通过青龙现有通知模块发送任务摘要。
 - `scripts/zcode_cn_daily.py`：实际领取时发放或变更账号套餐权益。；仅 ZCODE_ACTIVATION=1 且非只读、非预演时补报启动和日活事件，可能影响套餐资格。；实际模式且通知启用时发送脱敏任务总结。。
 - `scripts/zippo.py`：签到增加积分；收藏商品及领取积分；显式取消本轮收藏；记录分享任务及领取积分；提交标签和星级评价及领取积分；显式绑定指定推荐人；真实运行向青龙配置的通知渠道发送摘要。
 - `scripts/zodgame_test.py`：提交每日签到；首次加入 Bux 广告任务；记录广告观看完成并领取积分；启用通知时发送脱敏任务总结。
@@ -9662,6 +9904,7 @@
 - `scripts/shuyi.py`：上游 `Rookie-wb-WH/ql_scripts` / `shuyi.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/sign_in.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/kanxue/sign_in.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/skland_daily.py`：上游 `siwuli/skland-daily` / `skland_daily.py` / `c6159b4ca574b4493ae8b94e56a861c7e9e06955`。
+- `scripts/skland_demo.py`：上游 `nuthx/auto-sign` / `skland/skland-demo.py` / `a8d2c229bac693daebe1535bca4cfd49733b632d`。
 - `scripts/skyland.py`：上游 `CN-Grace/QinglongScripts` / `skyland.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/smzdm_checkin.js`：上游 `ump45nose/smzdm-checkin-ql` / `checkin.js` / `6b9eaced964c348efb46d2c13a45ab5c66caaea8`。
 - `scripts/ssl.py`：上游 `CN-Grace/QinglongScripts` / `SSL.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
@@ -9735,6 +9978,7 @@
 - `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/yht.py`：上游 `Rookie-wb-WH/ql_scripts` / `yht.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/youdao.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/youdao/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
+- `scripts/yyshuijuantime.py`：上游 `CN-Grace/QinglongScripts` / `YysHuijuanTime.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/zcode_cn_daily.py`：上游 `L0NE-6/ZCode-Daily` / `zcode_cn_daily.py` / `68e3adf4b5deb036f2a992a5aca24f02f3a64ade`。
 - `scripts/zippo.py`：上游 `Rookie-wb-WH/ql_scripts` / `zippo.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/zodgame_test.py`：上游 `miaonai/zodgame-ql` / `zodgame-test.py` / `6494977a250c71a8fcd00b48a4cf3e1249da4e4c`。
