@@ -7,6 +7,8 @@
 # 来源提交：c8c7c0f4fd1802df86c32a86c26b5c26cfef5023
 # 合并来源：Sitoi/dailycheckin dailycheckin/iqiyi/main.py (MIT)，
 # 提交 135cc236e59ac4f14bcddc44acb3cbb3ed6010b5；参考 iqiyi.js (MIT)。
+# 新合并来源：yuxian158/check dailycheckin_scripts/ck_iqiyi.py (MIT)，
+# 提交 723c834f121ff4eef2dec7afe521071a7efff1a9。
 # 许可证：MIT；保留上游署名。上游文件未包含单独的版权声明。
 # MIT License
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,6 +32,7 @@ IQIYI_COOKIES：每个非空行一个账号完整 Cookie；兼容 IQIYI_COOKIE�
 浏览器登录 https://www.iqiyi.com 后，在开发者工具 Application/Cookies 中
 获取自己账号的 P00001、P00003 和可选 __dfp，以分号组成一行。
 P00001 是登录凭据，P00003 是用户编号；__dfp 取 @ 前段，不用于分隔账号。
+兼容原 ck_iqiyi.py 的 dfp 字段；同时提供时优先 __dfp。
 默认执行 VIP 查询、自然月签到和积分签到。两类抽奖可能消耗抽奖机会，
 仅在 IQIYI_LOTTERY=1、IQIYI_SHAKE=1 时分别执行。保留上游抽奖参数。
 IQIYI_CHANCES=1 查询普通抽奖剩余次数；IQIYI_LOTTERY_ALL=1 查询后用完
@@ -38,6 +41,10 @@ IQIYI_SHAKE_ALL=1 连续摇一摇至接口确认机会耗尽，最多20次；与
 摇一摇同时启用时只执行连续模式，达到安全上限报告失败而非冒充完成。
 IQIYI_GIVE_TIMES=1 执行浏览网页两次、预约电影一次以领取白金抽奖次数；
 IQIYI_PLATINUM=1 白金抽奖五次；IQIYI_V7=1 领取V7免费升级星钻权益。
+IQIYI_VIP_SIGN=1 调用 VIP 自动签到并展示当月成长值。
+IQIYI_DAILY_TASKS=1 查询每日成长任务，加入待执行任务、通知完成并领取奖励；
+最多六轮，每次操作都检查业务代码并重新查询任务状态，未完成则非零退出。
+此流程可能记录任务参与、浏览或预约及增加成长值，仅明确启用时执行。
 新开关均默认关闭；请先在官方应用确认活动仍有效、领取条件和权益影响。
 以上无需额外凭据；可选 P00002、QC005 无须另配环境变量。
 IQIYI_DRY_RUN=1 完全断网，只验证配置与请求构造，不代表业务成功。
@@ -179,7 +186,7 @@ def _sign(params, key):
 
 def parse_cookie(cookie_str):
     """提取 P00001 / P00003 / __dfp"""
-    p00001 = p00003 = dfp = ""
+    p00001 = p00003 = dfp = legacy_dfp = ""
     for part in cookie_str.split(";"):
         part = part.strip()
         if "=" not in part:
@@ -192,7 +199,9 @@ def parse_cookie(cookie_str):
             p00003 = v
         elif k == "__dfp" and not dfp:
             dfp = v.split("@")[0] if "@" in v else v
-    return p00001, p00003, dfp
+        elif k == "dfp" and not legacy_dfp:
+            legacy_dfp = v.split("@", 1)[0]
+    return p00001, p00003, dfp or legacy_dfp
 
 def task_sign(p00001, p00003):
     """自然月签到,返回 (ok, msg)"""
@@ -458,6 +467,123 @@ def level_right(p00001):
     return activity_response("https://act.vip.iqiyi.com/level-right/receive", p00001,
                              {"code": "k8sj74234c683f"}, method="POST")
 
+
+# VIP 日常任务的路径、GET 方法及状态映射来自 ck_iqiyi.py。
+# 不推断未知状态，也不使用上游的“已累计成长”代替本次奖励成功确认。
+VIP_TASK_BASE = "https://tc.vip.iqiyi.com/taskCenter/task/"
+
+
+def vip_task_request(p00001, action="queryUserTask", extra=None):
+    params = {"P00001": p00001}
+    params.update(extra or {})
+    d, error = response(*_http(VIP_TASK_BASE + action + "?" + urllib.parse.urlencode(params)))
+    if d is None:
+        return None, error
+    if d.get("code") != "A00000":
+        return None, "VIP任务未获业务成功确认"
+    data = d.get("data")
+    if isinstance(data, dict):
+        # 若接口同时返回内层业务错误，不能以外层成功掩盖失败。
+        if "code" in data and data["code"] not in ("A00000", "A0000"):
+            return None, "VIP任务内层业务未获成功确认"
+        identity(data)
+    return d, ""
+
+
+def vip_month_sign(p00001):
+    d, error = vip_task_request(p00001, extra={"autoSign": "yes"})
+    if d is None:
+        return False, error
+    data = d.get("data")
+    value = data.get("monthlyGrowthReward") if isinstance(data, dict) else None
+    if type(value) not in (int, str) or not re.fullmatch(r"\d+", str(value)):
+        return False, "VIP签到响应缺少当月成长值，未确认完成"
+    return True, "VIP自动签到接口确认成功，当月成长值：%d（不是本次新增值）" % int(value)
+
+
+def vip_daily_query(p00001):
+    d, error = vip_task_request(p00001)
+    if d is None:
+        return None, error
+    data = d.get("data")
+    tasks = data.get("tasks") if isinstance(data, dict) else None
+    daily = tasks.get("daily") if isinstance(tasks, dict) else None
+    if not isinstance(daily, list):
+        return None, "每日任务响应缺少任务列表"
+    seen = set()
+    for item in daily:
+        if not isinstance(item, dict):
+            return None, "每日任务条目格式异常"
+        code, status = item.get("taskCode"), item.get("status")
+        if (not isinstance(code, str) or not code.strip() or code in seen
+                or type(status) is not int or status not in (0, 1, 2, 4)):
+            return None, "每日任务编号或状态未知，停止操作"
+        seen.add(code)
+    return daily, ""
+
+
+def vip_daily_action(p00001, code, action):
+    d, error = vip_task_request(p00001, action,
+                                {"taskCode": code, "platform": "bb136ff4276771f3", "lang": "zh_CN"})
+    return d is not None, error or "接口确认成功"
+
+
+def vip_daily_tasks(p00001):
+    if enabled("IQIYI_DRY_RUN"):
+        # 构造所有已知分支；占位 taskCode 仅用于预演，不进入真实任务。
+        for action in ("queryUserTask", "joinTask", "notify", "getTaskRewards"):
+            try:
+                if action == "queryUserTask":
+                    vip_daily_query(p00001)
+                else:
+                    vip_daily_action(p00001, "dry_run_task", action)
+            except DryRunRequest:
+                log("每日任务 %s：DRY_RUN_OK 请求构造通过，未发送" % action)
+        raise DryRunRequest()
+    tracked = set()
+    for turn in range(1, 7):
+        daily, error = vip_daily_query(p00001)
+        if daily is None:
+            return False, error
+        tracked.update(item["taskCode"] for item in daily)
+        pending = [item for item in daily if item["status"] != 1]
+        log("每日任务第%d轮：总数%d 已完成%d 待处理%d" %
+            (turn, len(daily), len(daily) - len(pending), len(pending)))
+        if not pending:
+            if not tracked.issubset({item["taskCode"] for item in daily}):
+                return False, "每日任务列表丢失已跟踪任务，无法确认完成"
+            return True, "每日成长任务完成：%d项，均经官方状态确认" % len(daily)
+        for number, item in enumerate(pending, 1):
+            code, state = item["taskCode"], item["status"]
+            label = public_value(item.get("name")) if isinstance(item.get("name"), str) else "任务%d" % number
+            actions = {2: ("joinTask",), 0: ("getTaskRewards",),
+                       4: ("notify", "getTaskRewards")}[state]
+            for action in actions:
+                ok, message = vip_daily_action(p00001, code, action)
+                log("每日任务 %s / %s：%s %s" % (label, action, "✅" if ok else "❌", message))
+                if not ok:
+                    return False, "每日任务操作失败，停止该流程"
+                # 关键动作之后重新读取状态，避免使用加入前的旧列表领取奖励。
+                updated, error = vip_daily_query(p00001)
+                if updated is None:
+                    return False, error
+                current = next((x for x in updated if x["taskCode"] == code), None)
+                if current is None:
+                    return False, "任务操作后未返回原任务，无法验证状态"
+                log("每日任务 %s：官方状态%d" % (label, current["status"]))
+                if current["status"] == 1:
+                    break
+            time.sleep(1)
+        time.sleep(10)
+    daily, error = vip_daily_query(p00001)
+    if daily is None:
+        return False, error
+    states = {item["taskCode"]: item["status"] for item in daily}
+    if all(states.get(code) == 1 for code in tracked) and all(v == 1 for v in states.values()):
+        return True, "每日成长任务完成：%d项，均经官方状态确认" % len(tracked)
+    return False, "每日任务达到六轮上限，仍有任务未确认完成"
+
+
 def vip_info(p00001):
     """查询 VIP 信息,返回 (ok, msg)"""
     url = VIP_URL + "?" + urllib.parse.urlencode({"P00001": p00001})
@@ -567,6 +693,8 @@ def main():
         give_enabled = enabled("IQIYI_GIVE_TIMES")
         platinum_enabled = enabled("IQIYI_PLATINUM")
         v7_enabled = enabled("IQIYI_V7")
+        vip_sign_enabled = enabled("IQIYI_VIP_SIGN")
+        daily_enabled = enabled("IQIYI_DAILY_TASKS")
         if not accounts:
             raise ValueError("未配置凭据")
     except ValueError:
@@ -599,6 +727,8 @@ def main():
                     ("领取白金任务次数", give_enabled, give_times, (p00001,)),
                     ("白金抽奖", platinum_enabled, platinum_lottery, (p00001,)),
                     ("V7免费升级星钻", v7_enabled, level_right, (p00001,)),
+                    ("VIP自动签到", vip_sign_enabled, vip_month_sign, (p00001,)),
+                    ("每日成长任务", daily_enabled, vip_daily_tasks, (p00001,)),
                     ("最终VIP查询", platinum_enabled or v7_enabled, vip_info, (p00001,)),
                 ]
                 for number, (name, active, action, args) in enumerate(stages, 2):
@@ -645,7 +775,7 @@ def main():
     body = "账号总数：%d；成功数：%d；失败数：%d；预演通过数：%d；状态：%s" % (
         len(accounts), succeeded, failed, passed if dry_run else 0, status)
     notification_start = time.monotonic()
-    log("阶段12：汇总通知")
+    log("阶段14：汇总通知")
     try:
         notification = notify_summary("爱奇艺签到", body, dry_run, notify_enabled)
     except (Exception, SystemExit):

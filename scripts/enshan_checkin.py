@@ -2,7 +2,14 @@
 # name: 恩山论坛签到
 # cron: 39 12 * * *
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-3.0-only
+# Combined maintained work: GPL-3.0 (effectiveLicense).
+# Primary source: quan-ge/EnShan-Signin-Tool/enshan_sign.py
+# commit a41a41012e7a032da992bd2f9445045f5ec2ad93 (GPL-3.0).
+# Original attribution: By Funseason - v3.3; By EnShan-Signin-Tool.
+# The following MIT attribution and license notice applies to the original
+# maintained component, retained here; the combined derivative is GPL-3.0.
+# Original SPDX-License-Identifier: MIT
 # Additional source: Sitoi/dailycheckin, dailycheckin/enshan/main.py
 # commit 135cc236e59ac4f14bcddc44acb3cbb3ed6010b5 (MIT).
 # Maintained standalone version of agluo/ql-script-hub/enshan_checkin.py at
@@ -73,6 +80,9 @@ class AccountResult:
     contribution: Optional[int] = None
     statistics: Optional[dict] = None
     continuous_days: Optional[int] = None
+    today_points: Optional[int] = None
+    total_days: Optional[int] = None
+    sign_statistics_status: str = ""
 
 
 def env_bool(name: str, default: bool = False) -> bool:
@@ -158,6 +168,9 @@ class EnshanClient:
         self.group = ""
         self.contribution = None
         self.continuous_days: Optional[int] = None
+        self.today_points: Optional[int] = None
+        self.total_days: Optional[int] = None
+        self.sign_statistics_status = "未读取"
         self.opener = urllib.request.build_opener(SameOriginRedirect())
 
     def _merge_set_cookie(self, headers: object) -> None:
@@ -384,6 +397,46 @@ class EnshanClient:
                     time.sleep(1 + attempt)
         return False, {"coin": None, "points": None}, f"credit page returned HTTP {last_status}"
 
+    def read_sign_statistics(self) -> None:
+        """只读取已验证签到后的公开数值；读取失败不推测，也不重试签到。"""
+        for url in (f"{BASE_URL}/erling_qd-sign_in_m.html", SIGN_PAGE_URL):
+            try:
+                response = self.request("GET", url, extra_headers={"Referer": SIGN_PAGE_URL})
+                page = response.text
+                authenticated = (self._extract_formhash(page) == self.formhash or
+                                 "action=logout" in page or
+                                 bool(re.search(r"discuz_uid\s*=\s*['\"]?[1-9]\d*", page)))
+                if response.status != 200 or not authenticated:
+                    continue
+                values = {}
+                for key, css_class, label in (
+                    ("today_points", "erqd-current-point", "今日积分"),
+                    ("continuous_days", "erqd-continuous-days", "连续签到"),
+                    ("total_days", "erqd-total-days", "总签到天数"),
+                ):
+                    raw = first_match(page, (
+                        rf'{css_class}[^>]*>\s*([0-9]{{1,9}})(?![0-9])',
+                        rf'{label}\s*(?:[:：]|</?[^>]+>|\s)*([0-9]{{1,9}})(?![0-9])',
+                    ))
+                    if raw is not None:
+                        values[key] = int(raw)
+                for key, value in values.items():
+                    if key != "continuous_days" or self.continuous_days is None:
+                        setattr(self, key, value)
+                if self.today_points is not None and self.total_days is not None and self.continuous_days is not None:
+                    self.sign_statistics_status = "签到统计已读取"
+                    return
+            except Exception:
+                # 不记录异常内容，避免泄露请求或响应数据。
+                continue
+        self.sign_statistics_status = "部分签到统计未提供或读取失败；未知值不推测"
+
+    def checkin_with_statistics(self) -> Tuple[bool, str, str]:
+        result = self.checkin()
+        if result[0]:
+            self.read_sign_statistics()
+        return result
+
     def checkin(self) -> Tuple[bool, str, str]:
         if not self.formhash:
             return False, "failed", "formhash is unavailable"
@@ -467,9 +520,11 @@ def run_account(index: int, cookie: str, timeout: int, privacy: bool) -> Account
             if client.username:
                 log(f"账号{index} · 用户：{client.username}")
             log(f"账号{index} · 恩山币 {before['coin']}，积分 {before['points']}，用户组 {client.group or '未知'}，贡献 {client.contribution}")
-            success, status, message = stage(3, "每日签到", client.checkin)
+            success, status, message = stage(3, "每日签到", client.checkin_with_statistics)
             if client.continuous_days is not None:
                 log(f"账号{index} · 已连续签到{client.continuous_days}天")
+            if success:
+                log(f"账号{index} · 今日签到积分 {client.today_points if client.today_points is not None else '未知'}，总签到天数 {client.total_days if client.total_days is not None else '未知'}；{client.sign_statistics_status}")
             after_ok, after, _ = stage(4, "读取签到后余额", client.profile)
             log(f"账号{index} · 恩山币 {before['coin']} → {after['coin']}，积分 {before['points']} → {after['points']}")
             details = message
@@ -477,7 +532,9 @@ def run_account(index: int, cookie: str, timeout: int, privacy: bool) -> Account
                 details += "；部分余额未能读取"
             result = AccountResult(index, success, status, details, client.username,
                                    before['coin'], after['coin'], before['points'], after['points'],
-                                   client.group, client.contribution, continuous_days=client.continuous_days)
+                                   client.group, client.contribution, continuous_days=client.continuous_days,
+                                   today_points=client.today_points, total_days=client.total_days,
+                                   sign_statistics_status=client.sign_statistics_status)
     except Exception:
         # Exception text may contain URL parameters, Cookie, or response contents.
         stats['failed'] += 1
@@ -538,6 +595,14 @@ def finish(results, dry_run, started, code, config_error=""):
         "exitCode": code, "elapsedSeconds": round(time.monotonic()-started, 2),
     }
     body = f"账号总数{payload['total']}，成功{payload['succeeded']}，失败{payload['failed']}；状态{payload['status']}"
+    for result in results:
+        if result.success and not dry_run:
+            body += (f"\n账号{result.account} {result.user or ''}：{result.message}；"
+                     f"恩山币 {result.coin_before} → {result.coin_after}，"
+                     f"积分 {result.point_before} → {result.point_after}，贡献 {result.contribution}；"
+                     f"今日签到积分 {result.today_points if result.today_points is not None else '未知'}，"
+                     f"连续签到 {result.continuous_days if result.continuous_days is not None else '未知'}天，"
+                     f"总签到 {result.total_days if result.total_days is not None else '未知'}天")
     if config_error:
         body += "；" + config_error
     payload['notification'] = notify_summary(body, dry_run)
@@ -564,7 +629,10 @@ def main() -> int:
         timeout = bounded_int("ENSHAN_HTTP_TIMEOUT", 20, 5, 120)
         delay_name = "ENSHAN_MAX_RANDOM_DELAY" if "ENSHAN_MAX_RANDOM_DELAY" in os.environ else "MAX_RANDOM_DELAY"
         max_delay = bounded_int(delay_name, 0, 0, 3600)
-        accounts = parse_accounts(os.getenv("ENSHAN_COOKIE", os.getenv("enshan_cookie", "")))
+        if "ENSHAN_MAX_RANDOM_DELAY" not in os.environ and "MAX_RANDOM_DELAY" not in os.environ:
+            if env_bool("EST_ENABLE_RANDOM_WAIT", False):
+                max_delay = 900
+        accounts = parse_accounts(os.getenv("ENSHAN_COOKIE", os.getenv("enshan_cookie", os.getenv("EST_cookie", ""))))
         if not accounts:
             raise ValueError("ENSHAN_COOKIE 未配置，请每行填写一个完整 Cookie")
     except ValueError:

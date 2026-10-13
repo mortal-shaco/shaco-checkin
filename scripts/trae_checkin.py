@@ -6,6 +6,15 @@
 来源：L0NE-6/Trae-AutoCheckin trae_checkin.py，以及 task.json 中同应用 MIT 参考。
 合并来源：xz0609/trae-work-checkin-ql trae_work_checkin.py（MIT）；
 同应用参考：03_checkin.py、trae_core.py、trae_credit_monitor.py。
+网页来源：Cat-zaizai/ZaiZaiCat-Checkin script/trae/web_checkin.py 与 api.py（MIT）；
+原网页思路归属 star620/TRAE-Automatic-sign-in，保留署名，不采用随机设备绕过。
+网页账号仍用 TRAE_ACCOUNTS 每行一个 JSON：session 和/或 sessionid，加真实 deviceId。
+在本人浏览器登录 https://www.trae.cn，F12 → 应用 → Cookie → www.trae.cn，
+复制 X-Cloudide-Session 的 Value 到 session；长效 sessionid 的 Value 到 sessionid。
+原样保留百分号编码，不粘贴整个 Cookie 请求头；两者须属于同一账号。
+兼容 TRAE_SESSION、TRAE_SESSIONID（各按行对应同一账号），--session 单账号；
+设备号用同账号 TRAE_DEVICE_ID[_2.._9] 或 JSON deviceId，禁止随机生成及风控换号。
+网页会话过期时用 sessionid 换新会话，以 0600 权限缓存；领取后复查今日状态。
 原定时：23 0 * * * 主签，7,37 * * * * 补签；可分别创建青龙任务。
 Trae Work 原定时 0 8,20 * * * 可继续使用同一脚本 checkin 命令。
 TRAE_ACCOUNTS：每个非空行一个 JSON 对象，配套凭据放在同一对象中。
@@ -68,6 +77,7 @@ import urllib.error
 import urllib.request
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.cookies import SimpleCookie
 from pathlib import Path
 
 UgHost = 'https://api.trae.cn'
@@ -110,7 +120,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 _opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
 
 
-def http(url, headers, body, timeout=30):
+def http(url, headers, body, timeout=30, response_headers=None):
     if DRY:
         raise TaskError('预演禁止网络请求')
     request = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers, method='POST')
@@ -121,10 +131,12 @@ def http(url, headers, body, timeout=30):
             response = error
         with response:
             status = response.code
+            if response_headers is not None:
+                response_headers.extend(response.headers.get_all('Set-Cookie', []))
             raw = response.read(MAX_RESPONSE + 1)
         if len(raw) > MAX_RESPONSE:
             raise TaskError('响应过大')
-        data = json.loads(raw)
+        data = json.loads(raw) if raw else {}
         if not isinstance(data, dict):
             raise TaskError('响应结构错误')
         return status, data
@@ -161,7 +173,7 @@ def identity(data):
     for obj in (data, root_of(data), root_of(data).get('user_info', {})):
         if not isinstance(obj, dict):
             continue
-        for field in ('nickname', 'username', 'display_name', 'displayName', 'uid', 'userId'):
+        for field in ('nickname', 'username', 'display_name', 'displayName', 'uid', 'userId', 'UserID', 'ScreenName'):
             value = obj.get(field)
             if isinstance(value, (str, int)) and value != '':
                 # 仅展示官方身份字段，过滤手机号、控制字符和可能的凭据反射。
@@ -435,20 +447,89 @@ def exchange(acc, cache, cache_path):
     raise TaskError('令牌续期失败：参考支持的客户端组合均不匹配')
 
 
+def web_headers(cookie_name, value):
+    return {'Cookie': cookie_name + '=' + value, 'Referer': 'https://www.trae.cn/',
+            'Origin': 'https://www.trae.cn', 'User-Agent': 'VSCode 1.107.1 (TRAE SOLO CN)',
+            'Accept': 'application/json, text/plain, */*', 'Content-Type': 'application/json'}
+
+
+class WebSessionError(TaskError):
+    pass
+
+
+def web_exchange(acc, cache, cache_path):
+    """网页独立 HTTP 链：会话换 JWT，失效时仅续期本账号会话一次。"""
+    def fetch():
+        status, data = http(UgHost + '/cloudide/api/v3/common/GetUserToken',
+                            web_headers('X-Cloudide-Session', acc['session']), {}, 30)
+        log('网页换令牌：HTTP %d（凭据及原始响应已隐藏）' % status)
+        if status not in (200, 401, 403):
+            raise TaskError('网页换令牌服务暂不可用，不轮换会话')
+        result = data.get('Result')
+        metadata = data.get('ResponseMetadata')
+        error = metadata.get('Error') if isinstance(metadata, dict) else None
+        if (status != 200 or error or ('code' in data and code_of(data) != 0)
+                or not isinstance(result, dict) or not isinstance(result.get('Token'), str)
+                or not result['Token'].strip()):
+            raise WebSessionError('网页换令牌未确认成功，请更新本账号 Cookie')
+        return result
+
+    try:
+        if not acc.get('session'):
+            raise WebSessionError('缺少网页会话')
+        result = fetch()
+    except WebSessionError:
+        if not acc.get('sessionid'):
+            raise
+        cookies = []
+        status, data = http(UgHost + '/cloudide/api/v3/trae/Login',
+                            web_headers('sessionid', acc['sessionid']), {}, 30, cookies)
+        metadata = data.get('ResponseMetadata')
+        error = metadata.get('Error') if isinstance(metadata, dict) else None
+        if status != 200 or error or ('code' in data and code_of(data) != 0):
+            raise TaskError('长效 Cookie 续期未确认成功')
+        new_session = ''
+        for header in cookies:
+            parsed = SimpleCookie()
+            try:
+                parsed.load(header)
+            except Exception:
+                continue
+            if 'X-Cloudide-Session' in parsed:
+                new_session = parsed['X-Cloudide-Session'].value
+        if not new_session or any(c in new_session for c in '\r\n;'):
+            raise TaskError('续期响应缺少有效网页会话')
+        acc['session'] = new_session
+        SECRETS.append(new_session)
+        cache.setdefault(acc['_key'], {})['session'] = new_session
+        write_json(cache_path, cache)
+        log('✅ 长效 Cookie 已续期，本账号新会话已安全保存')
+        result = fetch()
+    acc['accessToken'] = result['Token']
+    acc['expiresAt'] = expiry_seconds(result.get('TokenExpireAt')) or jwt_exp(result['Token'])
+    SECRETS.append(result['Token'])
+    entry = cache.setdefault(acc['_key'], {})
+    entry.update(accessToken=acc['accessToken'], expiresAt=acc['expiresAt'], session=acc.get('session', ''))
+    write_json(cache_path, cache)
+    log('✅ 网页会话换取令牌成功')
+    identity(result)
+
+
 def request_account(acc, url, body, cache, cache_path, refresh_allowed=True):
     expiry = jwt_exp(acc.get('accessToken', '')) or expiry_seconds(acc.get('expiresAt'))
     if not acc.get('accessToken') or (expiry and expiry <= time.time() + 60):
-        exchange(acc, cache, cache_path)
+        (web_exchange if acc.get('_web') else exchange)(acc, cache, cache_path)
     status, data = http(url, ug_headers(acc['accessToken'], acc['deviceId'], acc), body, 20)
-    if refresh_allowed and (status in (401, 403) or code_of(data) in AUTH_FAIL_CODES) and acc.get('refreshToken'):
-        exchange(acc, cache, cache_path)
+    if refresh_allowed and (status in (401, 403) or code_of(data) in AUTH_FAIL_CODES
+                            or (acc.get('_web') and code_of(data) in (1003, 10085))) and (acc.get('_web') or acc.get('refreshToken')):
+        (web_exchange if acc.get('_web') else exchange)(acc, cache, cache_path)
         status, data = http(url, ug_headers(acc['accessToken'], acc['deviceId'], acc), body, 20)
     log('请求结果：HTTP %d，业务码 %s' % (status, code_of(data) if code_of(data) is not None else '未提供'))
     identity(data)
     return status, data
 
 
-def parse_accounts():
+def parse_accounts(session_override=None):
     raw = os.getenv('TRAE_ACCOUNTS', '').strip()
     if raw:
         try:
@@ -478,6 +559,16 @@ def parse_accounts():
                                 'deviceId': os.getenv('TRAE_DEVICE_ID' + suffix, ''),
                                 'uid': os.getenv('TRAE_UID' + suffix, ''),
                                 'name': os.getenv('TRAE_NAME' + suffix, '')})
+        if not entries and (session_override or os.getenv('TRAE_SESSION') or os.getenv('TRAE_SESSIONID')):
+            sessions = (session_override or os.getenv('TRAE_SESSION', '')).splitlines()
+            long_sessions = os.getenv('TRAE_SESSIONID', '').splitlines()
+            if sessions and long_sessions and len(sessions) != len(long_sessions):
+                raise TaskError('TRAE_SESSION 与 TRAE_SESSIONID 账号行数必须一致')
+            for i in range(max(len(sessions), len(long_sessions))):
+                suffix = '' if i == 0 else '_' + str(i + 1)
+                entries.append({'session': sessions[i].strip() if i < len(sessions) else '',
+                                'sessionid': long_sessions[i].strip() if i < len(long_sessions) else '',
+                                'deviceId': os.getenv('TRAE_DEVICE_ID' + suffix, '')})
         if not entries and os.getenv('TRAE_ICUBE_AUTH'):
             entries = [{'icubeAuth': os.getenv('TRAE_ICUBE_AUTH'), 'deviceId': os.getenv('TRAE_DEVICE_ID', '')}]
         if not entries and os.getenv('TRAE_STORAGE_PATH'):
@@ -507,7 +598,7 @@ def parse_accounts():
         aliases = {'accessToken': ('token', 'access_token'), 'refreshToken': ('refresh_token',),
                    'deviceId': ('claimDeviceId', 'realDeviceId', 'device_id'), 'deviceKeyPem': ('device_key_pem', 'privateKeyPem'),
                    'devicePubPem': ('device_pub_pem', 'publicKeyPem'), 'machineId': ('machine_id',),
-                   'uid': ('userId', 'user_id')}
+                   'uid': ('userId', 'user_id'), 'session': ('X-Cloudide-Session',)}
         for canonical, alternatives in aliases.items():
             if not acc.get(canonical):
                 acc[canonical] = next((acc[k] for k in alternatives if acc.get(k)), '')
@@ -515,7 +606,7 @@ def parse_accounts():
             acc['deviceId'] = acc['claimDeviceId']
         if not acc.get('name'):
             acc['name'] = acc.get('screenName', '')
-        for field in ('accessToken', 'refreshToken', 'deviceId', 'deviceKeyPem', 'devicePubPem', 'machineId'):
+        for field in ('accessToken', 'refreshToken', 'deviceId', 'deviceKeyPem', 'devicePubPem', 'machineId', 'session', 'sessionid'):
             if not isinstance(acc.get(field, ''), str):
                 acc['_error'] = '凭据字段必须是字符串'
                 acc[field] = ''
@@ -523,7 +614,11 @@ def parse_accounts():
         if not acc['deviceId'] and len(entries) == 1:
             acc['deviceId'] = os.getenv('TRAE_DEVICE_ID', '').strip()
             SECRETS.append(acc['deviceId'])
-        seed = ('authPath:' + str(acc['authPath'])) if acc.get('authPath') else acc.get('refreshToken') or acc.get('accessToken') or str(index)
+        acc['_web'] = bool(acc.get('session') or acc.get('sessionid'))
+        for field in ('session', 'sessionid'):
+            if any(c in acc.get(field, '') for c in '\r\n;'):
+                acc['_error'] = 'Cookie 字段仅填单个 Value，不得包含换行或分号'
+        seed = ('authPath:' + str(acc['authPath'])) if acc.get('authPath') else acc.get('sessionid') or acc.get('session') or acc.get('refreshToken') or acc.get('accessToken') or str(index)
         acc['_key'] = hashlib.sha256(('uid:' + str(acc['uid']) if acc.get('uid') else 'credential:' + seed).encode()).hexdigest()
         accounts.append(acc)
     only = os.getenv('TRAE_ONLY', '').strip()
@@ -692,11 +787,11 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
     def validate():
         if acc.get('_error'):
             raise TaskError(acc['_error'])
-        if not acc.get('accessToken') and not acc.get('refreshToken'):
+        if not acc.get('_web') and not acc.get('accessToken') and not acc.get('refreshToken'):
             if DRY and (acc.get('icubeAuth') or acc.get('storagePath') or acc.get('authPath')):
                 raise TaskError('预演请提供占位明文凭据，不读取桌面凭据')
             load_explicit_credentials(acc)
-        if not acc.get('accessToken') and not acc.get('refreshToken'):
+        if not acc.get('_web') and not acc.get('accessToken') and not acc.get('refreshToken'):
             raise TaskError('该账号缺少 accessToken 或 refreshToken')
         if not re.fullmatch(r'\d{12,20}', acc.get('deviceId', '')):
             raise TaskError('缺少同账号官方客户端真实 deviceId（12 至 20 位数字）')
@@ -704,6 +799,8 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
             raise TaskError('accessToken 与 refreshToken 不应相同')
     run.stage('配置核验', validate)
     if DRY:
+        if acc.get('_web'):
+            log('网页预演：本账号会话换令牌、可选长效 Cookie 续期；保留真实设备号，领取后复查')
         run.stage('断网预演', lambda: log('DRY_RUN_OK：配置有效；计划' + ('查询积分' if task == 'credits' else '查询状态、按需签到、查询余额') + '，未发送请求或写入文件'))
         return 'dry-run'
     if task == 'checkin' and os.getenv('RANDOM_SIGNIN', 'false').strip().lower() not in DISABLED:
@@ -718,7 +815,12 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
                     remaining -= step
             run.stage('显式随机错峰', wait_random)
     saved = cache.get(acc['_key'], {})
-    if isinstance(saved, dict) and saved.get('accessToken') and saved.get('refreshToken'):
+    if acc.get('_web') and isinstance(saved, dict):
+        for field in ('session', 'accessToken', 'expiresAt'):
+            if saved.get(field):
+                acc[field] = saved[field]
+        SECRETS.extend([acc.get('session', ''), acc.get('accessToken', '')])
+    if not acc.get('_web') and isinstance(saved, dict) and saved.get('accessToken') and saved.get('refreshToken'):
         acc['accessToken'] = saved['accessToken']
         acc['refreshToken'] = saved['refreshToken']
         acc['expiresAt'] = saved.get('expiresAt', 0)
@@ -777,6 +879,12 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
                         raise TaskError('领取限流，已记冷却，交给后续定时重试')
                     raise TaskError('领取接口未确认业务成功')
             run.stage('按需领取签到积分', claim)
+            def verify_claim():
+                checked_after, _ = query_status()
+                if not checked_after:
+                    raise TaskError('领取后复查未确认今日已签，不记录完成状态')
+                log('☑️ 领取后复查确认今日已签')
+            run.stage('领取后状态复查', verify_claim)
         state['done'][key] = True
         state['cooldown'].pop(key, None)
         write_json(state_path, state)
@@ -1074,12 +1182,23 @@ def main():
     log('开始时间：' + start_time)
     log('运行模式：' + ('断网预演' if DRY else '正式'))
     try:
-        if len(sys.argv) > 2:
+        args = sys.argv[1:]
+        session_override = None
+        if '--session' in args:
+            i = args.index('--session')
+            if i + 1 >= len(args) or not args[i + 1].strip():
+                raise TaskError('--session 缺少 Cookie Value')
+            session_override = args[i + 1].strip()
+            SECRETS.append(session_override)
+            if os.getenv('TRAE_ACCOUNTS', '').strip() or os.getenv('TRAE_ACCESS_TOKEN') or os.getenv('TRAE_REFRESH_TOKEN'):
+                raise TaskError('--session 不得与其他账号配置混用；请统一使用 TRAE_ACCOUNTS')
+            del args[i:i + 2]
+        if len(args) > 1:
             raise TaskError('用法：python candidate.py [checkin|credits|login]')
-        task = (sys.argv[1] if len(sys.argv) == 2 else os.getenv('TRAE_TASK', 'checkin')).strip().lower()
+        task = (args[0] if args else os.getenv('TRAE_TASK', 'checkin')).strip().lower()
         if task not in ('checkin', 'credits', 'login'):
             raise TaskError('任务动作只能为 checkin、credits 或 login')
-        accounts = [{'_index': 1, '_key': 'login'}] if task == 'login' else parse_accounts()
+        accounts = [{'_index': 1, '_key': 'login'}] if task == 'login' else parse_accounts(session_override)
         account_count = len(accounts)
         log('账号数量：%d' % account_count)
         log('任务动作：' + {'checkin': '每日签到与余额', 'credits': '只查积分余额', 'login': '显式交互登录'}[task])
