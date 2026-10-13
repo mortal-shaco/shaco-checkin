@@ -3096,6 +3096,135 @@
       }
     },
     {
+      "catalogId": "2eeae7b152108dae",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::erke",
+      "checkProfile": {
+        "requiredEnv": [
+          "ERKE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ERKE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ERKE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ERKE_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "积分明细查询成功（业务码已核验）",
+          "会员签到成功（业务码已核验）",
+          "已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询积分明细第一页五条，展示累计积分、冻结积分、可用积分和积分记录数",
+          "会员签到及明确已签到状态识别",
+          "每行一个账号，保留上游账号字段兼容，逐账号与逐阶段统计",
+          "展示接口返回的非敏感官方账号身份",
+          "完全断网预演、阶段耗时日志及单行 TASK_SUMMARY 结构化汇总",
+          "青龙脱敏通知，通知失败不覆盖业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行提交会员签到，可能增加积分和签到记录"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "鸿星尔克签到",
+      "path": "scripts/erke.py",
+      "sha256": "887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/erke/main.py",
+        "related": [
+          {
+            "catalogId": "0dad9e3455d8ee78",
+            "sha256": "73700b126463c3a30d8699502034806a226b5518dd51503b4f1dcba5b794122f",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/erke/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "1 1 1 1 1",
+      "command": "python3 scripts/erke.py",
+      "environment": [
+        {
+          "name": "ERKE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人鸿星尔克微信小程序，在本人授权的网络调试中查看 https://hope.demogic.com/gic-wx-app/integral_record.json 或 sign/member_sign.json 的请求体，获取 memberId、enterpriseId、unionid、openid、wxOpenid，依次对应 member_id、enterprise_id、unionid、openid、wx_openid。五项必须来自同一账号；不要分享请求体。原 config/token.json 中 erke.accounts 的每个账号对象可复制为一行 JSON，不需要该文件或原仓库。",
+          "format": "每个非空行为一个 JSON 对象，五项字段均为非空字符串；可选 account_name 和 user_agent，兼容上游字段。account_name 保留输入兼容，日志优先使用官方身份，没有官方身份时用账号序号。JSON 内部文本与标点保留，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "ERKE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；首次使用建议设为 1。",
+          "format": "1、true、yes、on 启用完全断网预演；默认 0 正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有通知配置；在青龙环境变量中控制通知。",
+          "format": "默认 1；0、false、no、off 关闭。断网预演仅生成通知摘要并记录未投递，不调用可能联网的通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如通知模块不在默认位置，填写本人青龙通知模块所在目录。",
+          "format": "可选目录，含 notify.py 或 sendNotify.js；通知不可用不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON，同账号五项凭据组合在同一对象；逐账号、逐阶段独立处理，任一账号或配置失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询积分明细第一页五条，展示累计积分、冻结积分、可用积分和积分记录数",
+        "会员签到及明确已签到状态识别",
+        "每行一个账号，保留上游账号字段兼容，逐账号与逐阶段统计",
+        "展示接口返回的非敏感官方账号身份",
+        "完全断网预演、阶段耗时日志及单行 TASK_SUMMARY 结构化汇总",
+        "青龙脱敏通知，通知失败不覆盖业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行提交会员签到，可能增加积分和签到记录"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/2eeae7b152108dae",
+        "candidateSha256": "887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59"
+      }
+    },
+    {
       "catalogId": "b5b4289ee7ca4222",
       "applicationKey": "sitoi/dailycheckin::fnnasclub",
       "checkProfile": {

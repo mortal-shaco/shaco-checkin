@@ -52,6 +52,7 @@
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `33 14 * * *` |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `9 9 * * *` |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `39 12 * * *` |
+| 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `1 1 1 1 1` |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `0 8 * * *` |
 | 废文网签到 | `scripts/fwxs_checkin.js` | `node scripts/fwxs_checkin.js` | `5 8 * * *` |
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `0 8 * * *` |
@@ -187,6 +188,7 @@
 - `scripts/deepflood_checkin.py`：执行 DeepFlood 每日签到并验证接口业务结果，支持识别已完成签到；查询并汇总可配置时间窗口内的签到鸡腿收益，保留总量、次数及平均收益；支持换行分隔的多账号独立执行和汇总状态；可选的随机延迟执行，保持原每日计划及既有参数兼容；完全断网且无等待、无副作用的预演；正式运行通过青龙 notify.py 发送脱敏汇总，支持全局通知开关，预演显示同内容通知预览；显示官方返回的非敏感账号身份、编号阶段、耗时与账号及任务统计；保留 SUMMARY_JSON 并追加唯一单行 TASK_SUMMARY，配置或业务失败非零退出。
 - `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
 - `scripts/enshan_checkin.py`：使用 Cookie 验证登录，保留签到页 WAF 解码、论坛页回退和响应 Cookie 更新。；获取隐藏字段、退出链接或 JavaScript 中的 formhash，提交每日签到，严格识别成功及今日已签到。；在已验证的签到响应提供连续签到天数时展示天数，并在结构化账号结果中输出；未提供时不推测。；签到前后查询恩山币和积分，保留四个积分页地址回退与临时错误重试，展示余额变化。；展示官方公开用户名、用户组及贡献，隐藏 Cookie、会话及原始响应。；每行一个账号独立执行，任一失败非零退出，配置错误同样非零退出。；保持每日 12:39 定时、兼容旧参数及可选随机启动延迟，默认无等待。；完全断网配置预演，跳过登录、查询、签到和通知网络发送，不宣称真实业务成功。；带时间戳的分阶段日志、账号及任务统计，保留 SUMMARY_JSON 并输出唯一单行 TASK_SUMMARY。；按全局开关生成或发送青龙脱敏通知，通知不可用或失败不改变业务退出码。。
+- `scripts/erke.py`：查询积分明细第一页五条，展示累计积分、冻结积分、可用积分和积分记录数；会员签到及明确已签到状态识别；每行一个账号，保留上游账号字段兼容，逐账号与逐阶段统计；展示接口返回的非敏感官方账号身份；完全断网预演、阶段耗时日志及单行 TASK_SUMMARY 结构化汇总；青龙脱敏通知，通知失败不覆盖业务退出码。
 - `scripts/fnnasclub.py`：显示论坛提供的公开昵称；获取签到参数并执行每日签到；识别今日已打卡并避免重复签到；读取并脱敏显示我的打卡动态；每行一个账号，独立执行与失败汇总；完全断网预演、时间轴日志和单行结构化汇总；正式运行后发送青龙脱敏通知，通知失败保留业务退出码。
 - `scripts/fwxs_checkin.js`：登录有效性检查并展示官方公开 UID；废文网每日签到；以个人中心总签到天数增长确认成功；查询总签到天数与连续签到天数；明确的北京时间当天签到记录支持已签到判定；每行一个账号独立执行，兼容原 fwxs 变量与首个 # 后的昵称备注解析；完全断网预演及参数检查；青龙通知、分阶段脱敏日志、逐账号统计与单行结构化任务汇总。
 - `scripts/fxh.js`：每日查询当前积分；每日执行芬享汇签到，显示可解析的奖励积分与已签到状态；官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示；逐行多账号独立执行和失败退出；完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总；实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网。
@@ -327,6 +329,7 @@
 <tr><td rowspan="1"><code>scripts/deepflood_checkin.py</code></td><td><code>DEEPFLOOD_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号完整 Cookie；不按 &amp;、@ 或分号拆分账号，Cookie 中的这些字符原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/durex.py</code></td><td><code>dlshyzx</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/enshan_checkin.py</code></td><td><code>ENSHAN_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 Cookie，保留分号及等号；禁止使用 &amp;&amp;、&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/erke.py</code></td><td><code>ERKE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个 JSON 对象，五项字段均为非空字符串；可选 account_name 和 user_agent，兼容上游字段。account_name 保留输入兼容，日志优先使用官方身份，没有官方身份时用账号序号。JSON 内部文本与标点保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_COOKIE</code></td><td>是</td><td>格式：每个非空行为一个账号的完整 Cookie 值，保留分号及等号，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fwxs_checkin.js</code></td><td><code>fwxs</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；兼容 Cookie#昵称备注，仅按首个 # 分割，后续备注完整保留但为防泄漏不输出。禁止用 @ 或 &amp; 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fxh.js</code></td><td><code>fxhOpenId</code></td><td>是</td><td>格式：每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
@@ -581,6 +584,9 @@
 <tr><td><code>PRIVACY_MODE</code></td><td>否</td><td>格式：布尔开关，仅在未设置 ENSHAN_PRIVACY_MODE 时读取。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。断网预演仅生成脱敏通知正文，不发送网络通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，未设置时尝试导入 notify 或青龙标准目录。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/erke.py</code></td><td><code>ERKE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演；默认 0 正式执行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。断网预演仅生成通知摘要并记录未投递，不调用可能联网的通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录，含 notify.py 或 sendNotify.js；通知不可用不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启断网预演，默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：现有通知模块所在目录路径；业务运行不依赖通知模块。；多账号格式以该脚本文档为准</td></tr>
@@ -1196,6 +1202,7 @@
 - `scripts/deepflood_checkin.py`：每个非空行填写一个账号完整 Cookie；忽略空行并兼容换行格式，各账号独立执行，任一账号签到或收益查询失败则整体非零退出。。
 - `scripts/durex.py`：每个非空行一个账号的 Access-Token；各账号独立处理；任何账号失败则整体非零退出。。
 - `scripts/enshan_checkin.py`：每个非空行一个账号，逐个独立处理；任一账号失败整体非零退出。不使用其他账号分隔符。。
+- `scripts/erke.py`：每个非空行一个账号 JSON，同账号五项凭据组合在同一对象；逐账号、逐阶段独立处理，任一账号或配置失败时整体非零退出。。
 - `scripts/fnnasclub.py`：每个非空行填写一个账号的完整 Cookie，各账号独立执行；任何账号失败均整体非零退出。。
 - `scripts/fwxs_checkin.js`：fwxs 每个非空行一个账号；同一账号仅需完整 Cookie。逐账号独立执行，任一账号失败时整体非零退出。昵称备注兼容解析，日志采用账号序号与官方公开 UID，防止备注泄露凭据。。
 - `scripts/fxh.js`：fxhOpenId 每个非空行一个账号，逐个独立执行；任一账号失败整体非零退出，不使用 @ 或 & 分隔。。
@@ -1446,6 +1453,13 @@
 - 所属脚本：`scripts/enshan_checkin.py`
 - 获取或设置：在浏览器登录恩山无线论坛，打开开发者工具的网络面板，访问论坛页面，从该请求头复制完整 Cookie；仅存入青龙环境变量，不公开或写入日志。
 - 填写格式：`每个非空行填写一个账号的完整 Cookie，保留分号及等号；禁止使用 &&、& 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ERKE_ACCOUNTS`
+
+- 所属脚本：`scripts/erke.py`
+- 获取或设置：登录本人鸿星尔克微信小程序，在本人授权的网络调试中查看 https://hope.demogic.com/gic-wx-app/integral_record.json 或 sign/member_sign.json 的请求体，获取 memberId、enterpriseId、unionid、openid、wxOpenid，依次对应 member_id、enterprise_id、unionid、openid、wx_openid。五项必须来自同一账号；不要分享请求体。原 config/token.json 中 erke.accounts 的每个账号对象可复制为一行 JSON，不需要该文件或原仓库。
+- 填写格式：`每个非空行为一个 JSON 对象，五项字段均为非空字符串；可选 account_name 和 user_agent，兼容上游字段。account_name 保留输入兼容，日志优先使用官方身份，没有官方身份时用账号序号。JSON 内部文本与标点保留，不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `FNNASCLUB_COOKIE`
@@ -3042,6 +3056,24 @@
 - 所属脚本：`scripts/enshan_checkin.py`
 - 获取或设置：可选，填写青龙现有 notify.py 所在目录；无需为业务执行安装其他仓库。
 - 填写格式：`本地目录路径，未设置时尝试导入 notify 或青龙标准目录。`
+
+#### `ERKE_DRY_RUN`
+
+- 所属脚本：`scripts/erke.py`
+- 获取或设置：在青龙环境变量中设置；首次使用建议设为 1。
+- 填写格式：`1、true、yes、on 启用完全断网预演；默认 0 正式执行。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/erke.py`
+- 获取或设置：使用青龙已有通知配置；在青龙环境变量中控制通知。
+- 填写格式：`默认 1；0、false、no、off 关闭。断网预演仅生成通知摘要并记录未投递，不调用可能联网的通知模块。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/erke.py`
+- 获取或设置：如通知模块不在默认位置，填写本人青龙通知模块所在目录。
+- 填写格式：`可选目录，含 notify.py 或 sendNotify.js；通知不可用不改变业务退出码。`
 
 #### `FNNASCLUB_DRY_RUN`
 
@@ -6682,6 +6714,7 @@
 - `scripts/deepflood_checkin.py`：SHA-256 `1743ea3da4f0ef463f70619fb5a49d375dc48e5817d867ea080875a12b3f68c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01d51606a735260a`。
 - `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 - `scripts/enshan_checkin.py`：SHA-256 `7bb85fd34e7108fcc1553fb6c5283cf6d86723642a4e039b096267b8d7429d48`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
+- `scripts/erke.py`：SHA-256 `887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
 - `scripts/fnnasclub.py`：SHA-256 `80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
 - `scripts/fwxs_checkin.js`：SHA-256 `e9f6410e225fbef75b20d661e4122ea2bece6b41b7908f17f4f42244f151780c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
 - `scripts/fxh.js`：SHA-256 `228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
@@ -6817,6 +6850,7 @@
 - `scripts/deepflood_checkin.py`：正式运行向 DeepFlood 提交每日签到，可能获得鸡腿并改变账号签到及积分状态；正式运行通知启用且模块可用时，通过青龙已配置渠道发送脱敏任务汇总。
 - `scripts/durex.py`：每日签到改变签到状态并可能获得积分；开启分享后上报活动分享记录并可能获得奖励；开启抽奖后参与活动并可能消耗抽奖机会或积分。
 - `scripts/enshan_checkin.py`：正式运行提交每日签到，可能增加恩山币和积分。；正式访问论坛可能产生论坛自身的登录奖励或访问记录。；正式运行且通知开启时，通过青龙通知模块发送脱敏任务汇总。。
+- `scripts/erke.py`：正式运行提交会员签到，可能增加积分和签到记录。
 - `scripts/fnnasclub.py`：执行论坛签到，更新签到记录及论坛对应奖励；正式运行向已配置的青龙通知渠道发送脱敏总结。
 - `scripts/fwxs_checkin.js`：通过 GET /qiandao 完成废文网签到，增加签到天数及服务端签到奖励（以站点规则为准）；正式执行结束后通过青龙通知渠道发送脱敏任务统计（可关闭）。
 - `scripts/fxh.js`：实际执行每日签到，改变签到状态并由服务端发放积分；启用通知时调用青龙通知模块发送任务总结。
@@ -6954,6 +6988,7 @@
 - `scripts/deepflood_checkin.py`：上游 `agluo/ql-script-hub` / `deepflood_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/durex.py`：上游 `Rookie-wb-WH/ql_scripts` / `durex.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/enshan_checkin.py`：上游 `agluo/ql-script-hub` / `enshan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/erke.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/erke/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/fnnasclub.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/fnnasclub/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/fwxs_checkin.js`：上游 `zhui-zi/fwcheckin` / `fwxs_checkin.js` / `7793a795d603df34f0ebdbc7d6810427f84f59c6`。
 - `scripts/fxh.js`：上游 `xingly-cn/QLPanelScript` / `fxh.js` / `8c0323999253b7a0d8e47ff1136a562fedb3c980`。
