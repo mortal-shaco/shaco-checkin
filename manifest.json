@@ -10578,6 +10578,171 @@
       "applicationKey": "kuaishou"
     },
     {
+      "catalogId": "224698e8fa0ac8f6",
+      "applicationKey": "kukuai",
+      "checkProfile": {
+        "requiredEnv": [
+          "KUKU_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "KUKU_COOKIES",
+          "KUKU_STOKEN",
+          "KUKU_TOKENS",
+          "KUKU_PROXY",
+          "KUKU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "KUKU_NO_NOTIFY"
+        ],
+        "dryRunEnv": {
+          "KUKU_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询每日积分任务面板并验证业务登录状态",
+          "领取每日登录 LOGIN 奖励",
+          "领取对话 CHAT 任务奖励，不实际发送对话",
+          "明确 SUCCESS 且奖励为零时识别幂等已完成",
+          "逐行多账号及旧 Cookie 请求头、编辑器 JSON、对象格式兼容",
+          "使用 --only 序号选择一个账号",
+          "可选 HTTP/HTTPS 代理",
+          "显示官方响应中的昵称、用户名、显示名称或公开 UID",
+          "带阶段耗时、账号与任务统计的脱敏日志及单行 TASK_SUMMARY",
+          "青龙通知及全局关闭开关，通知失败保留业务退出码",
+          "完全断网参数预演及拟发送通知摘要"
+        ],
+        "sideEffects": [
+          "领取每日登录任务积分",
+          "领取对话任务积分",
+          "正式运行时通过青龙通知模块发送脱敏结果"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "KukuAI 每日积分",
+      "path": "scripts/kuku_daily.py",
+      "sha256": "d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/KukuAI-Daily",
+        "branch": "main",
+        "commit": "6912419c6b29365bb7b3172cc3c18bf7b763812d",
+        "originalPath": "kuku_daily.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/kuku_daily.py",
+      "environment": [
+        {
+          "name": "KUKU_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录官方库库 AI 客户端，自行从可查看的 kuku.baidu.com 官方业务请求中复制同账号 Cookie 和 genflowpro 产品作用域 STOKEN；网页通行证令牌不一定有效。脚本不负责换发，请勿使用第三方凭据获取服务。",
+          "format": "每个非空行一个账号：产品作用域STOKEN|完整Cookie；仅在第一个竖线处分割。Cookie 支持请求头、单行编辑器 JSON 或键值对象，必须包含 BDUSS。"
+        },
+        {
+          "name": "KUKU_COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧单账号输入，从官方业务请求复制 Cookie；与同账号 KUKU_STOKEN 配套。配置规范变量或 KUKU_TOKENS 时忽略此项。",
+          "format": "Cookie 请求头、编辑器 JSON 或键值对象，包含 BDUSS。"
+        },
+        {
+          "name": "KUKU_STOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧单账号输入，从官方客户端同账号业务请求获取 genflowpro 产品作用域 STOKEN；脚本不调用 DLL。",
+          "format": "完整产品会话令牌，与 KUKU_COOKIES 配套。"
+        },
+        {
+          "name": "KUKU_TOKENS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧多账号输入，按各账号官方会话信息填写；没有规范变量时使用，不输出备注。",
+          "format": "每个非空行：备注|BDUSS|PTOKEN|STOKEN；最多分割前三个竖线。不支持用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "KUKU_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，自行填写可信代理；代理地址可能含认证信息，日志不输出。",
+          "format": "HTTP 或 HTTPS 代理地址；不支持 SOCKS。"
+        },
+        {
+          "name": "KUKU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1。",
+          "format": "1 开启完全断网预演，0 正式领取。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知全局开关，默认开启。",
+          "format": "0、false、no、off 关闭，其余非空值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；也自动查找青龙标准目录或可导入通知模块。",
+          "format": "本机通知模块目录，仅用于可选通知，不是业务依赖。"
+        },
+        {
+          "name": "KUKU_NO_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容旧通知关闭开关。",
+          "format": "1 关闭通知。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，账号独立处理；规范输入只在第一个竖线处分割令牌与 Cookie。旧凭据输入可兼容替代规范变量。任一账号格式或业务失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询每日积分任务面板并验证业务登录状态",
+        "领取每日登录 LOGIN 奖励",
+        "领取对话 CHAT 任务奖励，不实际发送对话",
+        "明确 SUCCESS 且奖励为零时识别幂等已完成",
+        "逐行多账号及旧 Cookie 请求头、编辑器 JSON、对象格式兼容",
+        "使用 --only 序号选择一个账号",
+        "可选 HTTP/HTTPS 代理",
+        "显示官方响应中的昵称、用户名、显示名称或公开 UID",
+        "带阶段耗时、账号与任务统计的脱敏日志及单行 TASK_SUMMARY",
+        "青龙通知及全局关闭开关，通知失败保留业务退出码",
+        "完全断网参数预演及拟发送通知摘要"
+      ],
+      "sideEffects": [
+        "领取每日登录任务积分",
+        "领取对话任务积分",
+        "正式运行时通过青龙通知模块发送脱敏结果"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/224698e8fa0ac8f6",
+        "candidateSha256": "d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9"
+      }
+    },
+    {
       "catalogId": "7f6af4cafcff2aaf",
       "applicationKey": "yongyeym/autosign_qinglong::kurobbs",
       "checkProfile": {
@@ -11437,6 +11602,169 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/bd893babb907859b",
         "candidateSha256": "6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6"
+      }
+    },
+    {
+      "catalogId": "3328423575cf7143",
+      "applicationKey": "lobsterai",
+      "checkProfile": {
+        "requiredEnv": [
+          "LOBSTERAI_TOKEN"
+        ],
+        "optionalEnv": [
+          "LOBSTERAI_DRY_RUN",
+          "LOBSTERAI_REFRESH_STORE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN"
+        ],
+        "dryRunEnv": {
+          "LOBSTERAI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LOBSTERAI_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今天已签到（官方状态已核验）",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "每天签到：查询活动、查询状态、幂等提交和独立复核；明确已签到时不重复提交。",
+          "显示积分、连续签到和活动领取天数。",
+          "自动查询官方客户端版本，一次运行内共用版本；失败保留上游兜底版本，支持 --version 覆盖。",
+          "AT 临近到期时通过 RT 自动续期，以私密原子缓存支持滚动续期。",
+          "换行多账号和 --only UID 筛选；环境变量优先，可用 --auths 显式指定本人 JSON 凭据目录。",
+          "保留 --base HTTPS 地址覆盖；凭据请求拒绝重定向。",
+          "完全离线预演，不访问业务、版本、推送接口，不读写续期缓存。",
+          "青龙通知和可选 PushPlus 微信推送；所有结果生成脱敏总结，通知失败不影响业务退出码。",
+          "输出时间轴、编号阶段、账号及任务统计，并输出一个 TASK_SUMMARY JSON 汇总。"
+        ],
+        "sideEffects": [
+          "向官方接口提交每日签到，领取活动积分。",
+          "RT 自动续期会轮换账号令牌，并在本地写入私密续期缓存。",
+          "正式模式按配置发送脱敏青龙通知及可选 PushPlus 微信推送。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "LobsterAI 每日签到",
+      "path": "scripts/lobsterai_checkin.py",
+      "sha256": "30863a779860e257ebe6c38bb2b222f97448e0748a912b1c8cea38dc33f4dc18",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/LobsterAI-AutoCheckin",
+        "branch": "main",
+        "commit": "4e4c291a2f616ef865e18a1c8026939754bfc712",
+        "originalPath": "lobsterai_checkin.py",
+        "related": [
+          {
+            "catalogId": "242dc8fabb4e2afe",
+            "sha256": "4ccd6e41c7551ca3df03842fc25b4102b2d0b2c07ab1f07cf3639304d0aa8182",
+            "repository": "L0NE-6/LobsterAI-AutoCheckin",
+            "url": "https://github.com/L0NE-6/LobsterAI-AutoCheckin.git",
+            "branch": "main",
+            "commit": "4e4c291a2f616ef865e18a1c8026939754bfc712",
+            "originalPath": "lobsterai_login.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "1cc99a73be85dfb2",
+            "sha256": "d0987b12ad7cca6f7ba8c27db762bc5c41e7058757a073e773fd4fa9ebddca2f",
+            "repository": "L0NE-6/LobsterAI-AutoCheckin",
+            "url": "https://github.com/L0NE-6/LobsterAI-AutoCheckin.git",
+            "branch": "main",
+            "commit": "4e4c291a2f616ef865e18a1c8026939754bfc712",
+            "originalPath": "lobsterai_sms.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/lobsterai_checkin.py",
+      "environment": [
+        {
+          "name": "LOBSTERAI_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录官方门户 https://lobsterai.youdao.com/portal#/login，在本人浏览器开发者工具 Network 中复制 Authorization 的 Bearer 后的 accessToken；refreshToken 从本人登录响应或 Application 本地存储获取。UID 从本人账号资料获取，也可由 AT 的 JWT sub 自动识别。仅在青龙私密变量中保存。",
+          "format": "每个非空行一个账号：uid:AT:RT、uid:AT 或纯 AT。RT 可为空；同一账号字段使用英文冒号，逐个仅按首个冒号拆分并保留后续 RT 文本。不使用 @ 或 & 分隔账号。"
+        },
+        {
+          "name": "LOBSTERAI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 开启完全离线预演；默认 0。",
+          "format": "1、true、yes、on 开启，其他值关闭。"
+        },
+        {
+          "name": "LOBSTERAI_REFRESH_STORE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可自行指定缓存文件位置；默认脚本目录 lb_refresh_tokens.json。目录需已存在且可写，缓存含敏感凭据，请勿上传仓库。",
+          "format": "本机文件路径；文件使用 0600 权限原子保存。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知默认启用；自行设置 0 关闭青龙和 PushPlus 通知。预演仅生成通知摘要，不发送。",
+          "format": "默认 1；0、false、no、off 禁用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可指定青龙平台 notify.py 所在目录；默认检测脚本目录、/ql/data/scripts、/ql/scripts 和 Python 模块路径。通知失败不改变业务退出码。",
+          "format": "可信本机通知模块目录。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：在本人 PushPlus 管理页获取推送令牌，添加到青龙私密变量；保留上游微信推送功能。",
+          "format": "单个推送令牌，不是账号凭据。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "一个非空行对应一个账号，使用 LOBSTERAI_TOKEN 合并 UID、AT、RT；支持 uid:AT:RT、uid:AT 和纯 AT。每个账号独立执行，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每天签到：查询活动、查询状态、幂等提交和独立复核；明确已签到时不重复提交。",
+        "显示积分、连续签到和活动领取天数。",
+        "自动查询官方客户端版本，一次运行内共用版本；失败保留上游兜底版本，支持 --version 覆盖。",
+        "AT 临近到期时通过 RT 自动续期，以私密原子缓存支持滚动续期。",
+        "换行多账号和 --only UID 筛选；环境变量优先，可用 --auths 显式指定本人 JSON 凭据目录。",
+        "保留 --base HTTPS 地址覆盖；凭据请求拒绝重定向。",
+        "完全离线预演，不访问业务、版本、推送接口，不读写续期缓存。",
+        "青龙通知和可选 PushPlus 微信推送；所有结果生成脱敏总结，通知失败不影响业务退出码。",
+        "输出时间轴、编号阶段、账号及任务统计，并输出一个 TASK_SUMMARY JSON 汇总。"
+      ],
+      "sideEffects": [
+        "向官方接口提交每日签到，领取活动积分。",
+        "RT 自动续期会轮换账号令牌，并在本地写入私密续期缓存。",
+        "正式模式按配置发送脱敏青龙通知及可选 PushPlus 微信推送。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3328423575cf7143",
+        "candidateSha256": "30863a779860e257ebe6c38bb2b222f97448e0748a912b1c8cea38dc33f4dc18"
       }
     },
     {
@@ -13282,6 +13610,220 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/6919295133257387",
         "candidateSha256": "44b3e9817214e01d674b189c4b2b38af6bb6fcb0012f2887f471080a78e635b1"
+      }
+    },
+    {
+      "catalogId": "61204ec3f68839fd",
+      "applicationKey": "officeace",
+      "checkProfile": {
+        "requiredEnv": [
+          "OFFICEACE_TOKENS"
+        ],
+        "optionalEnv": [
+          "OFFICEACE_AK",
+          "OFFICEACE_SK",
+          "OFFICEACE_STS",
+          "OFFICEACE_PROJECT_ID",
+          "OFFICEACE_BASE_URL",
+          "OFFICEACE_DRY_RUN",
+          "OFFICEACE_RETRIES",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "NO_NOTIFY",
+          "QYWX_TOKEN",
+          "WECHAT_WEBHOOK",
+          "PLUSPLUS_TOKEN"
+        ],
+        "dryRunEnv": {
+          "OFFICEACE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "OFFICEACE_RETRIES": "2",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "领取成功：",
+          "今天没有可领的奖励（或已领过）",
+          "当前奖励额度合计",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "默认领取每日签到奖励和一次性新人礼，保留 V11-HMAC-SHA256 签名接口",
+          "--query 只读查询奖励额度积分",
+          "--only 指定账号，支持换行多账号和兼容单账号参数",
+          "配套凭据及 HTTPS 地址检查和凭据获取说明",
+          "业务码、奖励列表与积分读数校验；任一账号失败非零退出",
+          "完全离线预演配置、签名及执行计划",
+          "阶段时间轴日志、官方非敏感身份、账号统计和 TASK_SUMMARY 汇总",
+          "青龙脱敏结果通知与企业微信、PushPlus 兼容推送，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "默认领取每日签到奖励和新人礼，可能增加积分；查询和预演不领取",
+          "实时模式通知开启且组件或兼容推送已配置时发送脱敏任务通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "OfficeAce 果办每日奖励",
+      "path": "scripts/officeace_daily.py",
+      "sha256": "24733f11f9b386cbd668978df42e4c7a7140f8ef4480651d0aa73abe3d2ebb22",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/OfficeAce-Daily",
+        "branch": "main",
+        "commit": "a6759a929b20a64fa44914f5115a1d3fc230ce54",
+        "originalPath": "officeace_daily.py",
+        "related": [
+          {
+            "catalogId": "c25652f1731aebfa",
+            "sha256": "afc5cb957c0d302e80ffe2d69ceee42363b1264d4c013ff354e206f71fc3d566",
+            "repository": "L0NE-6/OfficeAce-Daily",
+            "url": "https://github.com/L0NE-6/OfficeAce-Daily.git",
+            "branch": "main",
+            "commit": "a6759a929b20a64fa44914f5115a1d3fc230ce54",
+            "originalPath": "officeace_get_token.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/officeace_daily.py",
+      "environment": [
+        {
+          "name": "OFFICEACE_TOKENS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。",
+          "format": "每个非空行一个账号：AK|SK|security_token|project_id|base_url，兼容前置备注。全部配套字段非空，地址为 HTTPS 根地址或 /v2；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "OFFICEACE_AK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。",
+          "format": "临时 AK"
+        },
+        {
+          "name": "OFFICEACE_SK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。",
+          "format": "临时 SK"
+        },
+        {
+          "name": "OFFICEACE_STS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。",
+          "format": "临时 security_token"
+        },
+        {
+          "name": "OFFICEACE_PROJECT_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。",
+          "format": "项目 ID"
+        },
+        {
+          "name": "OFFICEACE_BASE_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。",
+          "format": "网关地址"
+        },
+        {
+          "name": "OFFICEACE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "开启完全离线预演，不调用业务和通知组件。",
+          "format": "1、true、yes、on 开启，默认关闭"
+        },
+        {
+          "name": "OFFICEACE_RETRIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置幂等奖励请求的额外重试次数。",
+          "format": "0 到 5 的整数，默认 2"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有通知配置，默认开启。",
+          "format": "0、false、no、off 关闭，默认 1"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 所在目录，默认使用标准青龙位置或 notify 模块。",
+          "format": "目录路径"
+        },
+        {
+          "name": "NO_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版兼容通知关闭开关。",
+          "format": "1、true、yes、on 关闭全部推送"
+        },
+        {
+          "name": "QYWX_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的企业微信群机器人配置获取推送密钥。",
+          "format": "机器人密钥或 webhook 地址，优先于 WECHAT_WEBHOOK"
+        },
+        {
+          "name": "WECHAT_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的企业微信群机器人配置获取 webhook，兼容 QYWX_TOKEN。",
+          "format": "机器人密钥或 webhook 地址"
+        },
+        {
+          "name": "PLUSPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的 PushPlus 管理页面获取推送令牌。",
+          "format": "推送令牌，通过 HTTPS 投递"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，同行包含全部配套凭据。兼容前置备注但不打印。独立处理账号，任一账号失败整体非零退出；--only 序号可选择账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "默认领取每日签到奖励和一次性新人礼，保留 V11-HMAC-SHA256 签名接口",
+        "--query 只读查询奖励额度积分",
+        "--only 指定账号，支持换行多账号和兼容单账号参数",
+        "配套凭据及 HTTPS 地址检查和凭据获取说明",
+        "业务码、奖励列表与积分读数校验；任一账号失败非零退出",
+        "完全离线预演配置、签名及执行计划",
+        "阶段时间轴日志、官方非敏感身份、账号统计和 TASK_SUMMARY 汇总",
+        "青龙脱敏结果通知与企业微信、PushPlus 兼容推送，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "默认领取每日签到奖励和新人礼，可能增加积分；查询和预演不领取",
+        "实时模式通知开启且组件或兼容推送已配置时发送脱敏任务通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/61204ec3f68839fd",
+        "candidateSha256": "24733f11f9b386cbd668978df42e4c7a7140f8ef4480651d0aa73abe3d2ebb22"
       }
     },
     {

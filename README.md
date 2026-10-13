@@ -97,11 +97,13 @@
 | 全民K歌签到与奖励 | `scripts/kgqq.py` | `python3 scripts/kgqq.py` | `0 9 * * *` |
 | 科技玩家签到 | `scripts/kjwj.py` | `python3 scripts/kjwj.py` | `30 7 * * *` |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
+| KukuAI 每日积分 | `scripts/kuku_daily.py` | `python3 scripts/kuku_daily.py` | `0 8 * * *` |
 | 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `3 0 * * *` |
 | LINUX DO 登录与浏览统计 | `scripts/l.py` | `python3 scripts/l.py` | `5 */5 * * *` |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` |
 | NodeSeek 签到与收益统计 | `scripts/lizhixu_ql_script_hub_nodeseek.py` | `python3 scripts/lizhixu_ql_script_hub_nodeseek.py` | `23 4 * * *` |
 | 有道云笔记签到 | `scripts/lizhixu_ql_script_hub_youdao.py` | `python3 scripts/lizhixu_ql_script_hub_youdao.py` | `01 5 * * *` |
+| LobsterAI 每日签到 | `scripts/lobsterai_checkin.py` | `python3 scripts/lobsterai_checkin.py` | `0 9 * * *` |
 | Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `0 8 * * *` |
 | 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `8 8 * * *` |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
@@ -112,6 +114,7 @@
 | NodeSeek签到 | `scripts/nodeseek.py` | `python3 scripts/nodeseek.py` | `0 0 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
 | 塔吉多（异环）自动签到 | `scripts/nte.py` | `python3 scripts/nte.py` | `0 8 * * *` |
+| OfficeAce 果办每日奖励 | `scripts/officeace_daily.py` | `python3 scripts/officeace_daily.py` | `0 9 * * *` |
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `1 1 1 1 1` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `0 8 * * *` |
@@ -276,11 +279,13 @@
 - `scripts/kgqq.py`：查询并显示官方返回昵称及签到前后鲜花余额、计算本轮鲜花增量。；领取上游六类签到入口奖励：1、2、4、16、128、512。；显式开启后执行四类抽奖：入口 1 的类型 1、2，入口 4 的类型 104，以及类型 103。；显式开启后使用同账号真实鉴权参数查询音乐卡片，选择最高鲜花卡片，按上游大于 10 或大于 1 且小于 10 的档位领取对应互动奖励。；查询 VIP 状态，VIP 用户领取日奖励并显示福利道具数量，非 VIP 用户跳过领取。；每行独立多账号、完全断网预演、请求超时、固定主机及拒绝重定向、响应大小限制和明确业务成功判定。；时间轴分阶段日志、账号与子任务统计、单行 TASK_SUMMARY 汇总、青龙脱敏通知及通知失败保留业务退出码。。
 - `scripts/kjwj.py`：使用邮箱密码登录科技玩家，获取签到令牌；查询当日签到状态、当日获得积分和总积分；未签到时自动签到，并复查当日状态确认完成；已签到时跳过写操作并显示积分；显示官方返回的非秘密账号身份，屏蔽凭据和手机号；每行一个账号独立执行，失败返回非零退出码；完全断网预演、分阶段日志、每账号统计和单行结构化任务总结；正式执行后通过青龙通知发送脱敏总结，预演时显示通知摘要；通知失败保留业务退出码。
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
+- `scripts/kuku_daily.py`：查询每日积分任务面板并验证业务登录状态；领取每日登录 LOGIN 奖励；领取对话 CHAT 任务奖励，不实际发送对话；明确 SUCCESS 且奖励为零时识别幂等已完成；逐行多账号及旧 Cookie 请求头、编辑器 JSON、对象格式兼容；使用 --only 序号选择一个账号；可选 HTTP/HTTPS 代理；显示官方响应中的昵称、用户名、显示名称或公开 UID；带阶段耗时、账号与任务统计的脱敏日志及单行 TASK_SUMMARY；青龙通知及全局关闭开关，通知失败保留业务退出码；完全断网参数预演及拟发送通知摘要。
 - `scripts/kurobbs_sign.py`：查询社区每日任务完成进度；查询鸣潮默认绑定角色并展示官方公开身份；库街区每日签到及连续天数、累计天数和奖励展示；鸣潮每日签到、已签到识别及签到后状态核验；展示当月普通签到奖励和响应提供的限时循环签到奖励；浏览鸣潮今州茶馆帖子并核验进度；显式开启后点赞不同帖子并核验进度，不取消原有点赞；显式开启后提交帖子分享进度并核验完成，不发布文字；逐行多账号及旧单账号变量兼容；完全断网预演、时间轴日志、脱敏统计和青龙通知。
 - `scripts/l.py`：Cookie 登录身份校验并显示官方返回的公开用户名和信任等级；按原有浏览开关与数量参数，从首页发现并随机读取话题，校验标题及帖子正文；查询访问天数、浏览话题、已读帖子、阅读时长、给出点赞、收到点赞及发帖数；显示上游 TL0 至 TL1、TL1 至 TL2 的参考升级要求和达标情况；每行一个账号，账号互相隔离，任一账号失败返回非零退出码；完全断网预演、按阶段记录脱敏结果、账号与任务统计及单行结构化汇总；通过青龙通知模块发送脱敏汇总，失败或不可用不改变业务退出码。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：使用 Cookie 执行 Leaflow 每日签到；自动识别 CSRF 隐藏字段并提交签到表单；明确识别成功、今日已完成、会话失效和失败结果；在服务返回时提取当日签到奖励；支持换行多账号独立处理并生成结构化汇总；提供有限重试、请求超时和可选随机执行窗口；提供完全断网的预演配置校验；在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份；支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码；输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY；兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：每日签到，支持随机奖励或固定奖励模式。；随机时间窗口、多账号计划排序和带时间戳的等待倒计时；保留每天 04:23 的调度。；近 30 天签到收益分页查询，显示签到天数、鸡腿总数及日均收益；覆盖不完整或字段异常时明确失败。；按官方接口返回原值显示非敏感昵称、用户名、显示名称或公开 UID。；每行一个账号，独立执行并汇总失败退出码。；完全断网预演、参数检查、分阶段时间轴日志、账号统计及单行 TASK_SUMMARY JSON。；所有任务结果均尝试发送脱敏青龙通知；支持全局开关和通知目录发现，通知故障保留业务退出码。。
 - `scripts/lizhixu_ql_script_hub_youdao.py`：HTTPS 会话刷新；同步奖励并核验 rewardSpace 字段；每日签到并核验 space 字段；三次广告空间奖励及独立关闭开关；汇总已核验的空间奖励；显示官方返回的非敏感账号身份；换行多账号独立执行与失败退出码；完全断网预演及参数检查；分阶段计时、账号与任务统计及单行结构化汇总；青龙脱敏通知，兼容 notify.py 和 sendNotify.js，失败不影响业务退出码。
+- `scripts/lobsterai_checkin.py`：每天签到：查询活动、查询状态、幂等提交和独立复核；明确已签到时不重复提交。；显示积分、连续签到和活动领取天数。；自动查询官方客户端版本，一次运行内共用版本；失败保留上游兜底版本，支持 --version 覆盖。；AT 临近到期时通过 RT 自动续期，以私密原子缓存支持滚动续期。；换行多账号和 --only UID 筛选；环境变量优先，可用 --auths 显式指定本人 JSON 凭据目录。；保留 --base HTTPS 地址覆盖；凭据请求拒绝重定向。；完全离线预演，不访问业务、版本、推送接口，不读写续期缓存。；青龙通知和可选 PushPlus 微信推送；所有结果生成脱敏总结，通知失败不影响业务退出码。；输出时间轴、编号阶段、账号及任务统计，并输出一个 TASK_SUMMARY JSON 汇总。。
 - `scripts/loomy_daily.py`：每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。；--tasks 查询八项新手任务的分组、标题、积分与完成进度。；显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。；八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。；结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。；换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。；完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。；青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。。
 - `scripts/lynkco_qinglong_single.py`：AppCode优先续期、HMAC签名兜底及静态令牌回退；今日签到状态查询、自动签到和签到后复查，已签到时跳过；连续签到天数和签到卡查询；任务前后能量体积分查询；五页动态文章查找及上游备用文章；可选文章分享两步链及完整三步链回退，核验分享前后积分变化；多账号独立处理、官方非秘密身份展示、任何账号失败非零退出；青龙及可选Bark脱敏通知，通知失败保留业务退出码；完全断网预演、分阶段日志和单行结构化总结；旧账号变量及显式只读本地配置兼容。
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
@@ -291,6 +296,7 @@
 - `scripts/nodeseek.py`：每日零点签到，支持随机奖励或固定奖励。；保留 curl_cffi 指纹模拟及默认 chrome110。；保留签到前随机延迟 0～5 分钟。；完整 Cookie 按行配置多账号，各账号独立执行。；完全断网预演、分阶段脱敏日志和单行结构化统计。；显示接口返回的非敏感昵称、用户名、显示名称或公开 UID。；正式运行通过青龙通知助手发送成功、部分失败、失败或配置错误摘要；预演只输出摘要。。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
 - `scripts/nte.py`：刷新用户中心令牌，保留 1.2.5 客户端请求头及 ds 签名。；塔吉多社区签到及经验、金币结果显示。；自动发现游戏角色，支持各账号角色配置与兼容全局角色配置。；游戏角色签到，保留游戏编号回退链；重复签到要求官方状态明确确认 todaySign。；查询签到累计天数和今日道具奖励；查询失败给出警告，不替代签到业务状态。；查询云异环剩余、免费、充值时长，展示每日首登、首次游戏赠送、VIP剩余和待领取消息数量。；多账号独立执行、断网预演、阶段日志、官方非敏感身份展示、结构化汇总与青龙脱敏通知。。
+- `scripts/officeace_daily.py`：默认领取每日签到奖励和一次性新人礼，保留 V11-HMAC-SHA256 签名接口；--query 只读查询奖励额度积分；--only 指定账号，支持换行多账号和兼容单账号参数；配套凭据及 HTTPS 地址检查和凭据获取说明；业务码、奖励列表与积分读数校验；任一账号失败非零退出；完全离线预演配置、签名及执行计划；阶段时间轴日志、官方非敏感身份、账号统计和 TASK_SUMMARY 汇总；青龙脱敏结果通知与企业微信、PushPlus 兼容推送，通知失败保留业务退出码。
 - `scripts/ole.py`：Ole 微信小程序账号签到；保留原账号字段、门店与城市默认值及定时表达式；多账号独立执行与失败闭合退出；完全断网预演及参数检查；脱敏分阶段日志、账号统计与单行任务汇总；青龙通知摘要与全局开关；断网预演模拟通知。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
 - `scripts/psnine.py`：每日 PSNINE 祈祷签到；识别当天已经签到并展示累计祈祷天数；保留上游 do 接口及 psnid、shell 配套凭据；多账号独立执行和失败非零退出；完全断网预演、分阶段日志和单行结构化总结；实时任务结束时发送脱敏青龙通知，预演展示本地通知摘要；响应提供公开用户名时展示账号身份。
@@ -464,11 +470,13 @@
 <tr><td rowspan="1"><code>scripts/kgqq.py</code></td><td><code>KGQQ_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号。默认填写完整 Cookie（必须含数字 uid）；音乐奖励开启时填写 完整Cookie|g_tk_openkey，只在第一个竖线处分割，Cookie 内等号及分号原样保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kjwj.py</code></td><td><code>kjwj_info</code></td><td>是</td><td>格式：邮箱#密码，每行一个账号，仅首个 # 为分隔符，密码中后续字符原样保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_COOKIE</code></td><td>是</td><td>格式：每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 &amp; 或 @ 分隔；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/kuku_daily.py</code></td><td><code>KUKU_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：产品作用域STOKEN|完整Cookie；仅在第一个竖线处分割。Cookie 支持请求头、单行编辑器 JSON 或键值对象，必须包含 BDUSS。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kurobbs_sign.py</code></td><td><code>KUROBBS_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：社区UID|Token，仅在第一个 | 分隔，保留 Token 后续内容。社区 UID 为数字。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/l.py</code></td><td><code>LINUXDO_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，字段以分号分隔，每个字段仅在第一个等号处分割；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、&amp; 和 @ 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/lizhixu_ql_script_hub_nodeseek.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 Cookie；行内分号、等号及 &amp; 原样保留，不使用分隔符拆分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/lizhixu_ql_script_hub_youdao.py</code></td><td><code>YOUDAO_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，字段按分号分隔，每个字段仅在第一个等号处分开，后续等号和 &amp; 保留为凭据内容；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/lobsterai_checkin.py</code></td><td><code>LOBSTERAI_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号：uid:AT:RT、uid:AT 或纯 AT。RT 可为空；同一账号字段使用英文冒号，逐个仅按首个冒号拆分并保留后续 RT 文本。不使用 @ 或 &amp; 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="2"><code>scripts/lynkco_qinglong_single.py</code></td><td><code>LYNKCO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个JSON对象；token可单独使用，refreshToken必须配套deviceId，可同时配置token作续期失败回退；不以&amp;、@分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LYNKCO_APP_SECRETS</code></td><td>是</td><td>格式：JSON对象：nativeAppKey、nativeAppSecret必需；分享或续期需glDevId；nativeAppCode用于优先AppCode续期，缺失时回退HMAC；loginAppCode仅兼容保存。；多账号格式以该脚本文档为准</td></tr>
@@ -481,6 +489,7 @@
 <tr><td rowspan="1"><code>scripts/nodeseek.py</code></td><td><code>NS_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，保留完整 Cookie 中的分号、等号与其他字符；不以 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nte.py</code></td><td><code>NTE_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号：纯 refreshToken 或单行 JSON 对象。对象支持 refreshToken（兼容 token）、uid、deviceId、gameId、roleIds；可添加 cloudToken、cloudUserId、cloudDeviceId；云凭据必须成对提供，也可仅提供云账号。兼容 cloud_token、cloud_user_id、cloudUid、cloud 对象的 token/userId/uid/deviceId，以及 deviceid、cloud_device_id、game_id、role_ids、roleId。roleIds 为数组或逗号分隔角色列表；账号之间只用换行，不使用逗号、&amp; 或 @。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/officeace_daily.py</code></td><td><code>OFFICEACE_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号：AK|SK|security_token|project_id|base_url，兼容前置备注。全部配套字段非空，地址为 HTTPS 根地址或 /v2；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ole.py</code></td><td><code>OLE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；四个必填字段均为非空字符串。可选 shop_code 默认 205368，city_id 默认 c_region_11122，user_agent 默认保留上游值。兼容 account_name 字段但不输出用户填写的标签，避免泄漏手机号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/psnine.py</code></td><td><code>PSNINE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 psnid|shell，只按首个 | 分割；字段不能含分号、换行或非 ASCII 字符。；多账号格式以该脚本文档为准</td></tr>
@@ -1023,6 +1032,14 @@
 <tr><td rowspan="3"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启断网预演；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="8"><code>scripts/kuku_daily.py</code></td><td><code>KUKU_COOKIES</code></td><td>是</td><td>格式：Cookie 请求头、编辑器 JSON 或键值对象，包含 BDUSS。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>KUKU_STOKEN</code></td><td>是</td><td>格式：完整产品会话令牌，与 KUKU_COOKIES 配套。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>KUKU_TOKENS</code></td><td>是</td><td>格式：每个非空行：备注|BDUSS|PTOKEN|STOKEN；最多分割前三个竖线。不支持用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>KUKU_PROXY</code></td><td>是</td><td>格式：HTTP 或 HTTPS 代理地址；不支持 SOCKS。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>KUKU_DRY_RUN</code></td><td>否</td><td>格式：1 开启完全断网预演，0 正式领取。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余非空值开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录，仅用于可选通知，不是业务依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>KUKU_NO_NOTIFY</code></td><td>否</td><td>格式：1 关闭通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="7"><code>scripts/kurobbs_sign.py</code></td><td><code>kurobbs</code></td><td>是</td><td>格式：单账号 Token，不支持旧式账号分隔符；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>kuro_uid</code></td><td>是</td><td>格式：单账号数字社区 UID，与 kurobbs 配对；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>KUROBBS_DRY_RUN</code></td><td>否</td><td>格式：1 开启；0 关闭，默认 0；多账号格式以该脚本文档为准</td></tr>
@@ -1064,6 +1081,11 @@
 <tr><td><code>YOUDAO_AD_REWARDS</code></td><td>否</td><td>格式：1 或 0，也支持 true/false、yes/no、on/off。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1，关闭值为 0、false、no、off。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径；只用于可选通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/lobsterai_checkin.py</code></td><td><code>LOBSTERAI_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，其他值关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LOBSTERAI_REFRESH_STORE</code></td><td>否</td><td>格式：本机文件路径；文件使用 0600 权限原子保存。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可信本机通知模块目录。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：单个推送令牌，不是账号凭据。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="9"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_ONBOARDING</code></td><td>否</td><td>格式：0（默认，仅每日积分）或 1（批量领取）；--no-onboarding 优先关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LOOMY_DRY_RUN</code></td><td>否</td><td>格式：1 启用，0 默认正式执行；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
@@ -1157,6 +1179,19 @@
 <tr><td><code>NTE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启断网预演；其余值关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的目录；未设置时尝试 import notify、/ql/data/scripts/notify.py、/ql/scripts/notify.py。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="13"><code>scripts/officeace_daily.py</code></td><td><code>OFFICEACE_AK</code></td><td>是</td><td>格式：临时 AK；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>OFFICEACE_SK</code></td><td>是</td><td>格式：临时 SK；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>OFFICEACE_STS</code></td><td>是</td><td>格式：临时 security_token；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>OFFICEACE_PROJECT_ID</code></td><td>是</td><td>格式：项目 ID；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>OFFICEACE_BASE_URL</code></td><td>是</td><td>格式：网关地址；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>OFFICEACE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>OFFICEACE_RETRIES</code></td><td>否</td><td>格式：0 到 5 的整数，默认 2；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，默认 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NO_NOTIFY</code></td><td>否</td><td>格式：1、true、yes、on 关闭全部推送；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QYWX_TOKEN</code></td><td>是</td><td>格式：机器人密钥或 webhook 地址，优先于 WECHAT_WEBHOOK；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WECHAT_WEBHOOK</code></td><td>是</td><td>格式：机器人密钥或 webhook 地址；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PLUSPLUS_TOKEN</code></td><td>是</td><td>格式：推送令牌，通过 HTTPS 投递；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/ole.py</code></td><td><code>OLE_CONFIG_JSON</code></td><td>是</td><td>格式：JSON 对象，结构为 huaruntong.ole.accounts 数组；数组内保留原账号字段。无需私有文件路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>OLE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认 0。预演不代表真实业务成功。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。断网预演生成摘要并模拟投递，不运行通知模块。；多账号格式以该脚本文档为准</td></tr>
@@ -1895,11 +1930,13 @@
 - `scripts/kgqq.py`：每行一个账号的完整 Cookie，开启音乐奖励时使用 完整Cookie|g_tk_openkey；配套值须属于同一账号。忽略空行，逐个独立处理，任何账号失败则整体非零退出。。
 - `scripts/kjwj.py`：每个非空行表示一个账号，仅按首个 # 拆分邮箱和密码；逐账号独立执行，任一账号失败整体返回非零退出码。。
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
+- `scripts/kuku_daily.py`：每个非空行一个账号，账号独立处理；规范输入只在第一个竖线处分割令牌与 Cookie。旧凭据输入可兼容替代规范变量。任一账号格式或业务失败时整体非零退出。。
 - `scripts/kurobbs_sign.py`：每个非空行一个账号，社区UID|Token；只分割第一个 |。账号独立执行，任一账号或配置失败时整体非零退出。旧变量仅兼容一个账号。。
 - `scripts/l.py`：LINUXDO_COOKIES 每个非空行一个账号；逐个独立校验和处理，任何账号失败均以非零状态退出。。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：每个非空行一个账号的完整 NODESEEK_COOKIE；账号独立处理，任一账号签到或收益查询失败，整体非零退出。。
 - `scripts/lizhixu_ql_script_hub_youdao.py`：YOUDAO_COOKIE 每个非空行一个账号；逐个独立处理，任一账号失败或配置无效均以非零退出码结束。。
+- `scripts/lobsterai_checkin.py`：一个非空行对应一个账号，使用 LOBSTERAI_TOKEN 合并 UID、AT、RT；支持 uid:AT:RT、uid:AT 和纯 AT。每个账号独立执行，任一账号失败时整体非零退出。。
 - `scripts/loomy_daily.py`：每个非空行一个账号；兼容 session 和 备注|session，仅在第一个 | 处分割。独立处理各账号，任一账号失败则整体非零退出。--only N 可选择账号。。
 - `scripts/lynkco_qinglong_single.py`：每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。。
 - `scripts/mifan_optimized.py`：每个非空行一个账号，使用MIFAN_ACCOUNTS合并用户名和密码；只在第一个竖线分割，不使用分号、&或@分隔账号。账号独立执行，任一账号失败整体非零退出。。
@@ -1909,6 +1946,7 @@
 - `scripts/nodeseek.py`：NS_COOKIE 每个非空行一个账号，逐个独立签到；任意账号失败整体非零退出。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
 - `scripts/nte.py`：每个非空行一个账号，同账号配套凭据放在一个 JSON 对象中。各账号独立执行；任一账号失败则进程非零退出。。
+- `scripts/officeace_daily.py`：每个非空行一个账号，同行包含全部配套凭据。兼容前置备注但不打印。独立处理账号，任一账号失败整体非零退出；--only 序号可选择账号。。
 - `scripts/ole.py`：每个非空行一个完整 JSON 账号对象，同一账号凭据合并在一行；逐账号独立执行，任一失败时整体非零退出。。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
 - `scripts/psnine.py`：每个非空行一个账号，psnid 与 shell 同行，仅按首个 | 分割。逐账号独立处理，任一账号失败则进程非零退出。。
@@ -2481,6 +2519,13 @@
 - 填写格式：`每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 & 或 @ 分隔`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `KUKU_ACCOUNTS`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：登录官方库库 AI 客户端，自行从可查看的 kuku.baidu.com 官方业务请求中复制同账号 Cookie 和 genflowpro 产品作用域 STOKEN；网页通行证令牌不一定有效。脚本不负责换发，请勿使用第三方凭据获取服务。
+- 填写格式：`每个非空行一个账号：产品作用域STOKEN|完整Cookie；仅在第一个竖线处分割。Cookie 支持请求头、单行编辑器 JSON 或键值对象，必须包含 BDUSS。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `KUROBBS_ACCOUNTS`
 
 - 所属脚本：`scripts/kurobbs_sign.py`
@@ -2514,6 +2559,13 @@
 - 所属脚本：`scripts/lizhixu_ql_script_hub_youdao.py`
 - 获取或设置：浏览器登录有道云笔记 https://note.youdao.com，打开开发者工具的网络面板，选择该域名的已登录请求，复制请求头中的完整 Cookie 值。必须包含 YNOTE_PERS；不要复制 Cookie: 前缀，也不要将凭据贴入日志。
 - 填写格式：`每个非空行一个账号的完整 Cookie，字段按分号分隔，每个字段仅在第一个等号处分开，后续等号和 & 保留为凭据内容；不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LOBSTERAI_TOKEN`
+
+- 所属脚本：`scripts/lobsterai_checkin.py`
+- 获取或设置：登录官方门户 https://lobsterai.youdao.com/portal#/login，在本人浏览器开发者工具 Network 中复制 Authorization 的 Bearer 后的 accessToken；refreshToken 从本人登录响应或 Application 本地存储获取。UID 从本人账号资料获取，也可由 AT 的 JWT sub 自动识别。仅在青龙私密变量中保存。
+- 填写格式：`每个非空行一个账号：uid:AT:RT、uid:AT 或纯 AT。RT 可为空；同一账号字段使用英文冒号，逐个仅按首个冒号拆分并保留后续 RT 文本。不使用 @ 或 & 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `LOOMY_TOKENS`
@@ -2596,6 +2648,13 @@
 - 所属脚本：`scripts/nte.py`
 - 获取或设置：在本人官方塔吉多客户端登录，从用户中心刷新响应获取 refreshToken 和 uid；从绑定角色列表取得 roleId。云异环凭据来自本人客户端登录响应的 token 和 userId。deviceId 来自本人对应客户端请求，不要公开抓包内容。纯令牌模式依赖刷新响应返回 uid，否则请在账号对象中补充。
 - 填写格式：`每个非空行一个账号：纯 refreshToken 或单行 JSON 对象。对象支持 refreshToken（兼容 token）、uid、deviceId、gameId、roleIds；可添加 cloudToken、cloudUserId、cloudDeviceId；云凭据必须成对提供，也可仅提供云账号。兼容 cloud_token、cloud_user_id、cloudUid、cloud 对象的 token/userId/uid/deviceId，以及 deviceid、cloud_device_id、game_id、role_ids、roleId。roleIds 为数组或逗号分隔角色列表；账号之间只用换行，不使用逗号、& 或 @。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `OFFICEACE_TOKENS`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。
+- 填写格式：`每个非空行一个账号：AK|SK|security_token|project_id|base_url，兼容前置备注。全部配套字段非空，地址为 HTTPS 根地址或 /v2；不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `OLE_ACCOUNTS`
@@ -5950,6 +6009,58 @@
 - 获取或设置：仅当 notify.py 不在青龙标准路径时，填写其所在目录。
 - 填写格式：`本地目录路径`
 
+#### `KUKU_COOKIES`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：兼容旧单账号输入，从官方业务请求复制 Cookie；与同账号 KUKU_STOKEN 配套。配置规范变量或 KUKU_TOKENS 时忽略此项。
+- 填写格式：`Cookie 请求头、编辑器 JSON 或键值对象，包含 BDUSS。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `KUKU_STOKEN`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：兼容旧单账号输入，从官方客户端同账号业务请求获取 genflowpro 产品作用域 STOKEN；脚本不调用 DLL。
+- 填写格式：`完整产品会话令牌，与 KUKU_COOKIES 配套。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `KUKU_TOKENS`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：兼容旧多账号输入，按各账号官方会话信息填写；没有规范变量时使用，不输出备注。
+- 填写格式：`每个非空行：备注|BDUSS|PTOKEN|STOKEN；最多分割前三个竖线。不支持用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `KUKU_PROXY`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：可选，自行填写可信代理；代理地址可能含认证信息，日志不输出。
+- 填写格式：`HTTP 或 HTTPS 代理地址；不支持 SOCKS。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `KUKU_DRY_RUN`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：预演时设置为 1。
+- 填写格式：`1 开启完全断网预演，0 正式领取。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：青龙通知全局开关，默认开启。
+- 填写格式：`0、false、no、off 关闭，其余非空值开启。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：可选，填写青龙 notify.py 所在目录；也自动查找青龙标准目录或可导入通知模块。
+- 填写格式：`本机通知模块目录，仅用于可选通知，不是业务依赖。`
+
+#### `KUKU_NO_NOTIFY`
+
+- 所属脚本：`scripts/kuku_daily.py`
+- 获取或设置：兼容旧通知关闭开关。
+- 填写格式：`1 关闭通知。`
+
 #### `kurobbs`
 
 - 所属脚本：`scripts/kurobbs_sign.py`
@@ -6199,6 +6310,37 @@
 - 所属脚本：`scripts/lizhixu_ql_script_hub_youdao.py`
 - 获取或设置：可选指定青龙 notify.py 或 sendNotify.js 所在目录；未设置时自动查找青龙标准目录及可导入的 notify 模块。业务请求不依赖通知模块；缺失、失败或超时均保留业务退出码。
 - 填写格式：`本机通知模块目录路径；只用于可选通知。`
+
+#### `LOBSTERAI_DRY_RUN`
+
+- 所属脚本：`scripts/lobsterai_checkin.py`
+- 获取或设置：自行设置为 1 开启完全离线预演；默认 0。
+- 填写格式：`1、true、yes、on 开启，其他值关闭。`
+
+#### `LOBSTERAI_REFRESH_STORE`
+
+- 所属脚本：`scripts/lobsterai_checkin.py`
+- 获取或设置：可自行指定缓存文件位置；默认脚本目录 lb_refresh_tokens.json。目录需已存在且可写，缓存含敏感凭据，请勿上传仓库。
+- 填写格式：`本机文件路径；文件使用 0600 权限原子保存。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/lobsterai_checkin.py`
+- 获取或设置：青龙通知默认启用；自行设置 0 关闭青龙和 PushPlus 通知。预演仅生成通知摘要，不发送。
+- 填写格式：`默认 1；0、false、no、off 禁用。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/lobsterai_checkin.py`
+- 获取或设置：可指定青龙平台 notify.py 所在目录；默认检测脚本目录、/ql/data/scripts、/ql/scripts 和 Python 模块路径。通知失败不改变业务退出码。
+- 填写格式：`可信本机通知模块目录。`
+
+#### `PUSHPLUS_TOKEN`
+
+- 所属脚本：`scripts/lobsterai_checkin.py`
+- 获取或设置：可选：在本人 PushPlus 管理页获取推送令牌，添加到青龙私密变量；保留上游微信推送功能。
+- 填写格式：`单个推送令牌，不是账号凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `LOOMY_ONBOARDING`
 
@@ -6783,6 +6925,92 @@
 - 所属脚本：`scripts/nte.py`
 - 获取或设置：可选：填写青龙现有通知模块目录；不可用时保留业务退出码。
 - 填写格式：`包含 notify.py 的目录；未设置时尝试 import notify、/ql/data/scripts/notify.py、/ql/scripts/notify.py。`
+
+#### `OFFICEACE_AK`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。
+- 填写格式：`临时 AK`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `OFFICEACE_SK`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。
+- 填写格式：`临时 SK`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `OFFICEACE_STS`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。
+- 填写格式：`临时 security_token`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `OFFICEACE_PROJECT_ID`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。
+- 填写格式：`项目 ID`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `OFFICEACE_BASE_URL`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从已登录果办客户端或控制台授权控制面请求获取同一账号的临时 AK、SK、security_token、project_id 和网关地址；上游说明约两小时有效，运行前刷新。桌面 models.json 的 Basic 网关凭据不能用于签到。 仅在 OFFICEACE_TOKENS 为空时使用全部五个兼容单账号变量。
+- 填写格式：`网关地址`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `OFFICEACE_DRY_RUN`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：开启完全离线预演，不调用业务和通知组件。
+- 填写格式：`1、true、yes、on 开启，默认关闭`
+
+#### `OFFICEACE_RETRIES`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：设置幂等奖励请求的额外重试次数。
+- 填写格式：`0 到 5 的整数，默认 2`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：使用青龙已有通知配置，默认开启。
+- 填写格式：`0、false、no、off 关闭，默认 1`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：可选指定青龙 notify.py 所在目录，默认使用标准青龙位置或 notify 模块。
+- 填写格式：`目录路径`
+
+#### `NO_NOTIFY`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：旧版兼容通知关闭开关。
+- 填写格式：`1、true、yes、on 关闭全部推送`
+
+#### `QYWX_TOKEN`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从自己的企业微信群机器人配置获取推送密钥。
+- 填写格式：`机器人密钥或 webhook 地址，优先于 WECHAT_WEBHOOK`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WECHAT_WEBHOOK`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从自己的企业微信群机器人配置获取 webhook，兼容 QYWX_TOKEN。
+- 填写格式：`机器人密钥或 webhook 地址`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PLUSPLUS_TOKEN`
+
+- 所属脚本：`scripts/officeace_daily.py`
+- 获取或设置：从自己的 PushPlus 管理页面获取推送令牌。
+- 填写格式：`推送令牌，通过 HTTPS 投递`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `OLE_CONFIG_JSON`
 
@@ -11117,11 +11345,13 @@
 - `scripts/kgqq.py`：SHA-256 `fd14c4b064a5168918f0d3eb0ea766762361151ca7c441e4188cd7b98c31d9a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d49d052949d2bef1`。
 - `scripts/kjwj.py`：SHA-256 `6867c355c23ccfdd7deafbcbeef48865c1001d7e274c9b9e265dced5047eaaab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f4e13633e05b6a28`。
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
+- `scripts/kuku_daily.py`：SHA-256 `d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
 - `scripts/kurobbs_sign.py`：SHA-256 `420de38577b9132e63b09652938838b0a60f03519d374ea9114bc9a01d80bb05`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
 - `scripts/l.py`：SHA-256 `aba0cf5855af880ab672f6f322417b935718dc8e2e81351ebd65791a1b9809dd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f1ad78537129604d`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：SHA-256 `1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：SHA-256 `d403a1c68ee24f721a320318363bb0a763d815b217fa73801512ecbac8c303ff`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7990614346ba82e0`。
 - `scripts/lizhixu_ql_script_hub_youdao.py`：SHA-256 `6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd893babb907859b`。
+- `scripts/lobsterai_checkin.py`：SHA-256 `30863a779860e257ebe6c38bb2b222f97448e0748a912b1c8cea38dc33f4dc18`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3328423575cf7143`。
 - `scripts/loomy_daily.py`：SHA-256 `31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
 - `scripts/lynkco_qinglong_single.py`：SHA-256 `5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
@@ -11132,6 +11362,7 @@
 - `scripts/nodeseek.py`：SHA-256 `9e38011e2840ce76dc24111e8c6d6522aeb75b71d8212be4551def23840e5549`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c28f0207e2b02a7b`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
 - `scripts/nte.py`：SHA-256 `44b3e9817214e01d674b189c4b2b38af6bb6fcb0012f2887f471080a78e635b1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6919295133257387`。
+- `scripts/officeace_daily.py`：SHA-256 `24733f11f9b386cbd668978df42e4c7a7140f8ef4480651d0aa73abe3d2ebb22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/61204ec3f68839fd`。
 - `scripts/ole.py`：SHA-256 `5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
 - `scripts/psnine.py`：SHA-256 `c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
@@ -11296,11 +11527,13 @@
 - `scripts/kgqq.py`：领取签到奖励，可能增加账号鲜花或道具。；开启抽奖后执行抽奖，可能消耗次数或活动资源并发放奖励。；开启音乐奖励后领取音乐卡片互动奖励，可能改变互动奖励状态及鲜花余额。；VIP 用户领取日奖励，改变领取状态并可能增加道具。；正式执行结束后，通过可用的青龙通知模块发送脱敏任务汇总。。
 - `scripts/kjwj.py`：未签到时提交每日签到并获得积分；正式执行时按通知开关发送青龙任务通知。
 - `scripts/kuaishou_reward_status.py`：。
+- `scripts/kuku_daily.py`：领取每日登录任务积分；领取对话任务积分；正式运行时通过青龙通知模块发送脱敏结果。
 - `scripts/kurobbs_sign.py`：库街区社区签到并领取对应奖励；鸣潮游戏签到并领取对应奖励；浏览帖子计入社区任务进度；显式开启后点赞帖子；显式开启后提交分享任务进度。
 - `scripts/l.py`：正式运行的已登录页面请求可能由站点计入访问或浏览记录；是否更新由站点决定；正式运行且启用通知时调用青龙通知模块发送任务汇总。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励；正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：正式运行调用 NodeSeek 签到接口，产生当日签到记录并领取签到奖励。；启用通知时向已配置的青龙通知渠道发送脱敏任务汇总。。
 - `scripts/lizhixu_ql_script_hub_youdao.py`：正式运行刷新登录会话；正式运行同步奖励并增加云笔记空间；正式运行每日签到并领取空间奖励；默认正式运行领取三次广告空间奖励，可通过 YOUDAO_AD_REWARDS=0 关闭；启用通知时向青龙已配置渠道发送脱敏任务摘要。
+- `scripts/lobsterai_checkin.py`：向官方接口提交每日签到，领取活动积分。；RT 自动续期会轮换账号令牌，并在本地写入私密续期缓存。；正式模式按配置发送脱敏青龙通知及可选 PushPlus 微信推送。。
 - `scripts/loomy_daily.py`：正式默认执行刷新账号每日赠送积分。；显式批量或单项领取时上报新手任务完成状态并领取积分。；正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。；启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。。
 - `scripts/lynkco_qinglong_single.py`：每日签到并领取服务端奖励；默认上报文章分享并可能增加能量体积分，可用LYNKCO_DO_SHARE关闭；使用刷新令牌续期，服务端可能更新登录令牌状态；不写本地凭据文件；发送脱敏青龙通知及可选Bark推送；预演不发送网络通知。
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
@@ -11311,6 +11544,7 @@
 - `scripts/nodeseek.py`：正式运行向 NodeSeek 提交签到并领取随机或固定奖励。；通知启用且助手可用时发送脱敏任务通知。。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
 - `scripts/nte.py`：刷新用户中心令牌，可能轮换服务端会话凭据。；社区签到，可能增加经验和金币。；游戏角色签到，可能发放签到道具。；正式执行结束时通过已有青龙通知模块发送脱敏任务摘要。。
+- `scripts/officeace_daily.py`：默认领取每日签到奖励和新人礼，可能增加积分；查询和预演不领取；实时模式通知开启且组件或兼容推送已配置时发送脱敏任务通知。
 - `scripts/ole.py`：正式模式向 Ole 提交会员签到，可能增加签到记录及奖励积分；正式模式按青龙配置发送任务通知。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
 - `scripts/psnine.py`：向 PSNINE 提交每日祈祷签到，改变签到记录及服务发放的奖励；实时模式向配置的青龙通知渠道发送脱敏任务摘要。
@@ -11477,11 +11711,13 @@
 - `scripts/kgqq.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/kgqq/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/kjwj.py`：上游 `cloudcranes/some_scripts` / `kjwj.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
+- `scripts/kuku_daily.py`：上游 `L0NE-6/KukuAI-Daily` / `kuku_daily.py` / `6912419c6b29365bb7b3172cc3c18bf7b763812d`。
 - `scripts/kurobbs_sign.py`：上游 `yongyeym/AutoSign_QingLong` / `kurobbs_sign.py` / `f13a88e488c2d396e24cce8e9b6e27eefcbccad6`。
 - `scripts/l.py`：上游 `lzylipu/l-checkin` / `main.py` / `2c71083614d6ef87c8b502e1440fec3b08ab59c3`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：上游 `agluo/ql-script-hub` / `archive/leaflow_checkin.pyleaflow_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：上游 `lizhixu/ql-script-hub` / `nodeseek_checkin.py` / `ac591a320092dcaeaf236b7c2b6acfd28981e589`。
 - `scripts/lizhixu_ql_script_hub_youdao.py`：上游 `lizhixu/ql-script-hub` / `youdao.py` / `ac591a320092dcaeaf236b7c2b6acfd28981e589`。
+- `scripts/lobsterai_checkin.py`：上游 `L0NE-6/LobsterAI-AutoCheckin` / `lobsterai_checkin.py` / `4e4c291a2f616ef865e18a1c8026939754bfc712`。
 - `scripts/loomy_daily.py`：上游 `L0NE-6/Loomy-Daily` / `loomy_daily.py` / `3d0f19b0b6486ff9096507805a5f9d061604058f`。
 - `scripts/lynkco_qinglong_single.py`：上游 `zhaosongbing/LynkCoHelper-QingLong` / `qinglong/lynkco_qinglong_single.py` / `7b9330aeae5e458f00de92b46bbd31bbf99c95aa`。
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
@@ -11492,6 +11728,7 @@
 - `scripts/nodeseek.py`：上游 `CN-Grace/QinglongScripts` / `Nodeseek.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/nte.py`：上游 `Candy-QAQ/NTE-Auto-Sign` / `nte.py` / `38d77e1f7dc784f2baeb49c41cd4352deadf2b24`。
+- `scripts/officeace_daily.py`：上游 `L0NE-6/OfficeAce-Daily` / `officeace_daily.py` / `a6759a929b20a64fa44914f5115a1d3fc230ce54`。
 - `scripts/ole.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/ole/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/psnine.py`：上游 `nuthx/auto-sign` / `src/special/psnine.py` / `a8d2c229bac693daebe1535bca4cfd49733b632d`。
