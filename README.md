@@ -98,6 +98,7 @@
 | 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `3 0 * * *` |
 | LINUX DO 登录与浏览统计 | `scripts/l.py` | `python3 scripts/l.py` | `5 */5 * * *` |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` |
+| NodeSeek 签到与收益统计 | `scripts/lizhixu_ql_script_hub_nodeseek.py` | `python3 scripts/lizhixu_ql_script_hub_nodeseek.py` | `23 4 * * *` |
 | Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `0 8 * * *` |
 | 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `8 8 * * *` |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
@@ -272,6 +273,7 @@
 - `scripts/kurobbs_sign.py`：查询社区每日任务完成进度；查询鸣潮默认绑定角色并展示官方公开身份；库街区每日签到及连续天数、累计天数和奖励展示；鸣潮每日签到、已签到识别及签到后状态核验；展示当月普通签到奖励和响应提供的限时循环签到奖励；浏览鸣潮今州茶馆帖子并核验进度；显式开启后点赞不同帖子并核验进度，不取消原有点赞；显式开启后提交帖子分享进度并核验完成，不发布文字；逐行多账号及旧单账号变量兼容；完全断网预演、时间轴日志、脱敏统计和青龙通知。
 - `scripts/l.py`：Cookie 登录身份校验并显示官方返回的公开用户名和信任等级；按原有浏览开关与数量参数，从首页发现并随机读取话题，校验标题及帖子正文；查询访问天数、浏览话题、已读帖子、阅读时长、给出点赞、收到点赞及发帖数；显示上游 TL0 至 TL1、TL1 至 TL2 的参考升级要求和达标情况；每行一个账号，账号互相隔离，任一账号失败返回非零退出码；完全断网预演、按阶段记录脱敏结果、账号与任务统计及单行结构化汇总；通过青龙通知模块发送脱敏汇总，失败或不可用不改变业务退出码。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：使用 Cookie 执行 Leaflow 每日签到；自动识别 CSRF 隐藏字段并提交签到表单；明确识别成功、今日已完成、会话失效和失败结果；在服务返回时提取当日签到奖励；支持换行多账号独立处理并生成结构化汇总；提供有限重试、请求超时和可选随机执行窗口；提供完全断网的预演配置校验；在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份；支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码；输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY；兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小。
+- `scripts/lizhixu_ql_script_hub_nodeseek.py`：每日签到，支持随机奖励或固定奖励模式。；随机时间窗口、多账号计划排序和带时间戳的等待倒计时；保留每天 04:23 的调度。；近 30 天签到收益分页查询，显示签到天数、鸡腿总数及日均收益；覆盖不完整或字段异常时明确失败。；按官方接口返回原值显示非敏感昵称、用户名、显示名称或公开 UID。；每行一个账号，独立执行并汇总失败退出码。；完全断网预演、参数检查、分阶段时间轴日志、账号统计及单行 TASK_SUMMARY JSON。；所有任务结果均尝试发送脱敏青龙通知；支持全局开关和通知目录发现，通知故障保留业务退出码。。
 - `scripts/loomy_daily.py`：每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。；--tasks 查询八项新手任务的分组、标题、积分与完成进度。；显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。；八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。；结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。；换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。；完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。；青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。。
 - `scripts/lynkco_qinglong_single.py`：AppCode优先续期、HMAC签名兜底及静态令牌回退；今日签到状态查询、自动签到和签到后复查，已签到时跳过；连续签到天数和签到卡查询；任务前后能量体积分查询；五页动态文章查找及上游备用文章；可选文章分享两步链及完整三步链回退，核验分享前后积分变化；多账号独立处理、官方非秘密身份展示、任何账号失败非零退出；青龙及可选Bark脱敏通知，通知失败保留业务退出码；完全断网预演、分阶段日志和单行结构化总结；旧账号变量及显式只读本地配置兼容。
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
@@ -454,6 +456,7 @@
 <tr><td rowspan="1"><code>scripts/kurobbs_sign.py</code></td><td><code>KUROBBS_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：社区UID|Token，仅在第一个 | 分隔，保留 Token 后续内容。社区 UID 为数字。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/l.py</code></td><td><code>LINUXDO_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，字段以分号分隔，每个字段仅在第一个等号处分割；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、&amp; 和 @ 原样保留。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/lizhixu_ql_script_hub_nodeseek.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 Cookie；行内分号、等号及 &amp; 原样保留，不使用分隔符拆分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="2"><code>scripts/lynkco_qinglong_single.py</code></td><td><code>LYNKCO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个JSON对象；token可单独使用，refreshToken必须配套deviceId，可同时配置token作续期失败回退；不以&amp;、@分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LYNKCO_APP_SECRETS</code></td><td>是</td><td>格式：JSON对象：nativeAppKey、nativeAppSecret必需；分享或续期需glDevId；nativeAppCode用于优先AppCode续期，缺失时回退HMAC；loginAppCode仅兼容保存。；多账号格式以该脚本文档为准</td></tr>
@@ -1012,6 +1015,12 @@
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录，可选；亦支持 import notify.send、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>HTTP_PROXY</code></td><td>是</td><td>格式：标准库支持的代理地址；兼容 http_proxy。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>HTTPS_PROXY</code></td><td>是</td><td>格式：标准库支持的代理地址；兼容 https_proxy。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="6"><code>scripts/lizhixu_ql_script_hub_nodeseek.py</code></td><td><code>NS_RANDOM</code></td><td>否</td><td>格式：布尔值：true/false，也支持 1/0、yes/no、on/off。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：布尔值；false 表示立即签到。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：非负整数秒；账号按随机计划时间排序，等待使用同一起点，避免累积延时。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NODESEEK_DRY_RUN</code></td><td>否</td><td>格式：布尔值；开启后不加载 HTTP 依赖、不请求接口、不等待、不执行签到，通知器在禁止网络的子进程中尝试发送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知；其他值启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知组件不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="9"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_ONBOARDING</code></td><td>否</td><td>格式：0（默认，仅每日积分）或 1（批量领取）；--no-onboarding 优先关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LOOMY_DRY_RUN</code></td><td>否</td><td>格式：1 启用，0 默认正式执行；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
@@ -1837,6 +1846,7 @@
 - `scripts/kurobbs_sign.py`：每个非空行一个账号，社区UID|Token；只分割第一个 |。账号独立执行，任一账号或配置失败时整体非零退出。旧变量仅兼容一个账号。。
 - `scripts/l.py`：LINUXDO_COOKIES 每个非空行一个账号；逐个独立校验和处理，任何账号失败均以非零状态退出。。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。。
+- `scripts/lizhixu_ql_script_hub_nodeseek.py`：每个非空行一个账号的完整 NODESEEK_COOKIE；账号独立处理，任一账号签到或收益查询失败，整体非零退出。。
 - `scripts/loomy_daily.py`：每个非空行一个账号；兼容 session 和 备注|session，仅在第一个 | 处分割。独立处理各账号，任一账号失败则整体非零退出。--only N 可选择账号。。
 - `scripts/lynkco_qinglong_single.py`：每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。。
 - `scripts/mifan_optimized.py`：每个非空行一个账号，使用MIFAN_ACCOUNTS合并用户名和密码；只在第一个竖线分割，不使用分号、&或@分隔账号。账号独立执行，任一账号失败整体非零退出。。
@@ -2416,6 +2426,13 @@
 - 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
 - 获取或设置：浏览器登录 https://checkin.leaflow.net，打开开发者工具的网络面板，刷新页面后选择本站请求，复制请求头 Cookie 的完整值；不要复制响应头 Set-Cookie，不要公开。
 - 填写格式：`每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、& 和 @ 原样保留。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `NODESEEK_COOKIE`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
+- 获取或设置：浏览器登录 https://www.nodeseek.com，打开开发者工具网络面板，找到本站 /api/attendance 或 /api/account/credit/ 请求，从请求标头复制完整 Cookie 值。不要复制 Cookie: 前缀。请勿分享凭据。
+- 填写格式：`每个非空行填写一个账号的完整 Cookie；行内分号、等号及 & 原样保留，不使用分隔符拆分账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `LOOMY_TOKENS`
@@ -5875,6 +5892,42 @@
 - 获取或设置：需要代理时按运行环境配置，脚本不记录代理值。
 - 填写格式：`标准库支持的代理地址；兼容 https_proxy。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `NS_RANDOM`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
+- 获取或设置：按需要在青龙环境变量中设置；默认 true，保留上游随机签到奖励模式。
+- 填写格式：`布尔值：true/false，也支持 1/0、yes/no、on/off。`
+
+#### `RANDOM_SIGNIN`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
+- 获取或设置：按需要在青龙环境变量中设置；默认 true，在随机时间窗口内签到。
+- 填写格式：`布尔值；false 表示立即签到。`
+
+#### `MAX_RANDOM_DELAY`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
+- 获取或设置：按需要在青龙环境变量中设置；默认 3600 秒。
+- 填写格式：`非负整数秒；账号按随机计划时间排序，等待使用同一起点，避免累积延时。`
+
+#### `NODESEEK_DRY_RUN`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
+- 获取或设置：无网络验证时设置为 1；正式运行默认 0。
+- 填写格式：`布尔值；开启后不加载 HTTP 依赖、不请求接口、不等待、不执行签到，通知器在禁止网络的子进程中尝试发送。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
+- 获取或设置：全局通知开关，默认 1；通知渠道在青龙自身通知配置中设置。
+- 填写格式：`0、false、no、off 关闭通知；其他值启用。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
+- 获取或设置：可选：填写青龙 notify.py 所在目录；也支持导入 notify.send 及标准青龙脚本目录。
+- 填写格式：`本地目录路径；通知组件不可用或失败不改变业务退出码。`
 
 #### `LOOMY_ONBOARDING`
 
@@ -10751,6 +10804,7 @@
 - `scripts/kurobbs_sign.py`：SHA-256 `420de38577b9132e63b09652938838b0a60f03519d374ea9114bc9a01d80bb05`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
 - `scripts/l.py`：SHA-256 `aba0cf5855af880ab672f6f322417b935718dc8e2e81351ebd65791a1b9809dd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f1ad78537129604d`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：SHA-256 `1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
+- `scripts/lizhixu_ql_script_hub_nodeseek.py`：SHA-256 `d403a1c68ee24f721a320318363bb0a763d815b217fa73801512ecbac8c303ff`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7990614346ba82e0`。
 - `scripts/loomy_daily.py`：SHA-256 `31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
 - `scripts/lynkco_qinglong_single.py`：SHA-256 `5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
@@ -10925,6 +10979,7 @@
 - `scripts/kurobbs_sign.py`：库街区社区签到并领取对应奖励；鸣潮游戏签到并领取对应奖励；浏览帖子计入社区任务进度；显式开启后点赞帖子；显式开启后提交分享任务进度。
 - `scripts/l.py`：正式运行的已登录页面请求可能由站点计入访问或浏览记录；是否更新由站点决定；正式运行且启用通知时调用青龙通知模块发送任务汇总。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励；正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总。
+- `scripts/lizhixu_ql_script_hub_nodeseek.py`：正式运行调用 NodeSeek 签到接口，产生当日签到记录并领取签到奖励。；启用通知时向已配置的青龙通知渠道发送脱敏任务汇总。。
 - `scripts/loomy_daily.py`：正式默认执行刷新账号每日赠送积分。；显式批量或单项领取时上报新手任务完成状态并领取积分。；正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。；启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。。
 - `scripts/lynkco_qinglong_single.py`：每日签到并领取服务端奖励；默认上报文章分享并可能增加能量体积分，可用LYNKCO_DO_SHARE关闭；使用刷新令牌续期，服务端可能更新登录令牌状态；不写本地凭据文件；发送脱敏青龙通知及可选Bark推送；预演不发送网络通知。
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
@@ -11101,6 +11156,7 @@
 - `scripts/kurobbs_sign.py`：上游 `yongyeym/AutoSign_QingLong` / `kurobbs_sign.py` / `f13a88e488c2d396e24cce8e9b6e27eefcbccad6`。
 - `scripts/l.py`：上游 `lzylipu/l-checkin` / `main.py` / `2c71083614d6ef87c8b502e1440fec3b08ab59c3`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：上游 `agluo/ql-script-hub` / `archive/leaflow_checkin.pyleaflow_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/lizhixu_ql_script_hub_nodeseek.py`：上游 `lizhixu/ql-script-hub` / `nodeseek_checkin.py` / `ac591a320092dcaeaf236b7c2b6acfd28981e589`。
 - `scripts/loomy_daily.py`：上游 `L0NE-6/Loomy-Daily` / `loomy_daily.py` / `3d0f19b0b6486ff9096507805a5f9d061604058f`。
 - `scripts/lynkco_qinglong_single.py`：上游 `zhaosongbing/LynkCoHelper-QingLong` / `qinglong/lynkco_qinglong_single.py` / `7b9330aeae5e458f00de92b46bbd31bbf99c95aa`。
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
