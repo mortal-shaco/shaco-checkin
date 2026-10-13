@@ -1001,6 +1001,142 @@
       }
     },
     {
+      "catalogId": "aa1597fa93ade61b",
+      "applicationKey": "tangtang0812/aliyun::autosignin",
+      "checkProfile": {
+        "requiredEnv": [
+          "ALIYUN_REFRESH_TOKEN"
+        ],
+        "optionalEnv": [
+          "refreshToken",
+          "ALIYUN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ALIYUN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "刷新令牌成功",
+          "签到成功，本月累计",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用刷新令牌获取访问令牌，并显示官方返回的非敏感昵称",
+          "每日签到并显示本月累计签到天数",
+          "逐项领取全部正常签到记录中未领取的奖励，显示奖励名称与说明；单项失败继续其他奖励",
+          "展示当天已领取的奖励",
+          "兼容 refreshToken 参数，支持每行一个账号独立执行",
+          "提供完全断网预演、分阶段日志、账号与任务统计及单行 TASK_SUMMARY 汇总",
+          "按全局通知开关发送脱敏青龙通知；通知缺失或失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "通过官方接口刷新访问令牌，服务端可能轮换刷新令牌",
+          "执行每日签到",
+          "领取所有符合条件的未领签到奖励",
+          "正式执行时通过青龙通知模块发送任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "阿里云盘签到",
+      "path": "scripts/autosignin.js",
+      "sha256": "920f416ea8ff19757bf5d8bc27774d1231c4efd5f4ffc59c95d9a60b0ee976d8",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "TangTang0812/aliyun",
+        "branch": "main",
+        "commit": "fb6c6aa9c49c315f2e5c32949eef06689aa2ea7e",
+        "originalPath": "autoSignin.js"
+      },
+      "cron": "0 9 * * *",
+      "command": "node scripts/autosignin.js",
+      "environment": [
+        {
+          "name": "ALIYUN_REFRESH_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "本人登录阿里云盘网页，打开浏览器开发者工具的应用/本地存储，查找 refresh_token 或 token 对象的 refresh_token 字段；也可从本人登录令牌接口响应取得。仅复制 refresh_token，勿复制整个对象、access_token 或向他人提供凭据。令牌轮换或过期时重新登录并更新此变量。",
+          "format": "每个非空行填写一个账号的 refresh_token，不使用 & 或 @ 分隔账号。优先使用本变量，无非空值时兼容 refreshToken。"
+        },
+        {
+          "name": "refreshToken",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 ALIYUN_REFRESH_TOKEN 相同；仅作为上游旧变量的兼容输入。",
+          "format": "每行一个 refresh_token；旧版 & 多账号分隔方式需迁移为换行。"
+        },
+        {
+          "name": "ALIYUN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；断网测试时设为 1。",
+          "format": "1 为完全断网预演，其他值为正式执行；预演不验证业务成功，不调用通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置全局通知开关。",
+          "format": "默认 1；0、false、no、off（不区分大小写）关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙通知模块 sendNotify.js 所在目录；未设置时自动检查当前脚本目录及青龙常见脚本目录。",
+          "format": "本机目录路径；仅用于可选通知集成，不参与业务接口。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，忽略空行；账号依次独立执行，任一刷新、签到或领奖失败则最终退出码非零。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用刷新令牌获取访问令牌，并显示官方返回的非敏感昵称",
+        "每日签到并显示本月累计签到天数",
+        "逐项领取全部正常签到记录中未领取的奖励，显示奖励名称与说明；单项失败继续其他奖励",
+        "展示当天已领取的奖励",
+        "兼容 refreshToken 参数，支持每行一个账号独立执行",
+        "提供完全断网预演、分阶段日志、账号与任务统计及单行 TASK_SUMMARY 汇总",
+        "按全局通知开关发送脱敏青龙通知；通知缺失或失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "通过官方接口刷新访问令牌，服务端可能轮换刷新令牌",
+        "执行每日签到",
+        "领取所有符合条件的未领签到奖励",
+        "正式执行时通过青龙通知模块发送任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/aa1597fa93ade61b",
+        "candidateSha256": "d39889aa58c47d7ba19437ce8b30ae54bcc75fd017f255ccc1af4bed4575e29d"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "d39889aa58c47d7ba19437ce8b30ae54bcc75fd017f255ccc1af4bed4575e29d",
+        "releaseSha256": "920f416ea8ff19757bf5d8bc27774d1231c4efd5f4ffc59c95d9a60b0ee976d8",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "7919605278826396",
       "applicationKey": "ehentai",
       "checkProfile": {
