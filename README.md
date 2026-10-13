@@ -147,6 +147,7 @@
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `55 9 * * *` |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `1 16 * * *` |
 | 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` |
+| V2EX 每日签到 | `scripts/v2ex.py` | `python3 scripts/v2ex.py` | `0 9 * * *` |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `2 8 * * *` |
 | Trae CN 每日签到 | `scripts/web_checkin.py` | `python3 scripts/web_checkin.py` | `30 8 * * *` |
 | WorkBuddy 国内版日常维护 | `scripts/workbuddy_daily.py` | `python3 scripts/workbuddy_daily.py` | `0 7,12 * * *` |
@@ -274,6 +275,7 @@
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
 - `scripts/tyqhdraw.py`：登录并校验业务成功码与有效会话；查询调料包和番茄资产；打印官方返回的非秘密账号身份；显式开启后执行活动 58 集市兑换抽奖，每轮最多 10 次并检查奖品字段；使用本地透明掩膜图像匹配识别滑块并验证官方业务成功码；低置信度停止；查询实物礼品名称及非实物礼品数量；每行一个账号，账号独立失败隔离与整体非零退出；完全断网预演、青龙脱敏通知、逐阶段日志及单行任务汇总。
+- `scripts/v2ex.py`：每日登录签到领取奖励并复核已领取状态；显示官方用户名核对账号；查询今日签到奖励、账号余额与连续签到天数；支持已签到识别，避免重复领取；支持完整 Cookie、多账号与可选代理；完全断网预演、分阶段日志、结构化汇总及青龙脱敏通知。
 - `scripts/wangchao.py`：手机号与密码登录，展示官方返回的非敏感昵称或公开账号标识；保留上游随机客户端标识、RSA 密码加密、HMAC 登录认证、应用请求签名和 SM2 阅读参数加密；进入 App，获取每日阅读任务、识别已读文章、浏览未读文章、提交阅读记录并复查完成进度；显式开关控制同应用活动入口浏览，不伪造或重放随机阅读记录；显式开关控制每日一次抽奖，检查会话、阅读进度及官方资格，展示上游奖品名称；查询最近十条抽奖记录及时间；换行多账号、独立失败处理、完全断网预演、业务失败非零退出；限时 HTTP 请求、严格业务码与必要字段校验、禁止携带凭据重定向；时间轴阶段日志、每账号及全局统计、唯一单行 TASK_SUMMARY 汇总、青龙脱敏通知。
 - `scripts/web_checkin.py`：网页会话换取令牌并查询每日签到状态；长效 Cookie 自动续期，会话失败时使用已有会话或桌面令牌；网页令牌失效时重新换取一次，认证仍失败时回退同账号桌面令牌；桌面令牌到期预检与账号注册设备校验；每日按需领取签到积分，显示本次奖励，已签到不重复领取；领取未确认成功后复查账号签到状态；只查询任务开关，明确报告未开放活动；完整显示官方公开 UserID，按已验证成功的身份识别重复账号；每行一个账号，隔离失败并汇总非零退出；完全断网预演、时间轴日志与单行结构化汇总；青龙脱敏通知与全局关闭开关，通知故障不改变业务退出码。
 - `scripts/workbuddy_daily.py`：国内版每日签到及服务端签到状态回读，活动关闭正常跳过，区分签到连签与活跃连签；积分套餐总量、余额、用量、等级、能量、活跃连签及成长任务状态查询，显示官方非敏感账号身份；扫描已完成成长任务并领取奖励，回读验证领取状态；领奖保留网页请求头回退；Buddy信息、徽章查询及旅行状态驱动的出发和奖励领取；显式选择抽奖、最多五次盲盒、连签兑换、礼包补偿、昨日补签；未知资源或状态不执行消费；显式选择并允许模拟事件后执行设计/自动化/灵感、专家团、应用/教师助手、主题、资料库、五专家、五模板、GLM/五次对话、轻量云专家和夜猫子成长任务；保留上游HTTP链及服务端终态核验；小程序七环链式成长任务、锁定任务跳过、原请求头与回读目标、45秒节奏及相应回退；明文凭据本地体检、私有缓存轮换续期、--refresh、--query、--only、--gap、--mp-gap和旧过滤参数兼容；每行多账号隔离执行、断网预演、脱敏时间轴、账号及子任务统计、唯一TASK_SUMMARY记录、青龙通知。
@@ -408,6 +410,7 @@
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tyqhdraw.py</code></td><td><code>tyqhCookie</code></td><td>是</td><td>格式：每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/v2ex.py</code></td><td><code>V2EX_COOKIE</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Cookie，字段使用分号分隔；每个字段只按第一个等号拆分，值中后续等号保留。禁止使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wangchao.py</code></td><td><code>WangChao</code></td><td>是</td><td>格式：每个非空行一个“登录手机号#密码”。仅按第一个 # 切分，密码中的后续 #、&amp;、@ 等字符完整保留。密码 UTF-8 长度不超过 117 字节。旧版 &amp;&amp; 多账号分隔须手动迁移为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/web_checkin.py</code></td><td><code>TRAE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；device_id 为必填的 16 位数字字符串；session、sessionid、access_token 至少填写一个，可同时配置供续期和回退。expires_at 可选，为桌面令牌到期秒级时间戳。不得解码 Cookie 的百分号或复制整段 Cookie，不得共用设备。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/workbuddy_daily.py</code></td><td><code>WORKBUDDY_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号；手机号:AT:RT（AT可空）、AT:RT、手机号:RT 或单个明文JWT；只用换行分隔账号，配套凭据逐次仅切第一个英文冒号以保留后续文本；多账号格式以该脚本文档为准</td></tr>
@@ -1049,6 +1052,10 @@
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭，不区分大小写；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ocr_url</code></td><td>否</td><td>格式：已废弃，设置后也不使用；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/v2ex.py</code></td><td><code>V2EX_PROXY</code></td><td>是</td><td>格式：HTTP 或 HTTPS 代理 URL，可为空；不在日志显示。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>V2EX_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/wangchao.py</code></td><td><code>WANGCHAO_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1/0、true/false、yes/no、on/off。预演不代表真实业务成功。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WANGCHAO_LOTTERY</code></td><td>否</td><td>格式：默认 0；设为 1 时仅在阅读进度和官方资格都通过后抽奖一次，不自动重试。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WANGCHAO_BONUS</code></td><td>否</td><td>格式：默认 0；设为 1 时按接口提供的入口浏览，不重放随机文章阅读或承诺增加次数，不运行诗词答题及红包。；多账号格式以该脚本文档为准</td></tr>
@@ -1222,6 +1229,7 @@
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
 - `scripts/tyqhdraw.py`：每个非空行一个账号；同一账号的 thirdId 与 wid 写在同一行，保留原字段顺序。逐账号独立处理，任一账号失败则整体非零退出。。
+- `scripts/v2ex.py`：V2EX_COOKIE 每个非空行一个账号，保留 Cookie 值中的等号；独立处理所有账号，任一账号失败则整体非零退出。。
 - `scripts/wangchao.py`：每个非空行一个账号，只按第一个 # 切分配套手机号与密码。忽略空行；各账号独立处理，任一账号配置或业务失败则整体非零退出。。
 - `scripts/web_checkin.py`：TRAE_ACCOUNTS 每个非空行一个 JSON 对象，合并同账号凭据及设备；账号独立处理，任何账号失败整体非零退出。不得使用 & 或 @ 分隔账号。。
 - `scripts/workbuddy_daily.py`：每个非空行一个账号，按行独立执行；手机号与AT/RT属于同一账号并写在同一行。任一账号失败整体非零退出，不使用&或@分隔账号。。
@@ -2049,6 +2057,13 @@
 - 所属脚本：`scripts/tyqhdraw.py`
 - 获取或设置：登录统一茄皇小程序，使用本机 HTTPS 抓包查看官方 public/api/login 请求 JSON 的 thirdId 和 wid；必须使用同一账号的配套字段，不要分享抓包。
 - 填写格式：`每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `V2EX_COOKIE`
+
+- 所属脚本：`scripts/v2ex.py`
+- 获取或设置：浏览器登录 https://www.v2ex.com，在开发者工具的网络面板打开该站已登录请求，复制请求头 Cookie 的完整值，不包含 Cookie: 前缀。过期后重新登录获取。原配置中每个 V2EX 账号的 cookie 字段原样迁入一行。
+- 填写格式：`每个非空行是一个账号的完整 Cookie，字段使用分号分隔；每个字段只按第一个等号拆分，值中后续等号保留。禁止使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WangChao`
@@ -5922,6 +5937,31 @@
 - 获取或设置：旧版参数，无需获取或设置；维护版通过本地图像匹配识别，不连接外部 OCR 服务。
 - 填写格式：`已废弃，设置后也不使用`
 
+#### `V2EX_PROXY`
+
+- 所属脚本：`scripts/v2ex.py`
+- 获取或设置：可选，从自己的代理服务获取地址，对应原配置的 proxy 字段；所有账号使用同一代理。
+- 填写格式：`HTTP 或 HTTPS 代理 URL，可为空；不在日志显示。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `V2EX_DRY_RUN`
+
+- 所属脚本：`scripts/v2ex.py`
+- 获取或设置：设置为 1 开启断网预演。
+- 填写格式：`1、true、yes、on 开启，默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/v2ex.py`
+- 获取或设置：青龙全局通知开关，默认开启。
+- 填写格式：`0、false、no、off 关闭，其他值开启。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/v2ex.py`
+- 获取或设置：可选，填写青龙 notify.py 所在目录；也自动查找 Python 模块及青龙标准路径。
+- 填写格式：`本地目录路径。`
+
 #### `WANGCHAO_DRY_RUN`
 
 - 所属脚本：`scripts/wangchao.py`
@@ -6388,6 +6428,7 @@
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 - `scripts/tyqhdraw.py`：SHA-256 `c2c1115b60fd085034eb55d28ffb8fd3cb6476263eeff23f53f5bea8ad892b7e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
+- `scripts/v2ex.py`：SHA-256 `87453ce89a061c7d0d66350ab00b12cf7f952d505b629976157f708740e31cdc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4868a1b213ec9f7a`。
 - `scripts/wangchao.py`：SHA-256 `487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
 - `scripts/web_checkin.py`：SHA-256 `510f24fc55c7aaba9199b6b7325b0cdf40aae7f1dc7a8b40c87d2c77ad0bf0b8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dfbc26c082218297`。
 - `scripts/workbuddy_daily.py`：SHA-256 `145fb0bfe73802a31b64449346b2bdabfdfbe639769db567e40adcc964a33475`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
@@ -6515,6 +6556,7 @@
 - `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
 - `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
 - `scripts/tyqhdraw.py`：登录创建账号会话；显式开启时兑换抽奖，可能消耗资产或抽奖机会并获得奖品；抽奖遇到滑块时提交验证码验证；启用通知时通过青龙通知渠道发送脱敏任务统计。
+- `scripts/v2ex.py`：领取 V2EX 每日登录奖励，增加账号余额及更新签到记录；正常运行时通过青龙通知模块发送脱敏总结。
 - `scripts/wangchao.py`：实时登录会建立账号及活动服务会话；默认浏览未读文章并提交阅读记录，改变每日阅读进度；启用 WANGCHAO_BONUS 时浏览活动文章入口，可能改变浏览记录；启用 WANGCHAO_LOTTERY 时抽奖一次，消耗次数并产生中奖或参与记录；启用 QINGLONG_NOTIFY 时通过青龙通知渠道发送脱敏任务总结；预演通知禁止网络。
 - `scripts/web_checkin.py`：正式签到模式领取当日签到积分；配置 sessionid 时刷新网页登录会话；开启通知时调用青龙发送任务汇总；预演禁止通知网络发送。
 - `scripts/workbuddy_daily.py`：默认进行每日签到、领取已完成成长任务奖励、领取旅行奖励或派遣Buddy旅行；显式成长任务可能创建模型对话、消耗积分并发送模拟活跃事件，变更任务登记与成长进度；上报成功不代表真实桌面操作成功；显式抽奖消耗抽奖次数，盲盒消耗能量，补签消耗补签卡，连签兑换和礼包补偿领取奖励；配置私有缓存并触发续期时轮换认证令牌且保存至本人指定文件；实际运行向青龙通知模块发送脱敏摘要；断网预演仅模拟通知。
@@ -6644,6 +6686,7 @@
 - `scripts/tsthb_checkin.py`：上游 `agluo/ql-script-hub` / `tsthb_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/ty_netdisk_checkin.py`：上游 `agluo/ql-script-hub` / `ty_netdisk_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/tyqhdraw.py`：上游 `Rookie-wb-WH/ql_scripts` / `tyqhDraw.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
+- `scripts/v2ex.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/v2ex/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/wangchao.py`：上游 `Rookie-wb-WH/ql_scripts` / `wangchao.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/web_checkin.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/trae/web_checkin.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/workbuddy_daily.py`：上游 `L0NE-6/WorkBuddy-Daily` / `workbuddy_daily.py` / `e030ebde37411a90e0a3e35b88993e5686c7e1dd`。

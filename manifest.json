@@ -16783,6 +16783,145 @@
       }
     },
     {
+      "catalogId": "4868a1b213ec9f7a",
+      "applicationKey": "sitoi/dailycheckin::v2ex",
+      "checkProfile": {
+        "requiredEnv": [
+          "V2EX_COOKIE"
+        ],
+        "optionalEnv": [
+          "V2EX_PROXY",
+          "V2EX_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "V2EX_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "V2EX_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "V2EX_CHECKIN_OK",
+          "V2EX_ALREADY_COMPLETE",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "每日登录签到领取奖励并复核已领取状态",
+          "显示官方用户名核对账号",
+          "查询今日签到奖励、账号余额与连续签到天数",
+          "支持已签到识别，避免重复领取",
+          "支持完整 Cookie、多账号与可选代理",
+          "完全断网预演、分阶段日志、结构化汇总及青龙脱敏通知"
+        ],
+        "sideEffects": [
+          "领取 V2EX 每日登录奖励，增加账号余额及更新签到记录",
+          "正常运行时通过青龙通知模块发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "V2EX 每日签到",
+      "path": "scripts/v2ex.py",
+      "sha256": "87453ce89a061c7d0d66350ab00b12cf7f952d505b629976157f708740e31cdc",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Sitoi/dailycheckin",
+        "branch": "main",
+        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+        "originalPath": "dailycheckin/v2ex/main.py",
+        "related": [
+          {
+            "catalogId": "879b7ae6ea2c5a54",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "repository": "Sitoi/dailycheckin",
+            "url": "https://github.com/Sitoi/dailycheckin.git",
+            "branch": "main",
+            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+            "originalPath": "dailycheckin/v2ex/__init__.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/v2ex.py",
+      "environment": [
+        {
+          "name": "V2EX_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.v2ex.com，在开发者工具的网络面板打开该站已登录请求，复制请求头 Cookie 的完整值，不包含 Cookie: 前缀。过期后重新登录获取。原配置中每个 V2EX 账号的 cookie 字段原样迁入一行。",
+          "format": "每个非空行是一个账号的完整 Cookie，字段使用分号分隔；每个字段只按第一个等号拆分，值中后续等号保留。禁止使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "V2EX_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从自己的代理服务获取地址，对应原配置的 proxy 字段；所有账号使用同一代理。",
+          "format": "HTTP 或 HTTPS 代理 URL，可为空；不在日志显示。"
+        },
+        {
+          "name": "V2EX_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 开启断网预演。",
+          "format": "1、true、yes、on 开启，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启。",
+          "format": "0、false、no、off 关闭，其他值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；也自动查找 Python 模块及青龙标准路径。",
+          "format": "本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "V2EX_COOKIE 每个非空行一个账号，保留 Cookie 值中的等号；独立处理所有账号，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [
+        "requests"
+      ],
+      "features": [
+        "每日登录签到领取奖励并复核已领取状态",
+        "显示官方用户名核对账号",
+        "查询今日签到奖励、账号余额与连续签到天数",
+        "支持已签到识别，避免重复领取",
+        "支持完整 Cookie、多账号与可选代理",
+        "完全断网预演、分阶段日志、结构化汇总及青龙脱敏通知"
+      ],
+      "sideEffects": [
+        "领取 V2EX 每日登录奖励，增加账号余额及更新签到记录",
+        "正常运行时通过青龙通知模块发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/4868a1b213ec9f7a",
+        "candidateSha256": "87453ce89a061c7d0d66350ab00b12cf7f952d505b629976157f708740e31cdc"
+      }
+    },
+    {
       "catalogId": "d0c1751256314943",
       "applicationKey": "wangchao",
       "checkProfile": {
