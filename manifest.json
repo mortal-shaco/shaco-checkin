@@ -16665,21 +16665,22 @@
           "SKLAND_TOKEN"
         ],
         "optionalEnv": [
+          "SKLAND_DRY_RUN",
+          "SKLAND_DID",
+          "SKLAND_ACTIONS",
+          "SKLAND_ZONE_IDS",
+          "SKLAND_NOTIFY_URL",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "SKLAND_VIEW_COUNT",
+          "SKLAND_LIKE_COUNT",
+          "SKLAND_SHARE_COUNT",
           "SKLAND_PHONE",
           "SKLAND_PASSWORD",
           "SKLAND_TOKEN_N",
           "SKLAND_PHONE_N",
           "SKLAND_PASSWORD_N",
-          "SKLAND_DID",
-          "SKLAND_ZONE_IDS",
-          "SKLAND_ACTIONS",
-          "SKLAND_VIEW_COUNT",
-          "SKLAND_LIKE_COUNT",
-          "SKLAND_SHARE_COUNT",
-          "SKLAND_NOTIFY_URL",
-          "SKLAND_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR"
+          "SKYLAND_TYPE"
         ],
         "dryRunEnv": {
           "SKLAND_DRY_RUN": "1"
@@ -16689,7 +16690,8 @@
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "最终状态 success"
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
         ],
         "features": [
           "通行证 Token、森空岛 cred/token 和手机号密码登录，保留官方授权换取及请求签名",
@@ -16698,7 +16700,10 @@
           "配置数量的帖子浏览、显式开启的点赞和分享任务，保留帖子分页",
           "保留 --dry-run、--actions、--zones、--version 命令行参数及旧序号账号输入",
           "多账号独立执行、HTTP 超时、禁止重定向、业务码核验和失败闭合退出",
-          "完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知"
+          "完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知",
+          "显式 attendance 动作获取明日方舟所有绑定角色，逐角色签名签到并展示奖励名称与数量",
+          "游戏角色官方昵称与公开 UID 原样展示，单角色失败继续其他角色，任一失败整体非零退出",
+          "保留维护候选每日 08:00 调度；原始游戏签到为每日 08:30，可单独配置 attendance 并设置 30 8 * * *"
         ],
         "sideEffects": [
           "未配置 SKLAND_DID 时向上游设备服务注册临时设备标识",
@@ -16707,7 +16712,8 @@
           "浏览帖子可能增加任务浏览进度",
           "显式启用 like 时点赞帖子",
           "显式启用 share 时增加分享任务计数，不发布文案",
-          "正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要"
+          "正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要",
+          "显式开启 attendance 时为明日方舟绑定角色签到并领取游戏奖励"
         ]
       },
       "postReview": {
@@ -16716,7 +16722,7 @@
       },
       "displayName": "森空岛每日任务",
       "path": "scripts/skland_daily.py",
-      "sha256": "e46b829e655d9d987efe00d72fd5f57e5c7819ef62d1df4b1e96f603bab09f9a",
+      "sha256": "459e6ca86870e8334645523e047d28fe077fbb40d8bb034f63826b61853a5b56",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -16724,7 +16730,19 @@
         "repository": "siwuli/skland-daily",
         "branch": "main",
         "commit": "c6159b4ca574b4493ae8b94e56a861c7e9e06955",
-        "originalPath": "skland_daily.py"
+        "originalPath": "skland_daily.py",
+        "related": [
+          {
+            "repository": "bwmgd/skyland-auto-sign",
+            "url": "https://github.com/bwmgd/skyland-auto-sign.git",
+            "branch": "master",
+            "commit": "d89e4874b0ab87a1593e637af5f81d6eefcd3000",
+            "originalPath": "skyland.py",
+            "catalogId": "670bf85d8a6cb7a3",
+            "sha256": "6a7141add83a445a5411d68889eeb94d2974d67668324bfb4f138be84237bfa6",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "0 8 * * *",
       "command": "python3 scripts/skland_daily.py",
@@ -16733,119 +16751,126 @@
           "name": "SKLAND_TOKEN",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录官方鹰角通行证网页，在开发者工具查看本人登录响应的 token；或从本人森空岛官方客户端授权响应取得 cred 和 token。也可填写本人手机号密码的单行 JSON。不要公开凭据。",
-          "format": "每个非空行一个账号；通行证 token、cred:token、单行 JSON 对象 {\"cred\":\"本人凭据\",\"token\":\"本人签名凭据\"}、{\"data\":{\"content\":\"本人通行证凭据\"}} 或 {\"phone\":\"本人手机号\",\"password\":\"本人密码\"}；cred:token 仅在第一个冒号处分割"
-        },
-        {
-          "name": "SKLAND_PHONE",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧版兼容输入，本人鹰角通行证注册手机号；推荐将手机号密码合并到 SKLAND_TOKEN 的账号 JSON。",
-          "format": "单个手机号，与 SKLAND_PASSWORD 成对设置"
-        },
-        {
-          "name": "SKLAND_PASSWORD",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧版兼容输入，本人鹰角通行证密码。",
-          "format": "原密码字符串，与 SKLAND_PHONE 成对设置"
-        },
-        {
-          "name": "SKLAND_TOKEN_N",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧版兼容序号变量，N 替换为数字，获取方式同 SKLAND_TOKEN。",
-          "format": "每个非空行一个账号，格式同 SKLAND_TOKEN"
-        },
-        {
-          "name": "SKLAND_PHONE_N",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧版兼容序号变量，N 替换为数字，使用本人注册手机号。",
-          "format": "与相同序号的 SKLAND_PASSWORD_N 配对"
-        },
-        {
-          "name": "SKLAND_PASSWORD_N",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧版兼容序号变量，N 替换为数字，使用本人通行证密码。",
-          "format": "与相同序号的 SKLAND_PHONE_N 配对"
-        },
-        {
-          "name": "SKLAND_DID",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人官方客户端请求头 dId 获取；未设置时按上游设备服务接口自动注册临时标识，不落盘。",
-          "format": "设备标识字符串"
-        },
-        {
-          "name": "SKLAND_ZONE_IDS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "从官方 /api/v1/game 响应取得 gameId；留空处理全部版区。",
-          "format": "逗号分隔的版区编号"
-        },
-        {
-          "name": "SKLAND_ACTIONS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需要选择动作；点赞和分享改变账号状态，需显式添加。",
-          "format": "checkin,view,like,share 中的逗号分隔组合，默认 checkin,view"
-        },
-        {
-          "name": "SKLAND_VIEW_COUNT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置每版区浏览次数。",
-          "format": "非负整数，默认 5"
-        },
-        {
-          "name": "SKLAND_LIKE_COUNT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置每版区点赞次数，需启用 like。",
-          "format": "非负整数，默认 10"
-        },
-        {
-          "name": "SKLAND_SHARE_COUNT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置每版区分享次数，需启用 share。",
-          "format": "非负整数，默认 1"
-        },
-        {
-          "name": "SKLAND_NOTIFY_URL",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选的本人通知服务 HTTPS 地址，接收脱敏 JSON 汇总，受全局通知开关控制。",
-          "format": "HTTPS 地址，不允许内嵌用户名密码；预演不请求"
+          "howToGet": "登录本人官方鹰角通行证网页，从开发者工具的登录响应取得 token；或从本人森空岛授权响应取得 cred 和 token。账密来自本人的通行证。",
+          "format": "每个非空行一个账号：通行证 token、cred:token、单行 JSON {\"cred\":\"本人凭据\",\"token\":\"本人签名凭据\"}、官方响应 JSON 的 data.content，或单行 JSON 的 phone/password；cred:token 只在第一个冒号拆分。不要用分号、逗号、&、@分隔账号。"
         },
         {
           "name": "SKLAND_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "预演时设置为 1；不登录、不注册设备、不发送网络通知。",
-          "format": "1/true/yes/on 开启，默认关闭"
+          "howToGet": "预演时自行设为 1。",
+          "format": "1/true/yes/on 启用完全断网预演；默认关闭。"
+        },
+        {
+          "name": "SKLAND_DID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人森空岛客户端请求头取得 dId；留空自动向原设备服务注册临时标识。",
+          "format": "单个设备标识，不写入磁盘。"
+        },
+        {
+          "name": "SKLAND_ACTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需配置动作。",
+          "format": "逗号分隔 checkin,view,like,share,attendance；默认 checkin,view；点赞、分享和游戏签到需显式添加。attendance 单独执行明日方舟签到。"
+        },
+        {
+          "name": "SKLAND_ZONE_IDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从官方版区列表响应取得 gameId。",
+          "format": "逗号分隔社区版区编号；留空处理全部；不影响 attendance 的游戏角色。"
+        },
+        {
+          "name": "SKLAND_NOTIFY_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选配置本人控制的 HTTPS 通知地址。",
+          "format": "HTTPS 地址，不带用户信息；接收脱敏 JSON 摘要。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙通知总开关，默认启用；预演仅生成本地通知摘要以保证断网。",
-          "format": "0/false/no/off 关闭，其余值开启"
+          "howToGet": "按需配置青龙全局通知开关。",
+          "format": "默认 1；0/false/no/off 关闭所有通知；预演只生成本地通知摘要。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，设置青龙 notify.py 所在目录；默认尝试 import notify 和青龙标准脚本目录。",
-          "format": "本机目录路径，仅用于可选通知，不是业务运行依赖"
+          "howToGet": "青龙运行环境中 notify.py 所在目录。",
+          "format": "可选目录路径；脚本也尝试 import notify 和青龙标准路径；不可用时不改变业务退出码。"
+        },
+        {
+          "name": "SKLAND_VIEW_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置每个版区执行数量。",
+          "format": "非负整数，默认 5。"
+        },
+        {
+          "name": "SKLAND_LIKE_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置每个版区执行数量。",
+          "format": "非负整数，默认 10。"
+        },
+        {
+          "name": "SKLAND_SHARE_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置每个版区执行数量。",
+          "format": "非负整数，默认 1。"
+        },
+        {
+          "name": "SKLAND_PHONE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。",
+          "format": "带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。"
+        },
+        {
+          "name": "SKLAND_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。",
+          "format": "带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。"
+        },
+        {
+          "name": "SKLAND_TOKEN_N",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。",
+          "format": "带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。"
+        },
+        {
+          "name": "SKLAND_PHONE_N",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。",
+          "format": "带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。"
+        },
+        {
+          "name": "SKLAND_PASSWORD_N",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。",
+          "format": "带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。"
+        },
+        {
+          "name": "SKYLAND_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "原始源码保留的未使用变量，无需设置。",
+          "format": "无业务效果。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，禁止用 &、@、逗号或分号分隔账号；同账号配套凭据合并为 JSON 或 cred:token，仅在第一个冒号处分割。兼容旧序号及账密变量，重复凭据去重，账号独立执行，任一失败整体非零退出。"
+        "rule": "每个非空行一个账号；同账号的 cred/token 或手机号/密码合并在一行；独立处理账号，任一失败整体非零退出。旧序号变量继续兼容。"
       },
       "dependencies": [],
       "features": [
@@ -16855,7 +16880,10 @@
         "配置数量的帖子浏览、显式开启的点赞和分享任务，保留帖子分页",
         "保留 --dry-run、--actions、--zones、--version 命令行参数及旧序号账号输入",
         "多账号独立执行、HTTP 超时、禁止重定向、业务码核验和失败闭合退出",
-        "完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知"
+        "完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知",
+        "显式 attendance 动作获取明日方舟所有绑定角色，逐角色签名签到并展示奖励名称与数量",
+        "游戏角色官方昵称与公开 UID 原样展示，单角色失败继续其他角色，任一失败整体非零退出",
+        "保留维护候选每日 08:00 调度；原始游戏签到为每日 08:30，可单独配置 attendance 并设置 30 8 * * *"
       ],
       "sideEffects": [
         "未配置 SKLAND_DID 时向上游设备服务注册临时设备标识",
@@ -16864,7 +16892,8 @@
         "浏览帖子可能增加任务浏览进度",
         "显式启用 like 时点赞帖子",
         "显式启用 share 时增加分享任务计数，不发布文案",
-        "正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要"
+        "正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要",
+        "显式开启 attendance 时为明日方舟绑定角色签到并领取游戏奖励"
       ],
       "review": {
         "staticPassed": true,
@@ -16877,7 +16906,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/96b3c22e1eff9659",
-        "candidateSha256": "e46b829e655d9d987efe00d72fd5f57e5c7819ef62d1df4b1e96f603bab09f9a"
+        "candidateSha256": "459e6ca86870e8334645523e047d28fe077fbb40d8bb034f63826b61853a5b56"
       }
     },
     {

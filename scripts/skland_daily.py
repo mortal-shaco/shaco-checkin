@@ -2,6 +2,10 @@
 # name: 森空岛每日任务
 # cron: 0 8 * * *
 # SPDX-License-Identifier: MIT
+# 合并来源：bwmgd/skyland-auto-sign，skyland.py，Author: Bwmgd，Update: 2024/10/09
+# 原始归属：https://github.com/xxyz30/skyland-auto-sign
+# 镜像归属：https://gitee.com/FancyCabbage/skyland-auto-sign
+# 原始签到调度：0 30 8 * * *（青龙六字段）；仅签到可配置 30 8 * * *。
 # 上游：siwuli/skland-daily，skland_daily.py
 # 来源提交：c6159b4ca574b4493ae8b94e56a861c7e9e06955
 # 原文件未包含版权声明；保留原功能实现及作者归属。
@@ -42,6 +46,10 @@
     SKLAND_DID 可选，本人官方客户端请求头的 dId；未设置时自动注册设备标识。
     SKLAND_ZONE_IDS 逗号分隔的 gameId，从官方版区列表接口获取；默认全部。
     SKLAND_ACTIONS 默认 checkin,view；点赞和分享改变账号状态，显式添加 like,share。
+    attendance 为明日方舟绑定角色签到（领取游戏奖励），与社区 checkin 不同。
+    SKLAND_ACTIONS=attendance 可只运行原始签到；attendance,checkin,view 可一起运行。
+    SKLAND_ZONE_IDS 只筛选社区版区，不筛选游戏绑定角色。
+    SKYLAND_TYPE 为原脚本未使用的兼容变量，无业务效果。
     SKLAND_VIEW_COUNT / SKLAND_LIKE_COUNT / SKLAND_SHARE_COUNT 默认 5/10/1。
     SKLAND_NOTIFY_URL 可选 HTTPS 自有通知服务，发送脱敏 JSON 汇总。
     SKLAND_DRY_RUN=1 完全断网，只校验配置和模拟流程，不登录、不发通知请求。
@@ -191,7 +199,8 @@ ACTION_CHECKIN = "checkin"
 ACTION_VIEW = "view"
 ACTION_LIKE = "like"
 ACTION_SHARE = "share"
-ALL_ACTIONS = (ACTION_CHECKIN, ACTION_VIEW, ACTION_LIKE, ACTION_SHARE)
+ACTION_ATTENDANCE = "attendance"
+ALL_ACTIONS = (ACTION_CHECKIN, ACTION_VIEW, ACTION_LIKE, ACTION_SHARE, ACTION_ATTENDANCE)
 
 #: 服务端提示"今天已经签到过"的文案特征
 ALREADY_SIGNED_HINTS = ("重复签到", "已签到", "已检票")
@@ -745,10 +754,12 @@ class AccountReport:
     account: Account
     error: Optional[str] = None
     zones: List[ZoneReport] = field(default_factory=list)
+    attendance: List[Dict[str, Any]] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:
-        return self.error is None and not any(zone.failed for zone in self.zones)
+        return (self.error is None and not any(zone.failed for zone in self.zones)
+                and all(item["ok"] for item in self.attendance))
 
 
 class DailyTasks:
@@ -804,6 +815,15 @@ class DailyTasks:
 
     def run(self) -> AccountReport:
         report = AccountReport(account=self.client.account)
+        if self._wants(ACTION_ATTENDANCE):
+            try:
+                with stage("获取绑定角色及明日方舟签到"):
+                    self._attendance(report)
+            except Exception:
+                report.attendance.append({"ok": False, "message": "绑定角色接口或签到结构异常"})
+        if not any(self._wants(a) for a in
+                   (ACTION_CHECKIN, ACTION_VIEW, ACTION_LIKE, ACTION_SHARE)):
+            return report
 
         try:
             with stage("获取版区列表"):
@@ -828,6 +848,55 @@ class DailyTasks:
         for zone in zones:
             report.zones.append(self._run_zone(zone, checked))
         return report
+
+    def _attendance(self, report: AccountReport) -> None:
+        """原始游戏签到：逐角色独立执行，业务码与奖励结构均须有效。"""
+        data = self.client.get("/api/v1/game/player/binding", action="获取游戏绑定角色")
+        games = data.get("list")
+        if not isinstance(games, list):
+            raise SklandError("绑定角色列表结构无效")
+        characters = []
+        for game in games:
+            if not isinstance(game, dict):
+                raise SklandError("绑定游戏结构无效")
+            if game.get("appCode") == "arknights":
+                bindings = game.get("bindingList")
+                if not isinstance(bindings, list):
+                    raise SklandError("明日方舟角色列表结构无效")
+                characters.extend(bindings)
+        if not characters:
+            report.attendance.append({"ok": False, "message": "未绑定明日方舟角色，未执行游戏签到"})
+            return
+        for index, character in enumerate(characters, 1):
+            try:
+                with stage("明日方舟角色 {} 签到".format(index)):
+                    if not isinstance(character, dict) or not character.get("uid"):
+                        raise SklandError("绑定角色缺少公开 UID")
+                    identity = character.get("nickName")
+                    stamp("官方角色：{}；公开 UID：{}".format(
+                        identity if identity is not None else "未返回昵称", character["uid"]))
+                    result = self.client.post(
+                        "/api/v1/game/attendance",
+                        json_body={"gameId": 1, "uid": character["uid"]},
+                        action="明日方舟角色签到")
+                    awards = result.get("awards")
+                    if not isinstance(awards, list) or not awards:
+                        raise SklandError("签到响应缺少有效奖励列表，无法核验奖励")
+                    rewards = []
+                    for award in awards:
+                        if not isinstance(award, dict) or not isinstance(award.get("resource"), dict):
+                            raise SklandError("签到奖励结构无效")
+                        name = award["resource"].get("name")
+                        count = award.get("count") or 1
+                        if not isinstance(name, str) or not name or not isinstance(count, (int, str)):
+                            raise SklandError("签到奖励名称或数量无效")
+                        rewards.append("{}×{}".format(name, count))
+                    stamp("✅ 明日方舟签到成功，奖励：" + "，".join(rewards))
+                    report.attendance.append({"ok": True, "message": "明日方舟签到成功"})
+            except Exception:
+                # 不显示服务端错误文案、请求值或异常详情；继续处理其余角色。
+                stamp("❌ 角色 {} 签到失败，未确认业务成功或奖励结构".format(index))
+                report.attendance.append({"ok": False, "message": "明日方舟签到未通过核验"})
 
     def _run_zone(self, zone: Zone, checked: Dict[int, bool]) -> ZoneReport:
         report = ZoneReport(zone=zone, checked=checked.get(zone.game_id, False))
@@ -994,6 +1063,8 @@ def format_report(reports: Sequence[AccountReport], config: Config, dry_run: boo
 
     for index, report in enumerate(reports, start=1):
         lines.append("账号 {}/{}  {}".format(index, len(reports), report.account.label))
+        for item in report.attendance:
+            lines.append("  " + item["message"])
         if report.error:
             lines.append("  [!] {}".format(report.error))
         for zone in report.zones:
@@ -1095,10 +1166,12 @@ def parse_account(entry: str) -> Account:
                 (isinstance(value.get("data"), dict) and
                  isinstance(value["data"].get("content"), str) and value["data"]["content"])):
             raise SklandError("账号 JSON 缺少 cred/token 或 data.content")
+    elif ":" in entry:
+        # 只在第一个字段分隔符拆分，后续签名凭据原样保留。
+        if not all(part.strip() for part in entry.split(":", 1)):
+            raise SklandError("cred:token 两部分必须非空")
     elif any(c in entry for c in ";,\t "):
         raise SklandError("账号必须每行一个，不接受分号或逗号分隔")
-    elif ":" in entry and not all(entry.split(":", 1)):
-        raise SklandError("cred:token 两部分必须非空")
     return Account(entry=entry)
 
 
@@ -1170,8 +1243,12 @@ def qinglong_notify(content: str, dry_run: bool, url: str = "") -> str:
 
 def account_stats(report: AccountReport, config: Config) -> Dict[str, int]:
     stats = {"total": 0, "success": 0, "alreadyComplete": 0, "skipped": 0, "failed": 0}
+    for item in report.attendance:
+        stats["total"] += 1
+        stats["success" if item["ok"] else "failed"] += 1
     if report.error:
-        stats["total"] = stats["failed"] = 1
+        stats["total"] += 1
+        stats["failed"] += 1
         return stats
     for zone in report.zones:
         if ACTION_CHECKIN in config.actions:
