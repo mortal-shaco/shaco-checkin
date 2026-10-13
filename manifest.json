@@ -143,6 +143,146 @@
       }
     },
     {
+      "catalogId": "bd7e90cbb255e115",
+      "applicationKey": "aliyundrive",
+      "checkProfile": {
+        "requiredEnv": [
+          "refreshToken"
+        ],
+        "optionalEnv": [
+          "ALIYUNDRIVE_DRY_RUN",
+          "ALIYUN_PUSH_PLUS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ALIYUNDRIVE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功！本月累计签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "通过刷新令牌获取访问令牌并展示官方返回的昵称、用户名或公开用户标识",
+          "每日签到并展示本月累计签到天数",
+          "领取当日奖励并识别已领取状态",
+          "查询并展示本月签到日历",
+          "展示当日签到奖励和任务奖励概览",
+          "每行一个账号，独立执行并汇总失败",
+          "完全断网预演，模拟通知并明确未验证真实业务",
+          "青龙脱敏通知及可选 HTTPS PushPlus 推送，支持全局关闭",
+          "分阶段时间轴日志、逐账号统计和单行 TASK_SUMMARY 结构化汇总"
+        ],
+        "sideEffects": [
+          "刷新账号访问令牌",
+          "执行每日签到",
+          "领取当日签到奖励",
+          "向青龙通知渠道和可选 PushPlus 渠道发送脱敏任务总结（预演不发送）"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "阿里云盘每日签到",
+      "path": "scripts/aliyundrive_checkin.js",
+      "sha256": "e247d342c3624bc2e7cc9da6f1808d8dfeffe19f1df4a64d3a410b2b87a4ac0b",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "huwangkeji/aliyundrive_checkin",
+        "branch": "main",
+        "commit": "267ee025840c5b55dce5b5e1e365fb52ac500fce",
+        "originalPath": "aliyundrive_checkin.js"
+      },
+      "cron": "0 8 * * *",
+      "command": "node scripts/aliyundrive_checkin.js",
+      "environment": [
+        {
+          "name": "refreshToken",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录阿里云盘网页版 https://www.aliyundrive.com/，在浏览器开发者工具控制台读取 JSON.parse(localStorage.token).refresh_token，复制到青龙私密环境变量；不要公开或写入日志。",
+          "format": "每个非空行填写一个账号的 refresh_token；仅按换行分隔，不支持 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "ALIYUNDRIVE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "1 表示完全断网预演，其他值或未设置表示正式执行。"
+        },
+        {
+          "name": "ALIYUN_PUSH_PLUS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 PushPlus 官网账户获取推送令牌，存入青龙私密环境变量。",
+          "format": "单个 PushPlus 推送令牌；未设置时只使用青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "默认 1；0、false、no、off 关闭全部通知，大小写不敏感。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如默认青龙路径未找到通知模块，填写本机青龙 sendNotify.js 所在目录。业务执行不依赖此目录。",
+          "format": "可选通知模块目录；默认依次查找 /ql/data/scripts、/ql/scripts 和候选脚本所在目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "refreshToken 每个非空行一个账号；账号顺序独立执行，任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "通过刷新令牌获取访问令牌并展示官方返回的昵称、用户名或公开用户标识",
+        "每日签到并展示本月累计签到天数",
+        "领取当日奖励并识别已领取状态",
+        "查询并展示本月签到日历",
+        "展示当日签到奖励和任务奖励概览",
+        "每行一个账号，独立执行并汇总失败",
+        "完全断网预演，模拟通知并明确未验证真实业务",
+        "青龙脱敏通知及可选 HTTPS PushPlus 推送，支持全局关闭",
+        "分阶段时间轴日志、逐账号统计和单行 TASK_SUMMARY 结构化汇总"
+      ],
+      "sideEffects": [
+        "刷新账号访问令牌",
+        "执行每日签到",
+        "领取当日签到奖励",
+        "向青龙通知渠道和可选 PushPlus 渠道发送脱敏任务总结（预演不发送）"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/bd7e90cbb255e115",
+        "candidateSha256": "8041214fed7451c8a88e1b12400df21508140c7a0f07b4ca350846deafeb3cc2"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "8041214fed7451c8a88e1b12400df21508140c7a0f07b4ca350846deafeb3cc2",
+        "releaseSha256": "e247d342c3624bc2e7cc9da6f1808d8dfeffe19f1df4a64d3a410b2b87a4ac0b",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "9c6fa7a75879fa8b",
       "displayName": "阿里云盘签到",
       "path": "scripts/aliyunpan_checkin.py",
