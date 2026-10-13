@@ -33,6 +33,7 @@
 | --- | --- | --- | --- |
 | 依赖安装 | `scripts/install_dependencies.sh` | `task scripts/install_dependencies.sh` | `23 4 * * 1` |
 | 华润通999答题 | `scripts/999.py` | `python3 scripts/999.py` | `1 1 1 1 1` |
+| AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `0 8 * * *` |
 | 阿里云盘每日签到 | `scripts/aliyundrive_checkin.js` | `node scripts/aliyundrive_checkin.js` | `0 8 * * *` |
 | 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `3 11 * * *` |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `0 8 * * *` |
@@ -169,6 +170,7 @@
 ## 脚本功能
 
 - `scripts/999.py`：按原接口获取华润通999题目；展示题目、选项和接口标记的正确答案；支持单选或多选正确选项并提交答案；按上游 resultCode 字符串 0 验证获取和提交成功，不推断积分到账；多账号独立处理和失败退出；本地模拟完整答题流程的断网预演；按时间轴记录阶段耗时、账号和任务统计，并输出单条结构化汇总；正式执行通过青龙通知发送脱敏摘要，断网预演在本地输出摘要；展示官方接口返回的非敏感昵称、用户名、显示名称或公开标识。
+- `scripts/acfun.py`：手机号密码登录及多账号独立执行；每日签到及等级、香蕉余额查询；显示官方返回的非秘密昵称、用户名或公开用户标识；排行榜选择视频，支持显式点赞、点赞后取消和投一根香蕉；读取实际视频及分区信息后显式发布弹幕；禁止硬编码目标回退；弹幕优先使用独立无凭据的一言请求，保留正文与作者、来源署名；各类失败均回退本地文案；使用配套 App 登录凭据显式上报分享任务；完全断网预演、通知入口、带时间戳的分阶段统计和单行机器可读汇总。
 - `scripts/aliyundrive_checkin.js`：通过刷新令牌获取访问令牌并展示官方返回的昵称、用户名或公开用户标识；每日签到并展示本月累计签到天数；领取当日奖励并识别已领取状态；查询并展示本月签到日历；展示当日签到奖励和任务奖励概览；每行一个账号，独立执行并汇总失败；完全断网预演，模拟通知并明确未验证真实业务；青龙脱敏通知及可选 HTTPS PushPlus 推送，支持全局关闭；分阶段时间轴日志、逐账号统计和单行 TASK_SUMMARY 结构化汇总。
 - `scripts/aliyunpan_checkin.py`：执行阿里云盘每日会员签到并明确验证接口结果；签到后领取当日奖励，支持显式关闭领奖；按当日签到记录识别已领取奖励，展示奖励信息；按换行多账号独立处理并汇总退出状态；提供完全断网且结果确定的预演模拟；检测刷新令牌轮换并可选安全写入本地文件；保留可选执行前随机延迟与每日 11:03 调度；展示官方返回的非秘密账号身份，输出分阶段脱敏日志与统计；发送青龙脱敏任务通知，通知故障不改变业务退出码，预演模拟通知。
 - `scripts/aolaxing.py`：查询每日任务列表、今日任务总数及完成数。；按显式指定任务 ID 执行未完成任务，执行后重新读取列表核验已完成状态；已完成任务不重复执行。；查询当前积分、累计获得积分和累计签到次数。；官方响应返回昵称、用户名、显示名称或公开 UID 时显示非敏感身份；抑制手机号和凭据。；逐行多账号、上游配置键名兼容、断网预演、独立 HTTPS 请求、超时和失败非零退出。；时间轴阶段日志、账号与任务统计、单行机器汇总和青龙脱敏通知。。
@@ -310,6 +312,7 @@
 <thead><tr><th>脚本</th><th>变量</th><th>敏感</th><th>填写格式</th></tr></thead>
 <tbody>
 <tr><td rowspan="1"><code>scripts/999.py</code></td><td><code>HRT999_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个完整 JSON 对象；必填 mobile（十一位中国大陆手机号）和 token（非空字符串）；可选 user_agent（无换行字符串）及 account_name（原有账号备注兼容字段，不用于业务验证）。JSON 可无歧义保留凭据中的分隔符。不要用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/acfun.py</code></td><td><code>ACFUN_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为 手机号|密码；仅在第一个 | 分割，密码中的后续 | 和首尾空格原样保留。手机号两侧空格忽略；不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aliyundrive_checkin.js</code></td><td><code>refreshToken</code></td><td>是</td><td>格式：每个非空行填写一个账号的 refresh_token；仅按换行分隔，不支持 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aliyunpan_checkin.py</code></td><td><code>ALIYUN_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的刷新令牌，不填写整段 JSON，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aolaxing.py</code></td><td><code>AOLAXING_COOKIE</code></td><td>是</td><td>格式：每行一个账号的完整 Cookie；不按 &amp;、@ 或分号拆分账号。；多账号格式以该脚本文档为准</td></tr>
@@ -456,6 +459,11 @@
 <tr><td rowspan="3"><code>scripts/999.py</code></td><td><code>HRT999_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演，其余值正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启；断网预演仅在日志输出通知摘要，不外发。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录；缺失或发送失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/acfun.py</code></td><td><code>ACFUN_TASKS</code></td><td>否</td><td>格式：逗号分隔 sign（签到）、info（等级和香蕉余额查询）、like（点赞）、like-cycle（点赞后取消）、danmu（公开弹幕）、banana（投一根香蕉）、share（分享任务上报）；不得重复，like 与 like-cycle 不可同时选择。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ACFUN_LOCAL_TEXT</code></td><td>否</td><td>格式：空白合并后须为 1 至 280 字符，仅 danmu 使用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ACFUN_DRY_RUN</code></td><td>否</td><td>格式：1 开启完全断网预演；0、false、no、off 或空值关闭。预演不验证真实业务。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余值开启，默认 1。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录路径；依次尝试导入 notify.send、此目录的 notify.py、/ql/data/scripts/notify.py、/ql/scripts/notify.py。通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/aliyundrive_checkin.js</code></td><td><code>ALIYUNDRIVE_DRY_RUN</code></td><td>否</td><td>格式：1 表示完全断网预演，其他值或未设置表示正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ALIYUN_PUSH_PLUS</code></td><td>是</td><td>格式：单个 PushPlus 推送令牌；未设置时只使用青龙通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭全部通知，大小写不敏感。；多账号格式以该脚本文档为准</td></tr>
@@ -1190,6 +1198,7 @@
 多账号统一规则：每行一个账号；需要多个凭据变量时按相同非空行号配对，行数必须一致。
 
 - `scripts/999.py`：每个非空行一个 JSON 账号对象，手机号和令牌须属于同一账号。账号按行独立处理，任一账号配置或业务失败则整体非零退出。。
+- `scripts/acfun.py`：每个非空行一个 手机号|密码；仅拆分第一个 |，逐账号独立登录和执行任务；任一账号失败则整个进程非零退出。。
 - `scripts/aliyundrive_checkin.js`：refreshToken 每个非空行一个账号；账号顺序独立执行，任一账号失败则进程非零退出。。
 - `scripts/aliyunpan_checkin.py`：每个非空行一个账号；逐账号独立处理，任何账号失败均非零退出，安全持久化按原账号顺序保存。。
 - `scripts/aolaxing.py`：每个非空行对应一个账号，整行保留；逐账号独立处理，任何账号失败则整体非零退出。兼容变量 AOLAXING 使用原 JSON 数组。。
@@ -1327,6 +1336,13 @@
 - 所属脚本：`scripts/999.py`
 - 获取或设置：本人登录华润通999答题页面，使用浏览器开发者工具或本人设备抓包查看 api4.jiankangyouyi.com 的答题请求。取请求头 token 与 customdata 中的 mobile；可选 user_agent 使用同一请求的 User-Agent。仅保存在青龙环境变量中，不分享抓包数据。上游未提供更详细的登录入口或令牌有效期，请以本人实际请求为准。
 - 填写格式：`每个非空行为一个完整 JSON 对象；必填 mobile（十一位中国大陆手机号）和 token（非空字符串）；可选 user_agent（无换行字符串）及 account_name（原有账号备注兼容字段，不用于业务验证）。JSON 可无歧义保留凭据中的分隔符。不要用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ACFUN_ACCOUNTS`
+
+- 所属脚本：`scripts/acfun.py`
+- 获取或设置：使用本人 AcFun 注册手机号和密码；先在官方客户端确认可正常登录，再录入青龙环境变量。验证码或风控导致登录失败时需本人在官方客户端处理。
+- 填写格式：`每个非空行一个账号，格式为 手机号|密码；仅在第一个 | 分割，密码中的后续 | 和首尾空格原样保留。手机号两侧空格忽略；不得使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `refreshToken`
@@ -2277,6 +2293,36 @@
 - 所属脚本：`scripts/999.py`
 - 获取或设置：可选，填写青龙 notify.py 或 sendNotify.js 所在目录；默认自动发现常用青龙目录。
 - 填写格式：`本地通知模块目录；缺失或发送失败不改变业务退出码。`
+
+#### `ACFUN_TASKS`
+
+- 所属脚本：`scripts/acfun.py`
+- 获取或设置：按需要在青龙中设置；默认 sign,info。公开发布、消费香蕉和点赞操作均须显式选择。
+- 填写格式：`逗号分隔 sign（签到）、info（等级和香蕉余额查询）、like（点赞）、like-cycle（点赞后取消）、danmu（公开弹幕）、banana（投一根香蕉）、share（分享任务上报）；不得重复，like 与 like-cycle 不可同时选择。`
+
+#### `ACFUN_LOCAL_TEXT`
+
+- 所属脚本：`scripts/acfun.py`
+- 获取或设置：可选本地弹幕备用文案；默认“今天也要保持好心情。”；一言不可用或内容校验失败时使用。
+- 填写格式：`空白合并后须为 1 至 280 字符，仅 danmu 使用。`
+
+#### `ACFUN_DRY_RUN`
+
+- 所属脚本：`scripts/acfun.py`
+- 获取或设置：离线验证时设置为 1；正式任务不设置或设为 0。
+- 填写格式：`1 开启完全断网预演；0、false、no、off 或空值关闭。预演不验证真实业务。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/acfun.py`
+- 获取或设置：使用青龙自带通知配置；默认开启。离线烟雾测试设为 0；开启时预演仍尝试通知入口，但禁止网络和外部进程。
+- 填写格式：`0、false、no、off 关闭，其余值开启，默认 1。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/acfun.py`
+- 获取或设置：若青龙的 notify.py 不在常规路径，可设置其所在目录；无需私有工作流仓库。
+- 填写格式：`可选目录路径；依次尝试导入 notify.send、此目录的 notify.py、/ql/data/scripts/notify.py、/ql/scripts/notify.py。通知不可用或失败不改变业务退出码。`
 
 #### `ALIYUNDRIVE_DRY_RUN`
 
@@ -6747,6 +6793,7 @@
 ## 验证与兼容性
 
 - `scripts/999.py`：SHA-256 `c42405330b4bfbd4f50bdc0b0e37203134a0ea24701f9d51e3e5a5a680419b84`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ea0312febc74515`。
+- `scripts/acfun.py`：SHA-256 `006ac42bec4fba6c9e41599da022e9b425b4ca5b6617bcd66c0403ab8917ed65`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
 - `scripts/aliyundrive_checkin.js`：SHA-256 `e247d342c3624bc2e7cc9da6f1808d8dfeffe19f1df4a64d3a410b2b87a4ac0b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd7e90cbb255e115`。
 - `scripts/aliyunpan_checkin.py`：SHA-256 `eaaba6cb8f2216f2cfcef6262eeb6b2ec158db78b97957c8d10af0b2da678bc1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
 - `scripts/aolaxing.py`：SHA-256 `5e2e40940a4bd132b7f240273fe1e6850ace43aa93856a8ee9871aa263ee7b46`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ca8984737c9322f`。
@@ -6883,6 +6930,7 @@
 ## 副作用与风险
 
 - `scripts/999.py`：正式执行提交答题选项，可能按活动规则产生积分奖励；正式执行在通知开启且模块可用时外发脱敏任务摘要。
+- `scripts/acfun.py`：默认执行每日签到，更新签到状态；选择 like 时新增点赞；选择 like-cycle 时新增点赞后取消；选择 danmu 时向所选视频公开发布一条弹幕；选择 banana 时向所选视频投出一根香蕉，消耗余额；选择 share 时上报分享任务完成状态；开启通知时尝试发送脱敏任务总结，预演阻止网络传输。
 - `scripts/aliyundrive_checkin.js`：刷新账号访问令牌；执行每日签到；领取当日签到奖励；向青龙通知渠道和可选 PushPlus 渠道发送脱敏任务总结（预演不发送）。
 - `scripts/aliyunpan_checkin.py`：正式执行时刷新账号访问令牌，并可能轮换刷新令牌；正式执行时为每个账号完成阿里云盘会员签到；默认正式执行时领取当日签到奖励，可通过 ALIYUN_CLAIM_REWARD=0 关闭；明确启用持久化且检测到轮换时，将当前刷新令牌原子写入指定本地文件；正式执行通知开启时通过青龙通知组件发送脱敏总结。
 - `scripts/aolaxing.py`：配置 AOLAXING_TASK_IDS 时触发对应每日任务完成及服务端关联积分或签到状态变更，具体效果以用户审阅的任务为准。；在线运行且通知开启时发送青龙任务汇总通知。。
@@ -7021,6 +7069,7 @@
 仓库发布许可证：`GPL-3.0-only`。每个脚本仍保留准确来源：
 
 - `scripts/999.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/999/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
+- `scripts/acfun.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/acfun/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/aliyundrive_checkin.js`：上游 `huwangkeji/aliyundrive_checkin` / `aliyundrive_checkin.js` / `267ee025840c5b55dce5b5e1e365fb52ac500fce`。
 - `scripts/aliyunpan_checkin.py`：上游 `agluo/ql-script-hub` / `aliyunpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/aolaxing.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/aolaxing/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
