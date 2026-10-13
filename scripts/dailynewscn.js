@@ -28,7 +28,13 @@ DAY60S_DRY_RUN=1 兼容该模式断网预演；统一预演开关对所有模式
 DYHOT_LIST 为本地执行标记，在青龙手工填写 1；无需账号，不发送标记。
 DYHOT_DRY_RUN=1 兼容抖音榜断网预演；统一预演开关对所有模式生效。
 抖音榜另建同文件任务，设置 DAILYNEWSCN_TASK=dyhot，保持定时 0 25 9 * * *。
-功能覆盖对比：原维护日报、百度榜、抽签、世界新闻全部保留；仅补充主来源抖音前五热搜。
+功能覆盖对比：保留维护版日报、百度榜、抽签、世界新闻、抖音榜全部能力及默认值；新增鸡汤。
+原鸡汤来源 hot/jitang.js：09:30 读取公开短句并通知，无需账号，JITANG_LIST 为本地执行标记。
+新增 DAILYNEWSCN_TASK=jitang：HTTPS GET https://jkapi.com/api/dujitang，不发送标记或凭据。
+JITANG_LIST 在青龙手工填写 1，兼容旧非空值；JITANG_DRY_RUN=1 仅预演鸡汤。
+鸡汤另建同文件任务，设置 DAILYNEWSCN_TASK=jitang，保持定时 0 30 9 * * *。
+鸡汤沿用文本响应、超时、大小及错误页校验；允许短句，成功输出 JITANG_SUCCESS。
+不发布帖子、评论或分享文本，随机发文内容策略不适用；断网预演不会调用任何远程服务。
 修正前轮导入失败：契约 smokeTest.env 必须包含 dryRunEnv 的全部键值。
 上游均公开读取并通知；移除私有工作表适配器、写表和无超时请求。
 本任务无需账号，LIST 是执行标记，不能当作凭据或真实账号成功数。
@@ -36,10 +42,10 @@ DYHOT_DRY_RUN=1 兼容抖音榜断网预演；统一预演开关对所有模式�
 公开任务只读取一次，无账号循环；多个非空行仅兼容旧标记，不代表多账号。
 原抽签来源只有 HTTP 地址证据，保持原 GET URL，不发送凭据，不假设 HTTPS 已可用。
 完整 data 字符串字段与非空签等级为抽签业务校验；没有已证实的固定业务码，不臆造接口。
-参考来源：hot/chouq.js、hot/dailynewscn.js、hot/bdhot.js、hot/day60s.js、hot/dyhot.js。
+参考来源：hot/chouq.js、hot/dailynewscn.js、hot/bdhot.js、hot/day60s.js、hot/dyhot.js、hot/jitang.js。
 各源原作者标识均为 ql_sign_script : https://github.com/unitaryhighs/ql_sign_script，MIT。
 不复用上游私有 airscriptShim、工作表写入和自定义推送凭据。
-仅访问所选任务的上游公开日报、百度热搜、抽签、世界新闻或抖音热搜接口，不写表格、不发布帖子、不修改账号。
+仅访问所选任务的上游公开日报、百度热搜、抽签、世界新闻、抖音热搜或鸡汤接口，不写表格、不发布帖子、不修改账号。
 
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -65,15 +71,16 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const requestedTask = process.env.DAILYNEWSCN_TASK === undefined ? 'dailynewscn' : process.env.DAILYNEWSCN_TASK.trim();
-const task = ['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot'].includes(requestedTask) ? requestedTask : 'invalid';
+const task = ['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang'].includes(requestedTask) ? requestedTask : 'invalid';
 const isBaidu = task === 'bdhot';
 const isDraw = task === 'chouq';
 const isWorld = task === 'day60s';
 const isDouyin = task === 'dyhot';
-const TITLE = isDouyin ? '抖音热搜榜' : isWorld ? '每天60秒读懂世界' : isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
-const marker = isDouyin ? 'DYHOT_LIST' : isWorld ? 'DAY60S_LIST' : isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
-const URL = isDouyin ? 'https://jkapi.com/api/dy_hot?limit=5' : isWorld ? 'https://jkapi.com/api/day_60s' : isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
-const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1') || (isWorld && process.env.DAY60S_DRY_RUN === '1') || (isDouyin && process.env.DYHOT_DRY_RUN === '1');
+const isJitang = task === 'jitang';
+const TITLE = isJitang ? '鸡汤' : isDouyin ? '抖音热搜榜' : isWorld ? '每天60秒读懂世界' : isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
+const marker = isJitang ? 'JITANG_LIST' : isDouyin ? 'DYHOT_LIST' : isWorld ? 'DAY60S_LIST' : isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
+const URL = isJitang ? 'https://jkapi.com/api/dujitang' : isDouyin ? 'https://jkapi.com/api/dy_hot?limit=5' : isWorld ? 'https://jkapi.com/api/day_60s' : isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
+const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1') || (isWorld && process.env.DAY60S_DRY_RUN === '1') || (isDouyin && process.env.DYHOT_DRY_RUN === '1') || (isJitang && process.env.JITANG_DRY_RUN === '1');
 const started = Date.now();
 const stamp = () => new Date().toLocaleTimeString('zh-CN', { hour12: false });
 const log = text => console.log(`[${stamp()}] ${text}`);
@@ -126,10 +133,10 @@ function getReport() {
 function parseReport(text) {
   const cleaned = text.replace(/^\uFEFF/, '').trim();
   // 原来源只有文本响应，没有可验证的 JSON 业务码，拒绝错误页和未知结构。
-  if (cleaned.length < 20 || !/[\u3400-\u9fff]/u.test(cleaned) ||
+  if (cleaned.length < (isJitang ? 2 : 20) || !/[\u3400-\u9fff]/u.test(cleaned) ||
       /^[\[{]/.test(cleaned) || /<\/?(?:html|body|script|head)\b/i.test(cleaned) ||
       /(?:接口|请求|服务|参数).{0,12}(?:失败|错误|异常|限流|无效|维护)|访问频繁|请求过多|额度不足|今日暂无|暂无数据|暂无新闻|access denied|unauthorized|rate limit|internal server error/i.test(cleaned)) {
-    throw new Error((isBaidu || isDouyin) ? '热搜内容为空、错误提示或无法验证为榜单文本' : '日报内容为空、错误提示或无法验证为新闻文本');
+    throw new Error(isJitang ? '鸡汤内容为空、错误提示或无法验证为中文文本' : (isBaidu || isDouyin) ? '热搜内容为空、错误提示或无法验证为榜单文本' : '日报内容为空、错误提示或无法验证为新闻文本');
   }
   const lines = cleaned.split(/\r?\n/).map(line => line.replace(/[\u0000-\u001f\u007f-\u009f]/g, '').trim()).filter(Boolean);
   return lines.map(line => line
@@ -201,9 +208,9 @@ async function main() {
   const stageStart = Date.now();
   log('阶段 1/3：检查执行参数');
   const entries = (process.env[marker] || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-  if (!['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot'].includes(task) || !entries.length) {
+  if (!['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang'].includes(task) || !entries.length) {
     failure = 1;
-    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn、bdhot、chouq、day60s 或 dyhot；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
+    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn、bdhot、chouq、day60s、dyhot 或 jitang；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
     log('阶段 2/3：⏭️ 配置错误，跳过获取；阶段耗时 0 毫秒');
   } else {
     log(`✅ 执行标记检查通过；阶段耗时 ${Date.now() - stageStart} 毫秒`);
@@ -211,7 +218,7 @@ async function main() {
     log(`阶段 2/3：获取并验证${TITLE}`);
     try {
       if (dryRun) {
-        report = isDraw ? parseDraw(JSON.stringify({ data: { draw: '本地测试签 (上签)', annotate: '本地卦象，仅验证格式', explain: '本地解签　仅用于断网预演', source: '本地典故。非真实抽签结果。' } })) : parseReport(isDouyin ? '抖音热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : isWorld ? '每天60秒读懂世界断网预演\n这是一条本地世界新闻，仅用于验证文本处理流程，不代表今日真实新闻。' : isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
+        report = isDraw ? parseDraw(JSON.stringify({ data: { draw: '本地测试签 (上签)', annotate: '本地卦象，仅验证格式', explain: '本地解签　仅用于断网预演', source: '本地典故。非真实抽签结果。' } })) : parseReport(isJitang ? '本地鸡汤短句，仅用于断网预演。' : isDouyin ? '抖音热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : isWorld ? '每天60秒读懂世界断网预演\n这是一条本地世界新闻，仅用于验证文本处理流程，不代表今日真实新闻。' : isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
         skipped = 1;
         status = 'dry-run';
         log(`✅ DRY_RUN_OK：本地${TITLE}解析通过，HTTP 请求已跳过`);
@@ -220,7 +227,7 @@ async function main() {
         report = isDraw ? parseDraw(responseText) : parseReport(responseText);
         success = 1;
         status = 'success';
-        log(`✅ ${isDouyin ? 'DYHOT_SUCCESS' : isWorld ? 'DAY60S_SUCCESS' : isDraw ? 'CHOUQ_SUCCESS' : isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及${isDraw ? '签文结构' : '文本'}检查通过，共 ${report.length} 行`);
+        log(`✅ ${isJitang ? 'JITANG_SUCCESS' : isDouyin ? 'DYHOT_SUCCESS' : isWorld ? 'DAY60S_SUCCESS' : isDraw ? 'CHOUQ_SUCCESS' : isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及${isDraw ? '签文结构' : '文本'}检查通过，共 ${report.length} 行`);
         console.log(`【${TITLE}】\n` + report.join('\n'));
       }
     } catch (error) {

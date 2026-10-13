@@ -5321,16 +5321,18 @@
           "DAILYNEWSCN_LIST"
         ],
         "optionalEnv": [
-          "BDHOT_LIST",
-          "CHOUQ_LIST",
-          "DAY60S_LIST",
-          "DYHOT_LIST",
           "DAILYNEWSCN_TASK",
           "DAILYNEWSCN_DRY_RUN",
+          "BDHOT_LIST",
           "BDHOT_DRY_RUN",
+          "CHOUQ_LIST",
           "CHOUQ_DRY_RUN",
+          "DAY60S_LIST",
           "DAY60S_DRY_RUN",
+          "DYHOT_LIST",
           "DYHOT_DRY_RUN",
+          "JITANG_LIST",
+          "JITANG_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
@@ -5346,24 +5348,27 @@
           "BDHOT_SUCCESS",
           "CHOUQ_SUCCESS",
           "DAY60S_SUCCESS",
-          "DYHOT_SUCCESS"
+          "DYHOT_SUCCESS",
+          "JITANG_SUCCESS"
         ],
         "features": [
-          "默认每天 09:15 通过原 HTTPS GET 接口获取、整理输出中国日报并通知，保留 DAILYNEWSCN_LIST 参数及 DAILYNEWSCN_SUCCESS 成功标记。",
-          "DAILYNEWSCN_TASK=bdhot 时通过原 HTTPS GET 接口及 limit=5 获取百度前五热搜，保留 BDHOT_LIST、BDHOT_DRY_RUN 和 BDHOT_SUCCESS；另建同文件任务使用 0 0 9 * * *。",
-          "DAILYNEWSCN_TASK=chouq 时通过原 HTTP GET 接口随机抽签，输出签文、等级颜色、卦象、解签换行与典故首句；使用 CHOUQ_LIST 和 CHOUQ_SUCCESS，另建同文件任务使用 0 10 9 * * *。",
-          "所有执行标记仅在本地检查，无需账号、不发送标记；使用标准 Node.js 库独立请求，十秒总超时及 128 KiB 响应上限。",
-          "日报和百度榜保留 HTTP 200、中文文本、长度与错误页校验，拒绝未知 JSON、HTML、中断、超时及过大响应；抽签要求 HTTP 200、有效 JSON、完整签文字段、非空签等级（其他等级沿用中性色图标）且无明确失败标记，失败非零退出。",
-          "完全断网预演采用本地文本或签文，模拟通知，不加载通知模块；支持全部模式统一预演及百度榜、抽签兼容开关。",
-          "保留全局通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演均汇总，通知不可用不改变业务退出码。",
-          "保留带时间戳的编号阶段、耗时与统计、原成功标记及唯一单行 TASK_SUMMARY；公开任务账号总数为零，不记录真实业务账号成功。",
-          "新增 DAILYNEWSCN_TASK=day60s，通过原 HTTPS GET https://jkapi.com/api/day_60s 获取世界新闻，保留标题、文本输出与通知；使用 DAY60S_LIST 本地执行标记，支持 DAY60S_DRY_RUN；通过同文件另建任务保持 0 20 9 * * * 调度。",
-          "世界新闻沿用维护版十秒总超时、128 KiB 上限、HTTP 200、中文文本和错误页校验；验证通过才输出 DAY60S_SUCCESS，失败非零退出。",
-          "新增 DAILYNEWSCN_TASK=dyhot，通过原 HTTPS GET https://jkapi.com/api/dy_hot?limit=5 获取、整理输出并通知抖音前五热搜；保留 DYHOT_LIST，支持 DYHOT_DRY_RUN，验证成功输出 DYHOT_SUCCESS；同文件另建任务保持 0 25 9 * * *。",
-          "抖音榜沿用十秒总超时、128 KiB 上限、HTTP 200、中文文本长度与错误页检查；拒绝未知 JSON、HTML、中断、超时和过大响应，失败非零退出。"
+          "DAILYNEWSCN_TASK=dailynewscn 时读取、校验、输出并通知中国日报；保留 DAILYNEWSCN_LIST 和 DAILYNEWSCN_SUCCESS；同文件另建任务保持 0 15 9 * * * 调度。",
+          "DAILYNEWSCN_TASK=bdhot 时读取、校验、输出并通知百度前五热搜；保留 BDHOT_LIST 和 BDHOT_SUCCESS；同文件另建任务保持 0 0 9 * * * 调度。",
+          "DAILYNEWSCN_TASK=chouq 时读取、校验、输出并通知随机抽签；保留 CHOUQ_LIST 和 CHOUQ_SUCCESS；同文件另建任务保持 0 10 9 * * * 调度。",
+          "DAILYNEWSCN_TASK=day60s 时读取、校验、输出并通知每天60秒读懂世界；保留 DAY60S_LIST 和 DAY60S_SUCCESS；同文件另建任务保持 0 20 9 * * * 调度。",
+          "DAILYNEWSCN_TASK=dyhot 时读取、校验、输出并通知抖音前五热搜；保留 DYHOT_LIST 和 DYHOT_SUCCESS；同文件另建任务保持 0 25 9 * * * 调度。",
+          "DAILYNEWSCN_TASK=jitang 时读取、校验、输出并通知鸡汤；保留 JITANG_LIST 和 JITANG_SUCCESS；同文件另建任务保持 0 30 9 * * * 调度。",
+          "默认日报模式及原接口不变；百度榜和抖音榜保留 limit=5；鸡汤保留原 HTTPS GET 接口，支持短句。",
+          "抽签保留原 HTTP GET 接口、签文、签等级颜色、卦象、解签全角空格换行、典故首句及省略号；未知非空等级保留中性色图标。",
+          "无需账号；标记按非空行解析，公开内容只获取一次，不发送标记，不计为真实账号成功。",
+          "使用标准库独立请求，十秒总超时、128 KiB 上限、HTTP 200 及中文文本或抽签完整字段检查；拒绝错误页、未知 JSON、HTML、中断、超时和过大响应，失败非零退出。",
+          "保留统一预演开关和各模式兼容开关；本地解析并模拟通知，不调用网络，不加载通知模块，不声称真实业务成功。",
+          "保留全局通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演均汇总；通知不可用或失败不改变业务退出码。",
+          "带时间戳的任务横幅、起止时间、编号阶段、耗时和统计；保留原成功标记，追加唯一单行 TASK_SUMMARY JSON。",
+          "脱敏手机号、凭据、会话、签名及设备标识，不输出原始响应。"
         ],
         "sideEffects": [
-          "正式运行且通知启用时，向青龙已配置渠道发送所选公开内容与脱敏总结。"
+          "正式运行且通知启用时，向青龙已配置渠道发送所选公开内容和脱敏总结。"
         ]
       },
       "postReview": {
@@ -5372,7 +5377,7 @@
       },
       "displayName": "中国日报",
       "path": "scripts/dailynewscn.js",
-      "sha256": "a0fd29cfd915eb14a4907f4872d9c9edb29ab42e409869c99469d851fdf65c08",
+      "sha256": "572ad7e80f4f07210a7270a17b5329d8bf8dc2a042b3fb72ae60be59b83d8d82",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -5421,6 +5426,16 @@
             "catalogId": "2b7db030e2a4a19d",
             "sha256": "29263411ae33e459c000dce36ced8f0c6f6f0dc9d8bd5afea609fcde81b1294f",
             "license": "MIT"
+          },
+          {
+            "repository": "unitaryhighs/ql_sign_script",
+            "url": "https://github.com/unitaryhighs/ql_sign_script.git",
+            "branch": "main",
+            "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+            "originalPath": "hot/jitang.js",
+            "catalogId": "23073e422a4af232",
+            "sha256": "a85b592af2a5f3c5585e4e2a54ef2c114a1003c465cd00b3d55402a3cca66ff2",
+            "license": "MIT"
           }
         ]
       },
@@ -5428,120 +5443,136 @@
       "command": "node scripts/dailynewscn.js",
       "environment": [
         {
-          "name": "DAILYNEWSCN_LIST",
-          "required": true,
-          "sensitive": false,
-          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择默认日报模式时必须配置此执行标记，其他模式无需配置。",
-          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
-        },
-        {
-          "name": "BDHOT_LIST",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择百度热搜模式时必须配置此执行标记，其他模式无需配置。",
-          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
-        },
-        {
-          "name": "CHOUQ_LIST",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择随机抽签模式时必须配置此执行标记，其他模式无需配置。",
-          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
-        },
-        {
-          "name": "DAY60S_LIST",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择世界新闻模式时必须配置此执行标记，其他模式无需配置。",
-          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
-        },
-        {
-          "name": "DYHOT_LIST",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择抖音热搜模式时必须配置此执行标记，其他模式无需配置。",
-          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
-        },
-        {
           "name": "DAILYNEWSCN_TASK",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙任务中选择模式；默认 dailynewscn。",
-          "format": "dailynewscn、bdhot、chouq、day60s 或 dyhot；分别使用 0 15 9 * * *、0 0 9 * * *、0 10 9 * * *、0 20 9 * * *、0 25 9 * * *，均指向同一文件。"
+          "howToGet": "在青龙环境变量中选择任务，默认 dailynewscn。不同时间的任务指向同一文件，分别设置任务变量及定时。",
+          "format": "可选 dailynewscn、bdhot、chouq、day60s、dyhot、jitang；每次只执行一种任务。"
+        },
+        {
+          "name": "DAILYNEWSCN_LIST",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "无需注册、登录或账号凭据；在青龙手工填写 1，仅作本地执行标记，不向接口发送。",
+          "format": "选择 dailynewscn 时必填；填写 1，兼容旧非空值及每行一个标记；多行仍只读取一次，不代表多账号。该模式定时 0 15 9 * * *。"
         },
         {
           "name": "DAILYNEWSCN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
-          "format": "1 启用；未配置时正式运行。"
+          "howToGet": "在青龙手工设置；预演跳过网络并模拟通知，不加载通知模块。",
+          "format": "1 启用，其他值关闭。对所有模式生效。"
+        },
+        {
+          "name": "BDHOT_LIST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需注册、登录或账号凭据；在青龙手工填写 1，仅作本地执行标记，不向接口发送。",
+          "format": "选择 bdhot 时必填；填写 1，兼容旧非空值及每行一个标记；多行仍只读取一次，不代表多账号。该模式定时 0 0 9 * * *。"
         },
         {
           "name": "BDHOT_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
-          "format": "1 启用；未配置时正式运行。"
+          "howToGet": "在青龙手工设置；预演跳过网络并模拟通知，不加载通知模块。",
+          "format": "1 启用，其他值关闭。仅对 bdhot 模式生效。"
+        },
+        {
+          "name": "CHOUQ_LIST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需注册、登录或账号凭据；在青龙手工填写 1，仅作本地执行标记，不向接口发送。",
+          "format": "选择 chouq 时必填；填写 1，兼容旧非空值及每行一个标记；多行仍只读取一次，不代表多账号。该模式定时 0 10 9 * * *。"
         },
         {
           "name": "CHOUQ_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
-          "format": "1 启用；未配置时正式运行。"
+          "howToGet": "在青龙手工设置；预演跳过网络并模拟通知，不加载通知模块。",
+          "format": "1 启用，其他值关闭。仅对 chouq 模式生效。"
+        },
+        {
+          "name": "DAY60S_LIST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需注册、登录或账号凭据；在青龙手工填写 1，仅作本地执行标记，不向接口发送。",
+          "format": "选择 day60s 时必填；填写 1，兼容旧非空值及每行一个标记；多行仍只读取一次，不代表多账号。该模式定时 0 20 9 * * *。"
         },
         {
           "name": "DAY60S_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
-          "format": "1 启用；未配置时正式运行。"
+          "howToGet": "在青龙手工设置；预演跳过网络并模拟通知，不加载通知模块。",
+          "format": "1 启用，其他值关闭。仅对 day60s 模式生效。"
+        },
+        {
+          "name": "DYHOT_LIST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需注册、登录或账号凭据；在青龙手工填写 1，仅作本地执行标记，不向接口发送。",
+          "format": "选择 dyhot 时必填；填写 1，兼容旧非空值及每行一个标记；多行仍只读取一次，不代表多账号。该模式定时 0 25 9 * * *。"
         },
         {
           "name": "DYHOT_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
-          "format": "1 启用；未配置时正式运行。"
+          "howToGet": "在青龙手工设置；预演跳过网络并模拟通知，不加载通知模块。",
+          "format": "1 启用，其他值关闭。仅对 dyhot 模式生效。"
+        },
+        {
+          "name": "JITANG_LIST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需注册、登录或账号凭据；在青龙手工填写 1，仅作本地执行标记，不向接口发送。",
+          "format": "选择 jitang 时必填；填写 1，兼容旧非空值及每行一个标记；多行仍只读取一次，不代表多账号。该模式定时 0 30 9 * * *。"
+        },
+        {
+          "name": "JITANG_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙手工设置；预演跳过网络并模拟通知，不加载通知模块。",
+          "format": "1 启用，其他值关闭。仅对 jitang 模式生效。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙已配置的通知渠道；手工设置此全局通知开关。",
-          "format": "默认 1；0、false、no、off（不区分大小写）禁用。"
+          "howToGet": "使用青龙已有通知配置，可通过此变量关闭通知。",
+          "format": "默认 1；0、false、no、off 禁用，不区分大小写。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选填写青龙 sendNotify.js 所在目录；未配置时依次查找 /ql/data/scripts 和 /ql/scripts。",
-          "format": "本地目录路径；通知模块不可用或失败不改变业务退出码，预演不加载模块。"
+          "howToGet": "可选填写青龙已配置的 sendNotify.js 所在目录；未设置时查找青龙标准目录。",
+          "format": "本地目录路径；通知模块为可选集成，不是业务运行依赖。"
         }
       ],
       "multiAccount": {
         "supported": false,
         "separator": "",
-        "rule": "公开内容任务无需账号。执行标记按非空行读取，仅兼容旧参数且只请求一次，不统计为业务账号。",
-        "unsupportedReason": "公开接口无需登录或账号凭据，多账号没有业务意义。"
+        "rule": "公开内容任务无需账号，每次运行所选任务一次；非空标记行不代表账号。",
+        "unsupportedReason": "接口无需身份认证，没有可独立处理的账号凭据或账号业务。"
       },
       "dependencies": [],
       "features": [
-        "默认每天 09:15 通过原 HTTPS GET 接口获取、整理输出中国日报并通知，保留 DAILYNEWSCN_LIST 参数及 DAILYNEWSCN_SUCCESS 成功标记。",
-        "DAILYNEWSCN_TASK=bdhot 时通过原 HTTPS GET 接口及 limit=5 获取百度前五热搜，保留 BDHOT_LIST、BDHOT_DRY_RUN 和 BDHOT_SUCCESS；另建同文件任务使用 0 0 9 * * *。",
-        "DAILYNEWSCN_TASK=chouq 时通过原 HTTP GET 接口随机抽签，输出签文、等级颜色、卦象、解签换行与典故首句；使用 CHOUQ_LIST 和 CHOUQ_SUCCESS，另建同文件任务使用 0 10 9 * * *。",
-        "所有执行标记仅在本地检查，无需账号、不发送标记；使用标准 Node.js 库独立请求，十秒总超时及 128 KiB 响应上限。",
-        "日报和百度榜保留 HTTP 200、中文文本、长度与错误页校验，拒绝未知 JSON、HTML、中断、超时及过大响应；抽签要求 HTTP 200、有效 JSON、完整签文字段、非空签等级（其他等级沿用中性色图标）且无明确失败标记，失败非零退出。",
-        "完全断网预演采用本地文本或签文，模拟通知，不加载通知模块；支持全部模式统一预演及百度榜、抽签兼容开关。",
-        "保留全局通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演均汇总，通知不可用不改变业务退出码。",
-        "保留带时间戳的编号阶段、耗时与统计、原成功标记及唯一单行 TASK_SUMMARY；公开任务账号总数为零，不记录真实业务账号成功。",
-        "新增 DAILYNEWSCN_TASK=day60s，通过原 HTTPS GET https://jkapi.com/api/day_60s 获取世界新闻，保留标题、文本输出与通知；使用 DAY60S_LIST 本地执行标记，支持 DAY60S_DRY_RUN；通过同文件另建任务保持 0 20 9 * * * 调度。",
-        "世界新闻沿用维护版十秒总超时、128 KiB 上限、HTTP 200、中文文本和错误页校验；验证通过才输出 DAY60S_SUCCESS，失败非零退出。",
-        "新增 DAILYNEWSCN_TASK=dyhot，通过原 HTTPS GET https://jkapi.com/api/dy_hot?limit=5 获取、整理输出并通知抖音前五热搜；保留 DYHOT_LIST，支持 DYHOT_DRY_RUN，验证成功输出 DYHOT_SUCCESS；同文件另建任务保持 0 25 9 * * *。",
-        "抖音榜沿用十秒总超时、128 KiB 上限、HTTP 200、中文文本长度与错误页检查；拒绝未知 JSON、HTML、中断、超时和过大响应，失败非零退出。"
+        "DAILYNEWSCN_TASK=dailynewscn 时读取、校验、输出并通知中国日报；保留 DAILYNEWSCN_LIST 和 DAILYNEWSCN_SUCCESS；同文件另建任务保持 0 15 9 * * * 调度。",
+        "DAILYNEWSCN_TASK=bdhot 时读取、校验、输出并通知百度前五热搜；保留 BDHOT_LIST 和 BDHOT_SUCCESS；同文件另建任务保持 0 0 9 * * * 调度。",
+        "DAILYNEWSCN_TASK=chouq 时读取、校验、输出并通知随机抽签；保留 CHOUQ_LIST 和 CHOUQ_SUCCESS；同文件另建任务保持 0 10 9 * * * 调度。",
+        "DAILYNEWSCN_TASK=day60s 时读取、校验、输出并通知每天60秒读懂世界；保留 DAY60S_LIST 和 DAY60S_SUCCESS；同文件另建任务保持 0 20 9 * * * 调度。",
+        "DAILYNEWSCN_TASK=dyhot 时读取、校验、输出并通知抖音前五热搜；保留 DYHOT_LIST 和 DYHOT_SUCCESS；同文件另建任务保持 0 25 9 * * * 调度。",
+        "DAILYNEWSCN_TASK=jitang 时读取、校验、输出并通知鸡汤；保留 JITANG_LIST 和 JITANG_SUCCESS；同文件另建任务保持 0 30 9 * * * 调度。",
+        "默认日报模式及原接口不变；百度榜和抖音榜保留 limit=5；鸡汤保留原 HTTPS GET 接口，支持短句。",
+        "抽签保留原 HTTP GET 接口、签文、签等级颜色、卦象、解签全角空格换行、典故首句及省略号；未知非空等级保留中性色图标。",
+        "无需账号；标记按非空行解析，公开内容只获取一次，不发送标记，不计为真实账号成功。",
+        "使用标准库独立请求，十秒总超时、128 KiB 上限、HTTP 200 及中文文本或抽签完整字段检查；拒绝错误页、未知 JSON、HTML、中断、超时和过大响应，失败非零退出。",
+        "保留统一预演开关和各模式兼容开关；本地解析并模拟通知，不调用网络，不加载通知模块，不声称真实业务成功。",
+        "保留全局通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演均汇总；通知不可用或失败不改变业务退出码。",
+        "带时间戳的任务横幅、起止时间、编号阶段、耗时和统计；保留原成功标记，追加唯一单行 TASK_SUMMARY JSON。",
+        "脱敏手机号、凭据、会话、签名及设备标识，不输出原始响应。"
       ],
       "sideEffects": [
-        "正式运行且通知启用时，向青龙已配置渠道发送所选公开内容与脱敏总结。"
+        "正式运行且通知启用时，向青龙已配置渠道发送所选公开内容和脱敏总结。"
       ],
       "review": {
         "staticPassed": true,
@@ -5554,12 +5585,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/f3d5ae90c3c979bf",
-        "candidateSha256": "dc4c95c8fb4148b72af51f21791f2719999159f02b8dfcd25df1ae3313a55dd4"
+        "candidateSha256": "727f5331756d879f55b558d316f66fa6455c139d958edca0a5c7ef9fbc55f82a"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "dc4c95c8fb4148b72af51f21791f2719999159f02b8dfcd25df1ae3313a55dd4",
-        "releaseSha256": "a0fd29cfd915eb14a4907f4872d9c9edb29ab42e409869c99469d851fdf65c08",
+        "validatedSha256": "727f5331756d879f55b558d316f66fa6455c139d958edca0a5c7ef9fbc55f82a",
+        "releaseSha256": "572ad7e80f4f07210a7270a17b5329d8bf8dc2a042b3fb72ae60be59b83d8d82",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
