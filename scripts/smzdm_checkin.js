@@ -48,6 +48,12 @@
 // 网页模式仅执行原上游网页签到和资产查询；仍可显式组合抽奖/互动，不替代默认客户端奖励流程。
 // 原上游网页签到调度 30 8 * * * 可自定义；默认继续使用维护任务 31 8 * * *，避免重复签到任务。
 // 网页签到写入后重新查询本人账号的 has_checkin 与签到天数，验证失败不重试写入。
+// Additional source: unitaryhighs/ql_sign_script, sign/smzdm.js (MIT).
+// Original attribution: ql_sign_script : https://github.com/unitaryhighs/ql_sign_script
+// 固定活动使用 SMZDM_ACTION=upstream-lottery 单独运行，每账号仅 POST 一次，不自动重试。
+// 原调度 45 0 15 * * *（每日 15:00:45），保留独立活动运行时机；不加入 lottery 或 all。
+// 兼容 SMZDM_COOKIE_LIST，每个非空行一个完整 Cookie；优先使用 SMZDM_ACCOUNT 的 |Cookie 格式。
+// 固定活动可能已结束：HTTP 200 不代表成功，须同时验证 error_code=0 和非空 error_msg。
 // Maintained standalone derivative; no private repository or external executable required.
 
 const crypto = require('crypto');
@@ -84,12 +90,15 @@ function tokenMode(env = process.env) {
 
 function parseAccounts(env = process.env) {
   const action = taskAction(env);
-  const needsSk = action !== 'lottery' && tokenMode(env) !== 'web';
+  const needsSk = !['lottery', 'upstream-lottery'].includes(action) && tokenMode(env) !== 'web';
   interactionMode(env);
   const canonical = accountLines(env.SMZDM_ACCOUNT);
   if (!canonical.length) {
     // 抽奖保留维护目标原有 SMZDM_COOKIE 优先级；签到兼容上游复数变量优先级。
-    const legacyCookies = action === 'lottery' ? (env.SMZDM_COOKIE || env.SMZDM_COOKIES) : (env.SMZDM_COOKIES || env.SMZDM_COOKIE);
+    const legacyCookies = action === 'upstream-lottery'
+      ? (env.SMZDM_COOKIE_LIST || env.SMZDM_COOKIE || env.SMZDM_COOKIES)
+      : action === 'lottery' ? (env.SMZDM_COOKIE || env.SMZDM_COOKIES || env.SMZDM_COOKIE_LIST)
+      : (env.SMZDM_COOKIES || env.SMZDM_COOKIE || env.SMZDM_COOKIE_LIST);
     const cookies = accountLines(legacyCookies)
       .filter((line) => !line.startsWith('#'))
       .map((line) => line.replace(/^(['"])([\s\S]*)\1$/, '$2'));
@@ -490,7 +499,7 @@ async function runAccount(account, userAgentOverride = '') {
 
 function taskAction(env = process.env) {
   const action = String(env.SMZDM_ACTION || 'checkin').trim().toLowerCase();
-  if (!['checkin', 'lottery', 'all'].includes(action)) throw new Error('SMZDM_ACTION 必须为 checkin、lottery 或 all');
+  if (!['checkin', 'lottery', 'all', 'upstream-lottery'].includes(action)) throw new Error('SMZDM_ACTION 必须为 checkin、lottery、all 或 upstream-lottery');
   return action;
 }
 
@@ -565,6 +574,42 @@ async function runLottery(account, env, report = () => {}) {
     if (campaign !== campaigns[campaigns.length - 1]) await new Promise((resolve) => setTimeout(resolve, 5000 + crypto.randomInt(10001)));
   }
   return {ok: counts.failed === 0, state: counts.failed ? '抽奖任务失败' : '抽奖全部已验证', counts};
+}
+
+// 上游固定活动与动态会员转盘没有同活动证据，保持独立开关、方法与时机。
+async function runUpstreamLottery(account, env, report = () => {}) {
+  const started = Date.now();
+  const counts = {total: 1, success: 0, already: 0, skipped: 0, failed: 0};
+  report('[1/1] 固定活动：执行一次抽奖');
+  try {
+    const response = await fetchLimited('https://zhiyou.smzdm.com/user/lottery/jsonp_draw?active_id=ljX8qVlEA7', {
+      method: 'POST',
+      headers: {
+        Accept: '*/*', Cookie: account.cookie, 'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
+        'Content-Type': 'application/json', Referer: 'https://m.smzdm.com/',
+        'User-Agent': env.SMZDM_USER_AGENT_APP || 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/smzdm 10.4.6 rv:130.1 (iPhone 13; iOS 15.6; zh_CN)/iphone_smzdmapp/10.4.6/wkwebview/jsbv_1.0.0',
+      },
+      body: JSON.stringify({}),
+    });
+    if (response.status !== 200) throw new Error('抽奖 HTTP 失败');
+    const data = JSON.parse(response.text);
+    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('抽奖响应无效');
+    // 可用的官方公开身份原样展示；凭据和手机号仍由统一脱敏函数处理。
+    const identity = data.data?.nickname ?? data.nickname ?? data.data?.username ?? data.username
+      ?? data.data?.display_name ?? data.display_name ?? data.data?.smzdm_id ?? data.smzdm_id;
+    if (typeof identity === 'string' || typeof identity === 'number') report(`账号身份 ${display(identity, account)}`, '└─');
+    if (String(data.error_code) !== '0') {
+      report(`固定活动：业务未成功，业务码 ${safeCode(data.error_code)}`, '❌');
+      throw new Error('抽奖业务失败');
+    }
+    if (typeof data.error_msg !== 'string' || !data.error_msg.trim()) throw new Error('结果字段缺失');
+    counts.success++;
+    report(`固定活动：抽奖已验证，${display(data.error_msg, account)}，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '✅');
+  } catch {
+    counts.failed++;
+    report(`固定活动：HTTP、业务或响应字段校验失败；活动可能失效，不自动重试，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '❌');
+  }
+  return {ok: counts.failed === 0, state: counts.failed ? '固定活动抽奖失败' : '固定活动抽奖已验证', counts};
 }
 
 function interactionMode(env = process.env) {
@@ -780,8 +825,9 @@ async function run(env = process.env) {
       log(`${label}：[2/4] 规划签到请求`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       log(`${label}：[3/4] 规划奖励、概览与经验查询`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       const interactionPlan = interactionMode(env) === 'none' ? 0 : (interactionMode(env) === 'both' ? 20 : 12);
-      const planned = interactionPlan + (action === 'lottery' ? 0 : (tokenMode(env) === 'web' ? 3 : (tokenMode(env) === 'robot' ? 8 : 7))) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
+      const planned = action === 'upstream-lottery' ? interactionPlan + 1 : interactionPlan + (action === 'lottery' ? 0 : (tokenMode(env) === 'web' ? 3 : (tokenMode(env) === 'robot' ? 8 : 7))) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
       log(`${label}：互动开关 ${interactionMode(env)}（离线预演不查询列表、不提交互动）`, '└─');
+      if (action === 'upstream-lottery') log(`${label}：固定活动仅规划一次 POST，不访问网络、不执行签到或会员转盘`, '⏭️');
       log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤上限（互动按实际列表长度执行）；抽奖仅在显式选择后执行`, '└─');
       result = {ok: true, state: '预演通过', planned_requests: planned,
         counts: {total: planned + 1, success: 1, already: 0, skipped: planned, failed: 0}};
@@ -789,7 +835,8 @@ async function run(env = process.env) {
       log(`${label}：[2/4] 执行签到`);
       try {
         const report = (message, icon) => log(`${label}：${message}`, icon);
-        if (action === 'lottery') result = await runLottery(accounts[i], env, report);
+        if (action === 'upstream-lottery') result = await runUpstreamLottery(accounts[i], env, report);
+        else if (action === 'lottery') result = await runLottery(accounts[i], env, report);
         else {
           result = tokenMode(env) === 'web' ? await runWeb(accounts[i], report)
             : await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, report, env);
@@ -843,4 +890,4 @@ if (require.main === module) run().catch(async () => {
   await finish({execution: 'failed', mode: 'live', accounts_total: 0, accounts_success: 0, accounts_failed: 1, tasks_total: 1, tasks_success: 0, tasks_already: 0, tasks_skipped: 0, tasks_failed: 1}, 1, started, process.env);
 });
 
-module.exports = {webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};
+module.exports = {runUpstreamLottery, webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};

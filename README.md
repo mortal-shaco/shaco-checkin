@@ -296,7 +296,7 @@
 - `scripts/skland_daily.py`：通行证 Token、森空岛 cred/token 和手机号密码登录，保留官方授权换取及请求签名；自动获取临时设备标识或使用用户指定标识；获取版区及今日检票状态、版区筛选、每日检票及避免重复检票；配置数量的帖子浏览、显式开启的点赞和分享任务，保留帖子分页；保留 --dry-run、--actions、--zones、--version 命令行参数及旧序号账号输入；多账号独立执行、HTTP 超时、禁止重定向、业务码核验和失败闭合退出；完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知。
 - `scripts/skland_demo.py`：鹰角通行证登录，兼容旧版 TOKEN 和官网单行 JSON 响应输入；手机号密码或已有短信验证码登录；显式动作发送登录验证码；内置数美设备标识计算，也可使用同账号显式提供的设备标识；读取绑定角色，显示官方昵称或公开角色编号；明日方舟所有绑定角色签到并显示奖励；终末地所有绑定角色签到并显示奖励；可选游戏任务开关和签名令牌刷新；多账号独立处理、超时和严格业务成功码校验；完全断网预演、分阶段日志、账号及任务统计、单行结构化汇总；通过青龙通知模块发送脱敏总结，通知失败保留业务退出码。
 - `scripts/skyland.py`：保留数美设备指纹协议及进程内设备凭据缓存；服务器时间校准，失败时使用本地时间；鹰角 Token 授权并登录森空岛；查询账号绑定的明日方舟与终末地角色并显示官方昵称或公开角色标识；遍历全部明日方舟绑定角色每日签到并显示奖励；遍历全部终末地角色每日签到并显示奖励；每行一个账号，独立处理账号与角色，汇总失败并非零退出；完全断网预演、分阶段耗时日志与唯一 TASK_SUMMARY 结构化汇总；通过青龙通知模块发送脱敏统计，支持全局关闭及通知失败保持业务退出码。
-- `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总；展示签到天数、补签卡、普通奖励和礼包明细；查询值会员总经验、等级经验及有效期；通过显式任务开关查询两处会员转盘活动并各执行一次抽奖；可显式启用原上游未默认运行的生活频道转盘入口；仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk；保留原抽奖独立调度说明及请求间等待；可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应；兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk；按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果；通过显式开关执行好价点值与好文点赞，每类最多七条且逐项验证业务结果；互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化；查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟；显式网页 Cookie 签到无需 sk，已签到跳过写入，写入后重新核对账号身份、签到状态和天数；网页模式展示官方账号身份、积分、经验、金币、碎银、威望、等级及签到天数。
+- `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总；展示签到天数、补签卡、普通奖励和礼包明细；查询值会员总经验、等级经验及有效期；通过显式任务开关查询两处会员转盘活动并各执行一次抽奖；可显式启用原上游未默认运行的生活频道转盘入口；仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk；保留原抽奖独立调度说明及请求间等待；可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应；兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk；按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果；通过显式开关执行好价点值与好文点赞，每类最多七条且逐项验证业务结果；互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化；查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟；显式网页 Cookie 签到无需 sk，已签到跳过写入，写入后重新核对账号身份、签到状态和天数；网页模式展示官方账号身份、积分、经验、金币、碎银、威望、等级及签到天数；通过独立显式模式保留原固定活动单次 POST 抽奖，不与既有动态会员转盘混跑；兼容逐行 SMZDM_COOKIE_LIST 并保留原固定活动每日 15:00:45 调度说明；固定活动严格核验 HTTP、业务码和结果字段，失败不重试写入。
 - `scripts/ssl.py`：支持 Cloudflare API Token 和邮箱配套 Global API Key 两种认证，兼容原有环境变量；按区域分页读取 A 记录，多个区域合并去重，检查业务成功及完整分页，单个区域失败继续检查其余区域；多个账号逐行独立运行，配置错误、区域读取失败、无 A 记录、过期或证书检查失败均返回非零；依次尝试443、8443、4443、4433、9443端口，并保留指定端口检查函数；使用系统信任库校验主机名和证书；输出证书到期时间、剩余天数及颁发者，按正常、警告、过期、失败分类并按主域名报告；保留每日零点计划及默认30天警告阈值；仅到期警告且验证成功时可返回零；完全断网预演、带时间戳的分阶段日志、逐账号与整体统计及单行 TASK_SUMMARY JSON；成功、部分失败、失败及配置错误均尝试通过青龙 notify.py 发送脱敏报告；支持全局开关及通知超时，预演仅记录摘要预览。
 - `scripts/sudojia_33agilestudio.js`：邮箱密码登录并获取会话令牌；查询账户信息，显示返回的非敏感昵称、用户名、显示名称或公开 UID；每日签到获得积分；查询当前积分；按换行配置多账号，失败独立统计并非零退出；完全断网预演及配置校验；青龙脱敏通知、分阶段日志和单行结构化汇总。
 - `scripts/sudojia_allgirls.js`：获取并显示官方昵称；查询每日签到状态，已签到时避免重复请求；未签到时执行签到并复查已签到状态；查询当前积分；支持逐行多账号、请求超时与账号独立失败统计；支持完全断网预演、青龙通知和单行结构化汇总。
@@ -479,7 +479,7 @@
 <tr><td rowspan="1"><code>scripts/skland_daily.py</code></td><td><code>SKLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号；通行证 token、cred:token、单行 JSON 对象 {&quot;cred&quot;:&quot;本人凭据&quot;,&quot;token&quot;:&quot;本人签名凭据&quot;}、{&quot;data&quot;:{&quot;content&quot;:&quot;本人通行证凭据&quot;}} 或 {&quot;phone&quot;:&quot;本人手机号&quot;,&quot;password&quot;:&quot;本人密码&quot;}；cred:token 仅在第一个冒号处分割；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/skland_demo.py</code></td><td><code>SKLAND_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：通行证原文、含 data.content 的单行 JSON，或单行 JSON 对象，字段 token；也可字段 phone 与 password，或 phone 与 code；可在同一 JSON 添加 did（由本人官方登录请求的 dId 头获取）。send-code 动作仅需 phone。账号不能使用逗号、&amp; 或 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/skyland.py</code></td><td><code>SKYLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整账号 Token；禁止用逗号、&amp; 或 @ 分隔多个账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号，默认和 robot 模式为 sk|完整 Cookie；web 和仅抽奖可为 |完整 Cookie。只在首个 | 分割，完整保留后续 Cookie 内容，不以 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号，格式 sk|完整 Cookie；仅在第一个 | 分割。网页或仅抽奖模式使用 |完整 Cookie。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ssl.py</code></td><td><code>SSL_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；token 或 email/key 配套认证；zone_ids 和 domains 为一一对应的非空数组，区域标识为32位十六进制；例如字段结构 {&quot;token&quot;:&quot;占位凭据&quot;,&quot;zone_ids&quot;:[&quot;区域标识&quot;],&quot;domains&quot;:[&quot;主域名&quot;]}。凭据文本由 JSON 解析完整保留，不使用符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_33agilestudio.js</code></td><td><code>AGILE_STUDIO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个邮箱#密码，只按第一个 # 分隔，密码中的后续 #、&amp; 和 @ 均保留；禁止使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_allgirls.js</code></td><td><code>ALL_GIRLS_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的 AccessToken；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -1267,19 +1267,20 @@
 <tr><td rowspan="3"><code>scripts/skyland.py</code></td><td><code>SKYLAND_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录路径。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="13"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_COOKIE</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie，须含 sess；默认和 robot 模式还需按行配套 SMZDM_SK 或 Cookie 内本人 sk。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_COOKIES</code></td><td>是</td><td>格式：逐行完整 Cookie，兼容以 # 开头的注释行；签到优先此变量，仅抽奖优先 SMZDM_COOKIE；规范变量始终优先。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_SK</code></td><td>是</td><td>格式：兼容旧 Cookie 输入时每行一个配套 sk，默认和 robot 模式行数必须匹配；不覆盖规范账号变量。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_ACTION</code></td><td>否</td><td>格式：checkin（默认签到）、lottery（仅抽奖）、all（签到与抽奖）。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_TOKEN_MODE</code></td><td>否</td><td>格式：sess（默认客户端流程）、robot（获取旧客户端 Robot Token）、web（新增网页 Cookie 签到与资产查询，无需 sk，不执行客户端奖励和会员流程）。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_INTERACTION</code></td><td>否</td><td>格式：none（默认）、value、article、both；每类最多七条，不重试写入。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_LOTTERY_LIFE</code></td><td>否</td><td>格式：1、true、yes、on 开启；默认关闭，仅 lottery 或 all 生效。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_USER_AGENT_APP</code></td><td>否</td><td>格式：客户端 User-Agent；默认按 Cookie 中版本字段生成，否则使用维护版本 11.1.90。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SMZDM_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启；不调用业务接口、通知组件或其他联网服务。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，忽略大小写；通知失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录中有 sendNotify.js；否则依次查找 /ql/data/scripts 与 /ql/scripts。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：单个推送令牌，仅正式运行使用，受全局通知开关控制。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SENDKEY</code></td><td>是</td><td>格式：单个 SendKey，仅正式运行使用，受全局通知开关控制。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="14"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_COOKIE_LIST</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie，必须含 sess；固定活动模式下优先于其他旧 Cookie 变量。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_COOKIE</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie，至少含 sess；客户端签到另配同顺序 SMZDM_SK，或 Cookie 内带 sk。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_COOKIES</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie；可用 # 开头的注释行；客户端签到另配配套 sk。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_SK</code></td><td>是</td><td>格式：每个非空行一个 sk；需要 sk 时行数须与旧 Cookie 账号数相同。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_ACTION</code></td><td>否</td><td>格式：checkin：签到；lottery：既有会员转盘；all：签到和既有会员转盘；upstream-lottery：仅原固定活动一次抽奖。固定活动原调度为 45 0 15 * * *，会员转盘原独立调度为 20 8 * * *，需在相应任务环境中选择模式。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_TOKEN_MODE</code></td><td>否</td><td>格式：sess、robot 或 web；默认 sess。网页模式无需 sk。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_INTERACTION</code></td><td>否</td><td>格式：none、value、article 或 both；默认 none，每类最多七条，原互动调度 29 0-23/8 * * * 可自定义。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_LOTTERY_LIFE</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_USER_AGENT_APP</code></td><td>否</td><td>格式：可选请求头字符串；未配置时使用各模式既有客户端配置。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SMZDM_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认正式执行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。离线预演仅生成脱敏通知摘要。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录；组件缺失或发送失败只记录通知状态，不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：可选推送令牌，受 QINGLONG_NOTIFY 控制。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SENDKEY</code></td><td>是</td><td>格式：可选推送密钥，受 QINGLONG_NOTIFY 控制。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="9"><code>scripts/ssl.py</code></td><td><code>CF_API_TOKEN</code></td><td>是</td><td>格式：单账号令牌，优先于 CF_API_EMAIL 和 CF_API_KEY；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>CF_API_EMAIL</code></td><td>是</td><td>格式：单账号邮箱；无需与令牌同时填写；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>CF_API_KEY</code></td><td>是</td><td>格式：单账号全局密钥；多账号格式以该脚本文档为准</td></tr>
@@ -1834,7 +1835,7 @@
 - `scripts/skland_daily.py`：每个非空行一个账号，禁止用 &、@、逗号或分号分隔账号；同账号配套凭据合并为 JSON 或 cred:token，仅在第一个冒号处分割。兼容旧序号及账密变量，重复凭据去重，账号独立执行，任一失败整体非零退出。。
 - `scripts/skland_demo.py`：每个非空行一个账号；同一账号的通行证、手机号、密码、验证码和可选设备标识以单行 JSON 配套保存；各账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/skyland.py`：SKYLAND_TOKEN 每个非空行一个账号，忽略空行；账号与角色独立执行，任一失败整体非零退出。。
-- `scripts/smzdm_checkin.js`：每个非空行一个账号，用首个 | 组合本人 sk 与完整 Cookie，不以 & 或 @ 分隔账号；逐账号独立处理，任一失败整体非零退出。旧 Cookie 与 sk 输入按行配套。。
+- `scripts/smzdm_checkin.js`：每个非空行一个账号；配套 sk 与完整 Cookie 合并为 SMZDM_ACCOUNT，仅在首个 | 分割。旧 Cookie 变量逐行兼容，不用 & 或 @ 分隔账号；独立处理所有账号，任一账号失败整体非零退出。。
 - `scripts/ssl.py`：SSL_ACCOUNTS 每个非空行一个完整 JSON 账号对象，认证与区域配置放在同一行；逐账号独立处理，任一账号失败整体非零。旧版 CF_* 变量仅兼容一个账号。。
 - `scripts/sudojia_33agilestudio.js`：每个非空行一个邮箱#密码，仅第一个 # 为字段分隔符，各账号独立执行；任一账号失败则整体非零退出。。
 - `scripts/sudojia_allgirls.js`：每个非空行一个账号；按行独立处理，任一账号失败则整体非零退出。。
@@ -2580,8 +2581,8 @@
 #### `SMZDM_ACCOUNT`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：登录本人什么值得买客户端，从本人 /checkin 请求取得 sk 和完整 Cookie（含 sess）；网页模式登录 www.smzdm.com 后，在浏览器开发者工具网络面板复制本人 zhiyou.smzdm.com 请求的完整 Cookie。仅保存在青龙私有环境。
-- 填写格式：`每个非空行一个账号，默认和 robot 模式为 sk|完整 Cookie；web 和仅抽奖可为 |完整 Cookie。只在首个 | 分割，完整保留后续 Cookie 内容，不以 & 或 @ 分隔账号。`
+- 获取或设置：登录本人什么值得买客户端，从本人签到请求取得 sk；在开发者工具网络请求中复制本人完整 Cookie，至少含 sess。仅抽奖或网页签到可省略 sk。不要分享凭据。
+- 填写格式：`每个非空行一个账号，格式 sk|完整 Cookie；仅在第一个 | 分割。网页或仅抽奖模式使用 |完整 Cookie。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SSL_ACCOUNTS`
@@ -7517,87 +7518,94 @@
 - 获取或设置：可选，填写青龙已有 notify.py 所在目录；默认发现青龙标准路径或导入 notify.send，无通知模块仍可执行签到。
 - 填写格式：`本地通知模块目录路径。`
 
+#### `SMZDM_COOKIE_LIST`
+
+- 所属脚本：`scripts/smzdm_checkin.js`
+- 获取或设置：兼容原固定抽奖变量；从本人已登录什么值得买网页请求头复制完整 Cookie。
+- 填写格式：`每个非空行一个完整 Cookie，必须含 sess；固定活动模式下优先于其他旧 Cookie 变量。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `SMZDM_COOKIE`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：旧 Cookie 兼容输入，获取方式同 SMZDM_ACCOUNT；优先使用规范变量。
-- 填写格式：`每个非空行一个完整 Cookie，须含 sess；默认和 robot 模式还需按行配套 SMZDM_SK 或 Cookie 内本人 sk。`
+- 获取或设置：旧变量兼容入口；从本人已登录网页或客户端请求头获取完整 Cookie。
+- 填写格式：`每个非空行一个完整 Cookie，至少含 sess；客户端签到另配同顺序 SMZDM_SK，或 Cookie 内带 sk。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SMZDM_COOKIES`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：兼容旧复数 Cookie 变量，获取方式同 SMZDM_COOKIE。
-- 填写格式：`逐行完整 Cookie，兼容以 # 开头的注释行；签到优先此变量，仅抽奖优先 SMZDM_COOKIE；规范变量始终优先。`
+- 获取或设置：旧复数变量兼容入口；从本人已登录网页或客户端请求头获取完整 Cookie。
+- 填写格式：`每个非空行一个完整 Cookie；可用 # 开头的注释行；客户端签到另配配套 sk。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SMZDM_SK`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：从本人客户端 /checkin 请求获取，禁止使用共享默认 sk。
-- 填写格式：`兼容旧 Cookie 输入时每行一个配套 sk，默认和 robot 模式行数必须匹配；不覆盖规范账号变量。`
+- 获取或设置：从本人客户端签到请求取得 sk，与旧 Cookie 变量的账号逐行对应；不使用他人或共享默认值。
+- 填写格式：`每个非空行一个 sk；需要 sk 时行数须与旧 Cookie 账号数相同。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SMZDM_ACTION`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：在青龙手动选择任务；抽奖可能消耗机会或活动资产，应核对官方活动规则。
-- 填写格式：`checkin（默认签到）、lottery（仅抽奖）、all（签到与抽奖）。`
+- 获取或设置：按需要在青龙环境中选择；默认 checkin，不自动执行转盘或固定活动。
+- 填写格式：`checkin：签到；lottery：既有会员转盘；all：签到和既有会员转盘；upstream-lottery：仅原固定活动一次抽奖。固定活动原调度为 45 0 15 * * *，会员转盘原独立调度为 20 8 * * *，需在相应任务环境中选择模式。`
 
 #### `SMZDM_TOKEN_MODE`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：手动选择签到流程，不在失败后自动切换。
-- 填写格式：`sess（默认客户端流程）、robot（获取旧客户端 Robot Token）、web（新增网页 Cookie 签到与资产查询，无需 sk，不执行客户端奖励和会员流程）。`
+- 获取或设置：保留默认 sess；需要原 Robot Token 或网页 Cookie 签到时显式选择。
+- 填写格式：`sess、robot 或 web；默认 sess。网页模式无需 sk。`
 
 #### `SMZDM_INTERACTION`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：仅在需要好价点值或好文点赞时手动开启。
-- 填写格式：`none（默认）、value、article、both；每类最多七条，不重试写入。`
+- 获取或设置：仅希望执行点赞或点值时开启；默认不互动。
+- 填写格式：`none、value、article 或 both；默认 none，每类最多七条，原互动调度 29 0-23/8 * * * 可自定义。`
 
 #### `SMZDM_LOTTERY_LIFE`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：仅确认生活频道活动可用并愿意抽奖时手动开启。
-- 填写格式：`1、true、yes、on 开启；默认关闭，仅 lottery 或 all 生效。`
+- 获取或设置：显式启用原生活频道入口；仅影响 lottery 或 all，不影响固定活动模式。
+- 填写格式：`1、true、yes、on 启用；默认关闭。`
 
 #### `SMZDM_USER_AGENT_APP`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：可选，从本人客户端请求取得应用 User-Agent，不含 Cookie、Token、手机号或设备唯一标识。
-- 填写格式：`客户端 User-Agent；默认按 Cookie 中版本字段生成，否则使用维护版本 11.1.90。`
+- 获取或设置：可从本人什么值得买请求头复制客户端 User-Agent；不要填入凭据或设备标识。
+- 填写格式：`可选请求头字符串；未配置时使用各模式既有客户端配置。`
 
 #### `SMZDM_DRY_RUN`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：离线预演时设置为 1。
-- 填写格式：`1、true、yes、on 开启；不调用业务接口、通知组件或其他联网服务。`
+- 获取或设置：验证配置时设为 1，完全离线，不调用任何联网通知组件。
+- 填写格式：`1、true、yes、on 启用；默认正式执行。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：青龙全局通知开关，默认开启。
-- 填写格式：`0、false、no、off 关闭，忽略大小写；通知失败不改变业务退出码。`
+- 获取或设置：青龙全局通知开关；未配置时尝试青龙通知，失败后保留既有推送回退。
+- 填写格式：`默认 1；0、false、no、off 关闭。离线预演仅生成脱敏通知摘要。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：可选，设置青龙现有通知组件目录，无需其他仓库或安装程序。
-- 填写格式：`目录中有 sendNotify.js；否则依次查找 /ql/data/scripts 与 /ql/scripts。`
+- 获取或设置：可指定青龙已有 sendNotify.js 所在目录；也会查找青龙标准脚本目录。
+- 填写格式：`可选目录；组件缺失或发送失败只记录通知状态，不改变业务退出码。`
 
 #### `PUSHPLUS_TOKEN`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：可选，从本人 PushPlus 账户获取，作为青龙通知失败后的回退。
-- 填写格式：`单个推送令牌，仅正式运行使用，受全局通知开关控制。`
+- 获取或设置：在本人 PushPlus 账户取得推送令牌，仅用于青龙通知不可用或失败时回退。
+- 填写格式：`可选推送令牌，受 QINGLONG_NOTIFY 控制。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SENDKEY`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
-- 获取或设置：可选，从本人 Server酱账户获取，作为青龙及 PushPlus 通知失败后的回退。
-- 填写格式：`单个 SendKey，仅正式运行使用，受全局通知开关控制。`
+- 获取或设置：在本人 Server酱账户取得 SendKey，仅用于前两种通知不可用或失败时回退。
+- 填写格式：`可选推送密钥，受 QINGLONG_NOTIFY 控制。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `CF_API_TOKEN`
@@ -10591,7 +10599,7 @@
 - `scripts/skland_daily.py`：SHA-256 `e46b829e655d9d987efe00d72fd5f57e5c7819ef62d1df4b1e96f603bab09f9a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
 - `scripts/skland_demo.py`：SHA-256 `6630751a2fdb3b62947ba9dd9b33187db05cbf4dcdd859fe9f60da9e9dda5c2b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d82ea23b9575791b`。
 - `scripts/skyland.py`：SHA-256 `4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
-- `scripts/smzdm_checkin.js`：SHA-256 `130423b3d90981b4302fd5a9b6b845531d805a7b4230f021f2a23b7668cfaefb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
+- `scripts/smzdm_checkin.js`：SHA-256 `b01d902608844777102486bab86a7fa18f18c4dfb3166375b7bfacad07e0808b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
 - `scripts/ssl.py`：SHA-256 `6fc3c3040959c04d815c2ba897050e99994e591f34fbdd4ab6ca2b894ed54766`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cf6fb60f0d69e9ed`。
 - `scripts/sudojia_33agilestudio.js`：SHA-256 `7677c43b5720b0556f6d0b2949405b7c91d218dbc5d020ad6be0dd46ce2308d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
 - `scripts/sudojia_allgirls.js`：SHA-256 `c553619d6534fdf01df62c381df54bfb5557104402a27aa037bf381b075d8934`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e8776198aafad33e`。
@@ -10764,7 +10772,7 @@
 - `scripts/skland_daily.py`：未配置 SKLAND_DID 时向上游设备服务注册临时设备标识；账密或通行证登录时换取授权和账号会话凭据；版区每日检票改变签到状态；浏览帖子可能增加任务浏览进度；显式启用 like 时点赞帖子；显式启用 share 时增加分享任务计数，不发布文案；正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要。
 - `scripts/skland_demo.py`：实际模式下明日方舟角色每日签到并领取奖励；实际模式下终末地角色每日签到并领取奖励；仅 send-code 动作向本人手机号发送登录短信验证码；实际模式下向数美服务登记生成设备标识；传入 did 时不执行；登录时签发账号授权凭据，可选刷新签名令牌；启用通知且模块可用时发送脱敏任务通知。
 - `scripts/skyland.py`：向数美服务提交模拟浏览器指纹并生成设备凭据；通过鹰角授权接口生成登录授权并取得森空岛会话凭据；为明日方舟绑定角色每日签到并领取签到奖励；为终末地绑定角色每日签到并领取签到奖励；正式运行时通过青龙通知渠道发送脱敏任务统计。
-- `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态；显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励；显式启用 value 或 both 后对好价提交点值，改变账号投票状态；显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态。
+- `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态；显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励；显式启用 value 或 both 后对好价提交点值，改变账号投票状态；显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态；显式选择 upstream-lottery 后对原固定活动提交一次抽奖，可能消耗机会或活动资产并获得奖励。
 - `scripts/ssl.py`：实际模式下通过青龙通知通道发送证书检查报告；不修改 Cloudflare DNS、证书或账号数据。
 - `scripts/sudojia_33agilestudio.js`：登录建立账户会话；提交每日签到，按服务端规则获得积分；正式运行且启用通知时，通过青龙通知模块发送脱敏任务摘要。
 - `scripts/sudojia_allgirls.js`：未签到时执行每日签到，可能获得平台签到积分。

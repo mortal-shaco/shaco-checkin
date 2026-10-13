@@ -15437,6 +15437,7 @@
           "SMZDM_ACCOUNT"
         ],
         "optionalEnv": [
+          "SMZDM_COOKIE_LIST",
           "SMZDM_COOKIE",
           "SMZDM_COOKIES",
           "SMZDM_SK",
@@ -15458,11 +15459,11 @@
           "SMZDM_ACTION": "checkin",
           "SMZDM_TOKEN_MODE": "sess",
           "SMZDM_INTERACTION": "none",
-          "SMZDM_LOTTERY_LIFE": "0"
+          "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "最终状态  全部成功",
-          "TASK_SUMMARY="
+          "BENEFIT_SUMMARY=",
+          "最终状态  全部成功"
         ],
         "features": [
           "校验账号的 sk 与 sess 配套凭据",
@@ -15488,14 +15489,18 @@
           "互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化",
           "查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟",
           "显式网页 Cookie 签到无需 sk，已签到跳过写入，写入后重新核对账号身份、签到状态和天数",
-          "网页模式展示官方账号身份、积分、经验、金币、碎银、威望、等级及签到天数"
+          "网页模式展示官方账号身份、积分、经验、金币、碎银、威望、等级及签到天数",
+          "通过独立显式模式保留原固定活动单次 POST 抽奖，不与既有动态会员转盘混跑",
+          "兼容逐行 SMZDM_COOKIE_LIST 并保留原固定活动每日 15:00:45 调度说明",
+          "固定活动严格核验 HTTP、业务码和结果字段，失败不重试写入"
         ],
         "sideEffects": [
           "在什么值得买账号上执行每日签到并改变当日签到状态",
           "满足条件时领取连续签到额外奖励并改变账号奖励状态",
           "显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励",
           "显式启用 value 或 both 后对好价提交点值，改变账号投票状态",
-          "显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态"
+          "显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态",
+          "显式选择 upstream-lottery 后对原固定活动提交一次抽奖，可能消耗机会或活动资产并获得奖励"
         ]
       },
       "postReview": {
@@ -15504,7 +15509,7 @@
       },
       "displayName": "什么值得买签到",
       "path": "scripts/smzdm_checkin.js",
-      "sha256": "130423b3d90981b4302fd5a9b6b845531d805a7b4230f021f2a23b7668cfaefb",
+      "sha256": "b01d902608844777102486bab86a7fa18f18c4dfb3166375b7bfacad07e0808b",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -15530,7 +15535,7 @@
             "repository": "hex-ci/smzdm_script",
             "url": "https://github.com/hex-ci/smzdm_script.git",
             "branch": "main",
-            "commit": "eff365b2a44e9fe01e2ca2cdb3aa9a74d83cc649",
+            "commit": "c325760c459ef507dec3a52476bb459247328a74",
             "originalPath": "smzdm_checkin.js",
             "license": "MIT"
           },
@@ -15538,7 +15543,7 @@
             "repository": "hex-ci/smzdm_script",
             "url": "https://github.com/hex-ci/smzdm_script.git",
             "branch": "main",
-            "commit": "eff365b2a44e9fe01e2ca2cdb3aa9a74d83cc649",
+            "commit": "c325760c459ef507dec3a52476bb459247328a74",
             "originalPath": "smzdm_lottery.js",
             "catalogId": "01407af9e6b789da",
             "sha256": "0f415f1c12c84dff9e19a8c1cef3691b0c82ab1b7cd325c12544a01b044a72ad",
@@ -15573,6 +15578,16 @@
             "catalogId": "291d21bca3d4de12",
             "sha256": "a0717521e036c8585f4ce3898053bc40df262f8d994be57b9c7a05157170dc8a",
             "license": "MIT"
+          },
+          {
+            "repository": "unitaryhighs/ql_sign_script",
+            "url": "https://github.com/unitaryhighs/ql_sign_script.git",
+            "branch": "main",
+            "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+            "originalPath": "sign/smzdm.js",
+            "catalogId": "35c7eaee8a076dbb",
+            "sha256": "e88918bf6d7ce92d00fad9848dd335cebda07a6b61d4db27891e8ac92308a316",
+            "license": "MIT"
           }
         ]
       },
@@ -15583,105 +15598,112 @@
           "name": "SMZDM_ACCOUNT",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录本人什么值得买客户端，从本人 /checkin 请求取得 sk 和完整 Cookie（含 sess）；网页模式登录 www.smzdm.com 后，在浏览器开发者工具网络面板复制本人 zhiyou.smzdm.com 请求的完整 Cookie。仅保存在青龙私有环境。",
-          "format": "每个非空行一个账号，默认和 robot 模式为 sk|完整 Cookie；web 和仅抽奖可为 |完整 Cookie。只在首个 | 分割，完整保留后续 Cookie 内容，不以 & 或 @ 分隔账号。"
+          "howToGet": "登录本人什么值得买客户端，从本人签到请求取得 sk；在开发者工具网络请求中复制本人完整 Cookie，至少含 sess。仅抽奖或网页签到可省略 sk。不要分享凭据。",
+          "format": "每个非空行一个账号，格式 sk|完整 Cookie；仅在第一个 | 分割。网页或仅抽奖模式使用 |完整 Cookie。"
+        },
+        {
+          "name": "SMZDM_COOKIE_LIST",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容原固定抽奖变量；从本人已登录什么值得买网页请求头复制完整 Cookie。",
+          "format": "每个非空行一个完整 Cookie，必须含 sess；固定活动模式下优先于其他旧 Cookie 变量。"
         },
         {
           "name": "SMZDM_COOKIE",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧 Cookie 兼容输入，获取方式同 SMZDM_ACCOUNT；优先使用规范变量。",
-          "format": "每个非空行一个完整 Cookie，须含 sess；默认和 robot 模式还需按行配套 SMZDM_SK 或 Cookie 内本人 sk。"
+          "howToGet": "旧变量兼容入口；从本人已登录网页或客户端请求头获取完整 Cookie。",
+          "format": "每个非空行一个完整 Cookie，至少含 sess；客户端签到另配同顺序 SMZDM_SK，或 Cookie 内带 sk。"
         },
         {
           "name": "SMZDM_COOKIES",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容旧复数 Cookie 变量，获取方式同 SMZDM_COOKIE。",
-          "format": "逐行完整 Cookie，兼容以 # 开头的注释行；签到优先此变量，仅抽奖优先 SMZDM_COOKIE；规范变量始终优先。"
+          "howToGet": "旧复数变量兼容入口；从本人已登录网页或客户端请求头获取完整 Cookie。",
+          "format": "每个非空行一个完整 Cookie；可用 # 开头的注释行；客户端签到另配配套 sk。"
         },
         {
           "name": "SMZDM_SK",
           "required": false,
           "sensitive": true,
-          "howToGet": "从本人客户端 /checkin 请求获取，禁止使用共享默认 sk。",
-          "format": "兼容旧 Cookie 输入时每行一个配套 sk，默认和 robot 模式行数必须匹配；不覆盖规范账号变量。"
+          "howToGet": "从本人客户端签到请求取得 sk，与旧 Cookie 变量的账号逐行对应；不使用他人或共享默认值。",
+          "format": "每个非空行一个 sk；需要 sk 时行数须与旧 Cookie 账号数相同。"
         },
         {
           "name": "SMZDM_ACTION",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙手动选择任务；抽奖可能消耗机会或活动资产，应核对官方活动规则。",
-          "format": "checkin（默认签到）、lottery（仅抽奖）、all（签到与抽奖）。"
+          "howToGet": "按需要在青龙环境中选择；默认 checkin，不自动执行转盘或固定活动。",
+          "format": "checkin：签到；lottery：既有会员转盘；all：签到和既有会员转盘；upstream-lottery：仅原固定活动一次抽奖。固定活动原调度为 45 0 15 * * *，会员转盘原独立调度为 20 8 * * *，需在相应任务环境中选择模式。"
         },
         {
           "name": "SMZDM_TOKEN_MODE",
           "required": false,
           "sensitive": false,
-          "howToGet": "手动选择签到流程，不在失败后自动切换。",
-          "format": "sess（默认客户端流程）、robot（获取旧客户端 Robot Token）、web（新增网页 Cookie 签到与资产查询，无需 sk，不执行客户端奖励和会员流程）。"
+          "howToGet": "保留默认 sess；需要原 Robot Token 或网页 Cookie 签到时显式选择。",
+          "format": "sess、robot 或 web；默认 sess。网页模式无需 sk。"
         },
         {
           "name": "SMZDM_INTERACTION",
           "required": false,
           "sensitive": false,
-          "howToGet": "仅在需要好价点值或好文点赞时手动开启。",
-          "format": "none（默认）、value、article、both；每类最多七条，不重试写入。"
+          "howToGet": "仅希望执行点赞或点值时开启；默认不互动。",
+          "format": "none、value、article 或 both；默认 none，每类最多七条，原互动调度 29 0-23/8 * * * 可自定义。"
         },
         {
           "name": "SMZDM_LOTTERY_LIFE",
           "required": false,
           "sensitive": false,
-          "howToGet": "仅确认生活频道活动可用并愿意抽奖时手动开启。",
-          "format": "1、true、yes、on 开启；默认关闭，仅 lottery 或 all 生效。"
+          "howToGet": "显式启用原生活频道入口；仅影响 lottery 或 all，不影响固定活动模式。",
+          "format": "1、true、yes、on 启用；默认关闭。"
         },
         {
           "name": "SMZDM_USER_AGENT_APP",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，从本人客户端请求取得应用 User-Agent，不含 Cookie、Token、手机号或设备唯一标识。",
-          "format": "客户端 User-Agent；默认按 Cookie 中版本字段生成，否则使用维护版本 11.1.90。"
+          "howToGet": "可从本人什么值得买请求头复制客户端 User-Agent；不要填入凭据或设备标识。",
+          "format": "可选请求头字符串；未配置时使用各模式既有客户端配置。"
         },
         {
           "name": "SMZDM_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "离线预演时设置为 1。",
-          "format": "1、true、yes、on 开启；不调用业务接口、通知组件或其他联网服务。"
+          "howToGet": "验证配置时设为 1，完全离线，不调用任何联网通知组件。",
+          "format": "1、true、yes、on 启用；默认正式执行。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙全局通知开关，默认开启。",
-          "format": "0、false、no、off 关闭，忽略大小写；通知失败不改变业务退出码。"
+          "howToGet": "青龙全局通知开关；未配置时尝试青龙通知，失败后保留既有推送回退。",
+          "format": "默认 1；0、false、no、off 关闭。离线预演仅生成脱敏通知摘要。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，设置青龙现有通知组件目录，无需其他仓库或安装程序。",
-          "format": "目录中有 sendNotify.js；否则依次查找 /ql/data/scripts 与 /ql/scripts。"
+          "howToGet": "可指定青龙已有 sendNotify.js 所在目录；也会查找青龙标准脚本目录。",
+          "format": "可选目录；组件缺失或发送失败只记录通知状态，不改变业务退出码。"
         },
         {
           "name": "PUSHPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选，从本人 PushPlus 账户获取，作为青龙通知失败后的回退。",
-          "format": "单个推送令牌，仅正式运行使用，受全局通知开关控制。"
+          "howToGet": "在本人 PushPlus 账户取得推送令牌，仅用于青龙通知不可用或失败时回退。",
+          "format": "可选推送令牌，受 QINGLONG_NOTIFY 控制。"
         },
         {
           "name": "SENDKEY",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选，从本人 Server酱账户获取，作为青龙及 PushPlus 通知失败后的回退。",
-          "format": "单个 SendKey，仅正式运行使用，受全局通知开关控制。"
+          "howToGet": "在本人 Server酱账户取得 SendKey，仅用于前两种通知不可用或失败时回退。",
+          "format": "可选推送密钥，受 QINGLONG_NOTIFY 控制。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，用首个 | 组合本人 sk 与完整 Cookie，不以 & 或 @ 分隔账号；逐账号独立处理，任一失败整体非零退出。旧 Cookie 与 sk 输入按行配套。"
+        "rule": "每个非空行一个账号；配套 sk 与完整 Cookie 合并为 SMZDM_ACCOUNT，仅在首个 | 分割。旧 Cookie 变量逐行兼容，不用 & 或 @ 分隔账号；独立处理所有账号，任一账号失败整体非零退出。"
       },
       "dependencies": [],
       "features": [
@@ -15708,14 +15730,18 @@
         "互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化",
         "查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟",
         "显式网页 Cookie 签到无需 sk，已签到跳过写入，写入后重新核对账号身份、签到状态和天数",
-        "网页模式展示官方账号身份、积分、经验、金币、碎银、威望、等级及签到天数"
+        "网页模式展示官方账号身份、积分、经验、金币、碎银、威望、等级及签到天数",
+        "通过独立显式模式保留原固定活动单次 POST 抽奖，不与既有动态会员转盘混跑",
+        "兼容逐行 SMZDM_COOKIE_LIST 并保留原固定活动每日 15:00:45 调度说明",
+        "固定活动严格核验 HTTP、业务码和结果字段，失败不重试写入"
       ],
       "sideEffects": [
         "在什么值得买账号上执行每日签到并改变当日签到状态",
         "满足条件时领取连续签到额外奖励并改变账号奖励状态",
         "显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励",
         "显式启用 value 或 both 后对好价提交点值，改变账号投票状态",
-        "显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态"
+        "显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态",
+        "显式选择 upstream-lottery 后对原固定活动提交一次抽奖，可能消耗机会或活动资产并获得奖励"
       ],
       "review": {
         "staticPassed": true,
@@ -15728,12 +15754,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/621df252c315f2d1",
-        "candidateSha256": "f209d58f81bd6ba181209d4840add9a8400c970b21025f00866076726d9487ae"
+        "candidateSha256": "d86dd991180938cf134f4c13082d78e0fa391e27ffec8c38925ee529f3de87eb"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "f209d58f81bd6ba181209d4840add9a8400c970b21025f00866076726d9487ae",
-        "releaseSha256": "130423b3d90981b4302fd5a9b6b845531d805a7b4230f021f2a23b7668cfaefb",
+        "validatedSha256": "d86dd991180938cf134f4c13082d78e0fa391e27ffec8c38925ee529f3de87eb",
+        "releaseSha256": "b01d902608844777102486bab86a7fa18f18c4dfb3166375b7bfacad07e0808b",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
