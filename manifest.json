@@ -24221,6 +24221,370 @@
       }
     },
     {
+      "catalogId": "7f027fefd96fedf2",
+      "applicationKey": "lizhixu/ql-script-hub::vortexa",
+      "checkProfile": {
+        "requiredEnv": [
+          "VORTEXA_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "VORTEXA_LOGIN",
+          "VORTEXA_ACCOUNT_PASSWORD",
+          "VORTEXA_ACCOUNT",
+          "VORTEXA_EMAIL",
+          "VORTEXA_USERNAME",
+          "VORTEXA_PASSWORD",
+          "VORTEXA_TOKEN",
+          "VORTEXA_ACCESS_TOKEN",
+          "VORTEXA_COOKIE",
+          "VORTEXA_REFRESH",
+          "VORTEXA_FINGERPRINT",
+          "VORTEXA_USER_AGENT",
+          "VORTEXA_LOGIN_FIELD",
+          "VORTEXA_API_BASE",
+          "VORTEXA_ORIGIN",
+          "VORTEXA_REFERER",
+          "VORTEXA_PRODUCT_ID",
+          "VORTEXA_PLAN_ID",
+          "VORTEXA_PRODUCT_SLUG",
+          "VORTEXA_PRODUCT_NAME",
+          "VORTEXA_LIST_PRODUCTS",
+          "VORTEXA_CLAIM",
+          "VORTEXA_LOOP",
+          "VORTEXA_MAX_SCANS",
+          "VORTEXA_TIMEOUT_MS",
+          "VORTEXA_CONFIRM_DELAY_SECONDS",
+          "VORTEXA_INTERVAL_SECONDS",
+          "VORTEXA_INTERVAL_MIN_SECONDS",
+          "VORTEXA_INTERVAL_MAX_SECONDS",
+          "VORTEXA_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "VORTEXA_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "VORTEXA_CLAIM": "0",
+          "VORTEXA_LOOP": "0",
+          "VORTEXA_TIMEOUT_MS": "30000",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态 success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "账号密码登录，邮箱或用户名字段自动识别与自定义登录字段；访问 Token、刷新 Cookie 登录；授权失效后按原方式重新登录一次。",
+          "检查已有免费主机，显示公开服务名称或 ID；官网返回昵称、用户名、显示名或公开 UID 时输出身份以核对账号，不输出邮箱登录凭据。",
+          "查询免费主机库存、领取资格，默认完成只读检查；已有免费主机时确认已完成。",
+          "独立产品列表模式，列出免费产品名称、slug、产品 ID、套餐 ID、名称、类型和价格。",
+          "按产品 ID、slug 或名称选择免费产品；支持指定套餐 ID，未配置时选择首个免费产品及免费套餐。",
+          "显式开启免费主机领取，提交后以官方已有主机状态核验成功；未知响应、付费套餐和选定产品缺失时失败闭合。",
+          "显式开启有限随机间隔库存轮询；保留原十分钟定时规则、间隔配置、登录重试和请求头配置。",
+          "每行一个账号，凭据隔离，逐账号执行，任意账号失败整体非零退出。",
+          "完全断网预演、完整时间轴日志、分阶段与账号统计、一条 TASK_SUMMARY JSON；青龙通知及全局开关。"
+        ],
+        "sideEffects": [
+          "使用密码或刷新 Cookie 登录时创建或续期服务端登录会话；更新的访问 Token 和 Cookie 仅保存在本次进程内，不写文件。",
+          "仅在 VORTEXA_CLAIM 开启且产品套餐明确免费时提交免费主机领取，创建账号免费主机服务。",
+          "启用通知时通过已有青龙 sendNotify.js 发送脱敏任务总结；预演通知受断网保护。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Vortexa 免费主机检查与领取",
+      "path": "scripts/vortexa_free_claim.js",
+      "sha256": "4a9d6c8d8e147991d196f0ddebf7c74f200c9e12ab1fca721555034e46e2da04",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "lizhixu/ql-script-hub",
+        "branch": "main",
+        "commit": "ac591a320092dcaeaf236b7c2b6acfd28981e589",
+        "originalPath": "vortexa_free_claim.js"
+      },
+      "cron": "1,11,21,31,41,51 * * * *",
+      "command": "node scripts/vortexa_free_claim.js",
+      "environment": [
+        {
+          "name": "VORTEXA_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://www.vortexa.cloud 注册并登录。密码使用本人账号密码；Token 从开发者工具网络面板的 Authorization Bearer 或 /auth/login 响应 accessToken 获取；cookie 从官网 API 请求 Cookie 获取；refresh 使用 openbot_refresh Cookie 的值；fingerprint 从同一会话 x-fingerprint 请求头获取。不得公开这些凭据。建议使用此规范变量；未设置时兼容下列旧变量。",
+          "format": "每个非空行一个 JSON 对象，不使用任何符号分隔账号。支持 account/password、token、cookie、refresh；至少提供一组可用凭据。可选 fingerprint/userAgent 绑定同一账号；JSON 字符串保留密码中的分隔符。Cookie 仅填写请求头值，不包含 Cookie: 前缀；token 不含 Bearer 前缀。"
+        },
+        {
+          "name": "VORTEXA_LOGIN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "官网注册时使用的账号和密码；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "旧格式每行 账号@密码；用户名在第一个 @ 分割，邮箱在完整邮箱后的 @ 分割，密码剩余内容完整保留。推荐规范 JSON。"
+        },
+        {
+          "name": "VORTEXA_ACCOUNT_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "同 VORTEXA_LOGIN 的兼容别名；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "同 VORTEXA_LOGIN；两者同时设置时优先 VORTEXA_LOGIN。"
+        },
+        {
+          "name": "VORTEXA_ACCOUNT",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人官网登录账号；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "每个非空行一个账号，配套 VORTEXA_PASSWORD，非空旧凭据变量行数必须相同。"
+        },
+        {
+          "name": "VORTEXA_EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人官网注册邮箱，VORTEXA_ACCOUNT 的兼容输入；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "每行一个邮箱，配套 VORTEXA_PASSWORD；优先级 ACCOUNT、EMAIL、USERNAME。"
+        },
+        {
+          "name": "VORTEXA_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人官网注册用户名，VORTEXA_ACCOUNT 的兼容输入；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "每行一个用户名，配套 VORTEXA_PASSWORD。"
+        },
+        {
+          "name": "VORTEXA_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人官网账号密码；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "每个非空行一个密码，不能含换行；需要包含换行的凭据不支持。"
+        },
+        {
+          "name": "VORTEXA_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "开发者工具中官网 API 请求 Authorization 的 Bearer 值，或登录响应 accessToken；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "每行一个访问 Token，不含 Bearer 前缀。"
+        },
+        {
+          "name": "VORTEXA_ACCESS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "同 VORTEXA_TOKEN 的兼容别名；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "同 VORTEXA_TOKEN；优先使用 VORTEXA_TOKEN。"
+        },
+        {
+          "name": "VORTEXA_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "开发者工具中官网 API 请求的 Cookie 值，包含 openbot_refresh 时可刷新访问凭据；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "每行一个账号完整 Cookie，不含请求头名称。"
+        },
+        {
+          "name": "VORTEXA_REFRESH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "浏览器官网会话 Cookie 中 openbot_refresh 的值；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "每行一个刷新凭据；仅未提供完整 Cookie 时组装为 openbot_refresh Cookie。"
+        },
+        {
+          "name": "VORTEXA_FINGERPRINT",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "同一登录会话的 x-fingerprint 请求头；兼容输入，优先使用 VORTEXA_ACCOUNTS。",
+          "format": "单行文本；默认每个账号独立随机生成。规范账号对象内字段优先。"
+        },
+        {
+          "name": "VORTEXA_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "浏览器 API 请求 User-Agent 请求头；不需要填写时使用内置 Windows Chrome 请求头",
+          "format": "单行文本；规范账号对象内 userAgent 优先。"
+        },
+        {
+          "name": "VORTEXA_LOGIN_FIELD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从官网 /auth/login 请求体确认账号字段名",
+          "format": "可选字母开头的字母、数字、下划线字段，不能是 password；默认邮箱使用 email，其余使用 username。"
+        },
+        {
+          "name": "VORTEXA_API_BASE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅依据官网开发者工具确认 API 地址；无依据不要更改",
+          "format": "默认 https://api.vortexa.cloud/api；只允许 HTTPS，无 URL 凭据、查询串或片段。"
+        },
+        {
+          "name": "VORTEXA_ORIGIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "官网请求 Origin 头",
+          "format": "默认 https://www.vortexa.cloud；只允许 HTTPS。"
+        },
+        {
+          "name": "VORTEXA_REFERER",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "官网免费主机页面地址",
+          "format": "默认 https://www.vortexa.cloud/free-hosting；只允许 HTTPS。"
+        },
+        {
+          "name": "VORTEXA_PRODUCT_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "运行 VORTEXA_LIST_PRODUCTS=1 从公开免费产品列表获取",
+          "format": "产品 ID；指定值不存在就失败，不自动更换产品；即使同时提供套餐 ID 也须核验免费。"
+        },
+        {
+          "name": "VORTEXA_PLAN_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "运行产品列表模式从免费套餐列表获取",
+          "format": "免费套餐 ID；必须属于所选产品，且 type 为 free 或明确价格为零。"
+        },
+        {
+          "name": "VORTEXA_PRODUCT_SLUG",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "运行产品列表模式获取产品 slug",
+          "format": "不区分大小写精确匹配；优先级低于产品 ID。"
+        },
+        {
+          "name": "VORTEXA_PRODUCT_NAME",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "运行产品列表模式获取产品名称",
+          "format": "不区分大小写子串匹配，如 node；优先级低于 ID、slug；无选择参数时保留首个免费产品默认选择。"
+        },
+        {
+          "name": "VORTEXA_LIST_PRODUCTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户按需启用",
+          "format": "1/true/yes/on 开启；默认关闭；优先于领取和循环模式，账号凭据仍必须符合契约但不发送到产品接口。"
+        },
+        {
+          "name": "VORTEXA_CLAIM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户明确希望领取免费主机时启用",
+          "format": "1/true/yes/on 开启；默认关闭，只读取主机、库存、免费套餐；不直接领取付费套餐。"
+        },
+        {
+          "name": "VORTEXA_LOOP",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户按需启用库存轮询",
+          "format": "1/true/yes/on 开启；默认关闭；在领取模式下最多扫描 VORTEXA_MAX_SCANS 次，已有主机或领取核验完成即停止。"
+        },
+        {
+          "name": "VORTEXA_MAX_SCANS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按可接受的轮询时间配置",
+          "format": "1 至 30 的整数；循环默认 3 次，未开启循环只扫描一次；建议执行时间小于十分钟定时间隔。"
+        },
+        {
+          "name": "VORTEXA_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络质量配置",
+          "format": "1000 至 120000 的整数毫秒；默认 30000，覆盖完整请求时长。"
+        },
+        {
+          "name": "VORTEXA_CONFIRM_DELAY_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按服务开通延迟配置",
+          "format": "0 至 120 的整数秒；默认 5；领取后等待再确认官方状态，未确认则失败且不重复提交。"
+        },
+        {
+          "name": "VORTEXA_INTERVAL_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按库存扫描需要配置",
+          "format": "1 至 300 的整数秒；旧最小间隔别名，默认 30。"
+        },
+        {
+          "name": "VORTEXA_INTERVAL_MIN_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按库存扫描需要配置",
+          "format": "1 至 300 的整数秒；默认采用 INTERVAL_SECONDS 或 30。"
+        },
+        {
+          "name": "VORTEXA_INTERVAL_MAX_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按库存扫描需要配置",
+          "format": "不小于最小间隔且不大于 300 的整数秒；默认最小间隔与 60 中较大者。"
+        },
+        {
+          "name": "VORTEXA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地或青龙测试时启用",
+          "format": "1/true/yes/on 开启；不访问任何业务网络，不执行领取或登录；通知也受断网保护。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关",
+          "format": "默认 1；0/false/no/off 关闭；其余值尝试通知。通知缺失或失败不影响业务退出码。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "已安装青龙 sendNotify.js 的所在目录",
+          "format": "可选目录；其次探测 /ql/data/scripts 和 /ql/scripts；不下载辅助文件，不作为业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 JSON 账号对象；同一账号的配套凭据放在同一对象。旧变量按非空行对齐，不使用 &、@ 或其他符号分隔账号。逐账号隔离登录与 Cookie；任一账号失败时整体退出码为 1。"
+      },
+      "dependencies": [],
+      "features": [
+        "账号密码登录，邮箱或用户名字段自动识别与自定义登录字段；访问 Token、刷新 Cookie 登录；授权失效后按原方式重新登录一次。",
+        "检查已有免费主机，显示公开服务名称或 ID；官网返回昵称、用户名、显示名或公开 UID 时输出身份以核对账号，不输出邮箱登录凭据。",
+        "查询免费主机库存、领取资格，默认完成只读检查；已有免费主机时确认已完成。",
+        "独立产品列表模式，列出免费产品名称、slug、产品 ID、套餐 ID、名称、类型和价格。",
+        "按产品 ID、slug 或名称选择免费产品；支持指定套餐 ID，未配置时选择首个免费产品及免费套餐。",
+        "显式开启免费主机领取，提交后以官方已有主机状态核验成功；未知响应、付费套餐和选定产品缺失时失败闭合。",
+        "显式开启有限随机间隔库存轮询；保留原十分钟定时规则、间隔配置、登录重试和请求头配置。",
+        "每行一个账号，凭据隔离，逐账号执行，任意账号失败整体非零退出。",
+        "完全断网预演、完整时间轴日志、分阶段与账号统计、一条 TASK_SUMMARY JSON；青龙通知及全局开关。"
+      ],
+      "sideEffects": [
+        "使用密码或刷新 Cookie 登录时创建或续期服务端登录会话；更新的访问 Token 和 Cookie 仅保存在本次进程内，不写文件。",
+        "仅在 VORTEXA_CLAIM 开启且产品套餐明确免费时提交免费主机领取，创建账号免费主机服务。",
+        "启用通知时通过已有青龙 sendNotify.js 发送脱敏任务总结；预演通知受断网保护。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/7f027fefd96fedf2",
+        "candidateSha256": "b273f03a653096e937f1948492eb5c9115fa21fd73d4687f2197caa3eb75fc75"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "b273f03a653096e937f1948492eb5c9115fa21fd73d4687f2197caa3eb75fc75",
+        "releaseSha256": "4a9d6c8d8e147991d196f0ddebf7c74f200c9e12ab1fca721555034e46e2da04",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "d0c1751256314943",
       "applicationKey": "wangchao",
       "checkProfile": {

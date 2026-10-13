@@ -186,6 +186,7 @@
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `1 16 * * *` |
 | 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` |
 | 掌瓦每日商店推送 | `scripts/valorantstore.py` | `python3 scripts/valorantstore.py` | `15 8 * * *` |
+| Vortexa 免费主机检查与领取 | `scripts/vortexa_free_claim.js` | `node scripts/vortexa_free_claim.js` | `1,11,21,31,41,51 * * * *` |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `2 8 * * *` |
 | 华润通文体未来荟签到 | `scripts/wentiweilaihui.py` | `python3 scripts/wentiweilaihui.py` | `1 1 1 1 1` |
 | WorkBuddy签到 | `scripts/workbuddy.py` | `python3 scripts/workbuddy.py` | `30 8 * * *` |
@@ -356,6 +357,7 @@
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
 - `scripts/tyqhdraw.py`：登录并校验业务成功码与有效会话；查询调料包和番茄资产；打印官方返回的非秘密账号身份；显式开启后执行活动 58 集市兑换抽奖，每轮最多 10 次并检查奖品字段；使用本地透明掩膜图像匹配识别滑块并验证官方业务成功码；低置信度停止；查询实物礼品名称及非实物礼品数量；每行一个账号，账号独立失败隔离与整体非零退出；完全断网预演、青龙脱敏通知、逐阶段日志及单行任务汇总。
 - `scripts/valorantstore.py`：按原每日 08:15 定时查询掌上无畏契约每日商店，不购买商品。；刷新 access_token、client ticket、web ticket 和临时票据；刷新失败仍尝试旧会话查询并以失败状态退出。；查询绑定账号并按官方返回显示昵称；无昵称时使用账号序号。；报告每日皮肤名称、品质、点券价格、点赞数及北京时间刷新时间。；使用背景与商品图片生成商品长图，可选 Telegram 图片推送；图片失败保留文字报告并记录失败。；通过青龙通知发送包含商店报告、账号总数、成功数和失败数的脱敏总结；通知不可用不改变业务退出码。；支持每行一个账号、无网络预演、阶段耗时及账号和任务统计，输出唯一单行 TASK_SUMMARY。。
+- `scripts/vortexa_free_claim.js`：账号密码登录，邮箱或用户名字段自动识别与自定义登录字段；访问 Token、刷新 Cookie 登录；授权失效后按原方式重新登录一次。；检查已有免费主机，显示公开服务名称或 ID；官网返回昵称、用户名、显示名或公开 UID 时输出身份以核对账号，不输出邮箱登录凭据。；查询免费主机库存、领取资格，默认完成只读检查；已有免费主机时确认已完成。；独立产品列表模式，列出免费产品名称、slug、产品 ID、套餐 ID、名称、类型和价格。；按产品 ID、slug 或名称选择免费产品；支持指定套餐 ID，未配置时选择首个免费产品及免费套餐。；显式开启免费主机领取，提交后以官方已有主机状态核验成功；未知响应、付费套餐和选定产品缺失时失败闭合。；显式开启有限随机间隔库存轮询；保留原十分钟定时规则、间隔配置、登录重试和请求头配置。；每行一个账号，凭据隔离，逐账号执行，任意账号失败整体非零退出。；完全断网预演、完整时间轴日志、分阶段与账号统计、一条 TASK_SUMMARY JSON；青龙通知及全局开关。。
 - `scripts/wangchao.py`：手机号与密码登录，展示官方返回的非敏感昵称或公开账号标识；保留上游随机客户端标识、RSA 密码加密、HMAC 登录认证、应用请求签名和 SM2 阅读参数加密；进入 App，获取每日阅读任务、识别已读文章、浏览未读文章、提交阅读记录并复查完成进度；显式开关控制同应用活动入口浏览，不伪造或重放随机阅读记录；显式开关控制每日一次抽奖，检查会话、阅读进度及官方资格，展示上游奖品名称；查询最近十条抽奖记录及时间；换行多账号、独立失败处理、完全断网预演、业务失败非零退出；限时 HTTP 请求、严格业务码与必要字段校验、禁止携带凭据重定向；时间轴阶段日志、每账号及全局统计、唯一单行 TASK_SUMMARY 汇总、青龙脱敏通知。
 - `scripts/wentiweilaihui.py`：查询签到记录及今日签到状态；今日已签到时跳过重复签到，否则执行每日签到；查询并展示当前会员积分；官方响应提供昵称、用户名、显示名称或公开 UID 时展示非敏感账号身份；逐行多账号独立处理，兼容裸 JWT、完整 Wechat 登录令牌及原账号对象字段；完全断网预演和逐阶段脱敏日志、账号与子任务统计、单行结构化总结；正式执行后通过青龙通知发送脱敏总结，通知不可用不改变业务退出码。
 - `scripts/workbuddy.py`：每日签到和今日状态查询；主状态接口失败时回退兼容接口，令牌失效不盲目回退。；展示每日积分、签到获得积分、连续签到天数及连签奖励标记。；识别官方确认的活动关闭或今日已签；签到失败后复查，确认已签则视为完成。；可选刷新令牌续期并重试一次，兼容企业、租户、域名及自定义浏览器请求头。；逐行 JSON 多账号和驼峰凭据字段兼容，保留每日 08:30 定时与启动错峰参数。；完全断网预演、逐阶段脱敏日志、账号与子任务统计、单行结构化汇总和青龙通知。；官方返回公开昵称、用户名、显示名称或公开 UID 时显示可核对身份；不打印凭据或原始响应。。
@@ -538,6 +540,7 @@
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tyqhdraw.py</code></td><td><code>tyqhCookie</code></td><td>是</td><td>格式：每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/valorantstore.py</code></td><td><code>VALORANT_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；字段以分号分隔、名称与值以第一个等号分隔，后续等号原样保留。至少包含 userId、openid、access_token、ct，保留 tid、acctype 等其他原始 Cookie 字段。不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/vortexa_free_claim.js</code></td><td><code>VORTEXA_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，不使用任何符号分隔账号。支持 account/password、token、cookie、refresh；至少提供一组可用凭据。可选 fingerprint/userAgent 绑定同一账号；JSON 字符串保留密码中的分隔符。Cookie 仅填写请求头值，不包含 Cookie: 前缀；token 不含 Bearer 前缀。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wangchao.py</code></td><td><code>WangChao</code></td><td>是</td><td>格式：每个非空行一个“登录手机号#密码”。仅按第一个 # 切分，密码中的后续 #、&amp;、@ 等字符完整保留。密码 UTF-8 长度不超过 117 字节。旧版 &amp;&amp; 多账号分隔须手动迁移为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wentiweilaihui.py</code></td><td><code>WENTIWEILAIHUI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，可填裸 JWT 或完整 Wechat JWT；也可每行一个 JSON 对象，字段 token 必填，account_name、mobile、user_agent 可选，沿用上游字段名。JSON 不跨行；手机号兼容输入不发送不输出，账号名称不作为官方身份。不得用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/workbuddy.py</code></td><td><code>WORKBUDDY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；access_token 为必填字符串，refresh_token、uid、enterprise_id、domain、user_agent 为同账号的可选字符串。兼容 accessToken、refreshToken、enterpriseId、userAgent。JSON 保留完整字段内容，不按 &amp;、@ 或其他字符分割账号。；多账号格式以该脚本文档为准</td></tr>
@@ -1534,6 +1537,38 @@
 <tr><td><code>TG_BOT_TOKEN</code></td><td>是</td><td>格式：机器人令牌；仅向 Telegram 官方 HTTPS 接口发送。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>TG_USER_ID</code></td><td>是</td><td>格式：十进制聊天编号，群组编号可为负数。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>VALORANT_FONT_PATH</code></td><td>否</td><td>格式：可读本地字体文件路径；不是必需文件，不依赖固定私有路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="32"><code>scripts/vortexa_free_claim.js</code></td><td><code>VORTEXA_LOGIN</code></td><td>是</td><td>格式：旧格式每行 账号@密码；用户名在第一个 @ 分割，邮箱在完整邮箱后的 @ 分割，密码剩余内容完整保留。推荐规范 JSON。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_ACCOUNT_PASSWORD</code></td><td>是</td><td>格式：同 VORTEXA_LOGIN；两者同时设置时优先 VORTEXA_LOGIN。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号，配套 VORTEXA_PASSWORD，非空旧凭据变量行数必须相同。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_EMAIL</code></td><td>是</td><td>格式：每行一个邮箱，配套 VORTEXA_PASSWORD；优先级 ACCOUNT、EMAIL、USERNAME。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_USERNAME</code></td><td>是</td><td>格式：每行一个用户名，配套 VORTEXA_PASSWORD。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_PASSWORD</code></td><td>是</td><td>格式：每个非空行一个密码，不能含换行；需要包含换行的凭据不支持。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_TOKEN</code></td><td>是</td><td>格式：每行一个访问 Token，不含 Bearer 前缀。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_ACCESS_TOKEN</code></td><td>是</td><td>格式：同 VORTEXA_TOKEN；优先使用 VORTEXA_TOKEN。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_COOKIE</code></td><td>是</td><td>格式：每行一个账号完整 Cookie，不含请求头名称。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_REFRESH</code></td><td>是</td><td>格式：每行一个刷新凭据；仅未提供完整 Cookie 时组装为 openbot_refresh Cookie。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_FINGERPRINT</code></td><td>是</td><td>格式：单行文本；默认每个账号独立随机生成。规范账号对象内字段优先。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_USER_AGENT</code></td><td>否</td><td>格式：单行文本；规范账号对象内 userAgent 优先。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_LOGIN_FIELD</code></td><td>否</td><td>格式：可选字母开头的字母、数字、下划线字段，不能是 password；默认邮箱使用 email，其余使用 username。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_API_BASE</code></td><td>否</td><td>格式：默认 https://api.vortexa.cloud/api；只允许 HTTPS，无 URL 凭据、查询串或片段。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_ORIGIN</code></td><td>否</td><td>格式：默认 https://www.vortexa.cloud；只允许 HTTPS。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_REFERER</code></td><td>否</td><td>格式：默认 https://www.vortexa.cloud/free-hosting；只允许 HTTPS。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_PRODUCT_ID</code></td><td>否</td><td>格式：产品 ID；指定值不存在就失败，不自动更换产品；即使同时提供套餐 ID 也须核验免费。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_PLAN_ID</code></td><td>否</td><td>格式：免费套餐 ID；必须属于所选产品，且 type 为 free 或明确价格为零。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_PRODUCT_SLUG</code></td><td>否</td><td>格式：不区分大小写精确匹配；优先级低于产品 ID。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_PRODUCT_NAME</code></td><td>否</td><td>格式：不区分大小写子串匹配，如 node；优先级低于 ID、slug；无选择参数时保留首个免费产品默认选择。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_LIST_PRODUCTS</code></td><td>否</td><td>格式：1/true/yes/on 开启；默认关闭；优先于领取和循环模式，账号凭据仍必须符合契约但不发送到产品接口。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_CLAIM</code></td><td>否</td><td>格式：1/true/yes/on 开启；默认关闭，只读取主机、库存、免费套餐；不直接领取付费套餐。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_LOOP</code></td><td>否</td><td>格式：1/true/yes/on 开启；默认关闭；在领取模式下最多扫描 VORTEXA_MAX_SCANS 次，已有主机或领取核验完成即停止。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_MAX_SCANS</code></td><td>否</td><td>格式：1 至 30 的整数；循环默认 3 次，未开启循环只扫描一次；建议执行时间小于十分钟定时间隔。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_TIMEOUT_MS</code></td><td>否</td><td>格式：1000 至 120000 的整数毫秒；默认 30000，覆盖完整请求时长。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_CONFIRM_DELAY_SECONDS</code></td><td>否</td><td>格式：0 至 120 的整数秒；默认 5；领取后等待再确认官方状态，未确认则失败且不重复提交。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_INTERVAL_SECONDS</code></td><td>否</td><td>格式：1 至 300 的整数秒；旧最小间隔别名，默认 30。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_INTERVAL_MIN_SECONDS</code></td><td>否</td><td>格式：1 至 300 的整数秒；默认采用 INTERVAL_SECONDS 或 30。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_INTERVAL_MAX_SECONDS</code></td><td>否</td><td>格式：不小于最小间隔且不大于 300 的整数秒；默认最小间隔与 60 中较大者。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>VORTEXA_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启；不访问任何业务网络，不执行领取或登录；通知也受断网保护。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭；其余值尝试通知。通知缺失或失败不影响业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录；其次探测 /ql/data/scripts 和 /ql/scripts；不下载辅助文件，不作为业务依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/wangchao.py</code></td><td><code>WANGCHAO_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1/0、true/false、yes/no、on/off。预演不代表真实业务成功。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WANGCHAO_LOTTERY</code></td><td>否</td><td>格式：默认 0；设为 1 时仅在阅读进度和官方资格都通过后抽奖一次，不自动重试。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WANGCHAO_BONUS</code></td><td>否</td><td>格式：默认 0；设为 1 时按接口提供的入口浏览，不重放随机文章阅读或承诺增加次数，不运行诗词答题及红包。；多账号格式以该脚本文档为准</td></tr>
@@ -1760,6 +1795,7 @@
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
 - `scripts/tyqhdraw.py`：每个非空行一个账号；同一账号的 thirdId 与 wid 写在同一行，保留原字段顺序。逐账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/valorantstore.py`：VALORANT_COOKIE 每个非空行一个完整账号 Cookie，ct 与该账号其他字段合并在同一行；按顺序独立执行，任一账号失败则整体非零退出。。
+- `scripts/vortexa_free_claim.js`：每个非空行一个 JSON 账号对象；同一账号的配套凭据放在同一对象。旧变量按非空行对齐，不使用 &、@ 或其他符号分隔账号。逐账号隔离登录与 Cookie；任一账号失败时整体退出码为 1。。
 - `scripts/wangchao.py`：每个非空行一个账号，只按第一个 # 切分配套手机号与密码。忽略空行；各账号独立处理，任一账号配置或业务失败则整体非零退出。。
 - `scripts/wentiweilaihui.py`：每个非空行一个账号，独立执行签到及积分查询。JSON 对象将配套字段放在同一行，完整保存令牌及 User-Agent。任一账号或子任务失败整体非零退出。。
 - `scripts/workbuddy.py`：每个非空行一个独立账号 JSON 对象，配套凭据合并在同一行；逐账号独立运行，任一账号失败则进程非零退出。。
@@ -2890,6 +2926,13 @@
 - 所属脚本：`scripts/valorantstore.py`
 - 获取或设置：在本人授权设备上登录掌上无畏契约，通过合法抓包方式取得 app.mval.qq.com 每日商店请求的完整 Cookie，并从 refresh_client_ticket 请求体取得同一账号的 ct。将 ct 追加为 Cookie 字段；票据过期后重新抓包。不要公开或发送给他人。
 - 填写格式：`每个非空行一个账号；字段以分号分隔、名称与值以第一个等号分隔，后续等号原样保留。至少包含 userId、openid、access_token、ct，保留 tid、acctype 等其他原始 Cookie 字段。不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_ACCOUNTS`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：在 https://www.vortexa.cloud 注册并登录。密码使用本人账号密码；Token 从开发者工具网络面板的 Authorization Bearer 或 /auth/login 响应 accessToken 获取；cookie 从官网 API 请求 Cookie 获取；refresh 使用 openbot_refresh Cookie 的值；fingerprint 从同一会话 x-fingerprint 请求头获取。不得公开这些凭据。建议使用此规范变量；未设置时兼容下列旧变量。
+- 填写格式：`每个非空行一个 JSON 对象，不使用任何符号分隔账号。支持 account/password、token、cookie、refresh；至少提供一组可用凭据。可选 fingerprint/userAgent 绑定同一账号；JSON 字符串保留密码中的分隔符。Cookie 仅填写请求头值，不包含 Cookie: 前缀；token 不含 Bearer 前缀。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WangChao`
@@ -9016,6 +9059,209 @@
 - 获取或设置：可选，指定当前运行环境已经安装且获准使用的中文字体以改善长图中文显示；不填写使用 Pillow 内置字体。脚本不下载或安装字体。
 - 填写格式：`可读本地字体文件路径；不是必需文件，不依赖固定私有路径。`
 
+#### `VORTEXA_LOGIN`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：官网注册时使用的账号和密码；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`旧格式每行 账号@密码；用户名在第一个 @ 分割，邮箱在完整邮箱后的 @ 分割，密码剩余内容完整保留。推荐规范 JSON。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_ACCOUNT_PASSWORD`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：同 VORTEXA_LOGIN 的兼容别名；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`同 VORTEXA_LOGIN；两者同时设置时优先 VORTEXA_LOGIN。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_ACCOUNT`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：本人官网登录账号；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`每个非空行一个账号，配套 VORTEXA_PASSWORD，非空旧凭据变量行数必须相同。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_EMAIL`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：本人官网注册邮箱，VORTEXA_ACCOUNT 的兼容输入；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`每行一个邮箱，配套 VORTEXA_PASSWORD；优先级 ACCOUNT、EMAIL、USERNAME。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_USERNAME`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：本人官网注册用户名，VORTEXA_ACCOUNT 的兼容输入；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`每行一个用户名，配套 VORTEXA_PASSWORD。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_PASSWORD`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：本人官网账号密码；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`每个非空行一个密码，不能含换行；需要包含换行的凭据不支持。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_TOKEN`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：开发者工具中官网 API 请求 Authorization 的 Bearer 值，或登录响应 accessToken；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`每行一个访问 Token，不含 Bearer 前缀。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_ACCESS_TOKEN`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：同 VORTEXA_TOKEN 的兼容别名；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`同 VORTEXA_TOKEN；优先使用 VORTEXA_TOKEN。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_COOKIE`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：开发者工具中官网 API 请求的 Cookie 值，包含 openbot_refresh 时可刷新访问凭据；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`每行一个账号完整 Cookie，不含请求头名称。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_REFRESH`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：浏览器官网会话 Cookie 中 openbot_refresh 的值；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`每行一个刷新凭据；仅未提供完整 Cookie 时组装为 openbot_refresh Cookie。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_FINGERPRINT`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：同一登录会话的 x-fingerprint 请求头；兼容输入，优先使用 VORTEXA_ACCOUNTS。
+- 填写格式：`单行文本；默认每个账号独立随机生成。规范账号对象内字段优先。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `VORTEXA_USER_AGENT`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：浏览器 API 请求 User-Agent 请求头；不需要填写时使用内置 Windows Chrome 请求头
+- 填写格式：`单行文本；规范账号对象内 userAgent 优先。`
+
+#### `VORTEXA_LOGIN_FIELD`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：从官网 /auth/login 请求体确认账号字段名
+- 填写格式：`可选字母开头的字母、数字、下划线字段，不能是 password；默认邮箱使用 email，其余使用 username。`
+
+#### `VORTEXA_API_BASE`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：仅依据官网开发者工具确认 API 地址；无依据不要更改
+- 填写格式：`默认 https://api.vortexa.cloud/api；只允许 HTTPS，无 URL 凭据、查询串或片段。`
+
+#### `VORTEXA_ORIGIN`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：官网请求 Origin 头
+- 填写格式：`默认 https://www.vortexa.cloud；只允许 HTTPS。`
+
+#### `VORTEXA_REFERER`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：官网免费主机页面地址
+- 填写格式：`默认 https://www.vortexa.cloud/free-hosting；只允许 HTTPS。`
+
+#### `VORTEXA_PRODUCT_ID`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：运行 VORTEXA_LIST_PRODUCTS=1 从公开免费产品列表获取
+- 填写格式：`产品 ID；指定值不存在就失败，不自动更换产品；即使同时提供套餐 ID 也须核验免费。`
+
+#### `VORTEXA_PLAN_ID`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：运行产品列表模式从免费套餐列表获取
+- 填写格式：`免费套餐 ID；必须属于所选产品，且 type 为 free 或明确价格为零。`
+
+#### `VORTEXA_PRODUCT_SLUG`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：运行产品列表模式获取产品 slug
+- 填写格式：`不区分大小写精确匹配；优先级低于产品 ID。`
+
+#### `VORTEXA_PRODUCT_NAME`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：运行产品列表模式获取产品名称
+- 填写格式：`不区分大小写子串匹配，如 node；优先级低于 ID、slug；无选择参数时保留首个免费产品默认选择。`
+
+#### `VORTEXA_LIST_PRODUCTS`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：用户按需启用
+- 填写格式：`1/true/yes/on 开启；默认关闭；优先于领取和循环模式，账号凭据仍必须符合契约但不发送到产品接口。`
+
+#### `VORTEXA_CLAIM`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：用户明确希望领取免费主机时启用
+- 填写格式：`1/true/yes/on 开启；默认关闭，只读取主机、库存、免费套餐；不直接领取付费套餐。`
+
+#### `VORTEXA_LOOP`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：用户按需启用库存轮询
+- 填写格式：`1/true/yes/on 开启；默认关闭；在领取模式下最多扫描 VORTEXA_MAX_SCANS 次，已有主机或领取核验完成即停止。`
+
+#### `VORTEXA_MAX_SCANS`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：按可接受的轮询时间配置
+- 填写格式：`1 至 30 的整数；循环默认 3 次，未开启循环只扫描一次；建议执行时间小于十分钟定时间隔。`
+
+#### `VORTEXA_TIMEOUT_MS`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：按网络质量配置
+- 填写格式：`1000 至 120000 的整数毫秒；默认 30000，覆盖完整请求时长。`
+
+#### `VORTEXA_CONFIRM_DELAY_SECONDS`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：按服务开通延迟配置
+- 填写格式：`0 至 120 的整数秒；默认 5；领取后等待再确认官方状态，未确认则失败且不重复提交。`
+
+#### `VORTEXA_INTERVAL_SECONDS`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：按库存扫描需要配置
+- 填写格式：`1 至 300 的整数秒；旧最小间隔别名，默认 30。`
+
+#### `VORTEXA_INTERVAL_MIN_SECONDS`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：按库存扫描需要配置
+- 填写格式：`1 至 300 的整数秒；默认采用 INTERVAL_SECONDS 或 30。`
+
+#### `VORTEXA_INTERVAL_MAX_SECONDS`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：按库存扫描需要配置
+- 填写格式：`不小于最小间隔且不大于 300 的整数秒；默认最小间隔与 60 中较大者。`
+
+#### `VORTEXA_DRY_RUN`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：本地或青龙测试时启用
+- 填写格式：`1/true/yes/on 开启；不访问任何业务网络，不执行领取或登录；通知也受断网保护。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：青龙全局通知开关
+- 填写格式：`默认 1；0/false/no/off 关闭；其余值尝试通知。通知缺失或失败不影响业务退出码。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/vortexa_free_claim.js`
+- 获取或设置：已安装青龙 sendNotify.js 的所在目录
+- 填写格式：`可选目录；其次探测 /ql/data/scripts 和 /ql/scripts；不下载辅助文件，不作为业务依赖。`
+
 #### `WANGCHAO_DRY_RUN`
 
 - 所属脚本：`scripts/wangchao.py`
@@ -9629,6 +9875,7 @@
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 - `scripts/tyqhdraw.py`：SHA-256 `c2c1115b60fd085034eb55d28ffb8fd3cb6476263eeff23f53f5bea8ad892b7e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
 - `scripts/valorantstore.py`：SHA-256 `e7b189720b1086ca20bad310b392de69d4f75c7fa0660ed843120affa4bcc0fb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1153449ac9321744`。
+- `scripts/vortexa_free_claim.js`：SHA-256 `4a9d6c8d8e147991d196f0ddebf7c74f200c9e12ab1fca721555034e46e2da04`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f027fefd96fedf2`。
 - `scripts/wangchao.py`：SHA-256 `487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
 - `scripts/wentiweilaihui.py`：SHA-256 `f91a3a6a1873b350c695cc5466ff224a18d90d01e59e013c5a319dfc55facc24`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afa2f50b7baa69db`。
 - `scripts/workbuddy.py`：SHA-256 `c20f62f74b4c3a50a42852229dff9b40dc79baa5f6854e8d40e01a4f361c5a7a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/af0ae4c86279f8da`。
@@ -9799,6 +10046,7 @@
 - `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
 - `scripts/tyqhdraw.py`：登录创建账号会话；显式开启时兑换抽奖，可能消耗资产或抽奖机会并获得奖品；抽奖遇到滑块时提交验证码验证；启用通知时通过青龙通知渠道发送脱敏任务统计。
 - `scripts/valorantstore.py`：实时模式调用认证接口刷新账号票据，仅保存在当前独立会话内存中。；通知开启时向已配置青龙通知渠道发送脱敏商店与任务总结。；通知开启且配置 Telegram 时发送商品长图；生成的本地临时图片在发送后删除。。
+- `scripts/vortexa_free_claim.js`：使用密码或刷新 Cookie 登录时创建或续期服务端登录会话；更新的访问 Token 和 Cookie 仅保存在本次进程内，不写文件。；仅在 VORTEXA_CLAIM 开启且产品套餐明确免费时提交免费主机领取，创建账号免费主机服务。；启用通知时通过已有青龙 sendNotify.js 发送脱敏任务总结；预演通知受断网保护。。
 - `scripts/wangchao.py`：实时登录会建立账号及活动服务会话；默认浏览未读文章并提交阅读记录，改变每日阅读进度；启用 WANGCHAO_BONUS 时浏览活动文章入口，可能改变浏览记录；启用 WANGCHAO_LOTTERY 时抽奖一次，消耗次数并产生中奖或参与记录；启用 QINGLONG_NOTIFY 时通过青龙通知渠道发送脱敏任务总结；预演通知禁止网络。
 - `scripts/wentiweilaihui.py`：未签到时执行文体未来荟每日签到，可能增加积分；正式模式启用通知时发送脱敏任务总结。
 - `scripts/workbuddy.py`：每日签到及服务端积分、连签奖励状态变更。；配置刷新令牌且访问令牌过期时向服务端申请续期，仅在进程内更新凭据。；正式运行且通知启用时发送脱敏青龙任务总结。。
@@ -9971,6 +10219,7 @@
 - `scripts/ty_netdisk_checkin.py`：上游 `agluo/ql-script-hub` / `ty_netdisk_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/tyqhdraw.py`：上游 `Rookie-wb-WH/ql_scripts` / `tyqhDraw.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/valorantstore.py`：上游 `CN-Grace/QinglongScripts` / `ValorantStore.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
+- `scripts/vortexa_free_claim.js`：上游 `lizhixu/ql-script-hub` / `vortexa_free_claim.js` / `ac591a320092dcaeaf236b7c2b6acfd28981e589`。
 - `scripts/wangchao.py`：上游 `Rookie-wb-WH/ql_scripts` / `wangchao.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/wentiweilaihui.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/wentiweilaihui/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/workbuddy.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/workbuddy/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
