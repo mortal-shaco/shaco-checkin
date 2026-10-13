@@ -7152,6 +7152,132 @@
       }
     },
     {
+      "catalogId": "92c9eab51e75cca3",
+      "applicationKey": "yuxian158/check::meizu",
+      "checkProfile": {
+        "requiredEnv": [
+          "MEIZU_COOKIE"
+        ],
+        "optionalEnv": [
+          "MEIZU_DRAW_COUNT",
+          "MEIZU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MEIZU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MEIZU_DRAW_COUNT": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日社区签到及今日已签到识别，无法确认的响应按失败处理。",
+          "查询并显示官方返回的公开 UID；接口返回昵称、用户名或显示名称时一并显示。",
+          "显式设置次数后执行活动编号 2 的连续抽奖，保留五秒间隔及逐次奖励结果，默认不抽奖。",
+          "逐行多账号独立处理，任一账号失败则非零退出。",
+          "完全断网预演、分阶段脱敏日志、账号与任务统计、单行结构化汇总。",
+          "通过青龙通知模块发送脱敏结果并支持全局关闭；断网预演仅展示通知预览。"
+        ],
+        "sideEffects": [
+          "签到改变社区签到状态并可能获得奖励。",
+          "显式开启抽奖后消耗活动次数或积分，并可能获得奖励。",
+          "实际运行且通知开启时向青龙配置渠道发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "魅族社区签到",
+      "path": "scripts/ck_meizu.py",
+      "sha256": "b4aacb9c39582bc2b67c68e5ee5ede9d327a1df08b6b9d14ef23ef1658bb4f88",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_meizu.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/ck_meizu.py",
+      "environment": [
+        {
+          "name": "MEIZU_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://bbs.meizu.cn/，在浏览器开发者工具网络面板查看发往 bbs-act.meizu.cn/index.php 的请求，复制完整 Cookie 请求头。过期时重新登录获取。上游私有框架的 cookie 字段对应本变量。",
+          "format": "每个非空行一个账号的完整 Cookie；保留行内分号和等号，不以 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "MEIZU_DRAW_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置可选抽奖次数；原 draw_count 字段对应本变量。默认 0 禁止抽奖，正数表示同意活动编号 2 抽奖，可能消耗次数或积分。",
+          "format": "0 至 100 的整数；默认 0，对所有账号生效。"
+        },
+        {
+          "name": "MEIZU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "断网验证时设为 1；实际运行保持 0 或不设置。",
+          "format": "1 启用；0、false、no、off 或空值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知默认开启，设为 0 关闭；断网模式仅打印通知预览，不调用可能联网的通知模块。",
+          "format": "默认 1；0、false、no、off 或空值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙现有 notify.py 或 sendNotify.js 所在目录；未设置时尝试导入 notify 和青龙标准目录，通知缺失不影响业务退出码。",
+          "format": "本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "MEIZU_COOKIE 每个非空行一个账号，逐个独立执行；同行完整 Cookie 不再切分，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日社区签到及今日已签到识别，无法确认的响应按失败处理。",
+        "查询并显示官方返回的公开 UID；接口返回昵称、用户名或显示名称时一并显示。",
+        "显式设置次数后执行活动编号 2 的连续抽奖，保留五秒间隔及逐次奖励结果，默认不抽奖。",
+        "逐行多账号独立处理，任一账号失败则非零退出。",
+        "完全断网预演、分阶段脱敏日志、账号与任务统计、单行结构化汇总。",
+        "通过青龙通知模块发送脱敏结果并支持全局关闭；断网预演仅展示通知预览。"
+      ],
+      "sideEffects": [
+        "签到改变社区签到状态并可能获得奖励。",
+        "显式开启抽奖后消耗活动次数或积分，并可能获得奖励。",
+        "实际运行且通知开启时向青龙配置渠道发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/92c9eab51e75cca3",
+        "candidateSha256": "b4aacb9c39582bc2b67c68e5ee5ede9d327a1df08b6b9d14ef23ef1658bb4f88"
+      }
+    },
+    {
       "catalogId": "3c4712e799078b55",
       "applicationKey": "yuxian158/check::mgtv",
       "checkProfile": {
@@ -7281,6 +7407,151 @@
         "validatedSha256": "a539f25f149dcc1f12caa7141da25bee983fc1f4c31d530a796f6cd1b150acb8",
         "releaseSha256": "87ba378186422a2d560ae13c7cb814fbca39b9df9c488955d9db96b83e161ccb",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "f0626c73779225ec",
+      "applicationKey": "yuxian158/check::oneplusbbs",
+      "checkProfile": {
+        "requiredEnv": [
+          "ONEPLUSBBS"
+        ],
+        "optionalEnv": [
+          "ONEPLUSBBS_COOKIE",
+          "ONEPLUSBBS_DRAW",
+          "ONEPLUSBBS_DRY_RUN",
+          "ONEPLUSBBS_LOCAL_TEXT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ONEPLUSBBS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ONEPLUSBBS_DRAW": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功（官方响应确认）",
+          "今日已签到（官方响应确认）",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "论坛每日签到，识别官方成功或今日已签到结果",
+          "显式开启后最多十次抽奖，统计确认奖励、消耗及净加油",
+          "一言签到文字及作者来源署名，异常时回退本地文字",
+          "多账号逐行配置、独立执行及失败非零退出",
+          "完全断网预演、逐阶段耗时、账号及子任务统计、单行机器汇总",
+          "正式执行结束后发送脱敏青龙通知，通知不可用不改变业务退出码；预演仅输出通知摘要",
+          "官方页面返回当前账号昵称时显示身份，不从 Cookie 提取身份"
+        ],
+        "sideEffects": [
+          "提交每日签到及公开签到文字",
+          "显式开启抽奖后每次消耗 10 加油并可能获得奖励",
+          "正式执行结束后通过可用的青龙通知组件发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "一加手机社区官方论坛",
+      "path": "scripts/ck_oneplusbbs.py",
+      "sha256": "924c0a8026449096829e6622116ea2deab5b47b7614cd237c7760e810fdcf505",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_oneplusBBS.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/ck_oneplusbbs.py",
+      "environment": [
+        {
+          "name": "ONEPLUSBBS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录一加官方论坛，在开发者工具的网络面板查看发往 www.oneplusbbs.com 的已登录请求，复制完整 Cookie 请求头值；必须含 bbs_formhash。不要公开凭据。",
+          "format": "每个非空行一个账号的完整 Cookie；Cookie 字段以分号分隔，保留字段值中的 &、@ 和等号。"
+        },
+        {
+          "name": "ONEPLUSBBS_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容备用输入，获取方式同 ONEPLUSBBS；仅在规范变量为空时使用。上游使用私有框架的 cookie 配置，本维护版改为独立环境变量。",
+          "format": "每个非空行一个完整 Cookie。"
+        },
+        {
+          "name": "ONEPLUSBBS_DRAW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认关闭；确认愿意每次消耗 10 加油后设为 1。",
+          "format": "0 或 1；开启后每账号最多 10 次，失败即停止，不自动重试。"
+        },
+        {
+          "name": "ONEPLUSBBS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 验证参数和执行计划，不进行任何网络请求。",
+          "format": "0 或 1，默认 0。"
+        },
+        {
+          "name": "ONEPLUSBBS_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可设置公开签到文字；一言获取失败时使用，默认“努力奋斗”。不要包含个人信息或凭据。",
+          "format": "空白折叠后不超过 280 字符，超限或为空时使用默认文字。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关，默认开启；设为 0、false、no 或 off 关闭。断网预演仅生成本地通知摘要。",
+          "format": "1/0、true/false、yes/no 或 on/off。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定本地青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准目录。不是业务依赖。",
+          "format": "已存在的本地通知组件目录，不会下载或安装组件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号的完整 Cookie，各账号独立执行；任意账号失败则进程非零退出。不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "论坛每日签到，识别官方成功或今日已签到结果",
+        "显式开启后最多十次抽奖，统计确认奖励、消耗及净加油",
+        "一言签到文字及作者来源署名，异常时回退本地文字",
+        "多账号逐行配置、独立执行及失败非零退出",
+        "完全断网预演、逐阶段耗时、账号及子任务统计、单行机器汇总",
+        "正式执行结束后发送脱敏青龙通知，通知不可用不改变业务退出码；预演仅输出通知摘要",
+        "官方页面返回当前账号昵称时显示身份，不从 Cookie 提取身份"
+      ],
+      "sideEffects": [
+        "提交每日签到及公开签到文字",
+        "显式开启抽奖后每次消耗 10 加油并可能获得奖励",
+        "正式执行结束后通过可用的青龙通知组件发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/f0626c73779225ec",
+        "candidateSha256": "924c0a8026449096829e6622116ea2deab5b47b7614cd237c7760e810fdcf505"
       }
     },
     {
@@ -7941,6 +8212,129 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/7b77205efaf0158a",
         "candidateSha256": "5745d76090d1c471883f40df8aead8ad74fd0f1b7fe8db24c7b995bac3dc25a9"
+      }
+    },
+    {
+      "catalogId": "a5b99fb59f74d208",
+      "applicationKey": "unitaryhighs/ql_sign_script::dahai",
+      "checkProfile": {
+        "requiredEnv": [
+          "DAHAI_COOKIE_LIST"
+        ],
+        "optionalEnv": [
+          "DAHAI_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DAHAI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到成功",
+          "☑️ 今日已签到"
+        ],
+        "features": [
+          "每天 11:30 使用登录 Cookie 签到",
+          "显示连续签到天数",
+          "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID",
+          "明确识别签到成功与今日已签到，其他错误失败退出",
+          "多账号独立执行及汇总",
+          "完全断网预演、阶段日志和结构化汇总",
+          "通过青龙通知模块发送脱敏总结，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行提交每日签到，可能增加积分、经验及连续签到天数",
+          "正式运行启用通知时发送青龙任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "大海资源站每日签到",
+      "path": "scripts/dahai.js",
+      "sha256": "a07b71c7c9787d0b7034b5c8fda3aa3e70b2e96d2285b11e63b7e3fa35373b4d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "sign/dahai.js"
+      },
+      "cron": "0 30 11 * * *",
+      "command": "node scripts/dahai.js",
+      "environment": [
+        {
+          "name": "DAHAI_COOKIE_LIST",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://vip.lzzcc.cn 后，在浏览器开发者工具网络面板打开本站请求，复制请求头 Cookie 完整值；失效后重新登录获取。",
+          "format": "每个非空行一个账号的完整 Cookie，保留分号和等号，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "DAHAI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置，1 开启完全断网预演。",
+          "format": "1、true、yes、on 开启预演，其他值执行正式签到。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置，默认启用青龙通知。",
+          "format": "0、false、no、off 关闭，其他值启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 sendNotify.js 所在目录，默认检查 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本地通知模块目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个账号，完整 Cookie 原样保留；独立执行，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每天 11:30 使用登录 Cookie 签到",
+        "显示连续签到天数",
+        "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID",
+        "明确识别签到成功与今日已签到，其他错误失败退出",
+        "多账号独立执行及汇总",
+        "完全断网预演、阶段日志和结构化汇总",
+        "通过青龙通知模块发送脱敏总结，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行提交每日签到，可能增加积分、经验及连续签到天数",
+        "正式运行启用通知时发送青龙任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a5b99fb59f74d208",
+        "candidateSha256": "e5e90abd51e72abc03b1a7d5dc7248ca39c60da7d4f4cdc98f9fb616271a8bde"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "e5e90abd51e72abc03b1a7d5dc7248ca39c60da7d4f4cdc98f9fb616271a8bde",
+        "releaseSha256": "a07b71c7c9787d0b7034b5c8fda3aa3e70b2e96d2285b11e63b7e3fa35373b4d",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
     {
