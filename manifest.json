@@ -7018,6 +7018,140 @@
       }
     },
     {
+      "catalogId": "86bf0d1d9f07edf8",
+      "applicationKey": "oreoslab/checkinpanel::game163",
+      "checkProfile": {
+        "requiredEnv": [
+          "GAME163_AUTHORIZATION"
+        ],
+        "optionalEnv": [
+          "GAME163",
+          "GAME163_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "GAME163_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "GAME163_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到成功",
+          "☑️ 今日已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日网易云游戏签到，保留每天 08:20 的计划和原请求路径、POST 方法及请求头格式。",
+          "换行多账号及原 authorization 字段配置兼容，各账号独立处理。",
+          "标准库实现 HTTPS 请求，设置超时、响应大小上限并拒绝跳转。",
+          "仅接受明确签到成功或已签到文字；空响应、未知业务结果和错误均失败闭合。",
+          "官方返回安全的昵称、用户名、显示名或公开 UID 时显示原值，不输出凭据及原始响应。",
+          "完全断网预演，通知仅模拟；实际模式在成功、部分失败、失败和配置错误后尝试青龙通知。",
+          "时间轴日志、阶段耗时、账号与任务统计，以及恰好一条 TASK_SUMMARY JSON 记录。"
+        ],
+        "sideEffects": [
+          "实际模式向网易云游戏提交每日签到，可能获得服务端签到奖励。",
+          "通知开启且实际模式下，通过青龙通知模块发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "网易云游戏每日签到",
+      "path": "scripts/ck_game163.py",
+      "sha256": "7ed0cd491d05665776eca881d37deab2c42b356bc28ab3b1735f544fc6d56b4d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_game163.py"
+      },
+      "cron": "20 8 * * *",
+      "command": "python3 scripts/ck_game163.py",
+      "environment": [
+        {
+          "name": "GAME163_AUTHORIZATION",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人网易云游戏网页 https://cg.163.com/，打开浏览器开发者工具网络面板，从发往 n.cg.163.com 的已认证请求复制完整 Authorization 请求头值；过期后重新登录获取，不要公开凭据。",
+          "format": "每个非空行一个账号的完整 Authorization 值，保留前缀和内部字符，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "GAME163",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容入口，凭据获取方式同 GAME163_AUTHORIZATION；规范变量非空时优先使用规范变量。",
+          "format": "每行一个完整凭据，或原 GAME163 账号配置的 JSON 数组，每项为含 authorization 字符串的对象；不再依赖私有配置文件。"
+        },
+        {
+          "name": "GAME163_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置，用于完全断网的参数和流程预演。",
+          "format": "1、true、yes、on 开启，默认 0；预演不代表业务签到成功，通知仅模拟投递。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置通知全局开关。",
+          "format": "默认 1；0、false、no、off 关闭通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙现有 notify.py 所在目录。默认尝试导入 notify，再检查 /ql/data/scripts 和 /ql/scripts；无需下载或其他仓库。",
+          "format": "本地目录路径；通知不可用或失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，完整保留每行凭据，不使用其他账号分隔符；账号独立执行，任一账号失败则整体非零退出。旧 JSON 数组兼容入口也按每个对象独立执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日网易云游戏签到，保留每天 08:20 的计划和原请求路径、POST 方法及请求头格式。",
+        "换行多账号及原 authorization 字段配置兼容，各账号独立处理。",
+        "标准库实现 HTTPS 请求，设置超时、响应大小上限并拒绝跳转。",
+        "仅接受明确签到成功或已签到文字；空响应、未知业务结果和错误均失败闭合。",
+        "官方返回安全的昵称、用户名、显示名或公开 UID 时显示原值，不输出凭据及原始响应。",
+        "完全断网预演，通知仅模拟；实际模式在成功、部分失败、失败和配置错误后尝试青龙通知。",
+        "时间轴日志、阶段耗时、账号与任务统计，以及恰好一条 TASK_SUMMARY JSON 记录。"
+      ],
+      "sideEffects": [
+        "实际模式向网易云游戏提交每日签到，可能获得服务端签到奖励。",
+        "通知开启且实际模式下，通过青龙通知模块发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/86bf0d1d9f07edf8",
+        "candidateSha256": "9103dbb61f4b6cea8178175c4c3e698cfc55566037ebc70e45a6229cd1f7dea4"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "9103dbb61f4b6cea8178175c4c3e698cfc55566037ebc70e45a6229cd1f7dea4",
+        "releaseSha256": "7ed0cd491d05665776eca881d37deab2c42b356bc28ab3b1735f544fc6d56b4d",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "b896028c3fdcd52d",
       "applicationKey": "codearts",
       "checkProfile": {
