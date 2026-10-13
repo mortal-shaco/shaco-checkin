@@ -291,6 +291,148 @@
       }
     },
     {
+      "catalogId": "8cd72e9849a3c893",
+      "applicationKey": "cn-grace/qinglongscripts::airport",
+      "checkProfile": {
+        "requiredEnv": [
+          "SUYING_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "SUYING_USERNAME",
+          "SUYING_PASSWORD",
+          "SUYING_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "SUYING_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "SUYING_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "TASK_SUCCESS：全部账号登录、签到及流量查询已核验"
+        ],
+        "features": [
+          "使用邮箱和密码登录速鹰666，保留原有登录地址与表单字段。",
+          "每日签到并核验明确的业务成功结果；明确已签到结果视为已完成。",
+          "查询剩余流量，保留原 XPath 与 originBody Base64 页面解码及原始页面回退。",
+          "逐行多账号及旧版单账号参数兼容，失败账号不阻止后续账号执行。",
+          "脱敏的逐账号报告、统计、单行 TASK_SUMMARY 和青龙通知。",
+          "完全断网预演验证参数与执行计划，预演不代表真实账号业务成功。"
+        ],
+        "sideEffects": [
+          "正式模式通过登录建立网站会话。",
+          "正式模式执行每日签到，可能增加网站赠送流量或签到记录。",
+          "正式模式调用青龙通知渠道发送脱敏任务总结，可通过 QINGLONG_NOTIFY 关闭。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "机场签到（速鹰666）",
+      "path": "scripts/airport.py",
+      "sha256": "751d2835e39d2431905eacf72fc64a9cddfb4fac8032eaa83bc7af4632e7983d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "CN-Grace/QinglongScripts",
+        "branch": "main",
+        "commit": "a40a2b080e0160bd8e0b0b807081115537b87153",
+        "originalPath": "Airport.py"
+      },
+      "cron": "0 0 * * *",
+      "command": "python3 scripts/airport.py",
+      "environment": [
+        {
+          "name": "SUYING_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "从本人速鹰666网站注册或账户资料取得登录邮箱，密码使用本人网站登录密码。在青龙环境变量中填写每行一个账号。旧版单账号可改用 SUYING_USERNAME 与 SUYING_PASSWORD，两项必须同时设置；新变量存在时优先使用新变量。",
+          "format": "每个非空行：登录邮箱|密码。只按第一个 | 分割，后续密码内容保留；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "SUYING_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入：本人速鹰666登录邮箱，仅在未设置 SUYING_ACCOUNTS 时生效。",
+          "format": "一个账号的登录邮箱，须配套 SUYING_PASSWORD。"
+        },
+        {
+          "name": "SUYING_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入：本人速鹰666登录密码，仅在未设置 SUYING_ACCOUNTS 时生效。",
+          "format": "一个账号的完整密码，须配套 SUYING_USERNAME。"
+        },
+        {
+          "name": "SUYING_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置；预演时设为 1，正式执行时设为 0 或不设置。",
+          "format": "1、true、yes、on 启用完全断网预演。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启。预演仅生成通知总结，不调用通知渠道。",
+          "format": "0、false、no、off 关闭；其他值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙现有 notify.py 所在目录；默认尝试导入 notify.send 及青龙标准脚本目录。缺失或投递失败不会改变业务退出码。",
+          "format": "本机青龙通知模块所在目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "SUYING_ACCOUNTS 每个非空行一个账号，以第一个 | 分隔同一账号的邮箱和密码。逐账号独立处理，任一账号配置、登录、签到或流量查询失败时整体非零退出。旧版参数支持单账号。"
+      },
+      "dependencies": [
+        "requests",
+        "lxml"
+      ],
+      "features": [
+        "使用邮箱和密码登录速鹰666，保留原有登录地址与表单字段。",
+        "每日签到并核验明确的业务成功结果；明确已签到结果视为已完成。",
+        "查询剩余流量，保留原 XPath 与 originBody Base64 页面解码及原始页面回退。",
+        "逐行多账号及旧版单账号参数兼容，失败账号不阻止后续账号执行。",
+        "脱敏的逐账号报告、统计、单行 TASK_SUMMARY 和青龙通知。",
+        "完全断网预演验证参数与执行计划，预演不代表真实账号业务成功。"
+      ],
+      "sideEffects": [
+        "正式模式通过登录建立网站会话。",
+        "正式模式执行每日签到，可能增加网站赠送流量或签到记录。",
+        "正式模式调用青龙通知渠道发送脱敏任务总结，可通过 QINGLONG_NOTIFY 关闭。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/8cd72e9849a3c893",
+        "candidateSha256": "b845b906f82a88e785508a9072f2e347a2eb33a08fe2b2fbe8dff43c209c551a"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "b845b906f82a88e785508a9072f2e347a2eb33a08fe2b2fbe8dff43c209c551a",
+        "releaseSha256": "751d2835e39d2431905eacf72fc64a9cddfb4fac8032eaa83bc7af4632e7983d",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "bd7e90cbb255e115",
       "applicationKey": "aliyundrive",
       "checkProfile": {
