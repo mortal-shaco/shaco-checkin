@@ -1,14 +1,23 @@
 #!/usr/bin/env python3
 # name: ZCode 国内版领套餐
 # cron: 0 9 * * *
-# 来源：L0NE-6/ZCode-Daily，zcode_cn_daily.py
+# 来源：L0NE-6/ZCode-Daily，zcode_cn_daily.py、zcode_intl_daily.py；登录说明参考 zcode_login.py
 # 上游许可：MIT；本维护版本沿用 MIT。
 """
 ZCode 国内版限时套餐领取（不是传统签到）。Python 3，仅使用标准库。
 功能清点：预览套餐和权益、按最高优先级（同优先取首项）或指定套餐领取、
 验证码、版本参数、单账号筛选、北京时间、多渠道通知；激活事件改为显式开启。
 上游未提供 cron；建议每日北京时间 09:00，青龙调度时区需设 Asia/Shanghai。
-国际版 JWT 不通用，不合并国际版；交互登录工具仅作为凭据获取参考。
+国际版 JWT 不通用，使用独立账号变量及区域选择，绝不自动转换凭据。
+默认 --region cn 保持既有国内版任务；--region intl 只运行国际版；
+--region all 按国内、国际顺序处理已配置账号，--only 使用所选范围的统一编号。
+可用 ZCODE_REGION 设置默认区域（cn/intl/all），命令行优先。
+ZCODE_INTL_TOKENS：国际版账号，格式与 ZCODE_CN_TOKENS 相同；从官方国际版
+登录后的 billing/preview 或 billing/claim 请求获取套餐 JWT、设备及验证码。
+也可在官方客户端完成网页授权登录后抓取同一请求，勿使用推理 access_token。
+ZCODE_INTL_DRY_RUN=1 或 ZCODE_CN_DRY_RUN=1 均使整个进程完全断网。
+国际版兼容读取已有 zcode_intl_devices.json，缺省设备值按国际版独立生成。
+交互登录工具只作为凭据获取参考，不自动授权、不输出凭据。
 
 ZCODE_CN_TOKENS：每行一个账号，不用 & 或 @ 分隔。兼容以下格式：
 jwt；jwt|device_mid；jwt|device_mid|captcha；备注|jwt|device_mid|captcha。
@@ -373,7 +382,7 @@ def account_lines(raw):
     return [line.strip() for line in raw.splitlines() if line.strip() and not line.lstrip().startswith('#')]
 
 
-def parse_account(line):
+def parse_account(line, region="cn"):
     first, sep, rest = line.partition('|')
     # 仅 JWT 可明确识别时接受备注前缀，避免吞掉验证码中的分隔符。
     if sep and not looks_like_jwt(first) and looks_like_jwt(rest.partition('|')[0]):
@@ -389,16 +398,16 @@ def parse_account(line):
     if not mid and not DRY:
         # 只兼容读取，不再默认创建或改写设备文件。
         try:
-            store = json.loads(Path(__file__).with_name('zcode_cn_devices.json').read_text())
+            store = json.loads(Path(__file__).with_name('zcode_%s_devices.json' % region).read_text())
             mid = store[hashlib.sha256(token.encode()).hexdigest()[:16]]['mid']
             if not isinstance(mid, str):
                 mid = ''
         except Exception:
             mid = ''
     if not mid:
-        mid = str(uuid.uuid5(uuid.NAMESPACE_URL, 'zcode-cn:' + hashlib.sha256(token.encode()).hexdigest()))
+        mid = str(uuid.uuid5(uuid.NAMESPACE_URL, 'zcode-' + region + ':' + hashlib.sha256(token.encode()).hexdigest()))
     SECRETS.append(mid)
-    return {'jwt': token, 'device_mid': mid, 'captcha': captcha, 'user_id': jwt_user_id(token)}
+    return {'jwt': token, 'device_mid': mid, 'captcha': captcha, 'user_id': jwt_user_id(token), 'region': region}
 
 
 def verify_response(response, action):
@@ -519,7 +528,10 @@ def deliver_notification(title, content, disabled=False):
         dirs.append(Path(configured))
     dirs += [Path('/ql/data/scripts'), Path('/ql/scripts')]
     candidates = [p / 'notify.py' for p in dirs]
-    spec = importlib.util.find_spec('notify')
+    try:
+        spec = importlib.util.find_spec('notify')
+    except (ImportError, ValueError, AttributeError):
+        spec = None
     if spec and spec.origin:
         candidates.insert(0, Path(spec.origin))
     runner = ('import importlib.util,json,sys; p,t,c=json.load(sys.stdin); '
@@ -558,19 +570,20 @@ def deliver_notification(title, content, disabled=False):
 
 def main():
     global DRY
-    DRY = _env('ZCODE_CN_DRY_RUN').lower() in ('1', 'true', 'yes', 'on')
+    DRY = any(_env(name).lower() in ('1', 'true', 'yes', 'on')
+              for name in ('ZCODE_CN_DRY_RUN', 'ZCODE_INTL_DRY_RUN'))
     started = time.monotonic()
-    log('======== ZCode 国内版领套餐 ========')
+    log('======== ZCode 套餐领取（国内及国际版） ========')
     log('开始时间：' + beijing_now().isoformat(timespec='seconds'))
     log('模式：' + ('断网预演' if DRY else '实际执行'))
-    lines = account_lines(os.environ.get('ZCODE_CN_TOKENS', ''))
-    log('账号总数：%d' % len(lines))
+    lines = []
     # 收集敏感值，包括可选推送凭据；不记录备注，避免备注含凭据。
     for name in ('ZCODE_CAPTCHA_PARAM', 'PUSHPLUS_TOKEN', 'BARK_URL', 'WECOM_WEBHOOK',
                  'DINGTALK_WEBHOOK', 'DINGTALK_SECRET', 'QL_TOKEN'):
         SECRETS.append(_env(name))
     results, config_error, no_notify = [], False, '--no-notify' in sys.argv[1:]
-    parser = argparse.ArgumentParser(description='ZCode 国内版套餐领取')
+    parser = argparse.ArgumentParser(description='ZCode 套餐领取（默认国内版，可显式选择国际版）')
+    parser.add_argument('--region', choices=('cn', 'intl', 'all'), default=_env('ZCODE_REGION') or 'cn')
     parser.add_argument('--preview', action='store_true')
     parser.add_argument('--only', type=int)
     parser.add_argument('--no-notify', action='store_true')
@@ -578,29 +591,36 @@ def main():
         # 避免 argparse 错误日志回显未知参数里的敏感值。
         class QuietParser(argparse.ArgumentParser):
             def error(self, message):
-                raise TaskError('命令参数错误：支持 --preview、--only 正整数、--no-notify')
+                raise TaskError('命令参数错误：支持 --region cn/intl/all、--preview、--only 正整数、--no-notify')
         parser.__class__ = QuietParser
         args = parser.parse_args()
+        if args.region not in ('cn', 'intl', 'all'):
+            raise TaskError('ZCODE_REGION 仅支持 cn、intl 或 all')
+        regions = ('cn', 'intl') if args.region == 'all' else (args.region,)
+        lines = [(region, line) for region in regions
+                 for line in account_lines(os.environ.get('ZCODE_%s_TOKENS' % region.upper(), ''))]
+        log('区域：%s；账号总数：%d' % (args.region, len(lines)))
         if not lines:
-            raise TaskError('未配置 ZCODE_CN_TOKENS：每行一个国内版套餐 JWT')
+            raise TaskError('所选区域未配置账号：国内版用 ZCODE_CN_TOKENS，国际版用 ZCODE_INTL_TOKENS，每行一个套餐 JWT')
         if args.only is not None and not 1 <= args.only <= len(lines):
             raise TaskError('--only 超出账号范围')
         if _env('ZCODE_ACTIVATION') not in ('', '0', '1'):
             raise TaskError('ZCODE_ACTIVATION 仅支持 0 或 1')
-        for index, line in enumerate(lines, 1):
+        for index, (region, line) in enumerate(lines, 1):
             if args.only is not None and index != args.only:
                 continue
-            log('-------- 账号%d --------' % index)
+            log('-------- 账号%d（%s） --------' % (index, '国内版' if region == 'cn' else '国际版'))
             try:
-                account = parse_account(line)
+                account = parse_account(line, region)
                 stats = run_account(account, args, index)
             except Exception as error:
                 log('❌ 阶段0：' + (safe(error) if isinstance(error, TaskError) else '参数处理异常'))
                 stats = {'total': 1, 'success': 0, 'alreadyComplete': 0, 'skipped': 0, 'failure': 1, 'elapsedSeconds': 0}
                 log('账号%d 统计：总任务1，成功0，已完成0，跳过0，失败1；耗时0s' % index)
-            results.append({'account': index, **stats})
+            results.append({'account': index, 'region': region, **stats})
     except TaskError as error:
         config_error = True
+        log('账号总数：%d' % len(lines))
         log('❌ 阶段0：配置检查失败；' + safe(error) + '；耗时 %.2fs' % (time.monotonic() - started))
     failure = sum(r['failure'] > 0 for r in results)
     success = len(results) - failure
@@ -615,7 +635,7 @@ def main():
     log('子任务统计：' + json.dumps(task_stats, ensure_ascii=False))
     content = '账号总数 %d，处理 %d，成功 %d，失败 %d；配置错误 %s；状态 %s' % (len(lines), len(results), success, failure, '是' if config_error else '否', status)
     try:
-        summary['notification'] = deliver_notification('ZCode 国内版领套餐', content, no_notify)
+        summary['notification'] = deliver_notification('ZCode 套餐领取', content, no_notify)
     except Exception:
         summary['notification'] = 'unavailable'
         log('⚠️ 通知异常；保留业务退出码')
