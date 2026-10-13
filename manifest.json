@@ -1367,6 +1367,153 @@
       }
     },
     {
+      "catalogId": "f9739e4f6c54dce7",
+      "applicationKey": "crealitycloud",
+      "checkProfile": {
+        "requiredEnv": [
+          "CREALITY_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "CREALITY_DRY_RUN",
+          "RANDOM_SIGNIN",
+          "MAX_RANDOM_DELAY",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CREALITY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "RANDOM_SIGNIN": "true",
+          "MAX_RANDOM_DELAY": "3600",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功：官方业务码为 0",
+          "今日已签到，无需重复"
+        ],
+        "features": [
+          "国内站手机号或邮箱密码登录，手机号自动补 86 区号",
+          "直接登录态失效后的 OAuth 授权码登录回退",
+          "查询今日签到状态，已签到时避免重复操作",
+          "每日签到，展示连续签到天数和积分、经验奖励",
+          "查询官方非敏感身份、总积分、经验及创想币余额",
+          "默认整体随机延时和多账号间随机等待，保留每日 09:00 定时",
+          "每行一个账号、账号独立处理及失败非零退出",
+          "断网预演、逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 记录",
+          "通过青龙 notify.py 尝试发送脱敏任务总结，支持全局开关和失败隔离"
+        ],
+        "sideEffects": [
+          "登录与 OAuth 授权生成服务端会话",
+          "每日签到改变签到记录并领取奖励",
+          "正式运行发送已配置的青龙通知；断网预演仅尝试通知调用，不允许联网"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "创想云国内站签到",
+      "path": "scripts/crealitycloud_checkin.py",
+      "sha256": "65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "xz0609/crealitycloud-checkin-ql",
+        "branch": "main",
+        "commit": "ba2872b75372f62157b1f0cdcdf57ed59f9bd1fb",
+        "originalPath": "crealitycloud_checkin.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/crealitycloud_checkin.py",
+      "environment": [
+        {
+          "name": "CREALITY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在创想云国内站 https://www.crealitycloud.cn 注册或登录；使用手机号或邮箱及登录密码，忘记密码通过官方流程重置。无需抓取 Cookie 或 Token。",
+          "format": "每个非空行一个账号，格式为「手机号或邮箱 空格 密码」；只按第一个空白字段分隔，后续密码文本保留。手机号支持 11 位、86 加 11 位或 +86 加 11 位；邮箱直接填写；以 # 开头的行忽略。兼容脚本内 CONFIG_ACCOUNTS，推荐环境变量。"
+        },
+        {
+          "name": "CREALITY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时手动设置为 1，正式运行不设置或设为 0。",
+          "format": "1、true、yes、on 开启断网预演；预演成功只说明本地参数和流程检查通过，不表示真实签到成功。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需手动配置，保留上游默认 true。",
+          "format": "true 开启整体随机延时，其他值关闭；预演无延时。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需手动配置随机延时上限。",
+          "format": "整数秒，默认 3600；非正数关闭整体延时，非法值沿用默认；多个账号正式运行间隔 10 至 30 秒。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认开启；按需设置全局通知开关。",
+          "format": "0、false、no、off 关闭，其他值开启；通知不可用或失败不改变业务退出码。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "若青龙 notify.py 不在脚本目录或标准目录，填写其所在目录；由青龙管理通知凭据。",
+          "format": "可选本地目录，搜索 notify.py；另支持脚本目录、/ql/data/scripts 和 /ql/scripts。预演禁止通知模块联网或运行外部命令。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空非注释行一个账号；同一行以首个空白字段分隔账号与密码，保留密码后续文本。各账号独立处理，格式错误计为失败，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "国内站手机号或邮箱密码登录，手机号自动补 86 区号",
+        "直接登录态失效后的 OAuth 授权码登录回退",
+        "查询今日签到状态，已签到时避免重复操作",
+        "每日签到，展示连续签到天数和积分、经验奖励",
+        "查询官方非敏感身份、总积分、经验及创想币余额",
+        "默认整体随机延时和多账号间随机等待，保留每日 09:00 定时",
+        "每行一个账号、账号独立处理及失败非零退出",
+        "断网预演、逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 记录",
+        "通过青龙 notify.py 尝试发送脱敏任务总结，支持全局开关和失败隔离"
+      ],
+      "sideEffects": [
+        "登录与 OAuth 授权生成服务端会话",
+        "每日签到改变签到记录并领取奖励",
+        "正式运行发送已配置的青龙通知；断网预演仅尝试通知调用，不允许联网"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/f9739e4f6c54dce7",
+        "candidateSha256": "98f0ee5fa2939f299bae879b01b99e514eaef099f4eb6598904bda148ccff743"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "98f0ee5fa2939f299bae879b01b99e514eaef099f4eb6598904bda148ccff743",
+        "releaseSha256": "65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "e7b851436459bf8f",
       "applicationKey": "ddnsto",
       "checkProfile": {
