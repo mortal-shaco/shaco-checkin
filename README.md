@@ -61,6 +61,7 @@
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
+| Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` |
 | 雨云服务器签到 | `scripts/rainyun.py` | `python3 scripts/rainyun.py` | `0 2 * * *` |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `9 15 * * *` |
@@ -163,6 +164,7 @@
 - `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
+- `scripts/qoder_airscript.js`：逐账号显式签到开关，兼容原账号 JSON 和两种令牌字段命名；优先使用访问令牌，缺少时刷新；活动查询返回 401 后刷新并重试一次；中国区及国际区活动查询，可领取 Credits 活动逐项领取与额度统计；识别今日已领取、活动未开放及待下发；保留可选 Server酱、PushPlus、企业微信逐账号通知，增加青龙汇总通知及全局开关；指定私有账号文件时写回轮换令牌；仅环境变量时只在内存保存；官方非敏感身份显示、逐账号结果、分阶段日志及单行结构化汇总；完全断网预演、参数验证及多账号独立执行。
 - `scripts/quark_signin.py`：验证夸克账号 Cookie 并显示官方返回的昵称或公开身份；查询当日签到状态，识别今日已签到；领取每日存储空间奖励并展示奖励和连签进度；换行配置多账号，独立处理并汇总失败；可选随机延迟、请求超时、完全断网预演；脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知；失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应。
 - `scripts/rainyun.py`：使用雨云用户名和密码登录，保持登录 Cookie 与 CSRF 令牌。；执行每日签到并领取积分，仅以 HTTP 状态和结构化业务码确认成功。；查询并展示账号积分，展示接口返回的非敏感昵称、用户名或公开 UID。；业务步骤完成或失败后，在已成功登录的情况下执行退出登录并核验结果。；支持每行一个账号的独立会话和失败隔离。；提供完全断网预演、分阶段脱敏日志、账号与任务统计及单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏统计通知，支持全局开关；配置错误和部分失败同样汇总，预演跳过实际发送。。
 - `scripts/sfsu_checkin.py`：验证顺丰速运登录会话；每日签到并识别已签到状态；查询积分、完成安全的积分任务并领取奖励；查询丰蜜、完成丰蜜任务、执行大冒险和容量扩充并领取奖励；经显式授权后领取生活特权券；每月 26 至 28 日执行会员日非消费任务、免费抽奖、红包合成和 8 级红包提取；支持多账号独立执行、完全断网预演、脱敏汇总和青龙通知。
@@ -269,6 +271,7 @@
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；至少有 accessToken/access_token 或 refreshToken/refresh_token。device 包含非空字符串 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version。enabled=true 或 qiandao=&quot;是&quot; 才签到，默认跳过。可选 name、uid 保留，serverchan、pushplus、qywx 对应原 C/D/E 列的本人通知凭据；企业微信可用机器人 key 或完整地址。不按符号拆账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/quark_signin.py</code></td><td><code>QUARK_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留分号及等号，不使用 &amp;、&amp;&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/rainyun.py</code></td><td><code>rainyun_ck</code></td><td>是</td><td>格式：每个非空行一个账号：用户名#密码。仅在第一个 # 处分隔，密码后续的 # 和空格完整保留；用户名按上游规则转换为小写。不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sfsu_checkin.py</code></td><td><code>sfsyUrl</code></td><td>是</td><td>格式：每个非空行一个完整的 URL 编码登录/分享 URL；整行作为同一账号凭据，不使用 &amp;、@ 等字符分隔账号；多账号格式以该脚本文档为准</td></tr>
@@ -543,6 +546,11 @@
 <tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：非负整数秒，默认 0；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：布尔值；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS_FILE</code></td><td>否</td><td>格式：可读写的私有 JSONL 文件路径，每个非空行一个账号 JSON；优先于环境变量。不要放入公开订阅目录。原子写回权限为 0600。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QODER_REGION</code></td><td>否</td><td>格式：cn（默认中国区）或 global（国际区）；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QODER_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启完全断网预演，不领取、不写回、不真实发送通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭全部通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录路径；默认搜索 /ql/data/scripts 和 /ql/scripts。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/quark_signin.py</code></td><td><code>QUARK_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QUARK_TIMEOUT_SECONDS</code></td><td>否</td><td>格式：3 至 60 的整数秒数，默认 15。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QUARK_RANDOM_DELAY_MAX_SECONDS</code></td><td>否</td><td>格式：0 至 3600 的整数秒数，默认 0；预演不等待。；多账号格式以该脚本文档为准</td></tr>
@@ -850,6 +858,7 @@
 - `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
+- `scripts/qoder_airscript.js`：每个非空行一个账号 JSON，同账号令牌、设备参数及可选通知凭据合并在同一对象；各账号独立处理，任一账号失败整体非零退出。。
 - `scripts/quark_signin.py`：每个非空行一个账号，完整 Cookie 作为一个字段保留；账号独立执行，任一账号失败则进程非零退出。。
 - `scripts/rainyun.py`：每个非空行一个账号，格式为用户名#密码，仅在第一个 # 处分隔。账号独立使用会话，单账号失败不阻止后续账号；任一账号失败或配置无效时整体非零退出。。
 - `scripts/sfsu_checkin.py`：sfsyUrl 中每个非空行是一个独立账号的完整 URL；逐账号隔离处理，任一账号失败则进程非零退出。。
@@ -1115,6 +1124,13 @@
 - 所属脚本：`scripts/passnat_checkin.py`
 - 获取或设置：登录 PassNAT 网页端，在浏览器开发者工具的网络面板中查看已登录 API 请求，复制 Authorization 请求头的完整值；每个账号单独一行，切勿公开。
 - 填写格式：`每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `QODER_ACCOUNTS`
+
+- 所属脚本：`scripts/qoder_airscript.js`
+- 获取或设置：在本人已登录的 Qoder 客户端查看本人授权请求，复制 Bearer 访问令牌和 Cosy-* 八项请求头；刷新令牌从本人客户端登录凭据取得。也兼容原取参工具导出的账号 JSON，无需安装或运行上游仓库。配置账号文件时可不设本变量。
+- 填写格式：`每个非空行一个 JSON 对象；至少有 accessToken/access_token 或 refreshToken/refresh_token。device 包含非空字符串 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version。enabled=true 或 qiandao="是" 才签到，默认跳过。可选 name、uid 保留，serverchan、pushplus、qywx 对应原 C/D/E 列的本人通知凭据；企业微信可用机器人 key 或完整地址。不按符号拆账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `QUARK_COOKIE`
@@ -2784,6 +2800,36 @@
 - 所属脚本：`scripts/passnat_checkin.py`
 - 获取或设置：如 notify.py 不在青龙标准目录，可设置为其所在目录。
 - 填写格式：`包含 notify.py 的本地目录路径`
+
+#### `QODER_ACCOUNTS_FILE`
+
+- 所属脚本：`scripts/qoder_airscript.js`
+- 获取或设置：自行建立权限受限的私有账号文件并填写路径；启用即授权刷新令牌后写回。
+- 填写格式：`可读写的私有 JSONL 文件路径，每个非空行一个账号 JSON；优先于环境变量。不要放入公开订阅目录。原子写回权限为 0600。`
+
+#### `QODER_REGION`
+
+- 所属脚本：`scripts/qoder_airscript.js`
+- 获取或设置：按账号区域选择。
+- 填写格式：`cn（默认中国区）或 global（国际区）`
+
+#### `QODER_DRY_RUN`
+
+- 所属脚本：`scripts/qoder_airscript.js`
+- 获取或设置：预演时设为 1。
+- 填写格式：`1/true/yes/on 开启完全断网预演，不领取、不写回、不真实发送通知。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/qoder_airscript.js`
+- 获取或设置：使用青龙已有通知配置，默认开启。
+- 填写格式：`默认 1；0/false/no/off 关闭全部通知。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/qoder_airscript.js`
+- 获取或设置：通知模块不在标准位置时指定含 sendNotify.js 的目录。
+- 填写格式：`可选目录路径；默认搜索 /ql/data/scripts 和 /ql/scripts。`
 
 #### `QUARK_DRY_RUN`
 
@@ -4478,6 +4524,7 @@
 - `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
+- `scripts/qoder_airscript.js`：SHA-256 `f2de4d37431803d0d85df63bf97e7b2e936efbb3e4686d7e2bb2a15f24d91b07`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 - `scripts/quark_signin.py`：SHA-256 `2487b5cd4a53457b8d0ce2000f154668060333a0483b846a52a9d329da18a5bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
 - `scripts/rainyun.py`：SHA-256 `15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89f2e9b460331a75`。
 - `scripts/sfsu_checkin.py`：SHA-256 `d48a9999e72bbea15c0de43dc537ab4f37f63c5a6fb38708098482f92761affb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/19b2285cc7b8a82e`。
@@ -4580,6 +4627,7 @@
 - `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
+- `scripts/qoder_airscript.js`：显式启用账号领取活动奖励；必要时刷新令牌，可能导致刷新令牌轮换；显式配置私有账号文件时写回刷新后的令牌；通知开启时发送青龙汇总及已配置的逐账号通知。
 - `scripts/quark_signin.py`：实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励；实时模式下启用通知时通过青龙发送脱敏任务摘要。
 - `scripts/rainyun.py`：登录创建账号会话。；每日签到改变当日签到状态并领取积分。；退出登录结束当前账号会话。；正式运行时向已配置的青龙通知渠道发送任务汇总。。
 - `scripts/sfsu_checkin.py`：执行每日签到；完成符合安全规则的积分及丰蜜任务并领取奖励；进行丰蜜大冒险并在容量不足时扩容；在 SF_AUTO_COUPON=1 时创建一笔生活特权券领取订单；在会员日窗口领取可用邀请奖励、消耗免费抽奖次数、领取任务奖励、合成并提取红包。
@@ -4684,6 +4732,7 @@
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/qoder_airscript.js`：上游 `wallechfox/qoder-checkin` / `qoder-checkin-金山云文档/Qoder签到-金山文档AirScript.js` / `19ab6365c1f0759bb424a3d69e7de8dca89bf75d`。
 - `scripts/quark_signin.py`：上游 `agluo/ql-script-hub` / `quark_signin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/rainyun.py`：上游 `cloudcranes/some_scripts` / `rainyun.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/sfsu_checkin.py`：上游 `agluo/ql-script-hub` / `SFSU_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
