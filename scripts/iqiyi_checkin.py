@@ -5,6 +5,8 @@
 # new Env('爱奇艺签到')
 # 上游：deeplee/personal-scripts，iqiyi_checkin.py
 # 来源提交：c8c7c0f4fd1802df86c32a86c26b5c26cfef5023
+# 合并来源：Sitoi/dailycheckin dailycheckin/iqiyi/main.py (MIT)，
+# 提交 135cc236e59ac4f14bcddc44acb3cbb3ed6010b5；参考 iqiyi.js (MIT)。
 # 许可证：MIT；保留上游署名。上游文件未包含单独的版权声明。
 # MIT License
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,6 +32,14 @@ IQIYI_COOKIES：每个非空行一个账号完整 Cookie；兼容 IQIYI_COOKIE�
 P00001 是登录凭据，P00003 是用户编号；__dfp 取 @ 前段，不用于分隔账号。
 默认执行 VIP 查询、自然月签到和积分签到。两类抽奖可能消耗抽奖机会，
 仅在 IQIYI_LOTTERY=1、IQIYI_SHAKE=1 时分别执行。保留上游抽奖参数。
+IQIYI_CHANCES=1 查询普通抽奖剩余次数；IQIYI_LOTTERY_ALL=1 查询后用完
+普通抽奖机会（最多20次，与单次开关同时启用时只执行全部模式）。
+IQIYI_SHAKE_ALL=1 连续摇一摇至接口确认机会耗尽，最多20次；与单次
+摇一摇同时启用时只执行连续模式，达到安全上限报告失败而非冒充完成。
+IQIYI_GIVE_TIMES=1 执行浏览网页两次、预约电影一次以领取白金抽奖次数；
+IQIYI_PLATINUM=1 白金抽奖五次；IQIYI_V7=1 领取V7免费升级星钻权益。
+新开关均默认关闭；请先在官方应用确认活动仍有效、领取条件和权益影响。
+以上无需额外凭据；可选 P00002、QC005 无须另配环境变量。
 IQIYI_DRY_RUN=1 完全断网，只验证配置与请求构造，不代表业务成功。
 QINGLONG_NOTIFY 默认 1；设为 0/false/no/off 关闭通知。
 可用 QINGLONG_NOTIFY_DIR 指定青龙通知目录；兼容 PUSHPLUS_TOKEN、SENDKEY
@@ -148,7 +158,7 @@ def public_value(value):
 
 
 def identity(data):
-    for field in ("nickname", "username", "displayName", "uid", "userId"):
+    for field in ("nickname", "username", "user_name", "displayName", "uid", "userId"):
         value = data.get(field)
         if isinstance(value, (str, int)) and not isinstance(value, bool) and str(value):
             print("[%s] 官方身份 %s: %s" % (time.strftime("%H:%M:%S"), field, public_value(value)))
@@ -293,13 +303,19 @@ def lottery_draw(p00001, p00003):
     if type(d.get("code")) in (int, str) and d.get("code") in (0, "0"):
         data = d.get("data")
         if not isinstance(data, dict):
+            if isinstance(d.get("awardName"), str) and d["awardName"]:
+                identity(d)
+                return True, "抽奖成功，获得：" + public_value(d["awardName"])
             return False, "抽奖响应缺少结果"
         identity(data)
-        prize = data.get("prizeName") or data.get("prize_name")
+        prize = data.get("prizeName") or data.get("prize_name") or data.get("awardName")
         return True, "抽奖成功" + ("，获得：" + public_value(prize) if isinstance(prize, str) and prize else "")
+    if d.get("code") is None and isinstance(d.get("awardName"), str) and d["awardName"]:
+        identity(d)
+        return True, "抽奖成功，获得：" + public_value(d["awardName"])
     return False, "会员抽奖未获成功确认（登录态、机会或接口异常）"
 
-def shake_lottery(p00001):
+def shake_lottery(p00001, allow_exhausted=False):
     """摇一摇抽奖,返回 (ok, msg)"""
     params = {
         "P00001": p00001,
@@ -321,11 +337,126 @@ def shake_lottery(p00001):
     d, error = response(st, txt)
     if d is None:
         return False, error
+    if allow_exhausted and d.get("msg") == "抽奖次数用完":
+        return True, "摇一摇机会已耗尽"
     if d.get("code") == "A00000" and isinstance(d.get("data"), dict):
         identity(d["data"])
-        prize = d["data"].get("prizeName") or d["data"].get("prize_name")
+        prize = d["data"].get("prizeName") or d["data"].get("prize_name") or d["data"].get("title")
         return True, "摇一摇成功" + ("，获得：" + public_value(prize) if isinstance(prize, str) and prize else "")
     return False, "摇一摇未获成功确认（登录态、机会或接口异常）"
+
+
+def lottery_chances(p00001, p00003):
+    params = {
+        "lottery_chance": 1, "app_k": "b398b8ccbaeacca840073a7ee9b7e7e6",
+        "app_v": "11.6.5", "platform_id": 10, "dev_os": "8.0.0",
+        "dev_ua": "FRD-AL10", "net_sts": 1, "qyid": _md5(_rand16()),
+        "psp_uid": p00003, "psp_cki": p00001, "psp_status": 3,
+        "secure_v": 1, "secure_p": "GPhone", "req_sn": _ts13(),
+    }
+    d, error = response(*_http(LOTTERY_URL + "?" + urllib.parse.urlencode(params)))
+    if d is None:
+        return False, error, None
+    # 上游无 code 的成功响应必须同时存在明确的剩余次数，不能仅凭空 code 成功。
+    value = d.get("daysurpluschance")
+    code = d.get("code")
+    if ((code is None or (type(code) in (int, str) and code in (0, "0")))
+            and type(value) in (int, str)
+            and re.fullmatch(r"\d+", str(value))):
+        identity(d)
+        return True, "剩余普通抽奖次数：%d" % int(value), int(value)
+    return False, "抽奖次数查询未获成功确认", None
+
+
+def query_chances(p00001, p00003):
+    ok, message, _ = lottery_chances(p00001, p00003)
+    return ok, message
+
+
+def all_lottery(p00001, p00003):
+    ok, message, chance = lottery_chances(p00001, p00003)
+    if not ok:
+        return False, message
+    log("普通抽奖次数查询：" + message)
+    if chance > 20:
+        return False, "剩余次数超过单轮20次安全上限，未执行抽奖"
+    for number in range(1, chance + 1):
+        ok, message = lottery_draw(p00001, p00003)
+        log("普通抽奖第%d次：%s %s" % (number, "✅" if ok else "❌", message))
+        if not ok:
+            return False, "普通抽奖中途失败，已停止该步骤"
+        time.sleep(1)
+    return True, "普通抽奖完成：%d次（已验证剩余次数）" % chance
+
+
+def all_shake(p00001):
+    for number in range(1, 21):
+        ok, message = shake_lottery(p00001, allow_exhausted=True)
+        log("摇一摇第%d次：%s %s" % (number, "✅" if ok else "❌", message))
+        if not ok or message == "摇一摇机会已耗尽":
+            return ok, message
+        time.sleep(3)
+    return False, "摇一摇达到单轮20次安全上限，未确认机会耗尽"
+
+
+def activity_response(url, p00001, extra=None, method="GET", prize_field=None):
+    params = {"P00001": p00001}
+    params.update(extra or {})
+    if method == "POST":
+        result = _http(url, "POST", params,
+                       {"Content-Type": "application/x-www-form-urlencoded"})
+    else:
+        result = _http(url + "?" + urllib.parse.urlencode(params))
+    d, error = response(*result)
+    if d is None:
+        return False, error
+    # 两份参考未核验业务 code；只接受明确成功 code，未知状态不得视为成功。
+    if d.get("code") != "A00000":
+        return False, "活动未获成功确认（资格、活动窗口或接口异常）"
+    data = d.get("data")
+    if isinstance(data, dict):
+        identity(data)
+    if prize_field:
+        prize = data.get(prize_field) if isinstance(data, dict) else None
+        if not isinstance(prize, str) or not prize.strip():
+            return False, "活动响应缺少奖品结果"
+        return True, "获得：" + public_value(prize)
+    return True, "活动接口确认成功"
+
+
+def give_times(p00001):
+    all_ok = True
+    preview = False
+    for number, code in enumerate(("browseWeb", "browseWeb", "bookingMovie"), 1):
+        try:
+            ok, message = activity_response("https://pcell.iqiyi.com/lotto/giveTimes", p00001,
+                                           {"actCode": "bcf9d354bc9f677c", "timesCode": code})
+        except DryRunRequest:
+            preview = True
+            log("任务次数第%d项：DRY_RUN_OK 请求构造通过，未发送" % number)
+            continue
+        all_ok = all_ok and ok
+        log("任务次数第%d项：%s %s" % (number, "✅" if ok else "❌", message))
+        time.sleep(0.5)
+    if preview:
+        raise DryRunRequest()
+    return all_ok, "任务次数领取完成" if all_ok else "部分任务次数领取未确认成功"
+
+
+def platinum_lottery(p00001):
+    for number in range(1, 6):
+        ok, message = activity_response("https://pcell.iqiyi.com/lotto/lottery", p00001,
+                                       {"actCode": "bcf9d354bc9f677c"}, prize_field="giftName")
+        log("白金抽奖第%d次：%s %s" % (number, "✅" if ok else "❌", message))
+        if not ok:
+            return False, "白金抽奖中途失败，已停止该步骤"
+        time.sleep(1)
+    return True, "白金抽奖完成：5次，结果均经接口确认"
+
+
+def level_right(p00001):
+    return activity_response("https://act.vip.iqiyi.com/level-right/receive", p00001,
+                             {"code": "k8sj74234c683f"}, method="POST")
 
 def vip_info(p00001):
     """查询 VIP 信息,返回 (ok, msg)"""
@@ -338,7 +469,8 @@ def vip_info(p00001):
         data = d["data"]
         identity(data)
         details = []
-        for field in ("level", "vipLevel", "vipDeadline", "expireTime"):
+        for field in ("level", "vipLevel", "vipDeadline", "expireTime", "deadline",
+                      "growthvalue", "todayGrowthValue", "distance"):
             value = data.get(field)
             if isinstance(value, (int, str)) and str(value):
                 # 只输出明确的会员字段，不输出业务错误或任意响应。
@@ -429,6 +561,12 @@ def main():
         notify_enabled = enabled("QINGLONG_NOTIFY", "1")
         lottery_enabled = enabled("IQIYI_LOTTERY")
         shake_enabled = enabled("IQIYI_SHAKE")
+        chances_enabled = enabled("IQIYI_CHANCES")
+        all_lottery_enabled = enabled("IQIYI_LOTTERY_ALL")
+        all_shake_enabled = enabled("IQIYI_SHAKE_ALL")
+        give_enabled = enabled("IQIYI_GIVE_TIMES")
+        platinum_enabled = enabled("IQIYI_PLATINUM")
+        v7_enabled = enabled("IQIYI_V7")
         if not accounts:
             raise ValueError("未配置凭据")
     except ValueError:
@@ -453,8 +591,15 @@ def main():
                     ("VIP查询", True, vip_info, (p00001,)),
                     ("自然月签到", True, task_sign, (p00001, p00003)),
                     ("网页积分签到", True, score_sign, (p00001, p00003, dfp)),
-                    ("会员抽奖", lottery_enabled, lottery_draw, (p00001, p00003)),
-                    ("摇一摇抽奖", shake_enabled, shake_lottery, (p00001,)),
+                    ("抽奖次数查询", chances_enabled, query_chances, (p00001, p00003)),
+                    ("会员抽奖", lottery_enabled or all_lottery_enabled,
+                     all_lottery if all_lottery_enabled else lottery_draw, (p00001, p00003)),
+                    ("摇一摇抽奖", shake_enabled or all_shake_enabled,
+                     all_shake if all_shake_enabled else shake_lottery, (p00001,)),
+                    ("领取白金任务次数", give_enabled, give_times, (p00001,)),
+                    ("白金抽奖", platinum_enabled, platinum_lottery, (p00001,)),
+                    ("V7免费升级星钻", v7_enabled, level_right, (p00001,)),
+                    ("最终VIP查询", platinum_enabled or v7_enabled, vip_info, (p00001,)),
                 ]
                 for number, (name, active, action, args) in enumerate(stages, 2):
                     if not dry_run and number > 2 and active:
@@ -500,7 +645,7 @@ def main():
     body = "账号总数：%d；成功数：%d；失败数：%d；预演通过数：%d；状态：%s" % (
         len(accounts), succeeded, failed, passed if dry_run else 0, status)
     notification_start = time.monotonic()
-    log("阶段7：汇总通知")
+    log("阶段12：汇总通知")
     try:
         notification = notify_summary("爱奇艺签到", body, dry_run, notify_enabled)
     except (Exception, SystemExit):

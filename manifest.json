@@ -5086,172 +5086,6 @@
       }
     },
     {
-      "catalogId": "6c1cb801424774c8",
-      "applicationKey": "sitoi/dailycheckin::iqiyi",
-      "checkProfile": {
-        "requiredEnv": [
-          "IQIYI_COOKIE"
-        ],
-        "optionalEnv": [
-          "IQIYI_ACTIONS",
-          "IQIYI_TIMEOUT",
-          "IQIYI_MAX_DRAWS",
-          "IQIYI_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "IQIYI_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "IQIYI_ACTIONS": "info",
-          "IQIYI_TIMEOUT": "15",
-          "IQIYI_MAX_DRAWS": "20",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "\"status\": \"success\"",
-          "\"exitCode\": 0"
-        ],
-        "features": [
-          "查询 VIP 等级、当前成长、今日成长、升级所需成长和会员到期时间；接口返回公开身份时脱敏展示非凭据身份字段",
-          "显式启用普通抽奖：查询剩余次数并逐次校验奖励",
-          "显式启用每日摇一摇：展示逐次奖励，确认次数耗尽并限制循环次数",
-          "显式启用白金抽奖：执行五次抽奖并展示每次奖励或未中奖结果",
-          "显式启用浏览及预约任务次数领取，与白金抽奖组合时先领取次数",
-          "显式启用 V7 星钻升级权益领取，校验业务成功响应",
-          "多账号独立执行、断网预演、超时限制、失败闭合、分阶段日志和单行结构化任务汇总",
-          "青龙通知覆盖成功、部分失败、失败、配置错误及预演；通知故障保留业务退出码"
-        ],
-        "sideEffects": [
-          "选择 draw 时使用普通抽奖次数并领取抽奖奖励",
-          "选择 shake 时使用每日摇一摇次数并领取奖励",
-          "选择 platinum 时执行五次白金抽奖并领取奖励",
-          "选择 grant 时提交两次浏览任务及一次预约任务次数领取",
-          "选择 level 时领取 V7 星钻升级权益，可能改变会员权益",
-          "实时运行且通知开启时发送脱敏任务统计通知"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "爱奇艺账号与抽奖维护",
-      "path": "scripts/iqiyi.py",
-      "sha256": "cf55901a3b875992ebab7270ba46d449c61f3cd4df2cfe84bbefd1f2e1458021",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "Sitoi/dailycheckin",
-        "branch": "main",
-        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
-        "originalPath": "dailycheckin/iqiyi/main.py",
-        "related": [
-          {
-            "catalogId": "be3db7925f8a5d21",
-            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "repository": "Sitoi/dailycheckin",
-            "url": "https://github.com/Sitoi/dailycheckin.git",
-            "branch": "main",
-            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
-            "originalPath": "dailycheckin/iqiyi/__init__.py",
-            "license": "MIT"
-          }
-        ]
-      },
-      "cron": "15 9 * * *",
-      "command": "python3 scripts/iqiyi.py",
-      "environment": [
-        {
-          "name": "IQIYI_COOKIE",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录本人爱奇艺官网账号，在浏览器开发者工具的网络面板选择已登录接口请求，复制请求头中的完整 Cookie，在青龙环境变量中保存。Cookie 失效时重新登录获取，切勿公开分享。普通抽奖还需同一账号的 P00003。",
-          "format": "每个非空行保存一个账号的完整 Cookie；Cookie 内各字段以分号分隔，字段只按第一个等号拆分，保留后续等号。必需 P00001，选择 draw 时必需 P00003；兼容 P00002、__dfp、QC005，缺少末尾分号也可解析。不得用 & 或 @ 分隔账号。"
-        },
-        {
-          "name": "IQIYI_ACTIONS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需手动配置。默认 info 仅查询；抽奖和权益变更须显式选择。希望运行原上游完整工作流时使用 info,grant,platinum,level,draw,shake。领取权益需自行确认会员资格及活动条款。",
-          "format": "逗号分隔动作：info 查询 VIP 等级、当前及今日成长、升级所需成长、到期时间；draw 查询普通抽奖次数并使用现有次数；shake 每日摇一摇直至次数耗尽；platinum 白金抽奖五次；grant 领取两次浏览任务及一次预约任务次数；level 领取 V7 星钻升级权益。grant 与 platinum 同选时先领取次数。"
-        },
-        {
-          "name": "IQIYI_TIMEOUT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选手动设置网络超时，默认 15 秒。",
-          "format": "1～60 秒的数值"
-        },
-        {
-          "name": "IQIYI_MAX_DRAWS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "默认 20；确认活动次数后可调整。普通抽奖次数超过上限时不开始抽奖；摇一摇到达上限仍未确认耗尽时报告失败，避免无限递归。",
-          "format": "1～100 的整数"
-        },
-        {
-          "name": "IQIYI_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "离线检查时设置为 1；实时运行设为 0 或不设置。",
-          "format": "0、false、no、off 表示实时运行，其余值表示完全断网预演；预演不调用业务接口或通知网络。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "默认开启；设置 0 可关闭。实时运行通过青龙 notify.py 发送脱敏统计，通知不可用不改变业务退出码；预演仅模拟通知。",
-          "format": "0、false、no、off 关闭，其余值开启"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "通常不需配置；自定义青龙通知位置时，填写已有 notify.py 的目录。另支持 import notify 及青龙标准脚本目录。该文件只用于通知，业务执行无此依赖。",
-          "format": "本地通知模块所在目录"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "IQIYI_COOKIE 每个非空行一个账号，配套字段保存在同一 Cookie 行中。逐账号独立处理，单个动作或账号失败后继续其他动作及账号；任一账号失败整体非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "查询 VIP 等级、当前成长、今日成长、升级所需成长和会员到期时间；接口返回公开身份时脱敏展示非凭据身份字段",
-        "显式启用普通抽奖：查询剩余次数并逐次校验奖励",
-        "显式启用每日摇一摇：展示逐次奖励，确认次数耗尽并限制循环次数",
-        "显式启用白金抽奖：执行五次抽奖并展示每次奖励或未中奖结果",
-        "显式启用浏览及预约任务次数领取，与白金抽奖组合时先领取次数",
-        "显式启用 V7 星钻升级权益领取，校验业务成功响应",
-        "多账号独立执行、断网预演、超时限制、失败闭合、分阶段日志和单行结构化任务汇总",
-        "青龙通知覆盖成功、部分失败、失败、配置错误及预演；通知故障保留业务退出码"
-      ],
-      "sideEffects": [
-        "选择 draw 时使用普通抽奖次数并领取抽奖奖励",
-        "选择 shake 时使用每日摇一摇次数并领取奖励",
-        "选择 platinum 时执行五次白金抽奖并领取奖励",
-        "选择 grant 时提交两次浏览任务及一次预约任务次数领取",
-        "选择 level 时领取 V7 星钻升级权益，可能改变会员权益",
-        "实时运行且通知开启时发送脱敏任务统计通知"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/6c1cb801424774c8",
-        "candidateSha256": "cf55901a3b875992ebab7270ba46d449c61f3cd4df2cfe84bbefd1f2e1458021"
-      }
-    },
-    {
       "catalogId": "7701c083c0ca06d5",
       "applicationKey": "iqiyi",
       "checkProfile": {
@@ -5263,6 +5097,12 @@
           "IQIYI_DRY_RUN",
           "IQIYI_LOTTERY",
           "IQIYI_SHAKE",
+          "IQIYI_CHANCES",
+          "IQIYI_LOTTERY_ALL",
+          "IQIYI_SHAKE_ALL",
+          "IQIYI_GIVE_TIMES",
+          "IQIYI_PLATINUM",
+          "IQIYI_V7",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR",
           "PUSHPLUS_TOKEN",
@@ -5275,30 +5115,39 @@
           "IQIYI_DRY_RUN": "0",
           "IQIYI_LOTTERY": "0",
           "IQIYI_SHAKE": "0",
+          "IQIYI_CHANCES": "0",
+          "IQIYI_LOTTERY_ALL": "0",
+          "IQIYI_SHAKE_ALL": "0",
+          "IQIYI_GIVE_TIMES": "0",
+          "IQIYI_PLATINUM": "0",
+          "IQIYI_V7": "0",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "签到成功",
-          "今日已签到",
-          "积分签到成功",
-          "\"status\":\"success\""
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
         ],
         "features": [
-          "VIP 信息、官方账号身份、会员等级及到期信息查询",
-          "自然月签到，显示连签天数并识别已签到状态",
-          "网页积分签到，验证各项业务结果",
-          "显式启用会员抽奖，展示返回的奖品名称",
-          "显式启用摇一摇抽奖，展示返回的奖品名称",
-          "逐行多账号及旧 Cookie 参数兼容，保留每日 10:05 调度",
-          "完全断网预演、阶段日志、账号统计和单行 TASK_SUMMARY 汇总",
-          "青龙通知及 PushPlus、Server酱后备通知，总开关控制，失败不改变业务退出码"
+          "VIP信息、官方身份、会员等级、到期时间及成长值查询",
+          "自然月签到、连签天数及已签到识别",
+          "网页积分签到及逐项业务确认",
+          "可选普通抽奖次数查询，保留单次会员抽奖并支持全部机会抽奖和奖品展示",
+          "保留单次摇一摇并支持显式连续摇一摇、奖品展示和机会耗尽识别",
+          "显式领取白金任务次数及五次白金抽奖，逐次验证结果",
+          "显式领取V7免费升级星钻权益，变更后查询会员状态",
+          "逐行多账号、旧 Cookie 参数兼容和每日10:05调度",
+          "完全断网预演、阶段日志、账号统计及单行 TASK_SUMMARY",
+          "青龙通知、PushPlus与Server酱后备及总开关，通知失败保留业务退出码"
         ],
         "sideEffects": [
           "自然月签到改变签到记录并可能发放积分",
           "网页积分签到改变积分及签到记录",
-          "显式启用会员抽奖时消耗抽奖机会并可能获得奖品",
-          "显式启用摇一摇时消耗活动抽奖机会并可能获得奖品",
-          "正式模式开启通知时向配置的通知渠道发送脱敏总结"
+          "启用会员抽奖时消耗机会并可能获得奖品",
+          "启用摇一摇时消耗活动机会并可能获得奖品",
+          "启用任务次数领取时记录浏览、预约电影任务并增加白金次数",
+          "启用白金抽奖时消耗活动机会并可能获得奖品",
+          "启用V7领取时可能改变会员权益或类型",
+          "正式模式开启通知时向配置渠道发送脱敏总结"
         ]
       },
       "postReview": {
@@ -5307,7 +5156,7 @@
       },
       "displayName": "爱奇艺签到",
       "path": "scripts/iqiyi_checkin.py",
-      "sha256": "0c6ed2f9de2eeeedb8b520837543f0703d839647f0aad18a23d8659bcde63442",
+      "sha256": "37cd294e3b9f6aec9fb0c81bc7d978caad6df9dee694a8cf83a6c11aac968fff",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -5315,7 +5164,19 @@
         "repository": "deeplee/personal-scripts",
         "branch": "main",
         "commit": "c8c7c0f4fd1802df86c32a86c26b5c26cfef5023",
-        "originalPath": "iqiyi_checkin.py"
+        "originalPath": "iqiyi_checkin.py",
+        "related": [
+          {
+            "repository": "Sitoi/dailycheckin",
+            "url": "https://github.com/Sitoi/dailycheckin.git",
+            "branch": "main",
+            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+            "originalPath": "dailycheckin/iqiyi/main.py",
+            "catalogId": "6c1cb801424774c8",
+            "sha256": "278f75e204a32bbec9c30cb7099001d2c9a0a65644c2318da7ed98a3aa3ad857",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "5 10 * * *",
       "command": "python3 scripts/iqiyi_checkin.py",
@@ -5324,88 +5185,135 @@
           "name": "IQIYI_COOKIES",
           "required": true,
           "sensitive": true,
-          "howToGet": "浏览器登录自己的爱奇艺账号，在开发者工具的 Application → Cookies → https://www.iqiyi.com 获取 P00001、P00003 和可选 __dfp。只保存在青龙环境变量中，登录失效后重新获取。",
-          "format": "每个非空行一个账号；同一行以分号组合 P00001、P00003、可选 __dfp，字段以第一个等号拆分，值内后续等号保留。忽略空行和以 # 开头的注释行，__dfp 的 @ 仅在该字段内部处理，不作账号分隔符。"
+          "howToGet": "浏览器登录爱奇艺官网，打开开发者工具的应用或存储页，从爱奇艺域名 Cookie 获取本人 P00001、P00003，建议同时包含 __dfp。",
+          "format": "每个非空行一个账号完整 Cookie，以分号组合字段，字段只按首个等号拆分；不使用 & 或 @ 分隔账号。"
         },
         {
           "name": "IQIYI_COOKIE",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容上游单账号变量，获取方法同 IQIYI_COOKIES；仅在规范变量未设置时使用。",
-          "format": "完整 Cookie；逐行解析兼容输入，规范配置应使用 IQIYI_COOKIES。"
+          "howToGet": "旧参数兼容输入；规范变量未设置时使用。浏览器登录爱奇艺官网，打开开发者工具的应用或存储页，从爱奇艺域名 Cookie 获取本人 P00001、P00003，建议同时包含 __dfp。",
+          "format": "每个非空行一个账号完整 Cookie，以分号组合字段，字段只按首个等号拆分；不使用 & 或 @ 分隔账号。"
         },
         {
           "name": "IQIYI_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要断网预演时手动设为 1。",
-          "format": "默认 0；支持 1/0、true/false、yes/no、on/off。预演只校验配置和构造请求，不发送业务或通知请求。"
+          "howToGet": "在青龙环境变量中设置；完全断网预演，不执行业务或发送通知。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
         },
         {
           "name": "IQIYI_LOTTERY",
           "required": false,
           "sensitive": false,
-          "howToGet": "确认愿意消耗会员抽奖机会后手动设为 1。",
-          "format": "默认 0；支持上述布尔开关；仅控制会员抽奖，不影响签到。"
+          "howToGet": "在青龙环境变量中设置；单次会员抽奖，保留原开关含义。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
         },
         {
           "name": "IQIYI_SHAKE",
           "required": false,
           "sensitive": false,
-          "howToGet": "确认愿意消耗摇一摇抽奖机会后手动设为 1。",
-          "format": "默认 0；支持上述布尔开关；保留上游活动和奖品参数，活动可能到期，未核验成功时失败退出。"
+          "howToGet": "在青龙环境变量中设置；单次摇一摇，保留原开关含义。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
+        },
+        {
+          "name": "IQIYI_CHANCES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；只读查询普通抽奖剩余次数。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
+        },
+        {
+          "name": "IQIYI_LOTTERY_ALL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；按剩余机会连续普通抽奖，最多20次，优先于单次开关。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
+        },
+        {
+          "name": "IQIYI_SHAKE_ALL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；连续摇一摇至机会耗尽，最多20次，优先于单次开关。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
+        },
+        {
+          "name": "IQIYI_GIVE_TIMES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；领取白金次数：浏览网页两次和预约电影一次。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
+        },
+        {
+          "name": "IQIYI_PLATINUM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；白金抽奖五次；需要领取次数时同时启用 IQIYI_GIVE_TIMES。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
+        },
+        {
+          "name": "IQIYI_V7",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；领取V7免费升级星钻权益；先在官方应用确认资格及影响。",
+          "format": "1/0、true/false、yes/no、on/off；默认0。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙通知总开关；默认开启。",
-          "format": "默认 1；0、false、no、off 关闭；其他开关值与上述布尔格式相同。"
+          "howToGet": "在青龙环境变量中设置；控制青龙及全部后备通知渠道。",
+          "format": "1/0、true/false、yes/no、on/off；默认1。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙通知不在标准目录时，填写自己已有 notify.py 所在目录。",
-          "format": "本地目录；可选，不是业务运行依赖。优先导入 notify.send，随后查找指定目录、脚本目录及青龙标准目录。"
+          "howToGet": "通知模块位于自定义目录时填写该目录。",
+          "format": "包含 notify.py 的目录；为空则自动发现。"
         },
         {
           "name": "PUSHPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "从自己的 PushPlus 账号取得推送凭据；青龙通知不可用时作为可选后备。",
-          "format": "单个推送凭据；不与账号 Cookie 合并。"
+          "howToGet": "在 PushPlus 官网获取本人令牌，作为青龙通知后备。",
+          "format": "单个令牌。"
         },
         {
           "name": "SENDKEY",
           "required": false,
           "sensitive": true,
-          "howToGet": "从自己的 Server酱账号取得 SendKey；青龙和 PushPlus 不可用时作为可选后备。",
-          "format": "单个推送凭据；不与账号 Cookie 合并。"
+          "howToGet": "在 Server酱官网获取本人 SendKey，作为青龙及 PushPlus 的后备。",
+          "format": "单个 SendKey。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号完整 Cookie，同一账号配套字段以分号组合，字段只在第一个等号处分割；账号之间仅用换行，不用 & 或 @。逐账号独立运行，任一账号或启用步骤失败整体非零退出。"
+        "rule": "每个非空行一个账号完整 Cookie，优先规范变量，未设置时兼容旧变量；各账号独立处理，任一账号失败则整体非零退出。"
       },
       "dependencies": [],
       "features": [
-        "VIP 信息、官方账号身份、会员等级及到期信息查询",
-        "自然月签到，显示连签天数并识别已签到状态",
-        "网页积分签到，验证各项业务结果",
-        "显式启用会员抽奖，展示返回的奖品名称",
-        "显式启用摇一摇抽奖，展示返回的奖品名称",
-        "逐行多账号及旧 Cookie 参数兼容，保留每日 10:05 调度",
-        "完全断网预演、阶段日志、账号统计和单行 TASK_SUMMARY 汇总",
-        "青龙通知及 PushPlus、Server酱后备通知，总开关控制，失败不改变业务退出码"
+        "VIP信息、官方身份、会员等级、到期时间及成长值查询",
+        "自然月签到、连签天数及已签到识别",
+        "网页积分签到及逐项业务确认",
+        "可选普通抽奖次数查询，保留单次会员抽奖并支持全部机会抽奖和奖品展示",
+        "保留单次摇一摇并支持显式连续摇一摇、奖品展示和机会耗尽识别",
+        "显式领取白金任务次数及五次白金抽奖，逐次验证结果",
+        "显式领取V7免费升级星钻权益，变更后查询会员状态",
+        "逐行多账号、旧 Cookie 参数兼容和每日10:05调度",
+        "完全断网预演、阶段日志、账号统计及单行 TASK_SUMMARY",
+        "青龙通知、PushPlus与Server酱后备及总开关，通知失败保留业务退出码"
       ],
       "sideEffects": [
         "自然月签到改变签到记录并可能发放积分",
         "网页积分签到改变积分及签到记录",
-        "显式启用会员抽奖时消耗抽奖机会并可能获得奖品",
-        "显式启用摇一摇时消耗活动抽奖机会并可能获得奖品",
-        "正式模式开启通知时向配置的通知渠道发送脱敏总结"
+        "启用会员抽奖时消耗机会并可能获得奖品",
+        "启用摇一摇时消耗活动机会并可能获得奖品",
+        "启用任务次数领取时记录浏览、预约电影任务并增加白金次数",
+        "启用白金抽奖时消耗活动机会并可能获得奖品",
+        "启用V7领取时可能改变会员权益或类型",
+        "正式模式开启通知时向配置渠道发送脱敏总结"
       ],
       "review": {
         "staticPassed": true,
@@ -5418,7 +5326,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/7701c083c0ca06d5",
-        "candidateSha256": "0c6ed2f9de2eeeedb8b520837543f0703d839647f0aad18a23d8659bcde63442"
+        "candidateSha256": "37cd294e3b9f6aec9fb0c81bc7d978caad6df9dee694a8cf83a6c11aac968fff"
       }
     },
     {
