@@ -137,6 +137,7 @@
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `8 8,12 * * *` |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `45 9 * * *` |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `23 8 * * *` |
+| Trae 每日签到与积分查询 | `scripts/trae_checkin.py` | `python3 scripts/trae_checkin.py` | `7,23,37 * * * *` |
 | Trae Work 签到 | `scripts/trae_work_checkin.py` | `python3 scripts/trae_work_checkin.py` | `0 8,20 * * *` |
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `55 9 * * *` |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `1 16 * * *` |
@@ -257,6 +258,7 @@
 - `scripts/synspoint.py`：查询官方昵称并显示非敏感身份；查询任务前后积分；执行会员签到；执行浏览会员商城积分任务（任务编号 38）；显式开启上播预约后取消，保留原活动、商品列表和等待时间，可配置活动及商品；按原定时执行，支持每行一个账号及账号间失败隔离；断网预演、脱敏通知、分阶段日志及单行结构化任务汇总。
 - `scripts/tencent_video_checkin.py`：每日签到获取 V力值；领取每日观看任务奖励（不自动播放视频）；查询会员积分、等级和 V力值，保留零值展示；查询 VIP 到期时间；多账号逐行处理、兼容旧单账号变量、独立校验与失败汇总；返回官方非敏感昵称、用户名、显示名称或公开 UID 时显示身份；青龙通知及 PushPlus、Server酱顺序回退，支持全局通知开关；完全断网预演、分阶段日志和单行 TASK_SUMMARY 结构化总结。
 - `scripts/tieba_checkin.py`：保留登录验证和 TBS 获取、读取关注贴吧、识别当日已签到项目、为未签到贴吧逐吧签到，沿用明确成功码和已签到判断。；直接显示官方接口返回的昵称、用户名或公开 UID，方便核对账号。；显式开启后通过 APP 成长接口验证登录、取得独立 TBS，并执行成长任务每日签到，要求业务码明确为 0。；显式开启后查询当前成长值、贴贝余额、当前等级及距离下一等级所需成长值，保留上游等级差值算法。；沿用 TIEBA_COOKIE，兼容 TIE_BA_COOKIE 的完整 Cookie 或 BDUSS 单值，每行一个账号；成长字段在同一账号 Cookie 中提供。；保留规范任务每日 08:23 计划、逐吧详情开关与可配置请求间隔；成长任务默认关闭。；完全断网预演校验账号必要字段、不加载通知组件、不产生账号副作用，并展示脱敏通知汇总。；正式执行、配置失败、部分失败或成功后尝试青龙脱敏通知，支持全局关闭，通知失败保持业务退出码。；输出逐阶段时间轴、账号及任务统计、最终状态和恰好一个单行 TASK_SUMMARY 结构化汇总。；逐吧流程和成长任务独立处理，任一任务或账号失败返回非零退出码；HTTP 有超时、响应大小限制及同主机 HTTPS 重定向限制。。
+- `scripts/trae_checkin.py`：每日状态查询与按需签到，官方已签不重复领取；签到后查询真实积分余额，独立只查积分模式显示总额、已用和余额；访问凭据复用，过期或鉴权失败时自动续期；保留新版设备证明和旧客户端兼容链；轮换刷新凭据安全缓存，后续运行继续使用最新凭据；多账号独立处理、指定账号筛选、北京时间小时轮签及早窗全签；北京时间当日去重、账号独立限流冷却、启动及账号间错峰；青龙通知、可选企业微信与 PushPlus，通知失败保留业务退出码；断网预演、编号时间轴、分账号统计和唯一单行 TASK_SUMMARY 汇总；兼容显式加密凭据输入，不要求桌面端、其他仓库或凭据文件。
 - `scripts/trae_work_checkin.py`：每日签到状态查询与积分领取，默认或 checkin 命令执行。；到期前刷新凭据，认证失败时刷新并重试一次。；查询总额减消耗的剩余积分，兼容权益包及多种余额字段，支持零余额。；status 命令查询状态与积分，不领取积分；认证需要时仍可刷新凭据。；显式 login 命令交互式 OAuth 登录，支持浏览器回调和保密粘贴回调，成功后保密保存凭据。；换行 JSON 多账号与旧版凭据文件兼容，独立执行并汇总退出码。；沿用每日 8 点、20 点调度与默认每账号最大一小时随机延时。；通知、分阶段脱敏日志、每账号与任务统计、单行 TASK_SUMMARY 汇总和完全断网预演。。
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
 - `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
@@ -384,6 +386,7 @@
 <tr><td rowspan="1"><code>scripts/synspoint.py</code></td><td><code>synshd</code></td><td>是</td><td>格式：每个非空行一个账号凭据，可带 Bearer 前缀；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tencent_video_checkin.py</code></td><td><code>TENCENT_VIDEO_COOKIES</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie，字段以分号分隔，仅按第一个等号拆分字段值。必需非空字段 vqq_openid、vqq_access_token、main_login；建议保留 vqq_vuserid、vqq_appid、vdevice_qimei36 和 ip。支持空行及 # 开头注释，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tieba_checkin.py</code></td><td><code>TIEBA_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；支持 BDUSS 单值或完整 Cookie。成长任务要求同一行含 BDUSS=值; CUID=值，字段值按首个等号分割，后续等号保留；不能按 &amp; 或 @ 分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/trae_checkin.py</code></td><td><code>TRAE_ACCOUNTS</code></td><td>是</td><td>格式：推荐每个非空行一个 JSON 对象：accessToken 或 refreshToken 至少一个，deviceId 为同账号注册的 12 至 20 位数字；可选 deviceKeyPem、devicePubPem、machineId、uid、name。PEM 换行用 JSON 转义。兼容旧 JSON 数组；不以 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/trae_work_checkin.py</code></td><td><code>TRAE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必须含 accessToken、claimDeviceId（兼容 deviceId）与 fingerprint 对象（brand、type、os）；可选 refreshToken、expiresAt（秒或毫秒时间戳）、userId、screenName。只用换行分隔账号，各账号使用属于本人的不同真实注册设备。未设置时兼容读取脚本目录 auths/auth-*.json；环境变量优先，文件不是运行依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
@@ -949,6 +952,37 @@
 <tr><td><code>TIEBA_DELAY_MS</code></td><td>否</td><td>格式：整数毫秒；限制在 500 至 10000；格式错误沿用默认值。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；仅作为可选通知组件位置，业务功能不依赖此文件。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="31"><code>scripts/trae_checkin.py</code></td><td><code>TRAE_REFRESH_TOKEN</code></td><td>是</td><td>格式：单账号刷新凭据；兼容 _2 至 _9 后缀；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ACCESS_TOKEN</code></td><td>是</td><td>格式：单账号访问凭据；兼容 _2 至 _9 后缀；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_ID</code></td><td>是</td><td>格式：同账号真实设备号；12 至 20 位数字；兼容 _2 至 _9 后缀；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_KEY_PEM</code></td><td>是</td><td>格式：同设备 P-256 私钥 PEM，支持字面量 \n；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_PUB_PEM</code></td><td>是</td><td>格式：同设备公钥 PEM，支持字面量 \n；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_MACHINE_ID</code></td><td>是</td><td>格式：同设备 machineId 字符串；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_UID</code></td><td>否</td><td>格式：字符串；仅用于筛选，不作为官方返回身份打印；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_NAME</code></td><td>否</td><td>格式：字符串；仅用于筛选，不作为官方返回身份打印；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ICUBE_AUTH</code></td><td>是</td><td>格式：加密凭据串；解密需要公共包 cryptography，且需另填真实 TRAE_DEVICE_ID；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_STORAGE_PATH</code></td><td>是</td><td>格式：本人可读 storage.json 文件路径；不是必需依赖；预演不读取；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_TASK</code></td><td>否</td><td>格式：checkin 默认签到并查询余额；credits 仅查询积分总额、已用和余额；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 启用断网预演，不读取凭据文件、不访问接口、不写缓存；通知器尝试在禁网子进程中执行；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_BATCH</code></td><td>否</td><td>格式：默认 all 一轮全签；0 同 all；1 至 9999 每轮账号数，早窗全签；未处理账号不算成功，退出非零；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_ONLY</code></td><td>否</td><td>格式：从 1 开始的序号或精确标识；未匹配停止运行，避免误操作全部账号；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_JITTER</code></td><td>否</td><td>格式：默认 1 启用 0 至 20 秒启动等待；0、false、no、off 关闭；预演不等待；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_PEAK_HOURS</code></td><td>否</td><td>格式：默认 0；逗号分隔的小时或范围，如 0-1；小时须在 0 至 23 内；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_COOLDOWN_MIN</code></td><td>否</td><td>格式：默认 55；1 至 1440 分钟；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_PEAK_COOLDOWN_MIN</code></td><td>否</td><td>格式：默认 12；1 至 1440 分钟；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_CIRCUIT</code></td><td>否</td><td>格式：默认 0；1 表示一个账号限流后跳过剩余账号；跳过不算成功；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CLAIM_TRIES</code></td><td>否</td><td>格式：默认 1；1 至 5；只对限流进行显式退避重试，建议保留 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_TOKEN_CACHE</code></td><td>是</td><td>格式：默认脚本目录 .trae_token_cache.json，保存轮换后凭据，权限 0600；预演不读写；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_STATE_FILE</code></td><td>是</td><td>格式：默认脚本目录 .trae_checkin_state.json，保存北京时间当日完成及冷却状态，权限 0600；预演不读写；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_CLIENT_ID</code></td><td>否</td><td>格式：默认 ono9krqynydwx5；新版续期后兼容 en1oxy7wnw8j9n 的 IDE_PC 和 SOLO_PC；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_BRAND</code></td><td>否</td><td>格式：可选官方客户端设备品牌；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_NAME</code></td><td>否</td><td>格式：可选同设备名称；默认当前主机名；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TRAE_DEVICE_MODEL</code></td><td>否</td><td>格式：可选同设备型号；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；通知失败不改变业务退出码；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 或 sendNotify.js 的目录；不是业务 HTTP 依赖；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QYWX_TOKEN</code></td><td>是</td><td>格式：企业微信群机器人 key 或完整 webhook；通知失败不改变业务退出码；预演不调用；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WECHAT_WEBHOOK</code></td><td>是</td><td>格式：QYWX_TOKEN 的旧兼容输入；通知失败不改变业务退出码；预演不调用；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PLUSPLUS_TOKEN</code></td><td>是</td><td>格式：PushPlus 推送凭据；通知失败不改变业务退出码；预演不调用；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="6"><code>scripts/trae_work_checkin.py</code></td><td><code>TRAE_DRY_RUN</code></td><td>否</td><td>格式：1 启用完全断网预演，0 关闭，默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：默认 true；0、false、no、off 关闭；预演不延时。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0 至 86400 的整数秒，默认 3600；预演仍校验格式。；多账号格式以该脚本文档为准</td></tr>
@@ -1126,6 +1160,7 @@
 - `scripts/synspoint.py`：synshd 每个非空行一个账号，移除完整 Bearer 前缀后保留整行凭据；逐账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/tencent_video_checkin.py`：每个非空行一个完整账号 Cookie，同账号字段组合在同一行；忽略空行和 # 开头注释。规范变量优先，兼容旧单账号变量；独立处理账号，任一账号或步骤失败整体非零退出。。
 - `scripts/tieba_checkin.py`：每个非空行一个账号，整行保留为 Cookie；重复行去重，不按 & 或 @ 拆分。账号独立执行，任一账号失败则进程非零退出。。
+- `scripts/trae_checkin.py`：每个非空行一个账号 JSON 对象，账号间仅使用换行；配套访问凭据、刷新凭据和设备证明放在同一对象。兼容旧 JSON 数组和带序号的旧环境变量。逐账号独立处理，任一失败或轮签跳过均非零退出。。
 - `scripts/trae_work_checkin.py`：每个非空行一个账号 JSON，独立执行，单个账号失败不阻止后续账号，任一失败整体非零退出。不使用 & 或 @ 分隔账号。。
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
 - `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
@@ -1886,6 +1921,13 @@
 - 所属脚本：`scripts/tieba_checkin.py`
 - 获取或设置：在百度贴吧网站登录本人账号，从浏览器开发者工具请求头复制完整 Cookie，或其中 BDUSS 的值；开启成长任务时，从本人贴吧 APP 发往 tieba.baidu.com 的请求取得同一账号的 BDUSS 和 CUID。可改用兼容变量 TIE_BA_COOKIE。
 - 填写格式：`每个非空行一个账号；支持 BDUSS 单值或完整 Cookie。成长任务要求同一行含 BDUSS=值; CUID=值，字段值按首个等号分割，后续等号保留；不能按 & 或 @ 分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCOUNTS`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：在本人已登录的官方 Trae 中国版或 SOLO 客户端中，从登录或续期响应取得 accessToken、refreshToken；真实 deviceId 位于 storage.json 的 iCubeAuthInfo://icube-dc:<数字> 键。设备证明私钥和公钥来自同一键对应的凭据内容，machineId 来自 telemetry.machineId。请在本机安全查看，不上传、打印或共享凭据；青龙只需填入这些值，不需要安装客户端或提取器。accessToken 可单独使用直至过期；仅 refreshToken 的账号会先续期，新接口需要同设备证明。
+- 填写格式：`推荐每个非空行一个 JSON 对象：accessToken 或 refreshToken 至少一个，deviceId 为同账号注册的 12 至 20 位数字；可选 deviceKeyPem、devicePubPem、machineId、uid、name。PEM 换行用 JSON 转义。兼容旧 JSON 数组；不以 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TRAE_ACCOUNTS`
@@ -5291,6 +5333,205 @@
 - 获取或设置：可选填写青龙 notify.py 所在目录；自动尝试导入 notify.send 及标准青龙目录。
 - 填写格式：`本地目录路径；仅作为可选通知组件位置，业务功能不依赖此文件。`
 
+#### `TRAE_REFRESH_TOKEN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。
+- 填写格式：`单账号刷新凭据；兼容 _2 至 _9 后缀`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_ACCESS_TOKEN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。
+- 填写格式：`单账号访问凭据；兼容 _2 至 _9 后缀`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_DEVICE_ID`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。
+- 填写格式：`同账号真实设备号；12 至 20 位数字；兼容 _2 至 _9 后缀`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_DEVICE_KEY_PEM`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。
+- 填写格式：`同设备 P-256 私钥 PEM，支持字面量 \n`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_DEVICE_PUB_PEM`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。
+- 填写格式：`同设备公钥 PEM，支持字面量 \n`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_MACHINE_ID`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。
+- 填写格式：`同设备 machineId 字符串`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_UID`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选本人设置的旧账号筛选标识；兼容 _2 至 _9 后缀。
+- 填写格式：`字符串；仅用于筛选，不作为官方返回身份打印`
+
+#### `TRAE_NAME`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选本人设置的旧账号筛选标识；兼容 _2 至 _9 后缀。
+- 填写格式：`字符串；仅用于筛选，不作为官方返回身份打印`
+
+#### `TRAE_ICUBE_AUTH`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选兼容输入，从本人 storage.json 的 iCubeAuthInfo://icube.cloudide 值取得；不要共享。不是运行前提。
+- 填写格式：`加密凭据串；解密需要公共包 cryptography，且需另填真实 TRAE_DEVICE_ID`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_STORAGE_PATH`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选兼容输入，显式指定本人客户端凭据文件。推荐改用 TRAE_ACCOUNTS，脚本不会自动扫描目录。
+- 填写格式：`本人可读 storage.json 文件路径；不是必需依赖；预演不读取`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_TASK`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：按需在青龙环境变量中设置。
+- 填写格式：`checkin 默认签到并查询余额；credits 仅查询积分总额、已用和余额`
+
+#### `TRAE_DRY_RUN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：断网预演时设为 1。
+- 填写格式：`默认 0；1 启用断网预演，不读取凭据文件、不访问接口、不写缓存；通知器尝试在禁网子进程中执行`
+
+#### `TRAE_BATCH`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：需要按小时轮签时设置。
+- 填写格式：`默认 all 一轮全签；0 同 all；1 至 9999 每轮账号数，早窗全签；未处理账号不算成功，退出非零`
+
+#### `TRAE_ONLY`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：按需设置账号序号、uid 或 name。
+- 填写格式：`从 1 开始的序号或精确标识；未匹配停止运行，避免误操作全部账号`
+
+#### `TRAE_JITTER`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：按需设置错峰等待。
+- 填写格式：`默认 1 启用 0 至 20 秒启动等待；0、false、no、off 关闭；预演不等待`
+
+#### `TRAE_PEAK_HOURS`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：按北京时间配置签到早窗。
+- 填写格式：`默认 0；逗号分隔的小时或范围，如 0-1；小时须在 0 至 23 内`
+
+#### `TRAE_COOLDOWN_MIN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选运行控制，在青龙按需设置。
+- 填写格式：`默认 55；1 至 1440 分钟`
+
+#### `TRAE_PEAK_COOLDOWN_MIN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选运行控制，在青龙按需设置。
+- 填写格式：`默认 12；1 至 1440 分钟`
+
+#### `TRAE_CIRCUIT`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选运行控制，在青龙按需设置。
+- 填写格式：`默认 0；1 表示一个账号限流后跳过剩余账号；跳过不算成功`
+
+#### `CLAIM_TRIES`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选运行控制，在青龙按需设置。
+- 填写格式：`默认 1；1 至 5；只对限流进行显式退避重试，建议保留 1`
+
+#### `TRAE_TOKEN_CACHE`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选缓存位置；使用仅本人可读写的持久目录，不应进入公开仓库。
+- 填写格式：`默认脚本目录 .trae_token_cache.json，保存轮换后凭据，权限 0600；预演不读写`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_STATE_FILE`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选缓存位置；使用仅本人可读写的持久目录，不应进入公开仓库。
+- 填写格式：`默认脚本目录 .trae_checkin_state.json，保存北京时间当日完成及冷却状态，权限 0600；预演不读写`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TRAE_CLIENT_ID`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：从本人官方客户端请求配置取得；未设置时保留上游默认值。
+- 填写格式：`默认 ono9krqynydwx5；新版续期后兼容 en1oxy7wnw8j9n 的 IDE_PC 和 SOLO_PC`
+
+#### `TRAE_DEVICE_BRAND`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：从本人官方客户端请求配置取得；未设置时保留上游默认值。
+- 填写格式：`可选官方客户端设备品牌`
+
+#### `TRAE_DEVICE_NAME`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：从本人官方客户端请求配置取得；未设置时保留上游默认值。
+- 填写格式：`可选同设备名称；默认当前主机名`
+
+#### `TRAE_DEVICE_MODEL`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：从本人官方客户端请求配置取得；未设置时保留上游默认值。
+- 填写格式：`可选同设备型号`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：青龙通知全局开关。
+- 填写格式：`默认 1；0、false、no、off 关闭；通知失败不改变业务退出码`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选指定青龙通知模块目录；也自动尝试 import notify 和标准青龙 scripts 路径。
+- 填写格式：`包含 notify.py 或 sendNotify.js 的目录；不是业务 HTTP 依赖`
+
+#### `QYWX_TOKEN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选附加推送，从本人企业微信群机器人设置或 PushPlus 控制台取得；仍遵守 QINGLONG_NOTIFY 全局开关。
+- 填写格式：`企业微信群机器人 key 或完整 webhook；通知失败不改变业务退出码；预演不调用`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WECHAT_WEBHOOK`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选附加推送，从本人企业微信群机器人设置或 PushPlus 控制台取得；仍遵守 QINGLONG_NOTIFY 全局开关。
+- 填写格式：`QYWX_TOKEN 的旧兼容输入；通知失败不改变业务退出码；预演不调用`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PLUSPLUS_TOKEN`
+
+- 所属脚本：`scripts/trae_checkin.py`
+- 获取或设置：可选附加推送，从本人企业微信群机器人设置或 PushPlus 控制台取得；仍遵守 QINGLONG_NOTIFY 全局开关。
+- 填写格式：`PushPlus 推送凭据；通知失败不改变业务退出码；预演不调用`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `TRAE_DRY_RUN`
 
 - 所属脚本：`scripts/trae_work_checkin.py`
@@ -5830,6 +6071,7 @@
 - `scripts/synspoint.py`：SHA-256 `f343af6c80ac9ca40e51f0fb72a81d41acb2af51233623d6fa2f1fca4e636f7f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8060442233509c9a`。
 - `scripts/tencent_video_checkin.py`：SHA-256 `22ae305cd2e4196c0574785ab58f4dc0fb54266676ba599ea71971c4dc973ec6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
 - `scripts/tieba_checkin.py`：SHA-256 `2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
+- `scripts/trae_checkin.py`：SHA-256 `9772bf28cca609669b1499cc35c1eee8274f71152a49eda453b0289f17992fab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71de90498a3a6ded`。
 - `scripts/trae_work_checkin.py`：SHA-256 `8d93d71623e3677727614cd67282379102d38919c5528146f09f868932560bfe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/beffaf1692cf33d5`。
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 - `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
@@ -5950,6 +6192,7 @@
 - `scripts/synspoint.py`：会员签到及接口对应积分变化；提交浏览会员商城任务并可能获取积分；显式开启后创建商品上播预约，再取消本次成功创建的预约；正式运行时按全局开关发送脱敏总结通知。
 - `scripts/tencent_video_checkin.py`：实际执行时提交每日签到，可能增加 V力值；实际执行时领取每日观看奖励，可能增加 V力值；通知开启且实际执行时通过可用渠道发送脱敏任务总结。
 - `scripts/tieba_checkin.py`：正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态及可能产生签到奖励。；仅显式开启成长任务且 Cookie 同时含 BDUSS 和 CUID 时提交 APP 成长每日签到，改变当日成长签到状态及可能产生的成长奖励。；正式执行且通知开启、青龙组件可用时发送脱敏任务汇总通知。。
+- `scripts/trae_checkin.py`：签到领取积分；续期在服务端轮换刷新凭据；以限制权限更新本地令牌缓存、签到状态和冷却文件；正式运行发送脱敏青龙通知及显式配置的企业微信或 PushPlus 通知。
 - `scripts/trae_work_checkin.py`：checkin 命令为账号领取每日积分。；凭据刷新会请求官方接口更新会话凭据。；显式 login 或 TRAE_SAVE_CREDENTIALS=1 会保存本地敏感凭据文件。；正式执行且通知开启时发送脱敏任务通知。。
 - `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
 - `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
@@ -6072,6 +6315,7 @@
 - `scripts/synspoint.py`：上游 `Rookie-wb-WH/ql_scripts` / `synspoint.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/tencent_video_checkin.py`：上游 `deeplee/personal-scripts` / `tencent_video_checkin.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
 - `scripts/tieba_checkin.py`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_tieba.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
+- `scripts/trae_checkin.py`：上游 `L0NE-6/Trae-AutoCheckin` / `trae_checkin.py` / `38b1d919760ed9a36dfe6873be8765f8cafaff3f`。
 - `scripts/trae_work_checkin.py`：上游 `xz0609/trae-work-checkin-ql` / `trae_work_checkin.py` / `54ce4564ae714d9aa3140defa06308acce12942e`。
 - `scripts/tsthb_checkin.py`：上游 `agluo/ql-script-hub` / `tsthb_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/ty_netdisk_checkin.py`：上游 `agluo/ql-script-hub` / `ty_netdisk_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
