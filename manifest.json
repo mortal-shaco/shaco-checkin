@@ -7572,6 +7572,153 @@
       }
     },
     {
+      "catalogId": "f7a3490b78ba76fa",
+      "applicationKey": "yongyeym/autosign_qinglong::nga",
+      "checkProfile": {
+        "requiredEnv": [
+          "NGA_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "nga_uid",
+          "nga_cookie",
+          "nga_client_checksum",
+          "NGA_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NGA_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NGA_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "今日签到成功",
+          "今天已经签到过，无需签到",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "NGA社区每日签到，保留每日 00:03 定时计划。",
+          "识别今日已签到，避免将已完成任务标为失败。",
+          "展示官方签到响应的连续签到与累计签到天数。",
+          "识别登录失效和 iOS 客户端校验失败，提示更新对应参数。",
+          "展示官方返回的非敏感昵称、用户名、显示名称或公开 UID。",
+          "每行一个账号的配套凭据配置，兼容旧版单账号环境变量。",
+          "完全断网预演、逐账号隔离执行、失败非零退出。",
+          "提供分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY JSON。",
+          "成功、部分失败、失败、配置错误均尝试青龙通知；断网预演模拟通知，通知故障保留业务退出码。"
+        ],
+        "sideEffects": [
+          "实际运行时提交 NGA 每日签到请求，可能更新签到记录、连续天数及累计天数。",
+          "实际运行且通知开启时，通过青龙通知模块发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "NGA社区 每日签到",
+      "path": "scripts/nga_sign.py",
+      "sha256": "469a2e36b306f740a84908dd8c981c4c929afe956f91c3c22a05f0463efc9779",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yongyeym/AutoSign_QingLong",
+        "branch": "main",
+        "commit": "f13a88e488c2d396e24cce8e9b6e27eefcbccad6",
+        "originalPath": "nga_sign.py"
+      },
+      "cron": "3 0 * * *",
+      "command": "python3 scripts/nga_sign.py",
+      "environment": [
+        {
+          "name": "NGA_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录自己的 NGA iOS 客户端，使用自己控制的 HTTPS 抓包工具查看 ngabbs.com/nuke.php 签到请求，从表单提取 access_uid、access_token 和 __ngaClientChecksum；三个值必须来自同一账号。请勿分享抓包内容。若沿用旧版，可用完整的 nga_uid、nga_cookie、nga_client_checksum 三项替代本项。",
+          "format": "每个非空行一个 JSON 对象，包含字符串字段 uid、token、checksum；uid 为数字字符串；token 是 access_token 值，不是完整 Cookie；checksum 为 __ngaClientChecksum 原值。JSON 解析保留字段文本，不使用 &、@ 或其他字符分隔账号。"
+        },
+        {
+          "name": "nga_uid",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版单账号兼容项：从本人 iOS 客户端签到请求读取 access_uid，须同时设置 nga_cookie、nga_client_checksum。设置 NGA_ACCOUNTS 后忽略本项。",
+          "format": "数字字符串，仅支持一个账号。"
+        },
+        {
+          "name": "nga_cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容项：从本人 iOS 客户端签到请求读取 access_token，须同时设置 nga_uid、nga_client_checksum。",
+          "format": "access_token 原值，不是完整 Cookie，不使用账号分隔符。"
+        },
+        {
+          "name": "nga_client_checksum",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容项：从本人 iOS 客户端签到请求读取 __ngaClientChecksum；安卓端或过期校验码可能无法通过校验，须更新同账号的 iOS 请求值。",
+          "format": "客户端校验码字符串。"
+        },
+        {
+          "name": "NGA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置，验证安装与参数时启用。",
+          "format": "1、true、yes、on 启用完全断网预演；默认 0，执行实际签到。预演通知仅模拟，不加载外部通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置通知总开关。",
+          "format": "默认 1；0、false、no、off 关闭通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写青龙已有 notify.py 或 sendNotify.js 所在目录；无需设置时优先导入 notify，再检查青龙标准脚本目录，不自动下载模块。",
+          "format": "本地通知模块目录路径，可选。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "NGA_ACCOUNTS 每个非空行一个账号 JSON 对象，uid、token、checksum 合并在同一对象中。逐账号校验和执行，单账号失败不阻断其他账号；任一账号失败则进程非零退出。旧版三个变量仅兼容单账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "NGA社区每日签到，保留每日 00:03 定时计划。",
+        "识别今日已签到，避免将已完成任务标为失败。",
+        "展示官方签到响应的连续签到与累计签到天数。",
+        "识别登录失效和 iOS 客户端校验失败，提示更新对应参数。",
+        "展示官方返回的非敏感昵称、用户名、显示名称或公开 UID。",
+        "每行一个账号的配套凭据配置，兼容旧版单账号环境变量。",
+        "完全断网预演、逐账号隔离执行、失败非零退出。",
+        "提供分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY JSON。",
+        "成功、部分失败、失败、配置错误均尝试青龙通知；断网预演模拟通知，通知故障保留业务退出码。"
+      ],
+      "sideEffects": [
+        "实际运行时提交 NGA 每日签到请求，可能更新签到记录、连续天数及累计天数。",
+        "实际运行且通知开启时，通过青龙通知模块发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/f7a3490b78ba76fa",
+        "candidateSha256": "469a2e36b306f740a84908dd8c981c4c929afe956f91c3c22a05f0463efc9779"
+      }
+    },
+    {
       "catalogId": "4196e654f2a752f8",
       "applicationKey": "nodeseek",
       "checkProfile": {
