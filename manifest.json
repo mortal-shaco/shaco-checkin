@@ -6591,6 +6591,183 @@
       }
     },
     {
+      "catalogId": "e02ed814df52c998",
+      "applicationKey": "f1owkang/qingskyland::skyland",
+      "checkProfile": {
+        "requiredEnv": [
+          "SKYLAND_TOKENS"
+        ],
+        "optionalEnv": [
+          "SKYLAND_TOKEN_FILE",
+          "SKYLAND_DRY_RUN",
+          "SKYLAND_MODE",
+          "SKYLAND_SILENT_OK",
+          "USE_PROXY",
+          "NOTIFY_TITLE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "EXIT_WHEN_FAIL"
+        ],
+        "dryRunEnv": {
+          "SKYLAND_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "SKYLAND_DRY_RUN": "0",
+          "SKYLAND_MODE": "auto",
+          "QINGLONG_NOTIFY": "1",
+          "USE_PROXY": "off"
+        },
+        "successPatterns": [
+          "签到成功，奖励：",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "鹰角登录 token 换取森空岛认证凭据，独立实现设备认证与 HTTP 签名",
+          "查询明日方舟与终末地绑定账号，逐一签到全部角色并显示官方昵称或公开 UID、渠道及奖励",
+          "支持每行一个账号、官方 JSON 凭据、可选凭据文件与合并去重",
+          "保留青龙与 Hermes 模式、Hermes 成功正文静默、通知标题与显式代理开关",
+          "完整时间轴日志、账号与子任务统计及唯一 TASK_SUMMARY 机器记录",
+          "完全断网预演，检查凭据解析、签名及两种游戏请求契约；任意账号失败非零退出",
+          "成功、部分失败、失败或配置错误后生成脱敏通知，实际运行通过青龙 notify.py 投递并支持发现位置回退"
+        ],
+        "sideEffects": [
+          "实际运行时向设备认证服务注册本次设备认证信息",
+          "实际运行时换取鹰角授权及森空岛登录凭据",
+          "为明日方舟与终末地绑定角色执行每日签到并领取奖励",
+          "实际运行且通知开启时发送脱敏任务通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "森空岛自动签到",
+      "path": "scripts/f1owkang_qingskyland_skyland.py",
+      "sha256": "2fa1e00174515df634f27a6225379ab867b62fcd9f4049f46a7431bc0efb7ed3",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "f1owkang/QingSkyland",
+        "branch": "main",
+        "commit": "563c86c9d5965b5fc622e1cb33963346b661f26c",
+        "originalPath": "skyland.py"
+      },
+      "cron": "15 8 * * *",
+      "command": "python3 scripts/f1owkang_qingskyland_skyland.py",
+      "environment": [
+        {
+          "name": "SKYLAND_TOKENS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "本人登录 https://www.skland.com/ 后，在同一浏览器打开 https://web-api.skland.com/account/info/hg ，取官方响应 data.content。请只保存自己的凭据，不公开响应。账号需在森空岛绑定游戏角色。",
+          "format": "每个非空行一个完整鹰角登录 token；也接受每行一个包含 data.content 的官方 JSON。禁止使用逗号、& 或 @ 分隔账号。"
+        },
+        {
+          "name": "SKYLAND_TOKEN_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入：自行创建并保护本地凭据文件，填入其路径；可与 SKYLAND_TOKENS 合并去重，也兼容仅从文件读取。脚本不创建或修改此文件。",
+          "format": "文件路径，支持 ~；文件每行一个账号，支持以 # 开头的注释。"
+        },
+        {
+          "name": "SKYLAND_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线测试时设为 1；实际签到时设为 0。",
+          "format": "默认 0；1 启用，0/false/no/off 关闭。"
+        },
+        {
+          "name": "SKYLAND_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按执行环境选填；自动模式根据可发现的青龙通知模块选择日志输出流。",
+          "format": "auto（默认）、qinglong 或 hermes。"
+        },
+        {
+          "name": "SKYLAND_SILENT_OK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "希望全部成功时抑制 Hermes 投递正文可设为 on；统计记录仍保留。",
+          "format": "on 启用；默认 off。"
+        },
+        {
+          "name": "USE_PROXY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅需使用自己配置的系统代理时设为 on。",
+          "format": "默认 off，忽略系统代理；on 使用系统代理。"
+        },
+        {
+          "name": "NOTIFY_TITLE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写通知标题，不得填入凭据。",
+          "format": "默认“森空岛自动签到”。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关；离线预演只生成脱敏通知正文，禁止调用可能联网的通知模块。",
+          "format": "默认 1；0/false/no/off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 notify.py 所在目录；同时自动检查脚本目录、Python 模块与 /ql/data/scripts、/ql/scripts。",
+          "format": "本地目录路径；通知模块不可用或失败不改变业务退出码。"
+        },
+        {
+          "name": "EXIT_WHEN_FAIL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅为旧配置兼容保留；任意账号失败始终非零退出，无需设置此变量。",
+          "format": "旧版 on/off 输入不再允许失败返回零。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，完整 token 或官方 JSON；环境变量与可选文件合并按解析后的 token 去重。各账号独立处理，角色失败继续处理其他角色和账号；任意账号失败均非零退出。"
+      },
+      "dependencies": [
+        "requests>=2.31",
+        "cryptography>=43"
+      ],
+      "features": [
+        "鹰角登录 token 换取森空岛认证凭据，独立实现设备认证与 HTTP 签名",
+        "查询明日方舟与终末地绑定账号，逐一签到全部角色并显示官方昵称或公开 UID、渠道及奖励",
+        "支持每行一个账号、官方 JSON 凭据、可选凭据文件与合并去重",
+        "保留青龙与 Hermes 模式、Hermes 成功正文静默、通知标题与显式代理开关",
+        "完整时间轴日志、账号与子任务统计及唯一 TASK_SUMMARY 机器记录",
+        "完全断网预演，检查凭据解析、签名及两种游戏请求契约；任意账号失败非零退出",
+        "成功、部分失败、失败或配置错误后生成脱敏通知，实际运行通过青龙 notify.py 投递并支持发现位置回退"
+      ],
+      "sideEffects": [
+        "实际运行时向设备认证服务注册本次设备认证信息",
+        "实际运行时换取鹰角授权及森空岛登录凭据",
+        "为明日方舟与终末地绑定角色执行每日签到并领取奖励",
+        "实际运行且通知开启时发送脱敏任务通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e02ed814df52c998",
+        "candidateSha256": "2fa1e00174515df634f27a6225379ab867b62fcd9f4049f46a7431bc0efb7ed3"
+      }
+    },
+    {
       "catalogId": "b5b4289ee7ca4222",
       "applicationKey": "sitoi/dailycheckin::fnnasclub",
       "checkProfile": {
@@ -10827,6 +11004,147 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/7990614346ba82e0",
         "candidateSha256": "d403a1c68ee24f721a320318363bb0a763d815b217fa73801512ecbac8c303ff"
+      }
+    },
+    {
+      "catalogId": "bd893babb907859b",
+      "applicationKey": "lizhixu/ql-script-hub::youdao",
+      "checkProfile": {
+        "requiredEnv": [
+          "YOUDAO_COOKIE"
+        ],
+        "optionalEnv": [
+          "YOUDAO_DRY_RUN",
+          "YOUDAO_AD_REWARDS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "YOUDAO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "YOUDAO_DRY_RUN": "0",
+          "YOUDAO_AD_REWARDS": "1",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "HTTPS 会话刷新",
+          "同步奖励并核验 rewardSpace 字段",
+          "每日签到并核验 space 字段",
+          "三次广告空间奖励及独立关闭开关",
+          "汇总已核验的空间奖励",
+          "显示官方返回的非敏感账号身份",
+          "换行多账号独立执行与失败退出码",
+          "完全断网预演及参数检查",
+          "分阶段计时、账号与任务统计及单行结构化汇总",
+          "青龙脱敏通知，兼容 notify.py 和 sendNotify.js，失败不影响业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行刷新登录会话",
+          "正式运行同步奖励并增加云笔记空间",
+          "正式运行每日签到并领取空间奖励",
+          "默认正式运行领取三次广告空间奖励，可通过 YOUDAO_AD_REWARDS=0 关闭",
+          "启用通知时向青龙已配置渠道发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "有道云笔记签到",
+      "path": "scripts/lizhixu_ql_script_hub_youdao.py",
+      "sha256": "6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "lizhixu/ql-script-hub",
+        "branch": "main",
+        "commit": "ac591a320092dcaeaf236b7c2b6acfd28981e589",
+        "originalPath": "youdao.py"
+      },
+      "cron": "01 5 * * *",
+      "command": "python3 scripts/lizhixu_ql_script_hub_youdao.py",
+      "environment": [
+        {
+          "name": "YOUDAO_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录有道云笔记 https://note.youdao.com，打开开发者工具的网络面板，选择该域名的已登录请求，复制请求头中的完整 Cookie 值。必须包含 YNOTE_PERS；不要复制 Cookie: 前缀，也不要将凭据贴入日志。",
+          "format": "每个非空行一个账号的完整 Cookie，字段按分号分隔，每个字段仅在第一个等号处分开，后续等号和 & 保留为凭据内容；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "YOUDAO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 开启断网预演，默认 0；预演仅检查参数和执行计划，不确认真实业务成功，也不调用通知模块。",
+          "format": "1 或 0，也支持 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "YOUDAO_AD_REWARDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置；默认 1 保留三次广告空间奖励，设为 0 关闭该动作，签到和同步仍执行。",
+          "format": "1 或 0，也支持 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认 1；0、false、no、off 关闭通知。配置通知渠道使用青龙通知模块自身设置。",
+          "format": "默认 1，关闭值为 0、false、no、off。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录；未设置时自动查找青龙标准目录及可导入的 notify 模块。业务请求不依赖通知模块；缺失、失败或超时均保留业务退出码。",
+          "format": "本机通知模块目录路径；只用于可选通知。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "YOUDAO_COOKIE 每个非空行一个账号；逐个独立处理，任一账号失败或配置无效均以非零退出码结束。"
+      },
+      "dependencies": [
+        "requests"
+      ],
+      "features": [
+        "HTTPS 会话刷新",
+        "同步奖励并核验 rewardSpace 字段",
+        "每日签到并核验 space 字段",
+        "三次广告空间奖励及独立关闭开关",
+        "汇总已核验的空间奖励",
+        "显示官方返回的非敏感账号身份",
+        "换行多账号独立执行与失败退出码",
+        "完全断网预演及参数检查",
+        "分阶段计时、账号与任务统计及单行结构化汇总",
+        "青龙脱敏通知，兼容 notify.py 和 sendNotify.js，失败不影响业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行刷新登录会话",
+        "正式运行同步奖励并增加云笔记空间",
+        "正式运行每日签到并领取空间奖励",
+        "默认正式运行领取三次广告空间奖励，可通过 YOUDAO_AD_REWARDS=0 关闭",
+        "启用通知时向青龙已配置渠道发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/bd893babb907859b",
+        "candidateSha256": "6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6"
       }
     },
     {

@@ -72,6 +72,7 @@
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `39 12 * * *` |
 | Epic免费游戏 | `scripts/epicfreegames.py` | `python3 scripts/epicfreegames.py` | `0 8 * * 6` |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `1 1 1 1 1` |
+| 森空岛自动签到 | `scripts/f1owkang_qingskyland_skyland.py` | `python3 scripts/f1owkang_qingskyland_skyland.py` | `15 8 * * *` |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `0 8 * * *` |
 | Discuz 论坛日常维护 | `scripts/forum_download.py` | `python3 scripts/forum_download.py` | `20 8 * * *` |
 | 废文网签到 | `scripts/fwxs_checkin.js` | `node scripts/fwxs_checkin.js` | `5 8 * * *` |
@@ -99,6 +100,7 @@
 | LINUX DO 登录与浏览统计 | `scripts/l.py` | `python3 scripts/l.py` | `5 */5 * * *` |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` |
 | NodeSeek 签到与收益统计 | `scripts/lizhixu_ql_script_hub_nodeseek.py` | `python3 scripts/lizhixu_ql_script_hub_nodeseek.py` | `23 4 * * *` |
+| 有道云笔记签到 | `scripts/lizhixu_ql_script_hub_youdao.py` | `python3 scripts/lizhixu_ql_script_hub_youdao.py` | `01 5 * * *` |
 | Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `0 8 * * *` |
 | 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `8 8 * * *` |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
@@ -247,6 +249,7 @@
 - `scripts/enshan_checkin.py`：使用 Cookie 验证登录，保留签到页 WAF 解码、论坛页回退和响应 Cookie 更新。；获取隐藏字段、退出链接或 JavaScript 中的 formhash，提交每日签到，严格识别成功及今日已签到。；在已验证的签到响应提供连续签到天数时展示天数，并在结构化账号结果中输出；未提供时不推测。；签到前后查询恩山币和积分，保留四个积分页地址回退与临时错误重试，展示余额变化。；展示官方公开用户名、用户组及贡献，隐藏 Cookie、会话及原始响应。；每行一个账号独立执行，任一失败非零退出，配置错误同样非零退出。；保持每日 12:39 定时、兼容旧参数及可选随机启动延迟，默认无等待。；完全断网配置预演，跳过登录、查询、签到和通知网络发送，不宣称真实业务成功。；带时间戳的分阶段日志、账号及任务统计，保留 SUMMARY_JSON 并输出唯一单行 TASK_SUMMARY。；按全局开关生成或发送青龙脱敏通知，通知不可用或失败不改变业务退出码。；已验证签到后，按上游移动签到页与既有桌面签到页顺序读取今日签到积分和总签到天数；连续签到天数优先保留签到响应的值，缺失时补充页面值。；仅展示明确提供的非负签到统计，缺失项显示未知；可选统计读取失败不覆盖已验证签到结果。；兼容 EST_cookie 和 EST_ENABLE_RANDOM_WAIT，不再依赖浏览器可执行文件或本地凭据配置文件；Cookie 中自动获取登录身份。；正式通知增加各成功账号的余额、贡献及签到统计；配置错误、失败和断网预演也生成或发送摘要。。
 - `scripts/epicfreegames.py`：查询 Epic 本周及即将免费游戏，仅筛选有效基础游戏和零价促销。；展示游戏标题、原价、促销起止北京时间及商店链接，兼容语言地区和国家设置。；合成含封面、标题、原价及免费时间的图片并发送到 Telegram；封面失败保留资料卡片，图片生成或发送失败降级完整文字报告。；保留每周六 08:00 调度及 TG_BOT_TOKEN/TG_USER_ID 单账号兼容输入，支持每行一个 Telegram 通知账号。；通过本地样例断网预演，记录带时间戳的分阶段日志、账号统计及唯一 TASK_SUMMARY JSON；业务失败返回非零退出码。；成功、部分失败、失败、配置错误和预演均生成脱敏青龙通知汇总；实际通知失败保留业务退出码，预演仅模拟。。
 - `scripts/erke.py`：查询积分明细第一页五条，展示累计积分、冻结积分、可用积分和积分记录数；会员签到及明确已签到状态识别；每行一个账号，保留上游账号字段兼容，逐账号与逐阶段统计；展示接口返回的非敏感官方账号身份；完全断网预演、阶段耗时日志及单行 TASK_SUMMARY 结构化汇总；青龙脱敏通知，通知失败不覆盖业务退出码。
+- `scripts/f1owkang_qingskyland_skyland.py`：鹰角登录 token 换取森空岛认证凭据，独立实现设备认证与 HTTP 签名；查询明日方舟与终末地绑定账号，逐一签到全部角色并显示官方昵称或公开 UID、渠道及奖励；支持每行一个账号、官方 JSON 凭据、可选凭据文件与合并去重；保留青龙与 Hermes 模式、Hermes 成功正文静默、通知标题与显式代理开关；完整时间轴日志、账号与子任务统计及唯一 TASK_SUMMARY 机器记录；完全断网预演，检查凭据解析、签名及两种游戏请求契约；任意账号失败非零退出；成功、部分失败、失败或配置错误后生成脱敏通知，实际运行通过青龙 notify.py 投递并支持发现位置回退。
 - `scripts/fnnasclub.py`：显示论坛提供的公开昵称；获取签到参数并执行每日签到；识别今日已打卡并避免重复签到；读取并脱敏显示我的打卡动态；每行一个账号，独立执行与失败汇总；完全断网预演、时间轴日志和单行结构化汇总；正式运行后发送青龙脱敏通知，通知失败保留业务退出码。
 - `scripts/forum_download.py`：读取指定版块的主题列表，并按上游顺序读取前三个帖子的附件；下载显式启用，不保存文件，间隔两秒。；访问论坛首页并验证登录状态，不把首页访问成功推断为奖励到账。；提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。；独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。；官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。；多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。；显式 work 动作访问打工插件，最多点击八次，遇间隔限制停止点击，再领取奖励；只接受 messagetext 中明确成功或今日已完成提示。；保留默认 visit,credits、账号 JSON 参数及每日 08:20 计划；与现有动作在同一规范脚本运行。。
 - `scripts/fwxs_checkin.js`：登录有效性检查并展示官方公开 UID；废文网每日签到；以个人中心总签到天数增长确认成功；查询总签到天数与连续签到天数；明确的北京时间当天签到记录支持已签到判定；每行一个账号独立执行，兼容原 fwxs 变量与首个 # 后的昵称备注解析；完全断网预演及参数检查；青龙通知、分阶段脱敏日志、逐账号统计与单行结构化任务汇总。
@@ -274,6 +277,7 @@
 - `scripts/l.py`：Cookie 登录身份校验并显示官方返回的公开用户名和信任等级；按原有浏览开关与数量参数，从首页发现并随机读取话题，校验标题及帖子正文；查询访问天数、浏览话题、已读帖子、阅读时长、给出点赞、收到点赞及发帖数；显示上游 TL0 至 TL1、TL1 至 TL2 的参考升级要求和达标情况；每行一个账号，账号互相隔离，任一账号失败返回非零退出码；完全断网预演、按阶段记录脱敏结果、账号与任务统计及单行结构化汇总；通过青龙通知模块发送脱敏汇总，失败或不可用不改变业务退出码。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：使用 Cookie 执行 Leaflow 每日签到；自动识别 CSRF 隐藏字段并提交签到表单；明确识别成功、今日已完成、会话失效和失败结果；在服务返回时提取当日签到奖励；支持换行多账号独立处理并生成结构化汇总；提供有限重试、请求超时和可选随机执行窗口；提供完全断网的预演配置校验；在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份；支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码；输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY；兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：每日签到，支持随机奖励或固定奖励模式。；随机时间窗口、多账号计划排序和带时间戳的等待倒计时；保留每天 04:23 的调度。；近 30 天签到收益分页查询，显示签到天数、鸡腿总数及日均收益；覆盖不完整或字段异常时明确失败。；按官方接口返回原值显示非敏感昵称、用户名、显示名称或公开 UID。；每行一个账号，独立执行并汇总失败退出码。；完全断网预演、参数检查、分阶段时间轴日志、账号统计及单行 TASK_SUMMARY JSON。；所有任务结果均尝试发送脱敏青龙通知；支持全局开关和通知目录发现，通知故障保留业务退出码。。
+- `scripts/lizhixu_ql_script_hub_youdao.py`：HTTPS 会话刷新；同步奖励并核验 rewardSpace 字段；每日签到并核验 space 字段；三次广告空间奖励及独立关闭开关；汇总已核验的空间奖励；显示官方返回的非敏感账号身份；换行多账号独立执行与失败退出码；完全断网预演及参数检查；分阶段计时、账号与任务统计及单行结构化汇总；青龙脱敏通知，兼容 notify.py 和 sendNotify.js，失败不影响业务退出码。
 - `scripts/loomy_daily.py`：每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。；--tasks 查询八项新手任务的分组、标题、积分与完成进度。；显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。；八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。；结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。；换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。；完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。；青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。。
 - `scripts/lynkco_qinglong_single.py`：AppCode优先续期、HMAC签名兜底及静态令牌回退；今日签到状态查询、自动签到和签到后复查，已签到时跳过；连续签到天数和签到卡查询；任务前后能量体积分查询；五页动态文章查找及上游备用文章；可选文章分享两步链及完整三步链回退，核验分享前后积分变化；多账号独立处理、官方非秘密身份展示、任何账号失败非零退出；青龙及可选Bark脱敏通知，通知失败保留业务退出码；完全断网预演、分阶段日志和单行结构化总结；旧账号变量及显式只读本地配置兼容。
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
@@ -430,6 +434,7 @@
 <tr><td rowspan="1"><code>scripts/enshan_checkin.py</code></td><td><code>ENSHAN_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；同一账号各字段用分号分隔，字段值内的等号保留；不得用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/epicfreegames.py</code></td><td><code>EPIC_TG_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个机器人令牌|会话编号；只按首个 | 分割，支持数字会话编号或公开频道用户名。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/erke.py</code></td><td><code>ERKE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个 JSON 对象，五项字段均为非空字符串；可选 account_name 和 user_agent，兼容上游字段。account_name 保留输入兼容，日志优先使用官方身份，没有官方身份时用账号序号。JSON 内部文本与标点保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/f1owkang_qingskyland_skyland.py</code></td><td><code>SKYLAND_TOKENS</code></td><td>是</td><td>格式：每个非空行一个完整鹰角登录 token；也接受每行一个包含 data.content 的官方 JSON。禁止使用逗号、&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_COOKIE</code></td><td>是</td><td>格式：每个非空行为一个账号的完整 Cookie 值，保留分号及等号，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/forum_download.py</code></td><td><code>FORUM_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必填 url、cookie，可选 name、fid；不按分号、&amp; 或 @ 拆分 Cookie。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fwxs_checkin.js</code></td><td><code>fwxs</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；兼容 Cookie#昵称备注，仅按首个 # 分割，后续备注完整保留但为防泄漏不输出。禁止用 @ 或 &amp; 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -457,6 +462,7 @@
 <tr><td rowspan="1"><code>scripts/l.py</code></td><td><code>LINUXDO_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，字段以分号分隔，每个字段仅在第一个等号处分割；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、&amp; 和 @ 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/lizhixu_ql_script_hub_nodeseek.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 Cookie；行内分号、等号及 &amp; 原样保留，不使用分隔符拆分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/lizhixu_ql_script_hub_youdao.py</code></td><td><code>YOUDAO_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，字段按分号分隔，每个字段仅在第一个等号处分开，后续等号和 &amp; 保留为凭据内容；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="2"><code>scripts/lynkco_qinglong_single.py</code></td><td><code>LYNKCO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个JSON对象；token可单独使用，refreshToken必须配套deviceId，可同时配置token作续期失败回退；不以&amp;、@分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LYNKCO_APP_SECRETS</code></td><td>是</td><td>格式：JSON对象：nativeAppKey、nativeAppSecret必需；分享或续期需glDevId；nativeAppCode用于优先AppCode续期，缺失时回退HMAC；loginAppCode仅兼容保存。；多账号格式以该脚本文档为准</td></tr>
@@ -852,6 +858,15 @@
 <tr><td rowspan="3"><code>scripts/erke.py</code></td><td><code>ERKE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演；默认 0 正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。断网预演仅生成通知摘要并记录未投递，不调用可能联网的通知模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录，含 notify.py 或 sendNotify.js；通知不可用不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="9"><code>scripts/f1owkang_qingskyland_skyland.py</code></td><td><code>SKYLAND_TOKEN_FILE</code></td><td>是</td><td>格式：文件路径，支持 ~；文件每行一个账号，支持以 # 开头的注释。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKYLAND_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 启用，0/false/no/off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKYLAND_MODE</code></td><td>否</td><td>格式：auto（默认）、qinglong 或 hermes。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKYLAND_SILENT_OK</code></td><td>否</td><td>格式：on 启用；默认 off。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>USE_PROXY</code></td><td>否</td><td>格式：默认 off，忽略系统代理；on 使用系统代理。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NOTIFY_TITLE</code></td><td>否</td><td>格式：默认“森空岛自动签到”。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知模块不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>EXIT_WHEN_FAIL</code></td><td>否</td><td>格式：旧版 on/off 输入不再允许失败返回零。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启断网预演，默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：现有通知模块所在目录路径；业务运行不依赖通知模块。；多账号格式以该脚本文档为准</td></tr>
@@ -1021,6 +1036,10 @@
 <tr><td><code>NODESEEK_DRY_RUN</code></td><td>否</td><td>格式：布尔值；开启后不加载 HTTP 依赖、不请求接口、不等待、不执行签到，通知器在禁止网络的子进程中尝试发送。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知；其他值启用。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知组件不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/lizhixu_ql_script_hub_youdao.py</code></td><td><code>YOUDAO_DRY_RUN</code></td><td>否</td><td>格式：1 或 0，也支持 true/false、yes/no、on/off。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YOUDAO_AD_REWARDS</code></td><td>否</td><td>格式：1 或 0，也支持 true/false、yes/no、on/off。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1，关闭值为 0、false、no、off。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径；只用于可选通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="9"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_ONBOARDING</code></td><td>否</td><td>格式：0（默认，仅每日积分）或 1（批量领取）；--no-onboarding 优先关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LOOMY_DRY_RUN</code></td><td>否</td><td>格式：1 启用，0 默认正式执行；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
@@ -1823,6 +1842,7 @@
 - `scripts/enshan_checkin.py`：每个非空行一个账号的完整 Cookie，账号独立执行；任一账号失败整体非零退出。。
 - `scripts/epicfreegames.py`：每个非空行配置一个 Telegram 通知账号，格式为机器人令牌|会话编号；仅按首个 | 分割。逐账号独立发送，任一账号失败则整体非零退出。Epic 公开商品查询不需要商店登录凭据。。
 - `scripts/erke.py`：每个非空行一个账号 JSON，同账号五项凭据组合在同一对象；逐账号、逐阶段独立处理，任一账号或配置失败时整体非零退出。。
+- `scripts/f1owkang_qingskyland_skyland.py`：每个非空行一个账号，完整 token 或官方 JSON；环境变量与可选文件合并按解析后的 token 去重。各账号独立处理，角色失败继续处理其他角色和账号；任意账号失败均非零退出。。
 - `scripts/fnnasclub.py`：每个非空行填写一个账号的完整 Cookie，各账号独立执行；任何账号失败均整体非零退出。。
 - `scripts/forum_download.py`：每个非空行一个账号 JSON，论坛地址和完整 Cookie 放在同一行；独立执行，任一账号失败则整体非零退出。。
 - `scripts/fwxs_checkin.js`：fwxs 每个非空行一个账号；同一账号仅需完整 Cookie。逐账号独立执行，任一账号失败时整体非零退出。昵称备注兼容解析，日志采用账号序号与官方公开 UID，防止备注泄露凭据。。
@@ -1847,6 +1867,7 @@
 - `scripts/l.py`：LINUXDO_COOKIES 每个非空行一个账号；逐个独立校验和处理，任何账号失败均以非零状态退出。。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：每个非空行一个账号的完整 NODESEEK_COOKIE；账号独立处理，任一账号签到或收益查询失败，整体非零退出。。
+- `scripts/lizhixu_ql_script_hub_youdao.py`：YOUDAO_COOKIE 每个非空行一个账号；逐个独立处理，任一账号失败或配置无效均以非零退出码结束。。
 - `scripts/loomy_daily.py`：每个非空行一个账号；兼容 session 和 备注|session，仅在第一个 | 处分割。独立处理各账号，任一账号失败则整体非零退出。--only N 可选择账号。。
 - `scripts/lynkco_qinglong_single.py`：每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。。
 - `scripts/mifan_optimized.py`：每个非空行一个账号，使用MIFAN_ACCOUNTS合并用户名和密码；只在第一个竖线分割，不使用分号、&或@分隔账号。账号独立执行，任一账号失败整体非零退出。。
@@ -2249,6 +2270,13 @@
 - 填写格式：`每个非空行为一个 JSON 对象，五项字段均为非空字符串；可选 account_name 和 user_agent，兼容上游字段。account_name 保留输入兼容，日志优先使用官方身份，没有官方身份时用账号序号。JSON 内部文本与标点保留，不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `SKYLAND_TOKENS`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：本人登录 https://www.skland.com/ 后，在同一浏览器打开 https://web-api.skland.com/account/info/hg ，取官方响应 data.content。请只保存自己的凭据，不公开响应。账号需在森空岛绑定游戏角色。
+- 填写格式：`每个非空行一个完整鹰角登录 token；也接受每行一个包含 data.content 的官方 JSON。禁止使用逗号、& 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `FNNASCLUB_COOKIE`
 
 - 所属脚本：`scripts/fnnasclub.py`
@@ -2433,6 +2461,13 @@
 - 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
 - 获取或设置：浏览器登录 https://www.nodeseek.com，打开开发者工具网络面板，找到本站 /api/attendance 或 /api/account/credit/ 请求，从请求标头复制完整 Cookie 值。不要复制 Cookie: 前缀。请勿分享凭据。
 - 填写格式：`每个非空行填写一个账号的完整 Cookie；行内分号、等号及 & 原样保留，不使用分隔符拆分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `YOUDAO_COOKIE`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_youdao.py`
+- 获取或设置：浏览器登录有道云笔记 https://note.youdao.com，打开开发者工具的网络面板，选择该域名的已登录请求，复制请求头中的完整 Cookie 值。必须包含 YNOTE_PERS；不要复制 Cookie: 前缀，也不要将凭据贴入日志。
+- 填写格式：`每个非空行一个账号的完整 Cookie，字段按分号分隔，每个字段仅在第一个等号处分开，后续等号和 & 保留为凭据内容；不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `LOOMY_TOKENS`
@@ -4895,6 +4930,61 @@
 - 获取或设置：如通知模块不在默认位置，填写本人青龙通知模块所在目录。
 - 填写格式：`可选目录，含 notify.py 或 sendNotify.js；通知不可用不改变业务退出码。`
 
+#### `SKYLAND_TOKEN_FILE`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：可选兼容输入：自行创建并保护本地凭据文件，填入其路径；可与 SKYLAND_TOKENS 合并去重，也兼容仅从文件读取。脚本不创建或修改此文件。
+- 填写格式：`文件路径，支持 ~；文件每行一个账号，支持以 # 开头的注释。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SKYLAND_DRY_RUN`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：离线测试时设为 1；实际签到时设为 0。
+- 填写格式：`默认 0；1 启用，0/false/no/off 关闭。`
+
+#### `SKYLAND_MODE`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：按执行环境选填；自动模式根据可发现的青龙通知模块选择日志输出流。
+- 填写格式：`auto（默认）、qinglong 或 hermes。`
+
+#### `SKYLAND_SILENT_OK`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：希望全部成功时抑制 Hermes 投递正文可设为 on；统计记录仍保留。
+- 填写格式：`on 启用；默认 off。`
+
+#### `USE_PROXY`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：仅需使用自己配置的系统代理时设为 on。
+- 填写格式：`默认 off，忽略系统代理；on 使用系统代理。`
+
+#### `NOTIFY_TITLE`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：可选填写通知标题，不得填入凭据。
+- 填写格式：`默认“森空岛自动签到”。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：青龙全局通知开关；离线预演只生成脱敏通知正文，禁止调用可能联网的通知模块。
+- 填写格式：`默认 1；0/false/no/off 关闭。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：可选填写青龙 notify.py 所在目录；同时自动检查脚本目录、Python 模块与 /ql/data/scripts、/ql/scripts。
+- 填写格式：`本地目录路径；通知模块不可用或失败不改变业务退出码。`
+
+#### `EXIT_WHEN_FAIL`
+
+- 所属脚本：`scripts/f1owkang_qingskyland_skyland.py`
+- 获取或设置：仅为旧配置兼容保留；任意账号失败始终非零退出，无需设置此变量。
+- 填写格式：`旧版 on/off 输入不再允许失败返回零。`
+
 #### `FNNASCLUB_DRY_RUN`
 
 - 所属脚本：`scripts/fnnasclub.py`
@@ -5928,6 +6018,30 @@
 - 所属脚本：`scripts/lizhixu_ql_script_hub_nodeseek.py`
 - 获取或设置：可选：填写青龙 notify.py 所在目录；也支持导入 notify.send 及标准青龙脚本目录。
 - 填写格式：`本地目录路径；通知组件不可用或失败不改变业务退出码。`
+
+#### `YOUDAO_DRY_RUN`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_youdao.py`
+- 获取或设置：自行设置为 1 开启断网预演，默认 0；预演仅检查参数和执行计划，不确认真实业务成功，也不调用通知模块。
+- 填写格式：`1 或 0，也支持 true/false、yes/no、on/off。`
+
+#### `YOUDAO_AD_REWARDS`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_youdao.py`
+- 获取或设置：自行设置；默认 1 保留三次广告空间奖励，设为 0 关闭该动作，签到和同步仍执行。
+- 填写格式：`1 或 0，也支持 true/false、yes/no、on/off。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_youdao.py`
+- 获取或设置：青龙全局通知开关，默认 1；0、false、no、off 关闭通知。配置通知渠道使用青龙通知模块自身设置。
+- 填写格式：`默认 1，关闭值为 0、false、no、off。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/lizhixu_ql_script_hub_youdao.py`
+- 获取或设置：可选指定青龙 notify.py 或 sendNotify.js 所在目录；未设置时自动查找青龙标准目录及可导入的 notify 模块。业务请求不依赖通知模块；缺失、失败或超时均保留业务退出码。
+- 填写格式：`本机通知模块目录路径；只用于可选通知。`
 
 #### `LOOMY_ONBOARDING`
 
@@ -10778,6 +10892,7 @@
 - `scripts/enshan_checkin.py`：SHA-256 `bbf4daf1880caeb8d30c22e335df244f0aec8756937d3e810ef62da534899504`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
 - `scripts/epicfreegames.py`：SHA-256 `c8d5c51c3bc4dfbfb194ddb29720a35d605c3285eca606ec4af7ffdff72d0d4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
 - `scripts/erke.py`：SHA-256 `887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
+- `scripts/f1owkang_qingskyland_skyland.py`：SHA-256 `2fa1e00174515df634f27a6225379ab867b62fcd9f4049f46a7431bc0efb7ed3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e02ed814df52c998`。
 - `scripts/fnnasclub.py`：SHA-256 `80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
 - `scripts/forum_download.py`：SHA-256 `f7c36f3c4bb0ef72d1c9bdaec2387d373c870a5be4607ac71ed9f274c0339751`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
 - `scripts/fwxs_checkin.js`：SHA-256 `e9f6410e225fbef75b20d661e4122ea2bece6b41b7908f17f4f42244f151780c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
@@ -10805,6 +10920,7 @@
 - `scripts/l.py`：SHA-256 `aba0cf5855af880ab672f6f322417b935718dc8e2e81351ebd65791a1b9809dd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f1ad78537129604d`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：SHA-256 `1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：SHA-256 `d403a1c68ee24f721a320318363bb0a763d815b217fa73801512ecbac8c303ff`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7990614346ba82e0`。
+- `scripts/lizhixu_ql_script_hub_youdao.py`：SHA-256 `6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd893babb907859b`。
 - `scripts/loomy_daily.py`：SHA-256 `31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
 - `scripts/lynkco_qinglong_single.py`：SHA-256 `5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
@@ -10953,6 +11069,7 @@
 - `scripts/enshan_checkin.py`：正式运行提交每日签到，可能增加恩山币和积分。；正式访问论坛可能产生论坛自身的登录奖励或访问记录。；正式运行且通知开启时，通过青龙通知模块发送脱敏任务汇总。。
 - `scripts/epicfreegames.py`：向配置的 Telegram 会话发送免费游戏图片或文字提醒。；真实运行时按 QINGLONG_NOTIFY 设置通过青龙 notify.py 发送脱敏任务汇总。。
 - `scripts/erke.py`：正式运行提交会员签到，可能增加积分和签到记录。
+- `scripts/f1owkang_qingskyland_skyland.py`：实际运行时向设备认证服务注册本次设备认证信息；实际运行时换取鹰角授权及森空岛登录凭据；为明日方舟与终末地绑定角色执行每日签到并领取奖励；实际运行且通知开启时发送脱敏任务通知。
 - `scripts/fnnasclub.py`：执行论坛签到，更新签到记录及论坛对应奖励；正式运行向已配置的青龙通知渠道发送脱敏总结。
 - `scripts/forum_download.py`：启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。；首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。；显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。；显式开启 work 后提交广告点击和领取奖励，可能改变积分、任务状态及广告点击统计。。
 - `scripts/fwxs_checkin.js`：通过 GET /qiandao 完成废文网签到，增加签到天数及服务端签到奖励（以站点规则为准）；正式执行结束后通过青龙通知渠道发送脱敏任务统计（可关闭）。
@@ -10980,6 +11097,7 @@
 - `scripts/l.py`：正式运行的已登录页面请求可能由站点计入访问或浏览记录；是否更新由站点决定；正式运行且启用通知时调用青龙通知模块发送任务汇总。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励；正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：正式运行调用 NodeSeek 签到接口，产生当日签到记录并领取签到奖励。；启用通知时向已配置的青龙通知渠道发送脱敏任务汇总。。
+- `scripts/lizhixu_ql_script_hub_youdao.py`：正式运行刷新登录会话；正式运行同步奖励并增加云笔记空间；正式运行每日签到并领取空间奖励；默认正式运行领取三次广告空间奖励，可通过 YOUDAO_AD_REWARDS=0 关闭；启用通知时向青龙已配置渠道发送脱敏任务摘要。
 - `scripts/loomy_daily.py`：正式默认执行刷新账号每日赠送积分。；显式批量或单项领取时上报新手任务完成状态并领取积分。；正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。；启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。。
 - `scripts/lynkco_qinglong_single.py`：每日签到并领取服务端奖励；默认上报文章分享并可能增加能量体积分，可用LYNKCO_DO_SHARE关闭；使用刷新令牌续期，服务端可能更新登录令牌状态；不写本地凭据文件；发送脱敏青龙通知及可选Bark推送；预演不发送网络通知。
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
@@ -11130,6 +11248,7 @@
 - `scripts/enshan_checkin.py`：上游 `agluo/ql-script-hub` / `enshan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/epicfreegames.py`：上游 `CN-Grace/QinglongScripts` / `EpicFreeGames.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/erke.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/erke/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
+- `scripts/f1owkang_qingskyland_skyland.py`：上游 `f1owkang/QingSkyland` / `skyland.py` / `563c86c9d5965b5fc622e1cb33963346b661f26c`。
 - `scripts/fnnasclub.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/fnnasclub/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/forum_download.py`：上游 `nuthx/auto-sign` / `src/general/forum_download.py` / `a8d2c229bac693daebe1535bca4cfd49733b632d`。
 - `scripts/fwxs_checkin.js`：上游 `zhui-zi/fwcheckin` / `fwxs_checkin.js` / `7793a795d603df34f0ebdbc7d6810427f84f59c6`。
@@ -11157,6 +11276,7 @@
 - `scripts/l.py`：上游 `lzylipu/l-checkin` / `main.py` / `2c71083614d6ef87c8b502e1440fec3b08ab59c3`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：上游 `agluo/ql-script-hub` / `archive/leaflow_checkin.pyleaflow_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/lizhixu_ql_script_hub_nodeseek.py`：上游 `lizhixu/ql-script-hub` / `nodeseek_checkin.py` / `ac591a320092dcaeaf236b7c2b6acfd28981e589`。
+- `scripts/lizhixu_ql_script_hub_youdao.py`：上游 `lizhixu/ql-script-hub` / `youdao.py` / `ac591a320092dcaeaf236b7c2b6acfd28981e589`。
 - `scripts/loomy_daily.py`：上游 `L0NE-6/Loomy-Daily` / `loomy_daily.py` / `3d0f19b0b6486ff9096507805a5f9d061604058f`。
 - `scripts/lynkco_qinglong_single.py`：上游 `zhaosongbing/LynkCoHelper-QingLong` / `qinglong/lynkco_qinglong_single.py` / `7b9330aeae5e458f00de92b46bbd31bbf99c95aa`。
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
