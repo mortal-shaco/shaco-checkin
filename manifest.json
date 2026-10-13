@@ -983,6 +983,119 @@
       }
     },
     {
+      "catalogId": "fbf36f8697d4cc45",
+      "applicationKey": "oreoslab/checkinpanel::api",
+      "checkProfile": {
+        "requiredEnv": [
+          "HAX"
+        ],
+        "optionalEnv": [
+          "HAX_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HAX_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "HAX_MONITOR_SUCCESS"
+        ],
+        "features": [
+          "查询并按地区汇总 Hax 开通数量。",
+          "按虚拟化类型分组展示 Hax 可开通区域及开通页面链接。",
+          "展示 Woiden 可开通区域及开通页面链接。",
+          "保留 HAX 启用开关和每六小时第 21 分钟定时。",
+          "完全断网预演、独立查询失败隔离、页面校验及结构化汇总。",
+          "通过青龙通知模块发送公开结果和统计，通知失败保留业务退出码。"
+        ],
+        "sideEffects": [
+          "正式模式且启用通知时，通过青龙通知渠道发送查询结果和统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Hax 与 Woiden 可开通区域监控",
+      "path": "scripts/api_hax.py",
+      "sha256": "b82b5df5898bca09afb910abd7db43507e0fa2b93866ffd7fec97e722e3b8d49",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "api_hax.py"
+      },
+      "cron": "21 */6 * * *",
+      "command": "python3 scripts/api_hax.py",
+      "environment": [
+        {
+          "name": "HAX",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "无需凭据，手动设置青龙环境变量 HAX=1，替代上游私有配置启用开关。",
+          "format": "单个非敏感开关；1 启用；0、false、no、off 或空值不启用。未启用报告配置错误并非零退出。"
+        },
+        {
+          "name": "HAX_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置为 1 进行断网预演。",
+          "format": "默认 0；1 使用内置样本且不加载通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙全局通知开关，默认启用。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙已有 notify.py 所在目录；默认自动查找标准目录或导入 notify。",
+          "format": "本地目录路径，仅用于可选通知，不是业务运行依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": "",
+        "rule": "公开信息监控，无需登录或账号凭据，每次统一查询三项公开信息。",
+        "unsupportedReason": "公开页面无需账号，多账号不适用。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询并按地区汇总 Hax 开通数量。",
+        "按虚拟化类型分组展示 Hax 可开通区域及开通页面链接。",
+        "展示 Woiden 可开通区域及开通页面链接。",
+        "保留 HAX 启用开关和每六小时第 21 分钟定时。",
+        "完全断网预演、独立查询失败隔离、页面校验及结构化汇总。",
+        "通过青龙通知模块发送公开结果和统计，通知失败保留业务退出码。"
+      ],
+      "sideEffects": [
+        "正式模式且启用通知时，通过青龙通知渠道发送查询结果和统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/fbf36f8697d4cc45",
+        "candidateSha256": "b82b5df5898bca09afb910abd7db43507e0fa2b93866ffd7fec97e722e3b8d49"
+      }
+    },
+    {
       "catalogId": "6b6ae91490051bce",
       "applicationKey": "atxyq",
       "checkProfile": {
@@ -1442,6 +1555,143 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/3813c988ddc0c592",
         "candidateSha256": "f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426"
+      }
+    },
+    {
+      "catalogId": "ee45e24a6845dbc0",
+      "applicationKey": "aliyun",
+      "checkProfile": {
+        "requiredEnv": [
+          "ALIYUN_REFRESH_TOKEN"
+        ],
+        "optionalEnv": [
+          "refreshToken",
+          "ALIYUN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ALIYUN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ALIYUN_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功；本月累计签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "刷新并验证登录令牌，显示官方返回的非凭据账号身份。",
+          "每天 9 点执行签到并显示当月累计签到天数。",
+          "领取当天已完成的每日签到奖励和每日任务奖励，展示领取结果；未完成及已结束奖励明确跳过。",
+          "保留维护候选的业务状态及结构核验；未知奖励结构、状态和类型按失败处理。",
+          "逐行多账号及旧变量兼容，账号独立执行，任一失败整体非零退出。",
+          "完全断网预演、请求超时、响应大小限制、脱敏时间轴日志、每账号及任务统计和唯一 TASK_SUMMARY 汇总。",
+          "所有运行结果生成脱敏通知总结；正式运行使用青龙 sendNotify.js 投递，预演仅生成不联网投递。"
+        ],
+        "sideEffects": [
+          "正式运行刷新阿里云盘会话令牌，新凭据仅在内存使用。",
+          "正式运行执行每日签到。",
+          "正式运行领取当天已完成的签到及任务奖励。",
+          "正式运行在通知开启且模块可用时发送脱敏总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "阿里云盘签到与奖励领取",
+      "path": "scripts/autosignin.js",
+      "sha256": "c9f9cb1e7cf025514b245d555ac63849d2617eb3d29b473f92cf61f6b2a4a72b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "wang-st/aliyunSignIn",
+        "branch": "main",
+        "commit": "e81b2732652aadea5ee9920eb0d0adfe07dffa91",
+        "originalPath": "autoSignin.js"
+      },
+      "cron": "0 9 * * *",
+      "command": "node scripts/autosignin.js",
+      "environment": [
+        {
+          "name": "ALIYUN_REFRESH_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录自己的阿里云盘网页版，在浏览器开发者工具的应用（Application）→本地存储（Local Storage）中查找登录信息里的 refresh_token，仅复制该字段值并保存到青龙环境变量。失效后重新登录获取，不要复制完整登录对象。",
+          "format": "每个非空行一个刷新令牌；空行忽略，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "refreshToken",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧变量兼容输入，获取方式与 ALIYUN_REFRESH_TOKEN 相同，仅在规范变量未设置时使用。",
+          "format": "每个非空行一个刷新令牌，旧版 & 分隔格式需改为换行。"
+        },
+        {
+          "name": "ALIYUN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "断网验证时设置为 1；正式运行设为 0 或不设置。",
+          "format": "1 为断网预演，不调用业务接口及外部通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启；可设置关闭值。",
+          "format": "默认 1；0、false、no、off 关闭，不区分大小写。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已配置的青龙 sendNotify.js 所在目录；默认依次查找 /ql/data/scripts、/ql/scripts。",
+          "format": "本机目录路径；模块不可用或失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号的刷新令牌，规范变量优先于旧变量。账号独立执行；账号或奖励失败继续处理其他账号及奖励，但整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "刷新并验证登录令牌，显示官方返回的非凭据账号身份。",
+        "每天 9 点执行签到并显示当月累计签到天数。",
+        "领取当天已完成的每日签到奖励和每日任务奖励，展示领取结果；未完成及已结束奖励明确跳过。",
+        "保留维护候选的业务状态及结构核验；未知奖励结构、状态和类型按失败处理。",
+        "逐行多账号及旧变量兼容，账号独立执行，任一失败整体非零退出。",
+        "完全断网预演、请求超时、响应大小限制、脱敏时间轴日志、每账号及任务统计和唯一 TASK_SUMMARY 汇总。",
+        "所有运行结果生成脱敏通知总结；正式运行使用青龙 sendNotify.js 投递，预演仅生成不联网投递。"
+      ],
+      "sideEffects": [
+        "正式运行刷新阿里云盘会话令牌，新凭据仅在内存使用。",
+        "正式运行执行每日签到。",
+        "正式运行领取当天已完成的签到及任务奖励。",
+        "正式运行在通知开启且模块可用时发送脱敏总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ee45e24a6845dbc0",
+        "candidateSha256": "dddfdaeb357ea7d7fbdabeefffc2edd460812d8ba89685ef3bda43cd0860134b"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "dddfdaeb357ea7d7fbdabeefffc2edd460812d8ba89685ef3bda43cd0860134b",
+        "releaseSha256": "c9f9cb1e7cf025514b245d555ac63849d2617eb3d29b473f92cf61f6b2a4a72b",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
     {

@@ -38,8 +38,10 @@
 | 阿里云盘每日签到 | `scripts/aliyundrive_checkin.js` | `node scripts/aliyundrive_checkin.js` | `0 8 * * *` |
 | 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `3 11 * * *` |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `0 8 * * *` |
+| Hax 与 Woiden 可开通区域监控 | `scripts/api_hax.py` | `python3 scripts/api_hax.py` | `21 */6 * * *` |
 | 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `9 10,23 * * *` |
 | AutoClaw 国内版每日签到 | `scripts/autoclaw_cn_daily.py` | `python3 scripts/autoclaw_cn_daily.py` | `15 8 * * *` |
+| 阿里云盘签到与奖励领取 | `scripts/autosignin.js` | `node scripts/autosignin.js` | `0 9 * * *` |
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `1 */6 * * *` |
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `0 9 * * *` |
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `0 9 * * *` |
@@ -172,8 +174,10 @@
 - `scripts/aliyundrive_checkin.js`：通过刷新令牌获取访问令牌并展示官方返回的昵称、用户名或公开用户标识；每日签到并展示本月累计签到天数；领取当日奖励并识别已领取状态；查询并展示本月签到日历；展示当日签到奖励和任务奖励概览；每行一个账号，独立执行并汇总失败；完全断网预演，模拟通知并明确未验证真实业务；青龙脱敏通知及可选 HTTPS PushPlus 推送，支持全局关闭；分阶段时间轴日志、逐账号统计和单行 TASK_SUMMARY 结构化汇总。
 - `scripts/aliyunpan_checkin.py`：刷新登录凭据并识别令牌轮换，全程不输出凭据；查询官方公开身份与存储容量；查询失败继续签到与领奖，最终非零退出；每日签到并输出本月累计签到天数；输出逐日签到状态、奖励名称及说明、已领奖与待领奖天数；默认领取当日奖励并识别已领取状态，支持显式关闭领奖；显式开启后补领本月全部已签到未领奖励，单日失败仍继续其余奖励，最终失败退出；保留可选设备会话及设备签名；ecdsa 仅在正式启用时导入；保留随机延迟、新旧参数兼容和多账号独立执行；显式开启时安全持久化轮换令牌文件；完全断网预演、青龙脱敏总结通知、分阶段时间轴日志及原机器汇总。
 - `scripts/aolaxing.py`：查询每日任务列表、今日任务总数及完成数。；按显式指定任务 ID 执行未完成任务，执行后重新读取列表核验已完成状态；已完成任务不重复执行。；查询当前积分、累计获得积分和累计签到次数。；官方响应返回昵称、用户名、显示名称或公开 UID 时显示非敏感身份；抑制手机号和凭据。；逐行多账号、上游配置键名兼容、断网预演、独立 HTTPS 请求、超时和失败非零退出。；时间轴阶段日志、账号与任务统计、单行机器汇总和青龙脱敏通知。。
+- `scripts/api_hax.py`：查询并按地区汇总 Hax 开通数量。；按虚拟化类型分组展示 Hax 可开通区域及开通页面链接。；展示 Woiden 可开通区域及开通页面链接。；保留 HAX 启用开关和每六小时第 21 分钟定时。；完全断网预演、独立查询失败隔离、页面校验及结构化汇总。；通过青龙通知模块发送公开结果和统计，通知失败保留业务退出码。。
 - `scripts/atxyq.py`：查询并直接展示官方昵称，查询学校启用状态与积分任务列表。；每日签到，核验连续天数与获得积分。；领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。；查询当前可用积分。；显式开启最多两篇校园文章的点赞与取消点赞。；显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。；显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。；使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。；逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。。
 - `scripts/autoclaw_cn_daily.py`：国内版每日签到及积分奖励结果显示，明确业务码及成功标记校验；登录态过期后自动续期并重试签到，签名校验失败时使用 agent-refresh 备用接口；无明确领取结果时只读查询任务清单用于诊断，不将诊断冒充领取成功；支持 --refresh-only 仅续期、--only N 选择账号和 --no-notify 关闭通知；显式启用的私有凭据缓存读取和安全原子保存；默认不落盘登录态；换行多账号独立执行，任一失败整体非零退出；断网预演、分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY 汇总；官方返回昵称、用户名、显示名称或公开 UID 时显示该非秘密身份；青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送；显式 --region intl 或 AUTOCLAW_REGION=intl 使用国际版官方接口及独立凭据；保留国内版默认行为；显式 --region both 按同一每日时机独立执行两地区账号，缓存按地区配置；某地区缺配置仍处理另一地区账号并整体失败。
+- `scripts/autosignin.js`：刷新并验证登录令牌，显示官方返回的非凭据账号身份。；每天 9 点执行签到并显示当月累计签到天数。；领取当天已完成的每日签到奖励和每日任务奖励，展示领取结果；未完成及已结束奖励明确跳过。；保留维护候选的业务状态及结构核验；未知奖励结构、状态和类型按失败处理。；逐行多账号及旧变量兼容，账号独立执行，任一失败整体非零退出。；完全断网预演、请求超时、响应大小限制、脱敏时间轴日志、每账号及任务统计和唯一 TASK_SUMMARY 汇总。；所有运行结果生成脱敏通知总结；正式运行使用青龙 sendNotify.js 投递，预演仅生成不联网投递。。
 - `scripts/autosignin.py`：访问 E-Hentai 新闻页完成签到，并核验事件区明确奖励或今日已完成提示；识别随机遭遇，提示手动处理或等待结束；未确认签到时非零退出；保留默认 TLS 三次请求及 TLS 1.2 三次回退，设置超时、响应大小限制与证书校验；兼容 E_COOKIE、E_PROXY、E_USER_AGENT，多账号按非空行独立运行；解析服务端 Cookie 到期时间并提醒更新，不输出或写回 Cookie 值；显示官方返回的公开账号身份；其他响应内容保持脱敏；完全断网预演、时间轴阶段日志、账号统计、任务统计和单行 TASK_SUMMARY 汇总；正式运行通过青龙通知模块发送脱敏汇总，通知不可用不改变业务退出码；预演生成摘要并禁止外部投递。
 - `scripts/baidu.py`：下载并校验本站 UTF-8 URL 清单；调用百度站点提交接口并核验 success 与 remain，输出成功条数和剩余配额；支持显式设置重复提交次数，默认仅提交一次；按行配置多个站点，逐账号隔离错误并汇总业务退出码；完全离线预演、分阶段时间轴日志和唯一 TASK_SUMMARY 结构化结果；通过青龙通知发送脱敏结果，支持全局关闭，通知故障不改变业务退出码。
 - `scripts/baiduwangpan_checkin.py`：每日百度网盘会员签到，明确验证积分或已完成状态；获取并提交每日会员成长问题答案；读取并报告脱敏用户名、会员等级、成长值和会员类型；逐行多账号独立处理与结构化 JSON 汇总；完全断网的配置预演；成功、部分失败、失败、配置错误和预演状态的青龙脱敏汇总通知。
@@ -311,8 +315,10 @@
 <tr><td rowspan="1"><code>scripts/aliyundrive_checkin.js</code></td><td><code>refreshToken</code></td><td>是</td><td>格式：每个非空行填写一个账号的 refresh_token；仅按换行分隔，不支持 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aliyunpan_checkin.py</code></td><td><code>ALIYUN_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的刷新令牌；不用 &amp;、@ 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aolaxing.py</code></td><td><code>AOLAXING_COOKIE</code></td><td>是</td><td>格式：每行一个账号的完整 Cookie；不按 &amp;、@ 或分号拆分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/api_hax.py</code></td><td><code>HAX</code></td><td>否</td><td>格式：单个非敏感开关；1 启用；0、false、no、off 或空值不启用。未启用报告配置错误并非零退出。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/atxyq.py</code></td><td><code>atxyqs</code></td><td>是</td><td>格式：每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/autoclaw_cn_daily.py</code></td><td><code>AUTOCLAW_CN_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号。推荐 JSON 对象，access 必填，refresh、device_id 可选。兼容 token、token|refresh_token、token|refresh_token|device_id、备注|token|refresh_token|device_id 和旧备注|JWT 格式。逐次只按首个 | 切分，最后字段保留剩余文本；可带 Bearer 前缀。禁止用 &amp;、@ 分隔账号；特殊字符或歧义格式使用 JSON。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/autosignin.js</code></td><td><code>ALIYUN_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个刷新令牌；空行忽略，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/autosignin.py</code></td><td><code>E_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；字段用分号分隔，每个字段只按第一个等号拆分，后续等号保留。不要使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/baidu.py</code></td><td><code>BAIDU</code></td><td>是</td><td>格式：每个非空行是一个 JSON 对象，必填 data_url（HTTPS 文本清单地址）、submit_url（含唯一 site 和 token 的百度 HTTPS 接口地址），可选 times（1 至 100 的整数，默认 1）。不使用 &amp; 或 @ 分隔账号；接口地址内部的 &amp; 保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/baiduwangpan_checkin.py</code></td><td><code>BAIDU_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行；每行是包含 key=value 的完整 Cookie 请求头；多账号格式以该脚本文档为准</td></tr>
@@ -487,6 +493,9 @@
 <tr><td><code>AOLAXING_DRY_RUN</code></td><td>否</td><td>格式：1 开启；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/api_hax.py</code></td><td><code>HAX_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 使用内置样本且不加载通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于可选通知，不是业务运行依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="12"><code>scripts/atxyq.py</code></td><td><code>ATXYQ_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>atxyqDel</code></td><td>否</td><td>格式：整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ATXYQ_LIKE</code></td><td>否</td><td>格式：默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。；多账号格式以该脚本文档为准</td></tr>
@@ -514,6 +523,10 @@
 <tr><td><code>DINGTALK_SECRET</code></td><td>是</td><td>格式：与 DINGTALK_WEBHOOK 配套的加签密钥。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QL_URL</code></td><td>否</td><td>格式：HTTPS 面板根地址，需配套 QL_TOKEN。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QL_TOKEN</code></td><td>是</td><td>格式：与 QL_URL 配套的访问令牌。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/autosignin.js</code></td><td><code>refreshToken</code></td><td>是</td><td>格式：每个非空行一个刷新令牌，旧版 &amp; 分隔格式需改为换行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ALIYUN_DRY_RUN</code></td><td>否</td><td>格式：1 为断网预演，不调用业务接口及外部通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；模块不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/autosignin.py</code></td><td><code>E_PROXY</code></td><td>是</td><td>格式：HTTP 或 HTTPS 代理地址，所有账号共用；可包含代理认证信息但不会输出。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>E_USER_AGENT</code></td><td>否</td><td>格式：单行浏览器标识，禁止换行和空字符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>E_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演，其他值正式运行。；多账号格式以该脚本文档为准</td></tr>
@@ -1216,6 +1229,7 @@
 - `scripts/aolaxing.py`：每个非空行对应一个账号，整行保留；逐账号独立处理，任何账号失败则整体非零退出。兼容变量 AOLAXING 使用原 JSON 数组。。
 - `scripts/atxyq.py`：atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 # 拆分；后续字段不再次拆分。各账号独立执行，任一账号失败整体非零退出；不再使用 @ 分隔账号。。
 - `scripts/autoclaw_cn_daily.py`：每个非空行一个账号，同账号配套凭据合并在对应地区的一个变量内，推荐 JSON。账号独立执行，任一账号失败或所选地区缺少配置时整体非零退出。--only N 选择所选地区列表中的第 N 个账号；both 时先国内后国际。。
+- `scripts/autosignin.js`：每个非空行一个账号的刷新令牌，规范变量优先于旧变量。账号独立执行；账号或奖励失败继续处理其他账号及奖励，但整体非零退出。。
 - `scripts/autosignin.py`：E_COOKIE 每个非空行一个账号；同一行保留该账号所有 Cookie 字段。账号独立处理，任一账号失败时整体非零退出。。
 - `scripts/baidu.py`：BAIDU 每个非空行对应一个站点账号 JSON 对象，同一站点的清单地址、含令牌提交地址和次数合并在此对象中。各账号独立处理，任一账号失败整体非零退出。。
 - `scripts/baiduwangpan_checkin.py`：BAIDU_COOKIE 中每个非空行是一个独立账号；依次处理，任一账号失败时进程整体非零退出。。
@@ -1381,6 +1395,12 @@
 - 填写格式：`每行一个账号的完整 Cookie；不按 &、@ 或分号拆分账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `HAX`
+
+- 所属脚本：`scripts/api_hax.py`
+- 获取或设置：无需凭据，手动设置青龙环境变量 HAX=1，替代上游私有配置启用开关。
+- 填写格式：`单个非敏感开关；1 启用；0、false、no、off 或空值不启用。未启用报告配置错误并非零退出。`
+
 #### `atxyqs`
 
 - 所属脚本：`scripts/atxyq.py`
@@ -1393,6 +1413,13 @@
 - 所属脚本：`scripts/autoclaw_cn_daily.py`
 - 获取或设置：默认国内模式必填。在国内版官方桌面端登录，从自己的登录响应安全提取 access_token、refresh_token 和同次登录的 device_id。只有登录态也可签到，过期后须重新登录。国际模式改用 AUTOCLAW_INTL_TOKENS；两地区凭据不能混用。不要分享或提交登录响应。
 - 填写格式：`每个非空行一个账号。推荐 JSON 对象，access 必填，refresh、device_id 可选。兼容 token、token|refresh_token、token|refresh_token|device_id、备注|token|refresh_token|device_id 和旧备注|JWT 格式。逐次只按首个 | 切分，最后字段保留剩余文本；可带 Bearer 前缀。禁止用 &、@ 分隔账号；特殊字符或歧义格式使用 JSON。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ALIYUN_REFRESH_TOKEN`
+
+- 所属脚本：`scripts/autosignin.js`
+- 获取或设置：登录自己的阿里云盘网页版，在浏览器开发者工具的应用（Application）→本地存储（Local Storage）中查找登录信息里的 refresh_token，仅复制该字段值并保存到青龙环境变量。失效后重新登录获取，不要复制完整登录对象。
+- 填写格式：`每个非空行一个刷新令牌；空行忽略，不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `E_COOKIE`
@@ -2510,6 +2537,24 @@
 - 获取或设置：可选填写青龙已有 notify.py 所在目录；也会查找 Python notify 模块及青龙标准脚本目录。仅通知依赖青龙，业务独立运行。
 - 填写格式：`本机通知模块目录路径。`
 
+#### `HAX_DRY_RUN`
+
+- 所属脚本：`scripts/api_hax.py`
+- 获取或设置：手动设置为 1 进行断网预演。
+- 填写格式：`默认 0；1 使用内置样本且不加载通知模块。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/api_hax.py`
+- 获取或设置：使用青龙全局通知开关，默认启用。
+- 填写格式：`默认 1；0、false、no、off 关闭。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/api_hax.py`
+- 获取或设置：可选填写青龙已有 notify.py 所在目录；默认自动查找标准目录或导入 notify。
+- 填写格式：`本地目录路径，仅用于可选通知，不是业务运行依赖。`
+
 #### `ATXYQ_DRY_RUN`
 
 - 所属脚本：`scripts/atxyq.py`
@@ -2680,6 +2725,31 @@
 - 获取或设置：可选从自己的青龙面板获取对应 API 令牌。
 - 填写格式：`与 QL_URL 配套的访问令牌。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `refreshToken`
+
+- 所属脚本：`scripts/autosignin.js`
+- 获取或设置：旧变量兼容输入，获取方式与 ALIYUN_REFRESH_TOKEN 相同，仅在规范变量未设置时使用。
+- 填写格式：`每个非空行一个刷新令牌，旧版 & 分隔格式需改为换行。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ALIYUN_DRY_RUN`
+
+- 所属脚本：`scripts/autosignin.js`
+- 获取或设置：断网验证时设置为 1；正式运行设为 0 或不设置。
+- 填写格式：`1 为断网预演，不调用业务接口及外部通知。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/autosignin.js`
+- 获取或设置：青龙全局通知开关，默认开启；可设置关闭值。
+- 填写格式：`默认 1；0、false、no、off 关闭，不区分大小写。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/autosignin.js`
+- 获取或设置：可选，填写已配置的青龙 sendNotify.js 所在目录；默认依次查找 /ql/data/scripts、/ql/scripts。
+- 填写格式：`本机目录路径；模块不可用或失败不改变业务退出码。`
 
 #### `E_PROXY`
 
@@ -6919,8 +6989,10 @@
 - `scripts/aliyundrive_checkin.js`：SHA-256 `e247d342c3624bc2e7cc9da6f1808d8dfeffe19f1df4a64d3a410b2b87a4ac0b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd7e90cbb255e115`。
 - `scripts/aliyunpan_checkin.py`：SHA-256 `ed1ba9f840e3411c993266ae1b29c1db3cd968bf49f318d682fea69aab37815c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
 - `scripts/aolaxing.py`：SHA-256 `5e2e40940a4bd132b7f240273fe1e6850ace43aa93856a8ee9871aa263ee7b46`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ca8984737c9322f`。
+- `scripts/api_hax.py`：SHA-256 `b82b5df5898bca09afb910abd7db43507e0fa2b93866ffd7fec97e722e3b8d49`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbf36f8697d4cc45`。
 - `scripts/atxyq.py`：SHA-256 `6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
 - `scripts/autoclaw_cn_daily.py`：SHA-256 `f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3813c988ddc0c592`。
+- `scripts/autosignin.js`：SHA-256 `c9f9cb1e7cf025514b245d555ac63849d2617eb3d29b473f92cf61f6b2a4a72b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ee45e24a6845dbc0`。
 - `scripts/autosignin.py`：SHA-256 `cd2b330788aa14bc2e020a5451329f291e5d1dd97f66ad0a6ed2c921b6dee3d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7919605278826396`。
 - `scripts/baidu.py`：SHA-256 `f3bfc64c4f219e4c451796542f4d2af0605812c82ab871f29039441d108afd1a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed0673d8c02fc410`。
 - `scripts/baiduwangpan_checkin.py`：SHA-256 `e9c658f4544427bd94ab4da74a724038d1f849c8b9665464ded6e8a1c4dd2c18`；live 业务成功证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
@@ -7053,8 +7125,10 @@
 - `scripts/aliyundrive_checkin.js`：刷新账号访问令牌；执行每日签到；领取当日签到奖励；向青龙通知渠道和可选 PushPlus 渠道发送脱敏任务总结（预演不发送）。
 - `scripts/aliyunpan_checkin.py`：执行账号每日签到；默认领取当日奖励，显式全量模式下补领其他已签到未领奖励；ENABLE_DEVICE_SESSION=1 时注册设备会话；ALIYUN_PERSIST_ROTATED_TOKENS=1 且令牌轮换时写入安全凭据文件；正式执行且通知启用时发送脱敏任务通知。
 - `scripts/aolaxing.py`：配置 AOLAXING_TASK_IDS 时触发对应每日任务完成及服务端关联积分或签到状态变更，具体效果以用户审阅的任务为准。；在线运行且通知开启时发送青龙任务汇总通知。。
+- `scripts/api_hax.py`：正式模式且启用通知时，通过青龙通知渠道发送查询结果和统计。。
 - `scripts/atxyq.py`：默认每日签到，记录签到并可能增加积分。；默认领取普通任务奖励，可能增加积分。；开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。；开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。；atxyqDel 非零时删除本人最近十篇列表内帖子。；开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。；开启 ATXYQ_INVITE 后创建所选邀请关系。；正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。。
 - `scripts/autoclaw_cn_daily.py`：真实运行提交所选地区 daily_signin 签到任务，可能获得积分；登录态过期或 --refresh-only 时续期登录态，可能使旧登录态失效；仅显式配置对应地区 STORE_FILE 时写入受保护的本地凭据缓存；通知开启时通过已配置渠道发送脱敏摘要；预演仅模拟通知。
+- `scripts/autosignin.js`：正式运行刷新阿里云盘会话令牌，新凭据仅在内存使用。；正式运行执行每日签到。；正式运行领取当天已完成的签到及任务奖励。；正式运行在通知开启且模块可用时发送脱敏总结。。
 - `scripts/autosignin.py`：正式访问新闻页可能领取每日签到奖励及触发服务端随机遭遇事件；正式运行在通知启用且模块可用时发送脱敏通知。
 - `scripts/baidu.py`：实际运行向百度提交本站 URL 并消耗提交配额；显式 times 大于 1 时重复提交同一清单；实际运行在通知开启且通知模块可用时发送脱敏任务通知。
 - `scripts/baiduwangpan_checkin.py`：为每个已配置的百度网盘账号执行每日会员签到；为每个已配置的百度网盘账号提交每日会员问题答案；在通知开启且青龙通知模块可用时发送一条脱敏任务汇总通知。
@@ -7189,8 +7263,10 @@
 - `scripts/aliyundrive_checkin.js`：上游 `huwangkeji/aliyundrive_checkin` / `aliyundrive_checkin.js` / `267ee025840c5b55dce5b5e1e365fb52ac500fce`。
 - `scripts/aliyunpan_checkin.py`：上游 `agluo/ql-script-hub` / `aliyunpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/aolaxing.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/aolaxing/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
+- `scripts/api_hax.py`：上游 `OreosLab/checkinpanel` / `api_hax.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
 - `scripts/atxyq.py`：上游 `Rookie-wb-WH/ql_scripts` / `atxyq.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/autoclaw_cn_daily.py`：上游 `L0NE-6/AutoClaw-Daily` / `autoclaw_cn_daily.py` / `745a15b42d58bcaf9bb50920f5405e04b4f4964b`。
+- `scripts/autosignin.js`：上游 `wang-st/aliyunSignIn` / `autoSignin.js` / `e81b2732652aadea5ee9920eb0d0adfe07dffa91`。
 - `scripts/autosignin.py`：上游 `AkiyaKiko/EhentaiAutoSignIn` / `autosignin.py` / `c00c3d42a61b7f526dd41b8df157444380898e57`。
 - `scripts/baidu.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/baidu/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/baiduwangpan_checkin.py`：上游 `agluo/ql-script-hub` / `baiduwangpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
