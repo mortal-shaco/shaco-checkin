@@ -5321,14 +5321,16 @@
           "DAILYNEWSCN_LIST"
         ],
         "optionalEnv": [
-          "DAILYNEWSCN_TASK",
           "BDHOT_LIST",
           "CHOUQ_LIST",
           "DAY60S_LIST",
+          "DYHOT_LIST",
+          "DAILYNEWSCN_TASK",
           "DAILYNEWSCN_DRY_RUN",
           "BDHOT_DRY_RUN",
           "CHOUQ_DRY_RUN",
           "DAY60S_DRY_RUN",
+          "DYHOT_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
@@ -5343,7 +5345,8 @@
           "DAILYNEWSCN_SUCCESS",
           "BDHOT_SUCCESS",
           "CHOUQ_SUCCESS",
-          "DAY60S_SUCCESS"
+          "DAY60S_SUCCESS",
+          "DYHOT_SUCCESS"
         ],
         "features": [
           "默认每天 09:15 通过原 HTTPS GET 接口获取、整理输出中国日报并通知，保留 DAILYNEWSCN_LIST 参数及 DAILYNEWSCN_SUCCESS 成功标记。",
@@ -5355,7 +5358,9 @@
           "保留全局通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演均汇总，通知不可用不改变业务退出码。",
           "保留带时间戳的编号阶段、耗时与统计、原成功标记及唯一单行 TASK_SUMMARY；公开任务账号总数为零，不记录真实业务账号成功。",
           "新增 DAILYNEWSCN_TASK=day60s，通过原 HTTPS GET https://jkapi.com/api/day_60s 获取世界新闻，保留标题、文本输出与通知；使用 DAY60S_LIST 本地执行标记，支持 DAY60S_DRY_RUN；通过同文件另建任务保持 0 20 9 * * * 调度。",
-          "世界新闻沿用维护版十秒总超时、128 KiB 上限、HTTP 200、中文文本和错误页校验；验证通过才输出 DAY60S_SUCCESS，失败非零退出。"
+          "世界新闻沿用维护版十秒总超时、128 KiB 上限、HTTP 200、中文文本和错误页校验；验证通过才输出 DAY60S_SUCCESS，失败非零退出。",
+          "新增 DAILYNEWSCN_TASK=dyhot，通过原 HTTPS GET https://jkapi.com/api/dy_hot?limit=5 获取、整理输出并通知抖音前五热搜；保留 DYHOT_LIST，支持 DYHOT_DRY_RUN，验证成功输出 DYHOT_SUCCESS；同文件另建任务保持 0 25 9 * * *。",
+          "抖音榜沿用十秒总超时、128 KiB 上限、HTTP 200、中文文本长度与错误页检查；拒绝未知 JSON、HTML、中断、超时和过大响应，失败非零退出。"
         ],
         "sideEffects": [
           "正式运行且通知启用时，向青龙已配置渠道发送所选公开内容与脱敏总结。"
@@ -5367,7 +5372,7 @@
       },
       "displayName": "中国日报",
       "path": "scripts/dailynewscn.js",
-      "sha256": "fff87c1f47b18834be3477951ba6642e84e30b88da6af7aaa291ace67e507da6",
+      "sha256": "a0fd29cfd915eb14a4907f4872d9c9edb29ab42e409869c99469d851fdf65c08",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -5406,6 +5411,16 @@
             "catalogId": "e9c725fc3298b9b7",
             "sha256": "49548d01e37e960ac698d574a87703e94ab1db58094564e41a18d3b33e4e6e16",
             "license": "MIT"
+          },
+          {
+            "repository": "unitaryhighs/ql_sign_script",
+            "url": "https://github.com/unitaryhighs/ql_sign_script.git",
+            "branch": "main",
+            "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+            "originalPath": "hot/dyhot.js",
+            "catalogId": "2b7db030e2a4a19d",
+            "sha256": "29263411ae33e459c000dce36ced8f0c6f6f0dc9d8bd5afea609fcde81b1294f",
+            "license": "MIT"
           }
         ]
       },
@@ -5413,88 +5428,102 @@
       "command": "node scripts/dailynewscn.js",
       "environment": [
         {
-          "name": "DAILYNEWSCN_TASK",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量或各任务命令环境中手工设置，默认中国日报。",
-          "format": "dailynewscn（默认）、bdhot、chouq 或 day60s；各模式分别建立同文件任务。"
-        },
-        {
           "name": "DAILYNEWSCN_LIST",
           "required": true,
           "sensitive": false,
-          "howToGet": "无需注册或登录；在青龙手工填写 1，运行 dailynewscn 模式时必须设置此执行标记。不是账号凭据，不向接口发送。",
-          "format": "推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。"
+          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择默认日报模式时必须配置此执行标记，其他模式无需配置。",
+          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
         },
         {
           "name": "BDHOT_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册或登录；在青龙手工填写 1，运行 bdhot 模式时必须设置此执行标记。不是账号凭据，不向接口发送。",
-          "format": "推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。"
+          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择百度热搜模式时必须配置此执行标记，其他模式无需配置。",
+          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
         },
         {
           "name": "CHOUQ_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册或登录；在青龙手工填写 1，运行 chouq 模式时必须设置此执行标记。不是账号凭据，不向接口发送。",
-          "format": "推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。"
+          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择随机抽签模式时必须配置此执行标记，其他模式无需配置。",
+          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
         },
         {
           "name": "DAY60S_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册或登录；在青龙手工填写 1，运行 day60s 模式时必须设置此执行标记。不是账号凭据，不向接口发送。",
-          "format": "推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。"
+          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择世界新闻模式时必须配置此执行标记，其他模式无需配置。",
+          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
+        },
+        {
+          "name": "DYHOT_LIST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需账号或凭据，在青龙环境变量手工填写 1；选择抖音热搜模式时必须配置此执行标记，其他模式无需配置。",
+          "format": "任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。"
+        },
+        {
+          "name": "DAILYNEWSCN_TASK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙任务中选择模式；默认 dailynewscn。",
+          "format": "dailynewscn、bdhot、chouq、day60s 或 dyhot；分别使用 0 15 9 * * *、0 0 9 * * *、0 10 9 * * *、0 20 9 * * *、0 25 9 * * *，均指向同一文件。"
         },
         {
           "name": "DAILYNEWSCN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙手工设置。统一开关适用于全部模式，其他开关仅适用于对应模式。",
-          "format": "1 为完全断网预演，其他值为正式运行；预演不加载通知模块。"
+          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
+          "format": "1 启用；未配置时正式运行。"
         },
         {
           "name": "BDHOT_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙手工设置。统一开关适用于全部模式，其他开关仅适用于对应模式。",
-          "format": "1 为完全断网预演，其他值为正式运行；预演不加载通知模块。"
+          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
+          "format": "1 启用；未配置时正式运行。"
         },
         {
           "name": "CHOUQ_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙手工设置。统一开关适用于全部模式，其他开关仅适用于对应模式。",
-          "format": "1 为完全断网预演，其他值为正式运行；预演不加载通知模块。"
+          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
+          "format": "1 启用；未配置时正式运行。"
         },
         {
           "name": "DAY60S_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙手工设置。统一开关适用于全部模式，其他开关仅适用于对应模式。",
-          "format": "1 为完全断网预演，其他值为正式运行；预演不加载通知模块。"
+          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
+          "format": "1 启用；未配置时正式运行。"
+        },
+        {
+          "name": "DYHOT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。",
+          "format": "1 启用；未配置时正式运行。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙手工设置；正式通知使用青龙已有渠道配置。",
-          "format": "默认 1；0、false、no、off 禁用（不区分大小写）。"
+          "howToGet": "使用青龙已配置的通知渠道；手工设置此全局通知开关。",
+          "format": "默认 1；0、false、no、off（不区分大小写）禁用。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，填写青龙现有 sendNotify.js 所在目录；否则查找 /ql/data/scripts 和 /ql/scripts。",
-          "format": "本地目录路径；不需要下载或安装应用，不作为业务请求依赖。"
+          "howToGet": "可选填写青龙 sendNotify.js 所在目录；未配置时依次查找 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本地目录路径；通知模块不可用或失败不改变业务退出码，预演不加载模块。"
         }
       ],
       "multiAccount": {
         "supported": false,
         "separator": "",
-        "rule": "公开内容无需账号。各 LIST 仅为本地执行标记；多行兼容旧配置，每次只执行一个公开任务，账号数始终为零。",
-        "unsupportedReason": "服务接口是公开资讯与随机抽签，没有账号或凭据契约。"
+        "rule": "公开内容任务无需账号。执行标记按非空行读取，仅兼容旧参数且只请求一次，不统计为业务账号。",
+        "unsupportedReason": "公开接口无需登录或账号凭据，多账号没有业务意义。"
       },
       "dependencies": [],
       "features": [
@@ -5507,7 +5536,9 @@
         "保留全局通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演均汇总，通知不可用不改变业务退出码。",
         "保留带时间戳的编号阶段、耗时与统计、原成功标记及唯一单行 TASK_SUMMARY；公开任务账号总数为零，不记录真实业务账号成功。",
         "新增 DAILYNEWSCN_TASK=day60s，通过原 HTTPS GET https://jkapi.com/api/day_60s 获取世界新闻，保留标题、文本输出与通知；使用 DAY60S_LIST 本地执行标记，支持 DAY60S_DRY_RUN；通过同文件另建任务保持 0 20 9 * * * 调度。",
-        "世界新闻沿用维护版十秒总超时、128 KiB 上限、HTTP 200、中文文本和错误页校验；验证通过才输出 DAY60S_SUCCESS，失败非零退出。"
+        "世界新闻沿用维护版十秒总超时、128 KiB 上限、HTTP 200、中文文本和错误页校验；验证通过才输出 DAY60S_SUCCESS，失败非零退出。",
+        "新增 DAILYNEWSCN_TASK=dyhot，通过原 HTTPS GET https://jkapi.com/api/dy_hot?limit=5 获取、整理输出并通知抖音前五热搜；保留 DYHOT_LIST，支持 DYHOT_DRY_RUN，验证成功输出 DYHOT_SUCCESS；同文件另建任务保持 0 25 9 * * *。",
+        "抖音榜沿用十秒总超时、128 KiB 上限、HTTP 200、中文文本长度与错误页检查；拒绝未知 JSON、HTML、中断、超时和过大响应，失败非零退出。"
       ],
       "sideEffects": [
         "正式运行且通知启用时，向青龙已配置渠道发送所选公开内容与脱敏总结。"
@@ -5523,12 +5554,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/f3d5ae90c3c979bf",
-        "candidateSha256": "9ca4d405a8e33cd4eb8e76ec42ed387fc933c00a89b2c4e9d59c51a56475741a"
+        "candidateSha256": "dc4c95c8fb4148b72af51f21791f2719999159f02b8dfcd25df1ae3313a55dd4"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "9ca4d405a8e33cd4eb8e76ec42ed387fc933c00a89b2c4e9d59c51a56475741a",
-        "releaseSha256": "fff87c1f47b18834be3477951ba6642e84e30b88da6af7aaa291ace67e507da6",
+        "validatedSha256": "dc4c95c8fb4148b72af51f21791f2719999159f02b8dfcd25df1ae3313a55dd4",
+        "releaseSha256": "a0fd29cfd915eb14a4907f4872d9c9edb29ab42e409869c99469d851fdf65c08",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
@@ -12708,6 +12739,247 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/190d89a73fbfe28e",
         "candidateSha256": "c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4"
+      }
+    },
+    {
+      "catalogId": "ff443f9fbbdbade5",
+      "applicationKey": "flyingpen/pt-sign::pt",
+      "checkProfile": {
+        "requiredEnv": [
+          "PT_SITE_HDKYL_CK",
+          "PT_SITE_CARPT_CK",
+          "PT_SITE_AFUN_CK"
+        ],
+        "optionalEnv": [
+          "PT_SITE_HDKYL_URL",
+          "PT_SITE_CARPT_URL",
+          "PT_SITE_AFUN_URL",
+          "PT_SITES",
+          "PT_DRY_RUN",
+          "PT_WEBHOOK_URL",
+          "PT_WEBHOOK_TYPE",
+          "PT_PROXY",
+          "PT_RETRY",
+          "PT_TIMEOUT",
+          "PT_SAFELINE",
+          "PT_EXTRA_HEADERS",
+          "PT_DEBUG",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "PT_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "PT_SITES": "hdkyl,carpt,afun",
+          "PT_RETRY": "3",
+          "PT_TIMEOUT": "20000",
+          "PT_SAFELINE": "1",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "蝴蝶、CARPT、AFUN 三站每日签到，支持站点选择与签到页地址覆盖",
+          "按站点分别配置多账号完整 Cookie，维护独立的服务器 Cookie 罐并识别登录失效",
+          "兼容 SafeLine 云端挑战、上游本地计算及验证后重放签到页",
+          "解析今日已签到状态、连续签到天数、本次奖励和累计奖励；仅明确业务证据判定成功",
+          "稳定浏览器请求头、表单编码、同域重定向、可选代理、超时、受控重试及额外请求头",
+          "保留飞书、Bark、Server 酱、钉钉、企业微信和自定义 Webhook 推送载荷，并增加青龙统一脱敏通知",
+          "显示站点响应中的用户详情链接所提供的用户名与公开 UID，不输出凭据或手机号",
+          "完全断网预演、分账号阶段日志、任务统计和单行 TASK_SUMMARY 结构化汇总"
+        ],
+        "sideEffects": [
+          "向选中站点提交签到，可能增加站点奖励及连续签到计数",
+          "遇到 SafeLine 时提交挑战验证并更新当前进程内的会话 Cookie，不写入文件",
+          "实际运行后向已有青龙通知服务和可选 Webhook 发送脱敏任务总结；全局开关关闭时不发送"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "PT 多站签到（SafeLine 兼容维护版）",
+      "path": "scripts/pt_sign_v5.js",
+      "sha256": "00c5772a3b7bacd61255515237ab1bd9f1d9d075d9bbf32d8ce4ec8c123552d2",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Flyingpen/PT-sign",
+        "branch": "main",
+        "commit": "5c6cf9d38020c327f9a30c3977eb7765e4d2c5c2",
+        "originalPath": "PT-sign-V5.js"
+      },
+      "cron": "0 8 * * *",
+      "command": "node scripts/pt_sign_v5.js",
+      "environment": [
+        {
+          "name": "PT_SITE_HDKYL_CK",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录蝴蝶站点（www.hdkyl.in），打开开发者工具的网络面板，访问 attendance.php，复制请求头中的完整 Cookie。遇到 SafeLine 时先完成浏览器验证并包含 sl-challenge-jwt。仅供本人账号使用，不要公开。默认选择此站；未选择此站时无需配置。",
+          "format": "每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "PT_SITE_HDKYL_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；默认使用 https://www.hdkyl.in/attendance.php；仅在站点迁移后填写可信签到页地址。",
+          "format": "无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。"
+        },
+        {
+          "name": "PT_SITE_CARPT_CK",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录CARPT站点（carpt.net），打开开发者工具的网络面板，访问 attendance.php，复制请求头中的完整 Cookie。遇到 SafeLine 时先完成浏览器验证并包含 sl-challenge-jwt。仅供本人账号使用，不要公开。默认选择此站；未选择此站时无需配置。",
+          "format": "每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "PT_SITE_CARPT_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；默认使用 https://carpt.net/attendance.php；仅在站点迁移后填写可信签到页地址。",
+          "format": "无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。"
+        },
+        {
+          "name": "PT_SITE_AFUN_CK",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录AFUN站点（www.ptlover.cc），打开开发者工具的网络面板，访问 attendance.php，复制请求头中的完整 Cookie。遇到 SafeLine 时先完成浏览器验证并包含 sl-challenge-jwt。仅供本人账号使用，不要公开。默认选择此站；未选择此站时无需配置。",
+          "format": "每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "PT_SITE_AFUN_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；默认使用 https://www.ptlover.cc/attendance.php；仅在站点迁移后填写可信签到页地址。",
+          "format": "无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。"
+        },
+        {
+          "name": "PT_SITES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认运行 hdkyl、carpt、afun。只运行部分站点时，在青龙环境变量中设置要运行的站点键。",
+          "format": "逗号分隔的站点键，例如 hdkyl,carpt；这是站点选择设置，不是账号分隔符。"
+        },
+        {
+          "name": "PT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设为 1 启用完全断网预演。",
+          "format": "1、true、yes、on 启用；默认实际签到；预演仍校验必需凭据的格式，但不验证真实账号。"
+        },
+        {
+          "name": "PT_WEBHOOK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选；在自己的飞书、Bark、Server 酱、钉钉、企业微信或自定义推送服务创建推送地址。青龙通知自动发现，不依赖此变量。",
+          "format": "无内嵌用户名或密码的 HTTPS 完整地址；不要公开其中的推送密钥。"
+        },
+        {
+          "name": "PT_WEBHOOK_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据已配置的推送服务填写类型；保留原上游载荷格式。",
+          "format": "feishu、bark、sct、ding、wx、custom；默认 custom。"
+        },
+        {
+          "name": "PT_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选；填写自己已有的 HTTP 或 HTTPS 代理地址；不会下载或启动代理程序。",
+          "format": "HTTP 或 HTTPS 代理地址，可含代理认证信息；默认直接连接。"
+        },
+        {
+          "name": "PT_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；在青龙环境变量中设置获取页面失败时的最多尝试次数。",
+          "format": "1 至 10 的整数，默认 3；签到提交超时或业务状态未知时停止自动重试，避免重复提交。"
+        },
+        {
+          "name": "PT_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；按网络状况设置每次请求的超时毫秒数。",
+          "format": "1000 至 120000 的整数，默认 20000；Webhook 固定 8000 毫秒；青龙通知最多等待 15000 毫秒。"
+        },
+        {
+          "name": "PT_SAFELINE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；默认启用上游 SafeLine 云端挑战流程，失败时在浏览器完成验证并更新完整 Cookie。",
+          "format": "0 关闭，其他值启用；仅向挑战服务发送挑战令牌和浏览器属性，不发送账号 Cookie 或额外认证头。"
+        },
+        {
+          "name": "PT_EXTRA_HEADERS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选；从本人站点请求中获取必要的额外请求头，通常无需设置。",
+          "format": "key1:value1|key2:value2；仅在第一个冒号处分割；禁止 Cookie、认证、代理认证、Host、内容长度、Origin、Referer、Content-Type 和伪造来源 IP 等受保护字段。"
+        },
+        {
+          "name": "PT_DEBUG",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；设为 1 显示请求状态码、响应长度和解析步骤。",
+          "format": "1、true、yes、on 启用；不输出 HTML、表单令牌、Cookie、代理地址或原始响应。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知全局开关，默认开启。",
+          "format": "0、false、no、off 关闭青龙通知及可选 Webhook；其他值开启。断网预演只模拟通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；指向本人青龙安装中已有 sendNotify.js 的目录；否则检查 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本地目录路径；通知模块不可用、失败或超时只记录状态，不改变签到退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个站点的 PT_SITE_<SITE>_CK 内每个非空行代表该站一个独立账号；Cookie 字段用分号分隔，字段值中的后续等号原样保留；不同站点及账号分别维护 Cookie 罐并独立执行，任一账号或必需配置失败时整体非零退出。"
+      },
+      "dependencies": [
+        "axios@^1.12.2",
+        "https-proxy-agent@^7.0.6",
+        "tough-cookie@^6.0.0"
+      ],
+      "features": [
+        "蝴蝶、CARPT、AFUN 三站每日签到，支持站点选择与签到页地址覆盖",
+        "按站点分别配置多账号完整 Cookie，维护独立的服务器 Cookie 罐并识别登录失效",
+        "兼容 SafeLine 云端挑战、上游本地计算及验证后重放签到页",
+        "解析今日已签到状态、连续签到天数、本次奖励和累计奖励；仅明确业务证据判定成功",
+        "稳定浏览器请求头、表单编码、同域重定向、可选代理、超时、受控重试及额外请求头",
+        "保留飞书、Bark、Server 酱、钉钉、企业微信和自定义 Webhook 推送载荷，并增加青龙统一脱敏通知",
+        "显示站点响应中的用户详情链接所提供的用户名与公开 UID，不输出凭据或手机号",
+        "完全断网预演、分账号阶段日志、任务统计和单行 TASK_SUMMARY 结构化汇总"
+      ],
+      "sideEffects": [
+        "向选中站点提交签到，可能增加站点奖励及连续签到计数",
+        "遇到 SafeLine 时提交挑战验证并更新当前进程内的会话 Cookie，不写入文件",
+        "实际运行后向已有青龙通知服务和可选 Webhook 发送脱敏任务总结；全局开关关闭时不发送"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ff443f9fbbdbade5",
+        "candidateSha256": "00c5772a3b7bacd61255515237ab1bd9f1d9d075d9bbf32d8ce4ec8c123552d2"
       }
     },
     {
@@ -24819,6 +25091,8 @@
         ],
         "optionalEnv": [
           "TY_DRY_RUN",
+          "TY_DRAW_SIGNIN",
+          "TY_DRAW_PHOTOS",
           "RANDOM_SIGNIN",
           "MAX_RANDOM_DELAY",
           "TY_ACCOUNT_TIMEOUT",
@@ -24829,14 +25103,19 @@
           "TY_DRY_RUN": "1"
         },
         "liveEnv": {
-          "RANDOM_SIGNIN": "false",
+          "TY_DRY_RUN": "0",
+          "RANDOM_SIGNIN": "true",
+          "MAX_RANDOM_DELAY": "3600",
           "TY_ACCOUNT_TIMEOUT": "60",
+          "TY_DRAW_SIGNIN": "0",
+          "TY_DRAW_PHOTOS": "0",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "签到成功，获得",
+          "登录业务校验成功",
+          "签到成功",
           "今日已签到",
-          "\"status\": \"success\""
+          "最终状态：success"
         ],
         "features": [
           "使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话",
@@ -24850,10 +25129,17 @@
           "脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段",
           "每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试",
           "Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向",
-          "区分域名解析失败、网络连接失败、TLS 验证失败和超时"
+          "区分域名解析失败、网络连接失败、TLS 验证失败和超时",
+          "通过独立开关抽取当天签到奖励和已有相册任务奖励；沿用规范脚本及其每日16:01计划，不建立并行产品任务",
+          "奖励抽取明确校验响应字段及业务码，识别50M空间和无剩余机会；未知错误或缺少奖励字段时失败且不自动重试",
+          "奖励阶段独立处理失败并保留失败阶段；前置登录或签到未确认时跳过奖励；每账号总时限覆盖启用的奖励请求",
+          "保留密码后续分隔符和空格、原有汇总字段；预演覆盖启用的奖励阶段并从HTTP入口禁止网络",
+          "通知依次尝试可导入的notify.py、指定或标准青龙目录中的notify.py、sendNotify.js；限制通知耗时并抑制模块输出"
         ],
         "sideEffects": [
-          "正式模式每日签到可能增加奖励空间",
+          "正式模式每日签到可能增加账号奖励空间",
+          "启用签到奖励开关后，正式模式可能消耗当天已有签到抽奖机会并增加奖励空间",
+          "启用相册奖励开关后，正式模式可能消耗已有相册任务抽奖机会并增加奖励空间",
           "正式模式按通知配置发送脱敏任务结果"
         ]
       },
@@ -24863,7 +25149,7 @@
       },
       "displayName": "天翼云盘签到",
       "path": "scripts/ty_netdisk_checkin.py",
-      "sha256": "c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7",
+      "sha256": "096668383bde7522670dd87830f0e8b48ed4ce3e142e723c6fe6ebce238f99f2",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -24871,7 +25157,19 @@
         "repository": "agluo/ql-script-hub",
         "branch": "master",
         "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-        "originalPath": "ty_netdisk_checkin.py"
+        "originalPath": "ty_netdisk_checkin.py",
+        "related": [
+          {
+            "repository": "OreosLab/checkinpanel",
+            "url": "https://github.com/OreosLab/checkinpanel.git",
+            "branch": "master",
+            "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+            "originalPath": "ck_cloud189.py",
+            "catalogId": "9b29ccf7560d7d4d",
+            "sha256": "7dca02b70ffa031602128f13e420254eb0c6283cbff50e1cbc2728eedca83e5d",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "1 16 * * *",
       "command": "python3 scripts/ty_netdisk_checkin.py",
@@ -24880,56 +25178,70 @@
           "name": "TY_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "在天翼云盘官方客户端或官方网站确认账号及登录密码；忘记密码请使用官方找回流程，出现验证码或风控时先人工处理。旧 TY_USERNAME/TY_PASSWORD 须将同账号配对后合为本变量；不要修改密码中的特殊字符。",
-          "format": "每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行"
+          "howToGet": "在天翼云盘官方客户端确认登录用户名和账号密码；仅有短信登录时先在官方客户端设置密码。每个账号将用户名和密码合在一行添加到青龙环境变量。需要验证码时先人工完成官方登录，本脚本不绕过验证码。原私有 CLOUD189 配置的 phone/password 须迁移到此变量。",
+          "format": "每个非空行一个账号：用户名|密码；仅切分第一个竖线，密码内的竖线、&、@和空格原样保留；账号之间只能换行"
         },
         {
           "name": "TY_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "预演时设为1；默认0。",
-          "format": "1、true、yes、on 启用完全断网预演"
+          "howToGet": "需要断网验证时在青龙环境变量设置为1；正式执行时设为0或删除。",
+          "format": "1、true、yes、on启用；默认0"
+        },
+        {
+          "name": "TY_DRAW_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "希望签到后抽取当天已有的签到奖励机会时手动启用。",
+          "format": "1、true、yes、on启用；0、false、no、off关闭；默认0"
+        },
+        {
+          "name": "TY_DRAW_PHOTOS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "希望抽取已有相册任务奖励机会时手动启用；需自行在官方客户端取得资格，本脚本不启用相册备份或上传照片。",
+          "format": "1、true、yes、on启用；0、false、no、off关闭；默认0"
         },
         {
           "name": "RANDOM_SIGNIN",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要设置；默认true。验证接口时可设false，避免随机等待。",
-          "format": "true启用随机延迟；其他值关闭"
+          "howToGet": "按需要设置签到前随机等待；沿用已维护版本默认值，验证时可设为false。",
+          "format": "仅true启用；默认true"
         },
         {
           "name": "MAX_RANDOM_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要设置随机等待上限；默认3600秒。",
-          "format": "0～86400的整数；账号间另外随机等待10～30秒；预演均不等待"
+          "howToGet": "在青龙环境变量填写签到前随机延迟的最大秒数。",
+          "format": "0～86400的整数；默认3600；断网预演不等待"
         },
         {
           "name": "TY_ACCOUNT_TIMEOUT",
           "required": false,
           "sensitive": false,
-          "howToGet": "按网络条件设置；默认60秒，每账号独立总时限，不包含随机等待。",
-          "format": "10～600的整数；单次请求另有15秒超时，不自动重试"
+          "howToGet": "在青龙环境变量填写每个账号HTTP流程的总秒数；包括登录、签到及启用的奖励阶段，不包括随机等待。",
+          "format": "10～600的整数；默认60；需要Python 3.9及以上的青龙Linux或其他支持信号计时器的系统"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙环境变量中设置；默认1。",
-          "format": "0、false、no、off关闭通知；其余启用；预演只生成摘要而不传输"
+          "howToGet": "使用青龙现有通知配置；如需关闭任务通知设置为0。",
+          "format": "默认1；0、false、no、off关闭；断网预演只生成通知摘要、不传输"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选：填写青龙现有 notify.py 所在目录；也会尝试导入 notify 及青龙标准目录。",
-          "format": "本机通知目录路径；不可用或发送失败不改变业务退出码"
+          "howToGet": "可选填写青龙通知模块所在目录；不需要额外仓库或业务依赖。未设置时查找可导入的notify.py及青龙标准脚本目录，再尝试sendNotify.js。",
+          "format": "可选目录路径；通知模块不可用或失败不改变业务退出码"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。"
+        "rule": "每个非空行一个账号，用户名与密码用第一个竖线配对；不得用&或@分隔账号。各账号独立执行；任意账号配置或业务失败，整体非零退出。"
       },
       "dependencies": [],
       "features": [
@@ -24944,10 +25256,17 @@
         "脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段",
         "每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试",
         "Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向",
-        "区分域名解析失败、网络连接失败、TLS 验证失败和超时"
+        "区分域名解析失败、网络连接失败、TLS 验证失败和超时",
+        "通过独立开关抽取当天签到奖励和已有相册任务奖励；沿用规范脚本及其每日16:01计划，不建立并行产品任务",
+        "奖励抽取明确校验响应字段及业务码，识别50M空间和无剩余机会；未知错误或缺少奖励字段时失败且不自动重试",
+        "奖励阶段独立处理失败并保留失败阶段；前置登录或签到未确认时跳过奖励；每账号总时限覆盖启用的奖励请求",
+        "保留密码后续分隔符和空格、原有汇总字段；预演覆盖启用的奖励阶段并从HTTP入口禁止网络",
+        "通知依次尝试可导入的notify.py、指定或标准青龙目录中的notify.py、sendNotify.js；限制通知耗时并抑制模块输出"
       ],
       "sideEffects": [
-        "正式模式每日签到可能增加奖励空间",
+        "正式模式每日签到可能增加账号奖励空间",
+        "启用签到奖励开关后，正式模式可能消耗当天已有签到抽奖机会并增加奖励空间",
+        "启用相册奖励开关后，正式模式可能消耗已有相册任务抽奖机会并增加奖励空间",
         "正式模式按通知配置发送脱敏任务结果"
       ],
       "review": {
@@ -24961,7 +25280,13 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/70f2505a78eb7276",
-        "candidateSha256": "c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7"
+        "candidateSha256": "a4c798be0d3dd666e73ec75d055020ddd477aab12c99e8b083b9e5676909ea02"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "a4c798be0d3dd666e73ec75d055020ddd477aab12c99e8b083b9e5676909ea02",
+        "releaseSha256": "096668383bde7522670dd87830f0e8b48ed4ce3e142e723c6fe6ebce238f99f2",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
     {

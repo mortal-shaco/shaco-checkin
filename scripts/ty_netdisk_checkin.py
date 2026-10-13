@@ -2,8 +2,13 @@
 # -*- coding: utf-8 -*-
 # name: 天翼云盘签到
 # cron: 1 16 * * *
+# SPDX-License-Identifier: MIT
 # 上游：agluo/ql-script-hub，ty_netdisk_checkin.py（MIT）
 # 改编自：https://www.52pojie.cn/thread-1231190-1-1.html
+# 合并：OreosLab/checkinpanel，ck_cloud189.py（MIT）
+# :source https://github.com/MayoBlueSky/My-Actions/blob/master/function/cloud189/checkin.py
+# 参考：dailycheckin_scripts/ck_cloud189.py（MIT）；保留上游来源声明。
+# 有效许可：MIT；输入文件未包含额外版权声明。
 """天翼云盘每日签到。仅需 Python 3.9+ 标准库，无须安装 requests 或 rsa。
 在天翼云盘官方客户端设置或确认账号密码；需要验证码时请先人工登录。
 TY_ACCOUNTS：每个非空行填写 用户名|密码，仅切分第一个 |，密码原样保留。
@@ -14,6 +19,11 @@ TY_DRY_RUN=1：只检查配置并模拟流程，不请求网络、不等待、�
 RANDOM_SIGNIN=true（默认），MAX_RANDOM_DELAY=3600（秒）；账号间等待10～30秒。
 TY_ACCOUNT_TIMEOUT=60：每账号 HTTP 流程总时限（秒），不包含配置的随机等待。
 验证建议 RANDOM_SIGNIN=false；保留日常随机延迟默认值。
+TY_DRAW_SIGNIN=1：签到后抽取签到奖励；TY_DRAW_PHOTOS=1：抽取相册任务奖励。
+两个开关默认0，仅使用当前已有机会，不开启相册备份、不上传照片、不购买机会。
+奖励抽取无机会时记录已完成，未知错误或缺少奖励字段时失败，不自动重试。
+原 ck_cloud189.py 使用私有 CLOUD189 列表中的 phone/password，每日09:30；
+迁移为 TY_ACCOUNTS 每行用户名|密码；合并后沿用规范任务每日16:01，无需重复任务。
 QINGLONG_NOTIFY=0 可关闭通知；可用 QINGLONG_NOTIFY_DIR 指定青龙通知目录。
 """
 import os
@@ -86,6 +96,8 @@ class HttpSession:
 
     def request(self, method, url, headers=None, params=None, data=None,
                 timeout=15, allow_redirects=False):
+        if os.getenv("TY_DRY_RUN", "0").lower() in ("1", "true", "yes", "on"):
+            raise TaskError("断网预演禁止 HTTP 请求")
         if params:
             url += ("&" if "?" in url else "?") + urllib.parse.urlencode(params)
         merged = {**self.headers, **(headers or {})}
@@ -288,7 +300,7 @@ class TianYiYunPan:
                 value = data.get(key)
                 if isinstance(value, (str, int)) and not isinstance(value, bool):
                     value = str(value)
-                    if value in (self.username, self.password) or re.search(r"(?<!\d)1[3-9]\d{9}(?!\d)", value):
+                    if self.password in value or re.search(r"(?<!\d)1[3-9]\d{9}(?!\d)", value):
                         continue
                     if any(ord(c) < 32 for c in value):
                         continue
@@ -458,6 +470,47 @@ class TianYiYunPan:
         return "already" if already else "success"
 
 
+    def draw_prize(self, task_id):
+        # 两份同功能参考一致：GET，ACT_SIGNIN，description=1 表示50M，
+        # User_Not_Chance 表示无剩余机会。未知业务错误一律失败，不猜测成功码。
+        if task_id not in ("TASK_SIGNIN", "TASK_SIGNIN_PHOTOS"):
+            raise TaskError("不支持的奖励任务")
+        self.phase = "签到奖励抽取" if task_id == "TASK_SIGNIN" else "相册奖励抽取"
+        response = self.request("GET", "https://m.cloud.189.cn/v2/drawPrizeMarketDetails.action",
+            params={"taskId": task_id, "activityId": "ACT_SIGNIN"},
+            headers={"User-Agent": "Mozilla/5.0 Ecloud/8.6.3 Android/22",
+                     "Referer": "https://m.cloud.189.cn/zhuanti/2016/sign/index.jsp?albumBackupOpened=1"},
+            timeout=15)
+        result = response.json()
+        if not isinstance(result, dict):
+            raise TaskError("奖励响应不是对象；" + response_shape(result))
+        # 不把未知错误文本、description 原文或响应对象写入日志。
+        for key in ("res_code", "result", "code"):
+            if key in result and str(result[key]) != "0":
+                raise TaskError("奖励业务返回失败，" + key + "=" + business_code(result, key))
+        if result.get("errorCode") == "User_Not_Chance":
+            log(f"☑️ 账号{self.index} {self.phase}：没有剩余抽奖机会")
+            return "already"
+        if "errorCode" in result:
+            # 上游未证明任何带 errorCode 的响应是成功；包括0也不能推定成功。
+            raise TaskError("奖励业务返回错误，errorCode=" + business_code(result, "errorCode"))
+        description = result.get("description")
+        if not (type(description) is int and description > 0
+                or isinstance(description, str) and description.strip()
+                and not re.fullmatch(r"-?[0-9]+", description.strip())
+                or isinstance(description, str) and re.fullmatch(r"[1-9][0-9]*", description)):
+            raise TaskError("奖励响应缺少明确 description 奖励字段；" + response_shape(result))
+        self.identity(result)
+        if description in (1, "1"):
+            reward = "50M 空间"
+        elif isinstance(description, str) and re.fullmatch(r"[0-9]{1,6}\s*[MG]B?\s*空间", description.strip()):
+            reward = description.strip()
+        else:
+            reward = "已确认奖励（服务端自由文本不写入日志）"
+        log(f"✅ 账号{self.index} {self.phase}成功：{reward}")
+        return "success"
+
+
 def notify(body, dry):
     if os.getenv("QINGLONG_NOTIFY", "1").lower() in ("0", "false", "no", "off"):
         return "已关闭"
@@ -468,23 +521,43 @@ def notify(body, dry):
     import subprocess
     code = """import importlib.util, sys
 from pathlib import Path
+body = sys.stdin.read()
 try:
     from notify import send
-except ImportError:
-    send = None
-    for folder in sys.argv[1:]:
-        path = Path(folder) / 'notify.py'
-        if not path.is_file():
-            continue
+    send('天翼云盘签到', body)
+    sys.exit(0)
+except Exception:
+    pass
+for folder in sys.argv[1:]:
+    path = Path(folder) / 'notify.py'
+    if not path.is_file():
+        continue
+    try:
         sys.path.insert(0, str(path.parent))
         spec = importlib.util.spec_from_file_location('ql_notify', path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        send = module.send
-        break
-if send is None:
-    sys.exit(2)
-send('天翼云盘签到', sys.stdin.read())
+        module.send('天翼云盘签到', body)
+        sys.exit(0)
+    except Exception:
+        pass
+# 青龙的可选 JavaScript 通知兜底不参与业务 HTTP，也不是业务依赖。
+import subprocess, shutil
+node = shutil.which('node')
+if node:
+    for folder in sys.argv[1:]:
+        path = Path(folder) / 'sendNotify.js'
+        if not path.is_file():
+            continue
+        try:
+            proc = subprocess.run([node, '-e',
+                "const fs=require('fs');Promise.resolve(require(process.argv[1]).sendNotify('天翼云盘签到',fs.readFileSync(0,'utf8'))).catch(()=>process.exit(1));",
+                str(path)], input=body, text=True, timeout=8)
+            if proc.returncode == 0:
+                sys.exit(0)
+        except Exception:
+            pass
+sys.exit(2)
 """
     try:
         dirs = [p for p in (os.getenv("QINGLONG_NOTIFY_DIR"), "/ql/data/scripts", "/ql/scripts") if p]
@@ -505,14 +578,22 @@ def main():
     config_error = False
     config_detail = ""
     totals = dict(success=0, already=0, skipped=0, failed=0)
+    draw_signin = draw_photos = False
     try:
+        def draw_switch(name):
+            value = os.getenv(name, "0").lower()
+            if value not in ("1", "true", "yes", "on", "0", "false", "no", "off"):
+                raise ValueError()
+            return value in ("1", "true", "yes", "on")
+        draw_signin = draw_switch("TY_DRAW_SIGNIN")
+        draw_photos = draw_switch("TY_DRAW_PHOTOS")
         maximum = int(os.getenv("MAX_RANDOM_DELAY", "3600"))
         account_timeout = int(os.getenv("TY_ACCOUNT_TIMEOUT", "60"))
         if not 10 <= account_timeout <= 600 or not 0 <= maximum <= 86400 or not lines:
             raise ValueError()
     except ValueError:
         config_error = True
-        config_detail = "需要 TY_ACCOUNTS，MAX_RANDOM_DELAY 须为0～86400的整数，TY_ACCOUNT_TIMEOUT 须为10～600的整数"
+        config_detail = "需要 TY_ACCOUNTS，MAX_RANDOM_DELAY 须为0～86400的整数，TY_ACCOUNT_TIMEOUT 须为10～600的整数，奖励开关须为1/0或true/false/yes/no/on/off"
         if not lines and (os.getenv("TY_USERNAME") or os.getenv("TY_PASSWORD")):
             config_detail += "；检测到旧变量，请将同一账号合为 TY_ACCOUNTS 每行用户名|密码，密码原样保留"
         log("❌ 配置错误：" + config_detail)
@@ -524,6 +605,13 @@ def main():
             time.sleep(step)
             delay -= step
             log(f"阶段0 随机延迟剩余：{delay}秒")
+    enabled_draws = []
+    if draw_signin:
+        enabled_draws.append(("签到奖励抽取", "TASK_SIGNIN"))
+    if draw_photos:
+        enabled_draws.append(("相册奖励抽取", "TASK_SIGNIN_PHOTOS"))
+    task_count = 2 + len(enabled_draws)
+    log(f"任务开关：签到奖励={'开启' if draw_signin else '关闭'}；相册奖励={'开启' if draw_photos else '关闭'}；每账号{task_count}个阶段")
     for index, line in enumerate(lines if not config_error else [], 1):
         begin = time.monotonic()
         stats = dict(success=0, already=0, skipped=0, failed=0)
@@ -532,13 +620,13 @@ def main():
         stage = 1
         stamp = time.monotonic()
         try:
-            log(f"账号{index} 阶段1/2：配置与登录")
+            log(f"账号{index} 阶段1/{task_count}：配置与登录")
             username, sep, password = line.partition("|")
             if not sep or not username.strip() or not password:
                 raise TaskError("TY_ACCOUNTS 行格式无效：必须填写非空用户名|非空密码，仅切分第一个 |")
             if dry:
                 log("✅ 凭据格式检查通过；登录与签到仅模拟")
-                stats["skipped"] = 2
+                stats["skipped"] += 1
             else:
                 if index > 1:
                     time.sleep(random.uniform(10, 30))
@@ -546,27 +634,47 @@ def main():
                 if not client.login():
                     raise TaskError(client.last_error or "登录未通过")
                 stats["success"] += 1
-            log(f"账号{index} 阶段1/2结束，耗时{time.monotonic()-stamp:.2f}秒")
+            log(f"账号{index} 阶段1/{task_count}结束，耗时{time.monotonic()-stamp:.2f}秒")
             stage, stamp = 2, time.monotonic()
-            log(f"账号{index} 阶段2/2：{'模拟签到（无网络、无副作用）' if dry else '每日签到'}")
-            if not dry:
+            log(f"账号{index} 阶段2/{task_count}：{'模拟签到（无网络、无副作用）' if dry else '每日签到'}")
+            if dry:
+                stats["skipped"] += 1
+            else:
                 stats[client.sign_in()] += 1
-            log(f"账号{index} 阶段2/2结束，耗时{time.monotonic()-stamp:.2f}秒")
+            log(f"账号{index} 阶段2/{task_count}结束，耗时{time.monotonic()-stamp:.2f}秒")
+            # 奖励任务独立失败不会阻止后续奖励；登录或签到未确认则不尝试奖励。
+            for stage, (label, task_id) in enumerate(enabled_draws, 3):
+                stamp = time.monotonic()
+                log(f"账号{index} 阶段{stage}/{task_count}：{'模拟' if dry else ''}{label}")
+                try:
+                    if dry:
+                        stats["skipped"] += 1
+                        log("⏭️ 仅模拟已有机会的奖励抽取；无网络、无副作用")
+                    else:
+                        stats[client.draw_prize(task_id)] += 1
+                except Exception as error:
+                    detail = label + "：" + diagnostic(error)
+                    failure_detail += ("；" if failure_detail else "") + detail
+                    stats["failed"] += 1
+                    log(f"❌ 账号{index} {detail}；未确认业务成功")
+                log(f"账号{index} 阶段{stage}/{task_count}结束，耗时{time.monotonic()-stamp:.2f}秒")
         except Exception as error:
             failure_detail = diagnostic(error)
             if stage == 2 and client:
                 failure_detail = client.phase + "：" + failure_detail
             stats["failed"] += 1
-            if stage == 1:
-                stats["skipped"] += 1
-            log(f"❌ 账号{index} 阶段{stage}/2失败，耗时{time.monotonic()-stamp:.2f}秒；{diagnostic(error)}；未确认业务成功")
+            remaining = task_count - stage
+            stats["skipped"] += remaining
+            log(f"❌ 账号{index} 阶段{stage}/{task_count}失败，耗时{time.monotonic()-stamp:.2f}秒；{diagnostic(error)}；未确认业务成功")
+            for skipped_stage in range(stage + 1, task_count + 1):
+                log(f"⏭️ 账号{index} 阶段{skipped_stage}/{task_count}：前置阶段失败，跳过；耗时0.00秒")
         finally:
             if client:
                 client.session.close()
         for key in totals:
             totals[key] += stats[key]
         results.append({"account": index, "ok": stats["failed"] == 0, **stats, "failure": failure_detail})
-        log(f"账号{index} 统计：总任务2，成功{stats['success']}，已完成{stats['already']}，跳过{stats['skipped']}，失败{stats['failed']}，耗时{time.monotonic()-begin:.2f}秒")
+        log(f"账号{index} 统计：总任务{task_count}，成功{stats['success']}，已完成{stats['already']}，跳过{stats['skipped']}，失败{stats['failed']}，耗时{time.monotonic()-begin:.2f}秒")
     success = sum(r["ok"] for r in results)
     failed = len(lines)-success
     status = "configuration-error" if config_error else ("partial-failure" if failed and success else "failure" if failed else "dry-run" if dry else "success")

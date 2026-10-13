@@ -110,6 +110,7 @@
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `1 1 1 1 1` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `0 8 * * *` |
+| PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `0 8 * * *` |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` |
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `0 9 * * *` |
@@ -238,7 +239,7 @@
 - `scripts/crealitycloud_checkin.py`：国内站手机号或邮箱密码登录，手机号自动补 86 区号；直接登录态失效后的 OAuth 授权码登录回退；查询今日签到状态，已签到时避免重复操作；每日签到，展示连续签到天数和积分、经验奖励；查询官方非敏感身份、总积分、经验及创想币余额；默认整体随机延时和多账号间随机等待，保留每日 09:00 定时；每行一个账号、账号独立处理及失败非零退出；断网预演、逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 记录；通过青龙 notify.py 尝试发送脱敏任务总结，支持全局开关和失败隔离。
 - `scripts/dachao.py`：账号密码登录及官方昵称展示；动态发现签到和阅读活动；签到及已签到状态判断；阅读任务、实际等待及阅读时长上报；阅读滑块验证码三种算法求偏移并重试；显式开启签到抽奖和阅读抽奖；显式开启现金红包兑换及无效兑换码短暂重试；多账号隔离、失败闭合及单行结构化汇总；青龙通知与完全断网配置预演。
 - `scripts/daily_benefits.py`：按优先级合并双营销渠道，自动发现福利中心入口并查询活动页面；免费会员打卡、服务端签到日期和连续签到天数核对，提交后刷新核验今日状态；显式开启后可在服务端明确返回系列失效时重开签到系列一次；查询并按可用机会申请未参与的会员试用，逐项检查业务成功；显式开启后执行天天抽奖并逐次检查业务成功；先领取已有七日系列奖励，再签到；刷新签到及抽奖后检查七日领奖条件，防止同系列重复领取；可选合并同排期任务中心的官方公钥获取、加密签到、积分和即将过期积分查询；可选任务中心抽奖，使用官方页面返回的有效场次，保留单账号 max_lottery_limit 默认上限五次及抽奖后积分刷新；支持换行多账号和原 JSON 账号字段，显示官方非秘密昵称、用户名或公开用户编号；完全断网预演、独立账号失败处理、非零失败退出、脱敏日志、阶段耗时及唯一结构化任务汇总；所有运行结果均生成脱敏通知；正式运行发现并调用青龙通知，通知失败保持业务退出码。
-- `scripts/dailynewscn.js`：默认每天 09:15 通过原 HTTPS GET 接口获取、整理输出中国日报并通知，保留 DAILYNEWSCN_LIST 参数及 DAILYNEWSCN_SUCCESS 成功标记。；DAILYNEWSCN_TASK=bdhot 时通过原 HTTPS GET 接口及 limit=5 获取百度前五热搜，保留 BDHOT_LIST、BDHOT_DRY_RUN 和 BDHOT_SUCCESS；另建同文件任务使用 0 0 9 * * *。；DAILYNEWSCN_TASK=chouq 时通过原 HTTP GET 接口随机抽签，输出签文、等级颜色、卦象、解签换行与典故首句；使用 CHOUQ_LIST 和 CHOUQ_SUCCESS，另建同文件任务使用 0 10 9 * * *。；所有执行标记仅在本地检查，无需账号、不发送标记；使用标准 Node.js 库独立请求，十秒总超时及 128 KiB 响应上限。；日报和百度榜保留 HTTP 200、中文文本、长度与错误页校验，拒绝未知 JSON、HTML、中断、超时及过大响应；抽签要求 HTTP 200、有效 JSON、完整签文字段、非空签等级（其他等级沿用中性色图标）且无明确失败标记，失败非零退出。；完全断网预演采用本地文本或签文，模拟通知，不加载通知模块；支持全部模式统一预演及百度榜、抽签兼容开关。；保留全局通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演均汇总，通知不可用不改变业务退出码。；保留带时间戳的编号阶段、耗时与统计、原成功标记及唯一单行 TASK_SUMMARY；公开任务账号总数为零，不记录真实业务账号成功。；新增 DAILYNEWSCN_TASK=day60s，通过原 HTTPS GET https://jkapi.com/api/day_60s 获取世界新闻，保留标题、文本输出与通知；使用 DAY60S_LIST 本地执行标记，支持 DAY60S_DRY_RUN；通过同文件另建任务保持 0 20 9 * * * 调度。；世界新闻沿用维护版十秒总超时、128 KiB 上限、HTTP 200、中文文本和错误页校验；验证通过才输出 DAY60S_SUCCESS，失败非零退出。。
+- `scripts/dailynewscn.js`：默认每天 09:15 通过原 HTTPS GET 接口获取、整理输出中国日报并通知，保留 DAILYNEWSCN_LIST 参数及 DAILYNEWSCN_SUCCESS 成功标记。；DAILYNEWSCN_TASK=bdhot 时通过原 HTTPS GET 接口及 limit=5 获取百度前五热搜，保留 BDHOT_LIST、BDHOT_DRY_RUN 和 BDHOT_SUCCESS；另建同文件任务使用 0 0 9 * * *。；DAILYNEWSCN_TASK=chouq 时通过原 HTTP GET 接口随机抽签，输出签文、等级颜色、卦象、解签换行与典故首句；使用 CHOUQ_LIST 和 CHOUQ_SUCCESS，另建同文件任务使用 0 10 9 * * *。；所有执行标记仅在本地检查，无需账号、不发送标记；使用标准 Node.js 库独立请求，十秒总超时及 128 KiB 响应上限。；日报和百度榜保留 HTTP 200、中文文本、长度与错误页校验，拒绝未知 JSON、HTML、中断、超时及过大响应；抽签要求 HTTP 200、有效 JSON、完整签文字段、非空签等级（其他等级沿用中性色图标）且无明确失败标记，失败非零退出。；完全断网预演采用本地文本或签文，模拟通知，不加载通知模块；支持全部模式统一预演及百度榜、抽签兼容开关。；保留全局通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演均汇总，通知不可用不改变业务退出码。；保留带时间戳的编号阶段、耗时与统计、原成功标记及唯一单行 TASK_SUMMARY；公开任务账号总数为零，不记录真实业务账号成功。；新增 DAILYNEWSCN_TASK=day60s，通过原 HTTPS GET https://jkapi.com/api/day_60s 获取世界新闻，保留标题、文本输出与通知；使用 DAY60S_LIST 本地执行标记，支持 DAY60S_DRY_RUN；通过同文件另建任务保持 0 20 9 * * * 调度。；世界新闻沿用维护版十秒总超时、128 KiB 上限、HTTP 200、中文文本和错误页校验；验证通过才输出 DAY60S_SUCCESS，失败非零退出。；新增 DAILYNEWSCN_TASK=dyhot，通过原 HTTPS GET https://jkapi.com/api/dy_hot?limit=5 获取、整理输出并通知抖音前五热搜；保留 DYHOT_LIST，支持 DYHOT_DRY_RUN，验证成功输出 DYHOT_SUCCESS；同文件另建任务保持 0 25 9 * * *。；抖音榜沿用十秒总超时、128 KiB 上限、HTTP 200、中文文本长度与错误页检查；拒绝未知 JSON、HTML、中断、超时和过大响应，失败非零退出。。
 - `scripts/ddnsto.py`：申请 product_id=2 七天免费套餐并查询订单；把新套餐绑定到指定路由器；重新读取官方套餐并确认到期时间延长后才报告续费成功；识别本周免费套餐申请次数限制；只有现有套餐尚未过期才视为已完成；显示北京时间到期时间；官方返回非敏感昵称或用户名时原样显示；保留每天 09:30 的上游计划和 ddns_cookie、ddns_userid 单账号兼容参数；多账号按行独立执行，失败账号不阻断其他账号；任一失败整体非零退出；无网络预演、青龙脱敏汇总通知和带时间戳的分阶段日志；输出唯一 TASK_SUMMARY 单行 JSON 汇总。
 - `scripts/deepflood_checkin.py`：执行 DeepFlood 每日签到并验证接口业务结果，支持识别已完成签到；查询并汇总可配置时间窗口内的签到鸡腿收益，保留总量、次数及平均收益；支持换行分隔的多账号独立执行和汇总状态；可选的随机延迟执行，保持原每日计划及既有参数兼容；完全断网且无等待、无副作用的预演；正式运行通过青龙 notify.py 发送脱敏汇总，支持全局通知开关，预演显示同内容通知预览；显示官方返回的非敏感账号身份、编号阶段、耗时与账号及任务统计；保留 SUMMARY_JSON 并追加唯一单行 TASK_SUMMARY，配置或业务失败非零退出。
 - `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
@@ -283,6 +284,7 @@
 - `scripts/ole.py`：Ole 微信小程序账号签到；保留原账号字段、门店与城市默认值及定时表达式；多账号独立执行与失败闭合退出；完全断网预演及参数检查；脱敏分阶段日志、账号统计与单行任务汇总；青龙通知摘要与全局开关；断网预演模拟通知。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
 - `scripts/psnine.py`：每日 PSNINE 祈祷签到；识别当天已经签到并展示累计祈祷天数；保留上游 do 接口及 psnid、shell 配套凭据；多账号独立执行和失败非零退出；完全断网预演、分阶段日志和单行结构化总结；实时任务结束时发送脱敏青龙通知，预演展示本地通知摘要；响应提供公开用户名时展示账号身份。
+- `scripts/pt_sign_v5.js`：蝴蝶、CARPT、AFUN 三站每日签到，支持站点选择与签到页地址覆盖；按站点分别配置多账号完整 Cookie，维护独立的服务器 Cookie 罐并识别登录失效；兼容 SafeLine 云端挑战、上游本地计算及验证后重放签到页；解析今日已签到状态、连续签到天数、本次奖励和累计奖励；仅明确业务证据判定成功；稳定浏览器请求头、表单编码、同域重定向、可选代理、超时、受控重试及额外请求头；保留飞书、Bark、Server 酱、钉钉、企业微信和自定义 Webhook 推送载荷，并增加青龙统一脱敏通知；显示站点响应中的用户详情链接所提供的用户名与公开 UID，不输出凭据或手机号；完全断网预演、分账号阶段日志、任务统计和单行 TASK_SUMMARY 结构化汇总。
 - `scripts/qoder_airscript.js`：逐账号显式开关，兼容原账号 JSON 及两种访问、刷新令牌字段命名；优先使用访问令牌，缺少时刷新；活动查询 401 后刷新并重试一次；中国区和国际区活动强制刷新查询，支持同批账号指定不同地区；逐项领取全部可领 Credits 活动，累计额度并显示响应提供的有效期；识别有效窗口内今日已领取、明确的幂等重放、活动未开放及待下发；支持仅刷新令牌和指定账号的环境变量及兼容命令行开关；兼容标准及 data 包装响应、device_token 字段、jobToken 刷新路径和 campaignKey 标识；保留 Server酱、PushPlus、企业微信逐账号通知以及青龙汇总通知，全局开关控制；显式配置私有账号文件时原子写回轮换令牌，仅环境变量时只保存于内存；显示官方返回的非敏感身份，提供分阶段日志、逐账号统计及唯一 TASK_SUMMARY；完全断网预演，配置校验，多账号独立执行及失败非零退出。
 - `scripts/quark_signin.py`：验证夸克账号 Cookie 并显示官方返回的昵称或公开身份；查询当日签到状态，识别今日已签到；领取每日存储空间奖励并展示奖励和连签进度；换行配置多账号，独立处理并汇总失败；可选随机延迟、请求超时、完全断网预演；脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知；失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应。
 - `scripts/raccoon_daily.py`：每日触发积分发放，以北京时间今日正积分账单核验签到成功。；分别领取首次电脑端、手机端登录奖励，检查业务码和 granted，哈希台账避免重复探测。；--query 只查询今日入账，不触发发放、不领取奖励、不写台账。；--skip-onboarding 跳过新手奖励、--only N 筛选账号、--no-notify 关闭通知。；每行一个账号，支持备注|令牌与 Bearer 格式，各账号和奖励独立处理。；支持配置 HTTPS 站点和本地台账路径。；优先青龙通知，保留 PushPlus、Bark、企业微信、钉钉和面板通知兼容渠道。；完全断网预演、时间轴日志、官方非秘密账号身份及单行 TASK_SUMMARY 汇总。。
@@ -358,7 +360,7 @@
 - `scripts/tjd_daily.py`：社区每日签到并复核服务端任务进度；浏览推荐帖子，按服务端剩余次数执行和复核；显式启用帖子点赞，跳过已点赞帖子并复核进度；显式启用帖子分享回调，保留平台参数并复核进度；查询绑定游戏角色昵称、等级和服务器；绑定游戏每日签到，保留 H5 鉴权及已签到业务码 5052，执行后查询确认；查询任务进度、今日及累计金币、游戏签到状态；凭据失效时用可选账号密码自动重登一次，内置 AES 加密和签名，凭据仅在内存更新；支持 --only、--account、--config、--no-notify 和 --loop；预演只运行一轮；换行多账号及旧变量兼容、断网预演、阶段日志、青龙脱敏通知和单行机器汇总。
 - `scripts/trae_checkin.py`：每日查询签到状态、按需签到，官方已签不重复领取；签到后查询真实积分余额；独立 credits 模式显示总额、已用及余额，保留权益接口到用量接口的回退链；访问凭据复用、过期或鉴权失败自动续期，保留新版设备证明、IDE_PC、SOLO_PC 与旧客户端兼容链；即时安全缓存轮换后的凭据，后续复用最新访问及刷新凭据；多账号独立处理、指定账号筛选、北京时间小时轮签及早窗全签；北京时间当日去重、账号独立限流冷却、可选熔断、启动及账号间错峰；青龙通知、可选企业微信与 PushPlus，通知失败保留业务退出码；完全断网预演、编号时间轴、官方非敏感身份展示、分账号统计和唯一单行 TASK_SUMMARY；兼容显式明文及加密凭据、storage 文件和旧参数，无需桌面端或私有仓库；显式 login 交互登录，自带本机 HTTP 授权回调及隐藏粘贴表单，有限等待并通过续期接口核验；显式兼容 Trae Work auth 文件及 auth 目录，优先使用绑定 claimDeviceId 和同设备 fingerprint；兼容显式 RANDOM_SIGNIN、MAX_RANDOM_DELAY，保留规范脚本默认错峰及上游 8 点、20 点定时配置能力；网页会话换取访问令牌，长效 sessionid 在会话失效时续期并复用安全缓存；领取后复查今日签到状态，明确完成才写入去重状态；使用官方成功响应及安全缓存中的公开 UID 识别多个会话对应同一账号，单列重复配置统计；各条目仍独立核验签到状态和余额，不重复领取已经完成的签到；兼容主来源 account_name、expires_at 字段及显式 TRAE_JITTER_MAX，保留维护默认错峰和主来源 8 点 30 分定时配置能力；网页会话鉴权失效且已显式提供同账号桌面凭据时自动回退，不因网络错误切换账号或设备；领取接口报错后只读复查官方当日状态，确认已完成才能成功，未确认时保持失败及冷却；需更新凭据账号单独统计；逐字引用的 TRAE_ACCESS_TOKEN_2 至 _9 与实际解析一致，修正上次导入失败。
 - `scripts/tsthb_checkin.py`：从官方活动列表查询当前签到活动，优先每日签到入口；校验账号并展示官方返回的非敏感身份，隐藏手机号；每日签到并展示奖励名称或积分；每行一个账号，账号独立执行与失败汇总；可配置的随机延迟及倒计时，保留每天 09:55 调度；完整断网预演、分阶段日志、任务统计及单行结构化汇总；青龙脱敏通知及全局开关，通知失败保留业务退出码；每次 HTTP 请求设置 20 秒整体等待时限，覆盖域名解析和慢速响应；签到不自动重试。
-- `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时。
+- `scripts/ty_netdisk_checkin.py`：使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话；每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果；每行配套凭据、多账号独立执行、任一失败整体非零退出；保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔；显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应；青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录；完全断网预演、凭据格式检查及旧环境变量迁移提示；兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应；脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段；每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试；Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向；区分域名解析失败、网络连接失败、TLS 验证失败和超时；通过独立开关抽取当天签到奖励和已有相册任务奖励；沿用规范脚本及其每日16:01计划，不建立并行产品任务；奖励抽取明确校验响应字段及业务码，识别50M空间和无剩余机会；未知错误或缺少奖励字段时失败且不自动重试；奖励阶段独立处理失败并保留失败阶段；前置登录或签到未确认时跳过奖励；每账号总时限覆盖启用的奖励请求；保留密码后续分隔符和空格、原有汇总字段；预演覆盖启用的奖励阶段并从HTTP入口禁止网络；通知依次尝试可导入的notify.py、指定或标准青龙目录中的notify.py、sendNotify.js；限制通知耗时并抑制模块输出。
 - `scripts/tyqhdraw.py`：登录并校验业务成功码与有效会话；查询调料包和番茄资产；打印官方返回的非秘密账号身份；显式开启后执行活动 58 集市兑换抽奖，每轮最多 10 次并检查奖品字段；使用本地透明掩膜图像匹配识别滑块并验证官方业务成功码；低置信度停止；查询实物礼品名称及非实物礼品数量；每行一个账号，账号独立失败隔离与整体非零退出；完全断网预演、青龙脱敏通知、逐阶段日志及单行任务汇总。
 - `scripts/valorantstore.py`：按原每日 08:15 定时查询掌上无畏契约每日商店，不购买商品。；刷新 access_token、client ticket、web ticket 和临时票据；刷新失败仍尝试旧会话查询并以失败状态退出。；查询绑定账号并按官方返回显示昵称；无昵称时使用账号序号。；报告每日皮肤名称、品质、点券价格、点赞数及北京时间刷新时间。；使用背景与商品图片生成商品长图，可选 Telegram 图片推送；图片失败保留文字报告并记录失败。；通过青龙通知发送包含商店报告、账号总数、成功数和失败数的脱敏总结；通知不可用不改变业务退出码。；支持每行一个账号、无网络预演、阶段耗时及账号和任务统计，输出唯一单行 TASK_SUMMARY。。
 - `scripts/vortexa_free_claim.js`：账号密码登录，邮箱或用户名字段自动识别与自定义登录字段；访问 Token、刷新 Cookie 登录；授权失效后按原方式重新登录一次。；检查已有免费主机，显示公开服务名称或 ID；官网返回昵称、用户名、显示名或公开 UID 时输出身份以核对账号，不输出邮箱登录凭据。；查询免费主机库存、领取资格，默认完成只读检查；已有免费主机时确认已完成。；独立产品列表模式，列出免费产品名称、slug、产品 ID、套餐 ID、名称、类型和价格。；按产品 ID、slug 或名称选择免费产品；支持指定套餐 ID，未配置时选择首个免费产品及免费套餐。；显式开启免费主机领取，提交后以官方已有主机状态核验成功；未知响应、付费套餐和选定产品缺失时失败闭合。；显式开启有限随机间隔库存轮询；保留原十分钟定时规则、间隔配置、登录重试和请求头配置。；每行一个账号，凭据隔离，逐账号执行，任意账号失败整体非零退出。；完全断网预演、完整时间轴日志、分阶段与账号统计、一条 TASK_SUMMARY JSON；青龙通知及全局开关。。
@@ -419,7 +421,7 @@
 <tr><td rowspan="1"><code>scripts/crealitycloud_checkin.py</code></td><td><code>CREALITY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为「手机号或邮箱 空格 密码」；只按第一个空白字段分隔，后续密码文本保留。手机号支持 11 位、86 加 11 位或 +86 加 11 位；邮箱直接填写；以 # 开头的行忽略。兼容脚本内 CONFIG_ACCOUNTS，推荐环境变量。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/dachao.py</code></td><td><code>DACHAO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行是一个完整 JSON 对象，不用 &amp; 或 @ 分隔账号。必填字段 phone_number、password_encrypted、user_agent；兼容 password、user_agent_vapp、user_agent_aihoge。可选字段 account_name、tenant_id、client_id、session_id、passport_cookies、vapp_cookies、aihoge_cookies（兼容 cookies）、passport_signature_salt、aihoge_signature_salt、sign_lottery_id、redeem_member（兼容 withdraw_member）、redeem_cookies、redeem_user_agent。Cookie 和 member 保留原字符串（JSON 内引号须转义）。forum_session_id、forum_cookies、forum_tenant_id 兼容读取但原主任务没有论坛动作。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/daily_benefits.py</code></td><td><code>WPS_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号；仅福利任务使用完整 Cookie；任务中心使用 user_id|完整 Cookie，仅按第一个 | 分割，保留后续 Cookie 内容。也可每行一个 JSON 对象，包含 cookies 及可选 user_id、user_agent、account_name、max_lottery_limit，兼容原账号字段；不读取私有配置文件。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/dailynewscn.js</code></td><td><code>DAILYNEWSCN_LIST</code></td><td>否</td><td>格式：推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/dailynewscn.js</code></td><td><code>DAILYNEWSCN_LIST</code></td><td>否</td><td>格式：任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ddnsto.py</code></td><td><code>DDNSTO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 路由器ID|完整Cookie；仅在首个 | 分隔，同一行内 Cookie 原样保留，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/deepflood_checkin.py</code></td><td><code>DEEPFLOOD_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号完整 Cookie；不按 &amp;、@ 或分号拆分账号，Cookie 中的这些字符原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/durex.py</code></td><td><code>dlshyzx</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -466,6 +468,9 @@
 <tr><td rowspan="1"><code>scripts/ole.py</code></td><td><code>OLE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；四个必填字段均为非空字符串。可选 shop_code 默认 205368，city_id 默认 c_region_11122，user_agent 默认保留上游值。兼容 account_name 字段但不输出用户填写的标签，避免泄漏手机号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/psnine.py</code></td><td><code>PSNINE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 psnid|shell，只按首个 | 分割；字段不能含分号、换行或非 ASCII 字符。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/pt_sign_v5.js</code></td><td><code>PT_SITE_HDKYL_CK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_SITE_CARPT_CK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_SITE_AFUN_CK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；accessToken 或 access_token、refreshToken 或 refresh_token 至少一项有效。device 内 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项均为必填单行字符串。enabled=true 或 qiandao=&quot;是&quot; 才执行，默认跳过。region 可选 cn/global。可保留 name、uid；serverchan、pushplus、qywx 为可选逐账号通知凭据。仅刷新模式必须有刷新令牌。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/quark_signin.py</code></td><td><code>QUARK_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留分号及等号，不使用 &amp;、&amp;&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/raccoon_daily.py</code></td><td><code>RACCOON_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号：令牌或备注|令牌，只在第一个 | 拆分，支持 Bearer 前缀，不支持 &amp; 或 @ 分隔账号。备注不输出。；多账号格式以该脚本文档为准</td></tr>
@@ -543,7 +548,7 @@
 <tr><td rowspan="1"><code>scripts/tjd_daily.py</code></td><td><code>TJD_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必含 token、deviceid 字符串；可选 uid（默认 0）、name、phone、password、openudid、vendorid、account_uid。兼容旧 JSON 对象或数组，不以 &amp; 或 @ 分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/trae_checkin.py</code></td><td><code>TRAE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；accessToken 或 refreshToken 或 session/sessionid 至少一种，配套 deviceId 为同账号真实 12 至 20 位数字。可选 deviceKeyPem、devicePubPem、machineId、uid、name、expiresAt、fingerprint；兼容 access_token、refresh_token、device_id、account_name、expires_at。显式 icubeAuth、storagePath 或 authPath 可替代明文凭据；旧 JSON 数组仅作兼容。预演只用占位明文，不读凭据文件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tsthb_checkin.py</code></td><td><code>tsthbck</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 user-token，不填请求头名称；不使用 &amp; 或 @ 分隔账号，字段内部字符保持原样。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：用户名|密码；仅切分第一个竖线，密码内的竖线、&amp;、@和空格原样保留；账号之间只能换行；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tyqhdraw.py</code></td><td><code>tyqhCookie</code></td><td>是</td><td>格式：每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/valorantstore.py</code></td><td><code>VALORANT_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；字段以分号分隔、名称与值以第一个等号分隔，后续等号原样保留。至少包含 userId、openid、access_token、ct，保留 tid、acctype 等其他原始 Cookie 字段。不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/vortexa_free_claim.js</code></td><td><code>VORTEXA_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，不使用任何符号分隔账号。支持 account/password、token、cookie、refresh；至少提供一组可用凭据。可选 fingerprint/userAgent 绑定同一账号；JSON 字符串保留密码中的分隔符。Cookie 仅填写请求头值，不包含 Cookie: 前缀；token 不含 Bearer 前缀。；多账号格式以该脚本文档为准</td></tr>
@@ -787,16 +792,18 @@
 <tr><td><code>WPS_DRY_RUN</code></td><td>否</td><td>格式：1 开启完全断网预演；默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余启用，默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录，不填则尝试导入 notify 和 /ql/data/scripts、/ql/scripts。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="10"><code>scripts/dailynewscn.js</code></td><td><code>DAILYNEWSCN_TASK</code></td><td>否</td><td>格式：dailynewscn（默认）、bdhot、chouq 或 day60s；各模式分别建立同文件任务。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>BDHOT_LIST</code></td><td>否</td><td>格式：推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>CHOUQ_LIST</code></td><td>否</td><td>格式：推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>DAY60S_LIST</code></td><td>否</td><td>格式：推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>DAILYNEWSCN_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演，其他值为正式运行；预演不加载通知模块。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>BDHOT_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演，其他值为正式运行；预演不加载通知模块。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>CHOUQ_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演，其他值为正式运行；预演不加载通知模块。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>DAY60S_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演，其他值为正式运行；预演不加载通知模块。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用（不区分大小写）。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；不需要下载或安装应用，不作为业务请求依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="12"><code>scripts/dailynewscn.js</code></td><td><code>BDHOT_LIST</code></td><td>否</td><td>格式：任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CHOUQ_LIST</code></td><td>否</td><td>格式：任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DAY60S_LIST</code></td><td>否</td><td>格式：任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DYHOT_LIST</code></td><td>否</td><td>格式：任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DAILYNEWSCN_TASK</code></td><td>否</td><td>格式：dailynewscn、bdhot、chouq、day60s 或 dyhot；分别使用 0 15 9 * * *、0 0 9 * * *、0 10 9 * * *、0 20 9 * * *、0 25 9 * * *，均指向同一文件。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DAILYNEWSCN_DRY_RUN</code></td><td>否</td><td>格式：1 启用；未配置时正式运行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>BDHOT_DRY_RUN</code></td><td>否</td><td>格式：1 启用；未配置时正式运行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CHOUQ_DRY_RUN</code></td><td>否</td><td>格式：1 启用；未配置时正式运行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DAY60S_DRY_RUN</code></td><td>否</td><td>格式：1 启用；未配置时正式运行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DYHOT_DRY_RUN</code></td><td>否</td><td>格式：1 启用；未配置时正式运行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off（不区分大小写）禁用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知模块不可用或失败不改变业务退出码，预演不加载模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/ddnsto.py</code></td><td><code>ddns_userid</code></td><td>是</td><td>格式：单个路由器ID，仅字母、数字、下划线或连字符；不接受多行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ddns_cookie</code></td><td>是</td><td>格式：单行完整 Cookie，含唯一且非空的 csrftoken；末尾不必带分号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>DDNSTO_DRY_RUN</code></td><td>否</td><td>格式：1 启用断网预演，0 执行真实续费；默认 0；也支持 true/false、yes/no、on/off。；多账号格式以该脚本文档为准</td></tr>
@@ -1103,6 +1110,21 @@
 <tr><td><code>PSNINE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="15"><code>scripts/pt_sign_v5.js</code></td><td><code>PT_SITE_HDKYL_URL</code></td><td>否</td><td>格式：无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_SITE_CARPT_URL</code></td><td>否</td><td>格式：无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_SITE_AFUN_URL</code></td><td>否</td><td>格式：无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_SITES</code></td><td>否</td><td>格式：逗号分隔的站点键，例如 hdkyl,carpt；这是站点选择设置，不是账号分隔符。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认实际签到；预演仍校验必需凭据的格式，但不验证真实账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_WEBHOOK_URL</code></td><td>是</td><td>格式：无内嵌用户名或密码的 HTTPS 完整地址；不要公开其中的推送密钥。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_WEBHOOK_TYPE</code></td><td>否</td><td>格式：feishu、bark、sct、ding、wx、custom；默认 custom。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_PROXY</code></td><td>是</td><td>格式：HTTP 或 HTTPS 代理地址，可含代理认证信息；默认直接连接。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_RETRY</code></td><td>否</td><td>格式：1 至 10 的整数，默认 3；签到提交超时或业务状态未知时停止自动重试，避免重复提交。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_TIMEOUT</code></td><td>否</td><td>格式：1000 至 120000 的整数，默认 20000；Webhook 固定 8000 毫秒；青龙通知最多等待 15000 毫秒。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_SAFELINE</code></td><td>否</td><td>格式：0 关闭，其他值启用；仅向挑战服务发送挑战令牌和浏览器属性，不发送账号 Cookie 或额外认证头。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_EXTRA_HEADERS</code></td><td>是</td><td>格式：key1:value1|key2:value2；仅在第一个冒号处分割；禁止 Cookie、认证、代理认证、Host、内容长度、Origin、Referer、Content-Type 和伪造来源 IP 等受保护字段。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PT_DEBUG</code></td><td>否</td><td>格式：1、true、yes、on 启用；不输出 HTML、表单令牌、Cookie、代理地址或原始响应。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭青龙通知及可选 Webhook；其他值开启。断网预演只模拟通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知模块不可用、失败或超时只记录状态，不改变签到退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="7"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS_FILE</code></td><td>否</td><td>格式：可选私有 JSONL 文件路径，内容与 QODER_ACCOUNTS 相同，设置后优先读取此文件作为兼容输入。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QODER_REGION</code></td><td>否</td><td>格式：cn 或 global，默认 cn；账号 region 优先。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QODER_ACTION</code></td><td>否</td><td>格式：checkin（默认）查询并领取活动；refresh 仅刷新令牌，仍须显式启用账号。；多账号格式以该脚本文档为准</td></tr>
@@ -1622,12 +1644,14 @@
 <tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：非负整数，单位秒；随机延迟开启时在 0 至该值之间随机选择并显示倒计时。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，忽略大小写。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录路径；不会下载安装通知组件。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="6"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：true启用随机延迟；其他值关闭；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0～86400的整数；账号间另外随机等待10～30秒；预演均不等待；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>TY_ACCOUNT_TIMEOUT</code></td><td>否</td><td>格式：10～600的整数；单次请求另有15秒超时，不自动重试；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭通知；其余启用；预演只生成摘要而不传输；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知目录路径；不可用或发送失败不改变业务退出码；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="8"><code>scripts/ty_netdisk_checkin.py</code></td><td><code>TY_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on启用；默认0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TY_DRAW_SIGNIN</code></td><td>否</td><td>格式：1、true、yes、on启用；0、false、no、off关闭；默认0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TY_DRAW_PHOTOS</code></td><td>否</td><td>格式：1、true、yes、on启用；0、false、no、off关闭；默认0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：仅true启用；默认true；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0～86400的整数；默认3600；断网预演不等待；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TY_ACCOUNT_TIMEOUT</code></td><td>否</td><td>格式：10～600的整数；默认60；需要Python 3.9及以上的青龙Linux或其他支持信号计时器的系统；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认1；0、false、no、off关闭；断网预演只生成通知摘要、不传输；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录路径；通知模块不可用或失败不改变业务退出码；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="6"><code>scripts/tyqhdraw.py</code></td><td><code>TYQH_DRAW_ENABLE</code></td><td>否</td><td>格式：0 或 1；默认 0；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>TYQH_DRAW_LIMIT</code></td><td>否</td><td>格式：1 至 10 的整数；默认 10；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>TYQH_DRY_RUN</code></td><td>否</td><td>格式：0 或 1；默认 0；多账号格式以该脚本文档为准</td></tr>
@@ -1822,6 +1846,7 @@
 - `scripts/ole.py`：每个非空行一个完整 JSON 账号对象，同一账号凭据合并在一行；逐账号独立执行，任一失败时整体非零退出。。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
 - `scripts/psnine.py`：每个非空行一个账号，psnid 与 shell 同行，仅按首个 | 分割。逐账号独立处理，任一账号失败则进程非零退出。。
+- `scripts/pt_sign_v5.js`：每个站点的 PT_SITE_<SITE>_CK 内每个非空行代表该站一个独立账号；Cookie 字段用分号分隔，字段值中的后续等号原样保留；不同站点及账号分别维护 Cookie 罐并独立执行，任一账号或必需配置失败时整体非零退出。。
 - `scripts/qoder_airscript.js`：每个非空行一个完整账号 JSON 对象，配套令牌、设备字段和逐账号通知凭据放在同一对象中；禁止用 &、@ 或其他字符分隔账号。各账号和各活动独立执行，任一账号失败时整体非零退出。。
 - `scripts/quark_signin.py`：每个非空行一个账号，完整 Cookie 作为一个字段保留；账号独立执行，任一账号失败则进程非零退出。。
 - `scripts/raccoon_daily.py`：每个非空行一个账号，令牌或备注|令牌；仅在第一个 | 拆分，保留后续凭据文本，支持 Bearer 前缀。账号和两端奖励独立处理，任一账号失败整体非零退出。。
@@ -1897,7 +1922,7 @@
 - `scripts/tjd_daily.py`：每个非空行一个账号 JSON 对象，同账号凭据组合在一行。兼容旧 JSON 数组和换行对齐的旧变量。各账号独立执行，任一失败整体非零退出。。
 - `scripts/trae_checkin.py`：TRAE_ACCOUNTS 每个非空行一个账号 JSON 对象，同账号令牌、Cookie、设备号和证明放在同一对象中；不使用 &、@ 或其他字符分隔账号。兼容旧 JSON 数组及带 _2 至 _9 后缀的旧令牌变量。账号独立处理，任一账号失败、未完成或配置错误时整体非零退出；重复会话单列统计，仍独立核验官方状态和余额。。
 - `scripts/tsthb_checkin.py`：每个非空行一个账号，按顺序独立执行；任一账号失败则整体非零退出。。
-- `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名|密码仅切分第一个竖线；账号独立执行，任意账号失败则整体非零退出。。
+- `scripts/ty_netdisk_checkin.py`：每个非空行一个账号，用户名与密码用第一个竖线配对；不得用&或@分隔账号。各账号独立执行；任意账号配置或业务失败，整体非零退出。。
 - `scripts/tyqhdraw.py`：每个非空行一个账号；同一账号的 thirdId 与 wid 写在同一行，保留原字段顺序。逐账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/valorantstore.py`：VALORANT_COOKIE 每个非空行一个完整账号 Cookie，ct 与该账号其他字段合并在同一行；按顺序独立执行，任一账号失败则整体非零退出。。
 - `scripts/vortexa_free_claim.js`：每个非空行一个 JSON 账号对象；同一账号的配套凭据放在同一对象。旧变量按非空行对齐，不使用 &、@ 或其他符号分隔账号。逐账号隔离登录与 Cookie；任一账号失败时整体退出码为 1。。
@@ -2167,8 +2192,8 @@
 #### `DAILYNEWSCN_LIST`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：无需注册或登录；在青龙手工填写 1，运行 dailynewscn 模式时必须设置此执行标记。不是账号凭据，不向接口发送。
-- 填写格式：`推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。`
+- 获取或设置：无需账号或凭据，在青龙环境变量手工填写 1；选择默认日报模式时必须配置此执行标记，其他模式无需配置。
+- 填写格式：`任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。`
 
 #### `DDNSTO_ACCOUNTS`
 
@@ -2485,6 +2510,27 @@
 - 所属脚本：`scripts/psnine.py`
 - 获取或设置：登录 https://psnine.com，在浏览器开发者工具的应用或存储面板读取本站 Cookie：__Psnine_psnid 与 __Psnine_shell。两项必须来自同一账号。不要复制整段 Cookie 或分享凭据。
 - 填写格式：`每个非空行填写 psnid|shell，只按首个 | 分割；字段不能含分号、换行或非 ASCII 字符。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PT_SITE_HDKYL_CK`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：在浏览器登录蝴蝶站点（www.hdkyl.in），打开开发者工具的网络面板，访问 attendance.php，复制请求头中的完整 Cookie。遇到 SafeLine 时先完成浏览器验证并包含 sl-challenge-jwt。仅供本人账号使用，不要公开。默认选择此站；未选择此站时无需配置。
+- 填写格式：`每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PT_SITE_CARPT_CK`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：在浏览器登录CARPT站点（carpt.net），打开开发者工具的网络面板，访问 attendance.php，复制请求头中的完整 Cookie。遇到 SafeLine 时先完成浏览器验证并包含 sl-challenge-jwt。仅供本人账号使用，不要公开。默认选择此站；未选择此站时无需配置。
+- 填写格式：`每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PT_SITE_AFUN_CK`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：在浏览器登录AFUN站点（www.ptlover.cc），打开开发者工具的网络面板，访问 attendance.php，复制请求头中的完整 Cookie。遇到 SafeLine 时先完成浏览器验证并包含 sl-challenge-jwt。仅供本人账号使用，不要公开。默认选择此站；未选择此站时无需配置。
+- 填写格式：`每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `QODER_ACCOUNTS`
@@ -3029,8 +3075,8 @@
 #### `TY_ACCOUNTS`
 
 - 所属脚本：`scripts/ty_netdisk_checkin.py`
-- 获取或设置：在天翼云盘官方客户端或官方网站确认账号及登录密码；忘记密码请使用官方找回流程，出现验证码或风控时先人工处理。旧 TY_USERNAME/TY_PASSWORD 须将同账号配对后合为本变量；不要修改密码中的特殊字符。
-- 填写格式：`每个非空行一个账号，格式：用户名|密码；仅在第一个 | 分割，后续密码原样保留；账号之间只能换行`
+- 获取或设置：在天翼云盘官方客户端确认登录用户名和账号密码；仅有短信登录时先在官方客户端设置密码。每个账号将用户名和密码合在一行添加到青龙环境变量。需要验证码时先人工完成官方登录，本脚本不绕过验证码。原私有 CLOUD189 配置的 phone/password 须迁移到此变量。
+- 填写格式：`每个非空行一个账号：用户名|密码；仅切分第一个竖线，密码内的竖线、&、@和空格原样保留；账号之间只能换行`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `tyqhCookie`
@@ -4482,65 +4528,77 @@
 - 获取或设置：可填写青龙平台 notify.py 或 sendNotify.js 所在目录，默认自动寻找标准通知位置；业务运行不依赖通知模块。
 - 填写格式：`本机通知模块目录，不填则尝试导入 notify 和 /ql/data/scripts、/ql/scripts。`
 
-#### `DAILYNEWSCN_TASK`
-
-- 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：在青龙环境变量或各任务命令环境中手工设置，默认中国日报。
-- 填写格式：`dailynewscn（默认）、bdhot、chouq 或 day60s；各模式分别建立同文件任务。`
-
 #### `BDHOT_LIST`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：无需注册或登录；在青龙手工填写 1，运行 bdhot 模式时必须设置此执行标记。不是账号凭据，不向接口发送。
-- 填写格式：`推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。`
+- 获取或设置：无需账号或凭据，在青龙环境变量手工填写 1；选择百度热搜模式时必须配置此执行标记，其他模式无需配置。
+- 填写格式：`任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。`
 
 #### `CHOUQ_LIST`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：无需注册或登录；在青龙手工填写 1，运行 chouq 模式时必须设置此执行标记。不是账号凭据，不向接口发送。
-- 填写格式：`推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。`
+- 获取或设置：无需账号或凭据，在青龙环境变量手工填写 1；选择随机抽签模式时必须配置此执行标记，其他模式无需配置。
+- 填写格式：`任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。`
 
 #### `DAY60S_LIST`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：无需注册或登录；在青龙手工填写 1，运行 day60s 模式时必须设置此执行标记。不是账号凭据，不向接口发送。
-- 填写格式：`推荐 1；兼容旧非空值和多行非空标记，每次只获取一次公开内容。`
+- 获取或设置：无需账号或凭据，在青龙环境变量手工填写 1；选择世界新闻模式时必须配置此执行标记，其他模式无需配置。
+- 填写格式：`任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。`
+
+#### `DYHOT_LIST`
+
+- 所属脚本：`scripts/dailynewscn.js`
+- 获取或设置：无需账号或凭据，在青龙环境变量手工填写 1；选择抖音热搜模式时必须配置此执行标记，其他模式无需配置。
+- 填写格式：`任意非空本地执行标记，推荐 1；兼容每行一个旧标记，忽略空行；多个标记仍只执行一次，不向接口发送。`
+
+#### `DAILYNEWSCN_TASK`
+
+- 所属脚本：`scripts/dailynewscn.js`
+- 获取或设置：在青龙任务中选择模式；默认 dailynewscn。
+- 填写格式：`dailynewscn、bdhot、chouq、day60s 或 dyhot；分别使用 0 15 9 * * *、0 0 9 * * *、0 10 9 * * *、0 20 9 * * *、0 25 9 * * *，均指向同一文件。`
 
 #### `DAILYNEWSCN_DRY_RUN`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：在青龙手工设置。统一开关适用于全部模式，其他开关仅适用于对应模式。
-- 填写格式：`1 为完全断网预演，其他值为正式运行；预演不加载通知模块。`
+- 获取或设置：手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。
+- 填写格式：`1 启用；未配置时正式运行。`
 
 #### `BDHOT_DRY_RUN`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：在青龙手工设置。统一开关适用于全部模式，其他开关仅适用于对应模式。
-- 填写格式：`1 为完全断网预演，其他值为正式运行；预演不加载通知模块。`
+- 获取或设置：手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。
+- 填写格式：`1 启用；未配置时正式运行。`
 
 #### `CHOUQ_DRY_RUN`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：在青龙手工设置。统一开关适用于全部模式，其他开关仅适用于对应模式。
-- 填写格式：`1 为完全断网预演，其他值为正式运行；预演不加载通知模块。`
+- 获取或设置：手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。
+- 填写格式：`1 启用；未配置时正式运行。`
 
 #### `DAY60S_DRY_RUN`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：在青龙手工设置。统一开关适用于全部模式，其他开关仅适用于对应模式。
-- 填写格式：`1 为完全断网预演，其他值为正式运行；预演不加载通知模块。`
+- 获取或设置：手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。
+- 填写格式：`1 启用；未配置时正式运行。`
+
+#### `DYHOT_DRY_RUN`
+
+- 所属脚本：`scripts/dailynewscn.js`
+- 获取或设置：手工设置为 1 启用断网预演；统一开关适用于所有模式，其他开关仅适用于对应模式。
+- 填写格式：`1 启用；未配置时正式运行。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：在青龙手工设置；正式通知使用青龙已有渠道配置。
-- 填写格式：`默认 1；0、false、no、off 禁用（不区分大小写）。`
+- 获取或设置：使用青龙已配置的通知渠道；手工设置此全局通知开关。
+- 填写格式：`默认 1；0、false、no、off（不区分大小写）禁用。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/dailynewscn.js`
-- 获取或设置：可选，填写青龙现有 sendNotify.js 所在目录；否则查找 /ql/data/scripts 和 /ql/scripts。
-- 填写格式：`本地目录路径；不需要下载或安装应用，不作为业务请求依赖。`
+- 获取或设置：可选填写青龙 sendNotify.js 所在目录；未配置时依次查找 /ql/data/scripts 和 /ql/scripts。
+- 填写格式：`本地目录路径；通知模块不可用或失败不改变业务退出码，预演不加载模块。`
 
 #### `ddns_userid`
 
@@ -6431,6 +6489,99 @@
 - 所属脚本：`scripts/psnine.py`
 - 获取或设置：可选填写青龙现有 notify.py 所在目录；也会尝试直接导入 notify 和青龙标准目录。
 - 填写格式：`本地目录路径；通知不可用或失败不改变业务退出码。`
+
+#### `PT_SITE_HDKYL_URL`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；默认使用 https://www.hdkyl.in/attendance.php；仅在站点迁移后填写可信签到页地址。
+- 填写格式：`无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。`
+
+#### `PT_SITE_CARPT_URL`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；默认使用 https://carpt.net/attendance.php；仅在站点迁移后填写可信签到页地址。
+- 填写格式：`无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。`
+
+#### `PT_SITE_AFUN_URL`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；默认使用 https://www.ptlover.cc/attendance.php；仅在站点迁移后填写可信签到页地址。
+- 填写格式：`无内嵌用户名或密码的 HTTPS 完整地址；不允许跨域重定向传递凭据。`
+
+#### `PT_SITES`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：默认运行 hdkyl、carpt、afun。只运行部分站点时，在青龙环境变量中设置要运行的站点键。
+- 填写格式：`逗号分隔的站点键，例如 hdkyl,carpt；这是站点选择设置，不是账号分隔符。`
+
+#### `PT_DRY_RUN`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：在青龙环境变量中设为 1 启用完全断网预演。
+- 填写格式：`1、true、yes、on 启用；默认实际签到；预演仍校验必需凭据的格式，但不验证真实账号。`
+
+#### `PT_WEBHOOK_URL`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；在自己的飞书、Bark、Server 酱、钉钉、企业微信或自定义推送服务创建推送地址。青龙通知自动发现，不依赖此变量。
+- 填写格式：`无内嵌用户名或密码的 HTTPS 完整地址；不要公开其中的推送密钥。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PT_WEBHOOK_TYPE`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：根据已配置的推送服务填写类型；保留原上游载荷格式。
+- 填写格式：`feishu、bark、sct、ding、wx、custom；默认 custom。`
+
+#### `PT_PROXY`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；填写自己已有的 HTTP 或 HTTPS 代理地址；不会下载或启动代理程序。
+- 填写格式：`HTTP 或 HTTPS 代理地址，可含代理认证信息；默认直接连接。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PT_RETRY`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；在青龙环境变量中设置获取页面失败时的最多尝试次数。
+- 填写格式：`1 至 10 的整数，默认 3；签到提交超时或业务状态未知时停止自动重试，避免重复提交。`
+
+#### `PT_TIMEOUT`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；按网络状况设置每次请求的超时毫秒数。
+- 填写格式：`1000 至 120000 的整数，默认 20000；Webhook 固定 8000 毫秒；青龙通知最多等待 15000 毫秒。`
+
+#### `PT_SAFELINE`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；默认启用上游 SafeLine 云端挑战流程，失败时在浏览器完成验证并更新完整 Cookie。
+- 填写格式：`0 关闭，其他值启用；仅向挑战服务发送挑战令牌和浏览器属性，不发送账号 Cookie 或额外认证头。`
+
+#### `PT_EXTRA_HEADERS`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；从本人站点请求中获取必要的额外请求头，通常无需设置。
+- 填写格式：`key1:value1|key2:value2；仅在第一个冒号处分割；禁止 Cookie、认证、代理认证、Host、内容长度、Origin、Referer、Content-Type 和伪造来源 IP 等受保护字段。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PT_DEBUG`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；设为 1 显示请求状态码、响应长度和解析步骤。
+- 填写格式：`1、true、yes、on 启用；不输出 HTML、表单令牌、Cookie、代理地址或原始响应。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：青龙通知全局开关，默认开启。
+- 填写格式：`0、false、no、off 关闭青龙通知及可选 Webhook；其他值开启。断网预演只模拟通知。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/pt_sign_v5.js`
+- 获取或设置：可选；指向本人青龙安装中已有 sendNotify.js 的目录；否则检查 /ql/data/scripts 和 /ql/scripts。
+- 填写格式：`本地目录路径；通知模块不可用、失败或超时只记录状态，不改变签到退出码。`
 
 #### `QODER_ACCOUNTS_FILE`
 
@@ -9739,38 +9890,50 @@
 #### `TY_DRY_RUN`
 
 - 所属脚本：`scripts/ty_netdisk_checkin.py`
-- 获取或设置：预演时设为1；默认0。
-- 填写格式：`1、true、yes、on 启用完全断网预演`
+- 获取或设置：需要断网验证时在青龙环境变量设置为1；正式执行时设为0或删除。
+- 填写格式：`1、true、yes、on启用；默认0`
+
+#### `TY_DRAW_SIGNIN`
+
+- 所属脚本：`scripts/ty_netdisk_checkin.py`
+- 获取或设置：希望签到后抽取当天已有的签到奖励机会时手动启用。
+- 填写格式：`1、true、yes、on启用；0、false、no、off关闭；默认0`
+
+#### `TY_DRAW_PHOTOS`
+
+- 所属脚本：`scripts/ty_netdisk_checkin.py`
+- 获取或设置：希望抽取已有相册任务奖励机会时手动启用；需自行在官方客户端取得资格，本脚本不启用相册备份或上传照片。
+- 填写格式：`1、true、yes、on启用；0、false、no、off关闭；默认0`
 
 #### `RANDOM_SIGNIN`
 
 - 所属脚本：`scripts/ty_netdisk_checkin.py`
-- 获取或设置：按需要设置；默认true。验证接口时可设false，避免随机等待。
-- 填写格式：`true启用随机延迟；其他值关闭`
+- 获取或设置：按需要设置签到前随机等待；沿用已维护版本默认值，验证时可设为false。
+- 填写格式：`仅true启用；默认true`
 
 #### `MAX_RANDOM_DELAY`
 
 - 所属脚本：`scripts/ty_netdisk_checkin.py`
-- 获取或设置：按需要设置随机等待上限；默认3600秒。
-- 填写格式：`0～86400的整数；账号间另外随机等待10～30秒；预演均不等待`
+- 获取或设置：在青龙环境变量填写签到前随机延迟的最大秒数。
+- 填写格式：`0～86400的整数；默认3600；断网预演不等待`
 
 #### `TY_ACCOUNT_TIMEOUT`
 
 - 所属脚本：`scripts/ty_netdisk_checkin.py`
-- 获取或设置：按网络条件设置；默认60秒，每账号独立总时限，不包含随机等待。
-- 填写格式：`10～600的整数；单次请求另有15秒超时，不自动重试`
+- 获取或设置：在青龙环境变量填写每个账号HTTP流程的总秒数；包括登录、签到及启用的奖励阶段，不包括随机等待。
+- 填写格式：`10～600的整数；默认60；需要Python 3.9及以上的青龙Linux或其他支持信号计时器的系统`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/ty_netdisk_checkin.py`
-- 获取或设置：青龙环境变量中设置；默认1。
-- 填写格式：`0、false、no、off关闭通知；其余启用；预演只生成摘要而不传输`
+- 获取或设置：使用青龙现有通知配置；如需关闭任务通知设置为0。
+- 填写格式：`默认1；0、false、no、off关闭；断网预演只生成通知摘要、不传输`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/ty_netdisk_checkin.py`
-- 获取或设置：可选：填写青龙现有 notify.py 所在目录；也会尝试导入 notify 及青龙标准目录。
-- 填写格式：`本机通知目录路径；不可用或发送失败不改变业务退出码`
+- 获取或设置：可选填写青龙通知模块所在目录；不需要额外仓库或业务依赖。未设置时查找可导入的notify.py及青龙标准脚本目录，再尝试sendNotify.js。
+- 填写格式：`可选目录路径；通知模块不可用或失败不改变业务退出码`
 
 #### `TYQH_DRAW_ENABLE`
 
@@ -10541,7 +10704,7 @@
 - `scripts/crealitycloud_checkin.py`：SHA-256 `65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
 - `scripts/dachao.py`：SHA-256 `5745d76090d1c471883f40df8aead8ad74fd0f1b7fe8db24c7b995bac3dc25a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7b77205efaf0158a`。
 - `scripts/daily_benefits.py`：SHA-256 `9a155b77acadb949a6fedf73bdd5e63ec7684a45fabd5143b66ac1873f27676b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/35a9f7fe38bde305`。
-- `scripts/dailynewscn.js`：SHA-256 `fff87c1f47b18834be3477951ba6642e84e30b88da6af7aaa291ace67e507da6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f3d5ae90c3c979bf`。
+- `scripts/dailynewscn.js`：SHA-256 `a0fd29cfd915eb14a4907f4872d9c9edb29ab42e409869c99469d851fdf65c08`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f3d5ae90c3c979bf`。
 - `scripts/ddnsto.py`：SHA-256 `a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
 - `scripts/deepflood_checkin.py`：SHA-256 `1743ea3da4f0ef463f70619fb5a49d375dc48e5817d867ea080875a12b3f68c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01d51606a735260a`。
 - `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
@@ -10586,6 +10749,7 @@
 - `scripts/ole.py`：SHA-256 `5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
 - `scripts/psnine.py`：SHA-256 `c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
+- `scripts/pt_sign_v5.js`：SHA-256 `00c5772a3b7bacd61255515237ab1bd9f1d9d075d9bbf32d8ce4ec8c123552d2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ff443f9fbbdbade5`。
 - `scripts/qoder_airscript.js`：SHA-256 `e1e74cc7bb351cb9b95995c142025eebec911240c0b7e54d0a9fb62b60e54480`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 - `scripts/quark_signin.py`：SHA-256 `2487b5cd4a53457b8d0ce2000f154668060333a0483b846a52a9d329da18a5bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
 - `scripts/raccoon_daily.py`：SHA-256 `3ebdbfeaf41c75c467fdeb6f2e11889b5a985cacfc3b7203679348087ed36b63`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
@@ -10661,7 +10825,7 @@
 - `scripts/tjd_daily.py`：SHA-256 `95bb1d686b6e91e37c588601be134a99e9715c943ea99b63f6fda75fd0d51943`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e096ba77bcda7172`。
 - `scripts/trae_checkin.py`：SHA-256 `45962500ef7a2bad52fda864d421f76bf3639e6ee0fb6dee695b394eb34199b8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71de90498a3a6ded`。
 - `scripts/tsthb_checkin.py`：SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
-- `scripts/ty_netdisk_checkin.py`：SHA-256 `c35e0283ba47fa3652469504e70a40383c7fc0729a6cee7e96f1cf65383ad0f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
+- `scripts/ty_netdisk_checkin.py`：SHA-256 `096668383bde7522670dd87830f0e8b48ed4ce3e142e723c6fe6ebce238f99f2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 - `scripts/tyqhdraw.py`：SHA-256 `c2c1115b60fd085034eb55d28ffb8fd3cb6476263eeff23f53f5bea8ad892b7e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
 - `scripts/valorantstore.py`：SHA-256 `e7b189720b1086ca20bad310b392de69d4f75c7fa0660ed843120affa4bcc0fb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1153449ac9321744`。
 - `scripts/vortexa_free_claim.js`：SHA-256 `4a9d6c8d8e147991d196f0ddebf7c74f200c9e12ab1fca721555034e46e2da04`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f027fefd96fedf2`。
@@ -10759,6 +10923,7 @@
 - `scripts/ole.py`：正式模式向 Ole 提交会员签到，可能增加签到记录及奖励积分；正式模式按青龙配置发送任务通知。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
 - `scripts/psnine.py`：向 PSNINE 提交每日祈祷签到，改变签到记录及服务发放的奖励；实时模式向配置的青龙通知渠道发送脱敏任务摘要。
+- `scripts/pt_sign_v5.js`：向选中站点提交签到，可能增加站点奖励及连续签到计数；遇到 SafeLine 时提交挑战验证并更新当前进程内的会话 Cookie，不写入文件；实际运行后向已有青龙通知服务和可选 Webhook 发送脱敏任务总结；全局开关关闭时不发送。
 - `scripts/qoder_airscript.js`：显式启用账号后领取可领活动奖励；必要时或仅刷新模式下刷新令牌，可能轮换刷新令牌；显式配置私有账号文件时写回轮换令牌；通知开启时投递青龙汇总及已配置的逐账号通知。
 - `scripts/quark_signin.py`：实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励；实时模式下启用通知时通过青龙发送脱敏任务摘要。
 - `scripts/raccoon_daily.py`：正式模式请求 setting_info 触发每日积分发放。；正式模式默认领取桌面端、手机端一次性登录积分。；正式模式将确认结算的奖励状态写入本地哈希台账。；通知开启时尝试发送脱敏任务摘要。。
@@ -10834,7 +10999,7 @@
 - `scripts/tjd_daily.py`：社区签到增加金币和经验；浏览帖子增加阅读及任务进度；绑定游戏签到领取奖励；明确启用后给帖子点赞；明确启用后上报帖子分享回调；可选密码重登创建登录会话，可能使旧会话失效。
 - `scripts/trae_checkin.py`：签到领取积分；续期在服务端轮换刷新凭据；以 0600 权限原子更新本地令牌缓存、签到状态及冷却文件；显式 login 发起官方授权、轮换刷新凭据并以 0600 权限保存新 auth 文件；正式运行向青龙通知器及显式配置的企业微信、PushPlus 发送脱敏摘要；长效 Cookie 续期更新服务端网页会话，并以 0600 权限缓存网页会话及访问令牌；预演向本地青龙通知器提交脱敏摘要，禁止网络投递。
 - `scripts/tsthb_checkin.py`：向官方签到接口提交每日签到，可能获得积分或奖励；正式运行且通知开启时，通过已有青龙通知模块发送脱敏结果。
-- `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加奖励空间；正式模式按通知配置发送脱敏任务结果。
+- `scripts/ty_netdisk_checkin.py`：正式模式每日签到可能增加账号奖励空间；启用签到奖励开关后，正式模式可能消耗当天已有签到抽奖机会并增加奖励空间；启用相册奖励开关后，正式模式可能消耗已有相册任务抽奖机会并增加奖励空间；正式模式按通知配置发送脱敏任务结果。
 - `scripts/tyqhdraw.py`：登录创建账号会话；显式开启时兑换抽奖，可能消耗资产或抽奖机会并获得奖品；抽奖遇到滑块时提交验证码验证；启用通知时通过青龙通知渠道发送脱敏任务统计。
 - `scripts/valorantstore.py`：实时模式调用认证接口刷新账号票据，仅保存在当前独立会话内存中。；通知开启时向已配置青龙通知渠道发送脱敏商店与任务总结。；通知开启且配置 Telegram 时发送商品长图；生成的本地临时图片在发送后删除。。
 - `scripts/vortexa_free_claim.js`：使用密码或刷新 Cookie 登录时创建或续期服务端登录会话；更新的访问 Token 和 Cookie 仅保存在本次进程内，不写文件。；仅在 VORTEXA_CLAIM 开启且产品套餐明确免费时提交免费主机领取，创建账号免费主机服务。；启用通知时通过已有青龙 sendNotify.js 发送脱敏任务总结；预演通知受断网保护。。
@@ -10934,6 +11099,7 @@
 - `scripts/ole.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/ole/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/psnine.py`：上游 `nuthx/auto-sign` / `src/special/psnine.py` / `a8d2c229bac693daebe1535bca4cfd49733b632d`。
+- `scripts/pt_sign_v5.js`：上游 `Flyingpen/PT-sign` / `PT-sign-V5.js` / `5c6cf9d38020c327f9a30c3977eb7765e4d2c5c2`。
 - `scripts/qoder_airscript.js`：上游 `wallechfox/qoder-checkin` / `qoder-checkin-金山云文档/Qoder签到-金山文档AirScript.js` / `19ab6365c1f0759bb424a3d69e7de8dca89bf75d`。
 - `scripts/quark_signin.py`：上游 `agluo/ql-script-hub` / `quark_signin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/raccoon_daily.py`：上游 `L0NE-6/Raccoon-Daily` / `raccoon_daily.py` / `4e99a3b53829faf3ae228755b0f4c32859d25425`。

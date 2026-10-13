@@ -24,8 +24,12 @@ CHOUQ_DRY_RUN=1 兼容抽签断网预演；不自动添加其他任务或更改�
 DAY60S_LIST 在青龙手工填写 1，兼容旧非空值；无需注册或获取凭据，不发送标记。
 DAY60S_DRY_RUN=1 兼容该模式断网预演；统一预演开关对所有模式生效。
 世界新闻另建同文件任务，设置 DAILYNEWSCN_TASK=day60s，定时 0 20 9 * * *。
-抖音榜 DYHOT_LIST 09:25 仅作为文本接口参考，不新增其任务、不变更其调度。
-功能覆盖对比：原维护日报、百度榜、抽签全部保留；仅补充主来源60秒世界新闻。
+新增 DAILYNEWSCN_TASK=dyhot：HTTPS GET https://jkapi.com/api/dy_hot?limit=5 获取抖音前五热搜。
+DYHOT_LIST 为本地执行标记，在青龙手工填写 1；无需账号，不发送标记。
+DYHOT_DRY_RUN=1 兼容抖音榜断网预演；统一预演开关对所有模式生效。
+抖音榜另建同文件任务，设置 DAILYNEWSCN_TASK=dyhot，保持定时 0 25 9 * * *。
+功能覆盖对比：原维护日报、百度榜、抽签、世界新闻全部保留；仅补充主来源抖音前五热搜。
+修正前轮导入失败：契约 smokeTest.env 必须包含 dryRunEnv 的全部键值。
 上游均公开读取并通知；移除私有工作表适配器、写表和无超时请求。
 本任务无需账号，LIST 是执行标记，不能当作凭据或真实账号成功数。
 参数获取：所有 LIST 均为本地执行标记，在青龙环境变量手工填写 1，不需要注册或登录。
@@ -35,7 +39,7 @@ DAY60S_DRY_RUN=1 兼容该模式断网预演；统一预演开关对所有模式
 参考来源：hot/chouq.js、hot/dailynewscn.js、hot/bdhot.js、hot/day60s.js、hot/dyhot.js。
 各源原作者标识均为 ql_sign_script : https://github.com/unitaryhighs/ql_sign_script，MIT。
 不复用上游私有 airscriptShim、工作表写入和自定义推送凭据。
-仅访问所选任务的上游公开日报、百度热搜、抽签或世界新闻接口，不写表格、不发布帖子、不修改账号。
+仅访问所选任务的上游公开日报、百度热搜、抽签、世界新闻或抖音热搜接口，不写表格、不发布帖子、不修改账号。
 
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -61,14 +65,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const requestedTask = process.env.DAILYNEWSCN_TASK === undefined ? 'dailynewscn' : process.env.DAILYNEWSCN_TASK.trim();
-const task = ['dailynewscn', 'bdhot', 'chouq', 'day60s'].includes(requestedTask) ? requestedTask : 'invalid';
+const task = ['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot'].includes(requestedTask) ? requestedTask : 'invalid';
 const isBaidu = task === 'bdhot';
 const isDraw = task === 'chouq';
 const isWorld = task === 'day60s';
-const TITLE = isWorld ? '每天60秒读懂世界' : isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
-const marker = isWorld ? 'DAY60S_LIST' : isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
-const URL = isWorld ? 'https://jkapi.com/api/day_60s' : isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
-const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1') || (isWorld && process.env.DAY60S_DRY_RUN === '1');
+const isDouyin = task === 'dyhot';
+const TITLE = isDouyin ? '抖音热搜榜' : isWorld ? '每天60秒读懂世界' : isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
+const marker = isDouyin ? 'DYHOT_LIST' : isWorld ? 'DAY60S_LIST' : isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
+const URL = isDouyin ? 'https://jkapi.com/api/dy_hot?limit=5' : isWorld ? 'https://jkapi.com/api/day_60s' : isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
+const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1') || (isWorld && process.env.DAY60S_DRY_RUN === '1') || (isDouyin && process.env.DYHOT_DRY_RUN === '1');
 const started = Date.now();
 const stamp = () => new Date().toLocaleTimeString('zh-CN', { hour12: false });
 const log = text => console.log(`[${stamp()}] ${text}`);
@@ -124,7 +129,7 @@ function parseReport(text) {
   if (cleaned.length < 20 || !/[\u3400-\u9fff]/u.test(cleaned) ||
       /^[\[{]/.test(cleaned) || /<\/?(?:html|body|script|head)\b/i.test(cleaned) ||
       /(?:接口|请求|服务|参数).{0,12}(?:失败|错误|异常|限流|无效|维护)|访问频繁|请求过多|额度不足|今日暂无|暂无数据|暂无新闻|access denied|unauthorized|rate limit|internal server error/i.test(cleaned)) {
-    throw new Error(isBaidu ? '热搜内容为空、错误提示或无法验证为榜单文本' : '日报内容为空、错误提示或无法验证为新闻文本');
+    throw new Error((isBaidu || isDouyin) ? '热搜内容为空、错误提示或无法验证为榜单文本' : '日报内容为空、错误提示或无法验证为新闻文本');
   }
   const lines = cleaned.split(/\r?\n/).map(line => line.replace(/[\u0000-\u001f\u007f-\u009f]/g, '').trim()).filter(Boolean);
   return lines.map(line => line
@@ -196,9 +201,9 @@ async function main() {
   const stageStart = Date.now();
   log('阶段 1/3：检查执行参数');
   const entries = (process.env[marker] || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-  if (!['dailynewscn', 'bdhot', 'chouq', 'day60s'].includes(task) || !entries.length) {
+  if (!['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot'].includes(task) || !entries.length) {
     failure = 1;
-    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn、bdhot、chouq 或 day60s；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
+    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn、bdhot、chouq、day60s 或 dyhot；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
     log('阶段 2/3：⏭️ 配置错误，跳过获取；阶段耗时 0 毫秒');
   } else {
     log(`✅ 执行标记检查通过；阶段耗时 ${Date.now() - stageStart} 毫秒`);
@@ -206,7 +211,7 @@ async function main() {
     log(`阶段 2/3：获取并验证${TITLE}`);
     try {
       if (dryRun) {
-        report = isDraw ? parseDraw(JSON.stringify({ data: { draw: '本地测试签 (上签)', annotate: '本地卦象，仅验证格式', explain: '本地解签　仅用于断网预演', source: '本地典故。非真实抽签结果。' } })) : parseReport(isWorld ? '每天60秒读懂世界断网预演\n这是一条本地世界新闻，仅用于验证文本处理流程，不代表今日真实新闻。' : isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
+        report = isDraw ? parseDraw(JSON.stringify({ data: { draw: '本地测试签 (上签)', annotate: '本地卦象，仅验证格式', explain: '本地解签　仅用于断网预演', source: '本地典故。非真实抽签结果。' } })) : parseReport(isDouyin ? '抖音热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : isWorld ? '每天60秒读懂世界断网预演\n这是一条本地世界新闻，仅用于验证文本处理流程，不代表今日真实新闻。' : isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
         skipped = 1;
         status = 'dry-run';
         log(`✅ DRY_RUN_OK：本地${TITLE}解析通过，HTTP 请求已跳过`);
@@ -215,7 +220,7 @@ async function main() {
         report = isDraw ? parseDraw(responseText) : parseReport(responseText);
         success = 1;
         status = 'success';
-        log(`✅ ${isWorld ? 'DAY60S_SUCCESS' : isDraw ? 'CHOUQ_SUCCESS' : isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及${isDraw ? '签文结构' : '文本'}检查通过，共 ${report.length} 行`);
+        log(`✅ ${isDouyin ? 'DYHOT_SUCCESS' : isWorld ? 'DAY60S_SUCCESS' : isDraw ? 'CHOUQ_SUCCESS' : isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及${isDraw ? '签文结构' : '文本'}检查通过，共 ${report.length} 行`);
         console.log(`【${TITLE}】\n` + report.join('\n'));
       }
     } catch (error) {
