@@ -5520,6 +5520,185 @@
       }
     },
     {
+      "catalogId": "2f4c8afd9b69b090",
+      "applicationKey": "oreoslab/checkinpanel::aqc",
+      "checkProfile": {
+        "requiredEnv": [
+          "AQC_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "AQC",
+          "AQC_TASKS",
+          "AQC_MONITOR_IDS",
+          "AQC_FOLLOW_IDS",
+          "AQC_LIKE_TARGET",
+          "AQC_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AQC_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态 success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "登录状态核验及官方非敏感账号身份展示",
+          "热搜词获取与账号独立查询词库",
+          "每日签到、每日登录与任务进度复核",
+          "查询企业、老板、老赖、商标、地图及企业关系",
+          "浏览新闻、监控日报、互动详情",
+          "高级搜索、高级筛选",
+          "使用本账号 exportkey 访问批量查询结果并复核进度",
+          "显式启用并指定目标后添加监控、关注和点赞",
+          "显式启用后获取分享链接，不输出或模拟他人访问",
+          "两轮任务执行、领取可领取奖励及查询爱豆积分",
+          "多账号隔离、断网预演、超时、脱敏日志与结构化汇总",
+          "青龙通知及投递失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "签到并记录登录或查询浏览任务进度",
+          "领取任务奖励并增加爱豆积分",
+          "显式启用后添加指定企业监控",
+          "显式启用后添加指定企业关注",
+          "显式启用后为指定观点点赞"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "爱企查每日任务",
+      "path": "scripts/ck_aqc.js",
+      "sha256": "50092e54a944fd3c08f134bbed637e9c0a1d923bc416018811ae437ba5485fc8",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_aqc.js"
+      },
+      "cron": "37 0-23/8 * * *",
+      "command": "node scripts/ck_aqc.js",
+      "environment": [
+        {
+          "name": "AQC_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录百度爱企查，通过开发者工具网络面板复制发往 aiqicha.baidu.com 的请求 Cookie。批量查询所需 exportkey 从本人批量查询结果页面地址取得。不要公开凭据。",
+          "format": "每个非空行一个账号：完整 Cookie 或完整 Cookie|exportkey；仅按首个竖线拆分，后续内容保留为 exportkey。禁止用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "AQC",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧变量兼容输入，优先使用 AQC_ACCOUNTS；上游私有 getData().AQC 配置需迁移，不再读取私有文件。",
+          "format": "与 AQC_ACCOUNTS 相同，每行一个账号。"
+        },
+        {
+          "name": "AQC_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需求选择任务编号；默认仅启用签到、登录及查询浏览。",
+          "format": "逗号分隔编号；默认 CX10002,CX10001,CX11001,CX11002,CX11003,CX11004,CX11005,CX11006,CX11007,CX11009,CX12007,CX12008,CX12009。额外可选 CX11010 批量查询、CX12001 添加监控、CX12002 添加关注、CX12005 获取分享链接、CX12011 点赞。邀请 CX12006 无接口，不支持。"
+        },
+        {
+          "name": "AQC_MONITOR_IDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人希望监控的爱企查企业页面取得企业编号；仅在明确启用 CX12001 时使用。",
+          "format": "逗号分隔数字企业编号；不会自动取消监控。"
+        },
+        {
+          "name": "AQC_FOLLOW_IDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人希望关注的爱企查企业页面取得企业编号；仅在明确启用 CX12002 时使用。",
+          "format": "逗号分隔数字企业编号；不会自动取消关注。"
+        },
+        {
+          "name": "AQC_LIKE_TARGET",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人希望点赞的互动详情及观点请求取得 nid 和 reply_id；仅在明确启用 CX12011 时使用。",
+          "format": "互动编号,观点编号，两个数字编号。"
+        },
+        {
+          "name": "AQC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在本地或青龙配置为 1，执行断网预演。",
+          "format": "1 为断网预演；其他值为实跑。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙环境变量控制通知，默认开启。",
+          "format": "0、false、no、off 关闭；其余值开启。断网预演仅生成脱敏通知总结，不调用网络投递器。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "若青龙通知模块不在默认目录，指定 sendNotify.js 所在目录，仅用于可选通知。",
+          "format": "含 sendNotify.js 的目录；默认查找 /ql/data/scripts 和 /ql/scripts。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；Cookie 与 exportkey 用首个竖线组合。账号串行隔离，任一失败整体非零退出；可选目标编号适用于所有明确启用相应任务的账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "登录状态核验及官方非敏感账号身份展示",
+        "热搜词获取与账号独立查询词库",
+        "每日签到、每日登录与任务进度复核",
+        "查询企业、老板、老赖、商标、地图及企业关系",
+        "浏览新闻、监控日报、互动详情",
+        "高级搜索、高级筛选",
+        "使用本账号 exportkey 访问批量查询结果并复核进度",
+        "显式启用并指定目标后添加监控、关注和点赞",
+        "显式启用后获取分享链接，不输出或模拟他人访问",
+        "两轮任务执行、领取可领取奖励及查询爱豆积分",
+        "多账号隔离、断网预演、超时、脱敏日志与结构化汇总",
+        "青龙通知及投递失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "签到并记录登录或查询浏览任务进度",
+        "领取任务奖励并增加爱豆积分",
+        "显式启用后添加指定企业监控",
+        "显式启用后添加指定企业关注",
+        "显式启用后为指定观点点赞"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/2f4c8afd9b69b090",
+        "candidateSha256": "9d24a0cb63c86498f5d2817b2a59c3bae7a869f370e574d5030f9880aaad0e2a"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "9d24a0cb63c86498f5d2817b2a59c3bae7a869f370e574d5030f9880aaad0e2a",
+        "releaseSha256": "50092e54a944fd3c08f134bbed637e9c0a1d923bc416018811ae437ba5485fc8",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "cbcac1d0442bb8ef",
       "applicationKey": "oreoslab/checkinpanel::baidu",
       "checkProfile": {
@@ -6282,6 +6461,178 @@
       }
     },
     {
+      "catalogId": "c722e904dffeaf49",
+      "applicationKey": "oreoslab/checkinpanel::duokan",
+      "checkProfile": {
+        "requiredEnv": [
+          "DUOKAN_COOKIE"
+        ],
+        "optionalEnv": [
+          "DUOKAN",
+          "DUOKAN_DRY_RUN",
+          "DUOKAN_FREE",
+          "DUOKAN_DELAY",
+          "DUOKAN_DRAW",
+          "DUOKAN_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DUOKAN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "DUOKAN_FREE": "0",
+          "DUOKAN_DELAY": "0",
+          "DUOKAN_DRAW": "0",
+          "DUOKAN_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "每日签到：业务成功已核验",
+          "书豆查询：业务成功已核验",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日签到，保留上游时间戳与设备字段校验算法。",
+          "查询当前书豆总量、各批次数量、到期日期和可延期状态。",
+          "可选延长符合条件的书豆有效期。",
+          "可选领取频道限免图书，仅提交零价格请求。",
+          "可选消耗已有机会参加上游抽奖活动，最多六次且失败即停止。",
+          "多账号独立处理、凭据格式检查、无网络预演、请求超时和明确业务成功核验。",
+          "显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。",
+          "脱敏时间轴、阶段与账号统计、唯一单行结构化任务汇总以及青龙通知。"
+        ],
+        "sideEffects": [
+          "每日签到改变签到状态并可能获得书豆。",
+          "开启 DUOKAN_FREE 时领取图书并改变书架或购买记录。",
+          "开启 DUOKAN_DELAY 时修改可延期书豆批次的有效期。",
+          "开启 DUOKAN_DRAW 时消耗已有抽奖机会并可能领取活动奖励。",
+          "真实模式且通知启用时，通过青龙通知模块发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "多看阅读",
+      "path": "scripts/ck_duokan.py",
+      "sha256": "761187366b78083a2345c626db63d1ed6104b63f726bfd37fd2bc99f4348861a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_duokan.py"
+      },
+      "cron": "30 20 * * *",
+      "command": "python3 scripts/ck_duokan.py",
+      "environment": [
+        {
+          "name": "DUOKAN_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人已登录的多看阅读网页中，打开浏览器开发者工具的网络面板，查看发往 www.duokan.com 的签到或书豆请求，复制请求头中完整 Cookie。必须包含 device_id 和同一账号的登录会话字段；不要复制 Set-Cookie，不要公开凭据。若网页请求缺少这些字段，应从本人多看客户端同域请求获取，不能自行编造字段。",
+          "format": "每个非空行一个账号的完整 Cookie；字段以分号分隔，各字段仅在第一个等号处分割，保留值中的后续等号。"
+        },
+        {
+          "name": "DUOKAN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入；获取方式同 DUOKAN_COOKIE。原脚本通过私有 utils.get_data 读取 DUOKAN 账号列表，本版本不依赖该配置文件；请导出其中 cookie 字段。规范变量有值时优先使用规范变量。",
+          "format": "每行一个完整 Cookie；也接受上游账号列表的 JSON 数组，每项含 cookie 字段。"
+        },
+        {
+          "name": "DUOKAN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 开启完全断网预演；格式检查成功不代表真实签到成功。",
+          "format": "默认 0；1 或 0，也接受 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "DUOKAN_FREE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "明确希望领取频道限免图书时设为 1。仅提交价格为零的原始领书请求，不回退到付费购买。",
+          "format": "默认 0；1 开启、0 关闭。"
+        },
+        {
+          "name": "DUOKAN_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "明确希望延长可延期书豆有效期时设为 1；只处理书豆查询返回 delay 为 1 的批次。",
+          "format": "默认 0；1 开启、0 关闭。"
+        },
+        {
+          "name": "DUOKAN_DRAW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "明确同意消耗已有抽奖机会时设为 1。沿用上游活动编号，每个账号最多尝试六次，任一次失败立即停止；不会增加或伪造机会。旧活动可能已失效，失败不会视为完成。",
+          "format": "默认 0；1 开启、0 关闭。"
+        },
+        {
+          "name": "DUOKAN_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选请求超时设置；状态变更请求失败后不自动重试，避免重复操作。",
+          "format": "默认 15；1 至 60 之间的有限秒数。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认调用青龙 notify.py 发送脱敏总结；设为 0、false、no 或 off 关闭。预演时只模拟通知以保证完全断网。模块不可用或失败时保留业务退出码。",
+          "format": "默认 1；0、false、no、off 为关闭值，不区分大小写。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙 notify.py 所在目录；还会查找可导入的 notify 模块、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。只用于通知，业务逻辑不依赖外部仓库。",
+          "format": "本机通知模块目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，使用同一账号的完整 Cookie 合并设备字段和登录会话字段；不得以 & 或 @ 分隔账号。各账号独立执行，任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到，保留上游时间戳与设备字段校验算法。",
+        "查询当前书豆总量、各批次数量、到期日期和可延期状态。",
+        "可选延长符合条件的书豆有效期。",
+        "可选领取频道限免图书，仅提交零价格请求。",
+        "可选消耗已有机会参加上游抽奖活动，最多六次且失败即停止。",
+        "多账号独立处理、凭据格式检查、无网络预演、请求超时和明确业务成功核验。",
+        "显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。",
+        "脱敏时间轴、阶段与账号统计、唯一单行结构化任务汇总以及青龙通知。"
+      ],
+      "sideEffects": [
+        "每日签到改变签到状态并可能获得书豆。",
+        "开启 DUOKAN_FREE 时领取图书并改变书架或购买记录。",
+        "开启 DUOKAN_DELAY 时修改可延期书豆批次的有效期。",
+        "开启 DUOKAN_DRAW 时消耗已有抽奖机会并可能领取活动奖励。",
+        "真实模式且通知启用时，通过青龙通知模块发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c722e904dffeaf49",
+        "candidateSha256": "761187366b78083a2345c626db63d1ed6104b63f726bfd37fd2bc99f4348861a"
+      }
+    },
+    {
       "catalogId": "08575e47b55daffb",
       "applicationKey": "oreoslab/checkinpanel::everphoto",
       "checkProfile": {
@@ -6407,6 +6758,126 @@
         "type": "qinglong-discovery-metadata",
         "validatedSha256": "19759deb5e4a95619f349e9283a758e2b60c11460aba60d6d180418e4d2c09f7",
         "releaseSha256": "1c503ab4c6801ad18b37fa4b979bf3bf3bdb87dadace5ebb8d44c038966e35ae",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "b448219b57620cb7",
+      "applicationKey": "oreoslab/checkinpanel::fmapp",
+      "checkProfile": {
+        "requiredEnv": [
+          "FMAPP"
+        ],
+        "optionalEnv": [
+          "FMAPP_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "FMAPP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "FMAPP_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"mode\":\"live\",\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日 App 签到并显示下一次及累计签到发米粒奖励信息",
+          "查询并原样显示官方返回的非敏感账号昵称",
+          "查询发米粒余额",
+          "每行一个 JSON 账号，保留上游四个凭据字段及三个可选请求头默认值",
+          "完全断网预演、分阶段脱敏日志、账号统计及单行 TASK_SUMMARY 结构化结果",
+          "正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭"
+        ],
+        "sideEffects": [
+          "向 Fa米家提交每日签到，按服务端规则更新签到记录并发放发米粒"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Fa米家每日签到与发米粒查询",
+      "path": "scripts/ck_fmapp.py",
+      "sha256": "cf54bcf59156219426860a1c43d3467c51b8a7ae3b1f726612aff8d51557d227",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_fmapp.py"
+      },
+      "cron": "30 14 * * *",
+      "command": "python3 scripts/ck_fmapp.py",
+      "environment": [
+        {
+          "name": "FMAPP",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在自己的手机登录 Fa米家 App，使用本人授权的抓包工具查看 fmapp.chinafamilymart.com.cn 的 App 请求头。将 token、cookie、blackBox、deviceId 分别填入 token、cookie、blackbox、device_id；可从同一请求头获取 fmVersion、os、User-Agent，分别填入可选字段 fmversion、os、useragent。不要公开或分享抓包内容，登录失效后重新获取。",
+          "format": "每个非空行为一个 JSON 对象，必须包含非空字符串 token、cookie、blackbox、device_id。同一账号的全部凭据合并在该对象中；Cookie 中的分号、&、@ 等字符按 JSON 字符串原样保存，不用于账号分隔。可选字段 fmversion 默认 2.2.3、os 默认 ios、useragent 默认 Fa；字段值不可含换行。"
+        },
+        {
+          "name": "FMAPP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "1 启用完全断网预演；默认 0 正式执行。预演校验账号配置和请求构造，不签到、不查询、不实际发送通知，不代表真实业务成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "默认 1；0、false、no、off 关闭通知。正式运行在成功、部分失败、失败和配置错误后调用青龙发送器；预演仅打印脱敏通知总结。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用自定义青龙通知模块目录时设置，通常无需配置。",
+          "format": "包含 notify.py 或 sendNotify.js 的本机目录；也会自动检查可导入的 notify 模块及 /ql/data/scripts、/ql/scripts。通知不可用不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行填写一个账号 JSON 对象；账号逐个独立执行，某个账号配置或业务失败不阻止后续账号，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日 App 签到并显示下一次及累计签到发米粒奖励信息",
+        "查询并原样显示官方返回的非敏感账号昵称",
+        "查询发米粒余额",
+        "每行一个 JSON 账号，保留上游四个凭据字段及三个可选请求头默认值",
+        "完全断网预演、分阶段脱敏日志、账号统计及单行 TASK_SUMMARY 结构化结果",
+        "正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭"
+      ],
+      "sideEffects": [
+        "向 Fa米家提交每日签到，按服务端规则更新签到记录并发放发米粒"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/b448219b57620cb7",
+        "candidateSha256": "f93f1b6e51ebc091bc66928bb537ec0c322a62e6337e1a5789601c504f497720"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "f93f1b6e51ebc091bc66928bb537ec0c322a62e6337e1a5789601c504f497720",
+        "releaseSha256": "cf54bcf59156219426860a1c43d3467c51b8a7ae3b1f726612aff8d51557d227",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
