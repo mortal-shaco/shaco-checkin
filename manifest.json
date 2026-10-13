@@ -118,6 +118,152 @@
       "applicationKey": "aliyun-drive"
     },
     {
+      "catalogId": "3ca8984737c9322f",
+      "applicationKey": "sitoi/dailycheckin::aolaxing",
+      "checkProfile": {
+        "requiredEnv": [
+          "AOLAXING_COOKIE"
+        ],
+        "optionalEnv": [
+          "AOLAXING",
+          "AOLAXING_TASK_IDS",
+          "AOLAXING_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AOLAXING_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "AOLAXING_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "核验通过",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询每日任务列表、今日任务总数及完成数。",
+          "按显式指定任务 ID 执行未完成任务，执行后重新读取列表核验已完成状态；已完成任务不重复执行。",
+          "查询当前积分、累计获得积分和累计签到次数。",
+          "官方响应返回昵称、用户名、显示名称或公开 UID 时显示非敏感身份；抑制手机号和凭据。",
+          "逐行多账号、上游配置键名兼容、断网预演、独立 HTTPS 请求、超时和失败非零退出。",
+          "时间轴阶段日志、账号与任务统计、单行机器汇总和青龙脱敏通知。"
+        ],
+        "sideEffects": [
+          "配置 AOLAXING_TASK_IDS 时触发对应每日任务完成及服务端关联积分或签到状态变更，具体效果以用户审阅的任务为准。",
+          "在线运行且通知开启时发送青龙任务汇总通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "奥拉星每日任务与积分",
+      "path": "scripts/aolaxing.py",
+      "sha256": "5e2e40940a4bd132b7f240273fe1e6850ace43aa93856a8ee9871aa263ee7b46",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Sitoi/dailycheckin",
+        "branch": "main",
+        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+        "originalPath": "dailycheckin/aolaxing/main.py",
+        "related": [
+          {
+            "catalogId": "643971a358b070a0",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "repository": "Sitoi/dailycheckin",
+            "url": "https://github.com/Sitoi/dailycheckin.git",
+            "branch": "main",
+            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+            "originalPath": "dailycheckin/aolaxing/__init__.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/aolaxing.py",
+      "environment": [
+        {
+          "name": "AOLAXING_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录百田网奥拉星积分商城，在浏览器开发者工具网络面板查找 service.100bt.com/creditmall 请求，复制请求头 Cookie 完整值。请勿复制到日志或公开仓库。",
+          "format": "每行一个账号的完整 Cookie；不按 &、@ 或分号拆分账号。"
+        },
+        {
+          "name": "AOLAXING",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游配置键名，将原 config.json 中 AOLAXING 数组复制为此环境变量；仅在 AOLAXING_COOKIE 未设置时使用。不读取本地私有配置文件。",
+          "format": "JSON 数组，每项为包含 cookie 字段的对象。"
+        },
+        {
+          "name": "AOLAXING_TASK_IDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在浏览器网络面板查看每日任务列表返回的 taskID，并人工审阅任务实际行为后填写。默认留空，仅查询；多个账号使用相同任务选择。",
+          "format": "逗号分隔的不重复数字任务 ID。仅执行列表中未完成的指定任务。"
+        },
+        {
+          "name": "AOLAXING_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设为 1，不调用业务接口或通知网络；在线运行留空或设为 0。",
+          "format": "1 开启；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知默认开启，设为 0、false、no、off 可关闭。预演仅打印脱敏通知摘要。",
+          "format": "默认 1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙已有 notify.py 所在目录；也会查找 Python notify 模块及青龙标准脚本目录。仅通知依赖青龙，业务独立运行。",
+          "format": "本机通知模块目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行对应一个账号，整行保留；逐账号独立处理，任何账号失败则整体非零退出。兼容变量 AOLAXING 使用原 JSON 数组。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询每日任务列表、今日任务总数及完成数。",
+        "按显式指定任务 ID 执行未完成任务，执行后重新读取列表核验已完成状态；已完成任务不重复执行。",
+        "查询当前积分、累计获得积分和累计签到次数。",
+        "官方响应返回昵称、用户名、显示名称或公开 UID 时显示非敏感身份；抑制手机号和凭据。",
+        "逐行多账号、上游配置键名兼容、断网预演、独立 HTTPS 请求、超时和失败非零退出。",
+        "时间轴阶段日志、账号与任务统计、单行机器汇总和青龙脱敏通知。"
+      ],
+      "sideEffects": [
+        "配置 AOLAXING_TASK_IDS 时触发对应每日任务完成及服务端关联积分或签到状态变更，具体效果以用户审阅的任务为准。",
+        "在线运行且通知开启时发送青龙任务汇总通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3ca8984737c9322f",
+        "candidateSha256": "5e2e40940a4bd132b7f240273fe1e6850ace43aa93856a8ee9871aa263ee7b46"
+      }
+    },
+    {
       "catalogId": "6b6ae91490051bce",
       "applicationKey": "atxyq",
       "checkProfile": {
