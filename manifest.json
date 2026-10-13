@@ -2961,6 +2961,125 @@
       }
     },
     {
+      "catalogId": "b5b4289ee7ca4222",
+      "applicationKey": "sitoi/dailycheckin::fnnasclub",
+      "checkProfile": {
+        "requiredEnv": [
+          "FNNASCLUB_COOKIE"
+        ],
+        "optionalEnv": [
+          "FNNASCLUB_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "FNNASCLUB_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "FNNASCLUB_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到结果: 签到成功",
+          "签到结果: 您已签到，请勿重复签到",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "显示论坛提供的公开昵称",
+          "获取签到参数并执行每日签到",
+          "识别今日已打卡并避免重复签到",
+          "读取并脱敏显示我的打卡动态",
+          "每行一个账号，独立执行与失败汇总",
+          "完全断网预演、时间轴日志和单行结构化汇总",
+          "正式运行后发送青龙脱敏通知，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "执行论坛签到，更新签到记录及论坛对应奖励",
+          "正式运行向已配置的青龙通知渠道发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "飞牛Nas论坛签到",
+      "path": "scripts/fnnasclub.py",
+      "sha256": "80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Sitoi/dailycheckin",
+        "branch": "main",
+        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+        "originalPath": "dailycheckin/fnnasclub/main.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/fnnasclub.py",
+      "environment": [
+        {
+          "name": "FNNASCLUB_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://club.fnnas.com 后打开浏览器开发者工具的网络面板，复制该站已登录请求中的 Cookie 请求头值。",
+          "format": "每个非空行为一个账号的完整 Cookie 值，保留分号及等号，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "FNNASCLUB_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置，预演设为 1。",
+          "format": "1、true、yes、on 开启断网预演，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置全局通知开关。",
+          "format": "默认 1；0、false、no、off 关闭通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已有青龙 notify.py 或 sendNotify.js 所在目录；未设置时自动寻找青龙标准目录及可导入的 notify 模块。",
+          "format": "现有通知模块所在目录路径；业务运行不依赖通知模块。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行填写一个账号的完整 Cookie，各账号独立执行；任何账号失败均整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "显示论坛提供的公开昵称",
+        "获取签到参数并执行每日签到",
+        "识别今日已打卡并避免重复签到",
+        "读取并脱敏显示我的打卡动态",
+        "每行一个账号，独立执行与失败汇总",
+        "完全断网预演、时间轴日志和单行结构化汇总",
+        "正式运行后发送青龙脱敏通知，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "执行论坛签到，更新签到记录及论坛对应奖励",
+        "正式运行向已配置的青龙通知渠道发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/b5b4289ee7ca4222",
+        "candidateSha256": "80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc"
+      }
+    },
+    {
       "catalogId": "be3b140cb6fdd0e3",
       "applicationKey": "fw",
       "checkProfile": {
