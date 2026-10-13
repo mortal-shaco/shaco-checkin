@@ -21,6 +21,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// Additional source: deeplee/personal-scripts, smzdm_checkin.py (MIT).
+// Additional references: agluo/ql-script-hub, SMZDM_checkin.py (MIT).
 // Lottery source: hex-ci/smzdm_script, smzdm_lottery.js (MIT).
 // 参数：SMZDM_ACCOUNT 每行 sk|完整 Cookie；只在第一个 | 分割。
 // 获取：登录自己的什么值得买客户端，从本人 /checkin 请求取得 sk 和 Cookie 的 sess。
@@ -29,6 +31,10 @@
 // SMZDM_ACTION=all 显式同时执行；抽奖可能消耗机会或活动资产，请先核对官方活动规则。
 // SMZDM_LOTTERY_LIFE=1 显式启用原上游未默认执行的生活频道；不自动重试抽奖。
 // SMZDM_DRY_RUN=1 完全离线；QINGLONG_NOTIFY=0 关闭通知。
+// SMZDM_TOKEN_MODE=sess（默认）保留维护接口；robot 显式启用上游 10.4.1 Robot Token 流程。
+// 兼容 SMZDM_COOKIES 或 SMZDM_COOKIE 每行 Cookie，需提供同顺序逐行 SMZDM_SK，或 Cookie 自带 sk。
+// 上游每日 30 9 * * * 可作为签到自定义调度；不要重复建立每日签到任务。
+// 通知按青龙 → PushPlus → Server酱回退；PUSHPLUS_TOKEN、SENDKEY 可选且受 QINGLONG_NOTIFY 控制。
 // Maintained standalone derivative; no private repository or external executable required.
 
 const crypto = require('crypto');
@@ -57,14 +63,35 @@ function accountLines(value) {
   return String(value || '').split(/\r?\n/).map((v) => v.trim()).filter(Boolean);
 }
 
+function tokenMode(env = process.env) {
+  const mode = String(env.SMZDM_TOKEN_MODE || 'sess').trim().toLowerCase();
+  if (!['sess', 'robot'].includes(mode)) throw new Error('SMZDM_TOKEN_MODE 必须为 sess 或 robot');
+  return mode;
+}
+
 function parseAccounts(env = process.env) {
   const action = taskAction(env);
-  const legacy = action === 'lottery' && !accountLines(env.SMZDM_ACCOUNT).length;
-  const lines = accountLines(legacy ? env.SMZDM_COOKIE : env.SMZDM_ACCOUNT);
-  if (legacy && lines.length) return lines.map((cookie, i) => cookieValue(cookie, 'sess')
-    ? {sk: '', cookie} : {configurationError: `第 ${i + 1} 行 Cookie 缺少 sess`});
-  if (!lines.length) throw new Error('未配置 SMZDM_ACCOUNT');
-  return lines.map((line, i) => {
+  tokenMode(env);
+  const canonical = accountLines(env.SMZDM_ACCOUNT);
+  if (!canonical.length) {
+    // 抽奖保留维护目标原有 SMZDM_COOKIE 优先级；签到兼容上游复数变量优先级。
+    const legacyCookies = action === 'lottery' ? (env.SMZDM_COOKIE || env.SMZDM_COOKIES) : (env.SMZDM_COOKIES || env.SMZDM_COOKIE);
+    const cookies = accountLines(legacyCookies)
+      .filter((line) => !line.startsWith('#'))
+      .map((line) => line.replace(/^(['"])([\s\S]*)\1$/, '$2'));
+    if (!cookies.length) throw new Error('未配置 SMZDM_ACCOUNT');
+    const sks = accountLines(env.SMZDM_SK);
+    if (sks.length && sks.length !== cookies.length && action !== 'lottery') {
+      throw new Error('SMZDM_SK 行数必须与 Cookie 账号行数相同');
+    }
+    return cookies.map((cookie, i) => {
+      const sk = sks[i] || cookieValue(cookie, 'sk');
+      if (!cookieValue(cookie, 'sess')) return {configurationError: `第 ${i + 1} 行 Cookie 缺少 sess`};
+      if (action !== 'lottery' && !sk) return {configurationError: `第 ${i + 1} 行缺少本人 sk；请改用 SMZDM_ACCOUNT 或配置配套 SMZDM_SK`};
+      return {sk, cookie};
+    });
+  }
+  return canonical.map((line, i) => {
     const split = line.indexOf('|');
     if ((split < 1 && action !== 'lottery') || split < 0 || split === line.length - 1) return {configurationError: `invalid_SMZDM_ACCOUNT_format_at_line_${i + 1}：第 ${i + 1} 行应为 sk|Cookie`};
     const sk = line.slice(0, split).trim();
@@ -142,6 +169,22 @@ async function apiRequest(endpoint, account, data = {}, userAgentOverride = '') 
   });
   let payload = null;
   try { payload = JSON.parse(response.text); } catch { /* raw response is intentionally discarded */ }
+  return {status: response.status, httpStatus: response.status, payload};
+}
+
+// 此模式严格采用三个 Python 来源一致的旧客户端签名，不猜测接口变更。
+async function robotRequest(endpoint, account, fields = {}) {
+  const body = {f: 'android', v: '10.4.1', weixin: 1, time: Date.now(), ...fields};
+  const raw = Object.keys(body).sort().map((key) => `${key}=${body[key]}`).join('&');
+  body.sign = crypto.createHash('md5').update(`${raw}&key=${SIGN_KEY}`).digest('hex').toUpperCase();
+  const response = await fetchLimited(`${API}${endpoint}`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded', Cookie: account.cookie,
+      'User-Agent': 'smzdm_android_V10.4.1 rv:841 (22021211RC;Android12;zh)smzdmapp'},
+    body: new URLSearchParams(body).toString(),
+  });
+  let payload = null;
+  try { payload = JSON.parse(response.text); } catch { /* 不输出原始响应 */ }
   return {status: response.status, httpStatus: response.status, payload};
 }
 
@@ -225,21 +268,30 @@ async function monthlyExperience(account) {
 // 只输出明确的业务展示字段；屏蔽凭据和手机号，保留普通公开身份。
 function display(value, account) {
   let text = String(value ?? '未取得').replace(/<[^>]*>/g, '').replace(/[\r\n\x00-\x1f]/g, ' ');
-  for (const secret of [account.sk, account.cookie, ...account.cookie.split(';').map((part) => part.slice(part.indexOf('=') + 1).trim())]) {
-    if (secret && secret.length >= 4) text = text.split(secret).join('[凭据已隐藏]');
+  const values = account.cookie.split(';').map((part) => {
+    const split = part.indexOf('=');
+    const key = part.slice(0, split).trim();
+    return split >= 0 && !['smzdm_id', 'device_smzdm', 'device_smzdm_version', 'device_smzdm_version_code', 'v'].includes(key)
+      ? part.slice(split + 1).trim() : '';
+  });
+  for (const secret of [account.sk, account.cookie, ...values, ...(account.runtimeSecrets || [])]) {
+    if (secret) text = text.split(secret).join('[凭据已隐藏]');
   }
+  text = text.replace(/(?:cookie|token|sess|session|device_id|request_key|sign)\s*[:=]\s*[^\s;,]+/gi, '[凭据已隐藏]');
   return text.replace(/(?:\+?86[- ]?)?1[3-9]\d{9}/g, '[手机号已隐藏]');
 }
 
-async function runLive(account, userAgentOverride = '', report = () => {}) {
+async function runLive(account, userAgentOverride = '', report = () => {}, env = process.env) {
   const session = {sk: account.sk, token: cookieValue(account.cookie, 'sess')};
   const counts = {total: 0, success: 0, already: 0, skipped: 0, failed: 0};
+  const robot = tokenMode(env) === 'robot';
+  const stageTotal = robot ? 8 : 7;
   const steps = {};
   const warnings = [];
   async function stage(name, action) {
     const started = Date.now();
     counts.total++;
-    report(`[${counts.total}/7] ${name}`);
+    report(`[${counts.total}/${stageTotal}] ${name}`);
     try {
       const value = await action();
       counts.success++;
@@ -261,8 +313,20 @@ async function runLive(account, userAgentOverride = '', report = () => {}) {
     if (!response.payload?.data || typeof response.payload.data !== 'object') throw new Error('字段缺失');
     return response.payload.data;
   }
+  let robotToken = null;
+  if (robot) {
+    robotToken = await stage('获取 Robot Token', async () => {
+      const response = await robotRequest('/robot/token', account);
+      if (apiFailure(response) || typeof response.payload?.data?.token !== 'string' || !response.payload.data.token.trim()) throw new Error('Token 未验证');
+      return response.payload.data.token;
+    });
+    if (robotToken) account.runtimeSecrets = [robotToken];
+  }
   const signed = await stage('每日签到', async () => {
-    const response = await apiRequest('/checkin', account, {...session, touchstone_event: '', captcha: ''}, userAgentOverride);
+    if (robot && !robotToken) throw new Error('Token 未取得，不提交签到');
+    const response = robot
+      ? await robotRequest('/checkin', account, {sk: account.sk, token: robotToken})
+      : await apiRequest('/checkin', account, {...session, touchstone_event: '', captcha: ''}, userAgentOverride);
     const result = signResult(response);
     if (!result.ok) throw new Error('签到失败');
     return {...result, data: response.payload?.data};
@@ -272,7 +336,11 @@ async function runLive(account, userAgentOverride = '', report = () => {}) {
   let reward = null, view = null, extra = '无需领取';
   if (signed) {
     reward = await stage('普通签到奖励', async () => {
-      const data = await checked('/checkin/all_reward');
+      const data = robot ? await (async () => {
+        const response = await robotRequest('/checkin/all_reward', account, {sk: account.sk, token: robotToken});
+        if (apiFailure(response) || !response.payload?.data || typeof response.payload.data !== 'object') throw new Error('奖励未验证');
+        return response.payload.data;
+      })() : await checked('/checkin/all_reward');
       if (!data.normal_reward || typeof data.normal_reward !== 'object') throw new Error('字段缺失');
       const normal = data.normal_reward;
       report(`奖励 ${display(normal.reward_add?.title, account)}：${display(normal.reward_add?.content, account)}；连续签到 ${display(normal.sub_title, account)}`, '└─');
@@ -295,11 +363,11 @@ async function runLive(account, userAgentOverride = '', report = () => {}) {
     } else {
       counts.total++; counts.skipped++;
       extra = view ? '无需领取' : '状态未验证，跳过领取';
-      report(`[${counts.total}/7] 额外签到奖励：${extra}，用时 0.0 秒`, '⏭️');
+      report(`[${counts.total}/${stageTotal}] 额外签到奖励：${extra}，用时 0.0 秒`, '⏭️');
     }
   } else {
     counts.total += 3; counts.skipped += 3;
-    report('[2-4/7] 奖励流程：签到失败，跳过奖励请求，用时 0.0 秒', '⏭️');
+    report(`[${robot ? '3-5' : '2-4'}/${stageTotal}] 奖励流程：签到失败，跳过奖励请求，用时 0.0 秒`, '⏭️');
   }
   const vip = await stage('会员详情', async () => {
     const data = await checked('/vip', {token: session.token});
@@ -428,16 +496,41 @@ function notifier(env = process.env) {
 async function sendNotification(summary, env = process.env) {
   if (env.QINGLONG_NOTIFY !== undefined && /^(0|false|no|off)$/i.test(env.QINGLONG_NOTIFY.trim())) return '已关闭';
   if (truthy(env.SMZDM_DRY_RUN)) return '离线预演：已生成脱敏通知，未调用联网组件';
+  const content = `账号总数 ${summary.accounts_total}，成功 ${summary.accounts_success}，失败 ${summary.accounts_failed}。模式 ${summary.mode}，状态 ${summary.execution}\nBENEFIT_SUMMARY=${JSON.stringify(summary)}`;
+  const outcomes = [];
   const send = notifier(env);
-  if (!send) return '通知组件不可用';
-  try {
-    let timer;
+  if (send) {
     try {
-      await Promise.race([Promise.resolve().then(() => send(NAME, `账号总数 ${summary.accounts_total}，成功 ${summary.accounts_success}，失败 ${summary.accounts_failed}。模式 ${summary.mode}，状态 ${summary.execution}\nBENEFIT_SUMMARY=${JSON.stringify(summary)}`)),
-        new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('通知超时')), TIMEOUT_MS); })]);
-    } finally { clearTimeout(timer); }
-    return '发送成功';
-  } catch { return '发送失败'; }
+      let timer;
+      try {
+        const delivered = await Promise.race([Promise.resolve().then(() => send(NAME, content)),
+          new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('通知超时')), TIMEOUT_MS); })]);
+        if (delivered === false) throw new Error('通知失败');
+      } finally { clearTimeout(timer); }
+      return '发送成功（青龙）';
+    } catch { outcomes.push('青龙发送失败'); }
+  } else outcomes.push('通知组件不可用');
+  if (String(env.PUSHPLUS_TOKEN || '').trim()) {
+    try {
+      const response = await fetchLimited('https://www.pushplus.plus/send', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({token: env.PUSHPLUS_TOKEN.trim(), title: NAME, content}),
+      });
+      if (response.status !== 200 || Number(JSON.parse(response.text)?.code) !== 200) throw new Error('推送未确认');
+      return '发送成功（PushPlus）';
+    } catch { outcomes.push('PushPlus 发送失败'); }
+  }
+  if (String(env.SENDKEY || '').trim()) {
+    try {
+      const response = await fetchLimited(`https://sctapi.ftqq.com/${encodeURIComponent(env.SENDKEY.trim())}.send`, {
+        method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams({title: NAME, desp: content}).toString(),
+      });
+      if (response.status !== 200 || String(JSON.parse(response.text)?.code) !== '0') throw new Error('推送未确认');
+      return '发送成功（Server酱）';
+    } catch { outcomes.push('Server酱发送失败'); }
+  }
+  return outcomes.join('；');
 }
 
 function emitResult(result) { console.log(`BENEFIT_RESULT=${JSON.stringify(result)}`); }
@@ -486,7 +579,7 @@ async function run(env = process.env) {
     } else if (dryRun) {
       log(`${label}：[2/4] 规划签到请求`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       log(`${label}：[3/4] 规划奖励、概览与经验查询`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
-      const planned = (action === 'lottery' ? 0 : 7) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
+      const planned = (action === 'lottery' ? 0 : (tokenMode(env) === 'robot' ? 8 : 7)) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
       log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤；抽奖仅在显式选择后执行`, '└─');
       result = {ok: true, state: '预演通过', planned_requests: planned,
         counts: {total: planned + 1, success: 1, already: 0, skipped: planned, failed: 0}};
@@ -496,7 +589,7 @@ async function run(env = process.env) {
         const report = (message, icon) => log(`${label}：${message}`, icon);
         if (action === 'lottery') result = await runLottery(accounts[i], env, report);
         else {
-          result = await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, report);
+          result = await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, report, env);
           if (action === 'all') {
             const lottery = await runLottery(accounts[i], env, report);
             result.ok = result.ok && lottery.ok;
@@ -541,4 +634,4 @@ if (require.main === module) run().catch(async () => {
   await finish({execution: 'failed', mode: 'live', accounts_total: 0, accounts_success: 0, accounts_failed: 1, tasks_total: 1, tasks_success: 0, tasks_already: 0, tasks_skipped: 0, tasks_failed: 1}, 1, started, process.env);
 });
 
-module.exports = {activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};
+module.exports = {tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};

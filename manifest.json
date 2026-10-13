@@ -9938,24 +9938,31 @@
           "SMZDM_ACCOUNT"
         ],
         "optionalEnv": [
+          "SMZDM_COOKIES",
           "SMZDM_COOKIE",
+          "SMZDM_SK",
           "SMZDM_ACTION",
           "SMZDM_LOTTERY_LIFE",
+          "SMZDM_TOKEN_MODE",
           "SMZDM_USER_AGENT_APP",
           "SMZDM_DRY_RUN",
           "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR"
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "SENDKEY"
         ],
         "dryRunEnv": {
           "SMZDM_DRY_RUN": "1"
         },
         "liveEnv": {
           "SMZDM_ACTION": "checkin",
+          "SMZDM_TOKEN_MODE": "sess",
+          "SMZDM_LOTTERY_LIFE": "0",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
           "最终状态  全部成功",
-          "TASK_SUMMARY="
+          "\"execution\":\"ok\",\"mode\":\"live\""
         ],
         "features": [
           "校验账号的 sk 与 sess 配套凭据",
@@ -9973,7 +9980,10 @@
           "通过显式任务开关查询两处会员转盘活动并各执行一次抽奖",
           "可显式启用原上游未默认运行的生活频道转盘入口",
           "仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk",
-          "保留原抽奖独立调度说明及请求间等待"
+          "保留原抽奖独立调度说明及请求间等待",
+          "可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应",
+          "兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk",
+          "按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果"
         ],
         "sideEffects": [
           "在什么值得买账号上执行每日签到并改变当日签到状态",
@@ -9987,7 +9997,7 @@
       },
       "displayName": "什么值得买签到",
       "path": "scripts/smzdm_checkin.js",
-      "sha256": "4cb72b6ec2328cde8fe50751191a5d0a7ab57423b77f1ddd7180df99150bbe06",
+      "sha256": "537f03ad58434094b98b994588cbeb514d17135c0a56bc1987ff9c76cd7fdda2",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -10026,6 +10036,16 @@
             "catalogId": "01407af9e6b789da",
             "sha256": "0f415f1c12c84dff9e19a8c1cef3691b0c82ab1b7cd325c12544a01b044a72ad",
             "license": "MIT"
+          },
+          {
+            "repository": "deeplee/personal-scripts",
+            "url": "https://github.com/deeplee/personal-scripts.git",
+            "branch": "main",
+            "commit": "c8c7c0f4fd1802df86c32a86c26b5c26cfef5023",
+            "originalPath": "smzdm_checkin.py",
+            "catalogId": "8d0c65e5be7d512c",
+            "sha256": "d38a8612d61ef33069a7937311cd975b3e88a6f4f5011e6a1140110ee23d3b30",
+            "license": "MIT"
           }
         ]
       },
@@ -10036,63 +10056,98 @@
           "name": "SMZDM_ACCOUNT",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录本人什么值得买客户端，查看本人签到请求的 sk 参数与包含 sess 的完整 Cookie；配套凭据必须来自同一账号。只执行抽奖时可改用 SMZDM_COOKIE。",
-          "format": "每个非空行一个账号：sk|完整 Cookie；只在第一个竖线分割，后续内容完整保留。仅抽奖时 sk 可为空。"
+          "howToGet": "登录自己的什么值得买客户端，抓取本人签到请求的 sk 和完整 Cookie（必须含 sess）；在青龙环境变量中将同一账号两项合并。仅抽奖可使用空 sk。不要使用他人的凭据或上游硬编码 sk。",
+          "format": "每个非空行一个账号，sk|完整 Cookie；只按第一个 | 分割，后续 Cookie 原样保留；仅抽奖为 |完整 Cookie。"
+        },
+        {
+          "name": "SMZDM_COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容原 Python 脚本：从本人已登录请求头复制完整 Cookie。未配置 SMZDM_ACCOUNT 时签到优先使用本变量，抽奖优先使用 SMZDM_COOKIE；签到需同顺序 SMZDM_SK 或 Cookie 中的本人 sk。",
+          "format": "每行一条完整 Cookie，必须含 sess；可忽略空行和以 # 开头的注释。"
         },
         {
           "name": "SMZDM_COOKIE",
           "required": false,
           "sensitive": true,
-          "howToGet": "从本人已登录什么值得买网页请求头取得包含 sess 的完整 Cookie；仅在 SMZDM_ACTION=lottery 且未配置 SMZDM_ACCOUNT 时使用。",
-          "format": "每个非空行一个账号的完整 Cookie，不使用其他账号分隔符。"
+          "howToGet": "兼容旧变量：从本人已登录请求头复制完整 Cookie。SMZDM_ACCOUNT 优先；签到时低于 SMZDM_COOKIES，抽奖时保留本变量优先于 SMZDM_COOKIES。签到需配套 SMZDM_SK 或 Cookie 自带本人 sk。",
+          "format": "每个非空行一条完整 Cookie；禁止用 & 或 @ 分隔账号。仅抽奖不需要 sk。"
+        },
+        {
+          "name": "SMZDM_SK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧 Cookie 变量的可选配套输入，从每个本人客户端签到请求取得；推荐合并到 SMZDM_ACCOUNT。",
+          "format": "每行一个本人 sk，行数和顺序必须与 Cookie 账号一致，不使用默认共享值。"
         },
         {
           "name": "SMZDM_ACTION",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙自行选择任务；默认仅签到。抽奖请先核对官方活动规则，再单独创建 20 8 * * * 调度并设为 lottery；all 显式执行签到和抽奖。",
-          "format": "checkin、lottery 或 all；默认 checkin。"
+          "howToGet": "按所需任务在青龙中设置；签到默认运行，抽奖需要显式选择。",
+          "format": "checkin（默认）、lottery（只抽奖）、all（签到与抽奖）；抽奖可能消耗机会或活动资产。"
         },
         {
           "name": "SMZDM_LOTTERY_LIFE",
           "required": false,
           "sensitive": false,
-          "howToGet": "原上游生活频道入口默认未启用；确认活动可用后自行启用。",
-          "format": "1 启用；默认不启用。"
+          "howToGet": "需要生活频道转盘时显式设置，并核对官方活动规则。",
+          "format": "1 启用；默认关闭，仅 lottery 或 all 生效。"
+        },
+        {
+          "name": "SMZDM_TOKEN_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认保留维护版 sess 签到接口；需要上游 Robot Token 流程时显式设置 robot。",
+          "format": "sess（默认）或 robot；robot 使用上游 10.4.1 签名获取 Token，签到和普通奖励使用该 Token；仍需本人 sk。"
         },
         {
           "name": "SMZDM_USER_AGENT_APP",
           "required": false,
           "sensitive": false,
-          "howToGet": "可从本人客户端请求头取得；不含账号凭据和设备唯一标识。不配置时沿用 Cookie 版本识别及默认客户端标识。",
-          "format": "客户端 User-Agent 字符串。"
+          "howToGet": "可从本人客户端请求取得对应版本的 User-Agent；默认根据 Cookie 的客户端版本字段生成，未取得时使用维护版默认值。",
+          "format": "单行客户端 User-Agent；不要包含凭据。Robot Token 旧接口使用上游固定客户端标识。"
         },
         {
           "name": "SMZDM_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "离线检查时设置为 1；不会请求业务接口或通知网络组件。",
-          "format": "1、true、yes 或 on 启用。"
+          "howToGet": "离线检查时设置为 1；不调用业务接口、推送组件或任何网络请求。",
+          "format": "1、true、yes、on 启用，默认关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙全局通知开关，默认启用；离线模式生成脱敏通知摘要。",
-          "format": "0、false、no 或 off 关闭；默认 1。"
+          "howToGet": "青龙全局通知开关；通知组件不可用或发送失败不改变业务退出码。",
+          "format": "默认 1；0、false、no、off 关闭；离线预演只生成脱敏通知摘要。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可填青龙 sendNotify.js 所在目录；未设置则查找青龙标准脚本目录。通知组件缺失或失败不改变业务退出码。",
-          "format": "本机目录路径。"
+          "howToGet": "青龙内置 sendNotify.js 所在目录；未设置时检查 /ql/data/scripts 和 /ql/scripts。业务请求不依赖通知文件。",
+          "format": "目录路径，只用于可选通知组件。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在自己的 PushPlus 账户取得推送令牌；仅青龙通知不可用或失败时回退使用，不向业务接口发送。",
+          "format": "单个推送令牌；通过 HTTPS JSON 请求推送并验证业务码。"
+        },
+        {
+          "name": "SENDKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在自己的 Server酱账户取得 SendKey；仅青龙及 PushPlus 未成功时回退使用。",
+          "format": "单个 SendKey；通过 HTTPS 表单推送并验证业务码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，配套 sk 与 Cookie 写在同一行；只在首个竖线分割。各账号独立处理，任一账号失败整体非零退出。"
+        "rule": "每个非空行一个账号，配套 sk 和 Cookie 合并到 SMZDM_ACCOUNT，以第一个 | 分割；保留后续 Cookie 文本。旧 Cookie 输入也仅按换行分账号；各账号独立执行，任一失败整体非零退出。"
       },
       "dependencies": [],
       "features": [
@@ -10111,7 +10166,10 @@
         "通过显式任务开关查询两处会员转盘活动并各执行一次抽奖",
         "可显式启用原上游未默认运行的生活频道转盘入口",
         "仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk",
-        "保留原抽奖独立调度说明及请求间等待"
+        "保留原抽奖独立调度说明及请求间等待",
+        "可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应",
+        "兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk",
+        "按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果"
       ],
       "sideEffects": [
         "在什么值得买账号上执行每日签到并改变当日签到状态",
@@ -10129,12 +10187,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/621df252c315f2d1",
-        "candidateSha256": "a9137a25378d4487a6b80614a88c7cc675699820d670a9e52269149397ca9125"
+        "candidateSha256": "bcadd1bed5703634df54d0b475c6a0c3f3bedb9f6266e1f59ccb204a6027fd99"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "a9137a25378d4487a6b80614a88c7cc675699820d670a9e52269149397ca9125",
-        "releaseSha256": "4cb72b6ec2328cde8fe50751191a5d0a7ab57423b77f1ddd7180df99150bbe06",
+        "validatedSha256": "bcadd1bed5703634df54d0b475c6a0c3f3bedb9f6266e1f59ccb204a6027fd99",
+        "releaseSha256": "537f03ad58434094b98b994588cbeb514d17135c0a56bc1987ff9c76cd7fdda2",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
