@@ -4801,6 +4801,150 @@
       }
     },
     {
+      "catalogId": "4bc7f79f3e7ce4d0",
+      "applicationKey": "deeplee/personal-scripts::netease",
+      "checkProfile": {
+        "requiredEnv": [
+          "NETEASE_COOKIES"
+        ],
+        "optionalEnv": [
+          "NETEASE_COOKIE",
+          "NETEASE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "SENDKEY"
+        ],
+        "dryRunEnv": {
+          "NETEASE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NETEASE_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日云贝签到，保留 weapi 双层 AES 与 RSA 加密及原执行时间。",
+          "识别已签到和登录态失效，仅明确业务状态码确认成功。",
+          "每行一个账号，兼容旧 Cookie 变量；账号独立执行并汇总失败。",
+          "青龙通知优先，依次回退到 PushPlus 和 Server酱；支持全局关闭。",
+          "完全断网预演、带时间戳的分阶段日志、账号统计及单行结构化总结。",
+          "官方返回公开账号身份时按返回值展示。"
+        ],
+        "sideEffects": [
+          "真实执行时完成每日签到并获得接口确认的云贝奖励。",
+          "通知启用时通过青龙、PushPlus 或 Server酱发送脱敏总结；预演不发送真实通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "网易云音乐签到",
+      "path": "scripts/netease_music_checkin.py",
+      "sha256": "3361723a7083bc4b0a02650f4ba455741abde030fb1194bdf7e9d028c9ae100f",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "deeplee/personal-scripts",
+        "branch": "main",
+        "commit": "c8c7c0f4fd1802df86c32a86c26b5c26cfef5023",
+        "originalPath": "netease_music_checkin.py"
+      },
+      "cron": "15 9 * * *",
+      "command": "python3 scripts/netease_music_checkin.py",
+      "environment": [
+        {
+          "name": "NETEASE_COOKIES",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录网易云音乐官网 https://music.163.com，打开开发者工具的 Application → Cookies，复制同一账号的 MUSIC_U 和 __csrf，可复制整段 Cookie；登录态失效时重新登录获取。",
+          "format": "每个非空行一个账号的 Cookie，必须包含非空 MUSIC_U 和 __csrf；字段以分号分隔，值保留第一个等号后的全部文本。支持以 # 开头的注释行。"
+        },
+        {
+          "name": "NETEASE_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 NETEASE_COOKIES 相同；旧版兼容变量，仅在规范变量为空时读取。",
+          "format": "同规范变量；兼容单账号，亦支持每行一个账号。"
+        },
+        {
+          "name": "NETEASE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置；用于断网检查。",
+          "format": "1 启用；默认 0；不会调用签到、推送或其他网络接口。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动配置全局通知开关。",
+          "format": "默认 1；0、false、no、off 关闭全部渠道；断网预演只模拟通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已有青龙 notify.py 所在目录；否则尝试导入 notify 及青龙常规目录。",
+          "format": "本地通知模块目录，仅用于可选通知，不是签到依赖。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 PushPlus 官网，在个人设置获取推送令牌；青龙通知不可用时回退使用。",
+          "format": "推送令牌，独立于账号 Cookie。"
+        },
+        {
+          "name": "SENDKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 Server酱官网获取 SendKey；青龙和 PushPlus 不可用时回退使用。",
+          "format": "推送密钥，独立于账号 Cookie。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，整段 Cookie 保留；不使用 & 或 @ 分隔账号。逐个独立执行，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome"
+      ],
+      "features": [
+        "每日云贝签到，保留 weapi 双层 AES 与 RSA 加密及原执行时间。",
+        "识别已签到和登录态失效，仅明确业务状态码确认成功。",
+        "每行一个账号，兼容旧 Cookie 变量；账号独立执行并汇总失败。",
+        "青龙通知优先，依次回退到 PushPlus 和 Server酱；支持全局关闭。",
+        "完全断网预演、带时间戳的分阶段日志、账号统计及单行结构化总结。",
+        "官方返回公开账号身份时按返回值展示。"
+      ],
+      "sideEffects": [
+        "真实执行时完成每日签到并获得接口确认的云贝奖励。",
+        "通知启用时通过青龙、PushPlus 或 Server酱发送脱敏总结；预演不发送真实通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/4bc7f79f3e7ce4d0",
+        "candidateSha256": "3361723a7083bc4b0a02650f4ba455741abde030fb1194bdf7e9d028c9ae100f"
+      }
+    },
+    {
       "catalogId": "4e0cf5e129fb12a4",
       "applicationKey": "nga",
       "checkProfile": {
