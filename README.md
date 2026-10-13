@@ -316,7 +316,7 @@
 - `scripts/psnine.py`：每日 PSNINE 祈祷签到；识别当天已经签到并展示累计祈祷天数；保留上游 do 接口及 psnid、shell 配套凭据；多账号独立执行和失败非零退出；完全断网预演、分阶段日志和单行结构化总结；实时任务结束时发送脱敏青龙通知，预演展示本地通知摘要；响应提供公开用户名时展示账号身份。
 - `scripts/pt_sign_v5.js`：蝴蝶、CARPT、AFUN 三站每日签到，支持站点选择与签到页地址覆盖；按站点分别配置多账号完整 Cookie，维护独立的服务器 Cookie 罐并识别登录失效；兼容 SafeLine 云端挑战、上游本地计算及验证后重放签到页；解析今日已签到状态、连续签到天数、本次奖励和累计奖励；仅明确业务证据判定成功；稳定浏览器请求头、表单编码、同域重定向、可选代理、超时、受控重试及额外请求头；保留飞书、Bark、Server 酱、钉钉、企业微信和自定义 Webhook 推送载荷，并增加青龙统一脱敏通知；显示站点响应中的用户详情链接所提供的用户名与公开 UID，不输出凭据或手机号；完全断网预演、分账号阶段日志、任务统计和单行 TASK_SUMMARY 结构化汇总。
 - `scripts/qoder_airscript.js`：逐账号显式开关，兼容原账号 JSON 及两种访问、刷新令牌字段命名；优先使用访问令牌，缺少时刷新；活动查询 401 后刷新并重试一次；中国区和国际区活动强制刷新查询，支持同批账号指定不同地区；逐项领取全部可领 Credits 活动，累计额度并显示响应提供的有效期；识别有效窗口内今日已领取、明确的幂等重放、活动未开放及待下发；支持仅刷新令牌和指定账号的环境变量及兼容命令行开关；兼容标准及 data 包装响应、device_token 字段、jobToken 刷新路径和 campaignKey 标识；保留 Server酱、PushPlus、企业微信逐账号通知以及青龙汇总通知，全局开关控制；显式配置私有账号文件时原子写回轮换令牌，仅环境变量时只保存于内存；显示官方返回的非敏感身份，提供分阶段日志、逐账号统计及唯一 TASK_SUMMARY；完全断网预演，配置校验，多账号独立执行及失败非零退出。
-- `scripts/quark_signin.py`：验证夸克账号 Cookie 并显示官方返回的昵称或公开身份；查询当日签到状态，识别今日已签到；领取每日存储空间奖励并展示奖励和连签进度；换行配置多账号，独立处理并汇总失败；可选随机延迟、请求超时、完全断网预演；脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知；失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应。
+- `scripts/quark_signin.py`：验证夸克账号 Cookie 并显示官方返回的昵称或公开身份；查询当日签到状态，识别今日已签到；领取每日存储空间奖励并展示奖励和连签进度；换行配置多账号，独立处理并汇总失败；可选随机延迟、请求超时、完全断网预演；脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知；失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应；同一账号变量可选择网页 Cookie 或移动端 kps、sign、vcode 组合凭据；移动端按上游明确的请求参数认证和签到，默认网页模式保持不变；有效字段存在时展示官方会员类型、总容量及签到累计获得容量；移动端凭据缺项、重复项或非法格式在断网预演及实时模式中明确失败，不输出凭据。
 - `scripts/raccoon_daily.py`：每日触发积分发放，以北京时间今日正积分账单核验签到成功。；分别领取首次电脑端、手机端登录奖励，检查业务码和 granted，哈希台账避免重复探测。；--query 只查询今日入账，不触发发放、不领取奖励、不写台账。；--skip-onboarding 跳过新手奖励、--only N 筛选账号、--no-notify 关闭通知。；每行一个账号，支持备注|令牌与 Bearer 格式，各账号和奖励独立处理。；支持配置 HTTPS 站点和本地台账路径。；优先青龙通知，保留 PushPlus、Bark、企业微信、钉钉和面板通知兼容渠道。；完全断网预演、时间轴日志、官方非秘密账号身份及单行 TASK_SUMMARY 汇总。。
 - `scripts/rainyun.py`：使用雨云用户名和密码登录，保持登录 Cookie 与 CSRF 令牌。；执行每日签到并领取积分，仅以 HTTP 状态和结构化业务码确认成功。；查询并展示账号积分，展示接口返回的非敏感昵称、用户名或公开 UID。；业务步骤完成或失败后，在已成功登录的情况下执行退出登录并核验结果。；支持每行一个账号的独立会话和失败隔离。；提供完全断网预演、分阶段脱敏日志、账号与任务统计及单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏统计通知，支持全局开关；配置错误和部分失败同样汇总，预演跳过实际发送。。
 - `scripts/rousi_checkin.js`：普通模式每日签到，并按服务端今日日期识别已签到，避免重复操作；读取积分余额，保留站点自定义积分名称；展示分享率、当前魔力值及累计上传下载量；展示连续签到、已返回签到日期累计天数、本次奖励及连续签到奖励；兼容 Token、Bearer 前缀、Cookie、小写变量和编号变量的逐行多账号认证；可选 PushPlus HTTPS 汇总通知，保留渠道参数兼容；成功、部分失败、失败、配置错误均尝试青龙脱敏通知，预演仅模拟通知；完全断网预演、带阶段耗时的时间轴日志、账号与任务统计、单行 TASK_SUMMARY 输出。
@@ -519,7 +519,7 @@
 <tr><td><code>PT_SITE_CARPT_CK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PT_SITE_AFUN_CK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Cookie；按分号分隔 Cookie 字段，仅在第一个等号处分割字段，后续等号保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；accessToken 或 access_token、refreshToken 或 refresh_token 至少一项有效。device 内 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项均为必填单行字符串。enabled=true 或 qiandao=&quot;是&quot; 才执行，默认跳过。region 可选 cn/global。可保留 name、uid；serverchan、pushplus、qywx 为可选逐账号通知凭据。仅刷新模式必须有刷新令牌。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/quark_signin.py</code></td><td><code>QUARK_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留分号及等号，不使用 &amp;、&amp;&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/quark_signin.py</code></td><td><code>QUARK_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号。网页模式为完整 Cookie 或 pc|完整 Cookie；移动端模式为 mobile|kps=原始值; sign=原始值; vcode=原始值。仅识别首个模式分隔符，后续文本完整保留；账号不使用 &amp;、@ 分隔。默认网页模式，不自动切换接口。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/raccoon_daily.py</code></td><td><code>RACCOON_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号：令牌或备注|令牌，只在第一个 | 拆分，支持 Bearer 前缀，不支持 &amp; 或 @ 分隔账号。备注不输出。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/rainyun.py</code></td><td><code>rainyun_ck</code></td><td>是</td><td>格式：每个非空行一个账号：用户名#密码。仅在第一个 # 处分隔，密码后续的 # 和空格完整保留；用户名按上游规则转换为小写。不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/rousi_checkin.js</code></td><td><code>ROUSI_TOKEN</code></td><td>是</td><td>格式：规范凭据变量，每个非空行一个账号 Token，可带 Bearer 前缀；禁止用 &amp; 或 @ 分隔账号。已有兼容变量也能独立提供凭据，无需同时配置。；多账号格式以该脚本文档为准</td></tr>
@@ -1278,11 +1278,11 @@
 <tr><td><code>QODER_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 为断网预演，不请求业务或通知接口，不写回文件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0/false/no/off 关闭全部通知；--no-notify 同样关闭通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：通知模块所在目录，仅用于通知，业务独立运行；模块不存在或投递失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="5"><code>scripts/quark_signin.py</code></td><td><code>QUARK_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认关闭。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QUARK_TIMEOUT_SECONDS</code></td><td>否</td><td>格式：3 至 60 的整数秒数，默认 15。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QUARK_RANDOM_DELAY_MAX_SECONDS</code></td><td>否</td><td>格式：0 至 3600 的整数秒数，默认 0；预演不等待。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，无需安装或下载应用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/quark_signin.py</code></td><td><code>QUARK_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 启用，默认关闭；预演只验证配置、展示流程和生成通知摘要。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QUARK_TIMEOUT_SECONDS</code></td><td>否</td><td>格式：3 至 60 的整数秒，默认 15。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QUARK_RANDOM_DELAY_MAX_SECONDS</code></td><td>否</td><td>格式：0 至 3600 的整数秒，默认 0；预演不等待。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭；通知失败保留业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径，无需配置任何业务凭据；预演不加载或调用通知模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="12"><code>scripts/raccoon_daily.py</code></td><td><code>RACCOON_DRY_RUN</code></td><td>否</td><td>格式：1 完全断网、通知模拟、不写台账；0 正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RACCOON_STATE_FILE</code></td><td>否</td><td>格式：默认脚本旁 raccoon_onboarding.json，仅保存令牌哈希和奖励结算时间。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RACCOON_MAIN_SITE_URL</code></td><td>否</td><td>格式：默认 https://xiaohuanxiong.com；无内嵌凭据、无路径及查询串的 HTTPS 站点。；多账号格式以该脚本文档为准</td></tr>
@@ -2050,7 +2050,7 @@
 - `scripts/psnine.py`：每个非空行一个账号，psnid 与 shell 同行，仅按首个 | 分割。逐账号独立处理，任一账号失败则进程非零退出。。
 - `scripts/pt_sign_v5.js`：每个站点的 PT_SITE_<SITE>_CK 内每个非空行代表该站一个独立账号；Cookie 字段用分号分隔，字段值中的后续等号原样保留；不同站点及账号分别维护 Cookie 罐并独立执行，任一账号或必需配置失败时整体非零退出。。
 - `scripts/qoder_airscript.js`：每个非空行一个完整账号 JSON 对象，配套令牌、设备字段和逐账号通知凭据放在同一对象中；禁止用 &、@ 或其他字符分隔账号。各账号和各活动独立执行，任一账号失败时整体非零退出。。
-- `scripts/quark_signin.py`：每个非空行一个账号，完整 Cookie 作为一个字段保留；账号独立执行，任一账号失败则进程非零退出。。
+- `scripts/quark_signin.py`：每个非空行一个账号，网页 Cookie 与移动端三项签名凭据可混用。移动端三项凭据必须属于同一账号并组合在同一行；只按首个模式分隔符切分，不丢弃后续文本。各账号独立处理，任一账号失败时整体退出码为非零。。
 - `scripts/raccoon_daily.py`：每个非空行一个账号，令牌或备注|令牌；仅在第一个 | 拆分，保留后续凭据文本，支持 Bearer 前缀。账号和两端奖励独立处理，任一账号失败整体非零退出。。
 - `scripts/rainyun.py`：每个非空行一个账号，格式为用户名#密码，仅在第一个 # 处分隔。账号独立使用会话，单账号失败不阻止后续账号；任一账号失败或配置无效时整体非零退出。。
 - `scripts/rousi_checkin.js`：每个非空行一个账号；ROUSI_TOKEN 为规范变量，Cookie、小写及编号变量为兼容输入。相同类型的完全相同凭据去重，Token 与 Cookie 无需配对，同一账号只选一种。逐个独立处理，任一账号或读取阶段失败则整体非零退出。禁止使用 & 或 @ 分隔账号。。
@@ -2851,8 +2851,8 @@
 #### `QUARK_COOKIE`
 
 - 所属脚本：`scripts/quark_signin.py`
-- 获取或设置：登录夸克网盘 https://pan.quark.cn/，打开浏览器开发者工具的网络面板，选择已登录的夸克请求，复制请求头 Cookie 的完整值；失效后重新登录获取。只复制值，不包含 Cookie: 前缀或备注。
-- 填写格式：`每个非空行一个账号的完整 Cookie；保留分号及等号，不使用 &、&& 或 @ 分隔账号。`
+- 获取或设置：网页模式：登录 https://pan.quark.cn/，在浏览器开发者工具网络面板复制本人账号请求头中完整 Cookie 值。移动端模式：登录夸克手机应用，通过本人抓包工具读取容量查询或签到请求中的 kps、sign、vcode 原始编码值，将同账号三项参数以分号组合；不要复制设备标识、手机号或整个 URL。
+- 填写格式：`每个非空行一个账号。网页模式为完整 Cookie 或 pc|完整 Cookie；移动端模式为 mobile|kps=原始值; sign=原始值; vcode=原始值。仅识别首个模式分隔符，后续文本完整保留；账号不使用 &、@ 分隔。默认网页模式，不自动切换接口。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `RACCOON_TOKENS`
@@ -7555,32 +7555,32 @@
 #### `QUARK_DRY_RUN`
 
 - 所属脚本：`scripts/quark_signin.py`
-- 获取或设置：设为 1 可完全断网检查配置与执行流程，不验证真实凭据、不签到、不调用通知模块；会生成通知摘要。
-- 填写格式：`1、true、yes、on 开启，默认关闭。`
+- 获取或设置：自行设置为 1 启用完全断网预演。
+- 填写格式：`1/true/yes/on 启用，默认关闭；预演只验证配置、展示流程和生成通知摘要。`
 
 #### `QUARK_TIMEOUT_SECONDS`
 
 - 所属脚本：`scripts/quark_signin.py`
-- 获取或设置：按网络环境设置单次 HTTP 请求超时。
-- 填写格式：`3 至 60 的整数秒数，默认 15。`
+- 获取或设置：按网络情况自行设置。
+- 填写格式：`3 至 60 的整数秒，默认 15。`
 
 #### `QUARK_RANDOM_DELAY_MAX_SECONDS`
 
 - 所属脚本：`scripts/quark_signin.py`
-- 获取或设置：按需要设置每个实时账号执行前的随机延迟上限。
-- 填写格式：`0 至 3600 的整数秒数，默认 0；预演不等待。`
+- 获取或设置：按需要自行设置每个实时账号执行前随机等待的上限。
+- 填写格式：`0 至 3600 的整数秒，默认 0；预演不等待。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/quark_signin.py`
-- 获取或设置：使用青龙现有通知配置；设为 0 可关闭。通知异常不影响业务退出码。
-- 填写格式：`默认 1；0、false、no、off 关闭。`
+- 获取或设置：默认使用青龙已有通知配置；自行设置为 0 可关闭。
+- 填写格式：`默认 1；0/false/no/off 关闭；通知失败保留业务退出码。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/quark_signin.py`
-- 获取或设置：可选，填写青龙现有 notify.py 所在目录；也会尝试导入 notify 及青龙标准脚本目录。
-- 填写格式：`本地目录路径，无需安装或下载应用。`
+- 获取或设置：可选填写青龙 notify.py 所在目录；未填写时自动尝试导入 notify 及青龙标准脚本目录。
+- 填写格式：`目录路径，无需配置任何业务凭据；预演不加载或调用通知模块。`
 
 #### `RACCOON_DRY_RUN`
 
@@ -11969,7 +11969,7 @@
 - `scripts/psnine.py`：SHA-256 `c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
 - `scripts/pt_sign_v5.js`：SHA-256 `00c5772a3b7bacd61255515237ab1bd9f1d9d075d9bbf32d8ce4ec8c123552d2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ff443f9fbbdbade5`。
 - `scripts/qoder_airscript.js`：SHA-256 `e1e74cc7bb351cb9b95995c142025eebec911240c0b7e54d0a9fb62b60e54480`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
-- `scripts/quark_signin.py`：SHA-256 `2487b5cd4a53457b8d0ce2000f154668060333a0483b846a52a9d329da18a5bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
+- `scripts/quark_signin.py`：SHA-256 `500262df894e109fbe27a2dfafe56d9c395e01d816d6644bc6ff10c46b89d530`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
 - `scripts/raccoon_daily.py`：SHA-256 `3ebdbfeaf41c75c467fdeb6f2e11889b5a985cacfc3b7203679348087ed36b63`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
 - `scripts/rainyun.py`：SHA-256 `15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89f2e9b460331a75`。
 - `scripts/rousi_checkin.js`：SHA-256 `b20207312e40ff721f057cfe38dbdf6570486e9f4ce1b4d7882f60f85dafb138`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c5c6df4d8a81a7f`。

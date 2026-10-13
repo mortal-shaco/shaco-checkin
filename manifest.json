@@ -15497,8 +15497,6 @@
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "签到成功，奖励",
-          "今日已签到，奖励",
           "最终状态: ✅ success"
         ],
         "features": [
@@ -15508,7 +15506,10 @@
           "换行配置多账号，独立处理并汇总失败",
           "可选随机延迟、请求超时、完全断网预演",
           "脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知",
-          "失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应"
+          "失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应",
+          "同一账号变量可选择网页 Cookie 或移动端 kps、sign、vcode 组合凭据；移动端按上游明确的请求参数认证和签到，默认网页模式保持不变",
+          "有效字段存在时展示官方会员类型、总容量及签到累计获得容量",
+          "移动端凭据缺项、重复项或非法格式在断网预演及实时模式中明确失败，不输出凭据"
         ],
         "sideEffects": [
           "实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励",
@@ -15521,15 +15522,27 @@
       },
       "displayName": "夸克网盘每日签到",
       "path": "scripts/quark_signin.py",
-      "sha256": "2487b5cd4a53457b8d0ce2000f154668060333a0483b846a52a9d329da18a5bb",
+      "sha256": "500262df894e109fbe27a2dfafe56d9c395e01d816d6644bc6ff10c46b89d530",
       "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
+      "license": "GPL-3.0-only",
+      "licenseGate": "allowed-copyleft",
       "source": {
         "repository": "agluo/ql-script-hub",
         "branch": "master",
         "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-        "originalPath": "quark_signin.py"
+        "originalPath": "quark_signin.py",
+        "related": [
+          {
+            "repository": "Cp0204/quark-auto-save",
+            "url": "https://github.com/Cp0204/quark-auto-save.git",
+            "branch": "main",
+            "commit": "1c35e969332e03980f60c34fc15b2467370bafb2",
+            "originalPath": "quark_auto_save.py",
+            "catalogId": "4a2b6bcf73f07b9c",
+            "sha256": "5d6d5a713ab6f38d374396b881002eb5bac341377ed38a815a5a41fca90e749c",
+            "license": "GPL-3.0-only"
+          }
+        ]
       },
       "cron": "13 18 * * *",
       "command": "python3 scripts/quark_signin.py",
@@ -15538,49 +15551,49 @@
           "name": "QUARK_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录夸克网盘 https://pan.quark.cn/，打开浏览器开发者工具的网络面板，选择已登录的夸克请求，复制请求头 Cookie 的完整值；失效后重新登录获取。只复制值，不包含 Cookie: 前缀或备注。",
-          "format": "每个非空行一个账号的完整 Cookie；保留分号及等号，不使用 &、&& 或 @ 分隔账号。"
+          "howToGet": "网页模式：登录 https://pan.quark.cn/，在浏览器开发者工具网络面板复制本人账号请求头中完整 Cookie 值。移动端模式：登录夸克手机应用，通过本人抓包工具读取容量查询或签到请求中的 kps、sign、vcode 原始编码值，将同账号三项参数以分号组合；不要复制设备标识、手机号或整个 URL。",
+          "format": "每个非空行一个账号。网页模式为完整 Cookie 或 pc|完整 Cookie；移动端模式为 mobile|kps=原始值; sign=原始值; vcode=原始值。仅识别首个模式分隔符，后续文本完整保留；账号不使用 &、@ 分隔。默认网页模式，不自动切换接口。"
         },
         {
           "name": "QUARK_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "设为 1 可完全断网检查配置与执行流程，不验证真实凭据、不签到、不调用通知模块；会生成通知摘要。",
-          "format": "1、true、yes、on 开启，默认关闭。"
+          "howToGet": "自行设置为 1 启用完全断网预演。",
+          "format": "1/true/yes/on 启用，默认关闭；预演只验证配置、展示流程和生成通知摘要。"
         },
         {
           "name": "QUARK_TIMEOUT_SECONDS",
           "required": false,
           "sensitive": false,
-          "howToGet": "按网络环境设置单次 HTTP 请求超时。",
-          "format": "3 至 60 的整数秒数，默认 15。"
+          "howToGet": "按网络情况自行设置。",
+          "format": "3 至 60 的整数秒，默认 15。"
         },
         {
           "name": "QUARK_RANDOM_DELAY_MAX_SECONDS",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要设置每个实时账号执行前的随机延迟上限。",
-          "format": "0 至 3600 的整数秒数，默认 0；预演不等待。"
+          "howToGet": "按需要自行设置每个实时账号执行前随机等待的上限。",
+          "format": "0 至 3600 的整数秒，默认 0；预演不等待。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙现有通知配置；设为 0 可关闭。通知异常不影响业务退出码。",
-          "format": "默认 1；0、false、no、off 关闭。"
+          "howToGet": "默认使用青龙已有通知配置；自行设置为 0 可关闭。",
+          "format": "默认 1；0/false/no/off 关闭；通知失败保留业务退出码。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，填写青龙现有 notify.py 所在目录；也会尝试导入 notify 及青龙标准脚本目录。",
-          "format": "本地目录路径，无需安装或下载应用。"
+          "howToGet": "可选填写青龙 notify.py 所在目录；未填写时自动尝试导入 notify 及青龙标准脚本目录。",
+          "format": "目录路径，无需配置任何业务凭据；预演不加载或调用通知模块。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，完整 Cookie 作为一个字段保留；账号独立执行，任一账号失败则进程非零退出。"
+        "rule": "每个非空行一个账号，网页 Cookie 与移动端三项签名凭据可混用。移动端三项凭据必须属于同一账号并组合在同一行；只按首个模式分隔符切分，不丢弃后续文本。各账号独立处理，任一账号失败时整体退出码为非零。"
       },
       "dependencies": [],
       "features": [
@@ -15590,7 +15603,10 @@
         "换行配置多账号，独立处理并汇总失败",
         "可选随机延迟、请求超时、完全断网预演",
         "脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知",
-        "失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应"
+        "失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应",
+        "同一账号变量可选择网页 Cookie 或移动端 kps、sign、vcode 组合凭据；移动端按上游明确的请求参数认证和签到，默认网页模式保持不变",
+        "有效字段存在时展示官方会员类型、总容量及签到累计获得容量",
+        "移动端凭据缺项、重复项或非法格式在断网预演及实时模式中明确失败，不输出凭据"
       ],
       "sideEffects": [
         "实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励",
@@ -15607,7 +15623,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/18c47e12eda9864c",
-        "candidateSha256": "2487b5cd4a53457b8d0ce2000f154668060333a0483b846a52a9d329da18a5bb"
+        "candidateSha256": "500262df894e109fbe27a2dfafe56d9c395e01d816d6644bc6ff10c46b89d530"
       }
     },
     {

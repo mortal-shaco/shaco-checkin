@@ -2,9 +2,15 @@
 # -*- coding: utf-8 -*-
 # name: 夸克网盘每日签到
 # cron: 13 18 * * *
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-3.0-only
+# Original maintained source license notice: SPDX-License-Identifier: MIT
 # Maintained standalone adaptation of quark_signin.py from agluo/ql-script-hub.
 # Original source commit: a8d39b97cb22c3ac657089014df754342b456ff6
+# Compatible mobile signing adaptation: Cp0204/quark-auto-save, GPL-3.0-only.
+# Repo: https://github.com/Cp0204/quark_auto_save
+# Modify: 2026-02-04
+# ConfigFile: quark_config.json (upstream attribution; this script needs no file)
+# Upstream commit: 1c35e969332e03980f60c34fc15b2467370bafb2
 
 """夸克网盘每日存储空间签到（青龙独立版）。
 
@@ -21,6 +27,21 @@
   QINGLONG_NOTIFY_DIR               可选，青龙 notify.py 所在目录。
 
 账号只使用换行分隔；脚本绝不输出 Cookie 或原始响应。
+默认保持原有网页 Cookie 接口和每日 18:13 定时。可混合配置：
+  pc|完整网页 Cookie       （pc| 前缀可省略，原参数无需修改）
+  mobile|移动端凭据文本    （文本需包含同账号的 kps、sign、vcode，分号分隔）
+移动端凭据：登录夸克手机应用，用自己的抓包工具查看 growth/info 或
+ growth/sign 请求的查询参数，将 kps、sign、vcode 的原始编码值组合到同一行。
+不要使用他人凭据；不要复制请求 URL、设备标识或手机号。
+前缀只按首个 | 切分，后续文本原样保留；绝不使用 & 或 @ 分隔账号。
+移动端模式按上游 fr=android 和三项签名参数请求，网页模式不会自动切换接口。
+两种模式都先查询明确的签到布尔状态，再决定是否领取奖励。
+兼容展示官方返回的会员类型、总容量、签到累计容量（字段有效时）。
+本版本只优化同周期的签到能力。上游追更任务定时为 0 8,18,20 * * *，
+涉及转存、创建目录、重命名、可选删除及插件；其风险和调度不同，未合入。
+不读取 quark_config.json、TASKLIST、PUSH_CONFIG，不安装插件或下载配置。
+QUARK_TEST 的转存测试及删除回收站逻辑不适用于本签到任务。
+青龙通知在实时运行时发送；完全断网预演仅生成通知摘要，不调用通知模块。
 """
 
 from __future__ import annotations
@@ -31,6 +52,7 @@ import importlib.util
 import json
 import os
 import random
+import re
 import ssl
 import sys
 import time
@@ -212,6 +234,8 @@ class QuarkClient:
                 "User-Agent": "Mozilla/5.0 Qinglong-Quark-Signin/1.1",
             },
         )
+        if not self.cookie:
+            request.remove_header("Cookie")
         try:
             with self.opener.open(request, timeout=self.timeout) as response:
                 status = response.status
@@ -269,6 +293,86 @@ class QuarkClient:
         return data
 
 
+def account_credential(value: str) -> tuple[str, str]:
+    """仅解析明确的模式前缀，保留后续全部凭据内容。"""
+    mode, credential = "pc", value
+    if value.startswith(("pc|", "mobile|")):
+        mode, credential = value.split("|", 1)
+    if not credential.strip():
+        raise TaskError("账号凭据为空")
+    if any(ord(char) < 32 or ord(char) == 127 for char in credential):
+        raise TaskError("账号凭据包含非法控制字符")
+    return mode, credential
+
+
+def mobile_parameters(credential: str) -> dict[str, str]:
+    params = {}
+    # 上游支持原始编码值，并仅把二次编码的 %25 还原一次。
+    for key in ("kps", "sign", "vcode"):
+        matches = re.findall(r"(?:^|[;\s])" + key + r"=([a-zA-Z0-9%+/=]+)(?=;|\s|$)", credential)
+        if len(matches) != 1:
+            raise TaskError(f"移动端凭据必须包含且仅包含一个 {key}；请使用分号分隔同账号的三项参数")
+        params[key] = matches[0].replace("%25", "%")
+    return params
+
+
+class MobileQuarkClient(QuarkClient):
+    """采用上游已给出的移动端签到契约；不改变网页默认接口。"""
+
+    def __init__(self, credential: str, timeout: int):
+        self.mobile_query = {"pr": "ucpro", "fr": "android", **mobile_parameters(credential)}
+        super().__init__("", timeout)
+        self.cached_growth: Optional[dict[str, Any]] = None
+
+    def account_info(self) -> dict[str, Any]:
+        # 纯移动端凭据不能验证网页 Cookie；通过签名的只读容量接口认证。
+        self.cached_growth = self.growth_info()
+        identity = {key: self.cached_growth[key]
+                    for key in ("nickname", "username", "display_name", "uid")
+                    if key in self.cached_growth}
+        return identity or {"authenticated": True}
+
+    def growth_info(self) -> dict[str, Any]:
+        if self.cached_growth is not None:
+            return self.cached_growth
+        payload = self.request_json(
+            "GET", "https://drive-m.quark.cn/1/clouddrive/capacity/growth/info", self.mobile_query
+        )
+        data = business_data(payload, "移动端签到状态查询")
+        if not isinstance(data, dict) or not isinstance(data.get("cap_sign"), dict):
+            raise TaskError(f"移动端签到状态查询失败（{response_shape(payload)}）")
+        return data
+
+    def sign(self) -> dict[str, Any]:
+        payload = self.request_json(
+            "POST", "https://drive-m.quark.cn/1/clouddrive/capacity/growth/sign",
+            self.mobile_query, {"sign_cyclic": True}
+        )
+        data = business_data(payload, "移动端签到")
+        if not isinstance(data, dict) or not valid_number(data.get("sign_daily_reward")):
+            raise TaskError(f"移动端签到失败（奖励字段无效；{response_shape(payload)}；请先查询签到状态再重试）")
+        return data
+
+
+def make_client(value: str, timeout: int) -> QuarkClient:
+    mode, credential = account_credential(value)
+    return MobileQuarkClient(credential, timeout) if mode == "mobile" else QuarkClient(credential, timeout)
+
+
+def capacity_detail(growth: dict[str, Any]) -> str:
+    details = []
+    memberships = {"NORMAL": "普通用户", "EXP_SVIP": "88VIP", "SUPER_VIP": "SVIP", "Z_VIP": "SVIP+"}
+    member = growth.get("member_type")
+    if isinstance(member, str) and member in memberships:
+        details.append("会员类型：" + memberships[member])
+    if valid_number(growth.get("total_capacity")):
+        details.append(f"总空间：{reward_mb(growth['total_capacity'])} MB")
+    composition = growth.get("cap_composition")
+    if isinstance(composition, dict) and valid_number(composition.get("sign_reward")):
+        details.append(f"签到累计获得：{reward_mb(composition['sign_reward'])} MB")
+    return "，" + "，".join(details) if details else ""
+
+
 def valid_number(value: Any) -> bool:
     import math
     return type(value) in (int, float) and value >= 0 and math.isfinite(value)
@@ -291,7 +395,17 @@ def run_account(index: int, cookie: str, timeout: int, dry_run: bool, delay_max:
     print(f"\n[{clock_time()}] 账号 {index}")
     if dry_run:
         step_started = time.monotonic()
-        stage(1, "账号配置", "success", "已检测到非空 Cookie（内容已隐藏）", stats, step_started)
+        try:
+            mode, credential = account_credential(cookie)
+            if mode == "mobile":
+                mobile_parameters(credential)
+        except TaskError as exc:
+            stage(1, "账号配置", "failure", str(exc), stats, step_started)
+            for number in (2, 3):
+                stage(number, "后续任务", "skipped", "配置错误，未访问网络", stats, time.monotonic())
+            print(f"  账号统计: 总任务={stats.total} 成功={stats.success} 已完成={stats.already} 跳过={stats.skipped} 失败={stats.failed} 耗时={time.monotonic() - account_started:.2f}s")
+            return AccountResult(False, stats, "failed")
+        stage(1, "账号配置", "success", f"已检测到非空凭据（内容已隐藏），模式={mode}", stats, step_started)
         step_started = time.monotonic()
         stage(2, "签到状态", "success", "离线预演：将查询今日签到状态", stats, step_started)
         step_started = time.monotonic()
@@ -309,19 +423,19 @@ def run_account(index: int, cookie: str, timeout: int, dry_run: bool, delay_max:
     try:
         if any(ord(char) < 32 or ord(char) == 127 for char in cookie):
             raise TaskError("Cookie 包含非法控制字符，请重新复制请求头")
-        client = QuarkClient(cookie, timeout)
+        client = make_client(cookie, timeout)
         step_started = time.monotonic()
         account = client.account_info()
         identity = next((account[key] for key in ("nickname", "username", "display_name", "uid")
                          if isinstance(account.get(key), (str, int)) and account[key]), None)
         identity_text = f"，昵称：{identity}" if isinstance(identity, (str, int)) and identity else ""
-        stage(1, "账号验证", "success", f"Cookie 有效{identity_text}", stats, step_started)
+        stage(1, "账号验证", "success", f"{'移动端凭据有效' if isinstance(client, MobileQuarkClient) else 'Cookie 有效'}{identity_text}", stats, step_started)
         step_started = time.monotonic()
         growth = client.growth_info()
         cap_sign = growth["cap_sign"]
         if type(cap_sign.get("sign_daily")) is not bool:
             raise TaskError(f"签到状态查询失败（cap_sign.sign_daily 类型={field_shape(cap_sign, 'sign_daily')}；要求布尔值，未执行签到）")
-        stage(2, "签到状态", "success", "已获取签到状态", stats, step_started)
+        stage(2, "签到状态", "success", "已获取签到状态" + capacity_detail(growth), stats, step_started)
         step_started = time.monotonic()
         if cap_sign.get("sign_daily") is True:
             reward = reward_mb(cap_sign.get("sign_daily_reward"))
@@ -443,7 +557,7 @@ def main() -> int:
     business_ok = config_error is None and account_failure == 0
     if config_error:
         final_status = "configuration-error"
-    elif dry_run:
+    elif dry_run and account_failure == 0:
         final_status = "dry-run"
     elif account_failure == 0:
         final_status = "success"
