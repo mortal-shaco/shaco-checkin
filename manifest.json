@@ -5153,6 +5153,311 @@
       }
     },
     {
+      "catalogId": "c087eb48daa78349",
+      "applicationKey": "lynkco",
+      "checkProfile": {
+        "requiredEnv": [
+          "LYNKCO_ACCOUNTS",
+          "LYNKCO_APP_SECRETS"
+        ],
+        "optionalEnv": [
+          "LYNKCO_REFRESH_TOKEN",
+          "LYNKCO_DEVICE_ID",
+          "LYNKCO_TOKEN",
+          "LYNKCO_NATIVE_APP_KEY",
+          "LYNKCO_NATIVE_APP_SECRET",
+          "LYNKCO_NATIVE_APP_CODE",
+          "LYNKCO_LOGIN_APP_CODE",
+          "LYNKCO_NATIVE_GL_DEV_ID",
+          "LYNKCO_DO_SHARE",
+          "LYNKCO_SHARE_MODE",
+          "LYNKCO_CONTENT_ID",
+          "LYNKCO_ARTICLE_ID",
+          "LYNKCO_TIMEOUT",
+          "LYNKCO_ENERGY_DELAY",
+          "LYNKCO_ENV_FILE",
+          "LYNKCO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "LYNKCO_QL_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "LYNKCO_BARK_KEY",
+          "LYNKCO_BARK_ICON"
+        ],
+        "dryRunEnv": {
+          "LYNKCO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LYNKCO_DRY_RUN": "0",
+          "LYNKCO_DO_SHARE": "1",
+          "LYNKCO_SHARE_MODE": "simple",
+          "LYNKCO_TIMEOUT": "30",
+          "LYNKCO_ENERGY_DELAY": "5",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "LYNKCO_TASK_SUCCESS"
+        ],
+        "features": [
+          "AppCode优先续期、HMAC签名兜底及静态令牌回退",
+          "今日签到状态查询、自动签到和签到后复查，已签到时跳过",
+          "连续签到天数和签到卡查询",
+          "任务前后能量体积分查询",
+          "五页动态文章查找及上游备用文章",
+          "可选文章分享两步链及完整三步链回退，核验分享前后积分变化",
+          "多账号独立处理、官方非秘密身份展示、任何账号失败非零退出",
+          "青龙及可选Bark脱敏通知，通知失败保留业务退出码",
+          "完全断网预演、分阶段日志和单行结构化总结",
+          "旧账号变量及显式只读本地配置兼容"
+        ],
+        "sideEffects": [
+          "每日签到并领取服务端奖励",
+          "默认上报文章分享并可能增加能量体积分，可用LYNKCO_DO_SHARE关闭",
+          "使用刷新令牌续期，服务端可能更新登录令牌状态；不写本地凭据文件",
+          "发送脱敏青龙通知及可选Bark推送；预演不发送网络通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "领克App每日签到分享",
+      "path": "scripts/lynkco_qinglong_single.py",
+      "sha256": "5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "zhaosongbing/LynkCoHelper-QingLong",
+        "branch": "main",
+        "commit": "7b9330aeae5e458f00de92b46bbd31bbf99c95aa",
+        "originalPath": "qinglong/lynkco_qinglong_single.py",
+        "related": [
+          {
+            "catalogId": "6591afe698aa5ac3",
+            "sha256": "1ebe4865018a8f42efd7b70c6bff8b93380c090b27225fd6de58721d91c7d2ba",
+            "repository": "zhaosongbing/LynkCoHelper-QingLong",
+            "url": "https://github.com/zhaosongbing/LynkCoHelper-QingLong.git",
+            "branch": "main",
+            "commit": "7b9330aeae5e458f00de92b46bbd31bbf99c95aa",
+            "originalPath": "LynkCoHelper/lynkco_daily_tasks.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "63dc6a9dd77a79ca",
+            "sha256": "98fbea0cff989ab8fe36b62c6f0bf167dd9a058d070b9f39ac49e1be7d8208fb",
+            "repository": "zhaosongbing/LynkCoHelper-QingLong",
+            "url": "https://github.com/zhaosongbing/LynkCoHelper-QingLong.git",
+            "branch": "main",
+            "commit": "7b9330aeae5e458f00de92b46bbd31bbf99c95aa",
+            "originalPath": "LynkCoHelper/lynkco_common.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "8 8 * * *",
+      "command": "python3 scripts/lynkco_qinglong_single.py",
+      "environment": [
+        {
+          "name": "LYNKCO_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人领克App合法抓取登录或刷新请求；从响应data.centerTokenDto取token或refreshToken，从同一账号刷新请求取deviceId。静态令牌通常约30分钟，刷新令牌通常约30天，以实际服务端结果为准。",
+          "format": "每个非空行一个JSON对象；token可单独使用，refreshToken必须配套deviceId，可同时配置token作续期失败回退；不以&、@分账号。"
+        },
+        {
+          "name": "LYNKCO_APP_SECRETS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "从本人合法取得的App配置或授权抓包获取网关签名密钥与gl_dev_id，不内置他人密钥或设备标识。旧独立变量可兼容替代对应字段。",
+          "format": "JSON对象：nativeAppKey、nativeAppSecret必需；分享或续期需glDevId；nativeAppCode用于优先AppCode续期，缺失时回退HMAC；loginAppCode仅兼容保存。"
+        },
+        {
+          "name": "LYNKCO_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧输入，从本人App登录响应或刷新请求取得；设置LYNKCO_ACCOUNTS后忽略旧账号变量。",
+          "format": "每行一个刷新令牌，与设备标识按行配对。"
+        },
+        {
+          "name": "LYNKCO_DEVICE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧输入，从本人App登录响应或刷新请求取得；设置LYNKCO_ACCOUNTS后忽略旧账号变量。",
+          "format": "每行一个同账号deviceId，不广播单个设备标识。"
+        },
+        {
+          "name": "LYNKCO_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧输入，从本人App登录响应或刷新请求取得；设置LYNKCO_ACCOUNTS后忽略旧账号变量。",
+          "format": "每行一个静态令牌，按行配对回退；可单独使用，兼容bearer无空格前缀。"
+        },
+        {
+          "name": "LYNKCO_NATIVE_APP_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。",
+          "format": "单个字符串，对应nativeAppKey；不分账号。"
+        },
+        {
+          "name": "LYNKCO_NATIVE_APP_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。",
+          "format": "单个字符串，对应nativeAppSecret；不分账号。"
+        },
+        {
+          "name": "LYNKCO_NATIVE_APP_CODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。",
+          "format": "单个字符串，对应nativeAppCode；不分账号。"
+        },
+        {
+          "name": "LYNKCO_LOGIN_APP_CODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。",
+          "format": "单个字符串，对应loginAppCode；不分账号。"
+        },
+        {
+          "name": "LYNKCO_NATIVE_GL_DEV_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。",
+          "format": "单个字符串，对应glDevId；不分账号。"
+        },
+        {
+          "name": "LYNKCO_DO_SHARE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要设置，保留原默认1。",
+          "format": "1签到并分享；0、false、no、off关闭分享。"
+        },
+        {
+          "name": "LYNKCO_SHARE_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要选择原有分享链。",
+          "format": "默认simple两步链；full完整三步链，必须设置LYNKCO_CONTENT_ID。"
+        },
+        {
+          "name": "LYNKCO_CONTENT_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人App文章分享请求的contentId取得，用于完整链或两步失败回退。",
+          "format": "单个文章内容编号，不是账号凭据。"
+        },
+        {
+          "name": "LYNKCO_ARTICLE_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从App文章页面获取articleId；不设置则保留五页动态查找和上游备用文章。",
+          "format": "单个文章编号，不是账号凭据。"
+        },
+        {
+          "name": "LYNKCO_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况设置。",
+          "format": "请求超时秒数，默认30，范围大于0且不超过120。"
+        },
+        {
+          "name": "LYNKCO_ENERGY_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按积分异步到账情况设置。",
+          "format": "积分查询等待秒数，默认5，范围0至120。"
+        },
+        {
+          "name": "LYNKCO_ENV_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "显式兼容已有配置，不依赖外部仓库；仅只读，不回写。",
+          "format": "可选JSON文件路径，包含secrets、user；只有无账号环境输入时才使用单账号user。"
+        },
+        {
+          "name": "LYNKCO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无网络预演时设1。",
+          "format": "默认0；1完全断网，不发送请求，不验证真实业务成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认1。",
+          "format": "0、false、no、off关闭全部通知，其余开启；通知失败不改变业务退出码。"
+        },
+        {
+          "name": "LYNKCO_QL_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游青龙通知开关。",
+          "format": "默认1；0、false、no、off关闭青龙渠道，Bark仍受全局开关控制。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙已有notify.py或sendNotify.js所在目录；未设置仍探测标准路径及可导入notify模块。",
+          "format": "可选目录；预演只尝试禁止联网的Python通知，不启动Node通知。"
+        },
+        {
+          "name": "LYNKCO_BARK_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人Bark客户端取得推送Key，留空则不发送Bark。",
+          "format": "单个推送Key，仅向固定Bark服务发送脱敏总结。"
+        },
+        {
+          "name": "LYNKCO_BARK_ICON",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行配置通知图标地址，可留空。",
+          "format": "可选图标URL。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "AppCode优先续期、HMAC签名兜底及静态令牌回退",
+        "今日签到状态查询、自动签到和签到后复查，已签到时跳过",
+        "连续签到天数和签到卡查询",
+        "任务前后能量体积分查询",
+        "五页动态文章查找及上游备用文章",
+        "可选文章分享两步链及完整三步链回退，核验分享前后积分变化",
+        "多账号独立处理、官方非秘密身份展示、任何账号失败非零退出",
+        "青龙及可选Bark脱敏通知，通知失败保留业务退出码",
+        "完全断网预演、分阶段日志和单行结构化总结",
+        "旧账号变量及显式只读本地配置兼容"
+      ],
+      "sideEffects": [
+        "每日签到并领取服务端奖励",
+        "默认上报文章分享并可能增加能量体积分，可用LYNKCO_DO_SHARE关闭",
+        "使用刷新令牌续期，服务端可能更新登录令牌状态；不写本地凭据文件",
+        "发送脱敏青龙通知及可选Bark推送；预演不发送网络通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c087eb48daa78349",
+        "candidateSha256": "5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233"
+      }
+    },
+    {
       "catalogId": "c0137ce8eaf72832",
       "applicationKey": "main",
       "checkProfile": {

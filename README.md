@@ -65,6 +65,7 @@
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` |
 | Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `0 8 * * *` |
+| 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `8 8 * * *` |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
 | 网易云音乐签到 | `scripts/netease_music_checkin.py` | `python3 scripts/netease_music_checkin.py` | `15 9 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
@@ -181,6 +182,7 @@
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：使用 Cookie 执行 Leaflow 每日签到；自动识别 CSRF 隐藏字段并提交签到表单；明确识别成功、今日已完成、会话失效和失败结果；在服务返回时提取当日签到奖励；支持换行多账号独立处理并生成结构化汇总；提供有限重试、请求超时和可选随机执行窗口；提供完全断网的预演配置校验；在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份；支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码；输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY；兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小。
 - `scripts/loomy_daily.py`：每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。；--tasks 查询八项新手任务的分组、标题、积分与完成进度。；显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。；八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。；结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。；换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。；完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。；青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。。
+- `scripts/lynkco_qinglong_single.py`：AppCode优先续期、HMAC签名兜底及静态令牌回退；今日签到状态查询、自动签到和签到后复查，已签到时跳过；连续签到天数和签到卡查询；任务前后能量体积分查询；五页动态文章查找及上游备用文章；可选文章分享两步链及完整三步链回退，核验分享前后积分变化；多账号独立处理、官方非秘密身份展示、任何账号失败非零退出；青龙及可选Bark脱敏通知，通知失败保留业务退出码；完全断网预演、分阶段日志和单行结构化总结；旧账号变量及显式只读本地配置兼容。
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
 - `scripts/netease_music_checkin.py`：每日云贝签到，保留 weapi 双层 AES 与 RSA 加密及原执行时间。；识别已签到和登录态失效，仅明确业务状态码确认成功。；每行一个账号，兼容旧 Cookie 变量；账号独立执行并汇总失败。；青龙通知优先，依次回退到 PushPlus 和 Server酱；支持全局关闭。；完全断网预演、带时间戳的分阶段日志、账号统计及单行结构化总结。；官方返回公开账号身份时按返回值展示。。
 - `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
@@ -301,6 +303,8 @@
 <tr><td rowspan="1"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_COOKIE</code></td><td>是</td><td>格式：每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 &amp; 或 @ 分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、&amp; 和 @ 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="2"><code>scripts/lynkco_qinglong_single.py</code></td><td><code>LYNKCO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个JSON对象；token可单独使用，refreshToken必须配套deviceId，可同时配置token作续期失败回退；不以&amp;、@分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_APP_SECRETS</code></td><td>是</td><td>格式：JSON对象：nativeAppKey、nativeAppSecret必需；分享或续期需glDevId；nativeAppCode用于优先AppCode续期，缺失时回退HMAC；loginAppCode仅兼容保存。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/main.py</code></td><td><code>WALLHAVEN_SAVE_DIR</code></td><td>否</td><td>格式：绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/netease_music_checkin.py</code></td><td><code>NETEASE_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号的 Cookie，必须包含非空 MUSIC_U 和 __csrf；字段以分号分隔，值保留第一个等号后的全部文本。支持以 # 开头的注释行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
@@ -616,6 +620,27 @@
 <tr><td><code>WECOM_WEBHOOK</code></td><td>是</td><td>格式：HTTPS Webhook 地址或机器人 key；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>DINGTALK_WEBHOOK</code></td><td>是</td><td>格式：完整 HTTPS 地址；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>DINGTALK_SECRET</code></td><td>是</td><td>格式：加签密钥；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="21"><code>scripts/lynkco_qinglong_single.py</code></td><td><code>LYNKCO_REFRESH_TOKEN</code></td><td>是</td><td>格式：每行一个刷新令牌，与设备标识按行配对。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_DEVICE_ID</code></td><td>是</td><td>格式：每行一个同账号deviceId，不广播单个设备标识。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_TOKEN</code></td><td>是</td><td>格式：每行一个静态令牌，按行配对回退；可单独使用，兼容bearer无空格前缀。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_NATIVE_APP_KEY</code></td><td>是</td><td>格式：单个字符串，对应nativeAppKey；不分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_NATIVE_APP_SECRET</code></td><td>是</td><td>格式：单个字符串，对应nativeAppSecret；不分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_NATIVE_APP_CODE</code></td><td>是</td><td>格式：单个字符串，对应nativeAppCode；不分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_LOGIN_APP_CODE</code></td><td>是</td><td>格式：单个字符串，对应loginAppCode；不分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_NATIVE_GL_DEV_ID</code></td><td>是</td><td>格式：单个字符串，对应glDevId；不分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_DO_SHARE</code></td><td>否</td><td>格式：1签到并分享；0、false、no、off关闭分享。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_SHARE_MODE</code></td><td>否</td><td>格式：默认simple两步链；full完整三步链，必须设置LYNKCO_CONTENT_ID。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_CONTENT_ID</code></td><td>否</td><td>格式：单个文章内容编号，不是账号凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_ARTICLE_ID</code></td><td>否</td><td>格式：单个文章编号，不是账号凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_TIMEOUT</code></td><td>否</td><td>格式：请求超时秒数，默认30，范围大于0且不超过120。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_ENERGY_DELAY</code></td><td>否</td><td>格式：积分查询等待秒数，默认5，范围0至120。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_ENV_FILE</code></td><td>是</td><td>格式：可选JSON文件路径，包含secrets、user；只有无账号环境输入时才使用单账号user。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_DRY_RUN</code></td><td>否</td><td>格式：默认0；1完全断网，不发送请求，不验证真实业务成功。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭全部通知，其余开启；通知失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_QL_NOTIFY</code></td><td>否</td><td>格式：默认1；0、false、no、off关闭青龙渠道，Bark仍受全局开关控制。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录；预演只尝试禁止联网的Python通知，不启动Node通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_BARK_KEY</code></td><td>是</td><td>格式：单个推送Key，仅向固定Bark服务发送脱敏总结。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LYNKCO_BARK_ICON</code></td><td>否</td><td>格式：可选图标URL。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/main.py</code></td><td><code>WALLHAVEN_PAGES</code></td><td>否</td><td>格式：1 至 100 的整数，默认 5。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WALLHAVEN_DRY_RUN</code></td><td>否</td><td>格式：0、false、no、off 表示正式运行；其他值表示断网预演。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。断网预演仅生成通知摘要，不调用通知模块。；多账号格式以该脚本文档为准</td></tr>
@@ -1005,6 +1030,7 @@
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/loomy_daily.py`：每个非空行一个账号；兼容 session 和 备注|session，仅在第一个 | 处分割。独立处理各账号，任一账号失败则整体非零退出。--only N 可选择账号。。
+- `scripts/lynkco_qinglong_single.py`：每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。。
 - `scripts/netease_music_checkin.py`：每个非空行一个账号，整段 Cookie 保留；不使用 & 或 @ 分隔账号。逐个独立执行，任一账号失败则整体非零退出。。
 - `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
@@ -1308,6 +1334,20 @@
 - 所属脚本：`scripts/loomy_daily.py`
 - 获取或设置：在官方 Loomy 客户端登录，在本人授权的开发者工具或网络抓包中读取 loomyad.xunfei.cn 请求的 token 头，或 Authorization: Bearer 后的 session。登录态失效时重新登录并更新。不要公开凭据。
 - 填写格式：`每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_ACCOUNTS`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：在本人领克App合法抓取登录或刷新请求；从响应data.centerTokenDto取token或refreshToken，从同一账号刷新请求取deviceId。静态令牌通常约30分钟，刷新令牌通常约30天，以实际服务端结果为准。
+- 填写格式：`每个非空行一个JSON对象；token可单独使用，refreshToken必须配套deviceId，可同时配置token作续期失败回退；不以&、@分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_APP_SECRETS`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从本人合法取得的App配置或授权抓包获取网关签名密钥与gl_dev_id，不内置他人密钥或设备标识。旧独立变量可兼容替代对应字段。
+- 填写格式：`JSON对象：nativeAppKey、nativeAppSecret必需；分享或续期需glDevId；nativeAppCode用于优先AppCode续期，缺失时回退HMAC；loginAppCode仅兼容保存。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WALLHAVEN_SAVE_DIR`
@@ -3255,6 +3295,142 @@
 - 获取或设置：从本人钉钉群机器人的加签设置获取密钥，仅和相应 Webhook 配套使用。 青龙通知不可用时作为兼容推送通道。
 - 填写格式：`加签密钥`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_REFRESH_TOKEN`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：兼容旧输入，从本人App登录响应或刷新请求取得；设置LYNKCO_ACCOUNTS后忽略旧账号变量。
+- 填写格式：`每行一个刷新令牌，与设备标识按行配对。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_DEVICE_ID`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：兼容旧输入，从本人App登录响应或刷新请求取得；设置LYNKCO_ACCOUNTS后忽略旧账号变量。
+- 填写格式：`每行一个同账号deviceId，不广播单个设备标识。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_TOKEN`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：兼容旧输入，从本人App登录响应或刷新请求取得；设置LYNKCO_ACCOUNTS后忽略旧账号变量。
+- 填写格式：`每行一个静态令牌，按行配对回退；可单独使用，兼容bearer无空格前缀。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_NATIVE_APP_KEY`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。
+- 填写格式：`单个字符串，对应nativeAppKey；不分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_NATIVE_APP_SECRET`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。
+- 填写格式：`单个字符串，对应nativeAppSecret；不分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_NATIVE_APP_CODE`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。
+- 填写格式：`单个字符串，对应nativeAppCode；不分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_LOGIN_APP_CODE`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。
+- 填写格式：`单个字符串，对应loginAppCode；不分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_NATIVE_GL_DEV_ID`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从本人合法取得的App配置或授权抓包取得，优先于整合配置对应字段。
+- 填写格式：`单个字符串，对应glDevId；不分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_DO_SHARE`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：按需要设置，保留原默认1。
+- 填写格式：`1签到并分享；0、false、no、off关闭分享。`
+
+#### `LYNKCO_SHARE_MODE`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：按需要选择原有分享链。
+- 填写格式：`默认simple两步链；full完整三步链，必须设置LYNKCO_CONTENT_ID。`
+
+#### `LYNKCO_CONTENT_ID`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从本人App文章分享请求的contentId取得，用于完整链或两步失败回退。
+- 填写格式：`单个文章内容编号，不是账号凭据。`
+
+#### `LYNKCO_ARTICLE_ID`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从App文章页面获取articleId；不设置则保留五页动态查找和上游备用文章。
+- 填写格式：`单个文章编号，不是账号凭据。`
+
+#### `LYNKCO_TIMEOUT`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：按网络情况设置。
+- 填写格式：`请求超时秒数，默认30，范围大于0且不超过120。`
+
+#### `LYNKCO_ENERGY_DELAY`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：按积分异步到账情况设置。
+- 填写格式：`积分查询等待秒数，默认5，范围0至120。`
+
+#### `LYNKCO_ENV_FILE`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：显式兼容已有配置，不依赖外部仓库；仅只读，不回写。
+- 填写格式：`可选JSON文件路径，包含secrets、user；只有无账号环境输入时才使用单账号user。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_DRY_RUN`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：无网络预演时设1。
+- 填写格式：`默认0；1完全断网，不发送请求，不验证真实业务成功。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：青龙全局通知开关，默认1。
+- 填写格式：`0、false、no、off关闭全部通知，其余开启；通知失败不改变业务退出码。`
+
+#### `LYNKCO_QL_NOTIFY`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：兼容上游青龙通知开关。
+- 填写格式：`默认1；0、false、no、off关闭青龙渠道，Bark仍受全局开关控制。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：青龙已有notify.py或sendNotify.js所在目录；未设置仍探测标准路径及可导入notify模块。
+- 填写格式：`可选目录；预演只尝试禁止联网的Python通知，不启动Node通知。`
+
+#### `LYNKCO_BARK_KEY`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：从本人Bark客户端取得推送Key，留空则不发送Bark。
+- 填写格式：`单个推送Key，仅向固定Bark服务发送脱敏总结。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LYNKCO_BARK_ICON`
+
+- 所属脚本：`scripts/lynkco_qinglong_single.py`
+- 获取或设置：自行配置通知图标地址，可留空。
+- 填写格式：`可选图标URL。`
 
 #### `WALLHAVEN_PAGES`
 
@@ -5436,6 +5612,7 @@
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：SHA-256 `1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
 - `scripts/loomy_daily.py`：SHA-256 `31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
+- `scripts/lynkco_qinglong_single.py`：SHA-256 `5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 - `scripts/netease_music_checkin.py`：SHA-256 `3361723a7083bc4b0a02650f4ba455741abde030fb1194bdf7e9d028c9ae100f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4bc7f79f3e7ce4d0`。
 - `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
@@ -5552,6 +5729,7 @@
 - `scripts/kuaishou_reward_status.py`：。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励；正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总。
 - `scripts/loomy_daily.py`：正式默认执行刷新账号每日赠送积分。；显式批量或单项领取时上报新手任务完成状态并领取积分。；正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。；启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。。
+- `scripts/lynkco_qinglong_single.py`：每日签到并领取服务端奖励；默认上报文章分享并可能增加能量体积分，可用LYNKCO_DO_SHARE关闭；使用刷新令牌续期，服务端可能更新登录令牌状态；不写本地凭据文件；发送脱敏青龙通知及可选Bark推送；预演不发送网络通知。
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
 - `scripts/netease_music_checkin.py`：真实执行时完成每日签到并获得接口确认的云贝奖励。；通知启用时通过青龙、PushPlus 或 Server酱发送脱敏总结；预演不发送真实通知。。
 - `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
@@ -5670,6 +5848,7 @@
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：上游 `agluo/ql-script-hub` / `archive/leaflow_checkin.pyleaflow_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/loomy_daily.py`：上游 `L0NE-6/Loomy-Daily` / `loomy_daily.py` / `3d0f19b0b6486ff9096507805a5f9d061604058f`。
+- `scripts/lynkco_qinglong_single.py`：上游 `zhaosongbing/LynkCoHelper-QingLong` / `qinglong/lynkco_qinglong_single.py` / `7b9330aeae5e458f00de92b46bbd31bbf99c95aa`。
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/netease_music_checkin.py`：上游 `deeplee/personal-scripts` / `netease_music_checkin.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
