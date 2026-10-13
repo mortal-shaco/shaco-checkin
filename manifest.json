@@ -5318,7 +5318,8 @@
       "applicationKey": "unitaryhighs/ql_sign_script::hot",
       "checkProfile": {
         "requiredEnv": [
-          "DAILYNEWSCN_LIST"
+          "DAILYNEWSCN_LIST",
+          "OILPRICE_LIST"
         ],
         "optionalEnv": [
           "DAILYNEWSCN_TASK",
@@ -5339,14 +5340,17 @@
           "MEIJU_DRY_RUN",
           "MIYU_LIST",
           "MIYU_DRY_RUN",
+          "OILPRICE_DRY_RUN",
+          "OILPRICE_AREA",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
-          "DAILYNEWSCN_DRY_RUN": "1"
+          "DAILYNEWSCN_DRY_RUN": "1",
+          "OILPRICE_DRY_RUN": "1"
         },
         "liveEnv": {
-          "DAILYNEWSCN_TASK": "dailynewscn",
+          "DAILYNEWSCN_TASK": "oilprice",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
@@ -5358,25 +5362,27 @@
           "JITANG_SUCCESS",
           "KFC_SUCCESS",
           "MEIJU_SUCCESS",
-          "MIYU_SUCCESS"
+          "MIYU_SUCCESS",
+          "OILPRICE_SUCCESS"
         ],
         "features": [
-          "DAILYNEWSCN_TASK=dailynewscn 获取、校验、输出并通知中国日报，保留 DAILYNEWSCN_LIST、DAILYNEWSCN_SUCCESS；同文件另建任务保持定时 0 15 9 * * *。",
-          "DAILYNEWSCN_TASK=bdhot 获取、校验、输出并通知百度热搜榜，保留 BDHOT_LIST、BDHOT_SUCCESS；同文件另建任务保持定时 0 0 9 * * *。",
-          "DAILYNEWSCN_TASK=chouq 获取、校验、输出并通知随机抽签，保留 CHOUQ_LIST、CHOUQ_SUCCESS；同文件另建任务保持定时 0 10 9 * * *。",
-          "DAILYNEWSCN_TASK=day60s 获取、校验、输出并通知每天60秒读懂世界，保留 DAY60S_LIST、DAY60S_SUCCESS；同文件另建任务保持定时 0 20 9 * * *。",
-          "DAILYNEWSCN_TASK=dyhot 获取、校验、输出并通知抖音热搜榜，保留 DYHOT_LIST、DYHOT_SUCCESS；同文件另建任务保持定时 0 25 9 * * *。",
-          "DAILYNEWSCN_TASK=jitang 获取、校验、输出并通知鸡汤，保留 JITANG_LIST、JITANG_SUCCESS；同文件另建任务保持定时 0 30 9 * * *。",
-          "DAILYNEWSCN_TASK=kfc 获取、校验、输出并通知KFC疯狂星期四，保留 KFC_LIST、KFC_SUCCESS；同文件另建任务保持定时 0 35 9 * * *。",
-          "DAILYNEWSCN_TASK=meiju 获取、校验、输出并通知随机美句，保留 MEIJU_LIST、MEIJU_SUCCESS；同文件另建任务保持定时 0 40 9 * * *。",
-          "DAILYNEWSCN_TASK=miyu 获取、校验、输出并通知谜语，保留 MIYU_LIST、MIYU_SUCCESS；同文件另建任务保持定时 0 45 9 * * *。",
-          "默认日报及所有既有接口、参数、调度、输出标记和成功校验保持不变；百度和抖音保留前五条，鸡汤、美句及KFC支持短句。",
-          "抽签保留签文、签等级颜色、卦象、解签全角空格换行、典故首句及省略号；未知非空等级使用中性色图标。",
-          "Node.js 标准库独立 HTTP 请求，十秒总超时、128 KiB 大小限制和 HTTP 200 检查，拒绝错误页、未知 JSON、空白、网络中断和不可验证响应，失败非零退出。",
-          "完全断网预演采用本地样本并模拟通知，不加载通知模块，不宣称真实业务成功。",
-          "统一通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演都汇总，通知失败不改变业务退出码。",
-          "保留时间轴横幅、起止时间、编号阶段、耗时统计及原成功标记，追加唯一单行 TASK_SUMMARY JSON；隐藏凭据、手机号和设备标识。",
-          "无需账号；非空行标记只作兼容输入，公开内容只获取一次，不向接口发送标记。"
+          "DAILYNEWSCN_TASK=dailynewscn：获取、校验、输出并通知中国日报；保留 DAILYNEWSCN_LIST、DAILYNEWSCN_SUCCESS；同文件另建任务，定时 0 15 9 * * *。",
+          "DAILYNEWSCN_TASK=bdhot：获取、校验、输出并通知百度热搜榜；保留 BDHOT_LIST、BDHOT_SUCCESS；同文件另建任务，定时 0 0 9 * * *。",
+          "DAILYNEWSCN_TASK=chouq：获取、校验、输出并通知随机抽签；保留 CHOUQ_LIST、CHOUQ_SUCCESS；同文件另建任务，定时 0 10 9 * * *。",
+          "DAILYNEWSCN_TASK=day60s：获取、校验、输出并通知每天60秒读懂世界；保留 DAY60S_LIST、DAY60S_SUCCESS；同文件另建任务，定时 0 20 9 * * *。",
+          "DAILYNEWSCN_TASK=dyhot：获取、校验、输出并通知抖音热搜榜；保留 DYHOT_LIST、DYHOT_SUCCESS；同文件另建任务，定时 0 25 9 * * *。",
+          "DAILYNEWSCN_TASK=jitang：获取、校验、输出并通知鸡汤；保留 JITANG_LIST、JITANG_SUCCESS；同文件另建任务，定时 0 30 9 * * *。",
+          "DAILYNEWSCN_TASK=kfc：获取、校验、输出并通知KFC疯狂星期四；保留 KFC_LIST、KFC_SUCCESS；同文件另建任务，定时 0 35 9 * * *。",
+          "DAILYNEWSCN_TASK=meiju：获取、校验、输出并通知随机美句；保留 MEIJU_LIST、MEIJU_SUCCESS；同文件另建任务，定时 0 40 9 * * *。",
+          "DAILYNEWSCN_TASK=miyu：获取、校验、输出并通知谜语；保留 MIYU_LIST、MIYU_SUCCESS；同文件另建任务，定时 0 45 9 * * *。",
+          "DAILYNEWSCN_TASK=oilprice：获取、校验、输出并通知今日油价；保留 OILPRICE_LIST、OILPRICE_SUCCESS；同文件另建任务，定时 0 50 9 * * *。",
+          "默认日报及原九模式接口、参数、格式、成功校验和调度保持不变；抽签保留签等级颜色、卦象、全角空格换行、典故首句及省略号。",
+          "油价保留地区、日期、92/95/98号汽油、0号柴油和其他数字油号的图标及元/L格式；多地区独立处理，任一失败整体非零退出。",
+          "Node.js 标准库独立 HTTP；十秒总超时、128 KiB 限制、HTTP 200 与数据校验；无私有适配器或安装引导。",
+          "完全断网预演使用本地样本且模拟通知，不宣称真实接口成功。",
+          "统一通知开关、模块发现、十五秒超时和输出隔离；所有运行结果均汇总，通知失败不改变业务退出码。",
+          "保留时间轴横幅、起止时间、编号阶段、任务耗时统计和旧成功标记，追加唯一单行 TASK_SUMMARY；隐藏凭据与敏感字段。",
+          "无需账号；九种原任务多行标记仅作兼容输入，油价多行对应不同地区，标记不发送给接口。"
         ],
         "sideEffects": [
           "正式运行且通知启用时，向青龙已配置渠道发送所选公开内容及脱敏总结。"
@@ -5388,7 +5394,7 @@
       },
       "displayName": "中国日报",
       "path": "scripts/dailynewscn.js",
-      "sha256": "6599d0874f2cc2c0189f8bded8aee6db9d3a2a934661f96cce7616064cdb0d71",
+      "sha256": "f2c3d44944b98f1c36d9d248b6b80554a34a74656b6df7d267acf7a1583b1268",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -5477,6 +5483,16 @@
             "catalogId": "806b33fc8316c906",
             "sha256": "efd0cdd44e4a8e553ff7e3dd1de328e6a20e38c015e387ae63d41ea9bc706e01",
             "license": "MIT"
+          },
+          {
+            "repository": "unitaryhighs/ql_sign_script",
+            "url": "https://github.com/unitaryhighs/ql_sign_script.git",
+            "branch": "main",
+            "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+            "originalPath": "hot/oilprice.js",
+            "catalogId": "9f67d37bd65275ac",
+            "sha256": "23cb550966e98098156d6ff795e9924948685caa56112063af1b59aa48e220aa",
+            "license": "MIT"
           }
         ]
       },
@@ -5487,174 +5503,196 @@
           "name": "DAILYNEWSCN_TASK",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙任务环境中手工配置；默认 dailynewscn。不同内容分别创建指向同文件的任务。",
-          "format": "可选值：dailynewscn、bdhot、chouq、day60s、dyhot、jitang、kfc、meiju、miyu"
+          "howToGet": "在青龙同文件的各定时任务中手工设置；默认 dailynewscn。",
+          "format": "可选：dailynewscn、bdhot、chouq、day60s、dyhot、jitang、kfc、meiju、miyu、oilprice"
         },
         {
           "name": "DAILYNEWSCN_LIST",
           "required": true,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择中国日报模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 dailynewscn 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "DAILYNEWSCN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；对所有模式生效。"
         },
         {
           "name": "BDHOT_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择百度热搜榜模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 bdhot 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "BDHOT_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 bdhot 模式生效。"
         },
         {
           "name": "CHOUQ_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择随机抽签模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 chouq 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "CHOUQ_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 chouq 模式生效。"
         },
         {
           "name": "DAY60S_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择每天60秒读懂世界模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 day60s 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "DAY60S_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 day60s 模式生效。"
         },
         {
           "name": "DYHOT_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择抖音热搜榜模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 dyhot 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "DYHOT_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 dyhot 模式生效。"
         },
         {
           "name": "JITANG_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择鸡汤模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 jitang 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "JITANG_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 jitang 模式生效。"
         },
         {
           "name": "KFC_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择KFC疯狂星期四模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 kfc 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "KFC_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 kfc 模式生效。"
         },
         {
           "name": "MEIJU_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择随机美句模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 meiju 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "MEIJU_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 meiju 模式生效。"
         },
         {
           "name": "MIYU_LIST",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需注册、登录或获取凭据。在青龙手工填写 1；选择谜语模式时必须填写此执行标记。",
-          "format": "1 或兼容旧版非空值；每个非空行作为本地标记，公开内容仅获取一次，不发送标记。"
+          "howToGet": "无需账号或凭据；在青龙手工填写 1；仅选择此任务时必填，其他任务不读取。",
+          "format": "仅 miyu 模式必填；每个非空行一个本地执行标记，兼容旧非空值；多个标记仍仅获取一次。"
         },
         {
           "name": "MIYU_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手工填写 1 启用断网预演；DAILYNEWSCN_DRY_RUN 对全部模式生效，其余开关仅对对应模式生效。",
-          "format": "1 启用；其余值不启用。"
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 miyu 模式生效。"
+        },
+        {
+          "name": "OILPRICE_LIST",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "无需账号或凭据；手工填写地区名称，原工作表 D 列地区迁入本变量。",
+          "format": "仅油价模式必填；每个非空行一个中文地区，或一个含 area 字符串的 JSON 对象；旧标记 1 可配合 OILPRICE_AREA；不使用 & 或 @ 分隔。"
+        },
+        {
+          "name": "OILPRICE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙手工设置，无需从接口获取。",
+          "format": "1 启用断网预演；仅对 oilprice 模式生效。"
+        },
+        {
+          "name": "OILPRICE_AREA",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手工填写原工作表 D 列中文地区，仅用于兼容标记 1。",
+          "format": "中文地区，例如北京；地区行或 JSON area 优先。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙已有通知配置；手工设置该开关，默认 1。",
-          "format": "0、false、no、off 禁用，其余值启用。"
+          "howToGet": "手工设置全局通知开关。",
+          "format": "默认 1；0、false、no、off 禁用。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，填写青龙 sendNotify.js 所在目录；未设置时查找青龙标准目录。",
-          "format": "本地目录路径；仅用于可选通知，不是业务依赖。"
+          "howToGet": "可选，填写青龙自身 sendNotify.js 所在目录；默认发现 /ql/data/scripts 或 /ql/scripts。",
+          "format": "本机目录路径；缺失或通知失败保持业务退出码。"
         }
       ],
       "multiAccount": {
         "supported": false,
         "separator": "",
-        "rule": "公开内容无需账号；非空行执行标记仅作旧参数兼容，所选任务只读取一次，不向接口发送标记。",
-        "unsupportedReason": "公开内容接口没有账号或凭据契约，不存在多账号业务。"
+        "rule": "无需账号；原公开任务只获取一次，油价每个非空行一个地区且独立查询。",
+        "unsupportedReason": "公开接口没有账号或凭据契约，地区和执行标记不能计为账号。"
       },
       "dependencies": [],
       "features": [
-        "DAILYNEWSCN_TASK=dailynewscn 获取、校验、输出并通知中国日报，保留 DAILYNEWSCN_LIST、DAILYNEWSCN_SUCCESS；同文件另建任务保持定时 0 15 9 * * *。",
-        "DAILYNEWSCN_TASK=bdhot 获取、校验、输出并通知百度热搜榜，保留 BDHOT_LIST、BDHOT_SUCCESS；同文件另建任务保持定时 0 0 9 * * *。",
-        "DAILYNEWSCN_TASK=chouq 获取、校验、输出并通知随机抽签，保留 CHOUQ_LIST、CHOUQ_SUCCESS；同文件另建任务保持定时 0 10 9 * * *。",
-        "DAILYNEWSCN_TASK=day60s 获取、校验、输出并通知每天60秒读懂世界，保留 DAY60S_LIST、DAY60S_SUCCESS；同文件另建任务保持定时 0 20 9 * * *。",
-        "DAILYNEWSCN_TASK=dyhot 获取、校验、输出并通知抖音热搜榜，保留 DYHOT_LIST、DYHOT_SUCCESS；同文件另建任务保持定时 0 25 9 * * *。",
-        "DAILYNEWSCN_TASK=jitang 获取、校验、输出并通知鸡汤，保留 JITANG_LIST、JITANG_SUCCESS；同文件另建任务保持定时 0 30 9 * * *。",
-        "DAILYNEWSCN_TASK=kfc 获取、校验、输出并通知KFC疯狂星期四，保留 KFC_LIST、KFC_SUCCESS；同文件另建任务保持定时 0 35 9 * * *。",
-        "DAILYNEWSCN_TASK=meiju 获取、校验、输出并通知随机美句，保留 MEIJU_LIST、MEIJU_SUCCESS；同文件另建任务保持定时 0 40 9 * * *。",
-        "DAILYNEWSCN_TASK=miyu 获取、校验、输出并通知谜语，保留 MIYU_LIST、MIYU_SUCCESS；同文件另建任务保持定时 0 45 9 * * *。",
-        "默认日报及所有既有接口、参数、调度、输出标记和成功校验保持不变；百度和抖音保留前五条，鸡汤、美句及KFC支持短句。",
-        "抽签保留签文、签等级颜色、卦象、解签全角空格换行、典故首句及省略号；未知非空等级使用中性色图标。",
-        "Node.js 标准库独立 HTTP 请求，十秒总超时、128 KiB 大小限制和 HTTP 200 检查，拒绝错误页、未知 JSON、空白、网络中断和不可验证响应，失败非零退出。",
-        "完全断网预演采用本地样本并模拟通知，不加载通知模块，不宣称真实业务成功。",
-        "统一通知开关、模块发现、十五秒超时和输出隔离；成功、失败、配置错误及预演都汇总，通知失败不改变业务退出码。",
-        "保留时间轴横幅、起止时间、编号阶段、耗时统计及原成功标记，追加唯一单行 TASK_SUMMARY JSON；隐藏凭据、手机号和设备标识。",
-        "无需账号；非空行标记只作兼容输入，公开内容只获取一次，不向接口发送标记。"
+        "DAILYNEWSCN_TASK=dailynewscn：获取、校验、输出并通知中国日报；保留 DAILYNEWSCN_LIST、DAILYNEWSCN_SUCCESS；同文件另建任务，定时 0 15 9 * * *。",
+        "DAILYNEWSCN_TASK=bdhot：获取、校验、输出并通知百度热搜榜；保留 BDHOT_LIST、BDHOT_SUCCESS；同文件另建任务，定时 0 0 9 * * *。",
+        "DAILYNEWSCN_TASK=chouq：获取、校验、输出并通知随机抽签；保留 CHOUQ_LIST、CHOUQ_SUCCESS；同文件另建任务，定时 0 10 9 * * *。",
+        "DAILYNEWSCN_TASK=day60s：获取、校验、输出并通知每天60秒读懂世界；保留 DAY60S_LIST、DAY60S_SUCCESS；同文件另建任务，定时 0 20 9 * * *。",
+        "DAILYNEWSCN_TASK=dyhot：获取、校验、输出并通知抖音热搜榜；保留 DYHOT_LIST、DYHOT_SUCCESS；同文件另建任务，定时 0 25 9 * * *。",
+        "DAILYNEWSCN_TASK=jitang：获取、校验、输出并通知鸡汤；保留 JITANG_LIST、JITANG_SUCCESS；同文件另建任务，定时 0 30 9 * * *。",
+        "DAILYNEWSCN_TASK=kfc：获取、校验、输出并通知KFC疯狂星期四；保留 KFC_LIST、KFC_SUCCESS；同文件另建任务，定时 0 35 9 * * *。",
+        "DAILYNEWSCN_TASK=meiju：获取、校验、输出并通知随机美句；保留 MEIJU_LIST、MEIJU_SUCCESS；同文件另建任务，定时 0 40 9 * * *。",
+        "DAILYNEWSCN_TASK=miyu：获取、校验、输出并通知谜语；保留 MIYU_LIST、MIYU_SUCCESS；同文件另建任务，定时 0 45 9 * * *。",
+        "DAILYNEWSCN_TASK=oilprice：获取、校验、输出并通知今日油价；保留 OILPRICE_LIST、OILPRICE_SUCCESS；同文件另建任务，定时 0 50 9 * * *。",
+        "默认日报及原九模式接口、参数、格式、成功校验和调度保持不变；抽签保留签等级颜色、卦象、全角空格换行、典故首句及省略号。",
+        "油价保留地区、日期、92/95/98号汽油、0号柴油和其他数字油号的图标及元/L格式；多地区独立处理，任一失败整体非零退出。",
+        "Node.js 标准库独立 HTTP；十秒总超时、128 KiB 限制、HTTP 200 与数据校验；无私有适配器或安装引导。",
+        "完全断网预演使用本地样本且模拟通知，不宣称真实接口成功。",
+        "统一通知开关、模块发现、十五秒超时和输出隔离；所有运行结果均汇总，通知失败不改变业务退出码。",
+        "保留时间轴横幅、起止时间、编号阶段、任务耗时统计和旧成功标记，追加唯一单行 TASK_SUMMARY；隐藏凭据与敏感字段。",
+        "无需账号；九种原任务多行标记仅作兼容输入，油价多行对应不同地区，标记不发送给接口。"
       ],
       "sideEffects": [
         "正式运行且通知启用时，向青龙已配置渠道发送所选公开内容及脱敏总结。"
@@ -5670,12 +5708,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/f3d5ae90c3c979bf",
-        "candidateSha256": "29729615091203aec9053317ef8c50f42b4652b5907ae4a8c5f68ec3d415363b"
+        "candidateSha256": "d239f27652d63168992f08ebea371f0e4f3bee52c9c5696eae040ada260f60d9"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "29729615091203aec9053317ef8c50f42b4652b5907ae4a8c5f68ec3d415363b",
-        "releaseSha256": "6599d0874f2cc2c0189f8bded8aee6db9d3a2a934661f96cce7616064cdb0d71",
+        "validatedSha256": "d239f27652d63168992f08ebea371f0e4f3bee52c9c5696eae040ada260f60d9",
+        "releaseSha256": "f2c3d44944b98f1c36d9d248b6b80554a34a74656b6df7d267acf7a1583b1268",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },

@@ -80,6 +80,20 @@ MIYU_DRY_RUN=1 仅预演谜语；DAILYNEWSCN_DRY_RUN=1 对全部模式生效。
 MIT 及上游 ql_sign_script 来源标识完整保留；不自动发布帖子、评论或分享文本。
 本轮没有被拒绝的真实验证或前轮修复失败；仅进行断网检查，不声称真实接口成功。
 
+新增 DAILYNEWSCN_TASK=oilprice：原 HTTPS GET https://api.03c3.cn/api/oilPrice?area= 查询今日油价。
+同一维护文件另建任务，设置 DAILYNEWSCN_TASK=oilprice，保持 cron: 0 50 9 * * *。
+OILPRICE_LIST 每个非空行填写一个地区，例如北京；无需注册、Cookie、Token 或执行标记。
+也支持每行 JSON 对象 {"area":"北京"}；旧执行标记可配合 OILPRICE_AREA 指定统一地区。
+原来源仅说明工作表 D 列地区，未提供私有适配器的环境编码，不能保证未提供的分隔格式。
+OILPRICE_AREA 为可选地区默认值；纯地区行和 JSON area 优先于默认值。
+OILPRICE_DRY_RUN=1 为油价断网预演；统一 DAILYNEWSCN_DRY_RUN=1 仍对全部任务生效。
+油价各地区独立查询，任一地区配置或响应失败均非零退出；不把地区当作账号。
+保留地区、日期、92/95/98号汽油、0号柴油与其他油号价格的图标及元/L格式。
+验证 HTTP 200、JSON 数据结构、返回地区、有效日期、价格及明确失败标志；无业务码证据不臆造业务码。
+油价无账号、无发文；唯一正式副作用为青龙通知。移除原工作表写入、私有适配器和自定义推送。
+覆盖对比：原九模式、默认日报、接口、输出、调度及通知代码保留；仅补入缺失的油价模式。
+相关四来源的接口、GET 方法、抽签字段与维护版一致；本轮没有被拒绝的真实验证或前次失败。
+
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -104,7 +118,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const requestedTask = process.env.DAILYNEWSCN_TASK === undefined ? 'dailynewscn' : process.env.DAILYNEWSCN_TASK.trim();
-const task = ['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang', 'kfc', 'meiju', 'miyu'].includes(requestedTask) ? requestedTask : 'invalid';
+const task = ['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang', 'kfc', 'meiju', 'miyu', 'oilprice'].includes(requestedTask) ? requestedTask : 'invalid';
+const isOil = task === 'oilprice';
 const isBaidu = task === 'bdhot';
 const isDraw = task === 'chouq';
 const isWorld = task === 'day60s';
@@ -113,16 +128,16 @@ const isJitang = task === 'jitang';
 const isKfc = task === 'kfc';
 const isMeiju = task === 'meiju';
 const isMiyu = task === 'miyu';
-const TITLE = isMiyu ? '谜语' : isMeiju ? '随机美句' : isKfc ? 'KFC疯狂星期四' : isJitang ? '鸡汤' : isDouyin ? '抖音热搜榜' : isWorld ? '每天60秒读懂世界' : isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
-const marker = isMiyu ? 'MIYU_LIST' : isMeiju ? 'MEIJU_LIST' : isKfc ? 'KFC_LIST' : isJitang ? 'JITANG_LIST' : isDouyin ? 'DYHOT_LIST' : isWorld ? 'DAY60S_LIST' : isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
-const URL = isMiyu ? 'https://api.71xk.com/api/miyu' : isMeiju ? 'https://api.suyanw.cn/api/meiju' : isKfc ? 'http://shanhe.kim/api/za/kfc.php' : isJitang ? 'https://jkapi.com/api/dujitang' : isDouyin ? 'https://jkapi.com/api/dy_hot?limit=5' : isWorld ? 'https://jkapi.com/api/day_60s' : isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
-const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1') || (isWorld && process.env.DAY60S_DRY_RUN === '1') || (isDouyin && process.env.DYHOT_DRY_RUN === '1') || (isJitang && process.env.JITANG_DRY_RUN === '1') || (isKfc && process.env.KFC_DRY_RUN === '1') || (isMeiju && process.env.MEIJU_DRY_RUN === '1') || (isMiyu && process.env.MIYU_DRY_RUN === '1');
+const TITLE = isOil ? '今日油价' : isMiyu ? '谜语' : isMeiju ? '随机美句' : isKfc ? 'KFC疯狂星期四' : isJitang ? '鸡汤' : isDouyin ? '抖音热搜榜' : isWorld ? '每天60秒读懂世界' : isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
+const marker = isOil ? 'OILPRICE_LIST' : isMiyu ? 'MIYU_LIST' : isMeiju ? 'MEIJU_LIST' : isKfc ? 'KFC_LIST' : isJitang ? 'JITANG_LIST' : isDouyin ? 'DYHOT_LIST' : isWorld ? 'DAY60S_LIST' : isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
+const URL = isOil ? 'https://api.03c3.cn/api/oilPrice' : isMiyu ? 'https://api.71xk.com/api/miyu' : isMeiju ? 'https://api.suyanw.cn/api/meiju' : isKfc ? 'http://shanhe.kim/api/za/kfc.php' : isJitang ? 'https://jkapi.com/api/dujitang' : isDouyin ? 'https://jkapi.com/api/dy_hot?limit=5' : isWorld ? 'https://jkapi.com/api/day_60s' : isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
+const dryRun = (isOil && process.env.OILPRICE_DRY_RUN === '1') || process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1') || (isWorld && process.env.DAY60S_DRY_RUN === '1') || (isDouyin && process.env.DYHOT_DRY_RUN === '1') || (isJitang && process.env.JITANG_DRY_RUN === '1') || (isKfc && process.env.KFC_DRY_RUN === '1') || (isMeiju && process.env.MEIJU_DRY_RUN === '1') || (isMiyu && process.env.MIYU_DRY_RUN === '1');
 const started = Date.now();
 const stamp = () => new Date().toLocaleTimeString('zh-CN', { hour12: false });
 const log = text => console.log(`[${stamp()}] ${text}`);
 const disabled = value => /^(0|false|no|off)$/i.test((value || '').trim());
 
-function getReport() {
+function getReport(requestURL = URL) {
   if (dryRun) throw new Error('预演禁止网络');
   return new Promise((resolve, reject) => {
     let settled = false;
@@ -133,14 +148,14 @@ function getReport() {
       error ? reject(error) : resolve(value);
     };
     const transport = (isDraw || isKfc) ? http : https;
-    const request = transport.get(URL, { headers: { Accept: isDraw ? 'application/json' : 'text/plain', 'User-Agent': 'Qinglong-DailyNews/1.0' } }, response => {
+    const request = transport.get(requestURL, { headers: { Accept: (isDraw || isOil) ? 'application/json' : 'text/plain', 'User-Agent': 'Qinglong-DailyNews/1.0' } }, response => {
       if (response.statusCode !== 200) {
         finish(new Error(TITLE + '接口 HTTP 状态异常'));
         response.destroy();
         return;
       }
       const type = String(response.headers['content-type'] || '');
-      if ((isDraw ? /html|image|octet-stream/i : /html|json|image|octet-stream/i).test(type)) {
+      if (((isDraw || isOil) ? /html|image|octet-stream/i : /html|json|image|octet-stream/i).test(type)) {
         finish(new Error(TITLE + '响应格式与上游文本契约不符'));
         response.destroy();
         return;
@@ -245,7 +260,7 @@ async function main() {
   const stageStart = Date.now();
   log('阶段 1/3：检查执行参数');
   const entries = (process.env[marker] || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-  if (!['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang', 'kfc', 'meiju', 'miyu'].includes(task) || !entries.length) {
+  if (!['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang', 'kfc', 'meiju', 'miyu', 'oilprice'].includes(task) || !entries.length) {
     failure = 1;
     log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn、bdhot、chouq、day60s、dyhot、jitang、kfc、meiju 或 miyu；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
     log('阶段 2/3：⏭️ 配置错误，跳过获取；阶段耗时 0 毫秒');
@@ -287,4 +302,81 @@ async function main() {
   console.log('TASK_SUMMARY=' + JSON.stringify({ task, mode: dryRun ? 'dry-run' : 'live', status, accounts: { total: 0, success: 0, failure: 0 }, tasks: { total: 1, success, alreadyComplete: 0, skipped, failure }, notification, startedAt: new Date(started).toISOString(), finishedAt, elapsedMs: Date.now() - started }));
   process.exitCode = failure ? 1 : 0;
 }
-main();
+(isOil ? mainOil : main)();
+
+// 油价只读地区任务；旧九模式仍使用上面的原执行流程。
+function oilArea(line) {
+  let area = line.trim();
+  if (area.startsWith('{')) {
+    let row;
+    try { row = JSON.parse(area); } catch { throw new Error('地区 JSON 格式错误'); }
+    area = row && typeof row.area === 'string' ? row.area.trim() : '';
+  } else if (area === '1' && process.env.OILPRICE_AREA) {
+    area = process.env.OILPRICE_AREA.trim();
+  }
+  if (!/^[\u3400-\u9fff]{2,20}$/u.test(area)) throw new Error('地区必须为中文地区名称，旧标记请配合 OILPRICE_AREA');
+  return area;
+}
+function parseOil(text, area) {
+  let result;
+  try { result = JSON.parse(text.replace(/^\uFEFF/, '')); } catch { throw new Error('油价响应不是有效 JSON'); }
+  const d = result && result.data;
+  if (!d || typeof d !== 'object' || Array.isArray(d) || result.success === false ||
+      (result.error !== undefined && ![null, false, '', 0].includes(result.error)) ||
+      typeof d.area !== 'string' || d.area.trim() !== area || typeof d.date !== 'string') {
+    throw new Error('油价业务失败或地区、日期字段不符');
+  }
+  const match = d.date.trim().match(/^(\d{4})[-/年](\d{1,2})[-/月](\d{1,2})日?$/);
+  if (!match) throw new Error('油价日期格式无法验证');
+  const [year, month, day] = match.slice(1).map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (year < 2000 || date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) throw new Error('油价日期无效');
+  const prices = Object.entries(d).filter(([key]) => !['area', 'date'].includes(key));
+  if (!['92', '95', '98', '0'].every(key => Object.hasOwn(d, key)) || !prices.length) throw new Error('油价油号字段缺失');
+  const labels = { '92': '⛽92号汽油', '95': '🛢️95号汽油', '98': '🔥98号汽油', '0': '🚚0号柴油' };
+  const lines = prices.map(([key, value]) => {
+    if (!/^\d{1,3}$/.test(key) || !['number', 'string'].includes(typeof value) ||
+        !/^\d+(?:\.\d+)?$/.test(String(value)) || !Number.isFinite(Number(value)) || Number(value) <= 0) throw new Error('油价价格字段无法验证');
+    return `${labels[key] || `⛽${key}号油`}：${value}元/L`;
+  });
+  return [`📍地区：${d.area}`, `📅日期：${d.date}`, ...lines];
+}
+async function mainOil() {
+  console.log(`========== ${TITLE} ==========`);
+  log(`开始时间：${new Date(started).toISOString()}；模式：${dryRun ? '断网预演' : '正式运行'}`);
+  const entries = (process.env.OILPRICE_LIST || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  let success = 0, failure = 0, skipped = 0;
+  const reports = [];
+  log(`账号总数：0（公开油价，无需账号）；地区任务总数：${entries.length}`);
+  log('阶段 1/3：检查地区配置');
+  if (!entries.length) { failure = 1; log('❌ 配置错误：OILPRICE_LIST 每个非空行填写一个中文地区；阶段耗时 0 毫秒'); }
+  else log(`✅ 已读取 ${entries.length} 个地区条目；阶段耗时 ${Date.now() - started} 毫秒`);
+  log('阶段 2/3：逐地区获取并验证油价');
+  for (let i = 0; i < entries.length; i++) {
+    const begin = Date.now();
+    let ok = 0, bad = 0, skip = 0;
+    log(`地区任务 ${i + 1}：阶段 2/3 开始`);
+    try {
+      const area = oilArea(entries[i]);
+      const url = new global.URL(URL);
+      url.searchParams.set('area', area);
+      const text = dryRun ? JSON.stringify({ data: { area, date: '2026-01-01', '92': '7.00', '95': '7.50', '98': '8.00', '0': '6.50' } }) : await getReport(url);
+      const report = parseOil(text, area);
+      if (dryRun) { skipped++; skip = 1; log(`✅ DRY_RUN_OK：地区任务 ${i + 1} 本地解析通过，HTTP 已跳过`); }
+      else { success++; ok = 1; reports.push(report.join('\n')); log(`✅ OILPRICE_SUCCESS：地区任务 ${i + 1} 油价字段检查通过`); console.log('【今日油价】\n' + report.join('\n')); }
+    } catch (error) { failure++; bad = 1; log(`❌ 地区任务 ${i + 1}：${error.message}`); }
+    log(`地区任务 ${i + 1} 统计：总任务 1，成功 ${ok}，已完成 0，跳过 ${skip}，失败 ${bad}；耗时 ${Date.now() - begin} 毫秒`);
+  }
+  const status = !entries.length ? 'configuration-error' : failure ? (success ? 'partial-failure' : 'failure') : dryRun ? 'dry-run' : 'success';
+  const beginNotify = Date.now();
+  log('阶段 3/3：发送任务总结');
+  const body = `账号总数：0（无需账号）\n地区任务总数：${entries.length || 1}；成功：${success}；失败：${failure}；跳过：${skipped}\n状态：${status}` + (reports.length ? '\n【今日油价】\n' + reports.join('\n\n') : '');
+  const notification = await notify(body);
+  log(`通知结果：${notification}；阶段耗时 ${Date.now() - beginNotify} 毫秒`);
+  const finishedAt = new Date().toISOString();
+  console.log('--------------------------------');
+  log(`账号统计：总数 0，成功 0，失败 0；子任务统计：总数 ${entries.length || 1}，成功 ${success}，已完成 0，跳过 ${skipped}，失败 ${failure}`);
+  log(`完成时间：${finishedAt}；总耗时：${Date.now() - started} 毫秒；通知状态：${notification}；最终状态：${status}`);
+  console.log('TASK_SUMMARY=' + JSON.stringify({ task, mode: dryRun ? 'dry-run' : 'live', status, accounts: { total: 0, success: 0, failure: 0 }, tasks: { total: entries.length || 1, success, alreadyComplete: 0, skipped, failure }, notification, startedAt: new Date(started).toISOString(), finishedAt, elapsedMs: Date.now() - started }));
+  process.exitCode = failure ? 1 : 0;
+}
