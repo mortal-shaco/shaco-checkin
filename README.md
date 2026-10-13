@@ -78,6 +78,7 @@
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
 | 小米运动账号验证与步数上传 | `scripts/mimotion.py` | `python3 scripts/mimotion.py` | `0 20 * * *` |
 | 网易云音乐签到 | `scripts/netease_music_checkin.py` | `python3 scripts/netease_music_checkin.py` | `15 9 * * *` |
+| 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `30 9 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
@@ -210,6 +211,7 @@
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
 - `scripts/mimotion.py`：手机号或邮箱及密码登录 Zepp Life，核验授权与完整登录凭据，显示官方非敏感账号身份。；显式开启后在设定的随机范围内修改本人当天运动记录的步数并上传，要求接口 code=0 且 message=success。；优先获取远程时间戳，失败使用本地毫秒时间；HTTP 表单编码、超时、响应大小限制及禁止凭据重定向。；多账号独立执行、失败非零退出、断网预演、脱敏分阶段日志、单行 TASK_SUMMARY 汇总及青龙通知。。
 - `scripts/netease_music_checkin.py`：每日云贝签到，保留 weapi 双层 AES 与 RSA 加密及原执行时间。；识别已签到和登录态失效，仅明确业务状态码确认成功。；每行一个账号，兼容旧 Cookie 变量；账号独立执行并汇总失败。；青龙通知优先，依次回退到 PushPlus 和 Server酱；支持全局关闭。；完全断网预演、带时间戳的分阶段日志、账号统计及单行结构化总结。；官方返回公开账号身份时按返回值展示。。
+- `scripts/netease_task.py`：登录状态核验并显示官方昵称或公开用户编号；手机端与网页端双端签到，识别今日已签到；云贝签到、兼容任务字段并领取已完成任务奖励；VIP 成长值批量领取，失败时按任务编号通过备用接口领取；显式开启后从四个榜单随机获取最多 300 首歌曲并模拟提交播放记录；查询等级和累计听歌数量；多账号独立执行，部分失败时整体非零退出；完整断网预演、脱敏时间轴日志及单行 TASK_SUMMARY 统计；青龙通知及可选 Bark 通知，通知失败保留业务退出码。
 - `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
@@ -347,6 +349,8 @@
 <tr><td rowspan="1"><code>scripts/main.py</code></td><td><code>WALLHAVEN_SAVE_DIR</code></td><td>否</td><td>格式：绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/mimotion.py</code></td><td><code>MIMOTION_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 手机号或邮箱|密码，仅在第一个 | 分割；也支持每行一个 JSON 对象，字段 phone、password，上传时另需 data_json、last_deviceid，可选 min_step、max_step。data_json 是仅含当天一条记录的数组或 JSON 字符串，必须有非空 data 数组和 summary.stp.ttl；summary 可为对象或 JSON 字符串。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/netease_music_checkin.py</code></td><td><code>NETEASE_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号的 Cookie，必须包含非空 MUSIC_U 和 __csrf；字段以分号分隔，值保留第一个等号后的全部文本。支持以 # 开头的注释行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="2"><code>scripts/netease_task.py</code></td><td><code>NETEASE_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，MUSIC_U=&lt;本人凭据&gt;; __csrf=&lt;本人凭据&gt;; 其他字段原样保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NETEASE_API_BASE</code></td><td>否</td><td>格式：HTTPS 地址，可含路径前缀；不含认证信息、查询参数或片段。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
@@ -748,6 +752,11 @@
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录，仅用于可选通知，不是签到依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：推送令牌，独立于账号 Cookie。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SENDKEY</code></td><td>是</td><td>格式：推送密钥，独立于账号 Cookie。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/netease_task.py</code></td><td><code>NETEASE_SCROBBLE</code></td><td>否</td><td>格式：1 开启模拟提交最多 300 首榜单歌曲的播放记录，0 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NETEASE_DRY_RUN</code></td><td>否</td><td>格式：1 为预演，其他值为正式执行；预演不验证凭据有效性。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；断网预演仅模拟通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录，业务不依赖通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>BARK_URL</code></td><td>是</td><td>格式：本人完整 HTTPS 推送地址，不含查询参数或片段；受 QINGLONG_NOTIFY 总开关控制，预演不投递。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="12"><code>scripts/nga_checkin.py</code></td><td><code>NGA_UA</code></td><td>否</td><td>格式：单行 User-Agent，默认 Nga_Official/90409；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NGA_ENABLE_DAILY_MISSIONS</code></td><td>否</td><td>格式：布尔值，默认 0；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NGA_ENABLE_VIDEO_MISSIONS</code></td><td>否</td><td>格式：布尔值，默认 0；多账号格式以该脚本文档为准</td></tr>
@@ -1195,6 +1204,7 @@
 - `scripts/lynkco_qinglong_single.py`：每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。。
 - `scripts/mimotion.py`：每个非空行一个账号，仅在首个 | 分割账号和密码，密码中的其它分隔符保留；上传参数同属该行 JSON 对象。每个账号独立执行，任一失败均非零退出。旧 MIMOTION 数组只作为兼容输入。。
 - `scripts/netease_music_checkin.py`：每个非空行一个账号，整段 Cookie 保留；不使用 & 或 @ 分隔账号。逐个独立执行，任一账号失败则整体非零退出。。
+- `scripts/netease_task.py`：每个非空行填写同一账号的完整 Cookie，分号分隔字段，字段值只在第一个等号处拆分，保留后续内容；逐个处理账号，任一账号失败整体非零退出。。
 - `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
@@ -1600,6 +1610,19 @@
 - 获取或设置：浏览器登录网易云音乐官网 https://music.163.com，打开开发者工具的 Application → Cookies，复制同一账号的 MUSIC_U 和 __csrf，可复制整段 Cookie；登录态失效时重新登录获取。
 - 填写格式：`每个非空行一个账号的 Cookie，必须包含非空 MUSIC_U 和 __csrf；字段以分号分隔，值保留第一个等号后的全部文本。支持以 # 开头的注释行。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `NETEASE_COOKIE`
+
+- 所属脚本：`scripts/netease_task.py`
+- 获取或设置：登录网易云音乐网页版，在开发者工具网络面板查看本人已登录请求的 Cookie，复制 MUSIC_U、__csrf 及其他必要字段。不要向他人提供凭据。
+- 填写格式：`每个非空行一个账号，MUSIC_U=<本人凭据>; __csrf=<本人凭据>; 其他字段原样保留；不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `NETEASE_API_BASE`
+
+- 所属脚本：`scripts/netease_task.py`
+- 获取或设置：从管理员获取已信任且兼容网易云 Node.js API 接口的 HTTPS 服务地址。服务会接收 Cookie，必须确认可信；无默认第三方节点。预演无需配置。
+- 填写格式：`HTTPS 地址，可含路径前缀；不含认证信息、查询参数或片段。`
 
 #### `NGA_ACCOUNT`
 
@@ -4085,6 +4108,37 @@
 - 填写格式：`推送密钥，独立于账号 Cookie。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `NETEASE_SCROBBLE`
+
+- 所属脚本：`scripts/netease_task.py`
+- 获取或设置：仅在明确同意修改模拟播放历史时设为 1，默认关闭。
+- 填写格式：`1 开启模拟提交最多 300 首榜单歌曲的播放记录，0 关闭。`
+
+#### `NETEASE_DRY_RUN`
+
+- 所属脚本：`scripts/netease_task.py`
+- 获取或设置：在青龙环境变量中设为 1 开启完全断网预演。
+- 填写格式：`1 为预演，其他值为正式执行；预演不验证凭据有效性。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/netease_task.py`
+- 获取或设置：默认使用青龙通知模块；设为 0、false、no 或 off 可关闭。
+- 填写格式：`默认 1；断网预演仅模拟通知。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/netease_task.py`
+- 获取或设置：可选填写青龙 notify.py 所在目录，也会尝试导入 notify 及标准青龙脚本目录。
+- 填写格式：`本机通知模块目录，业务不依赖通知模块。`
+
+#### `BARK_URL`
+
+- 所属脚本：`scripts/netease_task.py`
+- 获取或设置：可选从本人 Bark 客户端复制 HTTPS 推送地址，保留上游通知入口。
+- 填写格式：`本人完整 HTTPS 推送地址，不含查询参数或片段；受 QINGLONG_NOTIFY 总开关控制，预演不投递。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `NGA_UA`
 
 - 所属脚本：`scripts/nga_checkin.py`
@@ -6567,6 +6621,7 @@
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 - `scripts/mimotion.py`：SHA-256 `4e8149eb7fd9f48b6a92c4b22190c633a40d7def1754bb196a3c26bcbf30d7cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
 - `scripts/netease_music_checkin.py`：SHA-256 `3361723a7083bc4b0a02650f4ba455741abde030fb1194bdf7e9d028c9ae100f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4bc7f79f3e7ce4d0`。
+- `scripts/netease_task.py`：SHA-256 `7bd19d9adc8b02fc9bf2e4d0ace4e164ed4f9e887c52de7317319034a0ea91a1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a8a311f3f5aaa2e6`。
 - `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
@@ -6699,6 +6754,7 @@
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
 - `scripts/mimotion.py`：正式登录会申请 Zepp 授权及登录令牌。；仅 MIMOTION_ACTION=upload 时上传本人提供的当天运动记录，修改 summary.stp.ttl；其它提供的记录字段保持原样，不合成心率或睡眠数据。；启用通知时调用青龙通知模块发送脱敏汇总，预演禁止联网。。
 - `scripts/netease_music_checkin.py`：真实执行时完成每日签到并获得接口确认的云贝奖励。；通知启用时通过青龙、PushPlus 或 Server酱发送脱敏总结；预演不发送真实通知。。
+- `scripts/netease_task.py`：手机端与网页端签到增加经验或签到记录；云贝签到增加云贝或签到记录；领取已完成云贝任务奖励；领取 VIP 成长值；NETEASE_SCROBBLE=1 时提交模拟播放记录并可能改变听歌历史或经验；正式运行且开启通知时投递脱敏青龙通知和可选 Bark 消息。
 - `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
@@ -6833,6 +6889,7 @@
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/mimotion.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/mimotion/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/netease_music_checkin.py`：上游 `deeplee/personal-scripts` / `netease_music_checkin.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
+- `scripts/netease_task.py`：上游 `Han-cy77/Qinglong_auto` / `netease_task.py` / `4bac7c4f709db60a648c4bd498e99f9c7e66b63b`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。

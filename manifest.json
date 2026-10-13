@@ -7205,6 +7205,161 @@
       }
     },
     {
+      "catalogId": "a8a311f3f5aaa2e6",
+      "applicationKey": "han-cy77/qinglong_auto::netease",
+      "checkProfile": {
+        "requiredEnv": [
+          "NETEASE_COOKIE",
+          "NETEASE_API_BASE"
+        ],
+        "optionalEnv": [
+          "NETEASE_SCROBBLE",
+          "NETEASE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "BARK_URL"
+        ],
+        "dryRunEnv": {
+          "NETEASE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NETEASE_SCROBBLE": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "登录状态核验并显示官方昵称或公开用户编号",
+          "手机端与网页端双端签到，识别今日已签到",
+          "云贝签到、兼容任务字段并领取已完成任务奖励",
+          "VIP 成长值批量领取，失败时按任务编号通过备用接口领取",
+          "显式开启后从四个榜单随机获取最多 300 首歌曲并模拟提交播放记录",
+          "查询等级和累计听歌数量",
+          "多账号独立执行，部分失败时整体非零退出",
+          "完整断网预演、脱敏时间轴日志及单行 TASK_SUMMARY 统计",
+          "青龙通知及可选 Bark 通知，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "手机端与网页端签到增加经验或签到记录",
+          "云贝签到增加云贝或签到记录",
+          "领取已完成云贝任务奖励",
+          "领取 VIP 成长值",
+          "NETEASE_SCROBBLE=1 时提交模拟播放记录并可能改变听歌历史或经验",
+          "正式运行且开启通知时投递脱敏青龙通知和可选 Bark 消息"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "网易云全能打卡",
+      "path": "scripts/netease_task.py",
+      "sha256": "7bd19d9adc8b02fc9bf2e4d0ace4e164ed4f9e887c52de7317319034a0ea91a1",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Han-cy77/Qinglong_auto",
+        "branch": "main",
+        "commit": "4bac7c4f709db60a648c4bd498e99f9c7e66b63b",
+        "originalPath": "netease_task.py"
+      },
+      "cron": "30 9 * * *",
+      "command": "python3 scripts/netease_task.py",
+      "environment": [
+        {
+          "name": "NETEASE_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录网易云音乐网页版，在开发者工具网络面板查看本人已登录请求的 Cookie，复制 MUSIC_U、__csrf 及其他必要字段。不要向他人提供凭据。",
+          "format": "每个非空行一个账号，MUSIC_U=<本人凭据>; __csrf=<本人凭据>; 其他字段原样保留；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "NETEASE_API_BASE",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "从管理员获取已信任且兼容网易云 Node.js API 接口的 HTTPS 服务地址。服务会接收 Cookie，必须确认可信；无默认第三方节点。预演无需配置。",
+          "format": "HTTPS 地址，可含路径前缀；不含认证信息、查询参数或片段。"
+        },
+        {
+          "name": "NETEASE_SCROBBLE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在明确同意修改模拟播放历史时设为 1，默认关闭。",
+          "format": "1 开启模拟提交最多 300 首榜单歌曲的播放记录，0 关闭。"
+        },
+        {
+          "name": "NETEASE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设为 1 开启完全断网预演。",
+          "format": "1 为预演，其他值为正式执行；预演不验证凭据有效性。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认使用青龙通知模块；设为 0、false、no 或 off 可关闭。",
+          "format": "默认 1；断网预演仅模拟通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 notify.py 所在目录，也会尝试导入 notify 及标准青龙脚本目录。",
+          "format": "本机通知模块目录，业务不依赖通知模块。"
+        },
+        {
+          "name": "BARK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选从本人 Bark 客户端复制 HTTPS 推送地址，保留上游通知入口。",
+          "format": "本人完整 HTTPS 推送地址，不含查询参数或片段；受 QINGLONG_NOTIFY 总开关控制，预演不投递。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行填写同一账号的完整 Cookie，分号分隔字段，字段值只在第一个等号处拆分，保留后续内容；逐个处理账号，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "登录状态核验并显示官方昵称或公开用户编号",
+        "手机端与网页端双端签到，识别今日已签到",
+        "云贝签到、兼容任务字段并领取已完成任务奖励",
+        "VIP 成长值批量领取，失败时按任务编号通过备用接口领取",
+        "显式开启后从四个榜单随机获取最多 300 首歌曲并模拟提交播放记录",
+        "查询等级和累计听歌数量",
+        "多账号独立执行，部分失败时整体非零退出",
+        "完整断网预演、脱敏时间轴日志及单行 TASK_SUMMARY 统计",
+        "青龙通知及可选 Bark 通知，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "手机端与网页端签到增加经验或签到记录",
+        "云贝签到增加云贝或签到记录",
+        "领取已完成云贝任务奖励",
+        "领取 VIP 成长值",
+        "NETEASE_SCROBBLE=1 时提交模拟播放记录并可能改变听歌历史或经验",
+        "正式运行且开启通知时投递脱敏青龙通知和可选 Bark 消息"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a8a311f3f5aaa2e6",
+        "candidateSha256": "7bd19d9adc8b02fc9bf2e4d0ace4e164ed4f9e887c52de7317319034a0ea91a1"
+      }
+    },
+    {
       "catalogId": "4e0cf5e129fb12a4",
       "applicationKey": "nga",
       "checkProfile": {
