@@ -1514,6 +1514,204 @@
       }
     },
     {
+      "catalogId": "35a9f7fe38bde305",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::wps",
+      "checkProfile": {
+        "requiredEnv": [
+          "WPS_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WPS_TASKS",
+          "WPS_RESTART_SERIES",
+          "WPS_USER_AGENT",
+          "WPS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WPS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WPS_TASKS": "checkin,reward",
+          "WPS_RESTART_SERIES": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "WPS_TASK_SUCCESS：全部账号业务已核验成功"
+        ],
+        "features": [
+          "按优先级合并双营销渠道，自动发现福利中心入口并查询活动页面",
+          "免费会员打卡、服务端签到日期和连续签到天数核对，提交后刷新核验今日状态",
+          "显式开启后可在服务端明确返回系列失效时重开签到系列一次",
+          "查询并按可用机会申请未参与的会员试用，逐项检查业务成功",
+          "显式开启后执行天天抽奖并逐次检查业务成功",
+          "先领取已有七日系列奖励，再签到；刷新签到及抽奖后检查七日领奖条件，防止同系列重复领取",
+          "可选合并同排期任务中心的官方公钥获取、加密签到、积分和即将过期积分查询",
+          "可选任务中心抽奖，使用官方页面返回的有效场次，保留单账号 max_lottery_limit 默认上限五次及抽奖后积分刷新",
+          "支持换行多账号和原 JSON 账号字段，显示官方非秘密昵称、用户名或公开用户编号",
+          "完全断网预演、独立账号失败处理、非零失败退出、脱敏日志、阶段耗时及唯一结构化任务汇总",
+          "所有运行结果均生成脱敏通知；正式运行发现并调用青龙通知，通知失败保持业务退出码"
+        ],
+        "sideEffects": [
+          "默认执行免费会员签到，符合条件时领取七日奖励",
+          "显式开启会员试用时提交申请并消耗申请机会",
+          "显式开启天天抽奖或任务中心抽奖时消耗抽奖机会并领取接口发放的奖品",
+          "显式开启签到系列重开时改变签到系列",
+          "显式开启任务中心时执行签到并领取签到奖励",
+          "正式运行通知启用且模块可用时发送任务汇总通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "WPS天天领福利（可选任务中心）",
+      "path": "scripts/daily_benefits.py",
+      "sha256": "9a155b77acadb949a6fedf73bdd5e63ec7684a45fabd5143b66ac1873f27676b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/wps/daily_benefits.py",
+        "related": [
+          {
+            "catalogId": "80f46be2f1774f1e",
+            "sha256": "c3d6a1fdf8a6db522ceacdb19e5ae5e7fdc97cabd91ab46ccd4f1e6797108861",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/wps/api.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "b925ac169d845480",
+            "sha256": "4186abeb3bdced00d0a11091ede67b917a85f77c21edf4b82bf42e17c92bb0ee",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/wps/main.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "9b72645deccfaab8",
+            "sha256": "2207084db2cc3d77e9618519944ab19ea7bca25661114d8cfd66b47e7f0ad283",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/wps/task_center.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "1 1 1 1 1",
+      "command": "python3 scripts/daily_benefits.py",
+      "environment": [
+        {
+          "name": "WPS_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 WPS 后打开福利中心，在开发者工具 Network 中复制 personal-act.wps.cn 的 page_info 或 component_action 请求 Cookie，包含登录会话及 act_csrf_token 或 csrf。启用任务中心时，从同账号官方响应或签到请求获取数字 user_id。不得复制他人账号数据。",
+          "format": "每个非空行一个账号；仅福利任务使用完整 Cookie；任务中心使用 user_id|完整 Cookie，仅按第一个 | 分割，保留后续 Cookie 内容。也可每行一个 JSON 对象，包含 cookies 及可选 user_id、user_agent、account_name、max_lottery_limit，兼容原账号字段；不读取私有配置文件。"
+        },
+        {
+          "name": "WPS_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需选择任务；默认 checkin,reward。trial 会申请会员试用，lottery 和 task_center_lottery 会消耗抽奖机会，task_center 会执行加密签到及查询积分，需显式启用。",
+          "format": "逗号分隔任务名称：checkin,reward,trial,lottery,task_center,task_center_lottery；账号仍按换行分隔。"
+        },
+        {
+          "name": "WPS_RESTART_SERIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "只有愿意在签到系列断签失效后重开时设为 1，默认关闭。",
+          "format": "1 启用；0 关闭。仅对服务端明确返回系列失效重试一次。"
+        },
+        {
+          "name": "WPS_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从本人浏览器官方请求头获取 User-Agent，默认使用原福利脚本浏览器头；每行 JSON 的 user_agent 优先。",
+          "format": "单行浏览器 User-Agent，不含 Cookie 或凭据。"
+        },
+        {
+          "name": "WPS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证配置和任务计划时设为 1，不访问 WPS 或通知网络，不判断凭据有效性。",
+          "format": "1 开启完全断网预演；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认启用 Qinglong 脱敏汇总通知；断网预演仅展示通知正文，正式运行调用通知模块。",
+          "format": "0、false、no、off 关闭，其余启用，默认 1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可填写青龙平台 notify.py 或 sendNotify.js 所在目录，默认自动寻找标准通知位置；业务运行不依赖通知模块。",
+          "format": "本机通知模块目录，不填则尝试导入 notify 和 /ql/data/scripts、/ql/scripts。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；Cookie 和同账号 user_id 合并在 WPS_ACCOUNTS 的一行，只在首个 | 分割。JSON 每行一个对象也可用。账号相互独立，任一账号或启用任务失败则整体非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome"
+      ],
+      "features": [
+        "按优先级合并双营销渠道，自动发现福利中心入口并查询活动页面",
+        "免费会员打卡、服务端签到日期和连续签到天数核对，提交后刷新核验今日状态",
+        "显式开启后可在服务端明确返回系列失效时重开签到系列一次",
+        "查询并按可用机会申请未参与的会员试用，逐项检查业务成功",
+        "显式开启后执行天天抽奖并逐次检查业务成功",
+        "先领取已有七日系列奖励，再签到；刷新签到及抽奖后检查七日领奖条件，防止同系列重复领取",
+        "可选合并同排期任务中心的官方公钥获取、加密签到、积分和即将过期积分查询",
+        "可选任务中心抽奖，使用官方页面返回的有效场次，保留单账号 max_lottery_limit 默认上限五次及抽奖后积分刷新",
+        "支持换行多账号和原 JSON 账号字段，显示官方非秘密昵称、用户名或公开用户编号",
+        "完全断网预演、独立账号失败处理、非零失败退出、脱敏日志、阶段耗时及唯一结构化任务汇总",
+        "所有运行结果均生成脱敏通知；正式运行发现并调用青龙通知，通知失败保持业务退出码"
+      ],
+      "sideEffects": [
+        "默认执行免费会员签到，符合条件时领取七日奖励",
+        "显式开启会员试用时提交申请并消耗申请机会",
+        "显式开启天天抽奖或任务中心抽奖时消耗抽奖机会并领取接口发放的奖品",
+        "显式开启签到系列重开时改变签到系列",
+        "显式开启任务中心时执行签到并领取签到奖励",
+        "正式运行通知启用且模块可用时发送任务汇总通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/35a9f7fe38bde305",
+        "candidateSha256": "88f711a1061ed67d10ca76641e15c9e10b4077af1c01a483d991835f2ce1ed62"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "88f711a1061ed67d10ca76641e15c9e10b4077af1c01a483d991835f2ce1ed62",
+        "releaseSha256": "9a155b77acadb949a6fedf73bdd5e63ec7684a45fabd5143b66ac1873f27676b",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "e7b851436459bf8f",
       "applicationKey": "ddnsto",
       "checkProfile": {
