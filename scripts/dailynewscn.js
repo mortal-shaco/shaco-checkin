@@ -58,6 +58,16 @@ KFC_DRY_RUN=1 兼容此模式断网预演，DAILYNEWSCN_DRY_RUN=1 对全部模�
 前轮执行器失败为模型列表刷新超时，无失败包或导入契约错误证据；本轮产物使用 Node 标准库独立执行。
 KFC 内容不自动发布帖子、评论或分享，公共发文随机文本策略不适用。
 
+新增 DAILYNEWSCN_TASK=meiju：HTTPS GET https://api.suyanw.cn/api/meiju 获取、校验、输出并通知随机美句。
+MEIJU_LIST 在青龙环境变量手工填写 1，兼容旧非空值；无需账号或凭据，不发送标记。
+MEIJU_DRY_RUN=1 仅预演美句；DAILYNEWSCN_DRY_RUN=1 对全部模式生效。
+同文件另建美句任务，设置 DAILYNEWSCN_TASK=meiju，保持 cron: 0 40 9 * * *。
+美句允许中文短句，拒绝空白、错误页、未知 JSON、超时和过大响应，成功输出 MEIJU_SUCCESS。
+本轮盘点：美句公开读取及通知尚未被维护版覆盖；在原七模式基础上增补，无重复产品脚本。
+参考日报、百度榜、抽签和60秒脚本的接口、方法及抽签格式与维护版一致，无接口变化证据。
+保留原七模式默认值、参数、调度、通知、预演、输出标记及校验，不增加远程文本替代链。
+删除美句源的私有工作表适配器、写表及无超时请求；不发布帖子、评论或分享。
+
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -82,17 +92,18 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const requestedTask = process.env.DAILYNEWSCN_TASK === undefined ? 'dailynewscn' : process.env.DAILYNEWSCN_TASK.trim();
-const task = ['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang', 'kfc'].includes(requestedTask) ? requestedTask : 'invalid';
+const task = ['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang', 'kfc', 'meiju'].includes(requestedTask) ? requestedTask : 'invalid';
 const isBaidu = task === 'bdhot';
 const isDraw = task === 'chouq';
 const isWorld = task === 'day60s';
 const isDouyin = task === 'dyhot';
 const isJitang = task === 'jitang';
 const isKfc = task === 'kfc';
-const TITLE = isKfc ? 'KFC疯狂星期四' : isJitang ? '鸡汤' : isDouyin ? '抖音热搜榜' : isWorld ? '每天60秒读懂世界' : isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
-const marker = isKfc ? 'KFC_LIST' : isJitang ? 'JITANG_LIST' : isDouyin ? 'DYHOT_LIST' : isWorld ? 'DAY60S_LIST' : isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
-const URL = isKfc ? 'http://shanhe.kim/api/za/kfc.php' : isJitang ? 'https://jkapi.com/api/dujitang' : isDouyin ? 'https://jkapi.com/api/dy_hot?limit=5' : isWorld ? 'https://jkapi.com/api/day_60s' : isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
-const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1') || (isWorld && process.env.DAY60S_DRY_RUN === '1') || (isDouyin && process.env.DYHOT_DRY_RUN === '1') || (isJitang && process.env.JITANG_DRY_RUN === '1') || (isKfc && process.env.KFC_DRY_RUN === '1');
+const isMeiju = task === 'meiju';
+const TITLE = isMeiju ? '随机美句' : isKfc ? 'KFC疯狂星期四' : isJitang ? '鸡汤' : isDouyin ? '抖音热搜榜' : isWorld ? '每天60秒读懂世界' : isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
+const marker = isMeiju ? 'MEIJU_LIST' : isKfc ? 'KFC_LIST' : isJitang ? 'JITANG_LIST' : isDouyin ? 'DYHOT_LIST' : isWorld ? 'DAY60S_LIST' : isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
+const URL = isMeiju ? 'https://api.suyanw.cn/api/meiju' : isKfc ? 'http://shanhe.kim/api/za/kfc.php' : isJitang ? 'https://jkapi.com/api/dujitang' : isDouyin ? 'https://jkapi.com/api/dy_hot?limit=5' : isWorld ? 'https://jkapi.com/api/day_60s' : isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
+const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1') || (isWorld && process.env.DAY60S_DRY_RUN === '1') || (isDouyin && process.env.DYHOT_DRY_RUN === '1') || (isJitang && process.env.JITANG_DRY_RUN === '1') || (isKfc && process.env.KFC_DRY_RUN === '1') || (isMeiju && process.env.MEIJU_DRY_RUN === '1');
 const started = Date.now();
 const stamp = () => new Date().toLocaleTimeString('zh-CN', { hour12: false });
 const log = text => console.log(`[${stamp()}] ${text}`);
@@ -145,10 +156,10 @@ function getReport() {
 function parseReport(text) {
   const cleaned = text.replace(/^\uFEFF/, '').trim();
   // 原来源只有文本响应，没有可验证的 JSON 业务码，拒绝错误页和未知结构。
-  if (cleaned.length < ((isJitang || isKfc) ? 2 : 20) || !/[\u3400-\u9fff]/u.test(cleaned) ||
+  if (cleaned.length < ((isJitang || isKfc || isMeiju) ? 2 : 20) || !/[\u3400-\u9fff]/u.test(cleaned) ||
       /^[\[{]/.test(cleaned) || /<\/?(?:html|body|script|head)\b/i.test(cleaned) ||
       /(?:接口|请求|服务|参数).{0,12}(?:失败|错误|异常|限流|无效|维护)|访问频繁|请求过多|额度不足|今日暂无|暂无数据|暂无新闻|access denied|unauthorized|rate limit|internal server error/i.test(cleaned)) {
-    throw new Error(isKfc ? 'KFC文案为空、错误提示或无法验证为中文文本' : isJitang ? '鸡汤内容为空、错误提示或无法验证为中文文本' : (isBaidu || isDouyin) ? '热搜内容为空、错误提示或无法验证为榜单文本' : '日报内容为空、错误提示或无法验证为新闻文本');
+    throw new Error(isMeiju ? '美句内容为空、错误提示或无法验证为中文文本' : isKfc ? 'KFC文案为空、错误提示或无法验证为中文文本' : isJitang ? '鸡汤内容为空、错误提示或无法验证为中文文本' : (isBaidu || isDouyin) ? '热搜内容为空、错误提示或无法验证为榜单文本' : '日报内容为空、错误提示或无法验证为新闻文本');
   }
   const lines = cleaned.split(/\r?\n/).map(line => line.replace(/[\u0000-\u001f\u007f-\u009f]/g, '').trim()).filter(Boolean);
   return lines.map(line => line
@@ -220,9 +231,9 @@ async function main() {
   const stageStart = Date.now();
   log('阶段 1/3：检查执行参数');
   const entries = (process.env[marker] || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-  if (!['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang', 'kfc'].includes(task) || !entries.length) {
+  if (!['dailynewscn', 'bdhot', 'chouq', 'day60s', 'dyhot', 'jitang', 'kfc', 'meiju'].includes(task) || !entries.length) {
     failure = 1;
-    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn、bdhot、chouq、day60s、dyhot、jitang 或 kfc；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
+    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn、bdhot、chouq、day60s、dyhot、jitang、kfc 或 meiju；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
     log('阶段 2/3：⏭️ 配置错误，跳过获取；阶段耗时 0 毫秒');
   } else {
     log(`✅ 执行标记检查通过；阶段耗时 ${Date.now() - stageStart} 毫秒`);
@@ -230,7 +241,7 @@ async function main() {
     log(`阶段 2/3：获取并验证${TITLE}`);
     try {
       if (dryRun) {
-        report = isDraw ? parseDraw(JSON.stringify({ data: { draw: '本地测试签 (上签)', annotate: '本地卦象，仅验证格式', explain: '本地解签　仅用于断网预演', source: '本地典故。非真实抽签结果。' } })) : parseReport(isKfc ? 'KFC疯狂星期四本地文案，仅用于断网预演。' : isJitang ? '本地鸡汤短句，仅用于断网预演。' : isDouyin ? '抖音热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : isWorld ? '每天60秒读懂世界断网预演\n这是一条本地世界新闻，仅用于验证文本处理流程，不代表今日真实新闻。' : isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
+        report = isDraw ? parseDraw(JSON.stringify({ data: { draw: '本地测试签 (上签)', annotate: '本地卦象，仅验证格式', explain: '本地解签　仅用于断网预演', source: '本地典故。非真实抽签结果。' } })) : parseReport(isMeiju ? '本地美句，仅用于断网预演。' : isKfc ? 'KFC疯狂星期四本地文案，仅用于断网预演。' : isJitang ? '本地鸡汤短句，仅用于断网预演。' : isDouyin ? '抖音热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : isWorld ? '每天60秒读懂世界断网预演\n这是一条本地世界新闻，仅用于验证文本处理流程，不代表今日真实新闻。' : isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
         skipped = 1;
         status = 'dry-run';
         log(`✅ DRY_RUN_OK：本地${TITLE}解析通过，HTTP 请求已跳过`);
@@ -239,7 +250,7 @@ async function main() {
         report = isDraw ? parseDraw(responseText) : parseReport(responseText);
         success = 1;
         status = 'success';
-        log(`✅ ${isKfc ? 'KFC_SUCCESS' : isJitang ? 'JITANG_SUCCESS' : isDouyin ? 'DYHOT_SUCCESS' : isWorld ? 'DAY60S_SUCCESS' : isDraw ? 'CHOUQ_SUCCESS' : isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及${isDraw ? '签文结构' : '文本'}检查通过，共 ${report.length} 行`);
+        log(`✅ ${isMeiju ? 'MEIJU_SUCCESS' : isKfc ? 'KFC_SUCCESS' : isJitang ? 'JITANG_SUCCESS' : isDouyin ? 'DYHOT_SUCCESS' : isWorld ? 'DAY60S_SUCCESS' : isDraw ? 'CHOUQ_SUCCESS' : isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及${isDraw ? '签文结构' : '文本'}检查通过，共 ${report.length} 行`);
         console.log(`【${TITLE}】\n` + report.join('\n'));
       }
     } catch (error) {
