@@ -70,6 +70,7 @@
 | 全民K歌签到与奖励 | `scripts/kgqq.py` | `python3 scripts/kgqq.py` | `0 9 * * *` |
 | 科技玩家签到 | `scripts/kjwj.py` | `python3 scripts/kjwj.py` | `30 7 * * *` |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
+| 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `3 0 * * *` |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` |
 | Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `0 8 * * *` |
 | 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `8 8 * * *` |
@@ -200,6 +201,7 @@
 - `scripts/kgqq.py`：查询并显示官方返回昵称及签到前后鲜花余额、计算本轮鲜花增量。；领取上游六类签到入口奖励：1、2、4、16、128、512。；显式开启后执行四类抽奖：入口 1 的类型 1、2，入口 4 的类型 104，以及类型 103。；显式开启后使用同账号真实鉴权参数查询音乐卡片，选择最高鲜花卡片，按上游大于 10 或大于 1 且小于 10 的档位领取对应互动奖励。；查询 VIP 状态，VIP 用户领取日奖励并显示福利道具数量，非 VIP 用户跳过领取。；每行独立多账号、完全断网预演、请求超时、固定主机及拒绝重定向、响应大小限制和明确业务成功判定。；时间轴分阶段日志、账号与子任务统计、单行 TASK_SUMMARY 汇总、青龙脱敏通知及通知失败保留业务退出码。。
 - `scripts/kjwj.py`：使用邮箱密码登录科技玩家，获取签到令牌；查询当日签到状态、当日获得积分和总积分；未签到时自动签到，并复查当日状态确认完成；已签到时跳过写操作并显示积分；显示官方返回的非秘密账号身份，屏蔽凭据和手机号；每行一个账号独立执行，失败返回非零退出码；完全断网预演、分阶段日志、每账号统计和单行结构化任务总结；正式执行后通过青龙通知发送脱敏总结，预演时显示通知摘要；通知失败保留业务退出码。
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
+- `scripts/kurobbs_sign.py`：查询社区每日任务完成进度；查询鸣潮默认绑定角色并展示官方公开身份；库街区每日签到及连续天数、累计天数和奖励展示；鸣潮每日签到、已签到识别及签到后状态核验；展示当月普通签到奖励和响应提供的限时循环签到奖励；浏览鸣潮今州茶馆帖子并核验进度；显式开启后点赞不同帖子并核验进度，不取消原有点赞；显式开启后提交帖子分享进度并核验完成，不发布文字；逐行多账号及旧单账号变量兼容；完全断网预演、时间轴日志、脱敏统计和青龙通知。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：使用 Cookie 执行 Leaflow 每日签到；自动识别 CSRF 隐藏字段并提交签到表单；明确识别成功、今日已完成、会话失效和失败结果；在服务返回时提取当日签到奖励；支持换行多账号独立处理并生成结构化汇总；提供有限重试、请求超时和可选随机执行窗口；提供完全断网的预演配置校验；在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份；支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码；输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY；兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小。
 - `scripts/loomy_daily.py`：每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。；--tasks 查询八项新手任务的分组、标题、积分与完成进度。；显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。；八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。；结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。；换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。；完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。；青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。。
 - `scripts/lynkco_qinglong_single.py`：AppCode优先续期、HMAC签名兜底及静态令牌回退；今日签到状态查询、自动签到和签到后复查，已签到时跳过；连续签到天数和签到卡查询；任务前后能量体积分查询；五页动态文章查找及上游备用文章；可选文章分享两步链及完整三步链回退，核验分享前后积分变化；多账号独立处理、官方非秘密身份展示、任何账号失败非零退出；青龙及可选Bark脱敏通知，通知失败保留业务退出码；完全断网预演、分阶段日志和单行结构化总结；旧账号变量及显式只读本地配置兼容。
@@ -334,6 +336,7 @@
 <tr><td rowspan="1"><code>scripts/kgqq.py</code></td><td><code>KGQQ_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号。默认填写完整 Cookie（必须含数字 uid）；音乐奖励开启时填写 完整Cookie|g_tk_openkey，只在第一个竖线处分割，Cookie 内等号及分号原样保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kjwj.py</code></td><td><code>kjwj_info</code></td><td>是</td><td>格式：邮箱#密码，每行一个账号，仅首个 # 为分隔符，密码中后续字符原样保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_COOKIE</code></td><td>是</td><td>格式：每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 &amp; 或 @ 分隔；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/kurobbs_sign.py</code></td><td><code>KUROBBS_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：社区UID|Token，仅在第一个 | 分隔，保留 Token 后续内容。社区 UID 为数字。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、&amp; 和 @ 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="2"><code>scripts/lynkco_qinglong_single.py</code></td><td><code>LYNKCO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个JSON对象；token可单独使用，refreshToken必须配套deviceId，可同时配置token作续期失败回退；不以&amp;、@分账号。；多账号格式以该脚本文档为准</td></tr>
@@ -664,6 +667,13 @@
 <tr><td rowspan="3"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启断网预演；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/kurobbs_sign.py</code></td><td><code>kurobbs</code></td><td>是</td><td>格式：单账号 Token，不支持旧式账号分隔符；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>kuro_uid</code></td><td>是</td><td>格式：单账号数字社区 UID，与 kurobbs 配对；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>KUROBBS_DRY_RUN</code></td><td>否</td><td>格式：1 开启；0 关闭，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>KUROBBS_LIKE</code></td><td>否</td><td>格式：1 开启；0 关闭，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>KUROBBS_SHARE</code></td><td>否</td><td>格式：1 开启；0 关闭，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：通知模块目录路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="18"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启；默认关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LEAFLOW_BASE</code></td><td>否</td><td>格式：HTTPS 根地址，无用户名、密码、路径、查询或片段；默认 https://checkin.leaflow.net。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LEAFLOW_TIMEOUT</code></td><td>否</td><td>格式：1 至 120 的整数秒，默认 20；维护参数优先。；多账号格式以该脚本文档为准</td></tr>
@@ -1169,6 +1179,7 @@
 - `scripts/kgqq.py`：每行一个账号的完整 Cookie，开启音乐奖励时使用 完整Cookie|g_tk_openkey；配套值须属于同一账号。忽略空行，逐个独立处理，任何账号失败则整体非零退出。。
 - `scripts/kjwj.py`：每个非空行表示一个账号，仅按首个 # 拆分邮箱和密码；逐账号独立执行，任一账号失败整体返回非零退出码。。
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
+- `scripts/kurobbs_sign.py`：每个非空行一个账号，社区UID|Token；只分割第一个 |。账号独立执行，任一账号或配置失败时整体非零退出。旧变量仅兼容一个账号。。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/loomy_daily.py`：每个非空行一个账号；兼容 session 和 备注|session，仅在第一个 | 处分割。独立处理各账号，任一账号失败则整体非零退出。--only N 可选择账号。。
 - `scripts/lynkco_qinglong_single.py`：每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。。
@@ -1516,6 +1527,13 @@
 - 所属脚本：`scripts/kuaishou_reward_status.py`
 - 获取或设置：在本人已登录的快手或快手极速版中打开“积分换好礼”页面，从本人控制的本地网络调试记录里找到 accelerate/info 请求，复制 Cookie 请求头；至少保留 kuaishou.api_st。不要绕过证书固定或使用第三方提取网站。
 - 填写格式：`每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 & 或 @ 分隔`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `KUROBBS_ACCOUNTS`
+
+- 所属脚本：`scripts/kurobbs_sign.py`
+- 获取或设置：登录官方库街区 App，用本人授权的抓包工具读取 api.kurobbs.com 请求头 token；从角色查询 queryUserId 或签到 userId 获取社区 UID，不能用游戏角色 UID。请勿公开凭据或抓包。
+- 填写格式：`每个非空行一个账号：社区UID|Token，仅在第一个 | 分隔，保留 Token 后续内容。社区 UID 为数字。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `LEAFLOW_COOKIE`
@@ -3558,6 +3576,50 @@
 - 所属脚本：`scripts/kuaishou_reward_status.py`
 - 获取或设置：仅当 notify.py 不在青龙标准路径时，填写其所在目录。
 - 填写格式：`本地目录路径`
+
+#### `kurobbs`
+
+- 所属脚本：`scripts/kurobbs_sign.py`
+- 获取或设置：旧变量兼容输入：官方库街区 App 请求头 token；仅在 KUROBBS_ACCOUNTS 未配置时与 kuro_uid 配对。
+- 填写格式：`单账号 Token，不支持旧式账号分隔符`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `kuro_uid`
+
+- 所属脚本：`scripts/kurobbs_sign.py`
+- 获取或设置：旧变量兼容输入：从本人官方请求的 queryUserId 或 userId 获取社区 UID。
+- 填写格式：`单账号数字社区 UID，与 kurobbs 配对`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `KUROBBS_DRY_RUN`
+
+- 所属脚本：`scripts/kurobbs_sign.py`
+- 获取或设置：在青龙环境变量中设为 1，断网预演不会调用业务或通知网络。
+- 填写格式：`1 开启；0 关闭，默认 0`
+
+#### `KUROBBS_LIKE`
+
+- 所属脚本：`scripts/kurobbs_sign.py`
+- 获取或设置：明确同意脚本点赞他人帖子后设为 1；不会取消已有点赞。
+- 填写格式：`1 开启；0 关闭，默认 0`
+
+#### `KUROBBS_SHARE`
+
+- 所属脚本：`scripts/kurobbs_sign.py`
+- 获取或设置：明确同意提交帖子分享任务进度后设为 1；不发布分享文字。
+- 填写格式：`1 开启；0 关闭，默认 0`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/kurobbs_sign.py`
+- 获取或设置：青龙全局通知开关；默认尝试 notify.py，通知不可用不改变业务退出码。
+- 填写格式：`默认 1；0、false、no、off 禁用`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/kurobbs_sign.py`
+- 获取或设置：可选：青龙现有 notify.py 所在目录；未配置时尝试导入 notify 和青龙标准目录，不需私人仓库。
+- 填写格式：`通知模块目录路径`
 
 #### `LEAFLOW_DRY_RUN`
 
@@ -6444,6 +6506,7 @@
 - `scripts/kgqq.py`：SHA-256 `fd14c4b064a5168918f0d3eb0ea766762361151ca7c441e4188cd7b98c31d9a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d49d052949d2bef1`。
 - `scripts/kjwj.py`：SHA-256 `6867c355c23ccfdd7deafbcbeef48865c1001d7e274c9b9e265dced5047eaaab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f4e13633e05b6a28`。
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
+- `scripts/kurobbs_sign.py`：SHA-256 `420de38577b9132e63b09652938838b0a60f03519d374ea9114bc9a01d80bb05`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：SHA-256 `1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
 - `scripts/loomy_daily.py`：SHA-256 `31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
 - `scripts/lynkco_qinglong_single.py`：SHA-256 `5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
@@ -6574,6 +6637,7 @@
 - `scripts/kgqq.py`：领取签到奖励，可能增加账号鲜花或道具。；开启抽奖后执行抽奖，可能消耗次数或活动资源并发放奖励。；开启音乐奖励后领取音乐卡片互动奖励，可能改变互动奖励状态及鲜花余额。；VIP 用户领取日奖励，改变领取状态并可能增加道具。；正式执行结束后，通过可用的青龙通知模块发送脱敏任务汇总。。
 - `scripts/kjwj.py`：未签到时提交每日签到并获得积分；正式执行时按通知开关发送青龙任务通知。
 - `scripts/kuaishou_reward_status.py`：。
+- `scripts/kurobbs_sign.py`：库街区社区签到并领取对应奖励；鸣潮游戏签到并领取对应奖励；浏览帖子计入社区任务进度；显式开启后点赞帖子；显式开启后提交分享任务进度。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励；正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总。
 - `scripts/loomy_daily.py`：正式默认执行刷新账号每日赠送积分。；显式批量或单项领取时上报新手任务完成状态并领取积分。；正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。；启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。。
 - `scripts/lynkco_qinglong_single.py`：每日签到并领取服务端奖励；默认上报文章分享并可能增加能量体积分，可用LYNKCO_DO_SHARE关闭；使用刷新令牌续期，服务端可能更新登录令牌状态；不写本地凭据文件；发送脱敏青龙通知及可选Bark推送；预演不发送网络通知。
@@ -6706,6 +6770,7 @@
 - `scripts/kgqq.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/kgqq/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/kjwj.py`：上游 `cloudcranes/some_scripts` / `kjwj.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
+- `scripts/kurobbs_sign.py`：上游 `yongyeym/AutoSign_QingLong` / `kurobbs_sign.py` / `f13a88e488c2d396e24cce8e9b6e27eefcbccad6`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：上游 `agluo/ql-script-hub` / `archive/leaflow_checkin.pyleaflow_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/loomy_daily.py`：上游 `L0NE-6/Loomy-Daily` / `loomy_daily.py` / `3d0f19b0b6486ff9096507805a5f9d061604058f`。
 - `scripts/lynkco_qinglong_single.py`：上游 `zhaosongbing/LynkCoHelper-QingLong` / `qinglong/lynkco_qinglong_single.py` / `7b9330aeae5e458f00de92b46bbd31bbf99c95aa`。
