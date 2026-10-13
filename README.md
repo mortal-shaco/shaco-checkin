@@ -74,6 +74,7 @@
 | Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `0 8 * * *` |
 | 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `8 8 * * *` |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
+| 小米运动账号验证与步数上传 | `scripts/mimotion.py` | `python3 scripts/mimotion.py` | `0 20 * * *` |
 | 网易云音乐签到 | `scripts/netease_music_checkin.py` | `python3 scripts/netease_music_checkin.py` | `15 9 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
@@ -202,6 +203,7 @@
 - `scripts/loomy_daily.py`：每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。；--tasks 查询八项新手任务的分组、标题、积分与完成进度。；显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。；八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。；结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。；换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。；完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。；青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。。
 - `scripts/lynkco_qinglong_single.py`：AppCode优先续期、HMAC签名兜底及静态令牌回退；今日签到状态查询、自动签到和签到后复查，已签到时跳过；连续签到天数和签到卡查询；任务前后能量体积分查询；五页动态文章查找及上游备用文章；可选文章分享两步链及完整三步链回退，核验分享前后积分变化；多账号独立处理、官方非秘密身份展示、任何账号失败非零退出；青龙及可选Bark脱敏通知，通知失败保留业务退出码；完全断网预演、分阶段日志和单行结构化总结；旧账号变量及显式只读本地配置兼容。
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
+- `scripts/mimotion.py`：手机号或邮箱及密码登录 Zepp Life，核验授权与完整登录凭据，显示官方非敏感账号身份。；显式开启后在设定的随机范围内修改本人当天运动记录的步数并上传，要求接口 code=0 且 message=success。；优先获取远程时间戳，失败使用本地毫秒时间；HTTP 表单编码、超时、响应大小限制及禁止凭据重定向。；多账号独立执行、失败非零退出、断网预演、脱敏分阶段日志、单行 TASK_SUMMARY 汇总及青龙通知。。
 - `scripts/netease_music_checkin.py`：每日云贝签到，保留 weapi 双层 AES 与 RSA 加密及原执行时间。；识别已签到和登录态失效，仅明确业务状态码确认成功。；每行一个账号，兼容旧 Cookie 变量；账号独立执行并汇总失败。；青龙通知优先，依次回退到 PushPlus 和 Server酱；支持全局关闭。；完全断网预演、带时间戳的分阶段日志、账号统计及单行结构化总结。；官方返回公开账号身份时按返回值展示。。
 - `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
@@ -335,6 +337,7 @@
 <tr><td rowspan="2"><code>scripts/lynkco_qinglong_single.py</code></td><td><code>LYNKCO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个JSON对象；token可单独使用，refreshToken必须配套deviceId，可同时配置token作续期失败回退；不以&amp;、@分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>LYNKCO_APP_SECRETS</code></td><td>是</td><td>格式：JSON对象：nativeAppKey、nativeAppSecret必需；分享或续期需glDevId；nativeAppCode用于优先AppCode续期，缺失时回退HMAC；loginAppCode仅兼容保存。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/main.py</code></td><td><code>WALLHAVEN_SAVE_DIR</code></td><td>否</td><td>格式：绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/mimotion.py</code></td><td><code>MIMOTION_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 手机号或邮箱|密码，仅在第一个 | 分割；也支持每行一个 JSON 对象，字段 phone、password，上传时另需 data_json、last_deviceid，可选 min_step、max_step。data_json 是仅含当天一条记录的数组或 JSON 字符串，必须有非空 data 数组和 summary.stp.ttl；summary 可为对象或 JSON 字符串。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/netease_music_checkin.py</code></td><td><code>NETEASE_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号的 Cookie，必须包含非空 MUSIC_U 和 __csrf；字段以分号分隔，值保留第一个等号后的全部文本。支持以 # 开头的注释行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
@@ -710,6 +713,13 @@
 <tr><td><code>WALLHAVEN_DRY_RUN</code></td><td>否</td><td>格式：0、false、no、off 表示正式运行；其他值表示断网预演。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。断网预演仅生成通知摘要，不调用通知模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/mimotion.py</code></td><td><code>MIMOTION</code></td><td>是</td><td>格式：JSON 数组；每个对象支持 phone、password、min_step、max_step；上传仍须本人 data_json、last_deviceid。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MIMOTION_ACTION</code></td><td>否</td><td>格式：login 或 upload，默认 login。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MIMOTION_MIN_STEP</code></td><td>否</td><td>格式：整数，默认 10000；0≤最小值≤最大值≤100000。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MIMOTION_MAX_STEP</code></td><td>否</td><td>格式：整数，默认 19999；与最小步数构成含两端的随机范围。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MIMOTION_DRY_RUN</code></td><td>否</td><td>格式：1 启用；0、false、no、off 或空值关闭，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录；不是业务脚本依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="6"><code>scripts/netease_music_checkin.py</code></td><td><code>NETEASE_COOKIE</code></td><td>是</td><td>格式：同规范变量；兼容单账号，亦支持每行一个账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NETEASE_DRY_RUN</code></td><td>否</td><td>格式：1 启用；默认 0；不会调用签到、推送或其他网络接口。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭全部渠道；断网预演只模拟通知。；多账号格式以该脚本文档为准</td></tr>
@@ -1156,6 +1166,7 @@
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/loomy_daily.py`：每个非空行一个账号；兼容 session 和 备注|session，仅在第一个 | 处分割。独立处理各账号，任一账号失败则整体非零退出。--only N 可选择账号。。
 - `scripts/lynkco_qinglong_single.py`：每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。。
+- `scripts/mimotion.py`：每个非空行一个账号，仅在首个 | 分割账号和密码，密码中的其它分隔符保留；上传参数同属该行 JSON 对象。每个账号独立执行，任一失败均非零退出。旧 MIMOTION 数组只作为兼容输入。。
 - `scripts/netease_music_checkin.py`：每个非空行一个账号，整段 Cookie 保留；不使用 & 或 @ 分隔账号。逐个独立执行，任一账号失败则整体非零退出。。
 - `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
@@ -1533,6 +1544,13 @@
 - 所属脚本：`scripts/main.py`
 - 获取或设置：在青龙中设置自己有写权限的壁纸保存目录。原脚本使用 /ql/data/downloads/local-website/img；本版必须显式设置以避免默认写入。无需账号或凭据。
 - 填写格式：`绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。`
+
+#### `MIMOTION_ACCOUNTS`
+
+- 所属脚本：`scripts/mimotion.py`
+- 获取或设置：在 Zepp Life 注册或绑定手机号、邮箱并设置登录密码；使用 Zepp Life 凭据，不是小米账号密码。在青龙环境变量中填写账号，切勿分享凭据。上传时从本人当天的 Zepp Life 运动同步请求取得 data_json 与 last_deviceid，先对 data_json 做 URL 解码，再放入同一账号 JSON 对象。
+- 填写格式：`每个非空行一个 手机号或邮箱|密码，仅在第一个 | 分割；也支持每行一个 JSON 对象，字段 phone、password，上传时另需 data_json、last_deviceid，可选 min_step、max_step。data_json 是仅含当天一条记录的数组或 JSON 字符串，必须有非空 data 数组和 summary.stp.ttl；summary 可为对象或 JSON 字符串。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `NETEASE_COOKIES`
 
@@ -3855,6 +3873,49 @@
 - 所属脚本：`scripts/main.py`
 - 获取或设置：仅当青龙 notify.py 未位于标准脚本目录或模块搜索路径时，指定其所在目录。通知不可用不影响下载退出码。
 - 填写格式：`包含 notify.py 的本地目录路径。`
+
+#### `MIMOTION`
+
+- 所属脚本：`scripts/mimotion.py`
+- 获取或设置：可选旧版账号环境变量；仅在 MIMOTION_ACCOUNTS 为空时使用。将原配置中的 MIMOTION 账号数组复制为该环境变量，不再读取 config.json。
+- 填写格式：`JSON 数组；每个对象支持 phone、password、min_step、max_step；上传仍须本人 data_json、last_deviceid。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `MIMOTION_ACTION`
+
+- 所属脚本：`scripts/mimotion.py`
+- 获取或设置：按需要设置；默认 login 仅验证账号，upload 显式授权修改本人当天步数。
+- 填写格式：`login 或 upload，默认 login。`
+
+#### `MIMOTION_MIN_STEP`
+
+- 所属脚本：`scripts/mimotion.py`
+- 获取或设置：可选最小步数；只在明确开启上传时使用，账号 min_step 优先。
+- 填写格式：`整数，默认 10000；0≤最小值≤最大值≤100000。`
+
+#### `MIMOTION_MAX_STEP`
+
+- 所属脚本：`scripts/mimotion.py`
+- 获取或设置：可选最大步数；只在明确开启上传时使用，账号 max_step 优先。
+- 填写格式：`整数，默认 19999；与最小步数构成含两端的随机范围。`
+
+#### `MIMOTION_DRY_RUN`
+
+- 所属脚本：`scripts/mimotion.py`
+- 获取或设置：设为 1 启用完全断网预演，验证参数和执行计划，不登录、不上传；通知也禁止联网。
+- 填写格式：`1 启用；0、false、no、off 或空值关闭，默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/mimotion.py`
+- 获取或设置：青龙通知总开关；默认调用 notify.py，缺失、超时或发送失败仅记录，不覆盖业务退出码。
+- 填写格式：`默认 1；0、false、no、off 关闭。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/mimotion.py`
+- 获取或设置：可选青龙通知模块目录；自动优先导入 notify，再查该目录以及 /ql/data/scripts、/ql/scripts。
+- 填写格式：`包含 notify.py 的本地目录；不是业务脚本依赖。`
 
 #### `NETEASE_COOKIE`
 
@@ -6355,6 +6416,7 @@
 - `scripts/loomy_daily.py`：SHA-256 `31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
 - `scripts/lynkco_qinglong_single.py`：SHA-256 `5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
+- `scripts/mimotion.py`：SHA-256 `4e8149eb7fd9f48b6a92c4b22190c633a40d7def1754bb196a3c26bcbf30d7cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
 - `scripts/netease_music_checkin.py`：SHA-256 `3361723a7083bc4b0a02650f4ba455741abde030fb1194bdf7e9d028c9ae100f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4bc7f79f3e7ce4d0`。
 - `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
@@ -6483,6 +6545,7 @@
 - `scripts/loomy_daily.py`：正式默认执行刷新账号每日赠送积分。；显式批量或单项领取时上报新手任务完成状态并领取积分。；正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。；启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。。
 - `scripts/lynkco_qinglong_single.py`：每日签到并领取服务端奖励；默认上报文章分享并可能增加能量体积分，可用LYNKCO_DO_SHARE关闭；使用刷新令牌续期，服务端可能更新登录令牌状态；不写本地凭据文件；发送脱敏青龙通知及可选Bark推送；预演不发送网络通知。
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
+- `scripts/mimotion.py`：正式登录会申请 Zepp 授权及登录令牌。；仅 MIMOTION_ACTION=upload 时上传本人提供的当天运动记录，修改 summary.stp.ttl；其它提供的记录字段保持原样，不合成心率或睡眠数据。；启用通知时调用青龙通知模块发送脱敏汇总，预演禁止联网。。
 - `scripts/netease_music_checkin.py`：真实执行时完成每日签到并获得接口确认的云贝奖励。；通知启用时通过青龙、PushPlus 或 Server酱发送脱敏总结；预演不发送真实通知。。
 - `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
@@ -6613,6 +6676,7 @@
 - `scripts/loomy_daily.py`：上游 `L0NE-6/Loomy-Daily` / `loomy_daily.py` / `3d0f19b0b6486ff9096507805a5f9d061604058f`。
 - `scripts/lynkco_qinglong_single.py`：上游 `zhaosongbing/LynkCoHelper-QingLong` / `qinglong/lynkco_qinglong_single.py` / `7b9330aeae5e458f00de92b46bbd31bbf99c95aa`。
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
+- `scripts/mimotion.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/mimotion/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/netease_music_checkin.py`：上游 `deeplee/personal-scripts` / `netease_music_checkin.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
