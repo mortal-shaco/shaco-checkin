@@ -11474,6 +11474,132 @@
       }
     },
     {
+      "catalogId": "cb2f4adeccaa95b9",
+      "applicationKey": "littlewuh/qinglongbox::dailycheckin-scripts",
+      "checkProfile": {
+        "requiredEnv": [
+          "NZZ_COOKIE"
+        ],
+        "optionalEnv": [
+          "NZZ_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NZZ_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NZZ_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到信息: 签到成功",
+          "签到信息: 今日已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "Cookie 登录配置检查，支持每行一个账号并保留 Cookie 值中的等号",
+          "从本站页面读取当前登录公开 UID 并按返回值显示，获取签到令牌",
+          "咔叽网单每日签到，明确区分签到成功、明确今日已签到和未确认成功",
+          "HTTPS 证书验证、请求超时、响应大小限制和同站安全跳转检查",
+          "完全断网预演，不验证真实业务成功，不产生签到动作",
+          "按账号及编号阶段输出带时间戳的脱敏日志、耗时和统计，保留账号信息及签到信息输出，追加单行 TASK_SUMMARY JSON",
+          "成功、部分失败、失败、配置错误和预演后尝试青龙脱敏通知；通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行在咔叽网单为已登录账号执行每日签到",
+          "通知开启且助手可用时发送脱敏任务汇总；预演仅尝试离线通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "咔叽网单每日签到",
+      "path": "scripts/littlewuh_qinglongbox_dailycheckin_scripts.py",
+      "sha256": "b165e0325fb0761f66081e45083b65726d03157099f19fddec58665381ad2c34",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "LittleWuh/qinglongbox",
+        "branch": "main",
+        "commit": "02e1c7a0788a62a7434f686118506ca5702fba24",
+        "originalPath": "dailycheckin_scripts/ck_2nzz.py"
+      },
+      "cron": "30 8 * * *",
+      "command": "python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py",
+      "environment": [
+        {
+          "name": "NZZ_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 https://www.2nzz.com，打开开发者工具的网络面板，选择本站已登录请求，复制请求头 Cookie 的值，不含 Cookie: 前缀；请勿分享或写入公开仓库。失效后重新登录并获取。",
+          "format": "每个非空行一个账号；完整 Cookie 的字段用分号分隔，键和值仅在第一个等号处分割，保留值中的后续等号；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "NZZ_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 开启完全断网预演；默认 0 正式签到。",
+          "format": "1、true、yes、on 开启；其他值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙环境变量中设置；默认 1，关闭时设为 0。",
+          "format": "0、false、no、off 关闭，其他值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙现有 notify.py 所在目录；默认依次查找青龙标准脚本目录和可导入的 notify 模块。无需另行下载依赖，缺失时只记录通知不可用。",
+          "format": "本机目录路径，不含 notify.py 文件名。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "NZZ_COOKIE 每个非空行一个账号，各账号独立 Cookie 会话；任一账号配置错误或签到未确认成功，整体以非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "Cookie 登录配置检查，支持每行一个账号并保留 Cookie 值中的等号",
+        "从本站页面读取当前登录公开 UID 并按返回值显示，获取签到令牌",
+        "咔叽网单每日签到，明确区分签到成功、明确今日已签到和未确认成功",
+        "HTTPS 证书验证、请求超时、响应大小限制和同站安全跳转检查",
+        "完全断网预演，不验证真实业务成功，不产生签到动作",
+        "按账号及编号阶段输出带时间戳的脱敏日志、耗时和统计，保留账号信息及签到信息输出，追加单行 TASK_SUMMARY JSON",
+        "成功、部分失败、失败、配置错误和预演后尝试青龙脱敏通知；通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行在咔叽网单为已登录账号执行每日签到",
+        "通知开启且助手可用时发送脱敏任务汇总；预演仅尝试离线通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/cb2f4adeccaa95b9",
+        "candidateSha256": "452d717accff504282d0dc786d8dbf350a19a0101c330a1242401c761f0ad682"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "452d717accff504282d0dc786d8dbf350a19a0101c330a1242401c761f0ad682",
+        "releaseSha256": "b165e0325fb0761f66081e45083b65726d03157099f19fddec58665381ad2c34",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "7990614346ba82e0",
       "applicationKey": "lizhixu/ql-script-hub::nodeseek",
       "checkProfile": {
