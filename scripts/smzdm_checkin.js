@@ -42,6 +42,12 @@
 // 兼容 SMZDM_COOKIES 或 SMZDM_COOKIE 每行 Cookie，需提供同顺序逐行 SMZDM_SK，或 Cookie 自带 sk。
 // 上游每日 30 9 * * * 可作为签到自定义调度；不要重复建立每日签到任务。
 // 通知按青龙 → PushPlus → Server酱回退；PUSHPLUS_TOKEN、SENDKEY 可选且受 QINGLONG_NOTIFY 控制。
+// Additional source: yuxian158/check, dailycheckin_scripts/ck_smzdm.py (MIT).
+// 网页模式 SMZDM_TOKEN_MODE=web：SMZDM_ACCOUNT 每行 |完整 Cookie，无需 sk。
+// 登录本人 www.smzdm.com，在开发者工具 Network 中复制 zhiyou.smzdm.com 请求的完整 Cookie。
+// 网页模式仅执行原上游网页签到和资产查询；仍可显式组合抽奖/互动，不替代默认客户端奖励流程。
+// 原上游网页签到调度 30 8 * * * 可自定义；默认继续使用维护任务 31 8 * * *，避免重复签到任务。
+// 网页签到写入后重新查询本人账号的 has_checkin 与签到天数，验证失败不重试写入。
 // Maintained standalone derivative; no private repository or external executable required.
 
 const crypto = require('crypto');
@@ -72,13 +78,13 @@ function accountLines(value) {
 
 function tokenMode(env = process.env) {
   const mode = String(env.SMZDM_TOKEN_MODE || 'sess').trim().toLowerCase();
-  if (!['sess', 'robot'].includes(mode)) throw new Error('SMZDM_TOKEN_MODE 必须为 sess 或 robot');
+  if (!['sess', 'robot', 'web'].includes(mode)) throw new Error('SMZDM_TOKEN_MODE 必须为 sess、robot 或 web');
   return mode;
 }
 
 function parseAccounts(env = process.env) {
   const action = taskAction(env);
-  tokenMode(env);
+  const needsSk = action !== 'lottery' && tokenMode(env) !== 'web';
   interactionMode(env);
   const canonical = accountLines(env.SMZDM_ACCOUNT);
   if (!canonical.length) {
@@ -89,22 +95,22 @@ function parseAccounts(env = process.env) {
       .map((line) => line.replace(/^(['"])([\s\S]*)\1$/, '$2'));
     if (!cookies.length) throw new Error('未配置 SMZDM_ACCOUNT');
     const sks = accountLines(env.SMZDM_SK);
-    if (sks.length && sks.length !== cookies.length && action !== 'lottery') {
+    if (sks.length && sks.length !== cookies.length && needsSk) {
       throw new Error('SMZDM_SK 行数必须与 Cookie 账号行数相同');
     }
     return cookies.map((cookie, i) => {
       const sk = sks[i] || cookieValue(cookie, 'sk');
       if (!cookieValue(cookie, 'sess')) return {configurationError: `第 ${i + 1} 行 Cookie 缺少 sess`};
-      if (action !== 'lottery' && !sk) return {configurationError: `第 ${i + 1} 行缺少本人 sk；请改用 SMZDM_ACCOUNT 或配置配套 SMZDM_SK`};
+      if (needsSk && !sk) return {configurationError: `第 ${i + 1} 行缺少本人 sk；请改用 SMZDM_ACCOUNT 或配置配套 SMZDM_SK`};
       return {sk, cookie};
     });
   }
   return canonical.map((line, i) => {
     const split = line.indexOf('|');
-    if ((split < 1 && action !== 'lottery') || split < 0 || split === line.length - 1) return {configurationError: `invalid_SMZDM_ACCOUNT_format_at_line_${i + 1}：第 ${i + 1} 行应为 sk|Cookie`};
+    if ((split < 1 && needsSk) || split < 0 || split === line.length - 1) return {configurationError: `invalid_SMZDM_ACCOUNT_format_at_line_${i + 1}：第 ${i + 1} 行应为 sk|Cookie`};
     const sk = line.slice(0, split).trim();
     const cookie = line.slice(split + 1).trim();
-    if ((!sk && action !== 'lottery') || !cookieValue(cookie, 'sess')) return {configurationError: `第 ${i + 1} 行缺少 sk 或 sess`};
+    if ((!sk && needsSk) || !cookieValue(cookie, 'sess')) return {configurationError: `第 ${i + 1} 行缺少 sk 或 sess`};
     return {sk, cookie};
   });
 }
@@ -287,6 +293,80 @@ function display(value, account) {
   }
   text = text.replace(/(?:cookie|token|sess|session|device_id|request_key|sign)\s*[:=]\s*[^\s;,]+/gi, '[凭据已隐藏]');
   return text.replace(/(?:\+?86[- ]?)?1[3-9]\d{9}/g, '[手机号已隐藏]');
+}
+
+// 网页端 URL、GET 方法及字段来自 ck_smzdm.py；不猜测新业务码或接口。
+async function webCurrent(account) {
+  const response = await fetchLimited('https://zhiyou.smzdm.com/user/info/jsonp_get_current', {
+    headers: {Cookie: account.cookie, Accept: 'application/json', Referer: 'https://www.smzdm.com/',
+      'User-Agent': 'Mozilla/5.0'},
+  });
+  if (response.status !== 200) throw new Error('网页概览 HTTP 失败');
+  const data = JSON.parse(response.text);
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('网页概览结构无效');
+  if (data.error_code !== undefined && String(data.error_code) !== '0') throw new Error('网页概览业务失败');
+  const identity = typeof data.nickname === 'string' && data.nickname.trim() ? data.nickname
+    : (/^[1-9]\d*$/.test(String(data.smzdm_id || '')) ? String(data.smzdm_id) : null);
+  if (!identity) throw new Error('网页账号身份未验证');
+  const flag = data.checkin?.has_checkin;
+  if (![true, false, 0, 1, '0', '1'].includes(flag)) throw new Error('网页签到状态缺失');
+  const days = data.checkin?.daily_checkin_num;
+  if (days === undefined || days === null || String(days).trim() === '' || !Number.isInteger(Number(days)) || Number(days) < 0) throw new Error('网页签到天数字段无效');
+  return {identity, signed: [true, 1, '1'].includes(flag), days: Number(days),
+    point: data.point, exp: data.exp, gold: data.gold, silver: data.silver,
+    prestige: data.prestige, level: data.level ?? data.rank};
+}
+
+async function runWeb(account, report = () => {}) {
+  const counts = {total: 0, success: 0, already: 0, skipped: 0, failed: 0};
+  async function stage(name, action) {
+    const started = Date.now();
+    counts.total++;
+    report(`[${counts.total}/3] ${name}`);
+    try {
+      const value = await action();
+      counts.success++;
+      report(`${name}：已验证，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '✅');
+      return value;
+    } catch (error) {
+      counts.failed++;
+      report(`${name}：${error?.name === 'AbortError' ? '请求超时' : 'HTTP、业务或响应字段校验失败'}，不自动重试写入，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '❌');
+      return null;
+    }
+  }
+  function overview(info) {
+    report(`账号身份 ${display(info.identity, account)}，积分 ${display(info.point, account)}，经验 ${display(info.exp, account)}，金币 ${display(info.gold, account)}，碎银 ${display(info.silver, account)}，威望 ${display(info.prestige, account)}，等级 ${display(info.level, account)}，已经签到 ${info.days} 天`, '└─');
+  }
+  const before = await stage('网页账号与签到状态', () => webCurrent(account));
+  if (before) overview(before);
+  if (!before || before.signed) {
+    counts.total += 2;
+    counts.skipped++;
+    if (before) counts.already++; else counts.skipped++;
+    report('[2/3] 网页每日签到：' + (before ? '今日已签到，不重复写入' : '身份或状态未验证，停止写入') + '，用时 0.0 秒', before ? '☑️' : '⏭️');
+    report('[3/3] 写入后核验：无需写入，跳过，用时 0.0 秒', '⏭️');
+    return {ok: !!before, state: before ? '今日已签到' : '网页账号未验证', counts};
+  }
+  const signed = await stage('网页每日签到', async () => {
+    const response = await fetchLimited('https://zhiyou.smzdm.com/user/checkin/jsonp_checkin', {
+      headers: {Cookie: account.cookie, Accept: 'application/json', Referer: 'https://www.smzdm.com/', 'User-Agent': 'Mozilla/5.0'},
+    });
+    if (response.status !== 200) throw new Error('网页签到 HTTP 失败');
+    const payload = JSON.parse(response.text);
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('网页签到结构无效');
+    if (payload.error_code !== undefined && String(payload.error_code) !== '0') throw new Error('网页签到业务失败');
+    const days = payload.data?.checkin_num;
+    if (days === undefined || days === null || String(days).trim() === '' || !Number.isInteger(Number(days)) || Number(days) < 1) throw new Error('网页签到结果未验证');
+    // 不输出原始响应或未经验证的错误消息。
+    return {days: Number(days)};
+  });
+  const after = await stage('网页签到后状态核验', async () => {
+    const info = await webCurrent(account);
+    if (!info.signed || info.identity !== before.identity || info.days < before.days || (signed && info.days !== signed.days)) throw new Error('网页签到状态未确认');
+    overview(info);
+    return info;
+  });
+  return {ok: counts.failed === 0 && !!after, state: counts.failed ? '网页签到未全部验证' : '网页签到成功', counts};
 }
 
 async function runLive(account, userAgentOverride = '', report = () => {}, env = process.env) {
@@ -700,7 +780,7 @@ async function run(env = process.env) {
       log(`${label}：[2/4] 规划签到请求`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       log(`${label}：[3/4] 规划奖励、概览与经验查询`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       const interactionPlan = interactionMode(env) === 'none' ? 0 : (interactionMode(env) === 'both' ? 20 : 12);
-      const planned = interactionPlan + (action === 'lottery' ? 0 : (tokenMode(env) === 'robot' ? 8 : 7)) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
+      const planned = interactionPlan + (action === 'lottery' ? 0 : (tokenMode(env) === 'web' ? 3 : (tokenMode(env) === 'robot' ? 8 : 7))) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
       log(`${label}：互动开关 ${interactionMode(env)}（离线预演不查询列表、不提交互动）`, '└─');
       log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤上限（互动按实际列表长度执行）；抽奖仅在显式选择后执行`, '└─');
       result = {ok: true, state: '预演通过', planned_requests: planned,
@@ -711,7 +791,8 @@ async function run(env = process.env) {
         const report = (message, icon) => log(`${label}：${message}`, icon);
         if (action === 'lottery') result = await runLottery(accounts[i], env, report);
         else {
-          result = await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, report, env);
+          result = tokenMode(env) === 'web' ? await runWeb(accounts[i], report)
+            : await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, report, env);
           if (action === 'all') {
             const lottery = await runLottery(accounts[i], env, report);
             result.ok = result.ok && lottery.ok;
@@ -762,4 +843,4 @@ if (require.main === module) run().catch(async () => {
   await finish({execution: 'failed', mode: 'live', accounts_total: 0, accounts_success: 0, accounts_failed: 1, tasks_total: 1, tasks_success: 0, tasks_already: 0, tasks_skipped: 0, tasks_failed: 1}, 1, started, process.env);
 });
 
-module.exports = {interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};
+module.exports = {webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};
