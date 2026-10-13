@@ -5708,6 +5708,167 @@
       }
     },
     {
+      "catalogId": "62f8f8c670e36faa",
+      "applicationKey": "cn-grace/qinglongscripts::epicfreegames",
+      "checkProfile": {
+        "requiredEnv": [
+          "EPIC_TG_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "TG_BOT_TOKEN",
+          "TG_USER_ID",
+          "EPIC_LOCALE",
+          "EPIC_COUNTRY",
+          "EPIC_FONT_PATH",
+          "EPIC_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "EPIC_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "EPIC_LOCALE": "zh-CN",
+          "EPIC_COUNTRY": "CN",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "Telegram 图片推送已确认",
+          "Telegram 文字推送已确认",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询 Epic 本周及即将免费游戏，仅筛选有效基础游戏和零价促销。",
+          "展示游戏标题、原价、促销起止北京时间及商店链接，兼容语言地区和国家设置。",
+          "合成含封面、标题、原价及免费时间的图片并发送到 Telegram；封面失败保留资料卡片，图片生成或发送失败降级完整文字报告。",
+          "保留每周六 08:00 调度及 TG_BOT_TOKEN/TG_USER_ID 单账号兼容输入，支持每行一个 Telegram 通知账号。",
+          "通过本地样例断网预演，记录带时间戳的分阶段日志、账号统计及唯一 TASK_SUMMARY JSON；业务失败返回非零退出码。",
+          "成功、部分失败、失败、配置错误和预演均生成脱敏青龙通知汇总；实际通知失败保留业务退出码，预演仅模拟。"
+        ],
+        "sideEffects": [
+          "向配置的 Telegram 会话发送免费游戏图片或文字提醒。",
+          "真实运行时按 QINGLONG_NOTIFY 设置通过青龙 notify.py 发送脱敏任务汇总。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Epic免费游戏",
+      "path": "scripts/epicfreegames.py",
+      "sha256": "c8d5c51c3bc4dfbfb194ddb29720a35d605c3285eca606ec4af7ffdff72d0d4a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "CN-Grace/QinglongScripts",
+        "branch": "main",
+        "commit": "a40a2b080e0160bd8e0b0b807081115537b87153",
+        "originalPath": "EpicFreeGames.py"
+      },
+      "cron": "0 8 * * 6",
+      "command": "python3 scripts/epicfreegames.py",
+      "environment": [
+        {
+          "name": "EPIC_TG_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "通过 Telegram 的 BotFather 创建机器人取得令牌；向机器人发送消息后，从官方 Bot API getUpdates 的 message.chat.id 获取会话编号。令牌和会话编号必须对应可接收消息的同一机器人。",
+          "format": "每个非空行一个机器人令牌|会话编号；只按首个 | 分割，支持数字会话编号或公开频道用户名。"
+        },
+        {
+          "name": "TG_BOT_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入，通过 Telegram 的 BotFather 获取；仅在 EPIC_TG_ACCOUNTS 为空时使用，需同时配置 TG_USER_ID。",
+          "format": "单个机器人令牌，不支持用符号分隔多个账号。"
+        },
+        {
+          "name": "TG_USER_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入，从官方 Bot API getUpdates 的 message.chat.id 获取，或填写机器人有权限发送消息的公开频道用户名。",
+          "format": "单个数字会话编号或公开频道用户名，配合 TG_BOT_TOKEN 使用。"
+        },
+        {
+          "name": "EPIC_LOCALE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按 Epic 商店支持的语言地区填写；默认 zh-CN。",
+          "format": "双字母语言代码或语言代码-地区代码。"
+        },
+        {
+          "name": "EPIC_COUNTRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按实际所在地区填写 Epic 商店国家代码；默认 CN。",
+          "format": "双字母国家代码。"
+        },
+        {
+          "name": "EPIC_FONT_PATH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写自行安装的中文字体文件路径；也会尝试常见系统中文字体。不自动下载或安装字体，缺少时推送文字。",
+          "format": "本地字体文件路径。"
+        },
+        {
+          "name": "EPIC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证设置为 1；真实运行设置为 0 或不设置。",
+          "format": "1/true/yes/on 开启完全断网预演。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认 1，调用青龙 notify.py 发送脱敏任务汇总；断网预演只模拟通知。",
+          "format": "0/false/no/off 关闭汇总通知，不影响 Telegram 游戏提醒。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定已有青龙 notify.py 的目录；也自动查找脚本目录及青龙标准目录。",
+          "format": "包含 notify.py 的本地目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行配置一个 Telegram 通知账号，格式为机器人令牌|会话编号；仅按首个 | 分割。逐账号独立发送，任一账号失败则整体非零退出。Epic 公开商品查询不需要商店登录凭据。"
+      },
+      "dependencies": [
+        "Pillow"
+      ],
+      "features": [
+        "查询 Epic 本周及即将免费游戏，仅筛选有效基础游戏和零价促销。",
+        "展示游戏标题、原价、促销起止北京时间及商店链接，兼容语言地区和国家设置。",
+        "合成含封面、标题、原价及免费时间的图片并发送到 Telegram；封面失败保留资料卡片，图片生成或发送失败降级完整文字报告。",
+        "保留每周六 08:00 调度及 TG_BOT_TOKEN/TG_USER_ID 单账号兼容输入，支持每行一个 Telegram 通知账号。",
+        "通过本地样例断网预演，记录带时间戳的分阶段日志、账号统计及唯一 TASK_SUMMARY JSON；业务失败返回非零退出码。",
+        "成功、部分失败、失败、配置错误和预演均生成脱敏青龙通知汇总；实际通知失败保留业务退出码，预演仅模拟。"
+      ],
+      "sideEffects": [
+        "向配置的 Telegram 会话发送免费游戏图片或文字提醒。",
+        "真实运行时按 QINGLONG_NOTIFY 设置通过青龙 notify.py 发送脱敏任务汇总。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/62f8f8c670e36faa",
+        "candidateSha256": "c8d5c51c3bc4dfbfb194ddb29720a35d605c3285eca606ec4af7ffdff72d0d4a"
+      }
+    },
+    {
       "catalogId": "2eeae7b152108dae",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::erke",
       "checkProfile": {

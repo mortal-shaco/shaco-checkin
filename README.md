@@ -68,6 +68,7 @@
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `33 14 * * *` |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `9 9 * * *` |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `39 12 * * *` |
+| Epic免费游戏 | `scripts/epicfreegames.py` | `python3 scripts/epicfreegames.py` | `0 8 * * 6` |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `1 1 1 1 1` |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `0 8 * * *` |
 | Discuz 论坛日常维护 | `scripts/forum_download.py` | `python3 scripts/forum_download.py` | `20 8 * * *` |
@@ -232,6 +233,7 @@
 - `scripts/deepflood_checkin.py`：执行 DeepFlood 每日签到并验证接口业务结果，支持识别已完成签到；查询并汇总可配置时间窗口内的签到鸡腿收益，保留总量、次数及平均收益；支持换行分隔的多账号独立执行和汇总状态；可选的随机延迟执行，保持原每日计划及既有参数兼容；完全断网且无等待、无副作用的预演；正式运行通过青龙 notify.py 发送脱敏汇总，支持全局通知开关，预演显示同内容通知预览；显示官方返回的非敏感账号身份、编号阶段、耗时与账号及任务统计；保留 SUMMARY_JSON 并追加唯一单行 TASK_SUMMARY，配置或业务失败非零退出。
 - `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
 - `scripts/enshan_checkin.py`：使用 Cookie 验证登录，保留签到页 WAF 解码、论坛页回退和响应 Cookie 更新。；获取隐藏字段、退出链接或 JavaScript 中的 formhash，提交每日签到，严格识别成功及今日已签到。；在已验证的签到响应提供连续签到天数时展示天数，并在结构化账号结果中输出；未提供时不推测。；签到前后查询恩山币和积分，保留四个积分页地址回退与临时错误重试，展示余额变化。；展示官方公开用户名、用户组及贡献，隐藏 Cookie、会话及原始响应。；每行一个账号独立执行，任一失败非零退出，配置错误同样非零退出。；保持每日 12:39 定时、兼容旧参数及可选随机启动延迟，默认无等待。；完全断网配置预演，跳过登录、查询、签到和通知网络发送，不宣称真实业务成功。；带时间戳的分阶段日志、账号及任务统计，保留 SUMMARY_JSON 并输出唯一单行 TASK_SUMMARY。；按全局开关生成或发送青龙脱敏通知，通知不可用或失败不改变业务退出码。；已验证签到后，按上游移动签到页与既有桌面签到页顺序读取今日签到积分和总签到天数；连续签到天数优先保留签到响应的值，缺失时补充页面值。；仅展示明确提供的非负签到统计，缺失项显示未知；可选统计读取失败不覆盖已验证签到结果。；兼容 EST_cookie 和 EST_ENABLE_RANDOM_WAIT，不再依赖浏览器可执行文件或本地凭据配置文件；Cookie 中自动获取登录身份。；正式通知增加各成功账号的余额、贡献及签到统计；配置错误、失败和断网预演也生成或发送摘要。。
+- `scripts/epicfreegames.py`：查询 Epic 本周及即将免费游戏，仅筛选有效基础游戏和零价促销。；展示游戏标题、原价、促销起止北京时间及商店链接，兼容语言地区和国家设置。；合成含封面、标题、原价及免费时间的图片并发送到 Telegram；封面失败保留资料卡片，图片生成或发送失败降级完整文字报告。；保留每周六 08:00 调度及 TG_BOT_TOKEN/TG_USER_ID 单账号兼容输入，支持每行一个 Telegram 通知账号。；通过本地样例断网预演，记录带时间戳的分阶段日志、账号统计及唯一 TASK_SUMMARY JSON；业务失败返回非零退出码。；成功、部分失败、失败、配置错误和预演均生成脱敏青龙通知汇总；实际通知失败保留业务退出码，预演仅模拟。。
 - `scripts/erke.py`：查询积分明细第一页五条，展示累计积分、冻结积分、可用积分和积分记录数；会员签到及明确已签到状态识别；每行一个账号，保留上游账号字段兼容，逐账号与逐阶段统计；展示接口返回的非敏感官方账号身份；完全断网预演、阶段耗时日志及单行 TASK_SUMMARY 结构化汇总；青龙脱敏通知，通知失败不覆盖业务退出码。
 - `scripts/fnnasclub.py`：显示论坛提供的公开昵称；获取签到参数并执行每日签到；识别今日已打卡并避免重复签到；读取并脱敏显示我的打卡动态；每行一个账号，独立执行与失败汇总；完全断网预演、时间轴日志和单行结构化汇总；正式运行后发送青龙脱敏通知，通知失败保留业务退出码。
 - `scripts/forum_download.py`：读取指定版块的主题列表，并按上游顺序读取前三个帖子的附件；下载显式启用，不保存文件，间隔两秒。；访问论坛首页并验证登录状态，不把首页访问成功推断为奖励到账。；提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。；独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。；官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。；多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。。
@@ -403,6 +405,7 @@
 <tr><td rowspan="1"><code>scripts/deepflood_checkin.py</code></td><td><code>DEEPFLOOD_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号完整 Cookie；不按 &amp;、@ 或分号拆分账号，Cookie 中的这些字符原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/durex.py</code></td><td><code>dlshyzx</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/enshan_checkin.py</code></td><td><code>ENSHAN_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；同一账号各字段用分号分隔，字段值内的等号保留；不得用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/epicfreegames.py</code></td><td><code>EPIC_TG_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个机器人令牌|会话编号；只按首个 | 分割，支持数字会话编号或公开频道用户名。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/erke.py</code></td><td><code>ERKE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个 JSON 对象，五项字段均为非空字符串；可选 account_name 和 user_agent，兼容上游字段。account_name 保留输入兼容，日志优先使用官方身份，没有官方身份时用账号序号。JSON 内部文本与标点保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_COOKIE</code></td><td>是</td><td>格式：每个非空行为一个账号的完整 Cookie 值，保留分号及等号，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/forum_download.py</code></td><td><code>FORUM_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；必填 url、cookie；可选 name；启用 download 时必填数字 fid。Cookie 作为 JSON 字符串完整保存，双引号和反斜杠按 JSON 转义，不拆分分号、&amp; 或 @。；多账号格式以该脚本文档为准</td></tr>
@@ -772,6 +775,14 @@
 <tr><td><code>PRIVACY_MODE</code></td><td>否</td><td>格式：布尔值；ENSHAN_PRIVACY_MODE 优先，默认开启；不会隐藏公开昵称。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，非必填；脚本业务不依赖通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="8"><code>scripts/epicfreegames.py</code></td><td><code>TG_BOT_TOKEN</code></td><td>是</td><td>格式：单个机器人令牌，不支持用符号分隔多个账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TG_USER_ID</code></td><td>是</td><td>格式：单个数字会话编号或公开频道用户名，配合 TG_BOT_TOKEN 使用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>EPIC_LOCALE</code></td><td>否</td><td>格式：双字母语言代码或语言代码-地区代码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>EPIC_COUNTRY</code></td><td>否</td><td>格式：双字母国家代码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>EPIC_FONT_PATH</code></td><td>否</td><td>格式：本地字体文件路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>EPIC_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启完全断网预演。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0/false/no/off 关闭汇总通知，不影响 Telegram 游戏提醒。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/erke.py</code></td><td><code>ERKE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演；默认 0 正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。断网预演仅生成通知摘要并记录未投递，不调用可能联网的通知模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录，含 notify.py 或 sendNotify.js；通知不可用不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
@@ -1552,6 +1563,7 @@
 - `scripts/deepflood_checkin.py`：每个非空行填写一个账号完整 Cookie；忽略空行并兼容换行格式，各账号独立执行，任一账号签到或收益查询失败则整体非零退出。。
 - `scripts/durex.py`：每个非空行一个账号的 Access-Token；各账号独立处理；任何账号失败则整体非零退出。。
 - `scripts/enshan_checkin.py`：每个非空行一个账号的完整 Cookie，账号独立执行；任一账号失败整体非零退出。。
+- `scripts/epicfreegames.py`：每个非空行配置一个 Telegram 通知账号，格式为机器人令牌|会话编号；仅按首个 | 分割。逐账号独立发送，任一账号失败则整体非零退出。Epic 公开商品查询不需要商店登录凭据。。
 - `scripts/erke.py`：每个非空行一个账号 JSON，同账号五项凭据组合在同一对象；逐账号、逐阶段独立处理，任一账号或配置失败时整体非零退出。。
 - `scripts/fnnasclub.py`：每个非空行填写一个账号的完整 Cookie，各账号独立执行；任何账号失败均整体非零退出。。
 - `scripts/forum_download.py`：每个非空行一个账号 JSON 对象，同账号的论坛地址、版块和 Cookie 放在同一个对象内。逐账号独立处理，任一账号失败整体非零退出；不使用 & 或 @ 分隔账号。。
@@ -1935,6 +1947,13 @@
 - 所属脚本：`scripts/enshan_checkin.py`
 - 获取或设置：浏览器登录恩山论坛，在开发者工具的网络面板选取发往 www.right.com.cn 的请求，复制完整 Cookie 请求头值；仅填入青龙私密环境变量，不含 Cookie: 前缀。Cookie 已含账号身份，不再要求上游 EST_USER_UID 或 config.json。
 - 填写格式：`每个非空行一个账号的完整 Cookie；同一账号各字段用分号分隔，字段值内的等号保留；不得用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `EPIC_TG_ACCOUNTS`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：通过 Telegram 的 BotFather 创建机器人取得令牌；向机器人发送消息后，从官方 Bot API getUpdates 的 message.chat.id 获取会话编号。令牌和会话编号必须对应可接收消息的同一机器人。
+- 填写格式：`每个非空行一个机器人令牌|会话编号；只按首个 | 分割，支持数字会话编号或公开频道用户名。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `ERKE_ACCOUNTS`
@@ -4250,6 +4269,56 @@
 - 所属脚本：`scripts/enshan_checkin.py`
 - 获取或设置：可选青龙 notify.py 所在目录；未配置时尝试导入 notify 并发现青龙标准目录。通知不可用不会改变业务退出码。
 - 填写格式：`本地目录路径，非必填；脚本业务不依赖通知模块。`
+
+#### `TG_BOT_TOKEN`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：旧版兼容输入，通过 Telegram 的 BotFather 获取；仅在 EPIC_TG_ACCOUNTS 为空时使用，需同时配置 TG_USER_ID。
+- 填写格式：`单个机器人令牌，不支持用符号分隔多个账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TG_USER_ID`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：旧版兼容输入，从官方 Bot API getUpdates 的 message.chat.id 获取，或填写机器人有权限发送消息的公开频道用户名。
+- 填写格式：`单个数字会话编号或公开频道用户名，配合 TG_BOT_TOKEN 使用。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `EPIC_LOCALE`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：按 Epic 商店支持的语言地区填写；默认 zh-CN。
+- 填写格式：`双字母语言代码或语言代码-地区代码。`
+
+#### `EPIC_COUNTRY`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：按实际所在地区填写 Epic 商店国家代码；默认 CN。
+- 填写格式：`双字母国家代码。`
+
+#### `EPIC_FONT_PATH`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：可选填写自行安装的中文字体文件路径；也会尝试常见系统中文字体。不自动下载或安装字体，缺少时推送文字。
+- 填写格式：`本地字体文件路径。`
+
+#### `EPIC_DRY_RUN`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：离线验证设置为 1；真实运行设置为 0 或不设置。
+- 填写格式：`1/true/yes/on 开启完全断网预演。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：默认 1，调用青龙 notify.py 发送脱敏任务汇总；断网预演只模拟通知。
+- 填写格式：`0/false/no/off 关闭汇总通知，不影响 Telegram 游戏提醒。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/epicfreegames.py`
+- 获取或设置：可选指定已有青龙 notify.py 的目录；也自动查找脚本目录及青龙标准目录。
+- 填写格式：`包含 notify.py 的本地目录。`
 
 #### `ERKE_DRY_RUN`
 
@@ -8882,6 +8951,7 @@
 - `scripts/deepflood_checkin.py`：SHA-256 `1743ea3da4f0ef463f70619fb5a49d375dc48e5817d867ea080875a12b3f68c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01d51606a735260a`。
 - `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 - `scripts/enshan_checkin.py`：SHA-256 `bbf4daf1880caeb8d30c22e335df244f0aec8756937d3e810ef62da534899504`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
+- `scripts/epicfreegames.py`：SHA-256 `c8d5c51c3bc4dfbfb194ddb29720a35d605c3285eca606ec4af7ffdff72d0d4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
 - `scripts/erke.py`：SHA-256 `887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
 - `scripts/fnnasclub.py`：SHA-256 `80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
 - `scripts/forum_download.py`：SHA-256 `0e9f16e998792dc859f4d18e97c0af3e52a72ef2f84a4ea80d2e8eb63745a149`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
@@ -9046,6 +9116,7 @@
 - `scripts/deepflood_checkin.py`：正式运行向 DeepFlood 提交每日签到，可能获得鸡腿并改变账号签到及积分状态；正式运行通知启用且模块可用时，通过青龙已配置渠道发送脱敏任务汇总。
 - `scripts/durex.py`：每日签到改变签到状态并可能获得积分；开启分享后上报活动分享记录并可能获得奖励；开启抽奖后参与活动并可能消耗抽奖机会或积分。
 - `scripts/enshan_checkin.py`：正式运行提交每日签到，可能增加恩山币和积分。；正式访问论坛可能产生论坛自身的登录奖励或访问记录。；正式运行且通知开启时，通过青龙通知模块发送脱敏任务汇总。。
+- `scripts/epicfreegames.py`：向配置的 Telegram 会话发送免费游戏图片或文字提醒。；真实运行时按 QINGLONG_NOTIFY 设置通过青龙 notify.py 发送脱敏任务汇总。。
 - `scripts/erke.py`：正式运行提交会员签到，可能增加积分和签到记录。
 - `scripts/fnnasclub.py`：执行论坛签到，更新签到记录及论坛对应奖励；正式运行向已配置的青龙通知渠道发送脱敏总结。
 - `scripts/forum_download.py`：启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。；首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。；显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。。
@@ -9212,6 +9283,7 @@
 - `scripts/deepflood_checkin.py`：上游 `agluo/ql-script-hub` / `deepflood_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/durex.py`：上游 `Rookie-wb-WH/ql_scripts` / `durex.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/enshan_checkin.py`：上游 `agluo/ql-script-hub` / `enshan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/epicfreegames.py`：上游 `CN-Grace/QinglongScripts` / `EpicFreeGames.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/erke.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/erke/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/fnnasclub.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/fnnasclub/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/forum_download.py`：上游 `nuthx/auto-sign` / `src/general/forum_download.py` / `a8d2c229bac693daebe1535bca4cfd49733b632d`。
