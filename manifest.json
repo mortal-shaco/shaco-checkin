@@ -4391,6 +4391,172 @@
       }
     },
     {
+      "catalogId": "6c1cb801424774c8",
+      "applicationKey": "sitoi/dailycheckin::iqiyi",
+      "checkProfile": {
+        "requiredEnv": [
+          "IQIYI_COOKIE"
+        ],
+        "optionalEnv": [
+          "IQIYI_ACTIONS",
+          "IQIYI_TIMEOUT",
+          "IQIYI_MAX_DRAWS",
+          "IQIYI_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "IQIYI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "IQIYI_ACTIONS": "info",
+          "IQIYI_TIMEOUT": "15",
+          "IQIYI_MAX_DRAWS": "20",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\": \"success\"",
+          "\"exitCode\": 0"
+        ],
+        "features": [
+          "查询 VIP 等级、当前成长、今日成长、升级所需成长和会员到期时间；接口返回公开身份时脱敏展示非凭据身份字段",
+          "显式启用普通抽奖：查询剩余次数并逐次校验奖励",
+          "显式启用每日摇一摇：展示逐次奖励，确认次数耗尽并限制循环次数",
+          "显式启用白金抽奖：执行五次抽奖并展示每次奖励或未中奖结果",
+          "显式启用浏览及预约任务次数领取，与白金抽奖组合时先领取次数",
+          "显式启用 V7 星钻升级权益领取，校验业务成功响应",
+          "多账号独立执行、断网预演、超时限制、失败闭合、分阶段日志和单行结构化任务汇总",
+          "青龙通知覆盖成功、部分失败、失败、配置错误及预演；通知故障保留业务退出码"
+        ],
+        "sideEffects": [
+          "选择 draw 时使用普通抽奖次数并领取抽奖奖励",
+          "选择 shake 时使用每日摇一摇次数并领取奖励",
+          "选择 platinum 时执行五次白金抽奖并领取奖励",
+          "选择 grant 时提交两次浏览任务及一次预约任务次数领取",
+          "选择 level 时领取 V7 星钻升级权益，可能改变会员权益",
+          "实时运行且通知开启时发送脱敏任务统计通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "爱奇艺账号与抽奖维护",
+      "path": "scripts/iqiyi.py",
+      "sha256": "cf55901a3b875992ebab7270ba46d449c61f3cd4df2cfe84bbefd1f2e1458021",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Sitoi/dailycheckin",
+        "branch": "main",
+        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+        "originalPath": "dailycheckin/iqiyi/main.py",
+        "related": [
+          {
+            "catalogId": "be3db7925f8a5d21",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "repository": "Sitoi/dailycheckin",
+            "url": "https://github.com/Sitoi/dailycheckin.git",
+            "branch": "main",
+            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+            "originalPath": "dailycheckin/iqiyi/__init__.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "15 9 * * *",
+      "command": "python3 scripts/iqiyi.py",
+      "environment": [
+        {
+          "name": "IQIYI_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人爱奇艺官网账号，在浏览器开发者工具的网络面板选择已登录接口请求，复制请求头中的完整 Cookie，在青龙环境变量中保存。Cookie 失效时重新登录获取，切勿公开分享。普通抽奖还需同一账号的 P00003。",
+          "format": "每个非空行保存一个账号的完整 Cookie；Cookie 内各字段以分号分隔，字段只按第一个等号拆分，保留后续等号。必需 P00001，选择 draw 时必需 P00003；兼容 P00002、__dfp、QC005，缺少末尾分号也可解析。不得用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "IQIYI_ACTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需手动配置。默认 info 仅查询；抽奖和权益变更须显式选择。希望运行原上游完整工作流时使用 info,grant,platinum,level,draw,shake。领取权益需自行确认会员资格及活动条款。",
+          "format": "逗号分隔动作：info 查询 VIP 等级、当前及今日成长、升级所需成长、到期时间；draw 查询普通抽奖次数并使用现有次数；shake 每日摇一摇直至次数耗尽；platinum 白金抽奖五次；grant 领取两次浏览任务及一次预约任务次数；level 领取 V7 星钻升级权益。grant 与 platinum 同选时先领取次数。"
+        },
+        {
+          "name": "IQIYI_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选手动设置网络超时，默认 15 秒。",
+          "format": "1～60 秒的数值"
+        },
+        {
+          "name": "IQIYI_MAX_DRAWS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认 20；确认活动次数后可调整。普通抽奖次数超过上限时不开始抽奖；摇一摇到达上限仍未确认耗尽时报告失败，避免无限递归。",
+          "format": "1～100 的整数"
+        },
+        {
+          "name": "IQIYI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置为 1；实时运行设为 0 或不设置。",
+          "format": "0、false、no、off 表示实时运行，其余值表示完全断网预演；预演不调用业务接口或通知网络。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认开启；设置 0 可关闭。实时运行通过青龙 notify.py 发送脱敏统计，通知不可用不改变业务退出码；预演仅模拟通知。",
+          "format": "0、false、no、off 关闭，其余值开启"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通常不需配置；自定义青龙通知位置时，填写已有 notify.py 的目录。另支持 import notify 及青龙标准脚本目录。该文件只用于通知，业务执行无此依赖。",
+          "format": "本地通知模块所在目录"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "IQIYI_COOKIE 每个非空行一个账号，配套字段保存在同一 Cookie 行中。逐账号独立处理，单个动作或账号失败后继续其他动作及账号；任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询 VIP 等级、当前成长、今日成长、升级所需成长和会员到期时间；接口返回公开身份时脱敏展示非凭据身份字段",
+        "显式启用普通抽奖：查询剩余次数并逐次校验奖励",
+        "显式启用每日摇一摇：展示逐次奖励，确认次数耗尽并限制循环次数",
+        "显式启用白金抽奖：执行五次抽奖并展示每次奖励或未中奖结果",
+        "显式启用浏览及预约任务次数领取，与白金抽奖组合时先领取次数",
+        "显式启用 V7 星钻升级权益领取，校验业务成功响应",
+        "多账号独立执行、断网预演、超时限制、失败闭合、分阶段日志和单行结构化任务汇总",
+        "青龙通知覆盖成功、部分失败、失败、配置错误及预演；通知故障保留业务退出码"
+      ],
+      "sideEffects": [
+        "选择 draw 时使用普通抽奖次数并领取抽奖奖励",
+        "选择 shake 时使用每日摇一摇次数并领取奖励",
+        "选择 platinum 时执行五次白金抽奖并领取奖励",
+        "选择 grant 时提交两次浏览任务及一次预约任务次数领取",
+        "选择 level 时领取 V7 星钻升级权益，可能改变会员权益",
+        "实时运行且通知开启时发送脱敏任务统计通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/6c1cb801424774c8",
+        "candidateSha256": "cf55901a3b875992ebab7270ba46d449c61f3cd4df2cfe84bbefd1f2e1458021"
+      }
+    },
+    {
       "catalogId": "7701c083c0ca06d5",
       "applicationKey": "deeplee/personal-scripts::iqiyi",
       "checkProfile": {
