@@ -3,6 +3,7 @@
 # name: WorkBuddy 国内版日常维护
 # cron: 0 7,12 * * *
 # 来源：L0NE-6/WorkBuddy-Daily，workbuddy_daily.py v3.7，MIT
+# 合并参考：Maquer/workbuddy-checkin，workbuddy_checkin.py，MIT
 """独立维护版。凭据：WORKBUDDY_REFRESH_TOKEN，每行 手机号:AT:RT、AT:RT、手机号:RT 或单个 JWT。
 明文凭据可在本人已登录客户端认证信息中读取；加密信封不可使用，改从官方登录请求响应获取。
 默认只执行签到、查询、已完成任务领奖及旅行；消耗资源、同意协议与模拟成长事件均需显式选择。
@@ -20,6 +21,16 @@ WORKBUDDY_DRY_RUN=1：完全断网，不轮换令牌、不写文件、不发送�
 续期令牌仅保存至本人指定 WORKBUDDY_TOKEN_STORE（0600）；默认不轮换尚有效的 AT。
 --refresh 或只有 RT 时必须配置此路径，以免新 RT 丢失。不要将此文件上传公开仓库。
 仅需 Python 标准库；无需桌面程序、登录脚本或私有仓库。
+--credit-report：独立只读积分日报，支持国内版及 --intl；--json 输出脱敏套餐数值数组。
+新增日报保留上游周期容量优先、累计容量回退、总用量补全算法，未知结构失败闭合。
+--intl --trial：独立的一次性专家加油包领取，不执行每日奖励或模型保活，不加入默认定时任务。
+trial 仅依据 HTTP 200 且业务码0确认领取；业务码14051确认此前已领取。
+新增操作不接受 --refresh、--query 或显式任务/保活开关组合，避免意外串联变更。
+原上游凭据目录、内置常驻 cron 与 Bark 专属推送不作为运行依赖：
+凭据使用现有逐行变量，定时使用青龙，通知使用 notify.py；不打印令牌片段或自动禁用账号。
+取得明文 AT/RT 后国内版使用 AT:RT；国际版使用 备注|AT|uid|RT 或单个 AT。
+JSON 日报仅包含账号序号与数值，不输出服务端原始数据或套餐自由文本。
+新增参考归属：Maquer/workbuddy-checkin and its contributors（MIT）。
 
 MIT License
 Attribution: L0NE-6/WorkBuddy-Daily and its contributors.
@@ -2323,7 +2334,9 @@ def main():
     timeline('🌱 WorkBuddy 国内版日常维护 | 开始时间：' + datetime.datetime.now().isoformat(timespec='seconds'))
     timeline('模式：' + ('断网预演' if DRY else '实际执行'))
     try:
-        parser = argparse.ArgumentParser()
+        parser = RedactedArgumentParser()
+        parser.add_argument('--credit-report', action='store_true', help='独立只读积分日报')
+        parser.add_argument('--json', action='store_true', help='配合 --credit-report 输出脱敏数值数组')
         parser.add_argument('--query', action='store_true')
         parser.add_argument('--refresh', action='store_true')
         parser.add_argument('--no-desktop', action='store_true', help='兼容旧参数；桌面程序依赖已移除')
@@ -2333,6 +2346,11 @@ def main():
         parser.add_argument('--tasks', default=os.getenv('WORKBUDDY_TASKS',os.getenv('WORKBUDDY_ONLY_TASKS','')))
         parser.add_argument('--skip-tasks', default=os.getenv('WORKBUDDY_SKIP_TASKS',''))
         args = parser.parse_args()
+        if args.json and not args.credit_report:
+            raise SafeError('--json 仅能配合 --credit-report')
+        if args.credit_report and (args.query or args.refresh or args.tasks or args.skip_tasks):
+            raise SafeError('积分日报不能与刷新、成长查询或任务筛选同时使用')
+        reports = []
         TASK_ONLY = _parse_task_filter(args.tasks)
         TASK_SKIP = _parse_task_filter(args.skip_tasks)
         if (TASK_ONLY | TASK_SKIP) - ALLOWED:
@@ -2352,7 +2370,7 @@ def main():
         stats['accounts'] = len(selected)
         timeline('账号数：%d' % len(selected))
         chosen = (TASK_ONLY or DEFAULT_TASKS) - TASK_SKIP
-        if not chosen and not (args.query or args.refresh):
+        if not chosen and not (args.query or args.refresh or args.credit_report):
             raise SafeError('没有选中的任务')
         cache = {}
         store = os.getenv('WORKBUDDY_TOKEN_STORE','')
@@ -2373,7 +2391,7 @@ def main():
                 before = 0
                 timeline('阶段%d：%s' % (number,name))
                 try:
-                    result = 'success' if DRY and number != 1 else (callback() or 'success')
+                    result = 'success' if DRY and number != 1 and not (args.credit_report and number == 2) else (callback() or 'success')
                     if len(ERRORS) != before:
                         raise SafeError('存在未确认请求；本阶段失败闭合')
                     if result not in counts:
@@ -2401,7 +2419,9 @@ def main():
                     rt = cached.get('refresh_token', rt)
                 exp = _jwt_claims(at).get('exp',0)
                 due = bool(rt and store and (time.time()-cached.get('updated',0)>10*86400 or (exp and exp-time.time()<7*86400)))
-                if args.refresh or not at or due:
+                if args.credit_report and not at:
+                    raise SafeError('只读积分日报需要有效 AT；请先单独 --refresh')
+                if args.refresh or (not args.credit_report and (not at or due)):
                     at, rt = rotate(idx, at, rt, store, cache)
                 elif exp and exp <= time.time():
                     raise SafeError('AT 已过期；配置私有缓存和 RT 后续期')
@@ -2409,7 +2429,9 @@ def main():
             if stage(1,'凭据检查与按需续期',authenticate) and not args.refresh:
                 s = new_api(at)
                 uid,nick = uid_of(at),nickname_of(at)
-                if stage(2,'账号身份、积分、用量、成长及任务查询',lambda:query_all(s)) and not args.query:
+                if args.credit_report:
+                    stage(2,'只读积分日报',lambda:credit_report(billing_report_headers(at,uid),False,idx,reports))
+                elif stage(2,'账号身份、积分、用量、成长及任务查询',lambda:query_all(s)) and not args.query:
                     actions = [('checkin',lambda:checkin(s)), ('claim',lambda:claim_ready(s))]
                     for key, fn in [('travel',t_travel),('buddy_info',t_buddy_info),('badges',t_badges),('lottery',t_lottery),('blindbox',t_blindbox),('gift',t_gift_compensation),('makeup',t_makeup)]:
                         actions.append((key,lambda fn=fn:fn(s,uid,nick,recipe_log)))
@@ -2436,6 +2458,8 @@ def main():
             stats['failed' if failed else 'success'] += 1
             timeline('账号统计：总任务%d，成功%d，已完成%d，跳过%d，失败%d，耗时%.2f秒' %
                      (sum(counts.values()),counts['success'],counts['alreadyComplete'],counts['skipped'],counts['failed'],time.monotonic()-account_start))
+        if args.json:
+            print(json.dumps(reports,ensure_ascii=False,separators=(',',':')))
         status = 'failure' if stats['failed']==stats['accounts'] else ('partial-failure' if stats['failed'] else ('dry-run' if DRY else 'success'))
     except (Exception,SystemExit) as e:
         timeline('❌ 配置错误：' + (str(e) if isinstance(e,SafeError) else '参数或缓存无效'))
@@ -2635,13 +2659,22 @@ def intl_main():
     timeline('WorkBuddy 国际版日常维护 | 开始时间：'+datetime.datetime.now().isoformat(timespec='seconds'))
     timeline('模式：'+('断网预演' if DRY else '实际执行'))
     try:
-        parser = argparse.ArgumentParser()
+        parser = RedactedArgumentParser()
+        parser.add_argument('--credit-report', action='store_true', help='独立只读积分日报')
+        parser.add_argument('--json', action='store_true', help='配合 --credit-report 输出脱敏数值数组')
         parser.add_argument('--intl',action='store_true')
+        parser.add_argument('--trial',action='store_true',help='独立领取一次性专家加油包')
         parser.add_argument('--only',type=int)
         parser.add_argument('--refresh',action='store_true')
         parser.add_argument('--keepalive',action='store_true')
         parser.add_argument('--no-keepalive',action='store_true')
         args = parser.parse_args()
+        if args.json and not args.credit_report:
+            raise SafeError('--json 仅能配合 --credit-report')
+        if (args.credit_report or args.trial) and (args.refresh or args.keepalive or args.no_keepalive or
+                (args.credit_report and args.trial) or os.getenv('WORKBUDDY_INTL_KEEPALIVE','0').lower() in truth):
+            raise SafeError('日报或一次性加油包必须独立运行，不能与续期或模型保活组合')
+        reports = []
         accounts = intl_accounts(os.getenv('WORKBUDDY_INTL_TOKENS','').strip() or os.getenv('WORKBUDDY_TOKEN',''))
         if not accounts:
             raise SafeError('缺少 WORKBUDDY_INTL_TOKENS；每行一个国际版账号')
@@ -2698,12 +2731,19 @@ def intl_main():
                 return 'success'
             if stage(1,'凭据检查与显式续期',auth) and not args.refresh:
                 h = intl_headers(at,uid)
-                stage(2,'活动探测、每日奖励领取与回读',lambda:'success' if DRY else intl_daily(h))
-                stage(3,'独立模型保活',lambda:'skipped' if not enabled else ('success' if DRY else intl_keepalive(h)))
+                if args.credit_report:
+                    stage(2,'只读国际版积分日报',lambda:credit_report(h,True,idx,reports))
+                elif args.trial:
+                    stage(2,'独立领取一次性专家加油包',lambda:'success' if DRY else intl_trial(h))
+                else:
+                    stage(2,'活动探测、每日奖励领取与回读',lambda:'success' if DRY else intl_daily(h))
+                    stage(3,'独立模型保活',lambda:'skipped' if not enabled else ('success' if DRY else intl_keepalive(h)))
             failed = counts['failed'] > 0
             stats['failed' if failed else 'success'] += 1
             timeline('账号统计：总任务%d，成功%d，已完成%d，跳过%d，失败%d，耗时%.2f秒' %
                      (sum(counts.values()),counts['success'],counts['alreadyComplete'],counts['skipped'],counts['failed'],time.monotonic()-mark))
+        if args.json:
+            print(json.dumps(reports,ensure_ascii=False,separators=(',',':')))
         status = ('failure' if stats['failed']==stats['accounts'] else 'partial-failure') if stats['failed'] else ('dry-run' if DRY else 'success')
     except (Exception,SystemExit) as e:
         timeline('❌ 配置错误：'+(str(e) if isinstance(e,SafeError) else '参数或缓存无效'))
@@ -2719,6 +2759,142 @@ def intl_main():
     timeline('结束时间：'+datetime.datetime.now().isoformat(timespec='seconds')+'；最终状态：'+status)
     print('TASK_SUMMARY='+json.dumps(stats,ensure_ascii=False,separators=(',',':')))
     return code
+
+
+class RedactedArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        raise SafeError('命令参数无效；请使用 --help 查看用法')
+
+
+def billing_report_headers(at, uid):
+    # 来源：Maquer/workbuddy-checkin billingHeaders（仅传输至官方业务域）。
+    headers = {'Authorization':'Bearer '+at, 'Accept':'application/json',
+               'Content-Type':'application/json', 'User-Agent':'CLI/2.63.2 CodeBuddy/2.63.2'}
+    if uid:
+        headers['X-User-Id'] = uid
+    headers['X-Domain'] = 'codebuddy.cn'
+    return headers
+
+
+def billing_request(path, headers, body, international):
+    global REQUEST_COUNT
+    if DRY:
+        raise SafeError('断网预演禁止 HTTP')
+    if path not in {'/v2/billing/meter/get-user-resource','/billing/ide/trial'}:
+        raise SafeError('非许可积分接口')
+    if path == '/billing/ide/trial' and not international:
+        raise SafeError('加油包仅支持国际版')
+    REQUEST_COUNT += 1
+    base = INTL_BASE if international else CBDOMAIN
+    try:
+        response = RealSession().post(base+path, headers=headers, json=body, timeout=30)
+        data = response.json()
+    except Exception:
+        raise SafeError('积分接口网络或解析失败，详情已脱敏') from None
+    timeline('POST 请求：HTTP %d' % response.status_code)
+    if not isinstance(data,dict) or not isinstance(data.get('code'),int) or isinstance(data.get('code'),bool):
+        raise SafeError('积分接口业务码缺失或类型变化')
+    return response.status_code, data
+
+
+def package_capacity(package):
+    # 保留上游 _package_remain_used 的周期/累计计算；禁止将未知数值当成余额0。
+    keys = ('CycleCapacitySize','CycleCapacityRemain','CycleCapacityUsed',
+            'CapacitySize','CapacityRemain','CapacityUsed')
+    if not any(key in package for key in keys):
+        raise SafeError('套餐容量字段缺失')
+    values = {}
+    for key in keys:
+        value = package.get(key,0)
+        if not isinstance(value,(int,float)) or isinstance(value,bool) or not __import__('math').isfinite(value):
+            raise SafeError('套餐容量字段不是有限数值')
+        values[key] = value
+    size = values['CycleCapacitySize']
+    if size > 0:
+        remain = min(max(values['CycleCapacityRemain'],0),size)
+        used = size-remain
+        if values['CycleCapacityUsed'] > used:
+            used = values['CycleCapacityUsed']
+            if size >= used:
+                remain = size-used
+        return remain,used,size
+    remain,used = values['CycleCapacityRemain'],values['CycleCapacityUsed']
+    if remain > 0 or used > 0:
+        remain,used = max(remain,0),max(used,0)
+        size = remain+used
+        if values['CapacitySize'] > size:
+            size = values['CapacitySize']
+            used = size-remain
+        return remain,used,size
+    remain,used = max(values['CapacityRemain'],0),max(values['CapacityUsed'],0)
+    size = values['CapacitySize']
+    if size <= 0:
+        size = remain+used
+    if used == 0 and size > remain:
+        used = size-remain
+    return remain,used,size
+
+
+def credit_report(headers, international, index, reports):
+    if DRY:
+        timeline('积分日报：仅验证参数与流程，不请求接口、不断言真实积分')
+        reports.append({'account':index,'region':'global' if international else 'cn','dryRun':True})
+        return 'success'
+    body = {'PageNumber':1,'PageSize':100,'ProductCode':'p_tcaca','Status':[0,3],
+            'PackageEndTimeRangeBegin':datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'PackageEndTimeRangeEnd':'2126-12-31 23:59:59'}
+    http, envelope = billing_request('/v2/billing/meter/get-user-resource',headers,body,international)
+    data = envelope.get('data')
+    if http != 200 or envelope['code'] != 0 or not isinstance(data,dict):
+        raise SafeError('积分日报未通过业务校验')
+    identity(data)
+    response = data.get('Response',data)
+    values = response.get('Data') if isinstance(response,dict) else None
+    if not isinstance(values,dict) or not isinstance(values.get('Accounts'),list):
+        raise SafeError('积分日报套餐字段缺失，不能将未知余额当成0')
+    # 上游只读第一页：若服务端明确还有数据，失败闭合，避免报告残缺总额。
+    packages = values['Accounts']
+    count = values.get('TotalCount',len(packages))
+    if not isinstance(count,(int,float)) or isinstance(count,bool) or count > len(packages):
+        raise SafeError('积分日报分页未完整，不能确认总余额')
+    safe_packages = []
+    for package in packages:
+        if not isinstance(package,dict):
+            raise SafeError('积分套餐行结构变化')
+        remain,used,size = package_capacity(package)
+        safe_packages.append({'remain':remain,'used':used,'size':size})
+    remain = sum(p['remain'] for p in safe_packages)
+    used = sum(p['used'] for p in safe_packages)
+    size = sum(p['size'] for p in safe_packages)
+    if size > 0:
+        used = max(used,size-remain,0)
+    dosage = values.get('TotalDosage',0)
+    if not isinstance(dosage,(int,float)) or isinstance(dosage,bool) or not __import__('math').isfinite(dosage):
+        raise SafeError('积分总用量字段无效')
+    if dosage > size:
+        size = dosage
+        used = max(used,size-remain,0)
+    report = {'account':index,'region':'global' if international else 'cn',
+              'total_remain':remain,'total_used':used,'total_size':size,
+              'pack_count':len(safe_packages),'packages':safe_packages}
+    reports.append(report)
+    timeline('积分日报：剩余%s，总量%s，已用%s，套餐数%d' % (remain,size,used,len(safe_packages)))
+    for n,p in enumerate(safe_packages,1):
+        timeline('套餐%d：剩余%s，总量%s，已用%s' % (n,p['remain'],p['size'],p['used']))
+    return 'success'
+
+
+def intl_trial(headers):
+    # 主来源明确记载14051为已领取；不依据模糊消息文本判成功。
+    http, envelope = billing_request('/billing/ide/trial',headers,{},True)
+    if http in (200,400,409) and envelope['code'] == 14051:
+        timeline('☑️ 官方业务码14051：此前已领取一次性专家加油包')
+        return 'alreadyComplete'
+    if http != 200 or envelope['code'] != 0 or not isinstance(envelope.get('data'),dict):
+        raise SafeError('一次性专家加油包领取未通过业务校验')
+    identity(envelope['data'])
+    timeline('✅ 一次性专家加油包领取：HTTP及官方业务码已验证')
+    return 'success'
 
 if __name__ == '__main__':
     sys.exit(intl_main() if '--intl' in sys.argv[1:] else main())

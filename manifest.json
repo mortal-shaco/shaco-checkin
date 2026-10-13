@@ -349,6 +349,131 @@
       }
     },
     {
+      "catalogId": "d81ca9fcd4ad24e1",
+      "applicationKey": "huwangkeji/51cto_sign_authed::51cto",
+      "checkProfile": {
+        "requiredEnv": [
+          "ICTO_BLOG_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ICTO_BLOG_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ICTO_BLOG_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功（已复查）",
+          "今日已签到，无需重复签到"
+        ],
+        "features": [
+          "账号密码登录并同步博客会话",
+          "获取签到Token并沿用原始MD5接口签名",
+          "查询每日签到状态，已经签到时避免重复提交",
+          "未签到时执行签到并重新查询验证完成",
+          "每行一个账号，兼容单行旧式用户名@密码",
+          "完全断网预演、阶段日志、账号及任务统计和结构化汇总",
+          "青龙通知及全局开关，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "登录建立服务端会话",
+          "每日签到及平台对应的签到奖励",
+          "真实运行时通过青龙通知渠道发送脱敏摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "51CTO博客每日签到",
+      "path": "scripts/51cto_sign.js",
+      "sha256": "0f62a8d10db8c2b4dd354e467d57274ec1ed97c9734cd4ac1965a96be9e43410",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "huwangkeji/51cto_sign_authed",
+        "branch": "main",
+        "commit": "c8231e0c5a52fdcd5c6020a3522c7b2c65a1aa84",
+        "originalPath": "51cto_sign.js"
+      },
+      "cron": "0 8 * * *",
+      "command": "node scripts/51cto_sign.js",
+      "environment": [
+        {
+          "name": "ICTO_BLOG_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在51CTO官网注册或使用已有账号的登录用户名和密码；验证码或额外验证须先人工处理，无需抓取Cookie。",
+          "format": "每个非空行一个账号，推荐用户名|密码；在首个竖线拆分，后续密码原样保留。兼容不含竖线的用户名@密码，在首个@拆分；邮箱用户名须使用竖线。旧版&多账号配置必须迁移为换行。"
+        },
+        {
+          "name": "ICTO_BLOG_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "由用户设置，预演时填1。",
+          "format": "1开启完全断网预演；其他值为真实运行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙面板按需设置，默认开启。",
+          "format": "0、false、no、off关闭通知，其他值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写已有青龙sendNotify.js所在目录，不需另一个项目仓库。",
+          "format": "可选本地目录；同时自动查找青龙标准脚本目录和当前目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，配套用户名和密码合并；独立处理，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "账号密码登录并同步博客会话",
+        "获取签到Token并沿用原始MD5接口签名",
+        "查询每日签到状态，已经签到时避免重复提交",
+        "未签到时执行签到并重新查询验证完成",
+        "每行一个账号，兼容单行旧式用户名@密码",
+        "完全断网预演、阶段日志、账号及任务统计和结构化汇总",
+        "青龙通知及全局开关，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "登录建立服务端会话",
+        "每日签到及平台对应的签到奖励",
+        "真实运行时通过青龙通知渠道发送脱敏摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d81ca9fcd4ad24e1",
+        "candidateSha256": "53274a16fe4d3d60861fd3add9b63521c955764dc1e091322aa92f4099e2aac2"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "53274a16fe4d3d60861fd3add9b63521c955764dc1e091322aa92f4099e2aac2",
+        "releaseSha256": "0f62a8d10db8c2b4dd354e467d57274ec1ed97c9734cd4ac1965a96be9e43410",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "8ea0312febc74515",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::999",
       "checkProfile": {
@@ -28354,30 +28479,31 @@
         ],
         "optionalEnv": [
           "WORKBUDDY_TOKEN",
-          "WORKBUDDY_DRY_RUN",
-          "WORKBUDDY_INTL_DRY_RUN",
           "WORKBUDDY_TASKS",
           "WORKBUDDY_ONLY_TASKS",
           "WORKBUDDY_SKIP_TASKS",
           "WORKBUDDY_ALLOW_REPORT",
           "WORKBUDDY_MP_GAP",
+          "WORKBUDDY_TOKEN_STORE",
+          "WORKBUDDY_INTL_TOKEN_STORE",
           "WORKBUDDY_INTL_KEEPALIVE",
           "WORKBUDDY_INTL_MODELS",
+          "WORKBUDDY_DRY_RUN",
+          "WORKBUDDY_INTL_DRY_RUN",
           "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "WORKBUDDY_TOKEN_STORE",
-          "WORKBUDDY_INTL_TOKEN_STORE"
+          "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "WORKBUDDY_DRY_RUN": "1"
         },
         "liveEnv": {
-          "QINGLONG_NOTIFY": "1",
-          "WORKBUDDY_INTL_KEEPALIVE": "0"
+          "WORKBUDDY_ALLOW_REPORT": "0",
+          "WORKBUDDY_INTL_KEEPALIVE": "0",
+          "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
           "最终状态：success",
-          "TASK_SUMMARY="
+          "\"status\":\"success\""
         ],
         "features": [
           "国内版每日签到及服务端签到状态回读，活动关闭正常跳过，区分签到连签与活跃连签",
@@ -28392,7 +28518,10 @@
           "国际版--intl活动状态探测、每日奖励领取及服务端回读，活动关闭正常跳过，认证或未知错误失败闭合",
           "国际版显式模型保活，四模型按序回退及自定义模型链，核验流式回答和完成标志；签到与保活分别统计",
           "国际版逐行多账号、旧单账号变量、--only与--no-keepalive兼容；显式--refresh与私有缓存续期",
-          "国际版断网预演、阶段时间轴、账号统计、唯一TASK_SUMMARY及青龙通知"
+          "国际版断网预演、阶段时间轴、账号统计、唯一TASK_SUMMARY及青龙通知",
+          "显式 --credit-report 独立查询国内版或国际版积分日报：聚合周期容量、累计容量、余额、用量及套餐数，结构异常或分页不完整失败闭合；不执行签到或成长任务",
+          "--credit-report --json 输出脱敏套餐数值数组，兼容上游总量、余额、用量和套餐字段；--only 按账号序号筛选",
+          "显式 --intl --trial 独立领取国际版一次性专家加油包；验证HTTP与业务码0，业务码14051识别已领取；不执行日常奖励、续期或模型保活"
         ],
         "sideEffects": [
           "默认进行每日签到、领取已完成成长任务奖励、领取旅行奖励或派遣Buddy旅行",
@@ -28402,7 +28531,8 @@
           "实际运行向青龙通知模块发送脱敏摘要；断网预演仅模拟通知",
           "国际版活动开放且未领取时领取每日奖励",
           "国际版显式保活创建模型对话与活跃记录，可能消耗积分",
-          "国际版显式--refresh轮换认证令牌并保存至本人指定私有缓存"
+          "国际版显式--refresh轮换认证令牌并保存至本人指定私有缓存",
+          "仅显式 --intl --trial 领取一次性专家加油包，不加入默认定时任务"
         ]
       },
       "postReview": {
@@ -28411,7 +28541,7 @@
       },
       "displayName": "WorkBuddy 国内版日常维护",
       "path": "scripts/workbuddy_daily.py",
-      "sha256": "bf7cd636bc6591a4c4f9256ed40eb170adafcdf5ac2e16940f59cbb20f2cc931",
+      "sha256": "af37790e41e116c92ebe1ecb8a001b4fc030d65a9785e161dc1bc926e23be14a",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -28430,6 +28560,16 @@
             "catalogId": "e933f4f4a2d187c7",
             "sha256": "a58a14028e4445c2208c7d27648c80b20246e14670f720c9bf746a518491db2f",
             "license": "MIT"
+          },
+          {
+            "repository": "Maquer/workbuddy-checkin",
+            "url": "https://github.com/Maquer/workbuddy-checkin.git",
+            "branch": "main",
+            "commit": "a45805fc8fbac52eb0c26d6d2c09331ed43c4a5d",
+            "originalPath": "workbuddy_checkin.py",
+            "catalogId": "67cfcdcca45c59e8",
+            "sha256": "ae56c902bf1f41648b272bf41cdb114290d62b9a8a61505446b8b522bf68737c",
+            "license": "MIT"
           }
         ]
       },
@@ -28440,119 +28580,119 @@
           "name": "WORKBUDDY_REFRESH_TOKEN",
           "required": true,
           "sensitive": true,
-          "howToGet": "国内版模式必填；从本人官方登录响应取得明文AT/RT，或读取本人已登录客户端未加密认证信息。加密信封不可用。国际版模式不读取此变量。",
-          "format": "每行一个账号：手机号:AT:RT、AT:RT、手机号:RT或单个JWT；首个冒号逐字段切分，保留RT剩余文本。"
+          "howToGet": "国内版账号必填；从本人官方登录授权响应获取明文 accessToken（AT）与 refreshToken（RT）；不得使用加密信封、他人凭据或把真实值提交仓库。可读取本人已登录客户端的明文认证信息；若加密则使用官方授权响应。国际版单独运行时改填 WORKBUDDY_INTL_TOKENS。",
+          "format": "每个非空行一个账号：手机号:AT:RT、AT:RT、手机号:RT 或单个明文 JWT；手机号只作为兼容备注，不输出；字段仅逐次切分首个冒号，保留末尾 RT 完整内容。"
         },
         {
           "name": "WORKBUDDY_INTL_TOKENS",
           "required": true,
           "sensitive": true,
-          "howToGet": "--intl模式必填；本人在www.workbuddy.ai用Google、GitHub或X完成官方授权，从认证响应取得accessToken、refreshToken及公开uid。与国内版不通用，不依赖登录工具执行。",
-          "format": "每行一个账号：AT、备注|AT、备注|AT|uid或备注|AT|uid|RT；首个竖线逐字段切分，保留RT剩余文本。禁止&或@分隔账号。"
+          "howToGet": "仅 --intl 国际版账号必填；从本人官方登录授权响应获取明文 accessToken（AT）与 refreshToken（RT）；不得使用加密信封、他人凭据或把真实值提交仓库。登录域为 www.workbuddy.ai，与国内版凭据不通用；UID 取本人授权信息中的公开账号标识。国内版运行时无需此变量。",
+          "format": "每个非空行一个账号：AT、备注|AT、备注|AT|uid 或 备注|AT|uid|RT；逐次切分首个竖线，保留末尾 RT 完整内容。"
         },
         {
           "name": "WORKBUDDY_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "国际版旧单账号兼容输入；仅当WORKBUDDY_INTL_TOKENS为空时使用，从本人国际版登录响应获取。",
-          "format": "单个国际版AT"
-        },
-        {
-          "name": "WORKBUDDY_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "国内版或国际版完全断网预演",
-          "format": "1开启，默认0"
-        },
-        {
-          "name": "WORKBUDDY_INTL_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "配合--intl完全断网预演",
-          "format": "1开启，默认0"
+          "howToGet": "旧国际版单账号兼容别名；从本人官方登录授权响应获取明文 accessToken（AT）与 refreshToken（RT）；不得使用加密信封、他人凭据或把真实值提交仓库。优先使用规范变量 WORKBUDDY_INTL_TOKENS。",
+          "format": "国际版单个 AT；规范变量非空时忽略。"
         },
         {
           "name": "WORKBUDDY_TASKS",
           "required": false,
           "sensitive": false,
-          "howToGet": "国内版白名单，或使用--tasks；默认签到、查询、领奖、旅行、Buddy和徽章",
-          "format": "逗号或空格分隔原任务名"
+          "howToGet": "按需手动选择国内版任务，默认签到、已完成任务领奖、旅行、Buddy信息和徽章查询；也可用 --tasks。",
+          "format": "任务名逗号或空格分隔：checkin、claim、travel、buddy_info、badges、lottery、blindbox、redeem、gift、makeup、canvas、team_3、apps、theme、library、expert_5、template_5、chat_5、black_cat、Expert_lighthouse、Sequential_Tasks_1 至 Sequential_Tasks_7，兼容对应服务端成长任务代码。"
         },
         {
           "name": "WORKBUDDY_ONLY_TASKS",
           "required": false,
           "sensitive": false,
-          "howToGet": "国内版旧白名单兼容变量，WORKBUDDY_TASKS优先",
-          "format": "逗号或空格分隔任务名"
+          "howToGet": "旧国内版任务筛选别名；建议使用 WORKBUDDY_TASKS。",
+          "format": "与 WORKBUDDY_TASKS 相同；规范变量未定义时生效。"
         },
         {
           "name": "WORKBUDDY_SKIP_TASKS",
           "required": false,
           "sensitive": false,
-          "howToGet": "国内版排除任务，或使用--skip-tasks",
-          "format": "逗号或空格分隔任务名"
+          "howToGet": "按需手动排除国内版任务，也可用 --skip-tasks；不影响纯查询或仅续期模式。",
+          "format": "同任务白名单格式，逗号或空格分隔。"
         },
         {
           "name": "WORKBUDDY_ALLOW_REPORT",
           "required": false,
           "sensitive": false,
-          "howToGet": "国内版显式成长事件任务需设1，可能创建对话并消耗积分；不代表真实桌面操作成功",
-          "format": "1允许，默认0"
+          "howToGet": "本人明确允许模拟活跃事件后设为1，仍需显式选择成长任务；会产生对话、积分消耗或模拟记录，不代表真实桌面操作。",
+          "format": "默认0；仅1开启成长任务模拟上报。"
         },
         {
           "name": "WORKBUDDY_MP_GAP",
           "required": false,
           "sensitive": false,
-          "howToGet": "国内版小程序链式任务节奏，--mp-gap可覆盖",
-          "format": "有限非负秒数，默认45"
-        },
-        {
-          "name": "WORKBUDDY_INTL_KEEPALIVE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "国际版设1或用--keepalive显式允许模型调用；--no-keepalive优先关闭，可能消耗积分",
-          "format": "1开启，默认0"
-        },
-        {
-          "name": "WORKBUDDY_INTL_MODELS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "国际版可选模型回退链，保留上游四模型；不保证官方持续免费",
-          "format": "逗号分隔模型名，默认deepseek-v4.1-flash,hy3,hy4-preview,hy4-preview-f"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "使用青龙notify.py发送脱敏摘要；通知不可用或失败保留业务退出码",
-          "format": "默认1；0、false、no、off关闭"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "指定青龙notify.py目录，默认查找标准青龙脚本目录；预演仅模拟通知",
-          "format": "目录路径"
+          "howToGet": "小程序成长任务使用上游45秒节奏；也可用 --mp-gap，维持真实操作间隔。",
+          "format": "默认45，单位秒，有限非负数。"
         },
         {
           "name": "WORKBUDDY_TOKEN_STORE",
           "required": false,
           "sensitive": true,
-          "howToGet": "国内版续期前设置，--refresh、仅RT或按需续期时使用。本人指定私有路径，禁止上传公开仓库。",
-          "format": "普通文件路径，父目录必须存在，权限0600，禁止符号链接"
+          "howToGet": "本人指定已有私有目录中的可写缓存文件，权限0600；需 RT 续期时必填，不能放入公开仓库。",
+          "format": "私有普通文件路径； --refresh、只有RT或已配置缓存的按需续期会原子写入；断网预演不读写。"
         },
         {
           "name": "WORKBUDDY_INTL_TOKEN_STORE",
           "required": false,
           "sensitive": true,
-          "howToGet": "国际版显式--refresh必须设置并提供RT；读取上次轮换缓存。本人指定私有路径，禁止上传公开仓库。",
-          "format": "普通文件路径，父目录必须存在，权限0600，禁止符号链接"
+          "howToGet": "国际版显式 --refresh 时提供本人已有私有目录中的可写缓存文件，权限0600；不得公开。",
+          "format": "国际版独立私有普通文件路径；续期需同一行RT；断网预演不读写。"
+        },
+        {
+          "name": "WORKBUDDY_INTL_KEEPALIVE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本人明确接受创建模型对话和可能的积分消耗后开启；--keepalive也可开启，--no-keepalive优先关闭。",
+          "format": "默认0；1、true、yes、on开启。独立日报或trial模式不得开启。"
+        },
+        {
+          "name": "WORKBUDDY_INTL_MODELS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认保留参考源四模型按序回退，可根据本人官方可用模型信息手动指定。",
+          "format": "逗号分隔模型名；默认 deepseek-v4.1-flash、hy3、hy4-preview、hy4-preview-f。"
+        },
+        {
+          "name": "WORKBUDDY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地或青龙验证时设为1；仅验证配置与执行阶段，不请求业务、文本提供方、通知网络或轮换文件。",
+          "format": "默认0；1、true、yes、on启用完全断网预演。"
+        },
+        {
+          "name": "WORKBUDDY_INTL_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅国际版兼容的断网预演开关，也可统一使用 WORKBUDDY_DRY_RUN。",
+          "format": "默认0；1、true、yes、on开启国际版断网预演。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有 notify.py 发送脱敏总结；默认开启；通知不可用不改变业务退出码。",
+          "format": "默认1；0、false、no、off关闭；断网预演仅模拟通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙通知模块所在目录；未指定时尝试导入 notify 及青龙标准脚本目录。",
+          "format": "含 notify.py 的本地目录；不作为业务运行依赖。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "国内版与国际版分别使用各自账号变量，每个非空行一个账号，独立统计；任一账号失败整体非零退出。--only从1开始选择账号，--intl显式选择国际版，默认国内版。"
+        "rule": "每个非空行一个账号；国内版与国际版分别使用各自的规范凭据变量；配套凭据写在同一行，仅按首字段分隔符逐次切分；禁止使用 &、@ 分隔账号。各账号独立执行，任一账号或子任务失败整体非零退出。"
       },
       "dependencies": [],
       "features": [
@@ -28568,7 +28708,10 @@
         "国际版--intl活动状态探测、每日奖励领取及服务端回读，活动关闭正常跳过，认证或未知错误失败闭合",
         "国际版显式模型保活，四模型按序回退及自定义模型链，核验流式回答和完成标志；签到与保活分别统计",
         "国际版逐行多账号、旧单账号变量、--only与--no-keepalive兼容；显式--refresh与私有缓存续期",
-        "国际版断网预演、阶段时间轴、账号统计、唯一TASK_SUMMARY及青龙通知"
+        "国际版断网预演、阶段时间轴、账号统计、唯一TASK_SUMMARY及青龙通知",
+        "显式 --credit-report 独立查询国内版或国际版积分日报：聚合周期容量、累计容量、余额、用量及套餐数，结构异常或分页不完整失败闭合；不执行签到或成长任务",
+        "--credit-report --json 输出脱敏套餐数值数组，兼容上游总量、余额、用量和套餐字段；--only 按账号序号筛选",
+        "显式 --intl --trial 独立领取国际版一次性专家加油包；验证HTTP与业务码0，业务码14051识别已领取；不执行日常奖励、续期或模型保活"
       ],
       "sideEffects": [
         "默认进行每日签到、领取已完成成长任务奖励、领取旅行奖励或派遣Buddy旅行",
@@ -28578,7 +28721,8 @@
         "实际运行向青龙通知模块发送脱敏摘要；断网预演仅模拟通知",
         "国际版活动开放且未领取时领取每日奖励",
         "国际版显式保活创建模型对话与活跃记录，可能消耗积分",
-        "国际版显式--refresh轮换认证令牌并保存至本人指定私有缓存"
+        "国际版显式--refresh轮换认证令牌并保存至本人指定私有缓存",
+        "仅显式 --intl --trial 领取一次性专家加油包，不加入默认定时任务"
       ],
       "review": {
         "staticPassed": true,
@@ -28591,12 +28735,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/132c582ed57df40f",
-        "candidateSha256": "0a5d91b7f5fc6f75c93cd14421548294cda56108a2acda6d2cf6ca5f385afd31"
+        "candidateSha256": "d92a530e5c9f33cfcd333a1d80eae630102b2cdf3d8f32d306545c42a5bba770"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "0a5d91b7f5fc6f75c93cd14421548294cda56108a2acda6d2cf6ca5f385afd31",
-        "releaseSha256": "bf7cd636bc6591a4c4f9256ed40eb170adafcdf5ac2e16940f59cbb20f2cc931",
+        "validatedSha256": "d92a530e5c9f33cfcd333a1d80eae630102b2cdf3d8f32d306545c42a5bba770",
+        "releaseSha256": "af37790e41e116c92ebe1ecb8a001b4fc030d65a9785e161dc1bc926e23be14a",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
