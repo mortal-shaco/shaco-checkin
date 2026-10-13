@@ -4349,6 +4349,137 @@
       "applicationKey": "cfmoto"
     },
     {
+      "catalogId": "5e7302e54a0be513",
+      "applicationKey": "naroiscool/naro-scripts::chevrolet",
+      "checkProfile": {
+        "requiredEnv": [
+          "CHEVROLET_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "xflCookie",
+          "CHEVROLET_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CHEVROLET_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "CHECKIN_SUCCESS",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "雪佛兰 APP 每日签到，保留上游接口、POST 方法及 cpctoken 请求头参数。",
+          "每行一个账号，兼容上游 xflCookie，独立处理并汇总账号结果。",
+          "完全断网预演，检查参数及执行流程，不把预演标为业务签到成功。",
+          "请求超时及响应大小限制，严格检查 HTTP 状态和明确业务成功标记。",
+          "显示官方返回的非秘密昵称、用户名、显示名称或公开 UID，同时抑制凭据、手机号和原始响应。",
+          "脱敏时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总。",
+          "通过青龙 sendNotify.js 通知成功、部分失败、失败、配置错误及预演结果，通知异常不改变业务退出码；断网预演中通知网络被禁止。"
+        ],
+        "sideEffects": [
+          "实际运行向雪佛兰签到接口提交签到，可能改变签到状态并获得服务端签到奖励。",
+          "通知启用且本地青龙通知器可用时，实际运行发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "雪佛兰APP签到",
+      "path": "scripts/chevrolet.js",
+      "sha256": "fc9137b46f1cb49c1d8f9523c145651d9453fbf8beac391fcc85039a950d7cd2",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "NaroisCool/naro-scripts",
+        "branch": "master",
+        "commit": "c2ffa8af2089bd98e1ed623c7a25d49b60ca0fdd",
+        "originalPath": "chevrolet.js"
+      },
+      "cron": "0 8 * * *",
+      "command": "node scripts/chevrolet.js",
+      "environment": [
+        {
+          "name": "CHEVROLET_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人授权设备上使用抓包工具查看雪佛兰 APP 签到请求 https://ctwx.sgmlink.com/api/check/submit 的 cpctoken 请求头，复制值；仅在本地青龙环境变量中保存，不分享抓包或凭据。",
+          "format": "每个非空行填写一个账号的 cpctoken 原始值，不含请求头名称；不使用 &、@ 或其他字符分隔账号。"
+        },
+        {
+          "name": "xflCookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "上游旧参数，获取方式同 CHEVROLET_ACCOUNTS；未设置规范变量时自动兼容。",
+          "format": "每个非空行填写一个 cpctoken；规范变量即使为空也优先，不回退旧变量。"
+        },
+        {
+          "name": "CHEVROLET_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要离线检查时手动设置。",
+          "format": "1 表示断网预演，其他值表示实际签到。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有通知渠道配置；需要关闭通知时手动设置本开关。",
+          "format": "默认 1；0、false、no、off（不区分大小写）关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通常无需设置；自定义安装时填写本地青龙 sendNotify.js 所在目录。",
+          "format": "本地目录路径；同时自动查找 /ql/data/scripts 和 /ql/scripts。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行代表一个账号，按顺序独立签到；行首尾空白去除，行内所有字符保留。任一账号失败整体非零退出，其他账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "雪佛兰 APP 每日签到，保留上游接口、POST 方法及 cpctoken 请求头参数。",
+        "每行一个账号，兼容上游 xflCookie，独立处理并汇总账号结果。",
+        "完全断网预演，检查参数及执行流程，不把预演标为业务签到成功。",
+        "请求超时及响应大小限制，严格检查 HTTP 状态和明确业务成功标记。",
+        "显示官方返回的非秘密昵称、用户名、显示名称或公开 UID，同时抑制凭据、手机号和原始响应。",
+        "脱敏时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总。",
+        "通过青龙 sendNotify.js 通知成功、部分失败、失败、配置错误及预演结果，通知异常不改变业务退出码；断网预演中通知网络被禁止。"
+      ],
+      "sideEffects": [
+        "实际运行向雪佛兰签到接口提交签到，可能改变签到状态并获得服务端签到奖励。",
+        "通知启用且本地青龙通知器可用时，实际运行发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/5e7302e54a0be513",
+        "candidateSha256": "069e262f4c9e5689eb64ea8f47bb9b9ff3d975792521767ba6a3b7210f1b530c"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "069e262f4c9e5689eb64ea8f47bb9b9ff3d975792521767ba6a3b7210f1b530c",
+        "releaseSha256": "fc9137b46f1cb49c1d8f9523c145651d9453fbf8beac391fcc85039a950d7cd2",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "a50eecf80a170dc5",
       "applicationKey": "yuxian158/check::dailycheckin-scripts",
       "checkProfile": {
