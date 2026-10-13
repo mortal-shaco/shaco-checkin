@@ -110,6 +110,7 @@
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
 | NodeSeek签到 | `scripts/nodeseek.py` | `python3 scripts/nodeseek.py` | `0 0 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
+| 塔吉多（异环）自动签到 | `scripts/nte.py` | `python3 scripts/nte.py` | `0 8 * * *` |
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `1 1 1 1 1` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `0 8 * * *` |
@@ -287,6 +288,7 @@
 - `scripts/nga_checkin.py`：每日签到，明确识别签到成功与今日已签到；兼容原 UID|Token 凭据与 iOS 校验码、旧版小写环境变量；展示官方返回的非敏感身份及签到连续天数、累计天数；登录失效和 iOS 客户端校验异常提示；可选日常任务 2、131、30；可选免广告及 N币视频任务；可选五次分享记录与分享奖励；默认查询资产统计；保留随机启动延时、动作间隔与请求超时设置；多账号独立执行与整体失败退出码；完全断网预演、时间轴日志、结构化汇总、青龙脱敏通知。
 - `scripts/nodeseek.py`：每日零点签到，支持随机奖励或固定奖励。；保留 curl_cffi 指纹模拟及默认 chrome110。；保留签到前随机延迟 0～5 分钟。；完整 Cookie 按行配置多账号，各账号独立执行。；完全断网预演、分阶段脱敏日志和单行结构化统计。；显示接口返回的非敏感昵称、用户名、显示名称或公开 UID。；正式运行通过青龙通知助手发送成功、部分失败、失败或配置错误摘要；预演只输出摘要。。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
+- `scripts/nte.py`：刷新用户中心令牌，保留 1.2.5 客户端请求头及 ds 签名。；塔吉多社区签到及经验、金币结果显示。；自动发现游戏角色，支持各账号角色配置与兼容全局角色配置。；游戏角色签到，保留游戏编号回退链；重复签到要求官方状态明确确认 todaySign。；查询签到累计天数和今日道具奖励；查询失败给出警告，不替代签到业务状态。；查询云异环剩余、免费、充值时长，展示每日首登、首次游戏赠送、VIP剩余和待领取消息数量。；多账号独立执行、断网预演、阶段日志、官方非敏感身份展示、结构化汇总与青龙脱敏通知。。
 - `scripts/ole.py`：Ole 微信小程序账号签到；保留原账号字段、门店与城市默认值及定时表达式；多账号独立执行与失败闭合退出；完全断网预演及参数检查；脱敏分阶段日志、账号统计与单行任务汇总；青龙通知摘要与全局开关；断网预演模拟通知。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
 - `scripts/psnine.py`：每日 PSNINE 祈祷签到；识别当天已经签到并展示累计祈祷天数；保留上游 do 接口及 psnid、shell 配套凭据；多账号独立执行和失败非零退出；完全断网预演、分阶段日志和单行结构化总结；实时任务结束时发送脱敏青龙通知，预演展示本地通知摘要；响应提供公开用户名时展示账号身份。
@@ -475,6 +477,7 @@
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号；兼容 access_uid|access_token，仅按首个竖线分割；iOS 使用单行 JSON 对象，字段为 access_uid、access_token、client_checksum，全部为字符串。JSON 也适用于 Token 含竖线的账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek.py</code></td><td><code>NS_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，保留完整 Cookie 中的分号、等号与其他字符；不以 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/nte.py</code></td><td><code>NTE_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号：纯 refreshToken 或单行 JSON 对象。对象支持 refreshToken（兼容 token）、uid、deviceId、gameId、roleIds；可添加 cloudToken、cloudUserId、cloudDeviceId；云凭据必须成对提供，也可仅提供云账号。兼容 cloud_token、cloud_user_id、cloudUid、cloud 对象的 token/userId/uid/deviceId，以及 deviceid、cloud_device_id、game_id、role_ids、roleId。roleIds 为数组或逗号分隔角色列表；账号之间只用换行，不使用逗号、&amp; 或 @。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ole.py</code></td><td><code>OLE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；四个必填字段均为非空字符串。可选 shop_code 默认 205368，city_id 默认 c_region_11122，user_agent 默认保留上游值。兼容 account_name 字段但不输出用户填写的标签，避免泄漏手机号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/psnine.py</code></td><td><code>PSNINE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 psnid|shell，只按首个 | 分割；字段不能含分号、换行或非 ASCII 字符。；多账号格式以该脚本文档为准</td></tr>
@@ -1135,6 +1138,13 @@
 <tr><td><code>NS_STATS_DAYS</code></td><td>否</td><td>格式：1..365 整数天，默认 30；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0/false/no/off 表示禁用，默认启用；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录绝对路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/nte.py</code></td><td><code>TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号，格式同 NTE_TOKEN。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TGD_GAME_ID</code></td><td>否</td><td>格式：单个游戏编号，默认 1289；账号对象 gameId 优先。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TGD_SIGN_GAME_IDS</code></td><td>否</td><td>格式：逗号分隔编号；尝试顺序为本变量、账号 gameId、默认编号、1289、1257，去重。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>TGD_ROLE_IDS</code></td><td>否</td><td>格式：逗号分隔角色编号，追加到各账号角色列表；留空自动发现。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NTE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启断网预演；其余值关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的目录；未设置时尝试 import notify、/ql/data/scripts/notify.py、/ql/scripts/notify.py。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/ole.py</code></td><td><code>OLE_CONFIG_JSON</code></td><td>是</td><td>格式：JSON 对象，结构为 huaruntong.ole.accounts 数组；数组内保留原账号字段。无需私有文件路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>OLE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认 0。预演不代表真实业务成功。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。断网预演生成摘要并模拟投递，不运行通知模块。；多账号格式以该脚本文档为准</td></tr>
@@ -1885,6 +1895,7 @@
 - `scripts/nga_checkin.py`：每个非空行一个账号；优先使用 NGA_ACCOUNT；旧版三个变量逐行对应。账号执行互不影响，任一账号失败整体非零退出。。
 - `scripts/nodeseek.py`：NS_COOKIE 每个非空行一个账号，逐个独立签到；任意账号失败整体非零退出。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
+- `scripts/nte.py`：每个非空行一个账号，同账号配套凭据放在一个 JSON 对象中。各账号独立执行；任一账号失败则进程非零退出。。
 - `scripts/ole.py`：每个非空行一个完整 JSON 账号对象，同一账号凭据合并在一行；逐账号独立执行，任一失败时整体非零退出。。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
 - `scripts/psnine.py`：每个非空行一个账号，psnid 与 shell 同行，仅按首个 | 分割。逐账号独立处理，任一账号失败则进程非零退出。。
@@ -2558,6 +2569,13 @@
 - 所属脚本：`scripts/nodeseek_checkin.py`
 - 获取或设置：登录 nodeseek.com，打开浏览器开发者工具的 Network，刷新页面，选择同站请求，复制 Request Headers 中完整的 cookie 值。请妥善保存，不要发送给他人。
 - 填写格式：`每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 & 和 @ 保持原样`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `NTE_TOKEN`
+
+- 所属脚本：`scripts/nte.py`
+- 获取或设置：在本人官方塔吉多客户端登录，从用户中心刷新响应获取 refreshToken 和 uid；从绑定角色列表取得 roleId。云异环凭据来自本人客户端登录响应的 token 和 userId。deviceId 来自本人对应客户端请求，不要公开抓包内容。纯令牌模式依赖刷新响应返回 uid，否则请在账号对象中补充。
+- 填写格式：`每个非空行一个账号：纯 refreshToken 或单行 JSON 对象。对象支持 refreshToken（兼容 token）、uid、deviceId、gameId、roleIds；可添加 cloudToken、cloudUserId、cloudDeviceId；云凭据必须成对提供，也可仅提供云账号。兼容 cloud_token、cloud_user_id、cloudUid、cloud 对象的 token/userId/uid/deviceId，以及 deviceid、cloud_device_id、game_id、role_ids、roleId。roleIds 为数组或逗号分隔角色列表；账号之间只用换行，不使用逗号、& 或 @。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `OLE_ACCOUNTS`
@@ -6646,6 +6664,49 @@
 - 所属脚本：`scripts/nodeseek_checkin.py`
 - 获取或设置：仅当青龙通知脚本不在默认路径时，设为 notify.py 或 sendNotify.js 所在目录
 - 填写格式：`本地目录绝对路径`
+
+#### `TOKEN`
+
+- 所属脚本：`scripts/nte.py`
+- 获取或设置：旧版兼容输入，获取方法同 NTE_TOKEN；仅在 NTE_TOKEN 未设置时读取。
+- 填写格式：`每个非空行一个账号，格式同 NTE_TOKEN。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `TGD_GAME_ID`
+
+- 所属脚本：`scripts/nte.py`
+- 获取或设置：从本人塔吉多角色接口的 gameId 获取；默认异环编号 1289。
+- 填写格式：`单个游戏编号，默认 1289；账号对象 gameId 优先。`
+
+#### `TGD_SIGN_GAME_IDS`
+
+- 所属脚本：`scripts/nte.py`
+- 获取或设置：按本人角色和官方签到接口核对可用游戏编号；沿用上游回退链。
+- 填写格式：`逗号分隔编号；尝试顺序为本变量、账号 gameId、默认编号、1289、1257，去重。`
+
+#### `TGD_ROLE_IDS`
+
+- 所属脚本：`scripts/nte.py`
+- 获取或设置：在本人塔吉多绑定角色后，从角色列表响应取得 roleId。多账号推荐在各账号 JSON 中设置 roleIds。
+- 填写格式：`逗号分隔角色编号，追加到各账号角色列表；留空自动发现。`
+
+#### `NTE_DRY_RUN`
+
+- 所属脚本：`scripts/nte.py`
+- 获取或设置：预演时设置为 1；正式签到时关闭。
+- 填写格式：`1、true、yes、on 开启断网预演；其余值关闭。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/nte.py`
+- 获取或设置：使用青龙全局通知配置。预演仅生成脱敏摘要，不请求通知服务。
+- 填写格式：`默认 1；0、false、no、off 关闭。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/nte.py`
+- 获取或设置：可选：填写青龙现有通知模块目录；不可用时保留业务退出码。
+- 填写格式：`包含 notify.py 的目录；未设置时尝试 import notify、/ql/data/scripts/notify.py、/ql/scripts/notify.py。`
 
 #### `OLE_CONFIG_JSON`
 
@@ -10993,6 +11054,7 @@
 - `scripts/nga_checkin.py`：SHA-256 `147ff1cce75da800dc48ed5dade6222282afff8f7bd6f1bbbdebda74ede5242e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 - `scripts/nodeseek.py`：SHA-256 `9e38011e2840ce76dc24111e8c6d6522aeb75b71d8212be4551def23840e5549`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c28f0207e2b02a7b`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
+- `scripts/nte.py`：SHA-256 `44b3e9817214e01d674b189c4b2b38af6bb6fcb0012f2887f471080a78e635b1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6919295133257387`。
 - `scripts/ole.py`：SHA-256 `5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
 - `scripts/psnine.py`：SHA-256 `c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
@@ -11170,6 +11232,7 @@
 - `scripts/nga_checkin.py`：每日签到改变签到及奖励状态；显式开启时增加日常任务计数及奖励状态；显式开启时增加视频任务计数、免广告与 N币奖励状态；显式开启时提交分享记录并领取分享奖励。
 - `scripts/nodeseek.py`：正式运行向 NodeSeek 提交签到并领取随机或固定奖励。；通知启用且助手可用时发送脱敏任务通知。。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
+- `scripts/nte.py`：刷新用户中心令牌，可能轮换服务端会话凭据。；社区签到，可能增加经验和金币。；游戏角色签到，可能发放签到道具。；正式执行结束时通过已有青龙通知模块发送脱敏任务摘要。。
 - `scripts/ole.py`：正式模式向 Ole 提交会员签到，可能增加签到记录及奖励积分；正式模式按青龙配置发送任务通知。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
 - `scripts/psnine.py`：向 PSNINE 提交每日祈祷签到，改变签到记录及服务发放的奖励；实时模式向配置的青龙通知渠道发送脱敏任务摘要。
@@ -11349,6 +11412,7 @@
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/nodeseek.py`：上游 `CN-Grace/QinglongScripts` / `Nodeseek.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/nte.py`：上游 `Candy-QAQ/NTE-Auto-Sign` / `nte.py` / `38d77e1f7dc784f2baeb49c41cd4352deadf2b24`。
 - `scripts/ole.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/ole/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/psnine.py`：上游 `nuthx/auto-sign` / `src/special/psnine.py` / `a8d2c229bac693daebe1535bca4cfd49733b632d`。

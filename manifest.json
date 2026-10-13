@@ -12950,6 +12950,172 @@
       }
     },
     {
+      "catalogId": "6919295133257387",
+      "applicationKey": "nte",
+      "checkProfile": {
+        "requiredEnv": [
+          "NTE_TOKEN"
+        ],
+        "optionalEnv": [
+          "TOKEN",
+          "TGD_GAME_ID",
+          "TGD_SIGN_GAME_IDS",
+          "TGD_ROLE_IDS",
+          "NTE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NTE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1",
+          "TGD_GAME_ID": "1289"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "刷新用户中心令牌，保留 1.2.5 客户端请求头及 ds 签名。",
+          "塔吉多社区签到及经验、金币结果显示。",
+          "自动发现游戏角色，支持各账号角色配置与兼容全局角色配置。",
+          "游戏角色签到，保留游戏编号回退链；重复签到要求官方状态明确确认 todaySign。",
+          "查询签到累计天数和今日道具奖励；查询失败给出警告，不替代签到业务状态。",
+          "查询云异环剩余、免费、充值时长，展示每日首登、首次游戏赠送、VIP剩余和待领取消息数量。",
+          "多账号独立执行、断网预演、阶段日志、官方非敏感身份展示、结构化汇总与青龙脱敏通知。"
+        ],
+        "sideEffects": [
+          "刷新用户中心令牌，可能轮换服务端会话凭据。",
+          "社区签到，可能增加经验和金币。",
+          "游戏角色签到，可能发放签到道具。",
+          "正式执行结束时通过已有青龙通知模块发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "塔吉多（异环）自动签到",
+      "path": "scripts/nte.py",
+      "sha256": "44b3e9817214e01d674b189c4b2b38af6bb6fcb0012f2887f471080a78e635b1",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Candy-QAQ/NTE-Auto-Sign",
+        "branch": "main",
+        "commit": "38d77e1f7dc784f2baeb49c41cd4352deadf2b24",
+        "originalPath": "nte.py",
+        "related": [
+          {
+            "catalogId": "6539e18e6672a234",
+            "sha256": "82edd6dbf0d8eeabc665a5ecb91671adaa1f64f13ae12276c51ed7893bee1881",
+            "repository": "Candy-QAQ/NTE-Auto-Sign",
+            "url": "https://github.com/Candy-QAQ/NTE-Auto-Sign.git",
+            "branch": "main",
+            "commit": "38d77e1f7dc784f2baeb49c41cd4352deadf2b24",
+            "originalPath": "qinglong.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/nte.py",
+      "environment": [
+        {
+          "name": "NTE_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人官方塔吉多客户端登录，从用户中心刷新响应获取 refreshToken 和 uid；从绑定角色列表取得 roleId。云异环凭据来自本人客户端登录响应的 token 和 userId。deviceId 来自本人对应客户端请求，不要公开抓包内容。纯令牌模式依赖刷新响应返回 uid，否则请在账号对象中补充。",
+          "format": "每个非空行一个账号：纯 refreshToken 或单行 JSON 对象。对象支持 refreshToken（兼容 token）、uid、deviceId、gameId、roleIds；可添加 cloudToken、cloudUserId、cloudDeviceId；云凭据必须成对提供，也可仅提供云账号。兼容 cloud_token、cloud_user_id、cloudUid、cloud 对象的 token/userId/uid/deviceId，以及 deviceid、cloud_device_id、game_id、role_ids、roleId。roleIds 为数组或逗号分隔角色列表；账号之间只用换行，不使用逗号、& 或 @。"
+        },
+        {
+          "name": "TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入，获取方法同 NTE_TOKEN；仅在 NTE_TOKEN 未设置时读取。",
+          "format": "每个非空行一个账号，格式同 NTE_TOKEN。"
+        },
+        {
+          "name": "TGD_GAME_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人塔吉多角色接口的 gameId 获取；默认异环编号 1289。",
+          "format": "单个游戏编号，默认 1289；账号对象 gameId 优先。"
+        },
+        {
+          "name": "TGD_SIGN_GAME_IDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按本人角色和官方签到接口核对可用游戏编号；沿用上游回退链。",
+          "format": "逗号分隔编号；尝试顺序为本变量、账号 gameId、默认编号、1289、1257，去重。"
+        },
+        {
+          "name": "TGD_ROLE_IDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在本人塔吉多绑定角色后，从角色列表响应取得 roleId。多账号推荐在各账号 JSON 中设置 roleIds。",
+          "format": "逗号分隔角色编号，追加到各账号角色列表；留空自动发现。"
+        },
+        {
+          "name": "NTE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1；正式签到时关闭。",
+          "format": "1、true、yes、on 开启断网预演；其余值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙全局通知配置。预演仅生成脱敏摘要，不请求通知服务。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙现有通知模块目录；不可用时保留业务退出码。",
+          "format": "包含 notify.py 的目录；未设置时尝试 import notify、/ql/data/scripts/notify.py、/ql/scripts/notify.py。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，同账号配套凭据放在一个 JSON 对象中。各账号独立执行；任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "刷新用户中心令牌，保留 1.2.5 客户端请求头及 ds 签名。",
+        "塔吉多社区签到及经验、金币结果显示。",
+        "自动发现游戏角色，支持各账号角色配置与兼容全局角色配置。",
+        "游戏角色签到，保留游戏编号回退链；重复签到要求官方状态明确确认 todaySign。",
+        "查询签到累计天数和今日道具奖励；查询失败给出警告，不替代签到业务状态。",
+        "查询云异环剩余、免费、充值时长，展示每日首登、首次游戏赠送、VIP剩余和待领取消息数量。",
+        "多账号独立执行、断网预演、阶段日志、官方非敏感身份展示、结构化汇总与青龙脱敏通知。"
+      ],
+      "sideEffects": [
+        "刷新用户中心令牌，可能轮换服务端会话凭据。",
+        "社区签到，可能增加经验和金币。",
+        "游戏角色签到，可能发放签到道具。",
+        "正式执行结束时通过已有青龙通知模块发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/6919295133257387",
+        "candidateSha256": "44b3e9817214e01d674b189c4b2b38af6bb6fcb0012f2887f471080a78e635b1"
+      }
+    },
+    {
       "catalogId": "89d9992e56504271",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::ole",
       "checkProfile": {
