@@ -24,6 +24,13 @@
 // Additional source: deeplee/personal-scripts, smzdm_checkin.py (MIT).
 // Additional references: agluo/ql-script-hub, SMZDM_checkin.py (MIT).
 // Lottery source: hex-ci/smzdm_script, smzdm_lottery.js (MIT).
+// Additional source: OreosLab/checkinpanel, ck_smzdm.js (MIT).
+// Original attribution: https://raw.githubusercontent.com/Tsukasa007/my_script/master/smzdm_mission.js
+// 上游互动调度 29 0-23/8 * * *；可自定义本任务调度，不重复建立同产品签到任务。
+// SMZDM_INTERACTION=none（默认）、value（好价点值）、article（好文点赞）、both（两者）。
+// 每类最多 7 次；仅显式开启后执行，改变账号投票/点赞状态，不自动重试写入。
+// 删除无奖励的去购买点击和收藏/取消切换，避免外站凭据传播及改变已有收藏。
+// 互动开启时查询前后资产、未读消息和近期经验；无需发布公开文本。
 // 参数：SMZDM_ACCOUNT 每行 sk|完整 Cookie；只在第一个 | 分割。
 // 获取：登录自己的什么值得买客户端，从本人 /checkin 请求取得 sk 和 Cookie 的 sess。
 // 默认 SMZDM_ACTION=checkin，保留签到 31 8 * * *；抽奖单独调度 20 8 * * *，设为 lottery。
@@ -72,6 +79,7 @@ function tokenMode(env = process.env) {
 function parseAccounts(env = process.env) {
   const action = taskAction(env);
   tokenMode(env);
+  interactionMode(env);
   const canonical = accountLines(env.SMZDM_ACCOUNT);
   if (!canonical.length) {
     // 抽奖保留维护目标原有 SMZDM_COOKIE 优先级；签到兼容上游复数变量优先级。
@@ -479,6 +487,118 @@ async function runLottery(account, env, report = () => {}) {
   return {ok: counts.failed === 0, state: counts.failed ? '抽奖任务失败' : '抽奖全部已验证', counts};
 }
 
+function interactionMode(env = process.env) {
+  const mode = String(env.SMZDM_INTERACTION || 'none').trim().toLowerCase();
+  if (!['none', 'value', 'article', 'both'].includes(mode)) throw new Error('SMZDM_INTERACTION 必须为 none、value、article 或 both');
+  return mode;
+}
+
+async function webAssets(account) {
+  const callback = `smzdmInfo_${Date.now()}`;
+  const url = new URL('https://zhiyou.smzdm.com/user/info/jsonp_get_current');
+  url.search = new URLSearchParams({with_avatar_ornament: '1', callback, _: String(Date.now())}).toString();
+  const response = await fetchLimited(url, {headers: {Cookie: account.cookie,
+    'User-Agent': profile(account.cookie).userAgent, Referer: 'https://zhiyou.smzdm.com/user/'}});
+  if (response.status !== 200) throw new Error('概览 HTTP 失败');
+  const data = lotteryPayload(response.text, callback);
+  if (!data.smzdm_id || String(data.smzdm_id) === '0' || typeof data.nickname !== 'string' || !data.nickname.trim()) throw new Error('账号身份未验证');
+  const assets = {};
+  for (const key of ['point', 'exp', 'gold', 'silver']) {
+    if (data[key] === null || data[key] === undefined || String(data[key]).trim() === '' || !Number.isFinite(Number(data[key]))) throw new Error('资产字段缺失');
+    assets[key] = Number(data[key]);
+  }
+  const unread = data.unread?.notice?.num;
+  if (unread === undefined || unread === null || !Number.isFinite(Number(unread))) throw new Error('消息字段缺失');
+  return {identity: data.nickname, level: data.vip_level, checkin: data.checkin?.has_checkin, unread: Number(unread), ...assets};
+}
+
+async function recentExperience(account) {
+  const response = await fetchLimited('https://zhiyou.smzdm.com/user/exp/', {
+    headers: {Cookie: account.cookie, 'User-Agent': profile(account.cookie).userAgent}});
+  if (response.status !== 200) throw new Error('经验 HTTP 失败');
+  const text = response.text;
+  // 登录身份与经验资产必须存在，不能把登录页或空页面判为成功。
+  if (!/info-stuff-nickname/i.test(text) || !/assets-num/i.test(text)) throw new Error('经验页面未验证');
+  const times = [...text.matchAll(/<div\s+class=['"]scoreLeft['"][^>]*>([\s\S]*?)<\/div>/gi)];
+  const details = [...text.matchAll(/<div\s+class=['"]scoreRight ellipsis['"][^>]*>([\s\S]*?)<\/div>/gi)];
+  if (times.length !== details.length) throw new Error('经验记录字段不匹配');
+  const assets = [...text.matchAll(/assets-num[^>]*>([^<]*)</gi)].map((m) => Number(m[1].trim().replaceAll(',', '')));
+  if (assets.length < 4 || !Number.isFinite(assets[1])) throw new Error('总经验字段缺失');
+  return {total: assets[1], rows: times.slice(0, 20).map((m, i) => ({time: m[1], detail: details[i][1]}))};
+}
+
+async function runInteraction(account, env, report = () => {}) {
+  const mode = interactionMode(env);
+  const counts = {total: 0, success: 0, already: 0, skipped: 0, failed: 0};
+  async function stage(name, action) {
+    const started = Date.now();
+    counts.total++;
+    report(`[${counts.total}] ${name}`);
+    try {
+      const value = await action();
+      if (value?.already) counts.already++; else counts.success++;
+      report(`${name}：${value?.already ? '已完成' : '已验证'}，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, value?.already ? '☑️' : '✅');
+      return value;
+    } catch {
+      counts.failed++;
+      report(`${name}：HTTP、业务或响应字段校验失败，未计为成功，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '❌');
+      return null;
+    }
+  }
+  const before = await stage('互动前资产与身份', () => webAssets(account));
+  if (before) report(`账号身份 ${display(before.identity, account)}，等级 ${display(before.level, account)}，积分 ${before.point}，金币 ${before.gold}，碎银 ${before.silver}，未读消息 ${before.unread}，签到状态 ${display(before.checkin, account)}`, '└─');
+  const beforeExp = await stage('互动前总经验', () => recentExperience(account));
+  if (!before) {
+    report('账号身份未验证，停止互动写入', '⏭️');
+    return {ok: false, state: '互动账号未验证', counts};
+  }
+  const kinds = [];
+  if (['value', 'both'].includes(mode)) kinds.push({name: '好价点值', url: 'https://faxian.smzdm.com/', channel: '3', pattern: /https?:\/\/www\.smzdm\.com\/p\/(\d+)/g});
+  if (['article', 'both'].includes(mode)) kinds.push({name: '好文点赞', url: 'https://post.smzdm.com/', channel: '11', pattern: /data-article=["'](\d+)["']\s+data-type=["']zan["']/g});
+  for (const kind of kinds) {
+    const ids = await stage(`${kind.name}列表`, async () => {
+      // 公共列表不携带账号凭据。
+      const response = await fetchLimited(kind.url, {headers: {'User-Agent': profile(account.cookie).userAgent}});
+      if (response.status !== 200) throw new Error('列表 HTTP 失败');
+      const ids = [...new Set([...response.text.matchAll(kind.pattern)].map((m) => m[1]))].slice(0, 7);
+      if (!ids.length) throw new Error('列表为空或结构改变');
+      return ids;
+    });
+    if (!ids) continue;
+    for (let i = 0; i < ids.length; i++) {
+      await stage(`${kind.name} ${i + 1}/${ids.length}`, async () => {
+        const response = await fetchLimited('https://zhiyou.smzdm.com/user/rating/ajax_add', {
+          method: 'POST', headers: {Cookie: account.cookie, 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            Accept: 'application/json, text/javascript, */*; q=0.01', 'User-Agent': profile(account.cookie).userAgent,
+            Origin: new URL(kind.url).origin, Referer: kind.url},
+          body: new URLSearchParams({article_id: ids[i], channel_id: kind.channel, rating: '1', client_type: 'PC',
+            event_key: '点值', otype: kind.channel === '3' ? '值' : '点赞', aid: ids[i], p: kind.channel === '3' ? '16' : '2',
+            cid: kind.channel === '3' ? '2' : '11', source: '无', atp: kind.channel === '3' ? '3' : '76', tagID: '无',
+            sourcePage: kind.url, sourceMode: '无'}).toString(),
+        });
+        if (response.status !== 200) throw new Error('互动 HTTP 失败');
+        const data = JSON.parse(response.text);
+        if (String(data.error_code) === '0') return {already: false};
+        if (String(data.error_code) === '1' && /^(已喜欢|已点值|已经点值|重复点值)[！!。\s]*$/.test(String(data.error_msg || ''))) return {already: true};
+        throw new Error('互动业务失败');
+      });
+      if (i < ids.length - 1) await new Promise((resolve) => setTimeout(resolve, 3100));
+    }
+  }
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  const after = await stage('互动后资产与消息', () => webAssets(account));
+  if (after) {
+    report(`账号身份 ${display(after.identity, account)}，等级 ${display(after.level, account)}，未读消息 ${after.unread}，签到状态 ${display(after.checkin, account)}`, '└─');
+    report(`积分 ${after.point}（变化 ${after.point - before.point}），金币 ${after.gold}（变化 ${after.gold - before.gold}），碎银 ${after.silver}（变化 ${after.silver - before.silver}）`, '└─');
+  }
+  const afterExp = await stage('互动后总经验与近期记录', () => recentExperience(account));
+  if (afterExp) {
+    report(`总经验 ${afterExp.total}${beforeExp ? `（变化 ${afterExp.total - beforeExp.total}）` : ''}；经验记录可能延迟`, '└─');
+    for (const row of afterExp.rows) report(`${display(row.time, account)} ${display(row.detail, account)}`, '└─');
+  }
+  return {ok: counts.failed === 0, state: counts.failed ? '部分互动任务失败' : '互动任务已验证', counts};
+}
+
 function notifier(env = process.env) {
   const roots = [env.QINGLONG_NOTIFY_DIR, '/ql/data/scripts', '/ql/scripts'].filter(Boolean);
   for (const root of roots) {
@@ -579,8 +699,10 @@ async function run(env = process.env) {
     } else if (dryRun) {
       log(`${label}：[2/4] 规划签到请求`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       log(`${label}：[3/4] 规划奖励、概览与经验查询`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
-      const planned = (action === 'lottery' ? 0 : (tokenMode(env) === 'robot' ? 8 : 7)) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
-      log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤；抽奖仅在显式选择后执行`, '└─');
+      const interactionPlan = interactionMode(env) === 'none' ? 0 : (interactionMode(env) === 'both' ? 20 : 12);
+      const planned = interactionPlan + (action === 'lottery' ? 0 : (tokenMode(env) === 'robot' ? 8 : 7)) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
+      log(`${label}：互动开关 ${interactionMode(env)}（离线预演不查询列表、不提交互动）`, '└─');
+      log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤上限（互动按实际列表长度执行）；抽奖仅在显式选择后执行`, '└─');
       result = {ok: true, state: '预演通过', planned_requests: planned,
         counts: {total: planned + 1, success: 1, already: 0, skipped: planned, failed: 0}};
     } else {
@@ -596,6 +718,12 @@ async function run(env = process.env) {
             result.state = result.ok ? '签到与抽奖均已验证' : '部分任务失败';
             for (const key of Object.keys(result.counts)) result.counts[key] += lottery.counts[key];
           }
+        }
+        if (interactionMode(env) !== 'none') {
+          const interaction = await runInteraction(accounts[i], env, report);
+          result.ok = result.ok && interaction.ok;
+          if (!result.ok) result.state = '部分任务失败';
+          for (const key of Object.keys(result.counts)) result.counts[key] += interaction.counts[key];
         }
       } catch (error) {
         result = {ok: false, state: error?.name === 'AbortError' ? '请求超时' : '网络或处理异常'};
@@ -634,4 +762,4 @@ if (require.main === module) run().catch(async () => {
   await finish({execution: 'failed', mode: 'live', accounts_total: 0, accounts_success: 0, accounts_failed: 1, tasks_total: 1, tasks_success: 0, tasks_already: 0, tasks_skipped: 0, tasks_failed: 1}, 1, started, process.env);
 });
 
-module.exports = {tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};
+module.exports = {interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};

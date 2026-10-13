@@ -2745,6 +2745,164 @@
       "applicationKey": "cfmoto"
     },
     {
+      "catalogId": "21b5208e088c5d34",
+      "applicationKey": "oreoslab/checkinpanel::ck",
+      "checkProfile": {
+        "requiredEnv": [
+          "ACFUN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ACFUN",
+          "ACFUN_ACTIONS",
+          "ACFUN_DANMU_FALLBACK",
+          "ACFUN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ACFUN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ACFUN_ACTIONS": "sign,info",
+          "ACFUN_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "独立实现手机号密码登录及多账号处理，不依赖原仓库工具。",
+          "保留每天 7:31 调度，默认签到与等级、香蕉余额查询。",
+          "按需获取排行榜视频和互动令牌。",
+          "显式启用点赞后取消，两步分别检查业务结果。",
+          "显式启用公开弹幕，动态提取视频和分区，一言优先并保留作者、来源署名，失败回退本地文本。",
+          "显式启用对排行榜视频投一根香蕉。",
+          "官方返回的非秘密昵称、用户名和公开用户标识直接显示。",
+          "支持完全断网预演、分阶段脱敏日志、账号及任务统计和单行结构化汇总。",
+          "正式执行的成功、部分失败、失败及配置错误均尝试青龙通知，通知不可用或失败保留业务退出码；断网预演模拟通知。"
+        ],
+        "sideEffects": [
+          "默认执行每日签到，可能获得签到奖励。",
+          "启用 like 时先点赞再取消；取消失败时可能保留点赞状态。",
+          "启用 danmu 时公开发布弹幕。",
+          "启用 banana 时消耗一根香蕉并投给视频。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AcFun每日签到与可选互动",
+      "path": "scripts/ck_acfun.py",
+      "sha256": "1e650693abb1fbf6f49934ed22d3ac1ff876d5c4ab719c232c57a5f15212af15",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_acfun.py"
+      },
+      "cron": "31 7 * * *",
+      "command": "python3 scripts/ck_acfun.py",
+      "environment": [
+        {
+          "name": "ACFUN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 AcFun 官方网站或客户端确认自己的登录手机号和密码，在青龙环境变量中填写；仅用于自己的账号。登录需要验证码时需自行在官方客户端处理，脚本不绕过验证。",
+          "format": "每个非空行一个账号：手机号|密码。只按第一个 | 分割，密码中的后续 |、&、@ 和空格完整保留。"
+        },
+        {
+          "name": "ACFUN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容原配置 ACFUN 中的 phone 和 password，手动将账号数据填入环境变量，不再读取私有配置文件；优先使用 ACFUN_ACCOUNTS。",
+          "format": "每个非空行 手机号|密码，或旧账号数组的 JSON，每项包含字符串 phone 和 password。"
+        },
+        {
+          "name": "ACFUN_ACTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需在青龙设置任务开关。默认 sign,info；like、danmu、banana 均须主动启用。",
+          "format": "逗号分隔的任务名，不重复：sign 签到，info 信息查询，like 点赞后取消，danmu 公开弹幕，banana 投一根香蕉。"
+        },
+        {
+          "name": "ACFUN_DANMU_FALLBACK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "启用弹幕时可在青龙填写公开备用文本，不要填入任何秘密。默认：欣赏作品，感谢分享。",
+          "format": "归一化空白后 1 至 280 个字符，一言网络、超时、HTTP、大小、JSON、正文或长度异常时使用。"
+        },
+        {
+          "name": "ACFUN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙设为 1 进行完全断网预演；正式运行设为 0。",
+          "format": "1 启用；0、false、no、off 或空值关闭。预演也不调用通知插件。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启；在青龙配置 notify.py 的通知渠道。",
+          "format": "0、false、no、off 或空值关闭，其余值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如青龙通知模块不在默认位置，可填写已有 notify.py 所在目录；通知模块是可选集成，缺失不影响业务退出码。",
+          "format": "本地目录路径，不是下载地址。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，手机号与密码在同一行，只在第一个 | 分割；逐账号独立处理，任一账号失败则整体非零退出。兼容 ACFUN 的旧 JSON 账号数组。"
+      },
+      "dependencies": [],
+      "features": [
+        "独立实现手机号密码登录及多账号处理，不依赖原仓库工具。",
+        "保留每天 7:31 调度，默认签到与等级、香蕉余额查询。",
+        "按需获取排行榜视频和互动令牌。",
+        "显式启用点赞后取消，两步分别检查业务结果。",
+        "显式启用公开弹幕，动态提取视频和分区，一言优先并保留作者、来源署名，失败回退本地文本。",
+        "显式启用对排行榜视频投一根香蕉。",
+        "官方返回的非秘密昵称、用户名和公开用户标识直接显示。",
+        "支持完全断网预演、分阶段脱敏日志、账号及任务统计和单行结构化汇总。",
+        "正式执行的成功、部分失败、失败及配置错误均尝试青龙通知，通知不可用或失败保留业务退出码；断网预演模拟通知。"
+      ],
+      "sideEffects": [
+        "默认执行每日签到，可能获得签到奖励。",
+        "启用 like 时先点赞再取消；取消失败时可能保留点赞状态。",
+        "启用 danmu 时公开发布弹幕。",
+        "启用 banana 时消耗一根香蕉并投给视频。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/21b5208e088c5d34",
+        "candidateSha256": "5b2c261a3a84c51b2f5f63acae0f2930199f581801d7cc962391c1b8571dc489"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "5b2c261a3a84c51b2f5f63acae0f2930199f581801d7cc962391c1b8571dc489",
+        "releaseSha256": "1e650693abb1fbf6f49934ed22d3ac1ff876d5c4ab719c232c57a5f15212af15",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "b896028c3fdcd52d",
       "applicationKey": "codearts",
       "checkProfile": {
@@ -2909,6 +3067,143 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/b896028c3fdcd52d",
         "candidateSha256": "c6bdd619ce35cd32e1fca575006e8420c6ac3b55d55cc1ffb48ba9122862d856"
+      }
+    },
+    {
+      "catalogId": "b33f4d715d28a216",
+      "applicationKey": "csdn2024/qiandaomzh::comicai",
+      "checkProfile": {
+        "requiredEnv": [
+          "COMICAI_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "comicai_Token",
+          "comicai_Cookie",
+          "COMICAI_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "COMICAI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "COMICAI_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功,签到后得到的积分数 mana 值为:",
+          "今天已经签到过了",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "可选 Cookie 登录页访问，保留原流程但不将页面 HTTP 200 当作认证成功",
+          "查询签到前积分并展示签到成功响应中的签到后积分",
+          "每日签到与已签到业务码识别",
+          "展示接口返回的非敏感昵称、用户名、显示名称或公开 UID",
+          "逐行多账号及旧环境变量兼容，账号独立执行且任一失败整体失败",
+          "完全断网预演及配置校验",
+          "分阶段时间轴日志、账号及子任务统计、单行 TASK_SUMMARY JSON",
+          "向青龙 notify.py 发送脱敏总结，通知不可用或失败时保留业务退出码"
+        ],
+        "sideEffects": [
+          "向 ComicAI 提交每日签到并可能获得积分",
+          "启用通知时发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "ComicAI 每日签到",
+      "path": "scripts/comicai_ai_cookie.py",
+      "sha256": "173db2c22758f322022dedfb23fdd735a85d1cff0d39ad308ed5a8c3d0d45c8c",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "CSDN2024/QianDaoMZH",
+        "branch": "main",
+        "commit": "b99c67e46d1e74d2fd3a0bff7cac3f83e5ee6903",
+        "originalPath": "comicai-ai-cookie.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/comicai_ai_cookie.py",
+      "environment": [
+        {
+          "name": "COMICAI_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 ComicAI 网页，从浏览器开发者工具网络面板读取 api.comicai.ai 请求的 Token 请求头；如需要兼容访问登录页，另取 comicai.ai 请求的 Cookie 请求头。仅保存在本人青龙环境中。",
+          "format": "每个非空行一个 JSON 对象，token 为必填非空字符串，cookie 为可选字符串；JSON 转义可保留凭据中的分隔符。设置规范变量后不读取旧变量。"
+        },
+        {
+          "name": "comicai_Token",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧变量兼容入口，从本人登录后的 ComicAI API 请求头读取 Token。",
+          "format": "仅当 COMICAI_ACCOUNTS 未设置时生效；每个非空行一个 Token，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "comicai_Cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧变量兼容入口，从本人登录后的 ComicAI 网页请求头读取 Cookie。",
+          "format": "仅当规范变量未设置时生效；每个非空行一个完整 Cookie，行数必须与旧 Token 变量一致；可以不设置。"
+        },
+        {
+          "name": "COMICAI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中自行设置以预演配置。",
+          "format": "1 启用完全断网预演，默认 0；预演不调用业务接口，不表示真实签到成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中自行设置全局通知开关，默认启用。",
+          "format": "0、false、no、off 关闭通知，默认 1；通知失败不改变业务退出码。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如已有青龙 notify.py 不在常规目录，可填写其所在目录，无需安装额外应用。",
+          "format": "本地目录路径；依次尝试导入 notify、指定目录及 /ql/data/scripts、/ql/scripts 的 notify.py。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，同账号 Token 和可选 Cookie 放在同一对象内；账号独立执行，任一账号失败整体非零退出。兼容变量按非空行对应，不允许 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "可选 Cookie 登录页访问，保留原流程但不将页面 HTTP 200 当作认证成功",
+        "查询签到前积分并展示签到成功响应中的签到后积分",
+        "每日签到与已签到业务码识别",
+        "展示接口返回的非敏感昵称、用户名、显示名称或公开 UID",
+        "逐行多账号及旧环境变量兼容，账号独立执行且任一失败整体失败",
+        "完全断网预演及配置校验",
+        "分阶段时间轴日志、账号及子任务统计、单行 TASK_SUMMARY JSON",
+        "向青龙 notify.py 发送脱敏总结，通知不可用或失败时保留业务退出码"
+      ],
+      "sideEffects": [
+        "向 ComicAI 提交每日签到并可能获得积分",
+        "启用通知时发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/b33f4d715d28a216",
+        "candidateSha256": "173db2c22758f322022dedfb23fdd735a85d1cff0d39ad308ed5a8c3d0d45c8c"
       }
     },
     {
@@ -10011,12 +10306,13 @@
           "SMZDM_ACCOUNT"
         ],
         "optionalEnv": [
-          "SMZDM_COOKIES",
           "SMZDM_COOKIE",
+          "SMZDM_COOKIES",
           "SMZDM_SK",
           "SMZDM_ACTION",
-          "SMZDM_LOTTERY_LIFE",
           "SMZDM_TOKEN_MODE",
+          "SMZDM_INTERACTION",
+          "SMZDM_LOTTERY_LIFE",
           "SMZDM_USER_AGENT_APP",
           "SMZDM_DRY_RUN",
           "QINGLONG_NOTIFY",
@@ -10030,12 +10326,13 @@
         "liveEnv": {
           "SMZDM_ACTION": "checkin",
           "SMZDM_TOKEN_MODE": "sess",
+          "SMZDM_INTERACTION": "none",
           "SMZDM_LOTTERY_LIFE": "0",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "最终状态  全部成功",
-          "\"execution\":\"ok\",\"mode\":\"live\""
+          "\"execution\":\"ok\",\"mode\":\"live\"",
+          "最终状态  全部成功"
         ],
         "features": [
           "校验账号的 sk 与 sess 配套凭据",
@@ -10056,12 +10353,17 @@
           "保留原抽奖独立调度说明及请求间等待",
           "可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应",
           "兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk",
-          "按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果"
+          "按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果",
+          "通过显式开关执行好价点值与好文点赞，每类最多七条且逐项验证业务结果",
+          "互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化",
+          "查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟"
         ],
         "sideEffects": [
           "在什么值得买账号上执行每日签到并改变当日签到状态",
           "满足条件时领取连续签到额外奖励并改变账号奖励状态",
-          "显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励"
+          "显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励",
+          "显式启用 value 或 both 后对好价提交点值，改变账号投票状态",
+          "显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态"
         ]
       },
       "postReview": {
@@ -10070,7 +10372,7 @@
       },
       "displayName": "什么值得买签到",
       "path": "scripts/smzdm_checkin.js",
-      "sha256": "537f03ad58434094b98b994588cbeb514d17135c0a56bc1987ff9c76cd7fdda2",
+      "sha256": "49c3e52ace7d3f96e5756eab063bca14083942bac7d08c44e1754c5a88a3fbfc",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -10119,6 +10421,16 @@
             "catalogId": "8d0c65e5be7d512c",
             "sha256": "d38a8612d61ef33069a7937311cd975b3e88a6f4f5011e6a1140110ee23d3b30",
             "license": "MIT"
+          },
+          {
+            "repository": "OreosLab/checkinpanel",
+            "url": "https://github.com/OreosLab/checkinpanel.git",
+            "branch": "master",
+            "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+            "originalPath": "ck_smzdm.js",
+            "catalogId": "98b90a8c2f88f9c8",
+            "sha256": "4f086362e0f1320106093316a64de485c5e63ab7a67b5af842d076c5e11025d9",
+            "license": "MIT"
           }
         ]
       },
@@ -10129,98 +10441,105 @@
           "name": "SMZDM_ACCOUNT",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录自己的什么值得买客户端，抓取本人签到请求的 sk 和完整 Cookie（必须含 sess）；在青龙环境变量中将同一账号两项合并。仅抽奖可使用空 sk。不要使用他人的凭据或上游硬编码 sk。",
-          "format": "每个非空行一个账号，sk|完整 Cookie；只按第一个 | 分割，后续 Cookie 原样保留；仅抽奖为 |完整 Cookie。"
-        },
-        {
-          "name": "SMZDM_COOKIES",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "兼容原 Python 脚本：从本人已登录请求头复制完整 Cookie。未配置 SMZDM_ACCOUNT 时签到优先使用本变量，抽奖优先使用 SMZDM_COOKIE；签到需同顺序 SMZDM_SK 或 Cookie 中的本人 sk。",
-          "format": "每行一条完整 Cookie，必须含 sess；可忽略空行和以 # 开头的注释。"
+          "howToGet": "登录本人的什么值得买客户端，从本人 /checkin 请求取得 sk，并复制同一账号请求头的完整 Cookie（必须包含 sess）。仅抽奖可从本人已登录网页请求头获取 Cookie，sk 留空。请勿公开凭据。",
+          "format": "每个非空行一个账号：sk|完整 Cookie；仅抽奖可用 |完整 Cookie。只按首个竖线分割，保留 Cookie 后续字符。"
         },
         {
           "name": "SMZDM_COOKIE",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容旧变量：从本人已登录请求头复制完整 Cookie。SMZDM_ACCOUNT 优先；签到时低于 SMZDM_COOKIES，抽奖时保留本变量优先于 SMZDM_COOKIES。签到需配套 SMZDM_SK 或 Cookie 自带本人 sk。",
-          "format": "每个非空行一条完整 Cookie；禁止用 & 或 @ 分隔账号。仅抽奖不需要 sk。"
+          "howToGet": "旧变量兼容输入，从本人已登录客户端或网页请求头获取完整 Cookie；签到需提供配套 sk。优先使用 SMZDM_ACCOUNT。",
+          "format": "每个非空行一个账号 Cookie，包含 sess；不使用 & 或 @ 分隔账号。仅 lottery 无需 sk。"
+        },
+        {
+          "name": "SMZDM_COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "SMZDM_COOKIE 的旧复数别名；签到模式优先使用此别名，抽奖模式优先使用 SMZDM_COOKIE。",
+          "format": "每行完整 Cookie；无 SMZDM_ACCOUNT 时使用；需包含 sess。"
         },
         {
           "name": "SMZDM_SK",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧 Cookie 变量的可选配套输入，从每个本人客户端签到请求取得；推荐合并到 SMZDM_ACCOUNT。",
-          "format": "每行一个本人 sk，行数和顺序必须与 Cookie 账号一致，不使用默认共享值。"
+          "howToGet": "旧签到参数，从本人客户端 /checkin 请求取得，与每行 Cookie 属于同一账号；不使用共享默认值。",
+          "format": "每行一个 sk，行数及顺序与旧 Cookie 输入一致；也兼容 Cookie 自带 sk 字段。"
         },
         {
           "name": "SMZDM_ACTION",
           "required": false,
           "sensitive": false,
-          "howToGet": "按所需任务在青龙中设置；签到默认运行，抽奖需要显式选择。",
-          "format": "checkin（默认）、lottery（只抽奖）、all（签到与抽奖）；抽奖可能消耗机会或活动资产。"
-        },
-        {
-          "name": "SMZDM_LOTTERY_LIFE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要生活频道转盘时显式设置，并核对官方活动规则。",
-          "format": "1 启用；默认关闭，仅 lottery 或 all 生效。"
+          "howToGet": "按需要选择签到、抽奖或两者；默认签到。抽奖会消耗机会或活动资产，请查看官方规则。",
+          "format": "checkin（默认）、lottery、all。"
         },
         {
           "name": "SMZDM_TOKEN_MODE",
           "required": false,
           "sensitive": false,
-          "howToGet": "默认保留维护版 sess 签到接口；需要上游 Robot Token 流程时显式设置 robot。",
-          "format": "sess（默认）或 robot；robot 使用上游 10.4.1 签名获取 Token，签到和普通奖励使用该 Token；仍需本人 sk。"
+          "howToGet": "默认保留 sess 签到；仅需旧客户端 Robot Token 流程时设为 robot。",
+          "format": "sess（默认）或 robot。"
+        },
+        {
+          "name": "SMZDM_INTERACTION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要好价点值或好文点赞时显式开启；默认关闭。每类最多七条，改变账号投票或点赞状态，不重试写入。",
+          "format": "none（默认）、value（好价点值）、article（好文点赞）、both（两者）；附加在现有任务上执行。"
+        },
+        {
+          "name": "SMZDM_LOTTERY_LIFE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式选择 lottery 或 all 后，如需生活频道转盘，再开启此开关。",
+          "format": "1 开启；默认关闭。"
         },
         {
           "name": "SMZDM_USER_AGENT_APP",
           "required": false,
           "sensitive": false,
-          "howToGet": "可从本人客户端请求取得对应版本的 User-Agent；默认根据 Cookie 的客户端版本字段生成，未取得时使用维护版默认值。",
-          "format": "单行客户端 User-Agent；不要包含凭据。Robot Token 旧接口使用上游固定客户端标识。"
+          "howToGet": "可选，从本人客户端请求取得 User-Agent；默认依据 Cookie 的客户端版本构造，不包含 Cookie 或 Token。",
+          "format": "什么值得买客户端 User-Agent 字符串。"
         },
         {
           "name": "SMZDM_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "离线检查时设置为 1；不调用业务接口、推送组件或任何网络请求。",
-          "format": "1、true、yes、on 启用，默认关闭。"
+          "howToGet": "离线核对参数和请求计划时设为 1；不调用业务接口或通知网络组件。",
+          "format": "1、true、yes、on 开启，默认关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙全局通知开关；通知组件不可用或发送失败不改变业务退出码。",
-          "format": "默认 1；0、false、no、off 关闭；离线预演只生成脱敏通知摘要。"
+          "howToGet": "青龙全局通知开关；通知不可用或失败不改变业务退出码。",
+          "format": "默认 1；0、false、no、off 关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙内置 sendNotify.js 所在目录；未设置时检查 /ql/data/scripts 和 /ql/scripts。业务请求不依赖通知文件。",
-          "format": "目录路径，只用于可选通知组件。"
+          "howToGet": "可选，填写青龙通知组件 sendNotify.js 所在目录；也自动查找 /ql/data/scripts 与 /ql/scripts。",
+          "format": "本地通知组件目录，不是业务运行依赖。"
         },
         {
           "name": "PUSHPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "在自己的 PushPlus 账户取得推送令牌；仅青龙通知不可用或失败时回退使用，不向业务接口发送。",
-          "format": "单个推送令牌；通过 HTTPS JSON 请求推送并验证业务码。"
+          "howToGet": "可选，从本人 PushPlus 控制台获取；青龙组件不可用或失败时回退使用。",
+          "format": "单个推送 Token，受 QINGLONG_NOTIFY 开关控制。"
         },
         {
           "name": "SENDKEY",
           "required": false,
           "sensitive": true,
-          "howToGet": "在自己的 Server酱账户取得 SendKey；仅青龙及 PushPlus 未成功时回退使用。",
-          "format": "单个 SendKey；通过 HTTPS 表单推送并验证业务码。"
+          "howToGet": "可选，从本人 Server酱控制台获取；青龙与 PushPlus 不可用或失败时回退使用。",
+          "format": "单个 SendKey，受 QINGLONG_NOTIFY 开关控制。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，配套 sk 和 Cookie 合并到 SMZDM_ACCOUNT，以第一个 | 分割；保留后续 Cookie 文本。旧 Cookie 输入也仅按换行分账号；各账号独立执行，任一失败整体非零退出。"
+        "rule": "每个非空行一个账号，首个竖线分隔同账号 sk 和完整 Cookie；各账号独立处理，任一失败整体非零退出。旧 Cookie 别名也逐行处理，签到需同顺序配套 sk。"
       },
       "dependencies": [],
       "features": [
@@ -10242,12 +10561,17 @@
         "保留原抽奖独立调度说明及请求间等待",
         "可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应",
         "兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk",
-        "按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果"
+        "按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果",
+        "通过显式开关执行好价点值与好文点赞，每类最多七条且逐项验证业务结果",
+        "互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化",
+        "查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟"
       ],
       "sideEffects": [
         "在什么值得买账号上执行每日签到并改变当日签到状态",
         "满足条件时领取连续签到额外奖励并改变账号奖励状态",
-        "显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励"
+        "显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励",
+        "显式启用 value 或 both 后对好价提交点值，改变账号投票状态",
+        "显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态"
       ],
       "review": {
         "staticPassed": true,
@@ -10260,12 +10584,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/621df252c315f2d1",
-        "candidateSha256": "bcadd1bed5703634df54d0b475c6a0c3f3bedb9f6266e1f59ccb204a6027fd99"
+        "candidateSha256": "4b78cd005896336e0ea96883ba355ed734cd5b30c88b1ce8f6cb8bab275a345f"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "bcadd1bed5703634df54d0b475c6a0c3f3bedb9f6266e1f59ccb204a6027fd99",
-        "releaseSha256": "537f03ad58434094b98b994588cbeb514d17135c0a56bc1987ff9c76cd7fdda2",
+        "validatedSha256": "4b78cd005896336e0ea96883ba355ed734cd5b30c88b1ce8f6cb8bab275a345f",
+        "releaseSha256": "49c3e52ace7d3f96e5756eab063bca14083942bac7d08c44e1754c5a88a3fbfc",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
