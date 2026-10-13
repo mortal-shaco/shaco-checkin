@@ -12742,6 +12742,229 @@
       }
     },
     {
+      "catalogId": "96b3c22e1eff9659",
+      "applicationKey": "skland",
+      "checkProfile": {
+        "requiredEnv": [
+          "SKLAND_TOKEN"
+        ],
+        "optionalEnv": [
+          "SKLAND_PHONE",
+          "SKLAND_PASSWORD",
+          "SKLAND_TOKEN_N",
+          "SKLAND_PHONE_N",
+          "SKLAND_PASSWORD_N",
+          "SKLAND_DID",
+          "SKLAND_ZONE_IDS",
+          "SKLAND_ACTIONS",
+          "SKLAND_VIEW_COUNT",
+          "SKLAND_LIKE_COUNT",
+          "SKLAND_SHARE_COUNT",
+          "SKLAND_NOTIFY_URL",
+          "SKLAND_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "SKLAND_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "SKLAND_ACTIONS": "checkin,view",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态 success"
+        ],
+        "features": [
+          "通行证 Token、森空岛 cred/token 和手机号密码登录，保留官方授权换取及请求签名",
+          "自动获取临时设备标识或使用用户指定标识",
+          "获取版区及今日检票状态、版区筛选、每日检票及避免重复检票",
+          "配置数量的帖子浏览、显式开启的点赞和分享任务，保留帖子分页",
+          "保留 --dry-run、--actions、--zones、--version 命令行参数及旧序号账号输入",
+          "多账号独立执行、HTTP 超时、禁止重定向、业务码核验和失败闭合退出",
+          "完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知"
+        ],
+        "sideEffects": [
+          "未配置 SKLAND_DID 时向上游设备服务注册临时设备标识",
+          "账密或通行证登录时换取授权和账号会话凭据",
+          "版区每日检票改变签到状态",
+          "浏览帖子可能增加任务浏览进度",
+          "显式启用 like 时点赞帖子",
+          "显式启用 share 时增加分享任务计数，不发布文案",
+          "正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "森空岛每日任务",
+      "path": "scripts/skland_daily.py",
+      "sha256": "e46b829e655d9d987efe00d72fd5f57e5c7819ef62d1df4b1e96f603bab09f9a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "siwuli/skland-daily",
+        "branch": "main",
+        "commit": "c6159b4ca574b4493ae8b94e56a861c7e9e06955",
+        "originalPath": "skland_daily.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/skland_daily.py",
+      "environment": [
+        {
+          "name": "SKLAND_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录官方鹰角通行证网页，在开发者工具查看本人登录响应的 token；或从本人森空岛官方客户端授权响应取得 cred 和 token。也可填写本人手机号密码的单行 JSON。不要公开凭据。",
+          "format": "每个非空行一个账号；通行证 token、cred:token、单行 JSON 对象 {\"cred\":\"本人凭据\",\"token\":\"本人签名凭据\"}、{\"data\":{\"content\":\"本人通行证凭据\"}} 或 {\"phone\":\"本人手机号\",\"password\":\"本人密码\"}；cred:token 仅在第一个冒号处分割"
+        },
+        {
+          "name": "SKLAND_PHONE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入，本人鹰角通行证注册手机号；推荐将手机号密码合并到 SKLAND_TOKEN 的账号 JSON。",
+          "format": "单个手机号，与 SKLAND_PASSWORD 成对设置"
+        },
+        {
+          "name": "SKLAND_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入，本人鹰角通行证密码。",
+          "format": "原密码字符串，与 SKLAND_PHONE 成对设置"
+        },
+        {
+          "name": "SKLAND_TOKEN_N",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容序号变量，N 替换为数字，获取方式同 SKLAND_TOKEN。",
+          "format": "每个非空行一个账号，格式同 SKLAND_TOKEN"
+        },
+        {
+          "name": "SKLAND_PHONE_N",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容序号变量，N 替换为数字，使用本人注册手机号。",
+          "format": "与相同序号的 SKLAND_PASSWORD_N 配对"
+        },
+        {
+          "name": "SKLAND_PASSWORD_N",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容序号变量，N 替换为数字，使用本人通行证密码。",
+          "format": "与相同序号的 SKLAND_PHONE_N 配对"
+        },
+        {
+          "name": "SKLAND_DID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人官方客户端请求头 dId 获取；未设置时按上游设备服务接口自动注册临时标识，不落盘。",
+          "format": "设备标识字符串"
+        },
+        {
+          "name": "SKLAND_ZONE_IDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从官方 /api/v1/game 响应取得 gameId；留空处理全部版区。",
+          "format": "逗号分隔的版区编号"
+        },
+        {
+          "name": "SKLAND_ACTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要选择动作；点赞和分享改变账号状态，需显式添加。",
+          "format": "checkin,view,like,share 中的逗号分隔组合，默认 checkin,view"
+        },
+        {
+          "name": "SKLAND_VIEW_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置每版区浏览次数。",
+          "format": "非负整数，默认 5"
+        },
+        {
+          "name": "SKLAND_LIKE_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置每版区点赞次数，需启用 like。",
+          "format": "非负整数，默认 10"
+        },
+        {
+          "name": "SKLAND_SHARE_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置每版区分享次数，需启用 share。",
+          "format": "非负整数，默认 1"
+        },
+        {
+          "name": "SKLAND_NOTIFY_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选的本人通知服务 HTTPS 地址，接收脱敏 JSON 汇总，受全局通知开关控制。",
+          "format": "HTTPS 地址，不允许内嵌用户名密码；预演不请求"
+        },
+        {
+          "name": "SKLAND_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1；不登录、不注册设备、不发送网络通知。",
+          "format": "1/true/yes/on 开启，默认关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关，默认启用；预演仅生成本地通知摘要以保证断网。",
+          "format": "0/false/no/off 关闭，其余值开启"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，设置青龙 notify.py 所在目录；默认尝试 import notify 和青龙标准脚本目录。",
+          "format": "本机目录路径，仅用于可选通知，不是业务运行依赖"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，禁止用 &、@、逗号或分号分隔账号；同账号配套凭据合并为 JSON 或 cred:token，仅在第一个冒号处分割。兼容旧序号及账密变量，重复凭据去重，账号独立执行，任一失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "通行证 Token、森空岛 cred/token 和手机号密码登录，保留官方授权换取及请求签名",
+        "自动获取临时设备标识或使用用户指定标识",
+        "获取版区及今日检票状态、版区筛选、每日检票及避免重复检票",
+        "配置数量的帖子浏览、显式开启的点赞和分享任务，保留帖子分页",
+        "保留 --dry-run、--actions、--zones、--version 命令行参数及旧序号账号输入",
+        "多账号独立执行、HTTP 超时、禁止重定向、业务码核验和失败闭合退出",
+        "完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知"
+      ],
+      "sideEffects": [
+        "未配置 SKLAND_DID 时向上游设备服务注册临时设备标识",
+        "账密或通行证登录时换取授权和账号会话凭据",
+        "版区每日检票改变签到状态",
+        "浏览帖子可能增加任务浏览进度",
+        "显式启用 like 时点赞帖子",
+        "显式启用 share 时增加分享任务计数，不发布文案",
+        "正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/96b3c22e1eff9659",
+        "candidateSha256": "e46b829e655d9d987efe00d72fd5f57e5c7819ef62d1df4b1e96f603bab09f9a"
+      }
+    },
+    {
       "catalogId": "0bde30a1db078051",
       "applicationKey": "cn-grace/qinglongscripts::skyland",
       "checkProfile": {
@@ -21278,6 +21501,234 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/e608052390d250da",
         "candidateSha256": "2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e"
+      }
+    },
+    {
+      "catalogId": "e096ba77bcda7172",
+      "applicationKey": "tjd",
+      "checkProfile": {
+        "requiredEnv": [
+          "TJD_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "TJD_TOKEN",
+          "TJD_DEVICEID",
+          "TJD_UID",
+          "TJD_NAME",
+          "TJD_PHONE",
+          "TJD_PASSWORD",
+          "TJD_OPENUDID",
+          "TJD_VENDORID",
+          "TJD_TASKS",
+          "TJD_SHARE_PLATFORM",
+          "TJD_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TJD_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TJD_TASKS": "signin,gamesign,browse",
+          "TJD_SHARE_PLATFORM": "qq",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "TASK_SUMMARY=",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "社区每日签到并复核服务端任务进度",
+          "浏览推荐帖子，按服务端剩余次数执行和复核",
+          "显式启用帖子点赞，跳过已点赞帖子并复核进度",
+          "显式启用帖子分享回调，保留平台参数并复核进度",
+          "查询绑定游戏角色昵称、等级和服务器",
+          "绑定游戏每日签到，保留 H5 鉴权及已签到业务码 5052，执行后查询确认",
+          "查询任务进度、今日及累计金币、游戏签到状态",
+          "凭据失效时用可选账号密码自动重登一次，内置 AES 加密和签名，凭据仅在内存更新",
+          "支持 --only、--account、--config、--no-notify 和 --loop；预演只运行一轮",
+          "换行多账号及旧变量兼容、断网预演、阶段日志、青龙脱敏通知和单行机器汇总"
+        ],
+        "sideEffects": [
+          "社区签到增加金币和经验",
+          "浏览帖子增加阅读及任务进度",
+          "绑定游戏签到领取奖励",
+          "明确启用后给帖子点赞",
+          "明确启用后上报帖子分享回调",
+          "可选密码重登创建登录会话，可能使旧会话失效"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "塔吉多每日任务",
+      "path": "scripts/tjd_daily.py",
+      "sha256": "95bb1d686b6e91e37c588601be134a99e9715c943ea99b63f6fda75fd0d51943",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "SkyBlue997/tjd-daily",
+        "branch": "main",
+        "commit": "1df775d4c5eea379111edecf53a62b447b756770",
+        "originalPath": "tjd_daily.py",
+        "related": [
+          {
+            "catalogId": "d5c5ec6f3efcf7f7",
+            "sha256": "ff5e0d3320ca038546316782459f9275f590546cfaf9cb4ada7a3e3409784c8c",
+            "repository": "SkyBlue997/tjd-daily",
+            "url": "https://github.com/SkyBlue997/tjd-daily.git",
+            "branch": "main",
+            "commit": "1df775d4c5eea379111edecf53a62b447b756770",
+            "originalPath": "tjd_login.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "30 9 * * *",
+      "command": "python3 scripts/tjd_daily.py",
+      "environment": [
+        {
+          "name": "TJD_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录塔吉多 App，通过本人授权抓包获取 bbs-api.tajiduo.com 请求头 Authorization 和 deviceid。可选 phone/password 是本人完美世界账号；openudid/vendorid 从同一设备登录请求获取。",
+          "format": "每个非空行一个 JSON 对象，必含 token、deviceid 字符串；可选 uid（默认 0）、name、phone、password、openudid、vendorid、account_uid。兼容旧 JSON 对象或数组，不以 & 或 @ 分账号。"
+        },
+        {
+          "name": "TJD_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人 App 请求头 Authorization；旧变量兼容输入，优先使用 TJD_ACCOUNTS。",
+          "format": "每行一个值，按 TJD_TOKEN 账号顺序对齐；不使用 & 分隔。缺少 deviceid 时该账号失败。"
+        },
+        {
+          "name": "TJD_DEVICEID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 Authorization 相同请求的 deviceid 头，此变量在脚本中实际读取；旧变量兼容输入，优先使用 TJD_ACCOUNTS。",
+          "format": "每行一个值，按 TJD_TOKEN 账号顺序对齐；不使用 & 分隔。缺少 deviceid 时该账号失败。"
+        },
+        {
+          "name": "TJD_UID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "同一请求的 uid 头，缺省为 0；旧变量兼容输入，优先使用 TJD_ACCOUNTS。",
+          "format": "每行一个值，按 TJD_TOKEN 账号顺序对齐；不使用 & 分隔。缺少 deviceid 时该账号失败。"
+        },
+        {
+          "name": "TJD_NAME",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置账号标签，仅用于 --account 过滤；旧变量兼容输入，优先使用 TJD_ACCOUNTS。",
+          "format": "每行一个值，按 TJD_TOKEN 账号顺序对齐；不使用 & 分隔。缺少 deviceid 时该账号失败。"
+        },
+        {
+          "name": "TJD_PHONE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人完美世界账号手机号；旧变量兼容输入，优先使用 TJD_ACCOUNTS。",
+          "format": "每行一个值，按 TJD_TOKEN 账号顺序对齐；不使用 & 分隔。缺少 deviceid 时该账号失败。"
+        },
+        {
+          "name": "TJD_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人完美世界账号密码；旧变量兼容输入，优先使用 TJD_ACCOUNTS。",
+          "format": "每行一个值，按 TJD_TOKEN 账号顺序对齐；不使用 & 分隔。缺少 deviceid 时该账号失败。"
+        },
+        {
+          "name": "TJD_OPENUDID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "同一设备登录请求 openudid；旧变量兼容输入，优先使用 TJD_ACCOUNTS。",
+          "format": "每行一个值，按 TJD_TOKEN 账号顺序对齐；不使用 & 分隔。缺少 deviceid 时该账号失败。"
+        },
+        {
+          "name": "TJD_VENDORID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "同一设备登录请求 vendorid；旧变量兼容输入，优先使用 TJD_ACCOUNTS。",
+          "format": "每行一个值，按 TJD_TOKEN 账号顺序对齐；不使用 & 分隔。缺少 deviceid 时该账号失败。"
+        },
+        {
+          "name": "TJD_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，点赞和分享必须明确选择。",
+          "format": "逗号分隔 signin、gamesign、browse、like、share、status；默认 signin,gamesign,browse；--only 优先。"
+        },
+        {
+          "name": "TJD_SHARE_PLATFORM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择分享回调平台。",
+          "format": "qq、wechat、timeline 或 wb；默认 qq，不发布文字。"
+        },
+        {
+          "name": "TJD_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 进行完全断网预演。",
+          "format": "1 启用；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关。",
+          "format": "默认 1；0、false、no、off 禁用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写青龙 notify.py 所在目录，也自动查找标准青龙目录。",
+          "format": "本地目录路径，通知失败保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，同账号凭据组合在一行。兼容旧 JSON 数组和换行对齐的旧变量。各账号独立执行，任一失败整体非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome"
+      ],
+      "features": [
+        "社区每日签到并复核服务端任务进度",
+        "浏览推荐帖子，按服务端剩余次数执行和复核",
+        "显式启用帖子点赞，跳过已点赞帖子并复核进度",
+        "显式启用帖子分享回调，保留平台参数并复核进度",
+        "查询绑定游戏角色昵称、等级和服务器",
+        "绑定游戏每日签到，保留 H5 鉴权及已签到业务码 5052，执行后查询确认",
+        "查询任务进度、今日及累计金币、游戏签到状态",
+        "凭据失效时用可选账号密码自动重登一次，内置 AES 加密和签名，凭据仅在内存更新",
+        "支持 --only、--account、--config、--no-notify 和 --loop；预演只运行一轮",
+        "换行多账号及旧变量兼容、断网预演、阶段日志、青龙脱敏通知和单行机器汇总"
+      ],
+      "sideEffects": [
+        "社区签到增加金币和经验",
+        "浏览帖子增加阅读及任务进度",
+        "绑定游戏签到领取奖励",
+        "明确启用后给帖子点赞",
+        "明确启用后上报帖子分享回调",
+        "可选密码重登创建登录会话，可能使旧会话失效"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e096ba77bcda7172",
+        "candidateSha256": "95bb1d686b6e91e37c588601be134a99e9715c943ea99b63f6fda75fd0d51943"
       }
     },
     {
