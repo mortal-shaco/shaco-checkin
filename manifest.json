@@ -3863,6 +3863,176 @@
       }
     },
     {
+      "catalogId": "7701c083c0ca06d5",
+      "applicationKey": "deeplee/personal-scripts::iqiyi",
+      "checkProfile": {
+        "requiredEnv": [
+          "IQIYI_COOKIES"
+        ],
+        "optionalEnv": [
+          "IQIYI_COOKIE",
+          "IQIYI_DRY_RUN",
+          "IQIYI_LOTTERY",
+          "IQIYI_SHAKE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "SENDKEY"
+        ],
+        "dryRunEnv": {
+          "IQIYI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "IQIYI_DRY_RUN": "0",
+          "IQIYI_LOTTERY": "0",
+          "IQIYI_SHAKE": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "积分签到成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "VIP 信息、官方账号身份、会员等级及到期信息查询",
+          "自然月签到，显示连签天数并识别已签到状态",
+          "网页积分签到，验证各项业务结果",
+          "显式启用会员抽奖，展示返回的奖品名称",
+          "显式启用摇一摇抽奖，展示返回的奖品名称",
+          "逐行多账号及旧 Cookie 参数兼容，保留每日 10:05 调度",
+          "完全断网预演、阶段日志、账号统计和单行 TASK_SUMMARY 汇总",
+          "青龙通知及 PushPlus、Server酱后备通知，总开关控制，失败不改变业务退出码"
+        ],
+        "sideEffects": [
+          "自然月签到改变签到记录并可能发放积分",
+          "网页积分签到改变积分及签到记录",
+          "显式启用会员抽奖时消耗抽奖机会并可能获得奖品",
+          "显式启用摇一摇时消耗活动抽奖机会并可能获得奖品",
+          "正式模式开启通知时向配置的通知渠道发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "爱奇艺签到",
+      "path": "scripts/iqiyi_checkin.py",
+      "sha256": "0c6ed2f9de2eeeedb8b520837543f0703d839647f0aad18a23d8659bcde63442",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "deeplee/personal-scripts",
+        "branch": "main",
+        "commit": "c8c7c0f4fd1802df86c32a86c26b5c26cfef5023",
+        "originalPath": "iqiyi_checkin.py"
+      },
+      "cron": "5 10 * * *",
+      "command": "python3 scripts/iqiyi_checkin.py",
+      "environment": [
+        {
+          "name": "IQIYI_COOKIES",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录自己的爱奇艺账号，在开发者工具的 Application → Cookies → https://www.iqiyi.com 获取 P00001、P00003 和可选 __dfp。只保存在青龙环境变量中，登录失效后重新获取。",
+          "format": "每个非空行一个账号；同一行以分号组合 P00001、P00003、可选 __dfp，字段以第一个等号拆分，值内后续等号保留。忽略空行和以 # 开头的注释行，__dfp 的 @ 仅在该字段内部处理，不作账号分隔符。"
+        },
+        {
+          "name": "IQIYI_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号变量，获取方法同 IQIYI_COOKIES；仅在规范变量未设置时使用。",
+          "format": "完整 Cookie；逐行解析兼容输入，规范配置应使用 IQIYI_COOKIES。"
+        },
+        {
+          "name": "IQIYI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网预演时手动设为 1。",
+          "format": "默认 0；支持 1/0、true/false、yes/no、on/off。预演只校验配置和构造请求，不发送业务或通知请求。"
+        },
+        {
+          "name": "IQIYI_LOTTERY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认愿意消耗会员抽奖机会后手动设为 1。",
+          "format": "默认 0；支持上述布尔开关；仅控制会员抽奖，不影响签到。"
+        },
+        {
+          "name": "IQIYI_SHAKE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认愿意消耗摇一摇抽奖机会后手动设为 1。",
+          "format": "默认 0；支持上述布尔开关；保留上游活动和奖品参数，活动可能到期，未核验成功时失败退出。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；默认开启。",
+          "format": "默认 1；0、false、no、off 关闭；其他开关值与上述布尔格式相同。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知不在标准目录时，填写自己已有 notify.py 所在目录。",
+          "format": "本地目录；可选，不是业务运行依赖。优先导入 notify.send，随后查找指定目录、脚本目录及青龙标准目录。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的 PushPlus 账号取得推送凭据；青龙通知不可用时作为可选后备。",
+          "format": "单个推送凭据；不与账号 Cookie 合并。"
+        },
+        {
+          "name": "SENDKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的 Server酱账号取得 SendKey；青龙和 PushPlus 不可用时作为可选后备。",
+          "format": "单个推送凭据；不与账号 Cookie 合并。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号完整 Cookie，同一账号配套字段以分号组合，字段只在第一个等号处分割；账号之间仅用换行，不用 & 或 @。逐账号独立运行，任一账号或启用步骤失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "VIP 信息、官方账号身份、会员等级及到期信息查询",
+        "自然月签到，显示连签天数并识别已签到状态",
+        "网页积分签到，验证各项业务结果",
+        "显式启用会员抽奖，展示返回的奖品名称",
+        "显式启用摇一摇抽奖，展示返回的奖品名称",
+        "逐行多账号及旧 Cookie 参数兼容，保留每日 10:05 调度",
+        "完全断网预演、阶段日志、账号统计和单行 TASK_SUMMARY 汇总",
+        "青龙通知及 PushPlus、Server酱后备通知，总开关控制，失败不改变业务退出码"
+      ],
+      "sideEffects": [
+        "自然月签到改变签到记录并可能发放积分",
+        "网页积分签到改变积分及签到记录",
+        "显式启用会员抽奖时消耗抽奖机会并可能获得奖品",
+        "显式启用摇一摇时消耗活动抽奖机会并可能获得奖品",
+        "正式模式开启通知时向配置的通知渠道发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/7701c083c0ca06d5",
+        "candidateSha256": "0c6ed2f9de2eeeedb8b520837543f0703d839647f0aad18a23d8659bcde63442"
+      }
+    },
+    {
       "catalogId": "757bc6292780fb17",
       "applicationKey": "jcqd",
       "checkProfile": {
