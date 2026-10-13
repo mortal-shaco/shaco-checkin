@@ -29531,6 +29531,184 @@
       }
     },
     {
+      "catalogId": "a414f4add19cb6a5",
+      "applicationKey": "wyycg",
+      "checkProfile": {
+        "requiredEnv": [
+          "WYYCG_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "wyycg_cookies",
+          "WYYCG_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "WYYCG_TELEGRAM_ID",
+          "WYYCG_TELEGRAM_TOKEN",
+          "WYYCG_SERVERCHAN_KEY",
+          "WYYCG_QQ_KEY",
+          "WYYCG_PUSHPLUS_TOKEN"
+        ],
+        "dryRunEnv": {
+          "WYYCG_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "每日签到成功",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "验证网易云游戏 Authorization 凭据并读取账户配置",
+          "每日签到并对业务结果进行明确成功判定，未知响应按失败处理",
+          "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID",
+          "多账号逐行处理与独立失败统计",
+          "兼容旧凭据变量及原主脚本的位置参数输入",
+          "青龙统一通知与原主脚本的 Telegram、ServerChan、QQ、PushPlus 可选推送",
+          "完全断网预演、时间轴日志、账号统计及单行结构化总结"
+        ],
+        "sideEffects": [
+          "执行每日签到，可能领取云游戏时长",
+          "真实执行时通过已配置的通知渠道发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "网易云游戏自动签到",
+      "path": "scripts/wyycg.py",
+      "sha256": "1da9e1203d9de2f68ac046c6271f1a425858ea39e54914d0bdb3e143b5df9975",
+      "stage": "released",
+      "license": "Apache-2.0",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "GamerNoTitle/wyycg-autocheckin",
+        "branch": "master",
+        "commit": "e12f44c306948430272c54152b04a11da917b92d",
+        "originalPath": "main.py",
+        "related": [
+          {
+            "catalogId": "880c936019a85de6",
+            "sha256": "e6db50517da76dd00b9dd430efaa6098327d2d38e183756340075fb4b9a829b4",
+            "repository": "GamerNoTitle/wyycg-autocheckin",
+            "url": "https://github.com/GamerNoTitle/wyycg-autocheckin.git",
+            "branch": "master",
+            "commit": "e12f44c306948430272c54152b04a11da917b92d",
+            "originalPath": "qinglong/qinglong.py",
+            "license": "Apache-2.0"
+          }
+        ]
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/wyycg.py",
+      "environment": [
+        {
+          "name": "WYYCG_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录网易云游戏网页 https://cg.163.com，在浏览器开发者工具网络面板查看 n.cg.163.com 的账户配置或签到请求，复制 Authorization 请求头完整值。不要填写 Cookie 请求头，也不要公开凭据。",
+          "format": "每个非空行一个账号的完整 Authorization 值；保留凭据内部字符，不使用 #、&、@ 分隔账号。"
+        },
+        {
+          "name": "wyycg_cookies",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容关联来源的旧环境变量；获取方式与 WYYCG_ACCOUNTS 相同。仅在规范变量为空时读取；也兼容第一个位置参数。",
+          "format": "每个非空行一个账号；原来的 # 账号分隔符已统一改为换行。"
+        },
+        {
+          "name": "WYYCG_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 开启完全断网预演；不访问业务接口或通知渠道。",
+          "format": "1 开启；0、false、no、off 或空值关闭，默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙统一通知配置，默认启用；关闭时也关闭原来源的额外推送。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙 notify.py 所在目录；也会尝试导入 notify 及标准青龙脚本目录。通知组件缺失不影响业务退出码。",
+          "format": "本机通知目录的绝对路径；业务运行不依赖此目录。"
+        },
+        {
+          "name": "WYYCG_TELEGRAM_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 Telegram 获取消息接收者标识；兼容第二个位置参数。",
+          "format": "与 WYYCG_TELEGRAM_TOKEN 同时设置才启用额外推送。"
+        },
+        {
+          "name": "WYYCG_TELEGRAM_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 Telegram BotFather 获取机器人令牌；兼容第三个位置参数。",
+          "format": "机器人令牌完整值，仅用于 Telegram 推送。"
+        },
+        {
+          "name": "WYYCG_SERVERCHAN_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 ServerChan 账户的发送密钥页面获取；兼容第四个位置参数。",
+          "format": "发送密钥完整值；选填。"
+        },
+        {
+          "name": "WYYCG_QQ_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从原来源使用的 push.xuthus.cc 服务获取；服务是否仍可用未经联网核验；兼容第五个位置参数。",
+          "format": "发送密钥完整值；选填。"
+        },
+        {
+          "name": "WYYCG_PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从原来源使用的 PushPlus 服务账户获取令牌；旧域名已采用 HTTPS，服务是否可用未经联网核验；兼容第六个位置参数。",
+          "format": "发送令牌完整值；选填。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；规范变量优先，其次旧变量，再次第一个位置参数。逐个独立处理，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "验证网易云游戏 Authorization 凭据并读取账户配置",
+        "每日签到并对业务结果进行明确成功判定，未知响应按失败处理",
+        "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID",
+        "多账号逐行处理与独立失败统计",
+        "兼容旧凭据变量及原主脚本的位置参数输入",
+        "青龙统一通知与原主脚本的 Telegram、ServerChan、QQ、PushPlus 可选推送",
+        "完全断网预演、时间轴日志、账号统计及单行结构化总结"
+      ],
+      "sideEffects": [
+        "执行每日签到，可能领取云游戏时长",
+        "真实执行时通过已配置的通知渠道发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a414f4add19cb6a5",
+        "candidateSha256": "1da9e1203d9de2f68ac046c6271f1a425858ea39e54914d0bdb3e143b5df9975"
+      }
+    },
+    {
       "catalogId": "e4af0e04fafedbd8",
       "applicationKey": "yht",
       "checkProfile": {

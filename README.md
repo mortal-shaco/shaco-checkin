@@ -210,6 +210,7 @@
 | WorkBuddy签到 | `scripts/workbuddy.py` | `python3 scripts/workbuddy.py` | `30 8 * * *` |
 | WorkBuddy 国内版日常维护 | `scripts/workbuddy_daily.py` | `python3 scripts/workbuddy_daily.py` | `0 7,12 * * *` |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
+| 网易云游戏自动签到 | `scripts/wyycg.py` | `python3 scripts/wyycg.py` | `0 8 * * *` |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `8 6 * * *` |
 | 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `0 8 * * *` |
 | 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `0 0 * * *` |
@@ -399,6 +400,7 @@
 - `scripts/workbuddy.py`：每日签到和今日状态查询；主状态接口失败时回退兼容接口，令牌失效不盲目回退。；展示每日积分、签到获得积分、连续签到天数及连签奖励标记。；识别官方确认的活动关闭或今日已签；签到失败后复查，确认已签则视为完成。；可选刷新令牌续期并重试一次，兼容企业、租户、域名及自定义浏览器请求头。；逐行 JSON 多账号和驼峰凭据字段兼容，保留每日 08:30 定时与启动错峰参数。；完全断网预演、逐阶段脱敏日志、账号与子任务统计、单行结构化汇总和青龙通知。；官方返回公开昵称、用户名、显示名称或公开 UID 时显示可核对身份；不打印凭据或原始响应。。
 - `scripts/workbuddy_daily.py`：国内版每日签到及服务端签到状态回读，活动关闭正常跳过，区分签到连签与活跃连签；积分套餐总量、余额、用量、等级、能量、活跃连签及成长任务状态查询，显示官方非敏感账号身份；扫描已完成成长任务并领取奖励，回读验证领取状态；领奖保留网页请求头回退；Buddy信息、徽章查询及旅行状态驱动的出发和奖励领取；显式选择抽奖、最多五次盲盒、连签兑换、礼包补偿、昨日补签；未知资源或状态不执行消费；显式选择并允许模拟事件后执行设计/自动化/灵感、专家团、应用/教师助手、主题、资料库、五专家、五模板、GLM/五次对话、轻量云专家和夜猫子成长任务；保留上游HTTP链及服务端终态核验；小程序七环链式成长任务、锁定任务跳过、原请求头与回读目标、45秒节奏及相应回退；明文凭据本地体检、私有缓存轮换续期、--refresh、--query、--only、--gap、--mp-gap和旧过滤参数兼容；每行多账号隔离执行、断网预演、脱敏时间轴、账号及子任务统计、唯一TASK_SUMMARY记录、青龙通知；国际版--intl活动状态探测、每日奖励领取及服务端回读，活动关闭正常跳过，认证或未知错误失败闭合；国际版显式模型保活，四模型按序回退及自定义模型链，核验流式回答和完成标志；签到与保活分别统计；国际版逐行多账号、旧单账号变量、--only与--no-keepalive兼容；显式--refresh与私有缓存续期；国际版断网预演、阶段时间轴、账号统计、唯一TASK_SUMMARY及青龙通知；显式 --credit-report 独立查询国内版或国际版积分日报：聚合周期容量、累计容量、余额、用量及套餐数，结构异常或分页不完整失败闭合；不执行签到或成长任务；--credit-report --json 输出脱敏套餐数值数组，兼容上游总量、余额、用量和套餐字段；--only 按账号序号筛选；显式 --intl --trial 独立领取国际版一次性专家加油包；验证HTTP与业务码0，业务码14051识别已领取；不执行日常奖励、续期或模型保活。
 - `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
+- `scripts/wyycg.py`：验证网易云游戏 Authorization 凭据并读取账户配置；每日签到并对业务结果进行明确成功判定，未知响应按失败处理；显示官方返回的非敏感昵称、用户名、显示名称或公开 UID；多账号逐行处理与独立失败统计；兼容旧凭据变量及原主脚本的位置参数输入；青龙统一通知与原主脚本的 Telegram、ServerChan、QQ、PushPlus 可选推送；完全断网预演、时间轴日志、账号统计及单行结构化总结。
 - `scripts/yht.py`：查询官方账号昵称等非敏感身份，不输出手机号；查询种植活动标题；参与种植活动；连续施肥，保留上游默认最多一百次请求并允许调低上限；查询当前等级、下一等级和剩余施肥次数；施肥接口返回当前不存在进行中的活动时尝试领取奖励，核验奖励名称与数量；可选每日签到及奖励详情查询，默认保持未启用；可选本次配置账号之间互助及互助身份查询；每行一个账号、独立执行、任一业务失败整体失败；完全断网预演、时间轴阶段日志、账号统计及单行结构化任务汇总；通过青龙通知适配器发送脱敏总结，通知异常保留业务退出码。
 - `scripts/youdao.py`：刷新登录会话，保留已有 Cookie 并接收服务端更新。；每日同步空间奖励，验证 rewardSpace 字段。；每日签到，验证 space 字段。；连续领取三次广告空间奖励，分别验证 space 字段。；显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，不从 Cookie 提取身份。；多账号独立处理，统计已确认奖励、阶段耗时及账号结果，输出单行结构化任务总结。；完全断网预演及青龙脱敏通知，通知失败不改变业务退出码。。
 - `scripts/yyshuijuantime.py`：每天读取阴阳师官网最新五条维护更新公告；支持原有三种正文容器，并保留嵌套正文内容；提取追忆绘卷活动名称、维护后开始日期及结束时间，支持跨年并验证日期；保留原 JSON 字段及同名同开始日期去重的活动历史；报告活动时间与已结束活动状态；通过青龙通知模块发送脱敏运行摘要，支持全局通知开关；无网络、无文件读写的内置公告预演；带时间戳的分阶段日志和单行结构化任务统计，失败非零退出。
@@ -604,6 +606,7 @@
 <tr><td rowspan="2"><code>scripts/workbuddy_daily.py</code></td><td><code>WORKBUDDY_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号：手机号:AT:RT、AT:RT、手机号:RT 或单个明文 JWT；手机号只作为兼容备注，不输出；字段仅逐次切分首个冒号，保留末尾 RT 完整内容。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WORKBUDDY_INTL_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号：AT、备注|AT、备注|AT|uid 或 备注|AT|uid|RT；逐次切分首个竖线，保留末尾 RT 完整内容。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/wyycg.py</code></td><td><code>WYYCG_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Authorization 值；保留凭据内部字符，不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/yht.py</code></td><td><code>Yht_token</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留大小写；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/youdao.py</code></td><td><code>YOUDAO_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；Cookie 字段用分号分隔，字段仅按第一个等号拆分，保留值中的后续等号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/yyshuijuantime.py</code></td><td><code>YYS_HUIJUAN_OUTPUT</code></td><td>否</td><td>格式：以 .json 结尾的绝对文件路径；每次运行使用一个路径，不按账号拆分；多账号格式以该脚本文档为准</td></tr>
@@ -1902,6 +1905,15 @@
 <tr><td rowspan="3"><code>scripts/wps_clock_in.py</code></td><td><code>WPS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on启用，默认0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭；默认1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地青龙通知模块所在目录，可不填写。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="9"><code>scripts/wyycg.py</code></td><td><code>wyycg_cookies</code></td><td>是</td><td>格式：每个非空行一个账号；原来的 # 账号分隔符已统一改为换行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WYYCG_DRY_RUN</code></td><td>否</td><td>格式：1 开启；0、false、no、off 或空值关闭，默认关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知目录的绝对路径；业务运行不依赖此目录。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WYYCG_TELEGRAM_ID</code></td><td>是</td><td>格式：与 WYYCG_TELEGRAM_TOKEN 同时设置才启用额外推送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WYYCG_TELEGRAM_TOKEN</code></td><td>是</td><td>格式：机器人令牌完整值，仅用于 Telegram 推送。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WYYCG_SERVERCHAN_KEY</code></td><td>是</td><td>格式：发送密钥完整值；选填。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WYYCG_QQ_KEY</code></td><td>是</td><td>格式：发送密钥完整值；选填。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WYYCG_PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：发送令牌完整值；选填。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="9"><code>scripts/yht.py</code></td><td><code>YHT_DRY_RUN</code></td><td>否</td><td>格式：1 完全断网预演，0 实跑；默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>YHT_HELP</code></td><td>否</td><td>格式：1 开启，0 关闭；默认 0；至少两个可取得用户标识的账号；排除自己。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>YHT_SIGN</code></td><td>否</td><td>格式：1 开启，0 关闭；默认 0。；多账号格式以该脚本文档为准</td></tr>
@@ -2122,6 +2134,7 @@
 - `scripts/workbuddy.py`：每个非空行一个独立账号 JSON 对象，配套凭据合并在同一行；逐账号独立运行，任一账号失败则进程非零退出。。
 - `scripts/workbuddy_daily.py`：每个非空行一个账号；国内版与国际版分别使用各自的规范凭据变量；配套凭据写在同一行，仅按首字段分隔符逐次切分；禁止使用 &、@ 分隔账号。各账号独立执行，任一账号或子任务失败整体非零退出。。
 - `scripts/wps_clock_in.py`：每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。。
+- `scripts/wyycg.py`：每个非空行一个账号；规范变量优先，其次旧变量，再次第一个位置参数。逐个独立处理，任一账号失败时整体非零退出。。
 - `scripts/yht.py`：每个非空行一个账号的完整 qm-user-token；逐账号执行，互助仅限本次配置的其他账号；任何账号业务失败整体非零退出。。
 - `scripts/youdao.py`：每个非空行一个账号；同一账号的 Cookie 字段以分号连接，字段仅按首个等号拆分。独立处理账号，任一账号失败则整体非零退出。。
 - `scripts/zcode_cn_daily.py`：每行一个账号，JWT、设备和验证码放在同一行；逐字段只在首个竖线处分割，验证码保留余下内容。国内及国际账号分别填写变量，默认国内版，--region intl 选择国际版，--region all 执行已配置区域。--only 按所选区域合并顺序筛选。任一账号或显式激活事件失败则非零退出。。
@@ -3442,6 +3455,13 @@
 - 所属脚本：`scripts/wps_clock_in.py`
 - 获取或设置：在WPS主页或微信小程序【我的WPS超级会员】登录，从本人授权的 *.wps.cn 请求Cookie中取得wps_sid参数的值。不要填写整个Cookie。
 - 填写格式：`每个非空行一个wps_sid值；只按换行分隔账号，不使用&或@分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WYYCG_ACCOUNTS`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：登录网易云游戏网页 https://cg.163.com，在浏览器开发者工具网络面板查看 n.cg.163.com 的账户配置或签到请求，复制 Authorization 请求头完整值。不要填写 Cookie 请求头，也不要公开凭据。
+- 填写格式：`每个非空行一个账号的完整 Authorization 值；保留凭据内部字符，不使用 #、&、@ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `Yht_token`
@@ -11519,6 +11539,66 @@
 - 获取或设置：若青龙notify.py不在标准目录，可设置其所在目录；不需要私有项目仓库。
 - 填写格式：`本地青龙通知模块所在目录，可不填写。`
 
+#### `wyycg_cookies`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：兼容关联来源的旧环境变量；获取方式与 WYYCG_ACCOUNTS 相同。仅在规范变量为空时读取；也兼容第一个位置参数。
+- 填写格式：`每个非空行一个账号；原来的 # 账号分隔符已统一改为换行。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WYYCG_DRY_RUN`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：设为 1 开启完全断网预演；不访问业务接口或通知渠道。
+- 填写格式：`1 开启；0、false、no、off 或空值关闭，默认关闭。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：使用青龙统一通知配置，默认启用；关闭时也关闭原来源的额外推送。
+- 填写格式：`默认 1；0、false、no、off 关闭。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：可选：填写青龙 notify.py 所在目录；也会尝试导入 notify 及标准青龙脚本目录。通知组件缺失不影响业务退出码。
+- 填写格式：`本机通知目录的绝对路径；业务运行不依赖此目录。`
+
+#### `WYYCG_TELEGRAM_ID`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：从 Telegram 获取消息接收者标识；兼容第二个位置参数。
+- 填写格式：`与 WYYCG_TELEGRAM_TOKEN 同时设置才启用额外推送。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WYYCG_TELEGRAM_TOKEN`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：从 Telegram BotFather 获取机器人令牌；兼容第三个位置参数。
+- 填写格式：`机器人令牌完整值，仅用于 Telegram 推送。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WYYCG_SERVERCHAN_KEY`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：从 ServerChan 账户的发送密钥页面获取；兼容第四个位置参数。
+- 填写格式：`发送密钥完整值；选填。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WYYCG_QQ_KEY`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：从原来源使用的 push.xuthus.cc 服务获取；服务是否仍可用未经联网核验；兼容第五个位置参数。
+- 填写格式：`发送密钥完整值；选填。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WYYCG_PUSHPLUS_TOKEN`
+
+- 所属脚本：`scripts/wyycg.py`
+- 获取或设置：从原来源使用的 PushPlus 服务账户获取令牌；旧域名已采用 HTTPS，服务是否可用未经联网核验；兼容第六个位置参数。
+- 填写格式：`发送令牌完整值；选填。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `YHT_DRY_RUN`
 
 - 所属脚本：`scripts/yht.py`
@@ -11973,6 +12053,7 @@
 - `scripts/workbuddy.py`：SHA-256 `c20f62f74b4c3a50a42852229dff9b40dc79baa5f6854e8d40e01a4f361c5a7a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/af0ae4c86279f8da`。
 - `scripts/workbuddy_daily.py`：SHA-256 `af37790e41e116c92ebe1ecb8a001b4fc030d65a9785e161dc1bc926e23be14a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
 - `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
+- `scripts/wyycg.py`：SHA-256 `1da9e1203d9de2f68ac046c6271f1a425858ea39e54914d0bdb3e143b5df9975`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a414f4add19cb6a5`。
 - `scripts/yht.py`：SHA-256 `041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e4af0e04fafedbd8`。
 - `scripts/youdao.py`：SHA-256 `0c740bfa5e0616e362c80e44bb42aedacc6cf7785d7a0665f4f9be29f4ddb799`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4cc5f70c13c67bbd`。
 - `scripts/yyshuijuantime.py`：SHA-256 `ed7e4a6e165c239056135e84d3f2a0825a5fcfded2a1f0961d11b37172069cf6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/efe42c0f180ce822`。
@@ -12162,6 +12243,7 @@
 - `scripts/workbuddy.py`：每日签到及服务端积分、连签奖励状态变更。；配置刷新令牌且访问令牌过期时向服务端申请续期，仅在进程内更新凭据。；正式运行且通知启用时发送脱敏青龙任务总结。。
 - `scripts/workbuddy_daily.py`：默认进行每日签到、领取已完成成长任务奖励、领取旅行奖励或派遣Buddy旅行；显式成长任务可能创建模型对话、消耗积分并发送模拟活跃事件，变更任务登记与成长进度；上报成功不代表真实桌面操作成功；显式抽奖消耗抽奖次数，盲盒消耗能量，补签消耗补签卡，连签兑换和礼包补偿领取奖励；配置私有缓存并触发续期时轮换认证令牌且保存至本人指定文件；实际运行向青龙通知模块发送脱敏摘要；断网预演仅模拟通知；国际版活动开放且未领取时领取每日奖励；国际版显式保活创建模型对话与活跃记录，可能消耗积分；国际版显式--refresh轮换认证令牌并保存至本人指定私有缓存；仅显式 --intl --trial 领取一次性专家加油包，不加入默认定时任务。
 - `scripts/wps_clock_in.py`：。
+- `scripts/wyycg.py`：执行每日签到，可能领取云游戏时长；真实执行时通过已配置的通知渠道发送脱敏任务总结。
 - `scripts/yht.py`：参加种植活动；消耗活动肥料进行施肥；满足条件时领取活动奖励；开启 YHT_SIGN 后提交每日签到并领取签到奖励；开启 YHT_HELP 后为本次配置的其他账号助力；通知开启时调用青龙通知发送总结；断网预演阻止联网和派生进程。
 - `scripts/youdao.py`：刷新账号登录会话。；领取每日同步奖励并增加账号空间。；提交每日签到并领取空间奖励。；提交三次广告奖励请求并增加账号空间。；实际运行时通过青龙发送脱敏通知。。
 - `scripts/yyshuijuantime.py`：正式运行在显式配置路径创建或更新活动 JSON 文件，必要时创建其父目录；正式运行通知开启时，通过青龙现有通知模块发送任务摘要。
@@ -12353,6 +12435,7 @@
 - `scripts/workbuddy.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/workbuddy/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/workbuddy_daily.py`：上游 `L0NE-6/WorkBuddy-Daily` / `workbuddy_daily.py` / `e030ebde37411a90e0a3e35b88993e5686c7e1dd`。
 - `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
+- `scripts/wyycg.py`：上游 `GamerNoTitle/wyycg-autocheckin` / `main.py` / `e12f44c306948430272c54152b04a11da917b92d`。
 - `scripts/yht.py`：上游 `Rookie-wb-WH/ql_scripts` / `yht.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/youdao.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/youdao/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/yyshuijuantime.py`：上游 `CN-Grace/QinglongScripts` / `YysHuijuanTime.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
