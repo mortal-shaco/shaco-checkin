@@ -8046,7 +8046,11 @@
           "NGA_ACCOUNT"
         ],
         "optionalEnv": [
+          "nga_uid",
+          "nga_cookie",
+          "nga_client_checksum",
           "NGA_UA",
+          "NGA_DRY_RUN",
           "NGA_ENABLE_DAILY_MISSIONS",
           "NGA_ENABLE_VIDEO_MISSIONS",
           "NGA_ENABLE_SHARE_MISSIONS",
@@ -8055,7 +8059,6 @@
           "NGA_ACTION_DELAY_SECONDS",
           "NGA_VIDEO_DELAY_SECONDS",
           "NGA_HTTP_TIMEOUT",
-          "NGA_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
@@ -8075,25 +8078,27 @@
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "NGA论坛签到成功",
-          "失败数: 0"
+          "签到: 成功",
+          "签到: 今日已签到"
         ],
         "features": [
-          "NGA每日签到（重复签到按成功处理）",
-          "可选执行任务2、任务131和任务30计数",
-          "可选执行4次免广告视频及5次N币视频任务计数",
-          "可选记录5次分享事件并领取分享奖励",
-          "签到后查询账户资产响应是否有效",
-          "按每行一个 UID|Token 账号独立处理并汇总失败结果",
-          "执行前可选随机延迟",
-          "完全离线的配置预演",
-          "青龙脱敏汇总通知"
+          "每日签到，明确识别签到成功与今日已签到",
+          "兼容原 UID|Token 凭据与 iOS 校验码、旧版小写环境变量",
+          "展示官方返回的非敏感身份及签到连续天数、累计天数",
+          "登录失效和 iOS 客户端校验异常提示",
+          "可选日常任务 2、131、30",
+          "可选免广告及 N币视频任务",
+          "可选五次分享记录与分享奖励",
+          "默认查询资产统计",
+          "保留随机启动延时、动作间隔与请求超时设置",
+          "多账号独立执行与整体失败退出码",
+          "完全断网预演、时间轴日志、结构化汇总、青龙脱敏通知"
         ],
         "sideEffects": [
-          "提交NGA每日签到",
-          "启用日常任务选项时增加任务计数",
-          "启用视频任务选项时增加视频任务计数并可能获得奖励",
-          "启用分享任务选项时记录分享事件并领取奖励"
+          "每日签到改变签到及奖励状态",
+          "显式开启时增加日常任务计数及奖励状态",
+          "显式开启时增加视频任务计数、免广告与 N币奖励状态",
+          "显式开启时提交分享记录并领取分享奖励"
         ]
       },
       "postReview": {
@@ -8102,7 +8107,7 @@
       },
       "displayName": "NGA 论坛签到",
       "path": "scripts/nga_checkin.py",
-      "sha256": "15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc",
+      "sha256": "147ff1cce75da800dc48ed5dade6222282afff8f7bd6f1bbbdebda74ede5242e",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -8110,7 +8115,19 @@
         "repository": "agluo/ql-script-hub",
         "branch": "master",
         "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-        "originalPath": "nga_checkin.py"
+        "originalPath": "nga_checkin.py",
+        "related": [
+          {
+            "repository": "yongyeym/AutoSign_QingLong",
+            "url": "https://github.com/yongyeym/AutoSign_QingLong.git",
+            "branch": "main",
+            "commit": "f13a88e488c2d396e24cce8e9b6e27eefcbccad6",
+            "originalPath": "nga_sign.py",
+            "catalogId": "f7a3490b78ba76fa",
+            "sha256": "e2b71bc0eb07a5edb5079e142bd2caa4e9041bd9eef7b8362cfcce7d4b40f472",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "1 17 * * *",
       "command": "python3 scripts/nga_checkin.py",
@@ -8119,116 +8136,139 @@
           "name": "NGA_ACCOUNT",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录NGA官方客户端后，在本人设备的同一条 https://ngabbs.com/nuke.php 请求中读取 access_uid 与 access_token，按 access_uid|access_token 拼成一行；不要分享调试记录。",
-          "format": "每行一个账号：access_uid|access_token；只用第一个竖线分隔"
+          "howToGet": "登录 NGA 客户端，在自己授权的请求抓包中获取 access_uid 和 access_token；iOS 还需从签到请求获取 __ngaClientChecksum。请勿分享抓包或凭据。保持同一账号的字段配套；出现登录失效时更新凭据，CLIENT ERROR 时重新获取当前 iOS 客户端校验码。",
+          "format": "每个非空行一个账号；兼容 access_uid|access_token，仅按首个竖线分割；iOS 使用单行 JSON 对象，字段为 access_uid、access_token、client_checksum，全部为字符串。JSON 也适用于 Token 含竖线的账号。"
+        },
+        {
+          "name": "nga_uid",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入：从自己授权的 NGA iOS 签到请求获取 access_uid；仅未设置 NGA_ACCOUNT 时生效，建议迁移为 NGA_ACCOUNT 单行 JSON。",
+          "format": "每行一个值，三个旧版变量必须逐行对应同一账号；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "nga_cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入：从自己授权的 NGA iOS 签到请求获取 access_token；仅未设置 NGA_ACCOUNT 时生效，建议迁移为 NGA_ACCOUNT 单行 JSON。",
+          "format": "每行一个值，三个旧版变量必须逐行对应同一账号；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "nga_client_checksum",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入：从自己授权的 NGA iOS 签到请求获取 __ngaClientChecksum；仅未设置 NGA_ACCOUNT 时生效，建议迁移为 NGA_ACCOUNT 单行 JSON。",
+          "format": "每行一个值，三个旧版变量必须逐行对应同一账号；不使用 & 或 @ 分隔账号。"
         },
         {
           "name": "NGA_UA",
           "required": false,
           "sensitive": false,
-          "howToGet": "通常无需设置；如接口要求，可填写获取凭据时NGA官方客户端请求中的 User-Agent。",
-          "format": "单行 User-Agent，默认 Nga_Official/90409"
-        },
-        {
-          "name": "NGA_ENABLE_DAILY_MISSIONS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "设为 1 明确启用任务2、131、30的计数动作。",
-          "format": "布尔值，默认 0"
-        },
-        {
-          "name": "NGA_ENABLE_VIDEO_MISSIONS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "设为 1 明确启用免广告及N币视频任务计数；会改变任务/奖励状态。",
-          "format": "布尔值，默认 0"
-        },
-        {
-          "name": "NGA_ENABLE_SHARE_MISSIONS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "设为 1 明确启用分享记录和奖励领取；仅记录分享事件，不自动发布文本。",
-          "format": "布尔值，默认 0"
-        },
-        {
-          "name": "NGA_QUERY_STATS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "设为 0 可关闭签到后的资产查询。",
-          "format": "布尔值，默认 1"
-        },
-        {
-          "name": "NGA_RANDOM_DELAY_MAX",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需填写执行前随机延迟的最大秒数。",
-          "format": "0至21600，默认0"
-        },
-        {
-          "name": "NGA_ACTION_DELAY_SECONDS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需调整连续日常/分享动作之间的间隔。",
-          "format": "0至30，默认1"
-        },
-        {
-          "name": "NGA_VIDEO_DELAY_SECONDS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需调整视频任务计数之间的间隔；过短可能不被服务端认可。",
-          "format": "0至120，默认30"
-        },
-        {
-          "name": "NGA_HTTP_TIMEOUT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按网络状况设置单次HTTPS请求超时秒数。",
-          "format": "3至60，默认20"
+          "howToGet": "客户端请求的 User-Agent；无 iOS 校验码时生效，原默认值保持不变。",
+          "format": "默认 Nga_Official/90409"
         },
         {
           "name": "NGA_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "设为 1 仅校验配置并展示计划动作，完全不访问NGA。",
-          "format": "布尔值，默认0"
+          "howToGet": "设为 1 时只检查配置与动作计划；不请求接口、不延时，也不调用可能联网的通知器。",
+          "format": "默认 0"
+        },
+        {
+          "name": "NGA_ENABLE_DAILY_MISSIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式开启日常任务 2、131、30，会改变任务及奖励状态。",
+          "format": "默认 0"
+        },
+        {
+          "name": "NGA_ENABLE_VIDEO_MISSIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式开启免广告初始化、四次免广告视频任务和五次 N币视频任务。",
+          "format": "默认 0"
+        },
+        {
+          "name": "NGA_ENABLE_SHARE_MISSIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式开启五次分享记录及分享奖励，不发布文字内容。",
+          "format": "默认 0"
+        },
+        {
+          "name": "NGA_QUERY_STATS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "查询资产统计，不改变账号状态。",
+          "format": "默认 1"
+        },
+        {
+          "name": "NGA_RANDOM_DELAY_MAX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "正式运行前随机等待的最大秒数，范围 0 至 21600。",
+          "format": "默认 0"
+        },
+        {
+          "name": "NGA_ACTION_DELAY_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "日常与分享动作间隔秒数，范围 0 至 30。",
+          "format": "默认 1"
+        },
+        {
+          "name": "NGA_VIDEO_DELAY_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "视频动作间隔秒数，范围 0 至 120。",
+          "format": "默认 30"
+        },
+        {
+          "name": "NGA_HTTP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "每次 HTTP 请求超时秒数，范围 3 至 60。",
+          "format": "默认 20"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "全局通知开关；设为0、false、no或off关闭。",
-          "format": "布尔值，默认1"
+          "howToGet": "青龙全局通知开关；0、false、no、off 关闭，通知失败不影响业务退出码。",
+          "format": "默认 1"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "仅当notify.py不在青龙标准路径时，填写其所在目录。",
-          "format": "本地目录路径"
+          "howToGet": "可选青龙通知模块目录，含 notify.py 或 sendNotify.js；业务运行不依赖该目录。",
+          "format": "默认 未设置"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。"
+        "rule": "每个非空行一个账号；优先使用 NGA_ACCOUNT；旧版三个变量逐行对应。账号执行互不影响，任一账号失败整体非零退出。"
       },
       "dependencies": [],
       "features": [
-        "NGA每日签到（重复签到按成功处理）",
-        "可选执行任务2、任务131和任务30计数",
-        "可选执行4次免广告视频及5次N币视频任务计数",
-        "可选记录5次分享事件并领取分享奖励",
-        "签到后查询账户资产响应是否有效",
-        "每行一个 UID|Token 账号的独立处理与失败汇总",
-        "执行前可选随机延迟",
-        "完全离线的配置预演",
-        "青龙脱敏汇总通知"
+        "每日签到，明确识别签到成功与今日已签到",
+        "兼容原 UID|Token 凭据与 iOS 校验码、旧版小写环境变量",
+        "展示官方返回的非敏感身份及签到连续天数、累计天数",
+        "登录失效和 iOS 客户端校验异常提示",
+        "可选日常任务 2、131、30",
+        "可选免广告及 N币视频任务",
+        "可选五次分享记录与分享奖励",
+        "默认查询资产统计",
+        "保留随机启动延时、动作间隔与请求超时设置",
+        "多账号独立执行与整体失败退出码",
+        "完全断网预演、时间轴日志、结构化汇总、青龙脱敏通知"
       ],
       "sideEffects": [
-        "提交NGA每日签到",
-        "启用日常任务选项时增加任务计数",
-        "启用视频任务选项时增加视频任务计数并可能获得奖励",
-        "启用分享任务选项时记录分享事件并领取奖励"
+        "每日签到改变签到及奖励状态",
+        "显式开启时增加日常任务计数及奖励状态",
+        "显式开启时增加视频任务计数、免广告与 N币奖励状态",
+        "显式开启时提交分享记录并领取分享奖励"
       ],
       "review": {
         "staticPassed": true,
@@ -8241,160 +8281,13 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/4e0cf5e129fb12a4",
-        "candidateSha256": "15d32f6c5f2462e14d1b96d7599282144383d86704b3221d2658977d83efadfe"
+        "candidateSha256": "669f918c7a920b60ed97ae5fefb53d2291279068245333fe8904356fad985301"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "15d32f6c5f2462e14d1b96d7599282144383d86704b3221d2658977d83efadfe",
-        "releaseSha256": "15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc",
+        "validatedSha256": "669f918c7a920b60ed97ae5fefb53d2291279068245333fe8904356fad985301",
+        "releaseSha256": "147ff1cce75da800dc48ed5dade6222282afff8f7bd6f1bbbdebda74ede5242e",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
-      }
-    },
-    {
-      "catalogId": "f7a3490b78ba76fa",
-      "applicationKey": "yongyeym/autosign_qinglong::nga",
-      "checkProfile": {
-        "requiredEnv": [
-          "NGA_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "nga_uid",
-          "nga_cookie",
-          "nga_client_checksum",
-          "NGA_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "NGA_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "NGA_DRY_RUN": "0",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "今日签到成功",
-          "今天已经签到过，无需签到",
-          "\"status\":\"success\""
-        ],
-        "features": [
-          "NGA社区每日签到，保留每日 00:03 定时计划。",
-          "识别今日已签到，避免将已完成任务标为失败。",
-          "展示官方签到响应的连续签到与累计签到天数。",
-          "识别登录失效和 iOS 客户端校验失败，提示更新对应参数。",
-          "展示官方返回的非敏感昵称、用户名、显示名称或公开 UID。",
-          "每行一个账号的配套凭据配置，兼容旧版单账号环境变量。",
-          "完全断网预演、逐账号隔离执行、失败非零退出。",
-          "提供分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY JSON。",
-          "成功、部分失败、失败、配置错误均尝试青龙通知；断网预演模拟通知，通知故障保留业务退出码。"
-        ],
-        "sideEffects": [
-          "实际运行时提交 NGA 每日签到请求，可能更新签到记录、连续天数及累计天数。",
-          "实际运行且通知开启时，通过青龙通知模块发送脱敏任务总结。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "NGA社区 每日签到",
-      "path": "scripts/nga_sign.py",
-      "sha256": "469a2e36b306f740a84908dd8c981c4c929afe956f91c3c22a05f0463efc9779",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "yongyeym/AutoSign_QingLong",
-        "branch": "main",
-        "commit": "f13a88e488c2d396e24cce8e9b6e27eefcbccad6",
-        "originalPath": "nga_sign.py"
-      },
-      "cron": "3 0 * * *",
-      "command": "python3 scripts/nga_sign.py",
-      "environment": [
-        {
-          "name": "NGA_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录自己的 NGA iOS 客户端，使用自己控制的 HTTPS 抓包工具查看 ngabbs.com/nuke.php 签到请求，从表单提取 access_uid、access_token 和 __ngaClientChecksum；三个值必须来自同一账号。请勿分享抓包内容。若沿用旧版，可用完整的 nga_uid、nga_cookie、nga_client_checksum 三项替代本项。",
-          "format": "每个非空行一个 JSON 对象，包含字符串字段 uid、token、checksum；uid 为数字字符串；token 是 access_token 值，不是完整 Cookie；checksum 为 __ngaClientChecksum 原值。JSON 解析保留字段文本，不使用 &、@ 或其他字符分隔账号。"
-        },
-        {
-          "name": "nga_uid",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧版单账号兼容项：从本人 iOS 客户端签到请求读取 access_uid，须同时设置 nga_cookie、nga_client_checksum。设置 NGA_ACCOUNTS 后忽略本项。",
-          "format": "数字字符串，仅支持一个账号。"
-        },
-        {
-          "name": "nga_cookie",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧版单账号兼容项：从本人 iOS 客户端签到请求读取 access_token，须同时设置 nga_uid、nga_client_checksum。",
-          "format": "access_token 原值，不是完整 Cookie，不使用账号分隔符。"
-        },
-        {
-          "name": "nga_client_checksum",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧版单账号兼容项：从本人 iOS 客户端签到请求读取 __ngaClientChecksum；安卓端或过期校验码可能无法通过校验，须更新同账号的 iOS 请求值。",
-          "format": "客户端校验码字符串。"
-        },
-        {
-          "name": "NGA_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中手动设置，验证安装与参数时启用。",
-          "format": "1、true、yes、on 启用完全断网预演；默认 0，执行实际签到。预演通知仅模拟，不加载外部通知模块。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中手动设置通知总开关。",
-          "format": "默认 1；0、false、no、off 关闭通知。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "填写青龙已有 notify.py 或 sendNotify.js 所在目录；无需设置时优先导入 notify，再检查青龙标准脚本目录，不自动下载模块。",
-          "format": "本地通知模块目录路径，可选。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "NGA_ACCOUNTS 每个非空行一个账号 JSON 对象，uid、token、checksum 合并在同一对象中。逐账号校验和执行，单账号失败不阻断其他账号；任一账号失败则进程非零退出。旧版三个变量仅兼容单账号。"
-      },
-      "dependencies": [],
-      "features": [
-        "NGA社区每日签到，保留每日 00:03 定时计划。",
-        "识别今日已签到，避免将已完成任务标为失败。",
-        "展示官方签到响应的连续签到与累计签到天数。",
-        "识别登录失效和 iOS 客户端校验失败，提示更新对应参数。",
-        "展示官方返回的非敏感昵称、用户名、显示名称或公开 UID。",
-        "每行一个账号的配套凭据配置，兼容旧版单账号环境变量。",
-        "完全断网预演、逐账号隔离执行、失败非零退出。",
-        "提供分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY JSON。",
-        "成功、部分失败、失败、配置错误均尝试青龙通知；断网预演模拟通知，通知故障保留业务退出码。"
-      ],
-      "sideEffects": [
-        "实际运行时提交 NGA 每日签到请求，可能更新签到记录、连续天数及累计天数。",
-        "实际运行且通知开启时，通过青龙通知模块发送脱敏任务总结。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/f7a3490b78ba76fa",
-        "candidateSha256": "469a2e36b306f740a84908dd8c981c4c929afe956f91c3c22a05f0463efc9779"
       }
     },
     {

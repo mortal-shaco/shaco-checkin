@@ -83,7 +83,6 @@
 | 小米运动账号验证与步数上传 | `scripts/mimotion.py` | `python3 scripts/mimotion.py` | `0 20 * * *` |
 | 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `30 9 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
-| NGA社区 每日签到 | `scripts/nga_sign.py` | `python3 scripts/nga_sign.py` | `3 0 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` |
@@ -217,8 +216,7 @@
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
 - `scripts/mimotion.py`：手机号或邮箱及密码登录 Zepp Life，核验授权与完整登录凭据，显示官方非敏感账号身份。；显式开启后在设定的随机范围内修改本人当天运动记录的步数并上传，要求接口 code=0 且 message=success。；优先获取远程时间戳，失败使用本地毫秒时间；HTTP 表单编码、超时、响应大小限制及禁止凭据重定向。；多账号独立执行、失败非零退出、断网预演、脱敏分阶段日志、单行 TASK_SUMMARY 汇总及青龙通知。。
 - `scripts/netease_task.py`：登录确认并显示官方非敏感昵称或公开 UID；手机签到与网页签到，识别业务码 -2 的今日已完成；可选官方 weapi 网页签到，显示返回积分；云贝签到与已完成任务奖励领取；VIP 成长值批量领取，保留任务查询与按任务 ID 领取备用接口；显式开启的模拟听歌，保留四个榜单获取链路及 300 首成功判定；等级与累计听歌数量查询；每行多账号、旧 Cookie 变量、注释与整行引号兼容；青龙通知失败后依次尝试 PushPlus 与 Server酱，保留独立 Bark 通知；完全断网预演、编号时间轴日志、逐账号统计与唯一结构化任务汇总。
-- `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
-- `scripts/nga_sign.py`：NGA社区每日签到，保留每日 00:03 定时计划。；识别今日已签到，避免将已完成任务标为失败。；展示官方签到响应的连续签到与累计签到天数。；识别登录失效和 iOS 客户端校验失败，提示更新对应参数。；展示官方返回的非敏感昵称、用户名、显示名称或公开 UID。；每行一个账号的配套凭据配置，兼容旧版单账号环境变量。；完全断网预演、逐账号隔离执行、失败非零退出。；提供分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY JSON。；成功、部分失败、失败、配置错误均尝试青龙通知；断网预演模拟通知，通知故障保留业务退出码。。
+- `scripts/nga_checkin.py`：每日签到，明确识别签到成功与今日已签到；兼容原 UID|Token 凭据与 iOS 校验码、旧版小写环境变量；展示官方返回的非敏感身份及签到连续天数、累计天数；登录失效和 iOS 客户端校验异常提示；可选日常任务 2、131、30；可选免广告及 N币视频任务；可选五次分享记录与分享奖励；默认查询资产统计；保留随机启动延时、动作间隔与请求超时设置；多账号独立执行与整体失败退出码；完全断网预演、时间轴日志、结构化汇总、青龙脱敏通知。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
 - `scripts/qoder_airscript.js`：逐账号显式签到开关，兼容原账号 JSON 和两种令牌字段命名；优先使用访问令牌，缺少时刷新；活动查询返回 401 后刷新并重试一次；中国区及国际区活动查询，可领取 Credits 活动逐项领取与额度统计；识别今日已领取、活动未开放及待下发；保留可选 Server酱、PushPlus、企业微信逐账号通知，增加青龙汇总通知及全局开关；指定私有账号文件时写回轮换令牌；仅环境变量时只在内存保存；官方非敏感身份显示、逐账号结果、分阶段日志及单行结构化汇总；完全断网预演、参数验证及多账号独立执行。
@@ -359,8 +357,7 @@
 <tr><td rowspan="1"><code>scripts/mimotion.py</code></td><td><code>MIMOTION_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 手机号或邮箱|密码，仅在第一个 | 分割；也支持每行一个 JSON 对象，字段 phone、password，上传时另需 data_json、last_deviceid，可选 min_step、max_step。data_json 是仅含当天一条记录的数组或 JSON 字符串，必须有非空 data 数组和 summary.stp.ttl；summary 可为对象或 JSON 字符串。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="2"><code>scripts/netease_task.py</code></td><td><code>NETEASE_COOKIE</code></td><td>是</td><td>格式：每个非空行一条完整 Cookie，必须包含非空 MUSIC_U 和 __csrf；字段用分号分隔，值中的 =、&amp;、@ 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NETEASE_API_BASE</code></td><td>否</td><td>格式：正式执行必填，断网预演可省略；HTTPS 地址，不含认证信息、查询参数或片段，该服务会接收账号 Cookie。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/nga_sign.py</code></td><td><code>NGA_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，包含字符串字段 uid、token、checksum；uid 为数字字符串；token 是 access_token 值，不是完整 Cookie；checksum 为 __ngaClientChecksum 原值。JSON 解析保留字段文本，不使用 &amp;、@ 或其他字符分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号；兼容 access_uid|access_token，仅按首个竖线分割；iOS 使用单行 JSON 对象，字段为 access_uid、access_token、client_checksum，全部为字符串。JSON 也适用于 Token 含竖线的账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；至少有 accessToken/access_token 或 refreshToken/refresh_token。device 包含非空字符串 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version。enabled=true 或 qiandao=&quot;是&quot; 才签到，默认跳过。可选 name、uid 保留，serverchan、pushplus、qywx 对应原 C/D/E 列的本人通知凭据；企业微信可用机器人 key 或完整地址。不按符号拆账号。；多账号格式以该脚本文档为准</td></tr>
@@ -793,24 +790,21 @@
 <tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：单个令牌；青龙通知失败时使用 HTTPS JSON 接口，业务码 200 才确认送达。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SENDKEY</code></td><td>是</td><td>格式：单个 SendKey；青龙与 PushPlus 均不可用时使用，业务码 0 才确认送达。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>BARK_URL</code></td><td>是</td><td>格式：HTTPS 地址，不含查询参数或片段；保留独立推送，受全局通知开关控制。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="12"><code>scripts/nga_checkin.py</code></td><td><code>NGA_UA</code></td><td>否</td><td>格式：单行 User-Agent，默认 Nga_Official/90409；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_ENABLE_DAILY_MISSIONS</code></td><td>否</td><td>格式：布尔值，默认 0；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_ENABLE_VIDEO_MISSIONS</code></td><td>否</td><td>格式：布尔值，默认 0；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_ENABLE_SHARE_MISSIONS</code></td><td>否</td><td>格式：布尔值，默认 0；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_QUERY_STATS</code></td><td>否</td><td>格式：布尔值，默认 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_RANDOM_DELAY_MAX</code></td><td>否</td><td>格式：0至21600，默认0；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_ACTION_DELAY_SECONDS</code></td><td>否</td><td>格式：0至30，默认1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_VIDEO_DELAY_SECONDS</code></td><td>否</td><td>格式：0至120，默认30；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_HTTP_TIMEOUT</code></td><td>否</td><td>格式：3至60，默认20；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_DRY_RUN</code></td><td>否</td><td>格式：布尔值，默认0；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：布尔值，默认1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="6"><code>scripts/nga_sign.py</code></td><td><code>nga_uid</code></td><td>否</td><td>格式：数字字符串，仅支持一个账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>nga_cookie</code></td><td>是</td><td>格式：access_token 原值，不是完整 Cookie，不使用账号分隔符。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>nga_client_checksum</code></td><td>是</td><td>格式：客户端校验码字符串。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>NGA_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演；默认 0，执行实际签到。预演通知仅模拟，不加载外部通知模块。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录路径，可选。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="15"><code>scripts/nga_checkin.py</code></td><td><code>nga_uid</code></td><td>是</td><td>格式：每行一个值，三个旧版变量必须逐行对应同一账号；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>nga_cookie</code></td><td>是</td><td>格式：每行一个值，三个旧版变量必须逐行对应同一账号；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>nga_client_checksum</code></td><td>是</td><td>格式：每行一个值，三个旧版变量必须逐行对应同一账号；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_UA</code></td><td>否</td><td>格式：默认 Nga_Official/90409；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_DRY_RUN</code></td><td>否</td><td>格式：默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_ENABLE_DAILY_MISSIONS</code></td><td>否</td><td>格式：默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_ENABLE_VIDEO_MISSIONS</code></td><td>否</td><td>格式：默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_ENABLE_SHARE_MISSIONS</code></td><td>否</td><td>格式：默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_QUERY_STATS</code></td><td>否</td><td>格式：默认 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_RANDOM_DELAY_MAX</code></td><td>否</td><td>格式：默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_ACTION_DELAY_SECONDS</code></td><td>否</td><td>格式：默认 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_VIDEO_DELAY_SECONDS</code></td><td>否</td><td>格式：默认 30；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NGA_HTTP_TIMEOUT</code></td><td>否</td><td>格式：默认 20；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：默认 未设置；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="7"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 表示启用；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NS_RANDOM</code></td><td>否</td><td>格式：布尔值，默认 true；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：布尔值，默认 false；多账号格式以该脚本文档为准</td></tr>
@@ -1250,8 +1244,7 @@
 - `scripts/lynkco_qinglong_single.py`：每个非空行一个账号JSON对象，配套刷新令牌和设备标识合并保存；旧变量仅换行按行配对，互不广播，不用&或@分账号；独立处理，任何账号失败整体非零退出。。
 - `scripts/mimotion.py`：每个非空行一个账号，仅在首个 | 分割账号和密码，密码中的其它分隔符保留；上传参数同属该行 JSON 对象。每个账号独立执行，任一失败均非零退出。旧 MIMOTION 数组只作为兼容输入。。
 - `scripts/netease_task.py`：每个非空行一个账号的完整 Cookie；同账号 MUSIC_U 与 __csrf 放在同一行，不以 & 或 @ 分隔账号。逐账号独立处理，任一账号失败时整体非零退出。。
-- `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
-- `scripts/nga_sign.py`：NGA_ACCOUNTS 每个非空行一个账号 JSON 对象，uid、token、checksum 合并在同一对象中。逐账号校验和执行，单账号失败不阻断其他账号；任一账号失败则进程非零退出。旧版三个变量仅兼容单账号。。
+- `scripts/nga_checkin.py`：每个非空行一个账号；优先使用 NGA_ACCOUNT；旧版三个变量逐行对应。账号执行互不影响，任一账号失败整体非零退出。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
 - `scripts/qoder_airscript.js`：每个非空行一个账号 JSON，同账号令牌、设备参数及可选通知凭据合并在同一对象；各账号独立处理，任一账号失败整体非零退出。。
@@ -1698,15 +1691,8 @@
 #### `NGA_ACCOUNT`
 
 - 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：登录NGA官方客户端后，在本人设备的同一条 https://ngabbs.com/nuke.php 请求中读取 access_uid 与 access_token，按 access_uid|access_token 拼成一行；不要分享调试记录。
-- 填写格式：`每行一个账号：access_uid|access_token；只用第一个竖线分隔`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
-#### `NGA_ACCOUNTS`
-
-- 所属脚本：`scripts/nga_sign.py`
-- 获取或设置：登录自己的 NGA iOS 客户端，使用自己控制的 HTTPS 抓包工具查看 ngabbs.com/nuke.php 签到请求，从表单提取 access_uid、access_token 和 __ngaClientChecksum；三个值必须来自同一账号。请勿分享抓包内容。若沿用旧版，可用完整的 nga_uid、nga_cookie、nga_client_checksum 三项替代本项。
-- 填写格式：`每个非空行一个 JSON 对象，包含字符串字段 uid、token、checksum；uid 为数字字符串；token 是 access_token 值，不是完整 Cookie；checksum 为 __ngaClientChecksum 原值。JSON 解析保留字段文本，不使用 &、@ 或其他字符分隔账号。`
+- 获取或设置：登录 NGA 客户端，在自己授权的请求抓包中获取 access_uid 和 access_token；iOS 还需从签到请求获取 __ngaClientChecksum。请勿分享抓包或凭据。保持同一账号的字段配套；出现登录失效时更新凭据，CLIENT ERROR 时重新获取当前 iOS 客户端校验码。
+- 填写格式：`每个非空行一个账号；兼容 access_uid|access_token，仅按首个竖线分割；iOS 使用单行 JSON 对象，字段为 access_uid、access_token、client_checksum，全部为字符串。JSON 也适用于 Token 含竖线的账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `NODESEEK_COOKIE`
@@ -4382,115 +4368,98 @@
 - 填写格式：`HTTPS 地址，不含查询参数或片段；保留独立推送，受全局通知开关控制。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `NGA_UA`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：通常无需设置；如接口要求，可填写获取凭据时NGA官方客户端请求中的 User-Agent。
-- 填写格式：`单行 User-Agent，默认 Nga_Official/90409`
-
-#### `NGA_ENABLE_DAILY_MISSIONS`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：设为 1 明确启用任务2、131、30的计数动作。
-- 填写格式：`布尔值，默认 0`
-
-#### `NGA_ENABLE_VIDEO_MISSIONS`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：设为 1 明确启用免广告及N币视频任务计数；会改变任务/奖励状态。
-- 填写格式：`布尔值，默认 0`
-
-#### `NGA_ENABLE_SHARE_MISSIONS`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：设为 1 明确启用分享记录和奖励领取；仅记录分享事件，不自动发布文本。
-- 填写格式：`布尔值，默认 0`
-
-#### `NGA_QUERY_STATS`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：设为 0 可关闭签到后的资产查询。
-- 填写格式：`布尔值，默认 1`
-
-#### `NGA_RANDOM_DELAY_MAX`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：按需填写执行前随机延迟的最大秒数。
-- 填写格式：`0至21600，默认0`
-
-#### `NGA_ACTION_DELAY_SECONDS`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：按需调整连续日常/分享动作之间的间隔。
-- 填写格式：`0至30，默认1`
-
-#### `NGA_VIDEO_DELAY_SECONDS`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：按需调整视频任务计数之间的间隔；过短可能不被服务端认可。
-- 填写格式：`0至120，默认30`
-
-#### `NGA_HTTP_TIMEOUT`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：按网络状况设置单次HTTPS请求超时秒数。
-- 填写格式：`3至60，默认20`
-
-#### `NGA_DRY_RUN`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：设为 1 仅校验配置并展示计划动作，完全不访问NGA。
-- 填写格式：`布尔值，默认0`
-
-#### `QINGLONG_NOTIFY`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：全局通知开关；设为0、false、no或off关闭。
-- 填写格式：`布尔值，默认1`
-
-#### `QINGLONG_NOTIFY_DIR`
-
-- 所属脚本：`scripts/nga_checkin.py`
-- 获取或设置：仅当notify.py不在青龙标准路径时，填写其所在目录。
-- 填写格式：`本地目录路径`
-
 #### `nga_uid`
 
-- 所属脚本：`scripts/nga_sign.py`
-- 获取或设置：旧版单账号兼容项：从本人 iOS 客户端签到请求读取 access_uid，须同时设置 nga_cookie、nga_client_checksum。设置 NGA_ACCOUNTS 后忽略本项。
-- 填写格式：`数字字符串，仅支持一个账号。`
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：旧版兼容输入：从自己授权的 NGA iOS 签到请求获取 access_uid；仅未设置 NGA_ACCOUNT 时生效，建议迁移为 NGA_ACCOUNT 单行 JSON。
+- 填写格式：`每行一个值，三个旧版变量必须逐行对应同一账号；不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `nga_cookie`
 
-- 所属脚本：`scripts/nga_sign.py`
-- 获取或设置：旧版单账号兼容项：从本人 iOS 客户端签到请求读取 access_token，须同时设置 nga_uid、nga_client_checksum。
-- 填写格式：`access_token 原值，不是完整 Cookie，不使用账号分隔符。`
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：旧版兼容输入：从自己授权的 NGA iOS 签到请求获取 access_token；仅未设置 NGA_ACCOUNT 时生效，建议迁移为 NGA_ACCOUNT 单行 JSON。
+- 填写格式：`每行一个值，三个旧版变量必须逐行对应同一账号；不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `nga_client_checksum`
 
-- 所属脚本：`scripts/nga_sign.py`
-- 获取或设置：旧版单账号兼容项：从本人 iOS 客户端签到请求读取 __ngaClientChecksum；安卓端或过期校验码可能无法通过校验，须更新同账号的 iOS 请求值。
-- 填写格式：`客户端校验码字符串。`
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：旧版兼容输入：从自己授权的 NGA iOS 签到请求获取 __ngaClientChecksum；仅未设置 NGA_ACCOUNT 时生效，建议迁移为 NGA_ACCOUNT 单行 JSON。
+- 填写格式：`每行一个值，三个旧版变量必须逐行对应同一账号；不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `NGA_UA`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：客户端请求的 User-Agent；无 iOS 校验码时生效，原默认值保持不变。
+- 填写格式：`默认 Nga_Official/90409`
 
 #### `NGA_DRY_RUN`
 
-- 所属脚本：`scripts/nga_sign.py`
-- 获取或设置：在青龙环境变量中手动设置，验证安装与参数时启用。
-- 填写格式：`1、true、yes、on 启用完全断网预演；默认 0，执行实际签到。预演通知仅模拟，不加载外部通知模块。`
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：设为 1 时只检查配置与动作计划；不请求接口、不延时，也不调用可能联网的通知器。
+- 填写格式：`默认 0`
+
+#### `NGA_ENABLE_DAILY_MISSIONS`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：显式开启日常任务 2、131、30，会改变任务及奖励状态。
+- 填写格式：`默认 0`
+
+#### `NGA_ENABLE_VIDEO_MISSIONS`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：显式开启免广告初始化、四次免广告视频任务和五次 N币视频任务。
+- 填写格式：`默认 0`
+
+#### `NGA_ENABLE_SHARE_MISSIONS`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：显式开启五次分享记录及分享奖励，不发布文字内容。
+- 填写格式：`默认 0`
+
+#### `NGA_QUERY_STATS`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：查询资产统计，不改变账号状态。
+- 填写格式：`默认 1`
+
+#### `NGA_RANDOM_DELAY_MAX`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：正式运行前随机等待的最大秒数，范围 0 至 21600。
+- 填写格式：`默认 0`
+
+#### `NGA_ACTION_DELAY_SECONDS`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：日常与分享动作间隔秒数，范围 0 至 30。
+- 填写格式：`默认 1`
+
+#### `NGA_VIDEO_DELAY_SECONDS`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：视频动作间隔秒数，范围 0 至 120。
+- 填写格式：`默认 30`
+
+#### `NGA_HTTP_TIMEOUT`
+
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：每次 HTTP 请求超时秒数，范围 3 至 60。
+- 填写格式：`默认 20`
 
 #### `QINGLONG_NOTIFY`
 
-- 所属脚本：`scripts/nga_sign.py`
-- 获取或设置：在青龙环境变量中手动设置通知总开关。
-- 填写格式：`默认 1；0、false、no、off 关闭通知。`
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：青龙全局通知开关；0、false、no、off 关闭，通知失败不影响业务退出码。
+- 填写格式：`默认 1`
 
 #### `QINGLONG_NOTIFY_DIR`
 
-- 所属脚本：`scripts/nga_sign.py`
-- 获取或设置：填写青龙已有 notify.py 或 sendNotify.js 所在目录；无需设置时优先导入 notify，再检查青龙标准脚本目录，不自动下载模块。
-- 填写格式：`本地通知模块目录路径，可选。`
+- 所属脚本：`scripts/nga_checkin.py`
+- 获取或设置：可选青龙通知模块目录，含 notify.py 或 sendNotify.js；业务运行不依赖该目录。
+- 填写格式：`默认 未设置`
 
 #### `NODESEEK_DRY_RUN`
 
@@ -6911,8 +6880,7 @@
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 - `scripts/mimotion.py`：SHA-256 `4e8149eb7fd9f48b6a92c4b22190c633a40d7def1754bb196a3c26bcbf30d7cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
 - `scripts/netease_task.py`：SHA-256 `a94fc863e187c81a29f6c44ab88c30162bc3d1570ebbe602a70ed4824a198fbe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a8a311f3f5aaa2e6`。
-- `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
-- `scripts/nga_sign.py`：SHA-256 `469a2e36b306f740a84908dd8c981c4c929afe956f91c3c22a05f0463efc9779`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f7a3490b78ba76fa`。
+- `scripts/nga_checkin.py`：SHA-256 `147ff1cce75da800dc48ed5dade6222282afff8f7bd6f1bbbdebda74ede5242e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
 - `scripts/qoder_airscript.js`：SHA-256 `f2de4d37431803d0d85df63bf97e7b2e936efbb3e4686d7e2bb2a15f24d91b07`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
@@ -7046,8 +7014,7 @@
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
 - `scripts/mimotion.py`：正式登录会申请 Zepp 授权及登录令牌。；仅 MIMOTION_ACTION=upload 时上传本人提供的当天运动记录，修改 summary.stp.ttl；其它提供的记录字段保持原样，不合成心率或睡眠数据。；启用通知时调用青龙通知模块发送脱敏汇总，预演禁止联网。。
 - `scripts/netease_task.py`：手机、网页与云贝签到改变签到记录或积分；领取已完成云贝任务奖励；领取 VIP 成长值；仅显式开启时提交模拟播放历史记录；正式执行且通知开启时发送青龙或备用渠道通知，并按配置发送 Bark 通知。
-- `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
-- `scripts/nga_sign.py`：实际运行时提交 NGA 每日签到请求，可能更新签到记录、连续天数及累计天数。；实际运行且通知开启时，通过青龙通知模块发送脱敏任务总结。。
+- `scripts/nga_checkin.py`：每日签到改变签到及奖励状态；显式开启时增加日常任务计数及奖励状态；显式开启时增加视频任务计数、免广告与 N币奖励状态；显式开启时提交分享记录并领取分享奖励。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
 - `scripts/qoder_airscript.js`：显式启用账号领取活动奖励；必要时刷新令牌，可能导致刷新令牌轮换；显式配置私有账号文件时写回刷新后的令牌；通知开启时发送青龙汇总及已配置的逐账号通知。
@@ -7184,7 +7151,6 @@
 - `scripts/mimotion.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/mimotion/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/netease_task.py`：上游 `Han-cy77/Qinglong_auto` / `netease_task.py` / `4bac7c4f709db60a648c4bd498e99f9c7e66b63b`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
-- `scripts/nga_sign.py`：上游 `yongyeym/AutoSign_QingLong` / `nga_sign.py` / `f13a88e488c2d396e24cce8e9b6e27eefcbccad6`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/qoder_airscript.js`：上游 `wallechfox/qoder-checkin` / `qoder-checkin-金山云文档/Qoder签到-金山文档AirScript.js` / `19ab6365c1f0759bb424a3d69e7de8dca89bf75d`。
