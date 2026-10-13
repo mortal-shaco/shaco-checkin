@@ -2366,6 +2366,129 @@
       }
     },
     {
+      "catalogId": "be3b140cb6fdd0e3",
+      "applicationKey": "fw",
+      "checkProfile": {
+        "requiredEnv": [
+          "fwxs"
+        ],
+        "optionalEnv": [
+          "FWXS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "FWXS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "FWXS_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到成功",
+          "☑️ 今日已签到",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "登录有效性检查并展示官方公开 UID",
+          "废文网每日签到；以个人中心总签到天数增长确认成功",
+          "查询总签到天数与连续签到天数；明确的北京时间当天签到记录支持已签到判定",
+          "每行一个账号独立执行，兼容原 fwxs 变量与首个 # 后的昵称备注解析",
+          "完全断网预演及参数检查",
+          "青龙通知、分阶段脱敏日志、逐账号统计与单行结构化任务汇总"
+        ],
+        "sideEffects": [
+          "通过 GET /qiandao 完成废文网签到，增加签到天数及服务端签到奖励（以站点规则为准）",
+          "正式执行结束后通过青龙通知渠道发送脱敏任务统计（可关闭）"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "废文网签到",
+      "path": "scripts/fwxs_checkin.js",
+      "sha256": "e9f6410e225fbef75b20d661e4122ea2bece6b41b7908f17f4f42244f151780c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "zhui-zi/fwcheckin",
+        "branch": "main",
+        "commit": "7793a795d603df34f0ebdbc7d6810427f84f59c6",
+        "originalPath": "fwxs_checkin.js"
+      },
+      "cron": "5 8 * * *",
+      "command": "node scripts/fwxs_checkin.js",
+      "environment": [
+        {
+          "name": "fwxs",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录废文网 https://xn--pxtr7m.net，在开发者工具的网络面板选中本站已登录请求，复制请求头 Cookie 的完整值，不包含 Cookie: 前缀。失效时重新登录获取；不要分享或写入仓库。",
+          "format": "每个非空行一个账号的完整 Cookie；兼容 Cookie#昵称备注，仅按首个 # 分割，后续备注完整保留但为防泄漏不输出。禁止用 @ 或 & 分隔账号。"
+        },
+        {
+          "name": "FWXS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置；预演用 1，正式执行用 0 或留空。",
+          "format": "1 表示完全断网预演，包括模拟通知；不会验证真实账号或执行签到。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需在青龙环境变量中设置，默认启用。",
+          "format": "0、false、no、off 关闭通知，其他值启用；断网预演仅模拟通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙公共通知模块 sendNotify.js 所在目录；默认查找 /ql/data/scripts、/ql/scripts 和脚本目录。",
+          "format": "本机目录路径；通知模块不可用或失败时不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "fwxs 每个非空行一个账号；同一账号仅需完整 Cookie。逐账号独立执行，任一账号失败时整体非零退出。昵称备注兼容解析，日志采用账号序号与官方公开 UID，防止备注泄露凭据。"
+      },
+      "dependencies": [],
+      "features": [
+        "登录有效性检查并展示官方公开 UID",
+        "废文网每日签到；以个人中心总签到天数增长确认成功",
+        "查询总签到天数与连续签到天数；明确的北京时间当天签到记录支持已签到判定",
+        "每行一个账号独立执行，兼容原 fwxs 变量与首个 # 后的昵称备注解析",
+        "完全断网预演及参数检查",
+        "青龙通知、分阶段脱敏日志、逐账号统计与单行结构化任务汇总"
+      ],
+      "sideEffects": [
+        "通过 GET /qiandao 完成废文网签到，增加签到天数及服务端签到奖励（以站点规则为准）",
+        "正式执行结束后通过青龙通知渠道发送脱敏任务统计（可关闭）"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/be3b140cb6fdd0e3",
+        "candidateSha256": "a450184ab0b0b7adf0350eb48b7fe994ea903e0f36d007c39ac957b876a31cf3"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "a450184ab0b0b7adf0350eb48b7fe994ea903e0f36d007c39ac957b876a31cf3",
+        "releaseSha256": "e9f6410e225fbef75b20d661e4122ea2bece6b41b7908f17f4f42244f151780c",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "825e404e9590b589",
       "applicationKey": "fxh",
       "checkProfile": {
