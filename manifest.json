@@ -5390,6 +5390,136 @@
       }
     },
     {
+      "catalogId": "d763137ff5e4fad6",
+      "applicationKey": "oreoslab/checkinpanel::airport",
+      "checkProfile": {
+        "requiredEnv": [
+          "AIRPORT_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "AIRPORT",
+          "AIRPORT_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AIRPORT_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "AIRPORT_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到已验证成功",
+          "☑️ 今日签到已完成",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用机场邮箱和密码登录 SSPanel，正确编码表单并维护会话 Cookie。",
+          "每日签到，仅明确 ret=1 或明确今日已签到业务响应判定成功。",
+          "查询 editXY 主题的用户等级、到期时间和剩余流量；主题不支持的字段明确跳过。",
+          "支持多机场多账号、旧 JSON 数组输入、逐账号独立处理和失败非零退出。",
+          "完全断网预演、带时间戳的分阶段脱敏日志、逐账号统计和单行 TASK_SUMMARY 汇总。",
+          "在官方接口返回公开身份时展示昵称、用户名、显示名称或公开 UID，不输出凭据或原始响应。",
+          "通过青龙 notify.py 发送脱敏任务汇总并支持全局开关；断网预演仅展示通知摘要。"
+        ],
+        "sideEffects": [
+          "向机场发起每日签到，可能领取流量等奖励。",
+          "登录时创建服务器账号会话。",
+          "开启通知的正式运行通过青龙通知渠道发送脱敏任务汇总。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "机场签到",
+      "path": "scripts/ck_airport.py",
+      "sha256": "9a5dc96063ef5b2e77ac8c1bab75562901852657bb2d51fa1d5f7ce2d859f848",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_airport.py"
+      },
+      "cron": "20 10 * * *",
+      "command": "python3 scripts/ck_airport.py",
+      "environment": [
+        {
+          "name": "AIRPORT_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在各机场官方网站注册账号，填写官网 HTTPS 地址和登录邮箱、密码；从青龙环境变量界面添加本变量。不需要获取 Cookie，不读取私有仓库配置。",
+          "format": "每个非空行一个 JSON 对象，包含 url、email、password 三个非空字符串。同账号凭据放在同一对象中，特殊字符按 JSON 转义；不能用 & 或 @ 分隔账号。兼容 JSON 对象数组。"
+        },
+        {
+          "name": "AIRPORT",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧 AIRPORT 配置兼容输入：将原配置中的 url、email、password 转为 JSON 填入青龙。推荐迁移到 AIRPORT_ACCOUNTS；两个变量都设置时优先 AIRPORT_ACCOUNTS。",
+          "format": "支持 JSON 对象数组或每行一个 JSON 对象，字段与 AIRPORT_ACCOUNTS 一致。"
+        },
+        {
+          "name": "AIRPORT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1，正式运行设为 0 或不设置。",
+          "format": "1 表示完全断网预演：校验配置并展示任务阶段，不登录、不签到、不发送网络通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，默认开启。",
+          "format": "0、false、no、off 关闭通知，其他非空值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在自定义青龙通知位置时填写已有 notify.py 所在目录。也自动查找可导入的 notify 模块、脚本同目录和青龙标准目录。",
+          "format": "目录路径；通知模块不存在、失败或超时不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，凭据使用 JSON 转义并保持值原样。逐账号独立处理，任一账号配置、登录、签到或网络查询失败则整体非零退出。兼容旧 JSON 数组。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用机场邮箱和密码登录 SSPanel，正确编码表单并维护会话 Cookie。",
+        "每日签到，仅明确 ret=1 或明确今日已签到业务响应判定成功。",
+        "查询 editXY 主题的用户等级、到期时间和剩余流量；主题不支持的字段明确跳过。",
+        "支持多机场多账号、旧 JSON 数组输入、逐账号独立处理和失败非零退出。",
+        "完全断网预演、带时间戳的分阶段脱敏日志、逐账号统计和单行 TASK_SUMMARY 汇总。",
+        "在官方接口返回公开身份时展示昵称、用户名、显示名称或公开 UID，不输出凭据或原始响应。",
+        "通过青龙 notify.py 发送脱敏任务汇总并支持全局开关；断网预演仅展示通知摘要。"
+      ],
+      "sideEffects": [
+        "向机场发起每日签到，可能领取流量等奖励。",
+        "登录时创建服务器账号会话。",
+        "开启通知的正式运行通过青龙通知渠道发送脱敏任务汇总。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d763137ff5e4fad6",
+        "candidateSha256": "9a5dc96063ef5b2e77ac8c1bab75562901852657bb2d51fa1d5f7ce2d859f848"
+      }
+    },
+    {
       "catalogId": "cbcac1d0442bb8ef",
       "applicationKey": "oreoslab/checkinpanel::baidu",
       "checkProfile": {
@@ -5508,6 +5638,264 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/cbcac1d0442bb8ef",
         "candidateSha256": "ab3ff2232123e9a8d0a05f1a738b6b3c632ff7797d6fb51ecc32f0565ed12423"
+      }
+    },
+    {
+      "catalogId": "3f0acba187ca5285",
+      "applicationKey": "oreoslab/checkinpanel::bilibili",
+      "checkProfile": {
+        "requiredEnv": [
+          "BILIBILI_COOKIES"
+        ],
+        "optionalEnv": [
+          "BILIBILI_COOKIE",
+          "BILIBILI",
+          "BILIBILI_DRY_RUN",
+          "BILIBILI_MANGA",
+          "BILIBILI_LIVE",
+          "BILIBILI_WATCH",
+          "BILIBILI_SHARE",
+          "BILIBILI_COIN_NUM",
+          "BILIBILI_COIN_TYPE",
+          "BILIBILI_SILVER2COIN",
+          "BILIBILI_VIP_TYPES",
+          "BILIBILI_MANGA_VIP_REWARD",
+          "BILIBILI_CHARGE_NUM",
+          "BILIBILI_CHARGE_UID",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BILIBILI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BILIBILI_DRY_RUN": "0",
+          "BILIBILI_MANGA": "1",
+          "BILIBILI_LIVE": "1",
+          "BILIBILI_WATCH": "0",
+          "BILIBILI_SHARE": "0",
+          "BILIBILI_COIN_NUM": "0",
+          "BILIBILI_COIN_TYPE": "1",
+          "BILIBILI_SILVER2COIN": "0",
+          "BILIBILI_MANGA_VIP_REWARD": "0",
+          "BILIBILI_CHARGE_NUM": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"failureCount\":0",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "登录状态验证并显示官方昵称及公开 UID",
+          "漫画客户端签到与重复签到识别",
+          "直播签到与重复签到识别",
+          "查询今日经验、当前经验与六级升级天数估算",
+          "查询直播银瓜子、金瓜子与硬币余额",
+          "查询分区最新视频及关注用户投稿以供选片",
+          "显式开启视频观看进度上报与视频分享任务",
+          "按每日目标投币并点赞，扣除今日已完成投币数量",
+          "显式开启银瓜子兑换硬币",
+          "按类型领取大会员权益券与漫画大会员福利",
+          "显式开启向指定 UP 主 B 币充电",
+          "多账号配置、独立处理、失败闭合及完全断网预演",
+          "分阶段脱敏日志、单行 TASK_SUMMARY 汇总与青龙通知"
+        ],
+        "sideEffects": [
+          "漫画签到改变签到记录并可能发放奖励",
+          "直播签到改变签到记录并可能发放奖励",
+          "启用观看上报时写入观看历史及进度",
+          "启用分享时调用视频分享任务接口并可能获得经验",
+          "启用投币时花费硬币并为视频点赞",
+          "启用兑换时花费银瓜子兑换硬币",
+          "启用大会员领取时改变权益券或漫画福利领取记录",
+          "启用充电时花费 B 币余额向指定 UP 主充电",
+          "正式执行且通知开启时向青龙配置的通知渠道发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Bilibili 每日任务",
+      "path": "scripts/ck_bilibili.py",
+      "sha256": "7d12bb124f137766e58e75551367d57af0e15dbfc07efc8da129bc6b71df820b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_bilibili.py"
+      },
+      "cron": "30 8 * * *",
+      "command": "python3 scripts/ck_bilibili.py",
+      "environment": [
+        {
+          "name": "BILIBILI_COOKIES",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "本人登录哔哩哔哩网页后，在浏览器开发者工具的网络面板选择发往 api.bilibili.com 的请求，复制完整 Cookie 请求头值；不要复制到公开日志。漫画与直播须使用同一账号可用的登录 Cookie。",
+          "format": "每个非空行一个完整 Cookie；必须包含 SESSDATA 和 bili_jct；用分号分隔字段，每个字段只按首个等号拆分，不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "BILIBILI_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容输入，与 BILIBILI_COOKIES 格式相同；规范变量优先。",
+          "format": "每行一个完整 Cookie。"
+        },
+        {
+          "name": "BILIBILI",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游原 BILIBILI 配置：把原 get_data 配置中的账号数组导出为 JSON 环境变量；不读取私有配置文件。仅在两种 Cookie 环境变量均未提供时使用。",
+          "format": "JSON 账号数组，或含 BILIBILI 数组的对象；每项含 cookie，可选 coin_num（0~5）、coin_type（0 或 1）、silver2coin（布尔值）。"
+        },
+        {
+          "name": "BILIBILI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 启用完全断网预演，验证全部账号配置，不调用业务或通知网络。",
+          "format": "1 或 0，默认 0。"
+        },
+        {
+          "name": "BILIBILI_MANGA",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "漫画签到任务开关。",
+          "format": "1 或 0，默认 1；客户端平台为 android。"
+        },
+        {
+          "name": "BILIBILI_LIVE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "直播签到任务开关。",
+          "format": "1 或 0，默认 1。"
+        },
+        {
+          "name": "BILIBILI_WATCH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式开启观看进度上报；会改变观看历史，不代表真实观看。",
+          "format": "1 或 0，默认 0；分区最新视频上报 300 秒。"
+        },
+        {
+          "name": "BILIBILI_SHARE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式开启视频分享任务接口；不发布任何文本，不调用随机文本提供方。",
+          "format": "1 或 0，默认 0。"
+        },
+        {
+          "name": "BILIBILI_COIN_NUM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本人选择每日投币目标；开启会花费硬币并附加点赞。兼容配置中的 coin_num 优先。",
+          "format": "整数 0~5，默认 0；从当日投币经验扣除已完成数量，目标不够时非零退出。"
+        },
+        {
+          "name": "BILIBILI_COIN_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "保留上游选片逻辑；兼容配置中的 coin_type 优先。",
+          "format": "0 使用分区最新视频，1 追加关注用户最近投稿并优先倒序选择；默认 1。"
+        },
+        {
+          "name": "BILIBILI_SILVER2COIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式开启银瓜子兑换硬币；兼容配置中显式 silver2coin 优先。不再默认花费银瓜子。",
+          "format": "1 或 0，默认 0。"
+        },
+        {
+          "name": "BILIBILI_VIP_TYPES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按大会员权益选择需要领取的类型；保留原有领取接口能力，只有明确启用时请求。",
+          "format": "逗号分隔 1~5：1 B 币券，2 会员购优惠券，3 漫画福利券，4 会员购包邮券，5 漫画商城优惠券；默认空，不领取。"
+        },
+        {
+          "name": "BILIBILI_MANGA_VIP_REWARD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式开启漫画大会员福利领取，须有对应会员资格。",
+          "format": "1 或 0，默认 0；reason_id 为 1。"
+        },
+        {
+          "name": "BILIBILI_CHARGE_NUM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本人决定是否开启 B 币充电。此操作花费 B 币余额，所有配置账号都会执行；默认关闭。必须同时配置接收人 UID。",
+          "format": "默认 0 关闭；开启时为整数 2~9999 贝壳，优先扣 B 币余额。"
+        },
+        {
+          "name": "BILIBILI_CHARGE_UID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人确认的 UP 主空间链接取得公开 UID，仅在启用充电时必需。",
+          "format": "正整数公开 UID；默认未设置。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关；成功、部分失败、失败及配置错误均提交脱敏总结；预演只展示通知摘要以保持断网。通知失败不改变业务退出码。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙已有 notify.py 所在目录；也支持 import notify.send 和标准青龙路径。此文件只用于通知，不是业务依赖。",
+          "format": "可选目录路径，不包含凭据。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "BILIBILI_COOKIES 每个非空行一个账号的完整 Cookie；同账号 SESSDATA 与 bili_jct 放在同一行，字段只在首个等号拆分。逐账号隔离，任一账号失败整体非零退出；仍接受原 BILIBILI JSON 账号数组兼容配置。"
+      },
+      "dependencies": [],
+      "features": [
+        "登录状态验证并显示官方昵称及公开 UID",
+        "漫画客户端签到与重复签到识别",
+        "直播签到与重复签到识别",
+        "查询今日经验、当前经验与六级升级天数估算",
+        "查询直播银瓜子、金瓜子与硬币余额",
+        "查询分区最新视频及关注用户投稿以供选片",
+        "显式开启视频观看进度上报与视频分享任务",
+        "按每日目标投币并点赞，扣除今日已完成投币数量",
+        "显式开启银瓜子兑换硬币",
+        "按类型领取大会员权益券与漫画大会员福利",
+        "显式开启向指定 UP 主 B 币充电",
+        "多账号配置、独立处理、失败闭合及完全断网预演",
+        "分阶段脱敏日志、单行 TASK_SUMMARY 汇总与青龙通知"
+      ],
+      "sideEffects": [
+        "漫画签到改变签到记录并可能发放奖励",
+        "直播签到改变签到记录并可能发放奖励",
+        "启用观看上报时写入观看历史及进度",
+        "启用分享时调用视频分享任务接口并可能获得经验",
+        "启用投币时花费硬币并为视频点赞",
+        "启用兑换时花费银瓜子兑换硬币",
+        "启用大会员领取时改变权益券或漫画福利领取记录",
+        "启用充电时花费 B 币余额向指定 UP 主充电",
+        "正式执行且通知开启时向青龙配置的通知渠道发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3f0acba187ca5285",
+        "candidateSha256": "7d12bb124f137766e58e75551367d57af0e15dbfc07efc8da129bc6b71df820b"
       }
     },
     {
@@ -5760,6 +6148,136 @@
         "type": "qinglong-discovery-metadata",
         "validatedSha256": "f0db6c24d95b12149b23e26b1a152acd7959f6437d45859238c6a3a0c2d9b606",
         "releaseSha256": "5ee4485d4cbbe36ccff6b5fd298dc3d0cba445e2a35d6dab5929a48454d7159b",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "f5d67f6a8e38d7ae",
+      "applicationKey": "oreoslab/checkinpanel::du163",
+      "checkProfile": {
+        "requiredEnv": [
+          "DU163_COOKIE"
+        ],
+        "optionalEnv": [
+          "DU163",
+          "DU163_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DU163_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到成功"
+        ],
+        "features": [
+          "网易蜗牛读书每日签到，保留上游接口、表单字段及每日 09:52 定时",
+          "支持 Cookie 中提取 _xsrf 和逐账号可选 User-Agent",
+          "业务码 0 确认签到成功，并展示有效的连续签到天数",
+          "多个账号独立运行、参数校验、限时请求和失败闭合",
+          "展示官方返回的非敏感昵称、用户名、显示名称或公开 UID",
+          "完全断网预演、分阶段脱敏日志及单行结构化任务统计",
+          "通过青龙 sendNotify.js 发送脱敏通知，通知异常不改变业务退出码"
+        ],
+        "sideEffects": [
+          "真实模式向官方提交每日签到，可能增加连续签到天数和官方签到奖励",
+          "通知启用且青龙通知可用时发送任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "网易蜗牛读书",
+      "path": "scripts/ck_du163.js",
+      "sha256": "75d6aa77f89a9e3f51773b5e963b147b2ae8537d66f1a55ac7efd735f1c808e0",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_du163.js"
+      },
+      "cron": "52 9 * * *",
+      "command": "node scripts/ck_du163.js",
+      "environment": [
+        {
+          "name": "DU163_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录网易蜗牛读书官方网站，通过浏览器开发者工具网络面板找到 sign.json 签到请求，复制请求头 Cookie（必须含非空 _xsrf）；可同时复制 User-Agent。凭据仅存入青龙环境变量，不要分享。",
+          "format": "每个非空行一个账号：完整 Cookie 或 完整 Cookie|User-Agent。只在第一个竖线处分割，后续竖线保留在 User-Agent 中。Cookie 内的分号保持原样。"
+        },
+        {
+          "name": "DU163",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧 DU163 名称；获取方法同 DU163_COOKIE。旧私有 utils 的账号对象配置须转为逐行 Cookie 输入。",
+          "format": "与 DU163_COOKIE 相同；仅在 DU163_COOKIE 为空时使用。"
+        },
+        {
+          "name": "DU163_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置为 1 启用完全断网预演。",
+          "format": "1、true、yes、on 启用；其他值执行真实签到。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需配置青龙全局通知开关，默认启用。",
+          "format": "0、false、no、off 关闭；其他值启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有通知功能；自定义安装时填写 sendNotify.js 所在目录。默认查找 /ql/data/scripts 与 /ql/scripts。",
+          "format": "本地目录路径；仅通知使用，不参与业务请求。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，空行忽略；Cookie 与可选 User-Agent 在同一行，用第一个竖线分隔。逐账号独立处理，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "网易蜗牛读书每日签到，保留上游接口、表单字段及每日 09:52 定时",
+        "支持 Cookie 中提取 _xsrf 和逐账号可选 User-Agent",
+        "业务码 0 确认签到成功，并展示有效的连续签到天数",
+        "多个账号独立运行、参数校验、限时请求和失败闭合",
+        "展示官方返回的非敏感昵称、用户名、显示名称或公开 UID",
+        "完全断网预演、分阶段脱敏日志及单行结构化任务统计",
+        "通过青龙 sendNotify.js 发送脱敏通知，通知异常不改变业务退出码"
+      ],
+      "sideEffects": [
+        "真实模式向官方提交每日签到，可能增加连续签到天数和官方签到奖励",
+        "通知启用且青龙通知可用时发送任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/f5d67f6a8e38d7ae",
+        "candidateSha256": "2220f0e0795d09274e9a6d00c1f3188b5c400858f43f05b99267c40071218cec"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "2220f0e0795d09274e9a6d00c1f3188b5c400858f43f05b99267c40071218cec",
+        "releaseSha256": "75d6aa77f89a9e3f51773b5e963b147b2ae8537d66f1a55ac7efd735f1c808e0",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
