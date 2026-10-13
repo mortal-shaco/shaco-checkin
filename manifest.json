@@ -2787,21 +2787,25 @@
         },
         "successPatterns": [
           "签到成功",
-          "今日已签到"
+          "今日已签到",
+          "\"status\":\"success\""
         ],
         "features": [
-          "Cookie 登录验证、WAF 解码及论坛页回退",
-          "每日签到，严格识别成功和今日已签到",
-          "签到前后读取恩山币及积分，保留积分页地址回退和临时错误重试",
-          "展示官方公开用户名、用户组、贡献及余额变化",
-          "每行一个账号，独立执行且失败非零退出",
-          "可选随机启动延迟，默认关闭等待，兼容上游参数和定时",
-          "完全断网配置预演",
-          "青龙通知及带时间戳分阶段日志，账号和任务统计，保留 SUMMARY_JSON 并追加 TASK_SUMMARY"
+          "使用 Cookie 验证登录，保留签到页 WAF 解码、论坛页回退和响应 Cookie 更新。",
+          "获取隐藏字段、退出链接或 JavaScript 中的 formhash，提交每日签到，严格识别成功及今日已签到。",
+          "在已验证的签到响应提供连续签到天数时展示天数，并在结构化账号结果中输出；未提供时不推测。",
+          "签到前后查询恩山币和积分，保留四个积分页地址回退与临时错误重试，展示余额变化。",
+          "展示官方公开用户名、用户组及贡献，隐藏 Cookie、会话及原始响应。",
+          "每行一个账号独立执行，任一失败非零退出，配置错误同样非零退出。",
+          "保持每日 12:39 定时、兼容旧参数及可选随机启动延迟，默认无等待。",
+          "完全断网配置预演，跳过登录、查询、签到和通知网络发送，不宣称真实业务成功。",
+          "带时间戳的分阶段日志、账号及任务统计，保留 SUMMARY_JSON 并输出唯一单行 TASK_SUMMARY。",
+          "按全局开关生成或发送青龙脱敏通知，通知不可用或失败不改变业务退出码。"
         ],
         "sideEffects": [
-          "提交每日签到，可能增加恩山币和积分",
-          "正式运行且通知开启时通过青龙发送脱敏任务总结"
+          "正式运行提交每日签到，可能增加恩山币和积分。",
+          "正式访问论坛可能产生论坛自身的登录奖励或访问记录。",
+          "正式运行且通知开启时，通过青龙通知模块发送脱敏任务汇总。"
         ]
       },
       "postReview": {
@@ -2810,7 +2814,7 @@
       },
       "displayName": "恩山论坛签到",
       "path": "scripts/enshan_checkin.py",
-      "sha256": "c564768903f243711988991d3a8883c99b189a04708c3b8d89660b5988c0d47e",
+      "sha256": "7bb85fd34e7108fcc1553fb6c5283cf6d86723642a4e039b096267b8d7429d48",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -2818,7 +2822,19 @@
         "repository": "agluo/ql-script-hub",
         "branch": "master",
         "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-        "originalPath": "enshan_checkin.py"
+        "originalPath": "enshan_checkin.py",
+        "related": [
+          {
+            "repository": "Sitoi/dailycheckin",
+            "url": "https://github.com/Sitoi/dailycheckin.git",
+            "branch": "main",
+            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+            "originalPath": "dailycheckin/enshan/main.py",
+            "catalogId": "46a1b51270c7db38",
+            "sha256": "92398db5dc94242ae4db65f8cb2c3cbe7f3620a235ae76ac61f8323f57ab7721",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "39 12 * * *",
       "command": "python3 scripts/enshan_checkin.py",
@@ -2827,99 +2843,102 @@
           "name": "ENSHAN_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "浏览器登录恩山论坛后，在开发者工具网络面板复制本人已登录请求的完整 Cookie 请求头。青龙面板每行填写一个账号，切勿公开。",
-          "format": "每个非空行一个完整 Cookie 请求头；字段用分号分隔，不用 && 或 @ 分隔账号"
+          "howToGet": "在浏览器登录恩山无线论坛，打开开发者工具的网络面板，访问论坛页面，从该请求头复制完整 Cookie；仅存入青龙环境变量，不公开或写入日志。",
+          "format": "每个非空行填写一个账号的完整 Cookie，保留分号及等号；禁止使用 &&、& 或 @ 分隔账号。"
         },
         {
           "name": "enshan_cookie",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容上游凭据变量，获取方式同 ENSHAN_COOKIE；仅在 ENSHAN_COOKIE 未设置时采用。",
-          "format": "每个非空行一个完整 Cookie"
+          "howToGet": "旧版兼容输入，获取方法同 ENSHAN_COOKIE；建议迁移到 ENSHAN_COOKIE。",
+          "format": "仅在未设置 ENSHAN_COOKIE 时读取，每行一个完整 Cookie。"
         },
         {
           "name": "ENSHAN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙面板自行设置，启用后不发送任何网络请求、执行等待或调用通知模块。",
-          "format": "1、true、yes、on 启用；默认关闭"
+          "howToGet": "断网预演时设为 1；正式运行省略或设为 0。",
+          "format": "1、true、yes、on 开启；默认关闭。"
         },
         {
           "name": "ENSHAN_HTTP_TIMEOUT",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙面板按网络情况设置。",
-          "format": "5 至 120 的整数秒，默认 20"
+          "howToGet": "按网络情况设置请求超时，无需从账号获取。",
+          "format": "5 至 120 的整数秒，默认 20。"
         },
         {
           "name": "ENSHAN_MAX_RANDOM_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙面板自行设置随机启动延迟，默认不等待。",
-          "format": "0 至 3600 的整数秒，默认 0；优先于 MAX_RANDOM_DELAY"
+          "howToGet": "需要随机错峰时自行设置；默认不等待。",
+          "format": "0 至 3600 的整数秒，默认 0；优先于 MAX_RANDOM_DELAY。"
         },
         {
           "name": "MAX_RANDOM_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "兼容上游延迟变量；仅在 ENSHAN_MAX_RANDOM_DELAY 未设置时使用。",
-          "format": "0 至 3600 的整数秒，默认 0"
+          "howToGet": "旧版随机启动延迟兼容设置。",
+          "format": "0 至 3600 的整数秒，仅在未设置 ENSHAN_MAX_RANDOM_DELAY 时读取；默认 0。"
         },
         {
           "name": "RANDOM_SIGNIN",
           "required": false,
           "sensitive": false,
-          "howToGet": "兼容上游随机延迟开关；关闭会停用已配置的随机启动延迟。",
-          "format": "1、true、yes、on 启用；默认启用，但延迟上限默认 0"
+          "howToGet": "需要关闭随机启动延迟时设为 0。",
+          "format": "1、true、yes、on 开启；默认开启，仅最大延迟大于 0 时等待。"
         },
         {
           "name": "ENSHAN_PRIVACY_MODE",
           "required": false,
           "sensitive": false,
-          "howToGet": "保留上一版维护契约参数兼容；依当前要求公开用户名直接显示，凭据始终隐藏。",
-          "format": "布尔值，默认 true；优先于 PRIVACY_MODE，不再遮蔽公开身份"
+          "howToGet": "保留旧版兼容参数；凭据始终隐藏，官方公开用户名始终展示。",
+          "format": "布尔开关，默认开启；不再遮盖官方公开用户名。"
         },
         {
           "name": "PRIVACY_MODE",
           "required": false,
           "sensitive": false,
-          "howToGet": "保留上游参数兼容，官方公开用户名直接显示，凭据始终隐藏。",
-          "format": "布尔值，默认 true"
+          "howToGet": "旧版隐私参数兼容输入；凭据始终隐藏，官方公开用户名始终展示。",
+          "format": "布尔开关，仅在未设置 ENSHAN_PRIVACY_MODE 时读取。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙面板设置全局通知开关；缺失通知模块或发送失败不改变业务退出码。",
-          "format": "默认 1；0、false、no、off 关闭"
+          "howToGet": "使用青龙现有通知配置；设为 0 可全局关闭通知。",
+          "format": "默认 1；0、false、no、off 关闭。断网预演仅生成脱敏通知正文，不发送网络通知。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选填写 notify.py 所在目录；也尝试导入 notify 及青龙标准脚本目录。",
-          "format": "本地目录路径，默认不设置"
+          "howToGet": "可选，填写青龙现有 notify.py 所在目录；无需为业务执行安装其他仓库。",
+          "format": "本地目录路径，未设置时尝试导入 notify 或青龙标准目录。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个完整 Cookie，各账号独立执行，任一账号失败则整体非零退出。"
+        "rule": "每个非空行一个账号，逐个独立处理；任一账号失败整体非零退出。不使用其他账号分隔符。"
       },
       "dependencies": [],
       "features": [
-        "Cookie 登录验证、WAF 解码及论坛页回退",
-        "每日签到，严格识别成功和今日已签到",
-        "签到前后读取恩山币及积分，保留积分页地址回退和临时错误重试",
-        "展示官方公开用户名、用户组、贡献及余额变化",
-        "每行一个账号，独立执行且失败非零退出",
-        "可选随机启动延迟，默认关闭等待，兼容上游参数和定时",
-        "完全断网配置预演",
-        "青龙通知及带时间戳分阶段日志，账号和任务统计，保留 SUMMARY_JSON 并追加 TASK_SUMMARY"
+        "使用 Cookie 验证登录，保留签到页 WAF 解码、论坛页回退和响应 Cookie 更新。",
+        "获取隐藏字段、退出链接或 JavaScript 中的 formhash，提交每日签到，严格识别成功及今日已签到。",
+        "在已验证的签到响应提供连续签到天数时展示天数，并在结构化账号结果中输出；未提供时不推测。",
+        "签到前后查询恩山币和积分，保留四个积分页地址回退与临时错误重试，展示余额变化。",
+        "展示官方公开用户名、用户组及贡献，隐藏 Cookie、会话及原始响应。",
+        "每行一个账号独立执行，任一失败非零退出，配置错误同样非零退出。",
+        "保持每日 12:39 定时、兼容旧参数及可选随机启动延迟，默认无等待。",
+        "完全断网配置预演，跳过登录、查询、签到和通知网络发送，不宣称真实业务成功。",
+        "带时间戳的分阶段日志、账号及任务统计，保留 SUMMARY_JSON 并输出唯一单行 TASK_SUMMARY。",
+        "按全局开关生成或发送青龙脱敏通知，通知不可用或失败不改变业务退出码。"
       ],
       "sideEffects": [
-        "提交每日签到，可能增加恩山币和积分",
-        "正式运行且通知开启时通过青龙发送脱敏任务总结"
+        "正式运行提交每日签到，可能增加恩山币和积分。",
+        "正式访问论坛可能产生论坛自身的登录奖励或访问记录。",
+        "正式运行且通知开启时，通过青龙通知模块发送脱敏任务汇总。"
       ],
       "review": {
         "staticPassed": true,
@@ -2932,12 +2951,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/bec8a601d5a51b0a",
-        "candidateSha256": "eae7d2d880160e42f4df36672ef2e598fa1142879fa88d6bb688a3e3810f6a3e"
+        "candidateSha256": "41229fef253e86a42c9e0b39a0b8733ff5a9e888335f0759f96ea47f8c6d53c4"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "eae7d2d880160e42f4df36672ef2e598fa1142879fa88d6bb688a3e3810f6a3e",
-        "releaseSha256": "c564768903f243711988991d3a8883c99b189a04708c3b8d89660b5988c0d47e",
+        "validatedSha256": "41229fef253e86a42c9e0b39a0b8733ff5a9e888335f0759f96ea47f8c6d53c4",
+        "releaseSha256": "7bb85fd34e7108fcc1553fb6c5283cf6d86723642a4e039b096267b8d7429d48",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },

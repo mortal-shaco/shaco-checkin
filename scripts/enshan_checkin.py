@@ -3,6 +3,8 @@
 # cron: 39 12 * * *
 #
 # SPDX-License-Identifier: MIT
+# Additional source: Sitoi/dailycheckin, dailycheckin/enshan/main.py
+# commit 135cc236e59ac4f14bcddc44acb3cbb3ed6010b5 (MIT).
 # Maintained standalone version of agluo/ql-script-hub/enshan_checkin.py at
 # commit a8d39b97cb22c3ac657089014df754342b456ff6. Upstream copyright belongs
 # to its contributors; this derivative remains distributed under the MIT License.
@@ -70,6 +72,7 @@ class AccountResult:
     group: str = ""
     contribution: Optional[int] = None
     statistics: Optional[dict] = None
+    continuous_days: Optional[int] = None
 
 
 def env_bool(name: str, default: bool = False) -> bool:
@@ -113,6 +116,7 @@ def clean_text(value: object, secret: str = "", limit: int = 180) -> str:
                 key, val = part.strip().split("=", 1)
                 if val:
                     text = text.replace(val, f"[{key or 'COOKIE'}_REDACTED]")
+    text = re.sub(r"(?<![0-9])1[3-9][0-9]{9}(?![0-9])", "[手机号已隐藏]", text)
     return text[:limit]
 
 
@@ -153,6 +157,7 @@ class EnshanClient:
         self.username = ""
         self.group = ""
         self.contribution = None
+        self.continuous_days: Optional[int] = None
         self.opener = urllib.request.build_opener(SameOriginRedirect())
 
     def _merge_set_cookie(self, headers: object) -> None:
@@ -234,8 +239,10 @@ class EnshanClient:
         return first_match(
             page,
             (
-                r'name=["\']formhash["\'][^>]*value=["\']([0-9a-f]+)',
+                r'name=["\']formhash["\'][^>]*value=["\']([0-9a-f]+)["\']',
                 r"action=logout(?:&amp;|&)formhash=([0-9a-f]+)",
+                r"\bformhash\s*[:=]\s*['\"]([0-9a-f]+)['\"]",
+                r'name=["\']formhash["\'][^>]*value=["\']([^"\']+)["\']',
             ),
         )
 
@@ -393,6 +400,8 @@ class EnshanClient:
         )
         if response.status != 200:
             return False, "failed", f"check-in returned HTTP {response.status}"
+        self.continuous_days = None
+        days: object = None
         message = ""
         status: object = None
         success: object = None
@@ -402,6 +411,7 @@ class EnshanClient:
                 message = clean_text(payload.get("message") or payload.get("msg"), self.cookie)
                 status = payload.get("status")
                 success = payload.get("success")
+                days = payload.get("continuous_days")
         except (ValueError, TypeError):
             message = clean_text(response.text, self.cookie)
         # Classify recognized business signals only; never print server messages or HTML.
@@ -410,6 +420,13 @@ class EnshanClient:
         already = any(marker in message for marker in ("已签到", "已经签到", "今日已签"))
         explicit = success is True or status in (1, "1", "success", "ok")
         stated = any(marker in message for marker in ("签到成功", "打卡成功"))
+        # Only expose a non-negative integer count from a verified business response.
+        verified = (already and not negative) or ((explicit or stated) and not rejected and not negative)
+        if verified and not isinstance(days, bool):
+            if isinstance(days, int) and days >= 0:
+                self.continuous_days = days
+            elif isinstance(days, str) and re.fullmatch(r"[0-9]{1,9}", days.strip()):
+                self.continuous_days = int(days.strip())
         if already and not negative:
             return True, "already_checked_in", "今日已签到"
         if (explicit or stated) and not rejected and not negative:
@@ -435,7 +452,8 @@ def run_account(index: int, cookie: str, timeout: int, privacy: bool) -> Account
             stats["alreadyComplete"] += 1
         else:
             stats["success" if ok else "failed"] += 1
-        log(f"账号{index} · 阶段{number}/4 {title} {'✅ 完成' if ok else '❌ 失败'}，耗时{time.monotonic()-begin:.2f}秒")
+        detail = value[-1] if isinstance(value[-1], str) else ""
+        log(f"账号{index} · 阶段{number}/4 {title} {'✅ 完成' if ok else '❌ 失败'}；{clean_text(detail, client.cookie)}；耗时{time.monotonic()-begin:.2f}秒")
         return value
 
     try:
@@ -450,6 +468,8 @@ def run_account(index: int, cookie: str, timeout: int, privacy: bool) -> Account
                 log(f"账号{index} · 用户：{client.username}")
             log(f"账号{index} · 恩山币 {before['coin']}，积分 {before['points']}，用户组 {client.group or '未知'}，贡献 {client.contribution}")
             success, status, message = stage(3, "每日签到", client.checkin)
+            if client.continuous_days is not None:
+                log(f"账号{index} · 已连续签到{client.continuous_days}天")
             after_ok, after, _ = stage(4, "读取签到后余额", client.profile)
             log(f"账号{index} · 恩山币 {before['coin']} → {after['coin']}，积分 {before['points']} → {after['points']}")
             details = message
@@ -457,7 +477,7 @@ def run_account(index: int, cookie: str, timeout: int, privacy: bool) -> Account
                 details += "；部分余额未能读取"
             result = AccountResult(index, success, status, details, client.username,
                                    before['coin'], after['coin'], before['points'], after['points'],
-                                   client.group, client.contribution)
+                                   client.group, client.contribution, continuous_days=client.continuous_days)
     except Exception:
         # Exception text may contain URL parameters, Cookie, or response contents.
         stats['failed'] += 1
@@ -561,12 +581,13 @@ def main() -> int:
                 validate_cookie(accounts[i-1], i)
                 results.append(AccountResult(i, True, "dry_run", "仅验证配置，未验证真实业务", statistics=stats))
             except (ValueError, UnicodeError):
+                stats.update(skipped=3, failed=1)
                 results.append(AccountResult(i, False, "configuration_error", "Cookie 格式无效", statistics=stats))
-            log(f"账号{i} · 总任务4，成功0，已完成0，跳过4，失败0，耗时0秒")
+            log(f"账号{i} · {results[-1].message}；总任务4，成功0，已完成0，跳过{stats['skipped']}，失败{stats['failed']}，耗时0秒")
         ok = all(r.success for r in results)
         if ok:
             print(f"DRY_RUN_OK: validated {len(accounts)} account(s); no network requests or state changes were made")
-        return finish(results, True, started, 0 if ok else 2)
+        return finish(results, True, started, 0 if ok else 2, "Cookie 格式无效" if not ok else "")
     if max_delay and env_bool("RANDOM_SIGNIN", True):
         delay = random.randint(0, max_delay)
         log(f"随机启动延迟 {delay}秒")
