@@ -16503,6 +16503,183 @@
       }
     },
     {
+      "catalogId": "132c582ed57df40f",
+      "applicationKey": "workbuddy",
+      "checkProfile": {
+        "requiredEnv": [
+          "WORKBUDDY_REFRESH_TOKEN"
+        ],
+        "optionalEnv": [
+          "WORKBUDDY_TASKS",
+          "WORKBUDDY_ONLY_TASKS",
+          "WORKBUDDY_SKIP_TASKS",
+          "WORKBUDDY_ALLOW_REPORT",
+          "WORKBUDDY_TOKEN_STORE",
+          "WORKBUDDY_MP_GAP",
+          "WORKBUDDY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WORKBUDDY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1",
+          "WORKBUDDY_ALLOW_REPORT": "0"
+        },
+        "successPatterns": [
+          "TASK_SUMMARY=",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "国内版每日签到及服务端签到状态回读，活动关闭正常跳过，区分签到连签与活跃连签",
+          "积分套餐总量、余额、用量、等级、能量、活跃连签及成长任务状态查询，显示官方非敏感账号身份",
+          "扫描已完成成长任务并领取奖励，回读验证领取状态；领奖保留网页请求头回退",
+          "Buddy信息、徽章查询及旅行状态驱动的出发和奖励领取",
+          "显式选择抽奖、最多五次盲盒、连签兑换、礼包补偿、昨日补签；未知资源或状态不执行消费",
+          "显式选择并允许模拟事件后执行设计/自动化/灵感、专家团、应用/教师助手、主题、资料库、五专家、五模板、GLM/五次对话、轻量云专家和夜猫子成长任务；保留上游HTTP链及服务端终态核验",
+          "小程序七环链式成长任务、锁定任务跳过、原请求头与回读目标、45秒节奏及相应回退",
+          "明文凭据本地体检、私有缓存轮换续期、--refresh、--query、--only、--gap、--mp-gap和旧过滤参数兼容",
+          "每行多账号隔离执行、断网预演、脱敏时间轴、账号及子任务统计、唯一TASK_SUMMARY记录、青龙通知"
+        ],
+        "sideEffects": [
+          "默认进行每日签到、领取已完成成长任务奖励、领取旅行奖励或派遣Buddy旅行",
+          "显式成长任务可能创建模型对话、消耗积分并发送模拟活跃事件，变更任务登记与成长进度；上报成功不代表真实桌面操作成功",
+          "显式抽奖消耗抽奖次数，盲盒消耗能量，补签消耗补签卡，连签兑换和礼包补偿领取奖励",
+          "配置私有缓存并触发续期时轮换认证令牌且保存至本人指定文件",
+          "实际运行向青龙通知模块发送脱敏摘要；断网预演仅模拟通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "WorkBuddy 国内版日常维护",
+      "path": "scripts/workbuddy_daily.py",
+      "sha256": "145fb0bfe73802a31b64449346b2bdabfdfbe639769db567e40adcc964a33475",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/WorkBuddy-Daily",
+        "branch": "main",
+        "commit": "e030ebde37411a90e0a3e35b88993e5686c7e1dd",
+        "originalPath": "workbuddy_daily.py"
+      },
+      "cron": "0 7,12 * * *",
+      "command": "python3 scripts/workbuddy_daily.py",
+      "environment": [
+        {
+          "name": "WORKBUDDY_REFRESH_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "本人登录 WorkBuddy 国内版后，从官方登录响应取得明文 accessToken 和 refreshToken；旧版可读取本人客户端认证文件中的同名字段。5.6.2以上的加密信封不可粘贴，应重新登录并在本人授权的网络调试中读取官方登录响应。国际版令牌不可混用。不要上传令牌缓存。",
+          "format": "每个非空行一个账号；手机号:AT:RT（AT可空）、AT:RT、手机号:RT 或单个明文JWT；只用换行分隔账号，配套凭据逐次仅切第一个英文冒号以保留后续文本"
+        },
+        {
+          "name": "WORKBUDDY_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中设置子任务白名单；留空执行签到、查询、已完成任务领奖、旅行、Buddy信息及徽章。",
+          "format": "逗号或空格分隔；checkin,claim,travel,buddy_info,badges,lottery,blindbox,redeem,gift,makeup,canvas,team_3,apps,theme,library,expert_5,template_5,chat_5,black_cat,Expert_lighthouse,Sequential_Tasks_1至Sequential_Tasks_7；兼容原成长任务代码。canvas为设计/自动化/灵感整组，apps为发现应用/企鹅教师助手整组，chat_5为GLM和五次对话整组。"
+        },
+        {
+          "name": "WORKBUDDY_ONLY_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容旧白名单变量，仅在未设置 WORKBUDDY_TASKS 时使用。",
+          "format": "与 WORKBUDDY_TASKS 相同"
+        },
+        {
+          "name": "WORKBUDDY_SKIP_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙中设置排除项，优先于白名单；排除组合任务中的任一项会跳过整组。",
+          "format": "逗号或空格分隔任务名"
+        },
+        {
+          "name": "WORKBUDDY_ALLOW_REPORT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "只有了解模拟活跃事件会变更成长进度，并愿意承担模型调用积分消耗时设置；还需显式白名单选择成长任务。",
+          "format": "1开启；默认0关闭"
+        },
+        {
+          "name": "WORKBUDDY_TOKEN_STORE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人指定持久化私有目录中的令牌缓存路径；目录先创建，文件权限必须0600。续期前检查可写性，保存轮换后的AT/RT。未设置时不轮换有效AT；只有RT、过期AT及 --refresh 都需要该路径。",
+          "format": "本人可写的文件路径；按账号行序绑定，调整行序后重新获取凭据"
+        },
+        {
+          "name": "WORKBUDDY_MP_GAP",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "小程序事件间隔，保留上游默认45秒与随机抖动。",
+          "format": "有限非负秒数，默认45；命令行 --mp-gap 优先"
+        },
+        {
+          "name": "WORKBUDDY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙中设置为1进行完全断网预演，使用占位凭据即可；不表示真实业务通过。",
+          "format": "1开启；默认0"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，实际运行调用面板提供的 notify.py；模块不可用或发送失败不影响业务退出码。",
+          "format": "默认1；0、false、no、off关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在面板通知模块不在默认路径时指定 notify.py 所在目录；通知属于可选运行环境集成，不是业务依赖。",
+          "format": "目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，按行独立执行；手机号与AT/RT属于同一账号并写在同一行。任一账号失败整体非零退出，不使用&或@分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "国内版每日签到及服务端签到状态回读，活动关闭正常跳过，区分签到连签与活跃连签",
+        "积分套餐总量、余额、用量、等级、能量、活跃连签及成长任务状态查询，显示官方非敏感账号身份",
+        "扫描已完成成长任务并领取奖励，回读验证领取状态；领奖保留网页请求头回退",
+        "Buddy信息、徽章查询及旅行状态驱动的出发和奖励领取",
+        "显式选择抽奖、最多五次盲盒、连签兑换、礼包补偿、昨日补签；未知资源或状态不执行消费",
+        "显式选择并允许模拟事件后执行设计/自动化/灵感、专家团、应用/教师助手、主题、资料库、五专家、五模板、GLM/五次对话、轻量云专家和夜猫子成长任务；保留上游HTTP链及服务端终态核验",
+        "小程序七环链式成长任务、锁定任务跳过、原请求头与回读目标、45秒节奏及相应回退",
+        "明文凭据本地体检、私有缓存轮换续期、--refresh、--query、--only、--gap、--mp-gap和旧过滤参数兼容",
+        "每行多账号隔离执行、断网预演、脱敏时间轴、账号及子任务统计、唯一TASK_SUMMARY记录、青龙通知"
+      ],
+      "sideEffects": [
+        "默认进行每日签到、领取已完成成长任务奖励、领取旅行奖励或派遣Buddy旅行",
+        "显式成长任务可能创建模型对话、消耗积分并发送模拟活跃事件，变更任务登记与成长进度；上报成功不代表真实桌面操作成功",
+        "显式抽奖消耗抽奖次数，盲盒消耗能量，补签消耗补签卡，连签兑换和礼包补偿领取奖励",
+        "配置私有缓存并触发续期时轮换认证令牌且保存至本人指定文件",
+        "实际运行向青龙通知模块发送脱敏摘要；断网预演仅模拟通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/132c582ed57df40f",
+        "candidateSha256": "145fb0bfe73802a31b64449346b2bdabfdfbe639769db567e40adcc964a33475"
+      }
+    },
+    {
       "catalogId": "aa7303325b9bca16",
       "applicationKey": "wps",
       "checkProfile": {

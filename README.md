@@ -145,6 +145,7 @@
 | 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `2 8 * * *` |
 | Trae CN 每日签到 | `scripts/web_checkin.py` | `python3 scripts/web_checkin.py` | `30 8 * * *` |
+| WorkBuddy 国内版日常维护 | `scripts/workbuddy_daily.py` | `python3 scripts/workbuddy_daily.py` | `0 7,12 * * *` |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `10 9 * * *` |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `8 6 * * *` |
 | ZCode 国内版领套餐 | `scripts/zcode_cn_daily.py` | `python3 scripts/zcode_cn_daily.py` | `0 9 * * *` |
@@ -267,6 +268,7 @@
 - `scripts/tyqhdraw.py`：登录并校验业务成功码与有效会话；查询调料包和番茄资产；打印官方返回的非秘密账号身份；显式开启后执行活动 58 集市兑换抽奖，每轮最多 10 次并检查奖品字段；使用本地透明掩膜图像匹配识别滑块并验证官方业务成功码；低置信度停止；查询实物礼品名称及非实物礼品数量；每行一个账号，账号独立失败隔离与整体非零退出；完全断网预演、青龙脱敏通知、逐阶段日志及单行任务汇总。
 - `scripts/wangchao.py`：手机号与密码登录，展示官方返回的非敏感昵称或公开账号标识；保留上游随机客户端标识、RSA 密码加密、HMAC 登录认证、应用请求签名和 SM2 阅读参数加密；进入 App，获取每日阅读任务、识别已读文章、浏览未读文章、提交阅读记录并复查完成进度；显式开关控制同应用活动入口浏览，不伪造或重放随机阅读记录；显式开关控制每日一次抽奖，检查会话、阅读进度及官方资格，展示上游奖品名称；查询最近十条抽奖记录及时间；换行多账号、独立失败处理、完全断网预演、业务失败非零退出；限时 HTTP 请求、严格业务码与必要字段校验、禁止携带凭据重定向；时间轴阶段日志、每账号及全局统计、唯一单行 TASK_SUMMARY 汇总、青龙脱敏通知。
 - `scripts/web_checkin.py`：网页会话换取令牌并查询每日签到状态；长效 Cookie 自动续期，会话失败时使用已有会话或桌面令牌；网页令牌失效时重新换取一次，认证仍失败时回退同账号桌面令牌；桌面令牌到期预检与账号注册设备校验；每日按需领取签到积分，显示本次奖励，已签到不重复领取；领取未确认成功后复查账号签到状态；只查询任务开关，明确报告未开放活动；完整显示官方公开 UserID，按已验证成功的身份识别重复账号；每行一个账号，隔离失败并汇总非零退出；完全断网预演、时间轴日志与单行结构化汇总；青龙脱敏通知与全局关闭开关，通知故障不改变业务退出码。
+- `scripts/workbuddy_daily.py`：国内版每日签到及服务端签到状态回读，活动关闭正常跳过，区分签到连签与活跃连签；积分套餐总量、余额、用量、等级、能量、活跃连签及成长任务状态查询，显示官方非敏感账号身份；扫描已完成成长任务并领取奖励，回读验证领取状态；领奖保留网页请求头回退；Buddy信息、徽章查询及旅行状态驱动的出发和奖励领取；显式选择抽奖、最多五次盲盒、连签兑换、礼包补偿、昨日补签；未知资源或状态不执行消费；显式选择并允许模拟事件后执行设计/自动化/灵感、专家团、应用/教师助手、主题、资料库、五专家、五模板、GLM/五次对话、轻量云专家和夜猫子成长任务；保留上游HTTP链及服务端终态核验；小程序七环链式成长任务、锁定任务跳过、原请求头与回读目标、45秒节奏及相应回退；明文凭据本地体检、私有缓存轮换续期、--refresh、--query、--only、--gap、--mp-gap和旧过滤参数兼容；每行多账号隔离执行、断网预演、脱敏时间轴、账号及子任务统计、唯一TASK_SUMMARY记录、青龙通知。
 - `scripts/wps_clock_in.py`：查询并显示官方返回的账号昵称，隐藏凭据和手机号。；查询打卡活动首条奖励名称，兼容sku_name与mb_name。；查询持续打卡天数，明确空奖励不能证明今日打卡成功。；保留wps_ck参数与每日09:10调度，支持换行多账号。；支持断网预演、脱敏青龙通知、阶段日志和单行结构化任务总结。。
 - `scripts/yht.py`：查询官方账号昵称等非敏感身份，不输出手机号；查询种植活动标题；参与种植活动；连续施肥，保留上游默认最多一百次请求并允许调低上限；查询当前等级、下一等级和剩余施肥次数；施肥接口返回当前不存在进行中的活动时尝试领取奖励，核验奖励名称与数量；可选每日签到及奖励详情查询，默认保持未启用；可选本次配置账号之间互助及互助身份查询；每行一个账号、独立执行、任一业务失败整体失败；完全断网预演、时间轴阶段日志、账号统计及单行结构化任务汇总；通过青龙通知适配器发送脱敏总结，通知异常保留业务退出码。
 - `scripts/zcode_cn_daily.py`：保留国内版默认任务，新增显式国际版及跨区域账号选择；两类凭据独立处理。；查询可领取套餐、权益及有效期，并按北京时间显示。；优先级最高套餐自动领取，同优先级保持上游顺序；可指定套餐。；支持每账号验证码及全局补齐参数、客户端版本和固定设备参数。；支持 --preview 只读预览、--only 账号筛选和 --no-notify 通知关闭。；支持显式激活事件补报，默认关闭。；支持每行一个账号、账号独立处理和失败非零退出。；支持完全断网预演、时间轴日志、账号统计及唯一 TASK_SUMMARY 记录。；发送青龙脱敏总结，兼容原推送通道及青龙接口，通知失败保留业务退出码。。
@@ -396,6 +398,7 @@
 <tr><td rowspan="1"><code>scripts/tyqhdraw.py</code></td><td><code>tyqhCookie</code></td><td>是</td><td>格式：每个非空行 thirdId#wid#备注；备注可省略。先在首个 # 拆分 thirdId，再在剩余内容首个 # 拆分 wid 与备注，保留备注后续文本。不再使用 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wangchao.py</code></td><td><code>WangChao</code></td><td>是</td><td>格式：每个非空行一个“登录手机号#密码”。仅按第一个 # 切分，密码中的后续 #、&amp;、@ 等字符完整保留。密码 UTF-8 长度不超过 117 字节。旧版 &amp;&amp; 多账号分隔须手动迁移为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/web_checkin.py</code></td><td><code>TRAE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；device_id 为必填的 16 位数字字符串；session、sessionid、access_token 至少填写一个，可同时配置供续期和回退。expires_at 可选，为桌面令牌到期秒级时间戳。不得解码 Cookie 的百分号或复制整段 Cookie，不得共用设备。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/workbuddy_daily.py</code></td><td><code>WORKBUDDY_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号；手机号:AT:RT（AT可空）、AT:RT、手机号:RT 或单个明文JWT；只用换行分隔账号，配套凭据逐次仅切第一个英文冒号以保留后续文本；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/wps_clock_in.py</code></td><td><code>wps_ck</code></td><td>是</td><td>格式：每个非空行一个wps_sid值；只按换行分隔账号，不使用&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/yht.py</code></td><td><code>Yht_token</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留大小写；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/zcode_cn_daily.py</code></td><td><code>ZCODE_CN_TOKENS</code></td><td>是</td><td>格式：每行一个账号：jwt、jwt|device_mid、jwt|device_mid|captcha_param 或 备注|jwt|device_mid|captcha_param。验证码保留后续竖线，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -1025,6 +1028,15 @@
 <tr><td><code>TRAE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启完全断网预演，其他值为正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；其余开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录；仅用于可选通知，业务不依赖该文件。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="9"><code>scripts/workbuddy_daily.py</code></td><td><code>WORKBUDDY_TASKS</code></td><td>否</td><td>格式：逗号或空格分隔；checkin,claim,travel,buddy_info,badges,lottery,blindbox,redeem,gift,makeup,canvas,team_3,apps,theme,library,expert_5,template_5,chat_5,black_cat,Expert_lighthouse,Sequential_Tasks_1至Sequential_Tasks_7；兼容原成长任务代码。canvas为设计/自动化/灵感整组，apps为发现应用/企鹅教师助手整组，chat_5为GLM和五次对话整组。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WORKBUDDY_ONLY_TASKS</code></td><td>否</td><td>格式：与 WORKBUDDY_TASKS 相同；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WORKBUDDY_SKIP_TASKS</code></td><td>否</td><td>格式：逗号或空格分隔任务名；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WORKBUDDY_ALLOW_REPORT</code></td><td>否</td><td>格式：1开启；默认0关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WORKBUDDY_TOKEN_STORE</code></td><td>是</td><td>格式：本人可写的文件路径；按账号行序绑定，调整行序后重新获取凭据；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WORKBUDDY_MP_GAP</code></td><td>否</td><td>格式：有限非负秒数，默认45；命令行 --mp-gap 优先；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WORKBUDDY_DRY_RUN</code></td><td>否</td><td>格式：1开启；默认0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认1；0、false、no、off关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/wps_clock_in.py</code></td><td><code>WPS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on启用，默认0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭；默认1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地青龙通知模块所在目录，可不填写。；多账号格式以该脚本文档为准</td></tr>
@@ -1176,6 +1188,7 @@
 - `scripts/tyqhdraw.py`：每个非空行一个账号；同一账号的 thirdId 与 wid 写在同一行，保留原字段顺序。逐账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/wangchao.py`：每个非空行一个账号，只按第一个 # 切分配套手机号与密码。忽略空行；各账号独立处理，任一账号配置或业务失败则整体非零退出。。
 - `scripts/web_checkin.py`：TRAE_ACCOUNTS 每个非空行一个 JSON 对象，合并同账号凭据及设备；账号独立处理，任何账号失败整体非零退出。不得使用 & 或 @ 分隔账号。。
+- `scripts/workbuddy_daily.py`：每个非空行一个账号，按行独立执行；手机号与AT/RT属于同一账号并写在同一行。任一账号失败整体非零退出，不使用&或@分隔账号。。
 - `scripts/wps_clock_in.py`：每个非空行一个账号，仅使用wps_sid值；各账号独立执行，任一失败则整体非零退出。。
 - `scripts/yht.py`：每个非空行一个账号的完整 qm-user-token；逐账号执行，互助仅限本次配置的其他账号；任何账号业务失败整体非零退出。。
 - `scripts/zcode_cn_daily.py`：每行一个账号，JWT、设备和验证码放在同一行；逐字段只在首个竖线处分割，验证码保留余下内容。国内及国际账号分别填写变量，默认国内版，--region intl 选择国际版，--region all 执行已配置区域。--only 按所选区域合并顺序筛选。任一账号或显式激活事件失败则非零退出。。
@@ -1986,6 +1999,13 @@
 - 所属脚本：`scripts/web_checkin.py`
 - 获取或设置：登录 https://www.trae.cn，在开发者工具的应用→Cookie 复制 X-Cloudide-Session 的值作为 session，或复制 sessionid 的值作为 sessionid。device_id 从本人同账号官方签到请求的 x-device-id 获取，必须为账号自己的注册设备。可选 access_token 从本人官方请求 Authorization 中 Cloud-IDE-JWT 后获取。无需安装或读取客户端私有文件。可由兼容单账号 TRAE_SESSION 和 TRAE_DEVICE_ID 替代。
 - 填写格式：`每个非空行一个 JSON 对象；device_id 为必填的 16 位数字字符串；session、sessionid、access_token 至少填写一个，可同时配置供续期和回退。expires_at 可选，为桌面令牌到期秒级时间戳。不得解码 Cookie 的百分号或复制整段 Cookie，不得共用设备。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WORKBUDDY_REFRESH_TOKEN`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：本人登录 WorkBuddy 国内版后，从官方登录响应取得明文 accessToken 和 refreshToken；旧版可读取本人客户端认证文件中的同名字段。5.6.2以上的加密信封不可粘贴，应重新登录并在本人授权的网络调试中读取官方登录响应。国际版令牌不可混用。不要上传令牌缓存。
+- 填写格式：`每个非空行一个账号；手机号:AT:RT（AT可空）、AT:RT、手机号:RT 或单个明文JWT；只用换行分隔账号，配套凭据逐次仅切第一个英文冒号以保留后续文本`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `wps_ck`
@@ -5785,6 +5805,61 @@
 - 获取或设置：可选，填写青龙 notify.py 所在目录；未配置则检查脚本同目录及 /ql/data/scripts、/ql/scripts。
 - 填写格式：`本地通知模块目录；仅用于可选通知，业务不依赖该文件。`
 
+#### `WORKBUDDY_TASKS`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：在青龙中设置子任务白名单；留空执行签到、查询、已完成任务领奖、旅行、Buddy信息及徽章。
+- 填写格式：`逗号或空格分隔；checkin,claim,travel,buddy_info,badges,lottery,blindbox,redeem,gift,makeup,canvas,team_3,apps,theme,library,expert_5,template_5,chat_5,black_cat,Expert_lighthouse,Sequential_Tasks_1至Sequential_Tasks_7；兼容原成长任务代码。canvas为设计/自动化/灵感整组，apps为发现应用/企鹅教师助手整组，chat_5为GLM和五次对话整组。`
+
+#### `WORKBUDDY_ONLY_TASKS`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：兼容旧白名单变量，仅在未设置 WORKBUDDY_TASKS 时使用。
+- 填写格式：`与 WORKBUDDY_TASKS 相同`
+
+#### `WORKBUDDY_SKIP_TASKS`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：青龙中设置排除项，优先于白名单；排除组合任务中的任一项会跳过整组。
+- 填写格式：`逗号或空格分隔任务名`
+
+#### `WORKBUDDY_ALLOW_REPORT`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：只有了解模拟活跃事件会变更成长进度，并愿意承担模型调用积分消耗时设置；还需显式白名单选择成长任务。
+- 填写格式：`1开启；默认0关闭`
+
+#### `WORKBUDDY_TOKEN_STORE`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：本人指定持久化私有目录中的令牌缓存路径；目录先创建，文件权限必须0600。续期前检查可写性，保存轮换后的AT/RT。未设置时不轮换有效AT；只有RT、过期AT及 --refresh 都需要该路径。
+- 填写格式：`本人可写的文件路径；按账号行序绑定，调整行序后重新获取凭据`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WORKBUDDY_MP_GAP`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：小程序事件间隔，保留上游默认45秒与随机抖动。
+- 填写格式：`有限非负秒数，默认45；命令行 --mp-gap 优先`
+
+#### `WORKBUDDY_DRY_RUN`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：青龙中设置为1进行完全断网预演，使用占位凭据即可；不表示真实业务通过。
+- 填写格式：`1开启；默认0`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：青龙全局通知开关，实际运行调用面板提供的 notify.py；模块不可用或发送失败不影响业务退出码。
+- 填写格式：`默认1；0、false、no、off关闭`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/workbuddy_daily.py`
+- 获取或设置：仅在面板通知模块不在默认路径时指定 notify.py 所在目录；通知属于可选运行环境集成，不是业务依赖。
+- 填写格式：`目录路径`
+
 #### `WPS_DRY_RUN`
 
 - 所属脚本：`scripts/wps_clock_in.py`
@@ -6126,6 +6201,7 @@
 - `scripts/tyqhdraw.py`：SHA-256 `c2c1115b60fd085034eb55d28ffb8fd3cb6476263eeff23f53f5bea8ad892b7e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
 - `scripts/wangchao.py`：SHA-256 `487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
 - `scripts/web_checkin.py`：SHA-256 `510f24fc55c7aaba9199b6b7325b0cdf40aae7f1dc7a8b40c87d2c77ad0bf0b8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dfbc26c082218297`。
+- `scripts/workbuddy_daily.py`：SHA-256 `145fb0bfe73802a31b64449346b2bdabfdfbe639769db567e40adcc964a33475`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
 - `scripts/wps_clock_in.py`：SHA-256 `bc653d3a575e4993de249bd00b7f3107a8ca17f8da320903f086372b1df9a827`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
 - `scripts/yht.py`：SHA-256 `041f5e6059185deb57a956d7c3d4f62db0b4f9e6438d6884ea9b561a04a7ad9d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e4af0e04fafedbd8`。
 - `scripts/zcode_cn_daily.py`：SHA-256 `7085cd0c4eeef4e5c9bc6f38f03e752e4e253b341c6fdb25334537e6ceceb8e5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a0a7b04503bfb900`。
@@ -6248,6 +6324,7 @@
 - `scripts/tyqhdraw.py`：登录创建账号会话；显式开启时兑换抽奖，可能消耗资产或抽奖机会并获得奖品；抽奖遇到滑块时提交验证码验证；启用通知时通过青龙通知渠道发送脱敏任务统计。
 - `scripts/wangchao.py`：实时登录会建立账号及活动服务会话；默认浏览未读文章并提交阅读记录，改变每日阅读进度；启用 WANGCHAO_BONUS 时浏览活动文章入口，可能改变浏览记录；启用 WANGCHAO_LOTTERY 时抽奖一次，消耗次数并产生中奖或参与记录；启用 QINGLONG_NOTIFY 时通过青龙通知渠道发送脱敏任务总结；预演通知禁止网络。
 - `scripts/web_checkin.py`：正式签到模式领取当日签到积分；配置 sessionid 时刷新网页登录会话；开启通知时调用青龙发送任务汇总；预演禁止通知网络发送。
+- `scripts/workbuddy_daily.py`：默认进行每日签到、领取已完成成长任务奖励、领取旅行奖励或派遣Buddy旅行；显式成长任务可能创建模型对话、消耗积分并发送模拟活跃事件，变更任务登记与成长进度；上报成功不代表真实桌面操作成功；显式抽奖消耗抽奖次数，盲盒消耗能量，补签消耗补签卡，连签兑换和礼包补偿领取奖励；配置私有缓存并触发续期时轮换认证令牌且保存至本人指定文件；实际运行向青龙通知模块发送脱敏摘要；断网预演仅模拟通知。
 - `scripts/wps_clock_in.py`：。
 - `scripts/yht.py`：参加种植活动；消耗活动肥料进行施肥；满足条件时领取活动奖励；开启 YHT_SIGN 后提交每日签到并领取签到奖励；开启 YHT_HELP 后为本次配置的其他账号助力；通知开启时调用青龙通知发送总结；断网预演阻止联网和派生进程。
 - `scripts/zcode_cn_daily.py`：实际领取时发放或变更账号套餐权益。；仅 ZCODE_ACTIVATION=1 且非只读、非预演时补报启动和日活事件，可能影响套餐资格。；实际模式且通知启用时发送脱敏任务总结。。
@@ -6372,6 +6449,7 @@
 - `scripts/tyqhdraw.py`：上游 `Rookie-wb-WH/ql_scripts` / `tyqhDraw.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/wangchao.py`：上游 `Rookie-wb-WH/ql_scripts` / `wangchao.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/web_checkin.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/trae/web_checkin.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
+- `scripts/workbuddy_daily.py`：上游 `L0NE-6/WorkBuddy-Daily` / `workbuddy_daily.py` / `e030ebde37411a90e0a3e35b88993e5686c7e1dd`。
 - `scripts/wps_clock_in.py`：上游 `cloudcranes/some_scripts` / `invalid/wps_clock_in.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/yht.py`：上游 `Rookie-wb-WH/ql_scripts` / `yht.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/zcode_cn_daily.py`：上游 `L0NE-6/ZCode-Daily` / `zcode_cn_daily.py` / `68e3adf4b5deb036f2a992a5aca24f02f3a64ade`。
