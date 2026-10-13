@@ -109,6 +109,7 @@
 | 申工社每日任务 | `scripts/sgs.py` | `python3 scripts/sgs.py` | `0 8 * * *` |
 | 书亦烧仙草签到 | `scripts/shuyi.py` | `python3 scripts/shuyi.py` | `0 9 * * *` |
 | 看雪论坛签到 | `scripts/sign_in.py` | `python3 scripts/sign_in.py` | `1 1 1 1 1` |
+| 森空岛签到 | `scripts/skyland.py` | `python3 scripts/skyland.py` | `0 8 * * *` |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `31 8 * * *` |
 | 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `1 11 * * *` |
 | 所有女生会员签到 | `scripts/sudojia_allgirls.js` | `node scripts/sudojia_allgirls.js` | `19 16 * * *` |
@@ -261,6 +262,7 @@
 - `scripts/sgs.py`：获取官方账号姓名与积分，展示非秘密身份；每日签到并检查业务成功；显式开启后随机检索未读文章并阅读最多五篇，限制分页次数；显式开启后执行五次工社服务访问计数；显式开启后执行五次热门活动浏览计数；换行多账号、失败非零退出；完全断网预演、青龙脱敏通知与单行结构化汇总。
 - `scripts/shuyi.py`：获取书亦烧仙草滑块验证码；使用 OpenCV 模板匹配识别滑块位置；使用 AES 加密并校验滑块，校验成功后签到；展示签到天数和所得积分；显示官方返回的非敏感昵称、用户名或公开账号标识；保留 sysxc_auth 参数名，支持每行一个账号独立执行；完全断网预演，不导入通知模块或发送任何推送；青龙通知和可选 PushPlus 脱敏推送；带时间戳的分阶段日志、账号统计和单行 TASK_SUMMARY 汇总。
 - `scripts/sign_in.py`：多账号看雪论坛签到，支持同账号 Cookie、CSRF token 和可选 User-Agent；兼容显式指定的旧配置文件及嵌套账号结构；使用独立标准库 HTTP 请求，固定原签到端点，限制超时及响应大小并核验业务码 0；显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，并展示纯数字奖励积分；完全离线参数预演、按阶段脱敏日志及单行结构化任务汇总；青龙通知及全局通知开关，通知不可用不改变业务退出码。
+- `scripts/skyland.py`：保留数美设备指纹协议及进程内设备凭据缓存；服务器时间校准，失败时使用本地时间；鹰角 Token 授权并登录森空岛；查询账号绑定的明日方舟与终末地角色并显示官方昵称或公开角色标识；遍历全部明日方舟绑定角色每日签到并显示奖励；遍历全部终末地角色每日签到并显示奖励；每行一个账号，独立处理账号与角色，汇总失败并非零退出；完全断网预演、分阶段耗时日志与唯一 TASK_SUMMARY 结构化汇总；通过青龙通知模块发送脱敏统计，支持全局关闭及通知失败保持业务退出码。
 - `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总；展示签到天数、补签卡、普通奖励和礼包明细；查询值会员总经验、等级经验及有效期；通过显式任务开关查询两处会员转盘活动并各执行一次抽奖；可显式启用原上游未默认运行的生活频道转盘入口；仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk；保留原抽奖独立调度说明及请求间等待；可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应；兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk；按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果；通过显式开关执行好价点值与好文点赞，每类最多七条且逐项验证业务结果；互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化；查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟。
 - `scripts/sudojia_33agilestudio.js`：邮箱密码登录并获取会话令牌；查询账户信息，显示返回的非敏感昵称、用户名、显示名称或公开 UID；每日签到获得积分；查询当前积分；按换行配置多账号，失败独立统计并非零退出；完全断网预演及配置校验；青龙脱敏通知、分阶段日志和单行结构化汇总。
 - `scripts/sudojia_allgirls.js`：获取并显示官方昵称；查询每日签到状态，已签到时避免重复请求；未签到时执行签到并复查已签到状态；查询当前积分；支持逐行多账号、请求超时与账号独立失败统计；支持完全断网预演、青龙通知和单行结构化汇总。
@@ -422,6 +424,7 @@
 <tr><td rowspan="1"><code>scripts/sgs.py</code></td><td><code>sgs</code></td><td>是</td><td>格式：每个非空行一个完整 Token；保留小写变量名 sgs，原版 # 多账号分隔改为换行，单账号参数兼容。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/shuyi.py</code></td><td><code>sysxc_auth</code></td><td>是</td><td>格式：每个非空行一个账号的 auth 原值；保留变量名，不再以 # 分隔账号，凭据内部的 # 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sign_in.py</code></td><td><code>KANXUE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必填 cookie、csrf_token 字符串，可选 user_agent、account_name；JSON 内保留完整凭据，不用任何分隔符拆分账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/skyland.py</code></td><td><code>SKYLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整账号 Token；禁止用逗号、&amp; 或 @ 分隔多个账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号：sk|完整 Cookie；仅抽奖可用 |完整 Cookie。只按首个竖线分割，保留 Cookie 后续字符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_33agilestudio.js</code></td><td><code>AGILE_STUDIO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个邮箱#密码，只按第一个 # 分隔，密码中的后续 #、&amp; 和 @ 均保留；禁止使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_allgirls.js</code></td><td><code>ALL_GIRLS_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的 AccessToken；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -1009,6 +1012,9 @@
 <tr><td><code>KANXUE_DRY_RUN</code></td><td>否</td><td>格式：1 开启，0、false、no、off 或空值关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/skyland.py</code></td><td><code>SKYLAND_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，默认 1。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="13"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号 Cookie，包含 sess；不使用 &amp; 或 @ 分隔账号。仅 lottery 无需 sk。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SMZDM_COOKIES</code></td><td>是</td><td>格式：每行完整 Cookie；无 SMZDM_ACCOUNT 时使用；需包含 sess。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SMZDM_SK</code></td><td>是</td><td>格式：每行一个 sk，行数及顺序与旧 Cookie 输入一致；也兼容 Cookie 自带 sk 字段。；多账号格式以该脚本文档为准</td></tr>
@@ -1439,6 +1445,7 @@
 - `scripts/sgs.py`：每个非空行一个账号 Token，独立处理；任一账号或子任务失败，整体非零退出。。
 - `scripts/shuyi.py`：sysxc_auth 每个非空行一个账号，逐个独立处理；任一账号失败则整体非零退出。账号间不能使用 #、& 或 @ 分隔。。
 - `scripts/sign_in.py`：每个非空行一个账号 JSON 对象，同一对象组合 Cookie 与 CSRF token；逐个独立执行，任一失败时整体非零退出。旧配置使用账号数组。。
+- `scripts/skyland.py`：SKYLAND_TOKEN 每个非空行一个账号，忽略空行；账号与角色独立执行，任一失败整体非零退出。。
 - `scripts/smzdm_checkin.js`：每个非空行一个账号，首个竖线分隔同账号 sk 和完整 Cookie；各账号独立处理，任一失败整体非零退出。旧 Cookie 别名也逐行处理，签到需同顺序配套 sk。。
 - `scripts/sudojia_33agilestudio.js`：每个非空行一个邮箱#密码，仅第一个 # 为字段分隔符，各账号独立执行；任一账号失败则整体非零退出。。
 - `scripts/sudojia_allgirls.js`：每个非空行一个账号；按行独立处理，任一账号失败则整体非零退出。。
@@ -2072,6 +2079,13 @@
 - 所属脚本：`scripts/sign_in.py`
 - 获取或设置：登录 https://bbs.kanxue.com，在浏览器开发者工具网络面板查看 user-signin.htm 签到请求，取得同一账号的 Cookie 请求头和 csrf_token 表单值。可选复制 User-Agent；抓取请求可能已完成当天签到。凭据过期后重新登录获取，不要公开。旧配置兼容入口为 KANXUE_CONFIG。
 - 填写格式：`每个非空行一个 JSON 对象，必填 cookie、csrf_token 字符串，可选 user_agent、account_name；JSON 内保留完整凭据，不用任何分隔符拆分账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SKYLAND_TOKEN`
+
+- 所属脚本：`scripts/skyland.py`
+- 获取或设置：在自己的浏览器登录鹰角网络官方账号页面 https://user.hypergryph.com/ ，再访问 https://web-api.hypergryph.com/account/info/hg 获取响应 content 中的账号 Token。若官方登录流程变化，从本人已登录客户端的授权请求获取 token；不要公开响应、Token 或 Cookie。
+- 填写格式：`每个非空行一个完整账号 Token；禁止用逗号、& 或 @ 分隔多个账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SMZDM_ACCOUNT`
@@ -5695,6 +5709,24 @@
 - 获取或设置：若 notify.py 无法直接导入且不在青龙标准脚本目录，可指定自己信任的通知模块目录。无需安装其他仓库；通知不可用不影响业务退出码。
 - 填写格式：`包含 notify.py 的本地目录路径。`
 
+#### `SKYLAND_DRY_RUN`
+
+- 所属脚本：`scripts/skyland.py`
+- 获取或设置：在青龙环境变量中设置为 1 开启完全断网预演。
+- 填写格式：`1、true、yes、on 开启，默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/skyland.py`
+- 获取或设置：青龙通知默认开启；需要关闭时设置为 0。
+- 填写格式：`0、false、no、off 关闭，默认 1。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/skyland.py`
+- 获取或设置：可选，填写青龙已有 notify.py 所在目录；默认发现青龙标准路径或导入 notify.send，无通知模块仍可执行签到。
+- 填写格式：`本地通知模块目录路径。`
+
 #### `SMZDM_COOKIE`
 
 - 所属脚本：`scripts/smzdm_checkin.js`
@@ -7923,6 +7955,7 @@
 - `scripts/sgs.py`：SHA-256 `af3d44c77a409fccb89cdf36a8282bb311c17463a559c544c114d78b253efce7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/45e40e4a3ee37968`。
 - `scripts/shuyi.py`：SHA-256 `947ec405caf0bacdc1f2b823552425d882c3510d733c99c8a1801bf7a739870c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/551a306ac75780f1`。
 - `scripts/sign_in.py`：SHA-256 `d2d3f6610f0aaf4c6866b93fc47751f18a8004bf53c9eae43b560cde380d6cef`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01041a1995eb1f55`。
+- `scripts/skyland.py`：SHA-256 `4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
 - `scripts/smzdm_checkin.js`：SHA-256 `49c3e52ace7d3f96e5756eab063bca14083942bac7d08c44e1754c5a88a3fbfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
 - `scripts/sudojia_33agilestudio.js`：SHA-256 `7677c43b5720b0556f6d0b2949405b7c91d218dbc5d020ad6be0dd46ce2308d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
 - `scripts/sudojia_allgirls.js`：SHA-256 `c553619d6534fdf01df62c381df54bfb5557104402a27aa037bf381b075d8934`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e8776198aafad33e`。
@@ -8075,6 +8108,7 @@
 - `scripts/sgs.py`：每日签到；显式开启时写入文章阅读记录；显式开启时写入工社服务访问计数；显式开启时写入热门活动浏览计数；开启通知时向青龙配置的渠道发送脱敏汇总。
 - `scripts/shuyi.py`：在书亦烧仙草账号执行签到并领取服务端发放的积分；实际执行时向青龙通知渠道发送脱敏任务总结；配置 PUSH_PLUS_TOKEN 时向 PushPlus 发送脱敏总结。
 - `scripts/sign_in.py`：正式执行时向看雪论坛提交签到，可能增加账号积分；正式执行且通知开启时通过青龙发送脱敏任务总结。
+- `scripts/skyland.py`：向数美服务提交模拟浏览器指纹并生成设备凭据；通过鹰角授权接口生成登录授权并取得森空岛会话凭据；为明日方舟绑定角色每日签到并领取签到奖励；为终末地绑定角色每日签到并领取签到奖励；正式运行时通过青龙通知渠道发送脱敏任务统计。
 - `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态；显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励；显式启用 value 或 both 后对好价提交点值，改变账号投票状态；显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态。
 - `scripts/sudojia_33agilestudio.js`：登录建立账户会话；提交每日签到，按服务端规则获得积分；正式运行且启用通知时，通过青龙通知模块发送脱敏任务摘要。
 - `scripts/sudojia_allgirls.js`：未签到时执行每日签到，可能获得平台签到积分。
@@ -8229,6 +8263,7 @@
 - `scripts/sgs.py`：上游 `Rookie-wb-WH/ql_scripts` / `sgs.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/shuyi.py`：上游 `Rookie-wb-WH/ql_scripts` / `shuyi.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/sign_in.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/kanxue/sign_in.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
+- `scripts/skyland.py`：上游 `CN-Grace/QinglongScripts` / `skyland.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/smzdm_checkin.js`：上游 `ump45nose/smzdm-checkin-ql` / `checkin.js` / `6b9eaced964c348efb46d2c13a45ab5c66caaea8`。
 - `scripts/sudojia_33agilestudio.js`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_33agilestudio.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_allgirls.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_allGirls.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
