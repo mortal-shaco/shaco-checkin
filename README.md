@@ -77,6 +77,7 @@
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `5 10 * * *` |
 | 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `0 8 * * *` |
 | jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `0 9 * * *` |
+| 精易论坛签到 | `scripts/jingyiluntan_sign.py` | `python3 scripts/jingyiluntan_sign.py` | `0 8 * * *` |
 | 杰士邦安心福利社 | `scripts/jissbon.py` | `python3 scripts/jissbon.py` | `9 9 * * *` |
 | 劲友家日常任务 | `scripts/jyj.py` | `python3 scripts/jyj.py` | `0 8 * * *` |
 | 全民K歌签到与奖励 | `scripts/kgqq.py` | `python3 scripts/kgqq.py` | `0 9 * * *` |
@@ -217,6 +218,7 @@
 - `scripts/iqiyi_checkin.py`：VIP信息、官方身份、会员等级、到期时间及成长值查询；自然月签到、连签天数及已签到识别；网页积分签到及逐项业务确认；可选普通抽奖次数查询，保留单次会员抽奖并支持全部机会抽奖和奖品展示；保留单次摇一摇并支持显式连续摇一摇、奖品展示和机会耗尽识别；显式领取白金任务次数及五次白金抽奖，逐次验证结果；显式领取V7免费升级星钻权益，变更后查询会员状态；逐行多账号、旧 Cookie 参数兼容和每日10:05调度；完全断网预演、阶段日志、账号统计及单行 TASK_SUMMARY；青龙通知、PushPlus与Server酱后备及总开关，通知失败保留业务退出码；显式启用 VIP 自动签到并展示当月成长值，不误报为本次新增成长；显式启用每日成长任务查询、任务参与、完成通知和奖励领取，逐项检查业务代码并刷新状态，最多六轮；兼容上游 dfp Cookie 字段，保留 __dfp 优先级及字段值中的等号。
 - `scripts/jc_checkin.py`：初始化会话并使用邮箱密码登录机场面板；每日签到及严格业务结果校验；逐行多账号及上游单账号参数兼容；返回非敏感官方账号身份时显示原值；HTTPS 证书校验、请求超时、响应大小限制和拒绝重定向；断网预演、阶段统计及单行 TASK_SUMMARY 汇总；青龙脱敏通知及显式开启的 HTTPS PushPlus 兼容推送。
 - `scripts/jcqd.py`：默认 ikuuu 官方导航域名发现、登录及每日签到；通过明确任务开关保留上游可选 v2free 和 gw树洞登录签到，各站独立会话；多账号逐行配置、旧单账号参数兼容、账号及站点失败隔离；HTTPS 证书校验、超时、响应大小限制、拒绝重定向和登录失败闭合；官方非凭据昵称、用户名、显示名称或公开 UID 核对；断网预演、逐阶段日志、账号统计、单行 TASK_SUMMARY 汇总及青龙通知。
+- `scripts/jingyiluntan_sign.py`：读取登录页面与表单令牌，显示官方返回的昵称；每日签到并区分成功和今日已签到；显式开启后按上游流程读取热门帖、逐帖评分 +1 和显示积分，保持两秒间隔；评分附言优先从一言读取文字、作者及出处，按策略格式注明出处；所有提供方失败回退本地文字；多账号独立执行、超时和明确业务成功校验；完全断网预演、脱敏时间轴日志和单行 TASK_SUMMARY 结构化统计；成功、部分失败、失败、配置错误及预演均生成脱敏通知摘要；预演仅模拟通知。
 - `scripts/jissbon.py`：查询官方昵称与当前积分；每日签到；分享奖励登记，不发布分享文字；显式开启后最多执行十次活动抽奖；换行多账号独立处理与失败非零退出；完全断网预演、脱敏通知和时间轴任务统计。
 - `scripts/jyj.py`：查询官方昵称及可用积分、历史使用和历史总积分；每日签到和每日水滴领取；显式开启三轮拍一拍实际计时游戏和三次幸运转盘；显式开启文章点赞、订阅、调研、分享任务奖励；分享接口不发布文本；兼容jyjRun健康运动领取开关，默认关闭；查询庄园种植状态及可种植药材，显式指定种植和浇水上限；独立活动开关支持本人照片上传、AI识别、春日活动拍照打卡及打卡查询；独立活动开关支持酒柜抽奖和红包雨；显式提供本人真实成绩后执行一轮药材游戏；换行多账号、断网预演、脱敏日志、业务失败退出与青龙通知。
 - `scripts/kgqq.py`：查询并显示官方返回昵称及签到前后鲜花余额、计算本轮鲜花增量。；领取上游六类签到入口奖励：1、2、4、16、128、512。；显式开启后执行四类抽奖：入口 1 的类型 1、2，入口 4 的类型 104，以及类型 103。；显式开启后使用同账号真实鉴权参数查询音乐卡片，选择最高鲜花卡片，按上游大于 10 或大于 1 且小于 10 的档位领取对应互动奖励。；查询 VIP 状态，VIP 用户领取日奖励并显示福利道具数量，非 VIP 用户跳过领取。；每行独立多账号、完全断网预演、请求超时、固定主机及拒绝重定向、响应大小限制和明确业务成功判定。；时间轴分阶段日志、账号与子任务统计、单行 TASK_SUMMARY 汇总、青龙脱敏通知及通知失败保留业务退出码。。
@@ -362,6 +364,7 @@
 <tr><td rowspan="2"><code>scripts/jc_checkin.py</code></td><td><code>JC_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个邮箱|密码；仅按首个 | 分割，后续 | 和密码空格保留；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>BASE_URL</code></td><td>否</td><td>格式：所有账号共用的 HTTPS 面板根地址，可包含部署子路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/jcqd.py</code></td><td><code>JCQD_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：登录邮箱|密码；只在第一个 | 分割，密码后续字符保持原样；不使用 &amp; 或 @ 分隔账号；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/jingyiluntan_sign.py</code></td><td><code>JYLT_Cookie</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留分号及其中的等号，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/jissbon.py</code></td><td><code>jsbaxfls</code></td><td>是</td><td>格式：每个非空行填写一个完整Access-Token；保留原变量名，旧#分隔须改为换行；不使用&amp;或@分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/jyj.py</code></td><td><code>jyjck</code></td><td>是</td><td>格式：每个非空行一个账号：authorization#userid；只按第一个#分割，后续字段原样保留，不支持@@、&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kgqq.py</code></td><td><code>KGQQ_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号。默认填写完整 Cookie（必须含数字 uid）；音乐奖励开启时填写 完整Cookie|g_tk_openkey，只在第一个竖线处分割，Cookie 内等号及分号原样保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -752,6 +755,11 @@
 <tr><td><code>JCQD_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启，默认 0；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0/false/no/off 关闭，默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/jingyiluntan_sign.py</code></td><td><code>JYLT_RATE</code></td><td>否</td><td>格式：1 开启热门帖逐帖 +1 评分，0 关闭；评分失败或额度受限时停止该账号评分并返回失败。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JYLT_LOCAL_TEXT</code></td><td>否</td><td>格式：归一化后不超过 280 字；空值或超长时使用内置文字。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JYLT_DRY_RUN</code></td><td>否</td><td>格式：1 完全断网模拟所有请求和通知，0 正式执行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余值开启；通知失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录；脚本业务不依赖此目录。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/jissbon.py</code></td><td><code>JSB_DRY_RUN</code></td><td>否</td><td>格式：1启用断网预演；0实际执行，默认0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>JSB_LOTTERY</code></td><td>否</td><td>格式：1启用抽奖；默认0关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>JSB_LOTTERY_COUNT</code></td><td>否</td><td>格式：1至10的整数，默认10；次数已用完或失败立即停止抽奖。；多账号格式以该脚本文档为准</td></tr>
@@ -1310,6 +1318,7 @@
 - `scripts/iqiyi_checkin.py`：每个非空行一个账号完整 Cookie；同账号字段以分号分隔且只按第一个等号拆分，不使用 & 或 @ 分隔账号。逐账号独立运行，任一账号失败则整体非零退出。。
 - `scripts/jc_checkin.py`：JC_ACCOUNTS 每个非空行一个邮箱|密码，仅按首个 | 分割；密码中的后续 | 和空格保留。所有账号共用 BASE_URL，独立执行；任一账号业务失败整体非零退出。EMAIL/PASSWORD 只兼容单账号。。
 - `scripts/jcqd.py`：每个非空行一个账号，登录邮箱|密码，仅按首个 | 分割；各账号和站点独立会话，任一账号失败整体非零退出。旧变量保留单账号兼容。。
+- `scripts/jingyiluntan_sign.py`：JYLT_Cookie 每个非空行一个账号，按行独立登录和执行；任一账号失败时进程非零退出。。
 - `scripts/jissbon.py`：每个非空行一个账号Access-Token，逐账号独立执行；任一账号失败整体非零退出。。
 - `scripts/jyj.py`：每个非空行一个账号，authorization#userid，只分割第一个#；逐账号独立处理，任一失败整体非零退出。。
 - `scripts/kgqq.py`：每行一个账号的完整 Cookie，开启音乐奖励时使用 完整Cookie|g_tk_openkey；配套值须属于同一账号。忽略空行，逐个独立处理，任何账号失败则整体非零退出。。
@@ -1714,6 +1723,13 @@
 - 所属脚本：`scripts/jcqd.py`
 - 获取或设置：在所选站点官网注册后使用本人登录邮箱和密码。上游提供的 ikuuu 官网为 https://ikuuu.art，v2free 为 https://w1.v2free.top，gw树洞接口源站为 https://m.mmomm.io，均未在线核实。发布后的 Check 使用本变量；独立运行仍可用旧单账号变量 jcuname 与 jcpasswd 组合。同一行须适用于所选站点，凭据不同的站点请分别建立任务。
 - 填写格式：`每个非空行一个账号：登录邮箱|密码；只在第一个 | 分割，密码后续字符保持原样；不使用 & 或 @ 分隔账号`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JYLT_Cookie`
+
+- 所属脚本：`scripts/jingyiluntan_sign.py`
+- 获取或设置：浏览器登录精易论坛 https://bbs.125.la，打开开发者工具的网络面板，选择本站已登录请求，复制请求头 Cookie 的完整值。会话过期后重新登录获取；不要复制请求头名称或向他人公开。
+- 填写格式：`每个非空行一个账号的完整 Cookie；保留分号及其中的等号，不用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `jsbaxfls`
@@ -4134,6 +4150,36 @@
 - 所属脚本：`scripts/jcqd.py`
 - 获取或设置：可选填写现有青龙 notify.py 所在目录；也自动尝试导入 notify 和青龙标准目录。
 - 填写格式：`本机通知模块目录路径`
+
+#### `JYLT_RATE`
+
+- 所属脚本：`scripts/jingyiluntan_sign.py`
+- 获取或设置：需要延续上游热门帖评分功能时手动设为 1；默认 0，避免自动消耗评分额度或更改帖子评分。
+- 填写格式：`1 开启热门帖逐帖 +1 评分，0 关闭；评分失败或额度受限时停止该账号评分并返回失败。`
+
+#### `JYLT_LOCAL_TEXT`
+
+- 所属脚本：`scripts/jingyiluntan_sign.py`
+- 获取或设置：可自行填写评分附言的本地备用文字；不要填写凭据或个人敏感信息。优先使用一言及出处，提供方异常时回退本地文字。
+- 填写格式：`归一化后不超过 280 字；空值或超长时使用内置文字。`
+
+#### `JYLT_DRY_RUN`
+
+- 所属脚本：`scripts/jingyiluntan_sign.py`
+- 获取或设置：离线检查时设为 1，正式运行时移除或设为 0。
+- 填写格式：`1 完全断网模拟所有请求和通知，0 正式执行。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/jingyiluntan_sign.py`
+- 获取或设置：沿用青龙全局通知设置；默认开启。
+- 填写格式：`0、false、no、off 关闭，其余值开启；通知失败不改变业务退出码。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/jingyiluntan_sign.py`
+- 获取或设置：可填写本机青龙 notify.py 或 sendNotify.js 所在目录；默认尝试导入 notify 和青龙标准目录。
+- 填写格式：`本地通知模块目录；脚本业务不依赖此目录。`
 
 #### `JSB_DRY_RUN`
 
@@ -7321,6 +7367,7 @@
 - `scripts/iqiyi_checkin.py`：SHA-256 `2829c7add08087e4c054a99ebc6b3f88c9e665a7a9310b713d19b2467acebed2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7701c083c0ca06d5`。
 - `scripts/jc_checkin.py`：SHA-256 `a9e3d7940077da25253b9b49f7a39552ffe129ebf250bf5036d3a1dad18cc787`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fd9b2a23e39332a5`。
 - `scripts/jcqd.py`：SHA-256 `ddbc8159cadbfeb3332e7ecfed3200f268bc1950c4fd4a6f6597b461ac7ad731`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/757bc6292780fb17`。
+- `scripts/jingyiluntan_sign.py`：SHA-256 `0a3987df426c3b1aecf1022de9d2c61da039f8ce3c6dc0bebff7f6c50117ca3e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c2696f744222baac`。
 - `scripts/jissbon.py`：SHA-256 `6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dff518c351ef674e`。
 - `scripts/jyj.py`：SHA-256 `28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d484be6cd2a617db`。
 - `scripts/kgqq.py`：SHA-256 `fd14c4b064a5168918f0d3eb0ea766762361151ca7c441e4188cd7b98c31d9a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d49d052949d2bef1`。
@@ -7461,6 +7508,7 @@
 - `scripts/iqiyi_checkin.py`：自然月签到改变签到记录并可能发放积分；网页积分签到改变积分及签到记录；启用会员抽奖时消耗机会并可能获得奖品；启用摇一摇时消耗活动机会并可能获得奖品；启用任务次数领取时记录浏览、预约电影任务并增加白金次数；启用白金抽奖时消耗活动机会并可能获得奖品；启用V7领取时可能改变会员权益或类型；正式模式开启通知时向配置渠道发送脱敏总结；启用 VIP 自动签到时改变签到记录并可能增加成长值；启用每日成长任务时记录任务参与、浏览或预约、完成通知，并可能领取成长奖励。
 - `scripts/jc_checkin.py`：正式运行登录并建立账号会话；正式运行每日签到，可能增加机场签到流量或奖励；启用通知时发送脱敏统计；显式开启兼容推送时向 PushPlus 发送脱敏统计。
 - `scripts/jcqd.py`：向所选站点提交登录并建立会话；向所选站点提交每日签到，可能获得流量或站点签到奖励；正式运行通过青龙通知模块发送脱敏任务摘要。
+- `scripts/jingyiluntan_sign.py`：正式运行提交每日签到；仅在 JYLT_RATE=1 时提交热门帖 +1 评分和附言，消耗论坛允许的评分额度；正式运行按全局开关发送青龙通知。
 - `scripts/jissbon.py`：实际执行时提交每日签到；实际执行时登记分享奖励；显式开启抽奖时消耗抽奖机会，可能消耗积分并获得奖品；启用通知时通过青龙通知模块发送脱敏总结。
 - `scripts/jyj.py`：签到并领取积分或水滴奖励；创建及提交拍一拍和药材游戏记录，领取游戏奖励；转盘、酒柜及红包雨抽奖，可能消耗活动次数或积分；点赞文章及记录订阅、调研、分享和运动任务；种植指定药材及消耗水滴浇水；上传本人照片至官方授权存储，提交AI识别及活动拍照打卡；通知启用且适配器可用时向青龙通知渠道发送脱敏结果。
 - `scripts/kgqq.py`：领取签到奖励，可能增加账号鲜花或道具。；开启抽奖后执行抽奖，可能消耗次数或活动资源并发放奖励。；开启音乐奖励后领取音乐卡片互动奖励，可能改变互动奖励状态及鲜花余额。；VIP 用户领取日奖励，改变领取状态并可能增加道具。；正式执行结束后，通过可用的青龙通知模块发送脱敏任务汇总。。
@@ -7603,6 +7651,7 @@
 - `scripts/iqiyi_checkin.py`：上游 `deeplee/personal-scripts` / `iqiyi_checkin.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
 - `scripts/jc_checkin.py`：上游 `kerncoola/JC_CheckIn` / `JC_CheckIn.py` / `71362b20abdad2711ddc2e4321ef33b3ebcc64c5`。
 - `scripts/jcqd.py`：上游 `Rookie-wb-WH/ql_scripts` / `jcqd.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
+- `scripts/jingyiluntan_sign.py`：上游 `CSDN2024/QianDaoMZH` / `JingYiLunTan-sign.py` / `b99c67e46d1e74d2fd3a0bff7cac3f83e5ee6903`。
 - `scripts/jissbon.py`：上游 `Rookie-wb-WH/ql_scripts` / `jissbon.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/jyj.py`：上游 `Rookie-wb-WH/ql_scripts` / `jingyoujia/jyj.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/kgqq.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/kgqq/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
