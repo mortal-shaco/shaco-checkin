@@ -443,6 +443,12 @@
           "ALIYUN_MAX_DELAY_SECONDS",
           "ALIYUN_PERSIST_ROTATED_TOKENS",
           "ALIYUN_TOKEN_OUTPUT_FILE",
+          "ENABLE_DEVICE_SESSION",
+          "MAX_RANDOM_DELAY",
+          "RANDOM_SIGNIN",
+          "AUTO_UPDATE_TOKEN",
+          "PRIVACY_MODE",
+          "SHOW_TOKEN_IN_NOTIFICATION",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
@@ -453,12 +459,11 @@
           "ALIYUN_CLAIM_REWARD": "1",
           "ALIYUN_MAX_DELAY_SECONDS": "0",
           "ALIYUN_PERSIST_ROTATED_TOKENS": "0",
+          "ENABLE_DEVICE_SESSION": "0",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "ALL ACCOUNTS SUCCEEDED:",
-          "ALIYUN_DRIVE_SUMMARY=",
-          "TASK_SUMMARY="
+          "ALL ACCOUNTS SUCCEEDED:"
         ],
         "features": [
           "执行阿里云盘每日会员签到并明确验证接口结果",
@@ -469,14 +474,19 @@
           "检测刷新令牌轮换并可选安全写入本地文件",
           "保留可选执行前随机延迟与每日 11:03 调度",
           "展示官方返回的非秘密账号身份，输出分阶段脱敏日志与统计",
-          "发送青龙脱敏任务通知，通知故障不改变业务退出码，预演模拟通知"
+          "发送青龙脱敏任务通知，通知故障不改变业务退出码，预演模拟通知",
+          "查询官方昵称或公开用户标识及存储容量、已用空间和使用比例",
+          "支持显式开启设备会话注册与 secp256k1 签名领奖，默认关闭",
+          "解析延期卡数量和备份空间奖励",
+          "兼容显式旧版随机延迟设置；只读查询失败继续签到领奖并以非零退出"
         ],
         "sideEffects": [
           "正式执行时刷新账号访问令牌，并可能轮换刷新令牌",
           "正式执行时为每个账号完成阿里云盘会员签到",
           "默认正式执行时领取当日签到奖励，可通过 ALIYUN_CLAIM_REWARD=0 关闭",
           "明确启用持久化且检测到轮换时，将当前刷新令牌原子写入指定本地文件",
-          "正式执行通知开启时通过青龙通知组件发送脱敏总结"
+          "正式执行通知开启时通过青龙通知组件发送脱敏总结",
+          "明确开启 ENABLE_DEVICE_SESSION 且需要领奖时向阿里云盘注册临时设备会话公钥。"
         ]
       },
       "postReview": {
@@ -485,7 +495,7 @@
       },
       "displayName": "阿里云盘签到",
       "path": "scripts/aliyunpan_checkin.py",
-      "sha256": "eaaba6cb8f2216f2cfcef6262eeb6b2ec158db78b97957c8d10af0b2da678bc1",
+      "sha256": "f73933110e9ec5ac21b1ab66afb64f6171e956de1cb8fd9e28bc6ce41aee4726",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -504,6 +514,16 @@
             "catalogId": "8b5191e80a8670cd",
             "sha256": "b57b242aaec9eb4af35b2ea196bc04df91c64b3a9a41cabab3525e5feb4d701c",
             "license": "MIT"
+          },
+          {
+            "repository": "lizhixu/ql-script-hub",
+            "url": "https://github.com/lizhixu/ql-script-hub.git",
+            "branch": "main",
+            "commit": "ac591a320092dcaeaf236b7c2b6acfd28981e589",
+            "originalPath": "aliyunpan_checkin.py",
+            "catalogId": "03fab719d6121fd2",
+            "sha256": "9ce0001d055a1770575a4a42df94424b408071b5a84340b2ec1ae3a43d7dd215",
+            "license": "MIT"
           }
         ]
       },
@@ -514,65 +534,109 @@
           "name": "ALIYUN_REFRESH_TOKEN",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录阿里云盘网页版，在开发者工具 Application 的 Local Storage 中找到当前站点 token 项，复制 refresh_token 字段；在青龙环境变量中配置。过期时重新登录获取。",
-          "format": "每个非空行一个账号的刷新令牌，不填写整段 JSON，不用 & 或 @ 分隔账号。"
+          "howToGet": "登录阿里云盘网页版，按 F12 打开开发者工具，在 Application 的 Local Storage 找到当前站点的 token 项，只复制 refresh_token 字段。勿公开账号数据。",
+          "format": "每个非空行一个刷新令牌，不使用 & 或 @ 分隔；单行内符号原样保留。"
         },
         {
           "name": "ALIYUN_DRIVE_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要断网预演时设置为 1。",
-          "format": "1/true/yes/on 开启，默认关闭。"
+          "howToGet": "在青龙环境变量中设置为 1，完全离线预演。",
+          "format": "默认关闭；1/true/yes/on 启用。"
         },
         {
           "name": "ALIYUN_CLAIM_REWARD",
           "required": false,
           "sensitive": false,
-          "howToGet": "默认签到后领取当日奖励；仅需原有签到行为时设置为 0。",
-          "format": "默认 1；1/true/yes/on 开启，0/false/no/off 关闭。"
+          "howToGet": "按需设置是否领取当日奖励。",
+          "format": "默认 1，0 仅签到；兼容 true/false、yes/no、on/off。"
         },
         {
           "name": "ALIYUN_MAX_DELAY_SECONDS",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要随机延迟时手工配置；保留规范脚本参数。",
-          "format": "非负整数，默认 0；正式执行前在零至该值之间随机等待。"
+          "howToGet": "按需设置执行前随机延迟上限。",
+          "format": "非负整数秒，默认 0；优先于 MAX_RANDOM_DELAY。"
         },
         {
           "name": "ALIYUN_PERSIST_ROTATED_TOKENS",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要安全保存轮换令牌时显式设置为 1，并同时设置输出文件。",
-          "format": "1/true/yes/on 开启，默认关闭；预演不写文件。"
+          "howToGet": "需要保存轮换凭据时显式开启，同时指定安全文件。",
+          "format": "默认关闭；1 启用，预演不写入。"
         },
         {
           "name": "ALIYUN_TOKEN_OUTPUT_FILE",
           "required": false,
+          "sensitive": true,
+          "howToGet": "指定安全本地文件绝对路径，父目录必须存在，文件不可公开。",
+          "format": "开启持久化时必填；轮换时原子覆盖为权限 0600，按原顺序每行保存一个账号的令牌。"
+        },
+        {
+          "name": "ENABLE_DEVICE_SESSION",
+          "required": false,
           "sensitive": false,
-          "howToGet": "选择由自己管理的私密文件路径，父目录必须已存在；持久化开启时必填。",
-          "format": "绝对路径；仅在轮换且持久化开启时原子写入，权限 0600，每行对应原账号顺序。文件包含敏感凭据，勿公开。"
+          "howToGet": "设备签名领奖需要从公共 PyPI 安装 ecdsa 并显式开启；未进行在线验证。",
+          "format": "默认 0；1 注册临时设备会话并签名；兼容 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版延迟上限兼容输入，建议使用 ALIYUN_MAX_DELAY_SECONDS。",
+          "format": "非负整数秒；仅显式设置时生效，默认 0。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版随机延迟开关兼容输入。",
+          "format": "显式 0/false/no/off 关闭延迟；默认保持维护版设置。"
+        },
+        {
+          "name": "AUTO_UPDATE_TOKEN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版兼容说明：改用显式安全文件持久化配置。",
+          "format": "此变量不再执行面板数据库或环境改写。"
+        },
+        {
+          "name": "PRIVACY_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版兼容说明：全部模式均隐藏凭据。",
+          "format": "此变量不能关闭凭据保护。"
+        },
+        {
+          "name": "SHOW_TOKEN_IN_NOTIFICATION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版兼容说明：通知不包含令牌及片段。",
+          "format": "此变量不能开启令牌展示。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙已有通知配置；需关闭时手工设置为 0。",
-          "format": "默认 1；0/false/no/off 关闭。预演仅模拟通知以确保断网。"
+          "howToGet": "按需配置青龙全局通知开关。",
+          "format": "默认 1；0/false/no/off 关闭；预演只模拟通知。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "notify.py 未在 Python 导入路径或青龙标准目录时，填写其所在目录。",
-          "format": "可选目录路径；通知组件缺失或推送失败不改变业务退出码。"
+          "howToGet": "可选指定已有 notify.py 所在目录，也自动查找青龙标准路径。",
+          "format": "可选本地目录；通知故障不改变业务退出码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号；逐账号独立处理，任何账号失败均非零退出，安全持久化按原账号顺序保存。"
+        "rule": "每个非空行一个刷新令牌，逐账号独立处理；任一账号或启用的持久化失败时整体非零退出。"
       },
-      "dependencies": [],
+      "dependencies": [
+        "ecdsa"
+      ],
       "features": [
         "执行阿里云盘每日会员签到并明确验证接口结果",
         "签到后领取当日奖励，支持显式关闭领奖",
@@ -582,14 +646,19 @@
         "检测刷新令牌轮换并可选安全写入本地文件",
         "保留可选执行前随机延迟与每日 11:03 调度",
         "展示官方返回的非秘密账号身份，输出分阶段脱敏日志与统计",
-        "发送青龙脱敏任务通知，通知故障不改变业务退出码，预演模拟通知"
+        "发送青龙脱敏任务通知，通知故障不改变业务退出码，预演模拟通知",
+        "查询官方昵称或公开用户标识及存储容量、已用空间和使用比例",
+        "支持显式开启设备会话注册与 secp256k1 签名领奖，默认关闭",
+        "解析延期卡数量和备份空间奖励",
+        "兼容显式旧版随机延迟设置；只读查询失败继续签到领奖并以非零退出"
       ],
       "sideEffects": [
         "正式执行时刷新账号访问令牌，并可能轮换刷新令牌",
         "正式执行时为每个账号完成阿里云盘会员签到",
         "默认正式执行时领取当日签到奖励，可通过 ALIYUN_CLAIM_REWARD=0 关闭",
         "明确启用持久化且检测到轮换时，将当前刷新令牌原子写入指定本地文件",
-        "正式执行通知开启时通过青龙通知组件发送脱敏总结"
+        "正式执行通知开启时通过青龙通知组件发送脱敏总结",
+        "明确开启 ENABLE_DEVICE_SESSION 且需要领奖时向阿里云盘注册临时设备会话公钥。"
       ],
       "review": {
         "staticPassed": true,
@@ -602,7 +671,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/9c6fa7a75879fa8b",
-        "candidateSha256": "eaaba6cb8f2216f2cfcef6262eeb6b2ec158db78b97957c8d10af0b2da678bc1"
+        "candidateSha256": "f73933110e9ec5ac21b1ab66afb64f6171e956de1cb8fd9e28bc6ce41aee4726"
       }
     },
     {

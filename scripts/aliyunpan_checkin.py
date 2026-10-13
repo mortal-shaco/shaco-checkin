@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # name: 阿里云盘签到
 # cron: 3 11 * * *
-# dependencies: none (Python standard library only)
+# dependencies: ecdsa (仅启用设备签名时需要)
 """Aliyun Drive daily check-in.
 
 Maintained standalone repair of ``aliyunpan_checkin.py`` from
@@ -35,7 +35,15 @@ QINGLONG_NOTIFY 默认 1；设为 0/false/no/off 可关闭。QINGLONG_NOTIFY_DIR
 合并来源：Sitoi/dailycheckin dailycheckin/aliyun/main.py，MIT；
 agluo/ql-script-hub aliyunpan_checkin.py 的领奖参考，MIT。
 保留规范目标的令牌轮换、多账号、通知、延迟和持久化能力及原定时。
-不采用参考脚本的默认数据库/环境改写、设备会话注册或令牌片段输出。
+不采用参考脚本的默认数据库/环境改写或令牌片段输出。
+新增来源：lizhixu/ql-script-hub aliyunpan_checkin.py，MIT，
+提交 ac591a320092dcaeaf236b7c2b6acfd28981e589；保留原有 MIT 声明。
+新增只读身份与容量查询；查询失败仍继续签到和领奖，最终非零退出。
+ENABLE_DEVICE_SESSION=1 可显式启用上游设备签名及注册会话，默认关闭，
+仅启用时需要公共 PyPI 的 ecdsa 包；预演不导入该依赖、不注册设备。
+MAX_RANDOM_DELAY 和 RANDOM_SIGNIN 接受显式旧配置；新延迟变量优先。
+AUTO_UPDATE_TOKEN、PRIVACY_MODE、SHOW_TOKEN_IN_NOTIFICATION 不再用于
+改写面板或放宽凭据保护；请使用原有显式安全文件持久化配置。
 
 MIT License
 Copyright (c) agluo/ql-script-hub contributors.
@@ -65,9 +73,12 @@ files, databases, or invoke Qinglong executables.
 from __future__ import annotations
 
 import json
+import hashlib
+import uuid
 import importlib.util
 import os
 import random
+import re
 import sys
 import tempfile
 import time
@@ -82,6 +93,9 @@ from urllib.request import Request, build_opener, HTTPRedirectHandler
 TOKEN_URL = "https://auth.aliyundrive.com/v2/account/token"
 REWARD_URL = "https://member.aliyundrive.com/v1/activity/sign_in_reward"
 SIGN_URL = "https://member.aliyundrive.com/v1/activity/sign_in_list"
+USER_INFO_URL = "https://user.aliyundrive.com/v2/user/get"
+STORAGE_URL = "https://api.aliyundrive.com/v2/user/get"
+SESSION_URL = "https://api.aliyundrive.com/users/v1/users/device/create_session"
 REQUEST_TIMEOUT_SECONDS = 20
 USER_AGENT = "qinglong-aliyun-drive-checkin/2.0"
 TRUE_VALUES = {"1", "true", "yes", "on"}
@@ -236,11 +250,14 @@ def decode_json(body: bytes, operation: str) -> dict[str, Any]:
 
 
 def post_json(
-    url: str, payload: dict[str, Any], operation: str, bearer_token: str = ""
+    url: str, payload: dict[str, Any], operation: str, bearer_token: str = "",
+    extra_headers: Optional[dict[str, str]] = None
 ) -> tuple[int, dict[str, Any]]:
     headers = {"Content-Type": "application/json", "User-Agent": USER_AGENT}
     if bearer_token:
         headers["Authorization"] = f"Bearer {bearer_token}"
+    if extra_headers:
+        headers.update(extra_headers)
     request = Request(
         url,
         data=json.dumps(payload, separators=(",", ":")).encode("utf-8"),
@@ -273,6 +290,9 @@ class AliyunDriveClient:
         self.sign_result = {}
         self.identity = ""
         self.secrets = [refresh_token]
+        self.user_id = ""
+        self.device_headers = {}
+        self.device_session = enabled("ENABLE_DEVICE_SESSION")
 
     def refresh_access_token(self) -> tuple[str, str, bool]:
         if self.dry_run:
@@ -297,6 +317,7 @@ class AliyunDriveClient:
         if not isinstance(next_refresh_token, str) or not next_refresh_token:
             raise CheckinError("token refresh response contained an invalid refresh token")
         self.secrets.extend([access_token, next_refresh_token])
+        self.user_id = payload.get("user_id", "")
         for field in ("nick_name", "display_name", "user_name", "user_id"):
             value = payload.get(field)
             if isinstance(value, str) and value and not any(secret in value for secret in self.secrets):
@@ -304,6 +325,67 @@ class AliyunDriveClient:
                 self.identity = value
                 break
         return access_token, next_refresh_token, next_refresh_token != self.refresh_token
+
+    def account_information(self, access_token):
+        """Read only the reference-supported identity and storage fields."""
+        if self.dry_run:
+            self.identity = "预演账号"
+            return "账号身份：预演账号；存储空间 1.00GB / 10.00GB（10.0%）"
+        details = []
+        for url, operation in ((USER_INFO_URL, "查询账号身份"), (STORAGE_URL, "查询存储容量")):
+            status, payload = post_json(url, {}, operation, access_token)
+            if status != 200 or payload.get("code") or payload.get("success") is False:
+                raise CheckinError(f"{operation}未获接口确认（HTTP {status}）")
+            if url == USER_INFO_URL:
+                for field in ("nick_name", "display_name", "user_name", "user_id"):
+                    value = payload.get(field)
+                    if isinstance(value, str) and value and not any(s in value for s in self.secrets):
+                        self.identity = value
+                        details.append("官方账号身份：" + json.dumps(value, ensure_ascii=False))
+                        break
+                else:
+                    raise CheckinError("账号接口未返回可验证的公开身份")
+            else:
+                space = payload.get("personal_space_info")
+                if not isinstance(space, dict):
+                    raise CheckinError("容量接口缺少存储信息")
+                used, total = space.get("used_size"), space.get("total_size")
+                if any(isinstance(v, bool) or not isinstance(v, (int, float)) or v < 0
+                       for v in (used, total)) or total <= 0:
+                    raise CheckinError("容量接口未返回有效空间数值")
+                details.append(f"存储空间 {used / 1024**3:.2f}GB / {total / 1024**3:.2f}GB（{used / total * 100:.1f}%）")
+        return "；".join(details)
+
+    def prepare_device_session(self, access_token):
+        if not self.device_session:
+            return
+        if self.dry_run:
+            return
+        if not isinstance(self.user_id, str) or not self.user_id:
+            raise CheckinError("设备签名需要官方返回的用户标识")
+        try:
+            from ecdsa import SigningKey, SECP256k1
+        except ImportError as exc:
+            raise CheckinError("ENABLE_DEVICE_SESSION=1 需要通过公共包仓库安装 ecdsa") from exc
+        private_key = SigningKey.generate(curve=SECP256k1)
+        device_id = uuid.uuid4().hex + uuid.uuid4().hex
+        self.secrets.append(device_id)
+        signing_text = f"25dzX3vbYqktVxyX:{device_id}:{self.user_id}:0".encode("utf-8")
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) aDrive/7.1.2 Chrome/130.0.6723.59 Electron/32.0.1 Safari/537.36",
+            "x-canary": "client=windows,app=adrive,version=v7.1.2",
+            "x-device-id": device_id,
+            "x-signature": private_key.sign(signing_text, hashfunc=hashlib.sha256).hex() + "01",
+            "x-signature-v2": hashlib.sha1(signing_text).hexdigest(),
+        }
+        status, payload = post_json(SESSION_URL, {
+            "deviceName": "Python Script", "modelName": "Windows 客户端",
+            "pubKey": private_key.get_verifying_key().to_string("uncompressed").hex(),
+        }, "注册可选设备会话", access_token, headers)
+        # Do not treat arbitrary nonempty result objects as verified success.
+        if status != 200 or payload.get("success") is not True:
+            raise CheckinError(f"设备会话未获明确成功确认（HTTP {status}）")
+        self.device_headers = headers
 
     def sign_in(self, access_token: str) -> int:
         if self.dry_run:
@@ -332,7 +414,20 @@ class AliyunDriveClient:
         text = " ".join(v for v in values if isinstance(v, str))
         for secret in self.secrets:
             text = text.replace(secret, "[已隐藏]")
+        text = re.sub(r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d{9}(?!\d)", "[手机号已隐藏]", text)
         return text.replace("\n", " ").replace("\r", " ")[:500]
+
+    def log_reward_description(self, log):
+        text = self.reward_description(log.get("reward"))
+        if text:
+            return text
+        kind, amount = log.get("type"), log.get("rewardAmount")
+        if kind not in {"postpone", "backupSpaceMb"}:
+            return ""
+        label = "延期卡" if kind == "postpone" else "备份空间"
+        if isinstance(amount, (int, float)) and not isinstance(amount, bool) and amount > 0:
+            label += f" {amount}" + ("MB" if kind == "backupSpaceMb" else "张")
+        return label
 
     def claim_reward(self, access_token, sign_days):
         if sign_days < 1:
@@ -344,27 +439,28 @@ class AliyunDriveClient:
                       and str(log.get("day")) == str(sign_days)
                       and log.get("status") == "normal"), None)
         if today and today.get("isReward") is True:
-            return "already", "当日奖励已领取 " + self.reward_description(today.get("reward"))
+            return "already", "当日奖励已领取 " + self.log_reward_description(today)
         if self.dry_run:
             return "success", "领奖成功（预演奖励）"
-        status, payload = post_json(REWARD_URL, {"signInDay": sign_days}, "领取当日奖励", access_token)
+        self.prepare_device_session(access_token)
+        status, payload = post_json(REWARD_URL, {"signInDay": sign_days}, "领取当日奖励", access_token, self.device_headers)
         if status != 200 or payload.get("success") is not True:
             # A vague error string or a failed claim must never become success.
             raise CheckinError(f"领奖未获接口确认（HTTP {status}），请核对当日奖励状态")
         info = self.reward_description(payload.get("result"))
         if not info and today:
-            info = self.reward_description(today.get("reward"))
+            info = self.log_reward_description(today)
         return "success", "领奖成功" + ("：" + info if info else "")
 
     def run(self, index=1, claim=True) -> AccountResult:
         next_token, rotated, days = self.refresh_token, False, None
         self.stats = {"success": 0, "already": 0, "skipped": 0, "failed": 0}
-        operations = [("刷新登录凭据", None), ("执行签到", None), ("领取当日奖励", None)]
+        operations = [("刷新登录凭据", None), ("查询身份与容量", None), ("执行签到", None), ("领取当日奖励", None)]
         access_token = ""
         error = ""
         for number, (name, _) in enumerate(operations, 1):
             began = time.monotonic()
-            timeline(f"账号 {index:02d}：[{number}/3] {name}")
+            timeline(f"账号 {index:02d}：[{number}/4] {name}")
             outcome, detail = "success", ""
             try:
                 if error:
@@ -375,6 +471,8 @@ class AliyunDriveClient:
                     if self.identity:
                         timeline("官方账号身份：" + json.dumps(self.identity, ensure_ascii=False), "└─")
                 elif number == 2:
+                    detail = self.account_information(access_token)
+                elif number == 3:
                     days = self.sign_in(access_token)
                     detail = f"签到成功，累计 {days} 天"
                 elif not claim:
@@ -383,12 +481,16 @@ class AliyunDriveClient:
                     outcome, detail = self.claim_reward(access_token, days)
             except Exception as exc:
                 outcome = "failed"
-                error = str(exc) if isinstance(exc, CheckinError) else "处理异常，详情已隐藏"
-                detail = error
+                detail = str(exc) if isinstance(exc, CheckinError) else "处理异常，详情已隐藏"
+                if number == 2:
+                    # Read-only enrichment must not prevent check-in or reward actions.
+                    detail += "；继续签到与领奖，整体将返回失败"
+                else:
+                    error = detail
             self.stats[outcome] += 1
             icon = {"success": "✅", "already": "☑️", "skipped": "⏭️", "failed": "❌"}[outcome]
             timeline(f"{icon} {detail} │ 阶段耗时 {time.monotonic() - began:.1f} 秒", "└─")
-        return AccountResult(not error, next_token, rotated, days, error)
+        return AccountResult(not self.stats["failed"], next_token, rotated, days, error)
 
 
 def persist_tokens(tokens: list[str], destination: str) -> None:
@@ -433,7 +535,14 @@ def main() -> int:
     persistence_failed = False
     try:
         tokens = parse_tokens()
-        max_delay = parse_nonnegative_int("ALIYUN_MAX_DELAY_SECONDS")
+        # Preserve maintained defaults; accept the upstream delay controls only when explicit.
+        delay_name = "ALIYUN_MAX_DELAY_SECONDS" if "ALIYUN_MAX_DELAY_SECONDS" in os.environ else "MAX_RANDOM_DELAY"
+        max_delay = parse_nonnegative_int(delay_name)
+        if "RANDOM_SIGNIN" in os.environ and not enabled("RANDOM_SIGNIN"):
+            max_delay = 0
+        raw_session = os.getenv("ENABLE_DEVICE_SESSION", "0").strip().lower()
+        if raw_session not in TRUE_VALUES | FALSE_VALUES:
+            raise CheckinError("ENABLE_DEVICE_SESSION 必须为 1 或 0")
         persistence_enabled = enabled("ALIYUN_PERSIST_ROTATED_TOKENS")
         output_file = os.getenv("ALIYUN_TOKEN_OUTPUT_FILE", "").strip()
         if persistence_enabled and not output_file:
@@ -470,7 +579,7 @@ def main() -> int:
         for key in task_stats:
             task_stats[key] += stats[key]
         timeline(f"账号 {index:02d}：{'✅ 成功' if result.success else '❌ 失败'}")
-        timeline(f"总任务 3 │ 成功 {stats['success']} │ 已完成 {stats['already']} │ 跳过 {stats['skipped']} │ 失败 {stats['failed']} │ 用时 {time.monotonic() - account_started:.1f} 秒", "└─")
+        timeline(f"总任务 4 │ 成功 {stats['success']} │ 已完成 {stats['already']} │ 跳过 {stats['skipped']} │ 失败 {stats['failed']} │ 用时 {time.monotonic() - account_started:.1f} 秒", "└─")
 
     rotated_count = sum(result.rotated for result in results)
     if persistence_enabled and rotated_count and not dry_run:
