@@ -13188,6 +13188,824 @@
       }
     },
     {
+      "catalogId": "3c5c6df4d8a81a7f",
+      "applicationKey": "rousi",
+      "checkProfile": {
+        "requiredEnv": [
+          "ROUSI_TOKEN"
+        ],
+        "optionalEnv": [
+          "ROUSI_COOKIE",
+          "ROUSI_TOKEN_1",
+          "ROUSI_TOKEN_2",
+          "ROUSI_TOKEN_3",
+          "ROUSI_TOKEN_4",
+          "ROUSI_TOKEN_5",
+          "ROUSI_TOKEN_6",
+          "ROUSI_TOKEN_7",
+          "ROUSI_TOKEN_8",
+          "ROUSI_TOKEN_9",
+          "ROUSI_TOKEN_10",
+          "ROUSI_TOKEN_11",
+          "ROUSI_TOKEN_12",
+          "ROUSI_TOKEN_13",
+          "ROUSI_TOKEN_14",
+          "ROUSI_TOKEN_15",
+          "ROUSI_TOKEN_16",
+          "ROUSI_TOKEN_17",
+          "ROUSI_TOKEN_18",
+          "ROUSI_TOKEN_19",
+          "ROUSI_TOKEN_20",
+          "ROUSI_COOKIE_1",
+          "ROUSI_COOKIE_2",
+          "ROUSI_COOKIE_3",
+          "ROUSI_COOKIE_4",
+          "ROUSI_COOKIE_5",
+          "ROUSI_COOKIE_6",
+          "ROUSI_COOKIE_7",
+          "ROUSI_COOKIE_8",
+          "ROUSI_COOKIE_9",
+          "ROUSI_COOKIE_10",
+          "ROUSI_COOKIE_11",
+          "ROUSI_COOKIE_12",
+          "ROUSI_COOKIE_13",
+          "ROUSI_COOKIE_14",
+          "ROUSI_COOKIE_15",
+          "ROUSI_COOKIE_16",
+          "ROUSI_COOKIE_17",
+          "ROUSI_COOKIE_18",
+          "ROUSI_COOKIE_19",
+          "ROUSI_COOKIE_20",
+          "rousi_token",
+          "rousi_cookie",
+          "rousi_token_1",
+          "rousi_token_2",
+          "rousi_token_3",
+          "rousi_token_4",
+          "rousi_token_5",
+          "rousi_token_6",
+          "rousi_token_7",
+          "rousi_token_8",
+          "rousi_token_9",
+          "rousi_token_10",
+          "rousi_token_11",
+          "rousi_token_12",
+          "rousi_token_13",
+          "rousi_token_14",
+          "rousi_token_15",
+          "rousi_token_16",
+          "rousi_token_17",
+          "rousi_token_18",
+          "rousi_token_19",
+          "rousi_token_20",
+          "rousi_cookie_1",
+          "rousi_cookie_2",
+          "rousi_cookie_3",
+          "rousi_cookie_4",
+          "rousi_cookie_5",
+          "rousi_cookie_6",
+          "rousi_cookie_7",
+          "rousi_cookie_8",
+          "rousi_cookie_9",
+          "rousi_cookie_10",
+          "rousi_cookie_11",
+          "rousi_cookie_12",
+          "rousi_cookie_13",
+          "rousi_cookie_14",
+          "rousi_cookie_15",
+          "rousi_cookie_16",
+          "rousi_cookie_17",
+          "rousi_cookie_18",
+          "rousi_cookie_19",
+          "rousi_cookie_20",
+          "ROUSI_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "pushplus_token",
+          "PUSHPLUS_TYPE"
+        ],
+        "dryRunEnv": {
+          "ROUSI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ROUSI_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1",
+          "PUSHPLUS_TYPE": "wechat"
+        },
+        "successPatterns": [
+          "✅ 签到成功",
+          "☑️ 今日已签到",
+          "最终状态：success"
+        ],
+        "features": [
+          "普通模式每日签到，并按服务端今日日期识别已签到，避免重复操作",
+          "读取积分余额，保留站点自定义积分名称",
+          "展示分享率、当前魔力值及累计上传下载量",
+          "展示连续签到、已返回签到日期累计天数、本次奖励及连续签到奖励",
+          "兼容 Token、Bearer 前缀、Cookie、小写变量和编号变量的逐行多账号认证",
+          "可选 PushPlus HTTPS 汇总通知，保留渠道参数兼容",
+          "成功、部分失败、失败、配置错误均尝试青龙脱敏通知，预演仅模拟通知",
+          "完全断网预演、带阶段耗时的时间轴日志、账号与任务统计、单行 TASK_SUMMARY 输出"
+        ],
+        "sideEffects": [
+          "正式运行未签到账号时提交普通签到，改变签到记录并领取服务端积分奖励",
+          "正式运行且通知开启时向青龙配置的通知渠道发送脱敏总结",
+          "正式运行配置 PushPlus 时向该通知渠道发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Rousi 签到",
+      "path": "scripts/rousi_checkin.js",
+      "sha256": "b20207312e40ff721f057cfe38dbdf6570486e9f4ce1b4d7882f60f85dafb138",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "373065025/rousi-checkin",
+        "branch": "main",
+        "commit": "627ec698dc9d35f69f44e479366a7c31dd46489c",
+        "originalPath": "rousi_checkin.js"
+      },
+      "cron": "0 9 * * *",
+      "command": "node scripts/rousi_checkin.js",
+      "environment": [
+        {
+          "name": "ROUSI_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "规范凭据变量，每个非空行一个账号 Token，可带 Bearer 前缀；禁止用 & 或 @ 分隔账号。已有兼容变量也能独立提供凭据，无需同时配置。"
+        },
+        {
+          "name": "ROUSI_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版凭据兼容输入，每个非空行一个完整 Cookie；不拆分 Cookie 内的 &、@、分号或等号。Token 与 Cookie 为可替换认证方式，无需配对，同一账号请只选一种。"
+        },
+        {
+          "name": "ROUSI_TOKEN_1",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_2",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_3",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_4",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_5",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_6",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_7",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_8",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_9",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_10",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_11",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_12",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_13",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_14",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_15",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_16",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_17",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_18",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_19",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_TOKEN_20",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_1",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_2",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_3",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_4",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_5",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_6",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_7",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_8",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_9",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_10",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_11",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_12",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_13",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_14",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_15",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_16",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_17",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_18",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_19",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_COOKIE_20",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。规范凭据变量，每个非空行一个账号 Token，可带 Bearer 前缀；禁止用 & 或 @ 分隔账号。已有兼容变量也能独立提供凭据，无需同时配置。"
+        },
+        {
+          "name": "rousi_cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版凭据兼容输入，每个非空行一个完整 Cookie；不拆分 Cookie 内的 &、@、分号或等号。Token 与 Cookie 为可替换认证方式，无需配对，同一账号请只选一种。"
+        },
+        {
+          "name": "rousi_token_1",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_2",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_3",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_4",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_5",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_6",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_7",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_8",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_9",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_10",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_11",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_12",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_13",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_14",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_15",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_16",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_17",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_18",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_19",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_token_20",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_1",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_2",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_3",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_4",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_5",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_6",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_7",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_8",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_9",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_10",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_11",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_12",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_13",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_14",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_15",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_16",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_17",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_18",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_19",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "rousi_cookie_20",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。",
+          "format": "小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。"
+        },
+        {
+          "name": "ROUSI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中自行设置。",
+          "format": "1、true、yes、on 表示完全断网预演；默认关闭。预演只验证参数和流程，不代表真实业务成功，通知仅模拟。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中自行设置通知开关。",
+          "format": "默认 1；0、false、no、off 关闭青龙与 PushPlus 通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写当前青龙通知模块 sendNotify.js 的所在目录；不设置则尝试标准青龙目录。",
+          "format": "本机目录路径；仅通知扩展使用，业务不依赖该目录或私有仓库。缺失或失败仅记录，不改变业务退出码。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 PushPlus 官方服务，在账号页面获取自己的推送令牌。",
+          "format": "一个推送令牌，用于可选 HTTPS 通知，不是 Rousi 账号凭据。"
+        },
+        {
+          "name": "pushplus_token",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 PUSHPLUS_TOKEN 相同，从 PushPlus 官方服务获取。",
+          "format": "旧版小写兼容输入，PUSHPLUS_TOKEN 非空时优先使用大写变量。"
+        },
+        {
+          "name": "PUSHPLUS_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据自己的 PushPlus 推送渠道设置。",
+          "format": "默认 wechat；兼容 pushplusvip、wxgo、qywxgo、email、feishu、dingtalk、bark，其余值按上游使用 send。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；ROUSI_TOKEN 为规范变量，Cookie、小写及编号变量为兼容输入。相同类型的完全相同凭据去重，Token 与 Cookie 无需配对，同一账号只选一种。逐个独立处理，任一账号或读取阶段失败则整体非零退出。禁止使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "普通模式每日签到，并按服务端今日日期识别已签到，避免重复操作",
+        "读取积分余额，保留站点自定义积分名称",
+        "展示分享率、当前魔力值及累计上传下载量",
+        "展示连续签到、已返回签到日期累计天数、本次奖励及连续签到奖励",
+        "兼容 Token、Bearer 前缀、Cookie、小写变量和编号变量的逐行多账号认证",
+        "可选 PushPlus HTTPS 汇总通知，保留渠道参数兼容",
+        "成功、部分失败、失败、配置错误均尝试青龙脱敏通知，预演仅模拟通知",
+        "完全断网预演、带阶段耗时的时间轴日志、账号与任务统计、单行 TASK_SUMMARY 输出"
+      ],
+      "sideEffects": [
+        "正式运行未签到账号时提交普通签到，改变签到记录并领取服务端积分奖励",
+        "正式运行且通知开启时向青龙配置的通知渠道发送脱敏总结",
+        "正式运行配置 PushPlus 时向该通知渠道发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3c5c6df4d8a81a7f",
+        "candidateSha256": "ed64d640bc1f163faba6ce68b03c220552b75da24003291d51ee9b64c3dafb42"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "ed64d640bc1f163faba6ce68b03c220552b75da24003291d51ee9b64c3dafb42",
+        "releaseSha256": "b20207312e40ff721f057cfe38dbdf6570486e9f4ce1b4d7882f60f85dafb138",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "c231dec461782853",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::sf",
       "checkProfile": {

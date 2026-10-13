@@ -113,6 +113,7 @@
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` |
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `0 9 * * *` |
 | 雨云服务器签到 | `scripts/rainyun.py` | `python3 scripts/rainyun.py` | `0 2 * * *` |
+| Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `0 9 * * *` |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `1 1 1 1 1` |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `9 15 * * *` |
 | 申工社每日任务 | `scripts/sgs.py` | `python3 scripts/sgs.py` | `0 8 * * *` |
@@ -284,6 +285,7 @@
 - `scripts/quark_signin.py`：验证夸克账号 Cookie 并显示官方返回的昵称或公开身份；查询当日签到状态，识别今日已签到；领取每日存储空间奖励并展示奖励和连签进度；换行配置多账号，独立处理并汇总失败；可选随机延迟、请求超时、完全断网预演；脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知；失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应。
 - `scripts/raccoon_daily.py`：每日触发积分发放，以北京时间今日正积分账单核验签到成功。；分别领取首次电脑端、手机端登录奖励，检查业务码和 granted，哈希台账避免重复探测。；--query 只查询今日入账，不触发发放、不领取奖励、不写台账。；--skip-onboarding 跳过新手奖励、--only N 筛选账号、--no-notify 关闭通知。；每行一个账号，支持备注|令牌与 Bearer 格式，各账号和奖励独立处理。；支持配置 HTTPS 站点和本地台账路径。；优先青龙通知，保留 PushPlus、Bark、企业微信、钉钉和面板通知兼容渠道。；完全断网预演、时间轴日志、官方非秘密账号身份及单行 TASK_SUMMARY 汇总。。
 - `scripts/rainyun.py`：使用雨云用户名和密码登录，保持登录 Cookie 与 CSRF 令牌。；执行每日签到并领取积分，仅以 HTTP 状态和结构化业务码确认成功。；查询并展示账号积分，展示接口返回的非敏感昵称、用户名或公开 UID。；业务步骤完成或失败后，在已成功登录的情况下执行退出登录并核验结果。；支持每行一个账号的独立会话和失败隔离。；提供完全断网预演、分阶段脱敏日志、账号与任务统计及单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏统计通知，支持全局开关；配置错误和部分失败同样汇总，预演跳过实际发送。。
+- `scripts/rousi_checkin.js`：普通模式每日签到，并按服务端今日日期识别已签到，避免重复操作；读取积分余额，保留站点自定义积分名称；展示分享率、当前魔力值及累计上传下载量；展示连续签到、已返回签到日期累计天数、本次奖励及连续签到奖励；兼容 Token、Bearer 前缀、Cookie、小写变量和编号变量的逐行多账号认证；可选 PushPlus HTTPS 汇总通知，保留渠道参数兼容；成功、部分失败、失败、配置错误均尝试青龙脱敏通知，预演仅模拟通知；完全断网预演、带阶段耗时的时间轴日志、账号与任务统计、单行 TASK_SUMMARY 输出。
 - `scripts/sf.py`：使用分享登录凭据获取账号会话并显示官方返回的昵称、用户名或公开用户编号；自动签到、统计连续签到天数并显示签到礼包名称与有效期；查询积分任务列表并解析直接任务代码或跳转链接内任务编号；执行明确允许的日常积分任务，跳过非日常任务及已完成任务；领取已执行任务的积分奖励并统计获得积分；查询当前可用积分；支持换行多账号、旧账号字段及显式旧配置文件输入；完全断网预演、分阶段脱敏日志、账号统计及单行结构化任务汇总；正式运行向青龙通知模块提交脱敏汇总，通知失败保持业务退出码。
 - `scripts/sfsu_checkin.py`：验证顺丰速运登录会话；每日签到并识别已签到状态；查询积分、完成安全的积分任务并领取奖励；查询丰蜜、完成丰蜜任务、执行大冒险和容量扩充并领取奖励；经显式授权后领取生活特权券；每月 26 至 28 日执行会员日非消费任务、免费抽奖、红包合成和 8 级红包提取；支持多账号独立执行、完全断网预演、脱敏汇总和青龙通知。
 - `scripts/sgs.py`：获取官方账号姓名与积分，展示非秘密身份；每日签到并检查业务成功；显式开启后随机检索未读文章并阅读最多五篇，限制分页次数；显式开启后执行五次工社服务访问计数；显式开启后执行五次热门活动浏览计数；换行多账号、失败非零退出；完全断网预演、青龙脱敏通知与单行结构化汇总。
@@ -465,6 +467,7 @@
 <tr><td rowspan="1"><code>scripts/quark_signin.py</code></td><td><code>QUARK_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留分号及等号，不使用 &amp;、&amp;&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/raccoon_daily.py</code></td><td><code>RACCOON_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号：令牌或备注|令牌，只在第一个 | 拆分，支持 Bearer 前缀，不支持 &amp; 或 @ 分隔账号。备注不输出。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/rainyun.py</code></td><td><code>rainyun_ck</code></td><td>是</td><td>格式：每个非空行一个账号：用户名#密码。仅在第一个 # 处分隔，密码后续的 # 和空格完整保留；用户名按上游规则转换为小写。不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/rousi_checkin.js</code></td><td><code>ROUSI_TOKEN</code></td><td>是</td><td>格式：规范凭据变量，每个非空行一个账号 Token，可带 Bearer 前缀；禁止用 &amp; 或 @ 分隔账号。已有兼容变量也能独立提供凭据，无需同时配置。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sf.py</code></td><td><code>SF_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必填字符串字段 sign、channel、device_id；可选字符串字段 user_agent、account_name。账号只按换行分隔，字段内容完整保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sfsu_checkin.py</code></td><td><code>sfsyUrl</code></td><td>是</td><td>格式：每个非空行一个完整的 URL 编码登录/分享 URL；整行作为同一账号凭据，不使用 &amp;、@ 等字符分隔账号；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sgs.py</code></td><td><code>sgs</code></td><td>是</td><td>格式：每个非空行一个完整 Token；保留小写变量名 sgs，原版 # 多账号分隔改为换行，单账号参数兼容。；多账号格式以该脚本文档为准</td></tr>
@@ -1119,6 +1122,95 @@
 <tr><td rowspan="3"><code>scripts/rainyun.py</code></td><td><code>RAINYUN_DRY_RUN</code></td><td>否</td><td>格式：默认 0；设置 1 开启完全断网预演，仅验证参数与执行计划，跳过业务请求和通知实际发送。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径，可选。业务脚本不依赖通知模块存在，通知失败保留业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="89"><code>scripts/rousi_checkin.js</code></td><td><code>ROUSI_COOKIE</code></td><td>是</td><td>格式：旧版凭据兼容输入，每个非空行一个完整 Cookie；不拆分 Cookie 内的 &amp;、@、分号或等号。Token 与 Cookie 为可替换认证方式，无需配对，同一账号请只选一种。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_1</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_2</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_3</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_4</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_5</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_6</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_7</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_8</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_9</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_10</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_11</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_12</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_13</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_14</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_15</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_16</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_17</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_18</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_19</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_TOKEN_20</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_1</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_2</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_3</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_4</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_5</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_6</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_7</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_8</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_9</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_10</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_11</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_12</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_13</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_14</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_15</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_16</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_17</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_18</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_19</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_COOKIE_20</code></td><td>是</td><td>格式：旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。规范凭据变量，每个非空行一个账号 Token，可带 Bearer 前缀；禁止用 &amp; 或 @ 分隔账号。已有兼容变量也能独立提供凭据，无需同时配置。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版凭据兼容输入，每个非空行一个完整 Cookie；不拆分 Cookie 内的 &amp;、@、分号或等号。Token 与 Cookie 为可替换认证方式，无需配对，同一账号请只选一种。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_1</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_2</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_3</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_4</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_5</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_6</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_7</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_8</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_9</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_10</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_11</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_12</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_13</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_14</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_15</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_16</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_17</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_18</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_19</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_token_20</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_1</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_2</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_3</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_4</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_5</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_6</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_7</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_8</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_9</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_10</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_11</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_12</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_13</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_14</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_15</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_16</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_17</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_18</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_19</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>rousi_cookie_20</code></td><td>是</td><td>格式：小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ROUSI_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 表示完全断网预演；默认关闭。预演只验证参数和流程，不代表真实业务成功，通知仅模拟。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭青龙与 PushPlus 通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；仅通知扩展使用，业务不依赖该目录或私有仓库。缺失或失败仅记录，不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：一个推送令牌，用于可选 HTTPS 通知，不是 Rousi 账号凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>pushplus_token</code></td><td>是</td><td>格式：旧版小写兼容输入，PUSHPLUS_TOKEN 非空时优先使用大写变量。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PUSHPLUS_TYPE</code></td><td>否</td><td>格式：默认 wechat；兼容 pushplusvip、wxgo、qywxgo、email、feishu、dingtalk、bark，其余值按上游使用 send。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/sf.py</code></td><td><code>SF_CONFIG</code></td><td>是</td><td>格式：文件路径，文件结构为 sf.accounts 数组，沿用 sign、channel、device_id、user_agent、account_name 字段。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SF_TASK_CODES</code></td><td>否</td><td>格式：逗号分隔任务代码，默认空；空时仅签到、任务查询和积分查询。非日常任务始终跳过。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SF_DRY_RUN</code></td><td>否</td><td>格式：1 启用；0、false、no、off 或空值关闭。；多账号格式以该脚本文档为准</td></tr>
@@ -1724,6 +1816,7 @@
 - `scripts/quark_signin.py`：每个非空行一个账号，完整 Cookie 作为一个字段保留；账号独立执行，任一账号失败则进程非零退出。。
 - `scripts/raccoon_daily.py`：每个非空行一个账号，令牌或备注|令牌；仅在第一个 | 拆分，保留后续凭据文本，支持 Bearer 前缀。账号和两端奖励独立处理，任一账号失败整体非零退出。。
 - `scripts/rainyun.py`：每个非空行一个账号，格式为用户名#密码，仅在第一个 # 处分隔。账号独立使用会话，单账号失败不阻止后续账号；任一账号失败或配置无效时整体非零退出。。
+- `scripts/rousi_checkin.js`：每个非空行一个账号；ROUSI_TOKEN 为规范变量，Cookie、小写及编号变量为兼容输入。相同类型的完全相同凭据去重，Token 与 Cookie 无需配对，同一账号只选一种。逐个独立处理，任一账号或读取阶段失败则整体非零退出。禁止使用 & 或 @ 分隔账号。。
 - `scripts/sf.py`：每个非空行一个账号 JSON 对象；同账号配套 sign、channel、device_id 放在同一行。各账号独立处理，任一账号失败则整体非零退出。旧配置数组按元素独立处理。。
 - `scripts/sfsu_checkin.py`：sfsyUrl 中每个非空行是一个独立账号的完整 URL；逐账号隔离处理，任一账号失败则进程非零退出。。
 - `scripts/sgs.py`：每个非空行一个账号 Token，独立处理；任一账号或子任务失败，整体非零退出。。
@@ -2403,6 +2496,13 @@
 - 所属脚本：`scripts/rainyun.py`
 - 获取或设置：使用雨云官网注册的账号用户名和登录密码；不需要抓取 Cookie，也不使用开放接口密钥。若账号需要验证码且接口拒绝空验证码，本脚本会报告失败，请先在官网核对账号登录要求。
 - 填写格式：`每个非空行一个账号：用户名#密码。仅在第一个 # 处分隔，密码后续的 # 和空格完整保留；用户名按上游规则转换为小写。不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`规范凭据变量，每个非空行一个账号 Token，可带 Bearer 前缀；禁止用 & 或 @ 分隔账号。已有兼容变量也能独立提供凭据，无需同时配置。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SF_ACCOUNTS`
@@ -6453,6 +6553,625 @@
 - 获取或设置：如通知模块不在默认路径，将本机青龙 notify.py 所在目录填入此变量；未配置则尝试导入 notify 并搜索 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：`本机目录路径，可选。业务脚本不依赖通知模块存在，通知失败保留业务退出码。`
 
+#### `ROUSI_COOKIE`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版凭据兼容输入，每个非空行一个完整 Cookie；不拆分 Cookie 内的 &、@、分号或等号。Token 与 Cookie 为可替换认证方式，无需配对，同一账号请只选一种。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_1`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_2`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_3`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_4`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_5`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_6`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_7`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_8`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_9`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_10`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_11`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_12`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_13`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_14`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_15`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_16`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_17`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_18`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_19`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_TOKEN_20`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_1`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_2`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_3`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_4`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_5`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_6`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_7`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_8`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_9`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_10`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_11`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_12`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_13`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_14`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_15`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_16`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_17`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_18`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_19`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_COOKIE_20`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。规范凭据变量，每个非空行一个账号 Token，可带 Bearer 前缀；禁止用 & 或 @ 分隔账号。已有兼容变量也能独立提供凭据，无需同时配置。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版凭据兼容输入，每个非空行一个完整 Cookie；不拆分 Cookie 内的 &、@、分号或等号。Token 与 Cookie 为可替换认证方式，无需配对，同一账号请只选一种。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_1`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_2`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_3`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_4`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_5`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_6`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_7`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_8`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_9`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_10`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_11`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_12`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_13`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_14`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_15`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_16`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_17`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_18`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_19`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_token_20`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，打开浏览器开发者工具的网络面板，查看站内 API 请求头 Authorization，复制 Bearer 后的值；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_TOKEN 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_1`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_2`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_3`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_4`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_5`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_6`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_7`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_8`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_9`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_10`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_11`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_12`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_13`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_14`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_15`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_16`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_17`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_18`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_19`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `rousi_cookie_20`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 https://rousi.pro/，在浏览器开发者工具网络面板中查看站内 API 请求头，复制完整 Cookie；不要分享凭据。
+- 填写格式：`小写兼容输入；同名大写变量非空时优先使用大写值。旧版编号兼容输入，解析规则与 ROUSI_COOKIE 相同，每个非空行一个账号；可单独提供凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `ROUSI_DRY_RUN`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：在青龙环境变量中自行设置。
+- 填写格式：`1、true、yes、on 表示完全断网预演；默认关闭。预演只验证参数和流程，不代表真实业务成功，通知仅模拟。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：在青龙环境变量中自行设置通知开关。
+- 填写格式：`默认 1；0、false、no、off 关闭青龙与 PushPlus 通知。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：填写当前青龙通知模块 sendNotify.js 的所在目录；不设置则尝试标准青龙目录。
+- 填写格式：`本机目录路径；仅通知扩展使用，业务不依赖该目录或私有仓库。缺失或失败仅记录，不改变业务退出码。`
+
+#### `PUSHPLUS_TOKEN`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：登录 PushPlus 官方服务，在账号页面获取自己的推送令牌。
+- 填写格式：`一个推送令牌，用于可选 HTTPS 通知，不是 Rousi 账号凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `pushplus_token`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：与 PUSHPLUS_TOKEN 相同，从 PushPlus 官方服务获取。
+- 填写格式：`旧版小写兼容输入，PUSHPLUS_TOKEN 非空时优先使用大写变量。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PUSHPLUS_TYPE`
+
+- 所属脚本：`scripts/rousi_checkin.js`
+- 获取或设置：根据自己的 PushPlus 推送渠道设置。
+- 填写格式：`默认 wechat；兼容 pushplusvip、wxgo、qywxgo、email、feishu、dingtalk、bark，其余值按上游使用 send。`
+
 #### `SF_CONFIG`
 
 - 所属脚本：`scripts/sf.py`
@@ -9816,6 +10535,7 @@
 - `scripts/quark_signin.py`：SHA-256 `2487b5cd4a53457b8d0ce2000f154668060333a0483b846a52a9d329da18a5bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
 - `scripts/raccoon_daily.py`：SHA-256 `3ebdbfeaf41c75c467fdeb6f2e11889b5a985cacfc3b7203679348087ed36b63`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
 - `scripts/rainyun.py`：SHA-256 `15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89f2e9b460331a75`。
+- `scripts/rousi_checkin.js`：SHA-256 `b20207312e40ff721f057cfe38dbdf6570486e9f4ce1b4d7882f60f85dafb138`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c5c6df4d8a81a7f`。
 - `scripts/sf.py`：SHA-256 `5c594804fd2d2a74fe2ad188aa73f95755d5bd28e562d3feceb78cc0fa87fcaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c231dec461782853`。
 - `scripts/sfsu_checkin.py`：SHA-256 `d48a9999e72bbea15c0de43dc537ab4f37f63c5a6fb38708098482f92761affb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/19b2285cc7b8a82e`。
 - `scripts/sgs.py`：SHA-256 `af3d44c77a409fccb89cdf36a8282bb311c17463a559c544c114d78b253efce7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/45e40e4a3ee37968`。
@@ -9987,6 +10707,7 @@
 - `scripts/quark_signin.py`：实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励；实时模式下启用通知时通过青龙发送脱敏任务摘要。
 - `scripts/raccoon_daily.py`：正式模式请求 setting_info 触发每日积分发放。；正式模式默认领取桌面端、手机端一次性登录积分。；正式模式将确认结算的奖励状态写入本地哈希台账。；通知开启时尝试发送脱敏任务摘要。。
 - `scripts/rainyun.py`：登录创建账号会话。；每日签到改变当日签到状态并领取积分。；退出登录结束当前账号会话。；正式运行时向已配置的青龙通知渠道发送任务汇总。。
+- `scripts/rousi_checkin.js`：正式运行未签到账号时提交普通签到，改变签到记录并领取服务端积分奖励；正式运行且通知开启时向青龙配置的通知渠道发送脱敏总结；正式运行配置 PushPlus 时向该通知渠道发送脱敏总结。
 - `scripts/sf.py`：分享登录创建账号会话；签到并领取签到礼包；按显式任务代码允许清单提交日常任务完成记录；领取任务积分奖励；正式运行发送青龙汇总通知。
 - `scripts/sfsu_checkin.py`：执行每日签到；完成符合安全规则的积分及丰蜜任务并领取奖励；进行丰蜜大冒险并在容量不足时扩容；在 SF_AUTO_COUPON=1 时创建一笔生活特权券领取订单；在会员日窗口领取可用邀请奖励、消耗免费抽奖次数、领取任务奖励、合成并提取红包。
 - `scripts/sgs.py`：每日签到；显式开启时写入文章阅读记录；显式开启时写入工社服务访问计数；显式开启时写入热门活动浏览计数；开启通知时向青龙配置的渠道发送脱敏汇总。
@@ -10160,6 +10881,7 @@
 - `scripts/quark_signin.py`：上游 `agluo/ql-script-hub` / `quark_signin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/raccoon_daily.py`：上游 `L0NE-6/Raccoon-Daily` / `raccoon_daily.py` / `4e99a3b53829faf3ae228755b0f4c32859d25425`。
 - `scripts/rainyun.py`：上游 `cloudcranes/some_scripts` / `rainyun.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
+- `scripts/rousi_checkin.js`：上游 `373065025/rousi-checkin` / `rousi_checkin.js` / `627ec698dc9d35f69f44e479366a7c31dd46489c`。
 - `scripts/sf.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/sf/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/sfsu_checkin.py`：上游 `agluo/ql-script-hub` / `SFSU_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/sgs.py`：上游 `Rookie-wb-WH/ql_scripts` / `sgs.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
