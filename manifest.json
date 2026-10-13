@@ -211,6 +211,144 @@
       }
     },
     {
+      "catalogId": "4a0d6e0728deb3f6",
+      "applicationKey": "2cycdx",
+      "checkProfile": {
+        "requiredEnv": [
+          "cycd_cookie"
+        ],
+        "optionalEnv": [
+          "CYCD_DRY_RUN",
+          "CYCD_LOCAL_TEXT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CYCD_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CYCD_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到"
+        ],
+        "features": [
+          "获取论坛签到页面及 formhash 登录参数。",
+          "每天 08:00 签到领取贡献，明确识别签到成功和今日已签到。",
+          "逐行多账号独立处理，任一账号失败返回非零退出码。",
+          "使用一言 HTTPS 随机签到文案，解析文本、作者和来源并保留署名格式；失败时使用本地文案，不向文案服务发送凭据。",
+          "保留页面编码识别、中文表单编码和 XML CDATA 业务结果解析。",
+          "返回官方非敏感用户名时显示，凭据、原始响应和敏感身份不输出。",
+          "提供完全断网预演，模拟签到、文案获取和通知。",
+          "青龙通知覆盖成功、部分失败、失败、配置错误及预演；不可用或失败时保留业务退出码。",
+          "输出时间轴阶段日志、账号和任务统计及单行 TASK_SUMMARY JSON。",
+          "独立标准库 HTTP 实现，带超时、响应大小限制及跨站重定向保护。"
+        ],
+        "sideEffects": [
+          "正式运行提交论坛签到及签到文案，领取对应贡献奖励。",
+          "正式运行且开启通知时发送脱敏任务通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "2cycdx自动签到",
+      "path": "scripts/2cycdx.py",
+      "sha256": "50e848475c664acc9e2f665f75dd6c0f4b72d770e94fea08f421185fdbd77d1b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Tgkkez/2cycdx_Autosignin",
+        "branch": "main",
+        "commit": "9afc3b1513b1f0c683e0eda992c1c33d627d9996",
+        "originalPath": "autosignin.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/2cycdx.py",
+      "environment": [
+        {
+          "name": "cycd_cookie",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.2cycdx.com/，按 F12 打开网络面板，刷新页面，选择论坛文档请求，从请求头复制完整 Cookie；每个账号分别登录获取。",
+          "format": "每个非空行一个账号的完整 Cookie；保留行内分号、等号、& 和 @，不用这些符号分隔账号。"
+        },
+        {
+          "name": "CYCD_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网预演时自行设置为 1。",
+          "format": "1、true、yes、on 表示开启；默认 0。"
+        },
+        {
+          "name": "CYCD_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可自行填写一言不可用时使用的本地签到文案。",
+          "format": "可选纯文本，合并空白后最多 280 字；空值使用内置文案。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙现有通知设置；需要关闭时自行设置为 0。",
+          "format": "默认 1；0、false、no、off 关闭通知。断网预演只模拟通知，不调用通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填入青龙现有 notify.py 所在目录；未设置时自动查找标准通知位置。",
+          "format": "本机目录路径，仅用于可选通知，不影响业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；使用完整 Cookie，不拆分行内字符。逐个独立执行，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "获取论坛签到页面及 formhash 登录参数。",
+        "每天 08:00 签到领取贡献，明确识别签到成功和今日已签到。",
+        "逐行多账号独立处理，任一账号失败返回非零退出码。",
+        "使用一言 HTTPS 随机签到文案，解析文本、作者和来源并保留署名格式；失败时使用本地文案，不向文案服务发送凭据。",
+        "保留页面编码识别、中文表单编码和 XML CDATA 业务结果解析。",
+        "返回官方非敏感用户名时显示，凭据、原始响应和敏感身份不输出。",
+        "提供完全断网预演，模拟签到、文案获取和通知。",
+        "青龙通知覆盖成功、部分失败、失败、配置错误及预演；不可用或失败时保留业务退出码。",
+        "输出时间轴阶段日志、账号和任务统计及单行 TASK_SUMMARY JSON。",
+        "独立标准库 HTTP 实现，带超时、响应大小限制及跨站重定向保护。"
+      ],
+      "sideEffects": [
+        "正式运行提交论坛签到及签到文案，领取对应贡献奖励。",
+        "正式运行且开启通知时发送脱敏任务通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/4a0d6e0728deb3f6",
+        "candidateSha256": "04cd0412c9a6ea340bd8f73c1b7d42b614f99eabdad2ca559808a12d97337085"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "04cd0412c9a6ea340bd8f73c1b7d42b614f99eabdad2ca559808a12d97337085",
+        "releaseSha256": "50e848475c664acc9e2f665f75dd6c0f4b72d770e94fea08f421185fdbd77d1b",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "8ea0312febc74515",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::999",
       "checkProfile": {

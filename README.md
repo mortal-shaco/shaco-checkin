@@ -33,6 +33,7 @@
 | --- | --- | --- | --- |
 | 依赖安装 | `scripts/install_dependencies.sh` | `task scripts/install_dependencies.sh` | `23 4 * * 1` |
 | 139云盘云朵任务 | `scripts/139_yunduo.py` | `python3 scripts/139_yunduo.py` | `0 9 * * *` |
+| 2cycdx自动签到 | `scripts/2cycdx.py` | `python3 scripts/2cycdx.py` | `0 8 * * *` |
 | 华润通999答题 | `scripts/999.py` | `python3 scripts/999.py` | `1 1 1 1 1` |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `0 8 * * *` |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `20 9 * * *` |
@@ -205,6 +206,7 @@
 ## 脚本功能
 
 - `scripts/139_yunduo.py`：标准库实现完整SSO与JWT认证链，展示官方返回的非敏感账号身份；获取执行前后AI豆余额；检查当日签到状态并执行每日签到，验证返回结果；列出云朵任务与奖励说明，完成小云互动礼319、问卷118及605、606、431点击任务并复查FINISH；显式启用后尝试其他未完成任务的点击接口；显式启用后上传随机小文件完成任务106，完成后可选择移入回收站；按最新AI豆余额展示可兑换奖品、分类、价格与今日余量，不执行兑换；逐行多账号及旧版单账号参数兼容，失败闭合；完全断网预演、时间轴日志、阶段统计和单行结构化任务汇总；青龙通知及PushPlus、Server酱通知回退，通知故障保留业务退出码。
+- `scripts/2cycdx.py`：获取论坛签到页面及 formhash 登录参数。；每天 08:00 签到领取贡献，明确识别签到成功和今日已签到。；逐行多账号独立处理，任一账号失败返回非零退出码。；使用一言 HTTPS 随机签到文案，解析文本、作者和来源并保留署名格式；失败时使用本地文案，不向文案服务发送凭据。；保留页面编码识别、中文表单编码和 XML CDATA 业务结果解析。；返回官方非敏感用户名时显示，凭据、原始响应和敏感身份不输出。；提供完全断网预演，模拟签到、文案获取和通知。；青龙通知覆盖成功、部分失败、失败、配置错误及预演；不可用或失败时保留业务退出码。；输出时间轴阶段日志、账号和任务统计及单行 TASK_SUMMARY JSON。；独立标准库 HTTP 实现，带超时、响应大小限制及跨站重定向保护。。
 - `scripts/999.py`：按原接口获取华润通999题目；展示题目、选项和接口标记的正确答案；支持单选或多选正确选项并提交答案；按上游 resultCode 字符串 0 验证获取和提交成功，不推断积分到账；多账号独立处理和失败退出；本地模拟完整答题流程的断网预演；按时间轴记录阶段耗时、账号和任务统计，并输出单条结构化汇总；正式执行通过青龙通知发送脱敏摘要，断网预演在本地输出摘要；展示官方接口返回的非敏感昵称、用户名、显示名称或公开标识。
 - `scripts/acfun.py`：手机号密码登录及多账号独立执行；每日签到及等级、香蕉余额查询；显示官方返回的非秘密昵称、用户名或公开用户标识；排行榜选择视频，支持显式点赞、点赞后取消和投一根香蕉；读取实际视频及分区信息后显式发布弹幕；禁止硬编码目标回退；弹幕优先使用独立无凭据的一言请求，保留正文与作者、来源署名；各类失败均回退本地文案；使用配套 App 登录凭据显式上报分享任务；完全断网预演、通知入口、带时间戳的分阶段统计和单行机器可读汇总。
 - `scripts/agentrouter.py`：通过 GitHub OAuth 重新登录触发每日签到，以服务端 checked_in 严格确认为成功。；查询并展示官方账号身份、当前余额美元换算及已用额度。；保留站点公开客户端配置、已知客户端编号和额度换算比例兜底。；支持每行一个账号、原 JSON 配置格式、账号站点与用户编号配置、代理与可信 CA 证书。；支持显式启用首次 GitHub OAuth 授权；默认要求浏览器手动授权。；每天 09:20 运行，多账号间隔五秒。；完全断网预演、分阶段日志、账号与子任务统计、单行 TASK_SUMMARY 汇总及青龙脱敏通知。。
@@ -382,6 +384,7 @@
 <thead><tr><th>脚本</th><th>变量</th><th>敏感</th><th>填写格式</th></tr></thead>
 <tbody>
 <tr><td rowspan="1"><code>scripts/139_yunduo.py</code></td><td><code>YDYP_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：手机号|Basic 授权值；也兼容省略 Basic 前缀的完整编码值或原始授权令牌。仅在第一个竖线处分割，后续凭据原样保留。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/2cycdx.py</code></td><td><code>cycd_cookie</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留行内分号、等号、&amp; 和 @，不用这些符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/999.py</code></td><td><code>HRT999_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个完整 JSON 对象；必填 mobile（十一位中国大陆手机号）和 token（非空字符串）；可选 user_agent（无换行字符串）及 account_name（原有账号备注兼容字段，不用于业务验证）。JSON 可无歧义保留凭据中的分隔符。不要用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/acfun.py</code></td><td><code>ACFUN_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为 手机号|密码；仅在第一个 | 分割，密码中的后续 | 和首尾空格原样保留。手机号两侧空格忽略；不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/agentrouter.py</code></td><td><code>AGENTROUTER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 user_session 值或 JSON 对象；对象必填 github_session，可填 account_name、base_url、user_id、proxy、verify；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -577,6 +580,10 @@
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：已有通知模块所在目录，不需要其他仓库；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：本人推送令牌；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SENDKEY</code></td><td>是</td><td>格式：本人 SendKey；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/2cycdx.py</code></td><td><code>CYCD_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 表示开启；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CYCD_LOCAL_TEXT</code></td><td>否</td><td>格式：可选纯文本，合并空白后最多 280 字；空值使用内置文案。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。断网预演只模拟通知，不调用通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径，仅用于可选通知，不影响业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/999.py</code></td><td><code>HRT999_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演，其余值正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启；断网预演仅在日志输出通知摘要，不外发。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录；缺失或发送失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
@@ -1743,6 +1750,7 @@
 多账号统一规则：每行一个账号；需要多个凭据变量时按相同非空行号配对，行数必须一致。
 
 - `scripts/139_yunduo.py`：每个非空行一个手机号与配套授权凭据，格式为手机号|授权值；仅在第一个竖线处分割。空行及以井号开头的注释行忽略，错误行计为账号失败。逐账号独立执行，任一账号失败时整体非零退出。。
+- `scripts/2cycdx.py`：每个非空行一个账号；使用完整 Cookie，不拆分行内字符。逐个独立执行，任一账号失败则整体非零退出。。
 - `scripts/999.py`：每个非空行一个 JSON 账号对象，手机号和令牌须属于同一账号。账号按行独立处理，任一账号配置或业务失败则整体非零退出。。
 - `scripts/acfun.py`：每个非空行一个 手机号|密码；仅拆分第一个 |，逐账号独立登录和执行任务；任一账号失败则整个进程非零退出。。
 - `scripts/agentrouter.py`：每个非空行一个账号；每行可为独立 GitHub user_session 值或包含 github_session 的 JSON 对象，配套账号配置在同一对象中；账号独立处理，任一失败整体非零退出。。
@@ -1911,6 +1919,13 @@
 - 所属脚本：`scripts/139_yunduo.py`
 - 获取或设置：登录中国移动云盘网页版 https://yun.139.com，打开开发者工具的网络面板，刷新页面，在 api.yun.139.com 或 yun.139.com 请求头中复制 Authorization；手机号使用该登录账号的手机号。凭据仅填入青龙环境变量，不要提交或分享。
 - 填写格式：`每个非空行一个账号：手机号|Basic 授权值；也兼容省略 Basic 前缀的完整编码值或原始授权令牌。仅在第一个竖线处分割，后续凭据原样保留。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `cycd_cookie`
+
+- 所属脚本：`scripts/2cycdx.py`
+- 获取或设置：浏览器登录 https://www.2cycdx.com/，按 F12 打开网络面板，刷新页面，选择论坛文档请求，从请求头复制完整 Cookie；每个账号分别登录获取。
+- 填写格式：`每个非空行一个账号的完整 Cookie；保留行内分号、等号、& 和 @，不用这些符号分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `HRT999_ACCOUNTS`
@@ -3192,6 +3207,30 @@
 - 获取或设置：可选：在本人 Server酱管理页面获取 SendKey；青龙和 PushPlus 不可用时尝试，预演不推送。
 - 填写格式：`本人 SendKey`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CYCD_DRY_RUN`
+
+- 所属脚本：`scripts/2cycdx.py`
+- 获取或设置：需要完全断网预演时自行设置为 1。
+- 填写格式：`1、true、yes、on 表示开启；默认 0。`
+
+#### `CYCD_LOCAL_TEXT`
+
+- 所属脚本：`scripts/2cycdx.py`
+- 获取或设置：可自行填写一言不可用时使用的本地签到文案。
+- 填写格式：`可选纯文本，合并空白后最多 280 字；空值使用内置文案。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/2cycdx.py`
+- 获取或设置：使用青龙现有通知设置；需要关闭时自行设置为 0。
+- 填写格式：`默认 1；0、false、no、off 关闭通知。断网预演只模拟通知，不调用通知模块。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/2cycdx.py`
+- 获取或设置：可选填入青龙现有 notify.py 所在目录；未设置时自动查找标准通知位置。
+- 填写格式：`本机目录路径，仅用于可选通知，不影响业务退出码。`
 
 #### `HRT999_DRY_RUN`
 
@@ -10455,6 +10494,7 @@
 ## 验证与兼容性
 
 - `scripts/139_yunduo.py`：SHA-256 `c37eff8c6b1d510213e6ec929a3f4505e7ecf43f6934c655d924fd0165024942`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/117317c83fa5c3cc`。
+- `scripts/2cycdx.py`：SHA-256 `50e848475c664acc9e2f665f75dd6c0f4b72d770e94fea08f421185fdbd77d1b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4a0d6e0728deb3f6`。
 - `scripts/999.py`：SHA-256 `c42405330b4bfbd4f50bdc0b0e37203134a0ea24701f9d51e3e5a5a680419b84`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ea0312febc74515`。
 - `scripts/acfun.py`：SHA-256 `006ac42bec4fba6c9e41599da022e9b425b4ca5b6617bcd66c0403ab8917ed65`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
 - `scripts/agentrouter.py`：SHA-256 `a22e06bb7c32b2ce57c1dbbea73b86dac505381bde53a818ec84254669f4c888`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/81684dd327c48211`。
@@ -10627,6 +10667,7 @@
 ## 副作用与风险
 
 - `scripts/139_yunduo.py`：执行每日签到并领取AI豆；点击互动、问卷及其他已选择任务，可能改变任务进度或领取AI豆；启用YDYP_UPLOAD后在云盘根目录上传10字节任务文件；启用YDYP_DELETE_AFTER后将本轮上传文件移入回收站；正式执行通知时向已配置的通知渠道发送脱敏统计。
+- `scripts/2cycdx.py`：正式运行提交论坛签到及签到文案，领取对应贡献奖励。；正式运行且开启通知时发送脱敏任务通知。。
 - `scripts/999.py`：正式执行提交答题选项，可能按活动规则产生积分奖励；正式执行在通知开启且模块可用时外发脱敏任务摘要。
 - `scripts/acfun.py`：默认执行每日签到，更新签到状态；选择 like 时新增点赞；选择 like-cycle 时新增点赞后取消；选择 danmu 时向所选视频公开发布一条弹幕；选择 banana 时向所选视频投出一根香蕉，消耗余额；选择 share 时上报分享任务完成状态；开启通知时尝试发送脱敏任务总结，预演阻止网络传输。
 - `scripts/agentrouter.py`：重新登录 AgentRouter，创建登录会话并可能发放当日签到额度。；仅显式启用 AGENTROUTER_ALLOW_AUTHORIZE 后可提交 GitHub 首次应用授权。；正式运行按 QINGLONG_NOTIFY 设置发送青龙通知。。
@@ -10801,6 +10842,7 @@
 仓库发布许可证：`GPL-3.0-only`。每个脚本仍保留准确来源：
 
 - `scripts/139_yunduo.py`：上游 `deeplee/personal-scripts` / `139_yunduo.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
+- `scripts/2cycdx.py`：上游 `Tgkkez/2cycdx_Autosignin` / `autosignin.py` / `9afc3b1513b1f0c683e0eda992c1c33d627d9996`。
 - `scripts/999.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/999/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/acfun.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/acfun/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/agentrouter.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/agentrouter/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
