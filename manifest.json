@@ -8,6 +8,209 @@
   "releaseLicense": "GPL-3.0-only",
   "scripts": [
     {
+      "catalogId": "117317c83fa5c3cc",
+      "applicationKey": "deeplee/personal-scripts::139",
+      "checkProfile": {
+        "requiredEnv": [
+          "YDYP_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "YDYP_PHONE",
+          "YDYP_AUTH",
+          "YDYP_TRY_ALL",
+          "YDYP_INTERACT_LIMIT",
+          "YDYP_UPLOAD",
+          "YDYP_DELETE_AFTER",
+          "YDYP_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "SENDKEY"
+        ],
+        "dryRunEnv": {
+          "YDYP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "YDYP_TRY_ALL": "0",
+          "YDYP_INTERACT_LIMIT": "30",
+          "YDYP_UPLOAD": "0",
+          "YDYP_DELETE_AFTER": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "TASK_SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "标准库实现完整SSO与JWT认证链，展示官方返回的非敏感账号身份",
+          "获取执行前后AI豆余额",
+          "检查当日签到状态并执行每日签到，验证返回结果",
+          "列出云朵任务与奖励说明，完成小云互动礼319、问卷118及605、606、431点击任务并复查FINISH",
+          "显式启用后尝试其他未完成任务的点击接口",
+          "显式启用后上传随机小文件完成任务106，完成后可选择移入回收站",
+          "按最新AI豆余额展示可兑换奖品、分类、价格与今日余量，不执行兑换",
+          "逐行多账号及旧版单账号参数兼容，失败闭合",
+          "完全断网预演、时间轴日志、阶段统计和单行结构化任务汇总",
+          "青龙通知及PushPlus、Server酱通知回退，通知故障保留业务退出码"
+        ],
+        "sideEffects": [
+          "执行每日签到并领取AI豆",
+          "点击互动、问卷及其他已选择任务，可能改变任务进度或领取AI豆",
+          "启用YDYP_UPLOAD后在云盘根目录上传10字节任务文件",
+          "启用YDYP_DELETE_AFTER后将本轮上传文件移入回收站",
+          "正式执行通知时向已配置的通知渠道发送脱敏统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "139云盘云朵任务",
+      "path": "scripts/139_yunduo.py",
+      "sha256": "c37eff8c6b1d510213e6ec929a3f4505e7ecf43f6934c655d924fd0165024942",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "deeplee/personal-scripts",
+        "branch": "main",
+        "commit": "c8c7c0f4fd1802df86c32a86c26b5c26cfef5023",
+        "originalPath": "139_yunduo.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/139_yunduo.py",
+      "environment": [
+        {
+          "name": "YDYP_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录中国移动云盘网页版 https://yun.139.com，打开开发者工具的网络面板，刷新页面，在 api.yun.139.com 或 yun.139.com 请求头中复制 Authorization；手机号使用该登录账号的手机号。凭据仅填入青龙环境变量，不要提交或分享。",
+          "format": "每个非空行一个账号：手机号|Basic 授权值；也兼容省略 Basic 前缀的完整编码值或原始授权令牌。仅在第一个竖线处分割，后续凭据原样保留。"
+        },
+        {
+          "name": "YDYP_PHONE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容变量；从本人中国移动云盘登录账号获取。未设置 YDYP_ACCOUNTS 时与 YDYP_AUTH 配套使用。",
+          "format": "中国大陆11位手机号"
+        },
+        {
+          "name": "YDYP_AUTH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录中国移动云盘网页版 https://yun.139.com，打开开发者工具的网络面板，刷新页面，在 api.yun.139.com 或 yun.139.com 请求头中复制 Authorization；手机号使用该登录账号的手机号。凭据仅填入青龙环境变量，不要提交或分享。这是旧版单账号兼容变量，与 YDYP_PHONE 配套；优先使用 YDYP_ACCOUNTS。",
+          "format": "Authorization 请求头值，可省略 Basic 前缀"
+        },
+        {
+          "name": "YDYP_TRY_ALL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认关闭；了解任务风险后自行开启，只调用未完成任务的点击接口，不自动生成发布文本。",
+          "format": "布尔值，默认0；1、true、yes、on开启；0、false、no、off关闭"
+        },
+        {
+          "name": "YDYP_INTERACT_LIMIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置小云互动礼单次执行的最大点击次数。每次点击后复查任务完成状态。",
+          "format": "1至100的整数，默认30"
+        },
+        {
+          "name": "YDYP_UPLOAD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认关闭；同意在云盘根目录创建10字节随机任务文件后设置为1。仅任务106未完成时上传。",
+          "format": "布尔值，默认0"
+        },
+        {
+          "name": "YDYP_DELETE_AFTER",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认关闭；同意将本轮上传的任务文件移入回收站后设置为1。只对本轮已确认上传的文件生效。",
+          "format": "布尔值，默认0"
+        },
+        {
+          "name": "YDYP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无网络预演时设置为1。只检查配置与展示流程，不验证账号有效性或真实业务。",
+          "format": "布尔值，默认0"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关，默认开启；通知失败不改变业务退出码。预演会尝试通知模块，网络调用被禁止。",
+          "format": "默认1；0、false、no、off关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写已有青龙 notify.py 或 sendNotify.js 所在目录；未填写时尝试导入 notify 和青龙标准脚本目录。",
+          "format": "已有通知模块所在目录，不需要其他仓库"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：在本人 PushPlus 管理页面获取推送令牌；青龙通知不可用时尝试 HTTPS 推送，预演不推送。",
+          "format": "本人推送令牌"
+        },
+        {
+          "name": "SENDKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：在本人 Server酱管理页面获取 SendKey；青龙和 PushPlus 不可用时尝试，预演不推送。",
+          "format": "本人 SendKey"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个手机号与配套授权凭据，格式为手机号|授权值；仅在第一个竖线处分割。空行及以井号开头的注释行忽略，错误行计为账号失败。逐账号独立执行，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "标准库实现完整SSO与JWT认证链，展示官方返回的非敏感账号身份",
+        "获取执行前后AI豆余额",
+        "检查当日签到状态并执行每日签到，验证返回结果",
+        "列出云朵任务与奖励说明，完成小云互动礼319、问卷118及605、606、431点击任务并复查FINISH",
+        "显式启用后尝试其他未完成任务的点击接口",
+        "显式启用后上传随机小文件完成任务106，完成后可选择移入回收站",
+        "按最新AI豆余额展示可兑换奖品、分类、价格与今日余量，不执行兑换",
+        "逐行多账号及旧版单账号参数兼容，失败闭合",
+        "完全断网预演、时间轴日志、阶段统计和单行结构化任务汇总",
+        "青龙通知及PushPlus、Server酱通知回退，通知故障保留业务退出码"
+      ],
+      "sideEffects": [
+        "执行每日签到并领取AI豆",
+        "点击互动、问卷及其他已选择任务，可能改变任务进度或领取AI豆",
+        "启用YDYP_UPLOAD后在云盘根目录上传10字节任务文件",
+        "启用YDYP_DELETE_AFTER后将本轮上传文件移入回收站",
+        "正式执行通知时向已配置的通知渠道发送脱敏统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/117317c83fa5c3cc",
+        "candidateSha256": "4743c37ae0a5985819cf580fa488f8760074f68dc6bc09cd2ce76860317f2768"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "4743c37ae0a5985819cf580fa488f8760074f68dc6bc09cd2ce76860317f2768",
+        "releaseSha256": "c37eff8c6b1d510213e6ec929a3f4505e7ecf43f6934c655d924fd0165024942",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "8ea0312febc74515",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::999",
       "checkProfile": {
@@ -4543,6 +4746,126 @@
         "type": "qinglong-discovery-metadata",
         "validatedSha256": "88f711a1061ed67d10ca76641e15c9e10b4077af1c01a483d991835f2ce1ed62",
         "releaseSha256": "9a155b77acadb949a6fedf73bdd5e63ec7684a45fabd5143b66ac1873f27676b",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "f3d5ae90c3c979bf",
+      "applicationKey": "unitaryhighs/ql_sign_script::hot",
+      "checkProfile": {
+        "requiredEnv": [
+          "DAILYNEWSCN_LIST"
+        ],
+        "optionalEnv": [
+          "DAILYNEWSCN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DAILYNEWSCN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "DAILYNEWSCN_SUCCESS",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "按原定每天 09:15 获取中国日报公开新闻摘要。",
+          "保持上游 HTTPS 地址及 GET 方法，使用标准 Node.js 库独立请求，不依赖私有仓库。",
+          "验证 HTTP 200 和非空新闻文本，拒绝错误页、未知结构、超时、过大或中断响应，失败非零退出。",
+          "输出整理脱敏后的日报，并通过青龙通知发送日报和任务统计。",
+          "支持完全断网预演，验证本地文本处理，模拟通知且不加载通知模块。",
+          "兼容 DAILYNEWSCN_LIST 非空执行标记，提供分阶段时间轴日志及唯一 TASK_SUMMARY 结构化总结。"
+        ],
+        "sideEffects": [
+          "正式运行且启用通知时，调用青龙通知模块向已配置的渠道发送日报或脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "中国日报",
+      "path": "scripts/dailynewscn.js",
+      "sha256": "288f8a194e4896e2a9c08ebad44efa4aa5125b65f036439c540ec57b34e82df9",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "hot/dailynewscn.js"
+      },
+      "cron": "0 15 9 * * *",
+      "command": "node scripts/dailynewscn.js",
+      "environment": [
+        {
+          "name": "DAILYNEWSCN_LIST",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "此任务读取公开日报，无需账号或凭据。在青龙环境变量中新增 DAILYNEWSCN_LIST，填写 1 作为执行标记即可；兼容原变量的非空值，不输出或发送其内容。",
+          "format": "非空执行标记，建议填写 1；兼容每行一个旧执行标记，忽略空行，多行仍只获取一次同一公开日报。"
+        },
+        {
+          "name": "DAILYNEWSCN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网预演时手动设置为 1；正式运行删除此变量或设置为 0。",
+          "format": "1 表示断网预演，其他值表示正式运行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有通知配置，默认启用；需要关闭时设置为 0。",
+          "format": "0、false、no、off 表示禁用，大小写不限；默认 1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可填写青龙自带 sendNotify.js 所在目录；未设置时依次查找 /ql/data/scripts 和 /ql/scripts。通知模块缺失不影响日报业务退出码。",
+          "format": "本机通知模块所在目录，不填文件名。"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": null,
+        "rule": "公开日报无需账号。执行标记按非空行读取，但不代表账号，不传给服务端，日报仅获取一次。",
+        "unsupportedReason": "公开接口不接受账号凭据，重复请求不会产生独立账号结果。"
+      },
+      "dependencies": [],
+      "features": [
+        "按原定每天 09:15 获取中国日报公开新闻摘要。",
+        "保持上游 HTTPS 地址及 GET 方法，使用标准 Node.js 库独立请求，不依赖私有仓库。",
+        "验证 HTTP 200 和非空新闻文本，拒绝错误页、未知结构、超时、过大或中断响应，失败非零退出。",
+        "输出整理脱敏后的日报，并通过青龙通知发送日报和任务统计。",
+        "支持完全断网预演，验证本地文本处理，模拟通知且不加载通知模块。",
+        "兼容 DAILYNEWSCN_LIST 非空执行标记，提供分阶段时间轴日志及唯一 TASK_SUMMARY 结构化总结。"
+      ],
+      "sideEffects": [
+        "正式运行且启用通知时，调用青龙通知模块向已配置的渠道发送日报或脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/f3d5ae90c3c979bf",
+        "candidateSha256": "fe4c8ade2d5bc156367c5bdaf6fcfe1b5fd5924c3376c0025150887ed426d1b7"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "fe4c8ade2d5bc156367c5bdaf6fcfe1b5fd5924c3376c0025150887ed426d1b7",
+        "releaseSha256": "288f8a194e4896e2a9c08ebad44efa4aa5125b65f036439c540ec57b34e82df9",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },

@@ -32,6 +32,7 @@
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron |
 | --- | --- | --- | --- |
 | 依赖安装 | `scripts/install_dependencies.sh` | `task scripts/install_dependencies.sh` | `23 4 * * 1` |
+| 139云盘云朵任务 | `scripts/139_yunduo.py` | `python3 scripts/139_yunduo.py` | `0 9 * * *` |
 | 华润通999答题 | `scripts/999.py` | `python3 scripts/999.py` | `1 1 1 1 1` |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `0 8 * * *` |
 | 机场签到（速鹰666） | `scripts/airport.py` | `python3 scripts/airport.py` | `0 0 * * *` |
@@ -61,6 +62,7 @@
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `0 9 * * *` |
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `30 10,14,18 * * *` |
 | WPS天天领福利（可选任务中心） | `scripts/daily_benefits.py` | `python3 scripts/daily_benefits.py` | `1 1 1 1 1` |
+| 中国日报 | `scripts/dailynewscn.js` | `node scripts/dailynewscn.js` | `0 15 9 * * *` |
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `30 9 * * *` |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `33 14 * * *` |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `9 9 * * *` |
@@ -190,6 +192,7 @@
 
 ## 脚本功能
 
+- `scripts/139_yunduo.py`：标准库实现完整SSO与JWT认证链，展示官方返回的非敏感账号身份；获取执行前后AI豆余额；检查当日签到状态并执行每日签到，验证返回结果；列出云朵任务与奖励说明，完成小云互动礼319、问卷118及605、606、431点击任务并复查FINISH；显式启用后尝试其他未完成任务的点击接口；显式启用后上传随机小文件完成任务106，完成后可选择移入回收站；按最新AI豆余额展示可兑换奖品、分类、价格与今日余量，不执行兑换；逐行多账号及旧版单账号参数兼容，失败闭合；完全断网预演、时间轴日志、阶段统计和单行结构化任务汇总；青龙通知及PushPlus、Server酱通知回退，通知故障保留业务退出码。
 - `scripts/999.py`：按原接口获取华润通999题目；展示题目、选项和接口标记的正确答案；支持单选或多选正确选项并提交答案；按上游 resultCode 字符串 0 验证获取和提交成功，不推断积分到账；多账号独立处理和失败退出；本地模拟完整答题流程的断网预演；按时间轴记录阶段耗时、账号和任务统计，并输出单条结构化汇总；正式执行通过青龙通知发送脱敏摘要，断网预演在本地输出摘要；展示官方接口返回的非敏感昵称、用户名、显示名称或公开标识。
 - `scripts/acfun.py`：手机号密码登录及多账号独立执行；每日签到及等级、香蕉余额查询；显示官方返回的非秘密昵称、用户名或公开用户标识；排行榜选择视频，支持显式点赞、点赞后取消和投一根香蕉；读取实际视频及分区信息后显式发布弹幕；禁止硬编码目标回退；弹幕优先使用独立无凭据的一言请求，保留正文与作者、来源署名；各类失败均回退本地文案；使用配套 App 登录凭据显式上报分享任务；完全断网预演、通知入口、带时间戳的分阶段统计和单行机器可读汇总。
 - `scripts/airport.py`：使用邮箱和密码登录速鹰666，保留原有登录地址与表单字段。；每日签到并核验明确的业务成功结果；明确已签到结果视为已完成。；查询剩余流量，保留原 XPath 与 originBody Base64 页面解码及原始页面回退。；逐行多账号及旧版单账号参数兼容，失败账号不阻止后续账号执行。；脱敏的逐账号报告、统计、单行 TASK_SUMMARY 和青龙通知。；完全断网预演验证参数与执行计划，预演不代表真实账号业务成功。。
@@ -219,6 +222,7 @@
 - `scripts/crealitycloud_checkin.py`：国内站手机号或邮箱密码登录，手机号自动补 86 区号；直接登录态失效后的 OAuth 授权码登录回退；查询今日签到状态，已签到时避免重复操作；每日签到，展示连续签到天数和积分、经验奖励；查询官方非敏感身份、总积分、经验及创想币余额；默认整体随机延时和多账号间随机等待，保留每日 09:00 定时；每行一个账号、账号独立处理及失败非零退出；断网预演、逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 记录；通过青龙 notify.py 尝试发送脱敏任务总结，支持全局开关和失败隔离。
 - `scripts/dachao.py`：账号密码登录及官方昵称展示；动态发现签到和阅读活动；签到及已签到状态判断；阅读任务、实际等待及阅读时长上报；阅读滑块验证码三种算法求偏移并重试；显式开启签到抽奖和阅读抽奖；显式开启现金红包兑换及无效兑换码短暂重试；多账号隔离、失败闭合及单行结构化汇总；青龙通知与完全断网配置预演。
 - `scripts/daily_benefits.py`：按优先级合并双营销渠道，自动发现福利中心入口并查询活动页面；免费会员打卡、服务端签到日期和连续签到天数核对，提交后刷新核验今日状态；显式开启后可在服务端明确返回系列失效时重开签到系列一次；查询并按可用机会申请未参与的会员试用，逐项检查业务成功；显式开启后执行天天抽奖并逐次检查业务成功；先领取已有七日系列奖励，再签到；刷新签到及抽奖后检查七日领奖条件，防止同系列重复领取；可选合并同排期任务中心的官方公钥获取、加密签到、积分和即将过期积分查询；可选任务中心抽奖，使用官方页面返回的有效场次，保留单账号 max_lottery_limit 默认上限五次及抽奖后积分刷新；支持换行多账号和原 JSON 账号字段，显示官方非秘密昵称、用户名或公开用户编号；完全断网预演、独立账号失败处理、非零失败退出、脱敏日志、阶段耗时及唯一结构化任务汇总；所有运行结果均生成脱敏通知；正式运行发现并调用青龙通知，通知失败保持业务退出码。
+- `scripts/dailynewscn.js`：按原定每天 09:15 获取中国日报公开新闻摘要。；保持上游 HTTPS 地址及 GET 方法，使用标准 Node.js 库独立请求，不依赖私有仓库。；验证 HTTP 200 和非空新闻文本，拒绝错误页、未知结构、超时、过大或中断响应，失败非零退出。；输出整理脱敏后的日报，并通过青龙通知发送日报和任务统计。；支持完全断网预演，验证本地文本处理，模拟通知且不加载通知模块。；兼容 DAILYNEWSCN_LIST 非空执行标记，提供分阶段时间轴日志及唯一 TASK_SUMMARY 结构化总结。。
 - `scripts/ddnsto.py`：申请 product_id=2 七天免费套餐并查询订单；把新套餐绑定到指定路由器；重新读取官方套餐并确认到期时间延长后才报告续费成功；识别本周免费套餐申请次数限制；只有现有套餐尚未过期才视为已完成；显示北京时间到期时间；官方返回非敏感昵称或用户名时原样显示；保留每天 09:30 的上游计划和 ddns_cookie、ddns_userid 单账号兼容参数；多账号按行独立执行，失败账号不阻断其他账号；任一失败整体非零退出；无网络预演、青龙脱敏汇总通知和带时间戳的分阶段日志；输出唯一 TASK_SUMMARY 单行 JSON 汇总。
 - `scripts/deepflood_checkin.py`：执行 DeepFlood 每日签到并验证接口业务结果，支持识别已完成签到；查询并汇总可配置时间窗口内的签到鸡腿收益，保留总量、次数及平均收益；支持换行分隔的多账号独立执行和汇总状态；可选的随机延迟执行，保持原每日计划及既有参数兼容；完全断网且无等待、无副作用的预演；正式运行通过青龙 notify.py 发送脱敏汇总，支持全局通知开关，预演显示同内容通知预览；显示官方返回的非敏感账号身份、编号阶段、耗时与账号及任务统计；保留 SUMMARY_JSON 并追加唯一单行 TASK_SUMMARY，配置或业务失败非零退出。
 - `scripts/durex.py`：查询并直接显示官方昵称与当前积分；每日签到；显式开启活动分享记录上报（不发布文本）；显式开启活动抽奖并验证奖品结果；每行一个账号、独立执行与失败退出；完全断网预演及本地通知预览；青龙脱敏通知、时间轴日志、账号统计与单行结构化汇总。
@@ -353,6 +357,7 @@
 <table>
 <thead><tr><th>脚本</th><th>变量</th><th>敏感</th><th>填写格式</th></tr></thead>
 <tbody>
+<tr><td rowspan="1"><code>scripts/139_yunduo.py</code></td><td><code>YDYP_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：手机号|Basic 授权值；也兼容省略 Basic 前缀的完整编码值或原始授权令牌。仅在第一个竖线处分割，后续凭据原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/999.py</code></td><td><code>HRT999_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个完整 JSON 对象；必填 mobile（十一位中国大陆手机号）和 token（非空字符串）；可选 user_agent（无换行字符串）及 account_name（原有账号备注兼容字段，不用于业务验证）。JSON 可无歧义保留凭据中的分隔符。不要用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/acfun.py</code></td><td><code>ACFUN_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为 手机号|密码；仅在第一个 | 分割，密码中的后续 | 和首尾空格原样保留。手机号两侧空格忽略；不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/airport.py</code></td><td><code>SUYING_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行：登录邮箱|密码。只按第一个 | 分割，后续密码内容保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -384,6 +389,7 @@
 <tr><td rowspan="1"><code>scripts/crealitycloud_checkin.py</code></td><td><code>CREALITY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为「手机号或邮箱 空格 密码」；只按第一个空白字段分隔，后续密码文本保留。手机号支持 11 位、86 加 11 位或 +86 加 11 位；邮箱直接填写；以 # 开头的行忽略。兼容脚本内 CONFIG_ACCOUNTS，推荐环境变量。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/dachao.py</code></td><td><code>DACHAO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行是一个完整 JSON 对象，不用 &amp; 或 @ 分隔账号。必填字段 phone_number、password_encrypted、user_agent；兼容 password、user_agent_vapp、user_agent_aihoge。可选字段 account_name、tenant_id、client_id、session_id、passport_cookies、vapp_cookies、aihoge_cookies（兼容 cookies）、passport_signature_salt、aihoge_signature_salt、sign_lottery_id、redeem_member（兼容 withdraw_member）、redeem_cookies、redeem_user_agent。Cookie 和 member 保留原字符串（JSON 内引号须转义）。forum_session_id、forum_cookies、forum_tenant_id 兼容读取但原主任务没有论坛动作。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/daily_benefits.py</code></td><td><code>WPS_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号；仅福利任务使用完整 Cookie；任务中心使用 user_id|完整 Cookie，仅按第一个 | 分割，保留后续 Cookie 内容。也可每行一个 JSON 对象，包含 cookies 及可选 user_id、user_agent、account_name、max_lottery_limit，兼容原账号字段；不读取私有配置文件。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/dailynewscn.js</code></td><td><code>DAILYNEWSCN_LIST</code></td><td>否</td><td>格式：非空执行标记，建议填写 1；兼容每行一个旧执行标记，忽略空行，多行仍只获取一次同一公开日报。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ddnsto.py</code></td><td><code>DDNSTO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 路由器ID|完整Cookie；仅在首个 | 分隔，同一行内 Cookie 原样保留，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/deepflood_checkin.py</code></td><td><code>DEEPFLOOD_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号完整 Cookie；不按 &amp;、@ 或分号拆分账号，Cookie 中的这些字符原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/durex.py</code></td><td><code>dlshyzx</code></td><td>是</td><td>格式：每个非空行一个完整令牌；保留变量名；不再使用上游的 # 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -523,6 +529,17 @@
 <table>
 <thead><tr><th>脚本</th><th>变量</th><th>敏感</th><th>填写格式</th></tr></thead>
 <tbody>
+<tr><td rowspan="11"><code>scripts/139_yunduo.py</code></td><td><code>YDYP_PHONE</code></td><td>是</td><td>格式：中国大陆11位手机号；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YDYP_AUTH</code></td><td>是</td><td>格式：Authorization 请求头值，可省略 Basic 前缀；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YDYP_TRY_ALL</code></td><td>否</td><td>格式：布尔值，默认0；1、true、yes、on开启；0、false、no、off关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YDYP_INTERACT_LIMIT</code></td><td>否</td><td>格式：1至100的整数，默认30；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YDYP_UPLOAD</code></td><td>否</td><td>格式：布尔值，默认0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YDYP_DELETE_AFTER</code></td><td>否</td><td>格式：布尔值，默认0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>YDYP_DRY_RUN</code></td><td>否</td><td>格式：布尔值，默认0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认1；0、false、no、off关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：已有通知模块所在目录，不需要其他仓库；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：本人推送令牌；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SENDKEY</code></td><td>是</td><td>格式：本人 SendKey；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/999.py</code></td><td><code>HRT999_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演，其余值正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启；断网预演仅在日志输出通知摘要，不外发。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录；缺失或发送失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
@@ -704,6 +721,9 @@
 <tr><td><code>WPS_DRY_RUN</code></td><td>否</td><td>格式：1 开启完全断网预演；默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余启用，默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录，不填则尝试导入 notify 和 /ql/data/scripts、/ql/scripts。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/dailynewscn.js</code></td><td><code>DAILYNEWSCN_DRY_RUN</code></td><td>否</td><td>格式：1 表示断网预演，其他值表示正式运行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 表示禁用，大小写不限；默认 1。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块所在目录，不填文件名。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/ddnsto.py</code></td><td><code>ddns_userid</code></td><td>是</td><td>格式：单个路由器ID，仅字母、数字、下划线或连字符；不接受多行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ddns_cookie</code></td><td>是</td><td>格式：单行完整 Cookie，含唯一且非空的 csrftoken；末尾不必带分号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>DDNSTO_DRY_RUN</code></td><td>否</td><td>格式：1 启用断网预演，0 执行真实续费；默认 0；也支持 true/false、yes/no、on/off。；多账号格式以该脚本文档为准</td></tr>
@@ -1452,6 +1472,7 @@
 
 多账号统一规则：每行一个账号；需要多个凭据变量时按相同非空行号配对，行数必须一致。
 
+- `scripts/139_yunduo.py`：每个非空行一个手机号与配套授权凭据，格式为手机号|授权值；仅在第一个竖线处分割。空行及以井号开头的注释行忽略，错误行计为账号失败。逐账号独立执行，任一账号失败时整体非零退出。。
 - `scripts/999.py`：每个非空行一个 JSON 账号对象，手机号和令牌须属于同一账号。账号按行独立处理，任一账号配置或业务失败则整体非零退出。。
 - `scripts/acfun.py`：每个非空行一个 手机号|密码；仅拆分第一个 |，逐账号独立登录和执行任务；任一账号失败则整个进程非零退出。。
 - `scripts/airport.py`：SUYING_ACCOUNTS 每个非空行一个账号，以第一个 | 分隔同一账号的邮箱和密码。逐账号独立处理，任一账号配置、登录、签到或流量查询失败时整体非零退出。旧版参数支持单账号。。
@@ -1605,6 +1626,13 @@
 ## 参数获取方法
 
 ### 必选参数获取（重点）
+
+#### `YDYP_ACCOUNTS`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：登录中国移动云盘网页版 https://yun.139.com，打开开发者工具的网络面板，刷新页面，在 api.yun.139.com 或 yun.139.com 请求头中复制 Authorization；手机号使用该登录账号的手机号。凭据仅填入青龙环境变量，不要提交或分享。
+- 填写格式：`每个非空行一个账号：手机号|Basic 授权值；也兼容省略 Basic 前缀的完整编码值或原始授权令牌。仅在第一个竖线处分割，后续凭据原样保留。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `HRT999_ACCOUNTS`
 
@@ -1819,6 +1847,12 @@
 - 获取或设置：浏览器登录 WPS 后打开福利中心，在开发者工具 Network 中复制 personal-act.wps.cn 的 page_info 或 component_action 请求 Cookie，包含登录会话及 act_csrf_token 或 csrf。启用任务中心时，从同账号官方响应或签到请求获取数字 user_id。不得复制他人账号数据。
 - 填写格式：`每个非空行一个账号；仅福利任务使用完整 Cookie；任务中心使用 user_id|完整 Cookie，仅按第一个 | 分割，保留后续 Cookie 内容。也可每行一个 JSON 对象，包含 cookies 及可选 user_id、user_agent、account_name、max_lottery_limit，兼容原账号字段；不读取私有配置文件。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `DAILYNEWSCN_LIST`
+
+- 所属脚本：`scripts/dailynewscn.js`
+- 获取或设置：此任务读取公开日报，无需账号或凭据。在青龙环境变量中新增 DAILYNEWSCN_LIST，填写 1 作为执行标记即可；兼容原变量的非空值，不输出或发送其内容。
+- 填写格式：`非空执行标记，建议填写 1；兼容每行一个旧执行标记，忽略空行，多行仍只获取一次同一公开日报。`
 
 #### `DDNSTO_ACCOUNTS`
 
@@ -2721,6 +2755,76 @@
 
 
 ### 可选参数说明
+
+#### `YDYP_PHONE`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：旧版单账号兼容变量；从本人中国移动云盘登录账号获取。未设置 YDYP_ACCOUNTS 时与 YDYP_AUTH 配套使用。
+- 填写格式：`中国大陆11位手机号`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `YDYP_AUTH`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：登录中国移动云盘网页版 https://yun.139.com，打开开发者工具的网络面板，刷新页面，在 api.yun.139.com 或 yun.139.com 请求头中复制 Authorization；手机号使用该登录账号的手机号。凭据仅填入青龙环境变量，不要提交或分享。这是旧版单账号兼容变量，与 YDYP_PHONE 配套；优先使用 YDYP_ACCOUNTS。
+- 填写格式：`Authorization 请求头值，可省略 Basic 前缀`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `YDYP_TRY_ALL`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：默认关闭；了解任务风险后自行开启，只调用未完成任务的点击接口，不自动生成发布文本。
+- 填写格式：`布尔值，默认0；1、true、yes、on开启；0、false、no、off关闭`
+
+#### `YDYP_INTERACT_LIMIT`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：自行设置小云互动礼单次执行的最大点击次数。每次点击后复查任务完成状态。
+- 填写格式：`1至100的整数，默认30`
+
+#### `YDYP_UPLOAD`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：默认关闭；同意在云盘根目录创建10字节随机任务文件后设置为1。仅任务106未完成时上传。
+- 填写格式：`布尔值，默认0`
+
+#### `YDYP_DELETE_AFTER`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：默认关闭；同意将本轮上传的任务文件移入回收站后设置为1。只对本轮已确认上传的文件生效。
+- 填写格式：`布尔值，默认0`
+
+#### `YDYP_DRY_RUN`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：无网络预演时设置为1。只检查配置与展示流程，不验证账号有效性或真实业务。
+- 填写格式：`布尔值，默认0`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：青龙通知总开关，默认开启；通知失败不改变业务退出码。预演会尝试通知模块，网络调用被禁止。
+- 填写格式：`默认1；0、false、no、off关闭`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：可选填写已有青龙 notify.py 或 sendNotify.js 所在目录；未填写时尝试导入 notify 和青龙标准脚本目录。
+- 填写格式：`已有通知模块所在目录，不需要其他仓库`
+
+#### `PUSHPLUS_TOKEN`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：可选：在本人 PushPlus 管理页面获取推送令牌；青龙通知不可用时尝试 HTTPS 推送，预演不推送。
+- 填写格式：`本人推送令牌`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SENDKEY`
+
+- 所属脚本：`scripts/139_yunduo.py`
+- 获取或设置：可选：在本人 Server酱管理页面获取 SendKey；青龙和 PushPlus 不可用时尝试，预演不推送。
+- 填写格式：`本人 SendKey`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `HRT999_DRY_RUN`
 
@@ -3832,6 +3936,24 @@
 - 所属脚本：`scripts/daily_benefits.py`
 - 获取或设置：可填写青龙平台 notify.py 或 sendNotify.js 所在目录，默认自动寻找标准通知位置；业务运行不依赖通知模块。
 - 填写格式：`本机通知模块目录，不填则尝试导入 notify 和 /ql/data/scripts、/ql/scripts。`
+
+#### `DAILYNEWSCN_DRY_RUN`
+
+- 所属脚本：`scripts/dailynewscn.js`
+- 获取或设置：需要断网预演时手动设置为 1；正式运行删除此变量或设置为 0。
+- 填写格式：`1 表示断网预演，其他值表示正式运行。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/dailynewscn.js`
+- 获取或设置：使用青龙已有通知配置，默认启用；需要关闭时设置为 0。
+- 填写格式：`0、false、no、off 表示禁用，大小写不限；默认 1。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/dailynewscn.js`
+- 获取或设置：可填写青龙自带 sendNotify.js 所在目录；未设置时依次查找 /ql/data/scripts 和 /ql/scripts。通知模块缺失不影响日报业务退出码。
+- 填写格式：`本机通知模块所在目录，不填文件名。`
 
 #### `ddns_userid`
 
@@ -8425,6 +8547,7 @@
 
 ## 验证与兼容性
 
+- `scripts/139_yunduo.py`：SHA-256 `c37eff8c6b1d510213e6ec929a3f4505e7ecf43f6934c655d924fd0165024942`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/117317c83fa5c3cc`。
 - `scripts/999.py`：SHA-256 `c42405330b4bfbd4f50bdc0b0e37203134a0ea24701f9d51e3e5a5a680419b84`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ea0312febc74515`。
 - `scripts/acfun.py`：SHA-256 `006ac42bec4fba6c9e41599da022e9b425b4ca5b6617bcd66c0403ab8917ed65`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
 - `scripts/airport.py`：SHA-256 `751d2835e39d2431905eacf72fc64a9cddfb4fac8032eaa83bc7af4632e7983d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8cd72e9849a3c893`。
@@ -8454,6 +8577,7 @@
 - `scripts/crealitycloud_checkin.py`：SHA-256 `65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
 - `scripts/dachao.py`：SHA-256 `5745d76090d1c471883f40df8aead8ad74fd0f1b7fe8db24c7b995bac3dc25a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7b77205efaf0158a`。
 - `scripts/daily_benefits.py`：SHA-256 `9a155b77acadb949a6fedf73bdd5e63ec7684a45fabd5143b66ac1873f27676b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/35a9f7fe38bde305`。
+- `scripts/dailynewscn.js`：SHA-256 `288f8a194e4896e2a9c08ebad44efa4aa5125b65f036439c540ec57b34e82df9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f3d5ae90c3c979bf`。
 - `scripts/ddnsto.py`：SHA-256 `a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
 - `scripts/deepflood_checkin.py`：SHA-256 `1743ea3da4f0ef463f70619fb5a49d375dc48e5817d867ea080875a12b3f68c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01d51606a735260a`。
 - `scripts/durex.py`：SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
@@ -8583,6 +8707,7 @@
 
 ## 副作用与风险
 
+- `scripts/139_yunduo.py`：执行每日签到并领取AI豆；点击互动、问卷及其他已选择任务，可能改变任务进度或领取AI豆；启用YDYP_UPLOAD后在云盘根目录上传10字节任务文件；启用YDYP_DELETE_AFTER后将本轮上传文件移入回收站；正式执行通知时向已配置的通知渠道发送脱敏统计。
 - `scripts/999.py`：正式执行提交答题选项，可能按活动规则产生积分奖励；正式执行在通知开启且模块可用时外发脱敏任务摘要。
 - `scripts/acfun.py`：默认执行每日签到，更新签到状态；选择 like 时新增点赞；选择 like-cycle 时新增点赞后取消；选择 danmu 时向所选视频公开发布一条弹幕；选择 banana 时向所选视频投出一根香蕉，消耗余额；选择 share 时上报分享任务完成状态；开启通知时尝试发送脱敏任务总结，预演阻止网络传输。
 - `scripts/airport.py`：正式模式通过登录建立网站会话。；正式模式执行每日签到，可能增加网站赠送流量或签到记录。；正式模式调用青龙通知渠道发送脱敏任务总结，可通过 QINGLONG_NOTIFY 关闭。。
@@ -8612,6 +8737,7 @@
 - `scripts/crealitycloud_checkin.py`：登录与 OAuth 授权生成服务端会话；每日签到改变签到记录并领取奖励；正式运行发送已配置的青龙通知；断网预演仅尝试通知调用，不允许联网。
 - `scripts/dachao.py`：签到改变签到记录及活动积分；完成阅读任务并上报阅读时长；开启抽奖后消耗活动抽奖次数并获得奖励；开启兑换后领取现金红包。
 - `scripts/daily_benefits.py`：默认执行免费会员签到，符合条件时领取七日奖励；显式开启会员试用时提交申请并消耗申请机会；显式开启天天抽奖或任务中心抽奖时消耗抽奖机会并领取接口发放的奖品；显式开启签到系列重开时改变签到系列；显式开启任务中心时执行签到并领取签到奖励；正式运行通知启用且模块可用时发送任务汇总通知。
+- `scripts/dailynewscn.js`：正式运行且启用通知时，调用青龙通知模块向已配置的渠道发送日报或脱敏任务总结。。
 - `scripts/ddnsto.py`：真实执行时创建七天免费套餐订单；真实执行时将订单套餐绑定到指定路由器并延长套餐到期时间；启用通知且青龙模块可用时发送脱敏任务通知。
 - `scripts/deepflood_checkin.py`：正式运行向 DeepFlood 提交每日签到，可能获得鸡腿并改变账号签到及积分状态；正式运行通知启用且模块可用时，通过青龙已配置渠道发送脱敏任务汇总。
 - `scripts/durex.py`：每日签到改变签到状态并可能获得积分；开启分享后上报活动分享记录并可能获得奖励；开启抽奖后参与活动并可能消耗抽奖机会或积分。
@@ -8743,6 +8869,7 @@
 
 仓库发布许可证：`GPL-3.0-only`。每个脚本仍保留准确来源：
 
+- `scripts/139_yunduo.py`：上游 `deeplee/personal-scripts` / `139_yunduo.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
 - `scripts/999.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/999/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/acfun.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/acfun/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/airport.py`：上游 `CN-Grace/QinglongScripts` / `Airport.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
@@ -8772,6 +8899,7 @@
 - `scripts/crealitycloud_checkin.py`：上游 `xz0609/crealitycloud-checkin-ql` / `crealitycloud_checkin.py` / `ba2872b75372f62157b1f0cdcdf57ed59f9bd1fb`。
 - `scripts/dachao.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/dachao/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/daily_benefits.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/wps/daily_benefits.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
+- `scripts/dailynewscn.js`：上游 `unitaryhighs/ql_sign_script` / `hot/dailynewscn.js` / `caa96862c9a31521347217b3b20b8ba3f6413c18`。
 - `scripts/ddnsto.py`：上游 `cloudcranes/some_scripts` / `ddnsto.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/deepflood_checkin.py`：上游 `agluo/ql-script-hub` / `deepflood_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/durex.py`：上游 `Rookie-wb-WH/ql_scripts` / `durex.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
