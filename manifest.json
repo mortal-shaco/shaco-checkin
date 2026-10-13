@@ -7936,7 +7936,7 @@
     },
     {
       "catalogId": "a8a311f3f5aaa2e6",
-      "applicationKey": "netease-music",
+      "applicationKey": "han-cy77/qinglong_auto::netease",
       "checkProfile": {
         "requiredEnv": [
           "NETEASE_COOKIE",
