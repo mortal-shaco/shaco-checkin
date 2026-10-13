@@ -1,35 +1,15 @@
 {
-  "schemaVersion": 1,
   "catalogId": "9c6fa7a75879fa8b",
-  "candidateSha256": "47804db900a03d1ec6a340a1afa1a435f864a3ba661f08470e9be43804ab2e9f",
-  "source": {
-    "repository": "agluo/ql-script-hub",
-    "branch": "master",
-    "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-    "path": "aliyunpan_checkin.py",
-    "sha256": "78ef9dae8c4f8a7ca94cb6284172402f029dc0914f2671b5ad73284b531d5bf1",
-    "related": []
-  },
-  "testedAt": "2026-09-29T05:07:08.000830+00:00",
-  "finishedAt": "2026-09-29T05:07:08.854909+00:00",
-  "mode": "live",
-  "runner": "local-sandbox-validator",
-  "runtime": {
-    "command": "python3.14"
-  },
-  "accountType": "local-user-configured",
+  "candidateSha256": "eaaba6cb8f2216f2cfcef6262eeb6b2ec158db78b97957c8d10af0b2da678bc1",
+  "mode": "basic",
   "exitCode": 0,
-  "timedOut": false,
-  "businessResult": "success",
-  "sideEffectsObserved": [
-    "Performs an Aliyun Drive membership check-in for each account during live runs",
-    "Refreshes each account access token and may rotate its refresh token during live runs",
-    "When explicitly enabled, atomically writes current refresh tokens to the configured local file"
-  ],
-  "log": "redacted.log",
-  "humanDecision": {
-    "status": "passed",
-    "decidedBy": "mortal-shaco",
-    "decidedAt": "2026-09-29T05:07:18.620979+00:00"
-  }
+  "businessResult": "not-verified",
+  "testedAt": "2026-10-13T04:50:55.324071+00:00",
+  "checks": [
+    "exact-hash",
+    "syntax",
+    "provenance",
+    "license",
+    "usage-documentation"
+  ]
 }

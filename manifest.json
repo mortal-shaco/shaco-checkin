@@ -284,9 +284,60 @@
     },
     {
       "catalogId": "9c6fa7a75879fa8b",
+      "applicationKey": "aliyun-drive",
+      "checkProfile": {
+        "requiredEnv": [
+          "ALIYUN_REFRESH_TOKEN"
+        ],
+        "optionalEnv": [
+          "ALIYUN_DRIVE_DRY_RUN",
+          "ALIYUN_CLAIM_REWARD",
+          "ALIYUN_MAX_DELAY_SECONDS",
+          "ALIYUN_PERSIST_ROTATED_TOKENS",
+          "ALIYUN_TOKEN_OUTPUT_FILE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ALIYUN_DRIVE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ALIYUN_CLAIM_REWARD": "1",
+          "ALIYUN_MAX_DELAY_SECONDS": "0",
+          "ALIYUN_PERSIST_ROTATED_TOKENS": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "ALL ACCOUNTS SUCCEEDED:",
+          "ALIYUN_DRIVE_SUMMARY=",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "执行阿里云盘每日会员签到并明确验证接口结果",
+          "签到后领取当日奖励，支持显式关闭领奖",
+          "按当日签到记录识别已领取奖励，展示奖励信息",
+          "按换行多账号独立处理并汇总退出状态",
+          "提供完全断网且结果确定的预演模拟",
+          "检测刷新令牌轮换并可选安全写入本地文件",
+          "保留可选执行前随机延迟与每日 11:03 调度",
+          "展示官方返回的非秘密账号身份，输出分阶段脱敏日志与统计",
+          "发送青龙脱敏任务通知，通知故障不改变业务退出码，预演模拟通知"
+        ],
+        "sideEffects": [
+          "正式执行时刷新账号访问令牌，并可能轮换刷新令牌",
+          "正式执行时为每个账号完成阿里云盘会员签到",
+          "默认正式执行时领取当日签到奖励，可通过 ALIYUN_CLAIM_REWARD=0 关闭",
+          "明确启用持久化且检测到轮换时，将当前刷新令牌原子写入指定本地文件",
+          "正式执行通知开启时通过青龙通知组件发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
       "displayName": "阿里云盘签到",
       "path": "scripts/aliyunpan_checkin.py",
-      "sha256": "4b1884c921accb1fe4555d1eca158f6ab1acbea919d95c32e0fa1d92df7a3c00",
+      "sha256": "eaaba6cb8f2216f2cfcef6262eeb6b2ec158db78b97957c8d10af0b2da678bc1",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -294,7 +345,19 @@
         "repository": "agluo/ql-script-hub",
         "branch": "master",
         "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-        "originalPath": "aliyunpan_checkin.py"
+        "originalPath": "aliyunpan_checkin.py",
+        "related": [
+          {
+            "repository": "Sitoi/dailycheckin",
+            "url": "https://github.com/Sitoi/dailycheckin.git",
+            "branch": "main",
+            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+            "originalPath": "dailycheckin/aliyun/main.py",
+            "catalogId": "8b5191e80a8670cd",
+            "sha256": "b57b242aaec9eb4af35b2ea196bc04df91c64b3a9a41cabab3525e5feb4d701c",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "3 11 * * *",
       "command": "python3 scripts/aliyunpan_checkin.py",
@@ -303,94 +366,96 @@
           "name": "ALIYUN_REFRESH_TOKEN",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录阿里云盘网页版，从本人已认证会话的浏览器存储中复制 refresh_token；切勿分享。",
-          "format": "每个非空行填写一个刷新令牌，空行会被忽略。"
+          "howToGet": "登录阿里云盘网页版，在开发者工具 Application 的 Local Storage 中找到当前站点 token 项，复制 refresh_token 字段；在青龙环境变量中配置。过期时重新登录获取。",
+          "format": "每个非空行一个账号的刷新令牌，不填写整段 JSON，不用 & 或 @ 分隔账号。"
         },
         {
           "name": "ALIYUN_DRIVE_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；设为 1 可在不联网、不等待、不签到且不保存凭据的情况下模拟所有账号。",
-          "format": "1、true、yes 或 on 表示启用。"
+          "howToGet": "需要断网预演时设置为 1。",
+          "format": "1/true/yes/on 开启，默认关闭。"
+        },
+        {
+          "name": "ALIYUN_CLAIM_REWARD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认签到后领取当日奖励；仅需原有签到行为时设置为 0。",
+          "format": "默认 1；1/true/yes/on 开启，0/false/no/off 关闭。"
         },
         {
           "name": "ALIYUN_MAX_DELAY_SECONDS",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；设置正式执行前的最大随机等待时间，默认 0。",
-          "format": "非负整数秒数。"
+          "howToGet": "需要随机延迟时手工配置；保留规范脚本参数。",
+          "format": "非负整数，默认 0；正式执行前在零至该值之间随机等待。"
         },
         {
           "name": "ALIYUN_PERSIST_ROTATED_TOKENS",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；仅在需要把轮换后的刷新令牌写入文件时明确设为 1，默认关闭。",
-          "format": "1、true、yes 或 on 表示启用。"
+          "howToGet": "需要安全保存轮换令牌时显式设置为 1，并同时设置输出文件。",
+          "format": "1/true/yes/on 开启，默认关闭；预演不写文件。"
         },
         {
           "name": "ALIYUN_TOKEN_OUTPUT_FILE",
           "required": false,
           "sensitive": false,
-          "howToGet": "启用令牌持久化时，填写位于现有目录内的令牌文件绝对路径。",
-          "format": "本地绝对文件路径；文件以 0600 权限原子替换，每行一个令牌。"
+          "howToGet": "选择由自己管理的私密文件路径，父目录必须已存在；持久化开启时必填。",
+          "format": "绝对路径；仅在轮换且持久化开启时原子写入，权限 0600，每行对应原账号顺序。文件包含敏感凭据，勿公开。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "default": "1",
-          "howToGet": "无需获取；默认通过青龙 notify.py 推送脱敏任务总结，设为 0 可关闭。"
+          "howToGet": "使用青龙已有通知配置；需关闭时手工设置为 0。",
+          "format": "默认 1；0/false/no/off 关闭。预演仅模拟通知以确保断网。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "仅当 notify.py 不在青龙标准路径时，填写其所在目录。",
-          "format": "本地目录路径"
+          "howToGet": "notify.py 未在 Python 导入路径或青龙标准目录时，填写其所在目录。",
+          "format": "可选目录路径；通知组件缺失或推送失败不改变业务退出码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "ALIYUN_REFRESH_TOKEN 每个非空行填写一个账号；忽略空行并独立处理各账号。"
+        "rule": "每个非空行一个账号；逐账号独立处理，任何账号失败均非零退出，安全持久化按原账号顺序保存。"
       },
       "dependencies": [],
       "features": [
         "执行阿里云盘每日会员签到并明确验证接口结果",
+        "签到后领取当日奖励，支持显式关闭领奖",
+        "按当日签到记录识别已领取奖励，展示奖励信息",
         "按换行多账号独立处理并汇总退出状态",
         "提供完全断网且结果确定的预演模拟",
-        "检测刷新令牌轮换并可选安全写入本地文件"
+        "检测刷新令牌轮换并可选安全写入本地文件",
+        "保留可选执行前随机延迟与每日 11:03 调度",
+        "展示官方返回的非秘密账号身份，输出分阶段脱敏日志与统计",
+        "发送青龙脱敏任务通知，通知故障不改变业务退出码，预演模拟通知"
       ],
       "sideEffects": [
-        "正式执行时为每个账号完成阿里云盘会员签到",
         "正式执行时刷新账号访问令牌，并可能轮换刷新令牌",
-        "明确启用持久化时，将当前刷新令牌原子写入配置的本地文件"
+        "正式执行时为每个账号完成阿里云盘会员签到",
+        "默认正式执行时领取当日签到奖励，可通过 ALIYUN_CLAIM_REWARD=0 关闭",
+        "明确启用持久化且检测到轮换时，将当前刷新令牌原子写入指定本地文件",
+        "正式执行通知开启时通过青龙通知组件发送脱敏总结"
       ],
       "review": {
         "staticPassed": true,
-        "sandboxPassed": true,
-        "humanAccepted": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
         "sideEffectsReviewed": true
       },
       "validation": {
-        "status": "passed",
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
         "evidence": "projects/checkin/validation/9c6fa7a75879fa8b",
-        "candidateSha256": "4b1884c921accb1fe4555d1eca158f6ab1acbea919d95c32e0fa1d92df7a3c00",
-        "evidenceCandidateSha256": "47804db900a03d1ec6a340a1afa1a435f864a3ba661f08470e9be43804ab2e9f",
-        "reuseAttestation": {
-          "component": "shared-logging",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-09-29T08:35:07.144259+00:00",
-          "reason": "按用户确认的第三版时间轴模板统一阿里云盘签到日志；仅改变时间戳、阶段展示和任务统计，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "47804db900a03d1ec6a340a1afa1a435f864a3ba661f08470e9be43804ab2e9f",
-          "toCandidateSha256": "4b1884c921accb1fe4555d1eca158f6ab1acbea919d95c32e0fa1d92df7a3c00",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      },
-      "applicationKey": "aliyun-drive"
+        "candidateSha256": "eaaba6cb8f2216f2cfcef6262eeb6b2ec158db78b97957c8d10af0b2da678bc1"
+      }
     },
     {
       "catalogId": "3ca8984737c9322f",
