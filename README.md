@@ -38,6 +38,7 @@
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `1 */6 * * *` |
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `0 9 * * *` |
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `0 9 * * *` |
+| 百度网盘会员成长值 | `scripts/baiduwp.py` | `python3 scripts/baiduwp.py` | `0 8 * * *` |
 | 百事乐元抽奖 | `scripts/bsly_draw.py` | `python3 scripts/bsly_draw.py` | `0 9 * * *` |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `0 9,18 * * *` |
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `0 9 * * *` |
@@ -157,6 +158,7 @@
 - `scripts/autosignin.py`：访问 E-Hentai 新闻页完成签到，并核验事件区明确奖励或今日已完成提示；识别随机遭遇，提示手动处理或等待结束；未确认签到时非零退出；保留默认 TLS 三次请求及 TLS 1.2 三次回退，设置超时、响应大小限制与证书校验；兼容 E_COOKIE、E_PROXY、E_USER_AGENT，多账号按非空行独立运行；解析服务端 Cookie 到期时间并提醒更新，不输出或写回 Cookie 值；显示官方返回的公开账号身份；其他响应内容保持脱敏；完全断网预演、时间轴阶段日志、账号统计、任务统计和单行 TASK_SUMMARY 汇总；正式运行通过青龙通知模块发送脱敏汇总，通知不可用不改变业务退出码；预演生成摘要并禁止外部投递。
 - `scripts/baidu.py`：下载并校验本站 UTF-8 URL 清单；调用百度站点提交接口并核验 success 与 remain，输出成功条数和剩余配额；支持显式设置重复提交次数，默认仅提交一次；按行配置多个站点，逐账号隔离错误并汇总业务退出码；完全离线预演、分阶段时间轴日志和唯一 TASK_SUMMARY 结构化结果；通过青龙通知发送脱敏结果，支持全局关闭，通知故障不改变业务退出码。
 - `scripts/baiduwangpan_checkin.py`：每日百度网盘会员签到，明确验证积分或已完成状态；获取并提交每日会员成长问题答案；读取并报告脱敏用户名、会员等级、成长值和会员类型；逐行多账号独立处理与结构化 JSON 汇总；完全断网的配置预演；成功、部分失败、失败、配置错误和预演状态的青龙脱敏汇总通知。
+- `scripts/baiduwp.py`：会员成长值签到并报告获得成长值；获取每日题目并提交官方返回的答案，报告答题成长值；查询当前会员等级和成长值；展示官方返回的非敏感账号身份；可选择单项或组合任务，支持每行一个账号；完全断网参数预演、独立账号失败统计及单行结构化任务汇总；正式执行结束后调用青龙通知，通知失败不改变业务退出码。
 - `scripts/bsly_draw.py`：百事乐元抽奖，保留原 GET 接口、Token、User-Agent 和微信 Referer 请求头。；每行多账号及旧账号字段兼容，保留 User-Agent 内的 #，账号独立处理。；显式开启抽奖及每账号可配置次数上限，数字业务码 0 和有效奖品名称双重校验。；超时、限制响应大小、禁止重定向和副作用请求重试，网络与业务失败均非零退出。；完全断网预演、脱敏时间轴日志、编号阶段与耗时、逐账号及全任务统计、单行 TASK_SUMMARY。；官方返回昵称、用户名、显示名称或公开 UID 时展示非凭据身份，抑制手机号及凭据。；通过青龙 notify.py 或 sendNotify.js 发送脱敏任务总结，支持全局关闭，通知失败保留业务退出码；预演仅本地模拟。。
 - `scripts/bwcj.py`：读取并展示官方非秘密账号身份，禁止输出手机号和凭据。；读取积分流水获取签到用户 ID，支持同账号手动补充用户 ID 并核验一致性。；查询新版签到天数，使用上游签名算法执行新版签到并核验业务状态和奖励明细。；显式开启旧版签到后查询旧版活动及连续天数并执行旧版签到。；保留每天 9 点和 18 点定时及 bwcjCookie 变量名，换行多账号独立执行。；完全断网预演、脱敏分阶段日志、账号及任务统计、唯一 TASK_SUMMARY 结构化记录。；青龙通知发送脱敏总结，支持全局开关，通知失败不改变业务退出码。。
 - `scripts/cdrail.py`：每日签到与积分增量展示；基于明确业务码确认签到成功或今日已签到；每行一个账号，支持 JSON、查询字符串及自定义请求头；签到前随机等待、账号间间隔及超时控制；完全断网预演、青龙脱敏通知及单行结构化汇总；展示接口返回的非敏感昵称、用户名、显示名或公开账号标识。
@@ -281,6 +283,7 @@
 <tr><td rowspan="1"><code>scripts/autosignin.py</code></td><td><code>E_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；字段用分号分隔，每个字段只按第一个等号拆分，后续等号保留。不要使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/baidu.py</code></td><td><code>BAIDU</code></td><td>是</td><td>格式：每个非空行是一个 JSON 对象，必填 data_url（HTTPS 文本清单地址）、submit_url（含唯一 site 和 token 的百度 HTTPS 接口地址），可选 times（1 至 100 的整数，默认 1）。不使用 &amp; 或 @ 分隔账号；接口地址内部的 &amp; 保持原样。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/baiduwangpan_checkin.py</code></td><td><code>BAIDU_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行；每行是包含 key=value 的完整 Cookie 请求头；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/baiduwp.py</code></td><td><code>BAIDUWP_COOKIE</code></td><td>是</td><td>格式：每个非空行为一个账号的完整 Cookie；分号和等号保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/bsly_draw.py</code></td><td><code>bsly</code></td><td>是</td><td>格式：每个非空行一个账号：token#User-Agent#账号备注。第一个 # 分隔 token，最后一个 # 分隔备注，中间的 # 保留在 User-Agent 中；备注不可含 #。不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/bwcj.py</code></td><td><code>bwcjCookie</code></td><td>是</td><td>格式：每个非空行一个 Token，或 Token|customerId；仅在首个 | 分割。同账号配套字段，账号仅用换行分隔，不支持原 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/cdrail.py</code></td><td><code>CDRAIL_DATA</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象或 URL 编码查询字符串；必填 token、app-token，Cookie 和设备请求头按本人抓包提供。支持 appToken/app_token 及 device-id/device_id 别名和其他自定义请求头；传输控制头忽略。查询字符串用 &amp; 分字段，各字段仅在第一个 = 处分割，值中的 &amp; 编码为 %26；推荐 JSON 保留复杂凭据。不得以 @ 或 &amp; 分账号。；多账号格式以该脚本文档为准</td></tr>
@@ -446,6 +449,10 @@
 <tr><td><code>BAIDUWANGPAN_DELAY_MAX</code></td><td>否</td><td>格式：非负整数；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：1/0 或常见布尔值；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/baiduwp.py</code></td><td><code>BAIDUWP_TASKS</code></td><td>否</td><td>格式：英文逗号分隔 signin,quiz,info；可单独选择；重复项只执行一次。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>BAIDUWP_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演；预演不验证实际登录状态，通知也仅模拟。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 禁用；其余值启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于可选通知，不是业务执行依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/bsly_draw.py</code></td><td><code>BSLY_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演，其他值为实跑；预演仅在本地展示通知摘要。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>BSLY_ENABLE_DRAW</code></td><td>否</td><td>格式：仅 1 允许实际抽奖；预演无需开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>BSLY_MAX_DRAWS</code></td><td>否</td><td>格式：1 至 100 的整数；达到上限即停止，任何未验证成功的请求立即停止该账号，不自动重试。；多账号格式以该脚本文档为准</td></tr>
@@ -1023,6 +1030,7 @@
 - `scripts/autosignin.py`：E_COOKIE 每个非空行一个账号；同一行保留该账号所有 Cookie 字段。账号独立处理，任一账号失败时整体非零退出。。
 - `scripts/baidu.py`：BAIDU 每个非空行对应一个站点账号 JSON 对象，同一站点的清单地址、含令牌提交地址和次数合并在此对象中。各账号独立处理，任一账号失败整体非零退出。。
 - `scripts/baiduwangpan_checkin.py`：BAIDU_COOKIE 中每个非空行是一个独立账号；依次处理，任一账号失败时进程整体非零退出。。
+- `scripts/baiduwp.py`：BAIDUWP_COOKIE 每个非空行为一个账号，各账号独立执行；任一账号或子任务失败均整体非零退出。。
 - `scripts/bsly_draw.py`：每个非空行一个账号，保留旧 token#User-Agent#备注字段。账号独立执行，任一账号失败整体非零退出。。
 - `scripts/bwcj.py`：每个非空行一个账号；同账号 Token 与可选 customerId 使用首个 | 分割。各账号独立处理，任一失败整体非零退出。。
 - `scripts/cdrail.py`：每个非空行一个账号，同一账号的配套凭据集中在该行；各账号独立处理，任一账号失败整体非零退出。。
@@ -1173,6 +1181,13 @@
 - 所属脚本：`scripts/baiduwangpan_checkin.py`
 - 获取或设置：登录 https://pan.baidu.com/ 后打开浏览器开发者工具的 Network 面板，刷新页面，选择一个 pan.baidu.com 请求，复制 Request Headers 中完整的 Cookie 值。
 - 填写格式：`每个账号一个非空行；每行是包含 key=value 的完整 Cookie 请求头`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `BAIDUWP_COOKIE`
+
+- 所属脚本：`scripts/baiduwp.py`
+- 获取或设置：在浏览器登录 https://pan.baidu.com，打开开发者工具网络面板，选择发送到 pan.baidu.com 的已登录请求，复制完整 Cookie 请求头值，不包含 Cookie: 前缀。Cookie 失效时重新登录获取。无需原仓库 config.json。
+- 填写格式：`每个非空行为一个账号的完整 Cookie；分号和等号保留，不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `bsly`
@@ -2225,6 +2240,30 @@
 - 所属脚本：`scripts/baiduwangpan_checkin.py`
 - 获取或设置：如青龙 notify.py 不在标准位置，可设为其所在目录。
 - 填写格式：`包含 notify.py 的目录路径`
+
+#### `BAIDUWP_TASKS`
+
+- 所属脚本：`scripts/baiduwp.py`
+- 获取或设置：按需设置任务选择；不设置时依次执行会员签到、每日答题和会员信息查询。
+- 填写格式：`英文逗号分隔 signin,quiz,info；可单独选择；重复项只执行一次。`
+
+#### `BAIDUWP_DRY_RUN`
+
+- 所属脚本：`scripts/baiduwp.py`
+- 获取或设置：预演时设为 1；正式执行时设为 0 或不设置。
+- 填写格式：`1、true、yes、on 启用完全断网预演；预演不验证实际登录状态，通知也仅模拟。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/baiduwp.py`
+- 获取或设置：默认启用青龙通知，使用青龙现有通知配置；需要禁用时设置为 0。
+- 填写格式：`0、false、no、off 禁用；其余值启用。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/baiduwp.py`
+- 获取或设置：可选填写已有青龙 notify.py 所在目录；默认自动查找可导入的 notify 模块及 /ql/data/scripts、/ql/scripts。
+- 填写格式：`本地目录路径，仅用于可选通知，不是业务执行依赖。`
 
 #### `BSLY_DRY_RUN`
 
@@ -5692,6 +5731,7 @@
 - `scripts/autosignin.py`：SHA-256 `cd2b330788aa14bc2e020a5451329f291e5d1dd97f66ad0a6ed2c921b6dee3d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7919605278826396`。
 - `scripts/baidu.py`：SHA-256 `f3bfc64c4f219e4c451796542f4d2af0605812c82ab871f29039441d108afd1a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed0673d8c02fc410`。
 - `scripts/baiduwangpan_checkin.py`：SHA-256 `e9c658f4544427bd94ab4da74a724038d1f849c8b9665464ded6e8a1c4dd2c18`；live 业务成功证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
+- `scripts/baiduwp.py`：SHA-256 `419008b91e8a348b310d5de9d819e6670ec665dd212922406e85348e52f6b0d6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/74d362990ff7d2f9`。
 - `scripts/bsly_draw.py`：SHA-256 `ae1d0fe072b35fe9c22ad02ebc04ca2b0571c7cf0e60c3ad68e2c8cca58925a3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28b170786df4dff2`。
 - `scripts/bwcj.py`：SHA-256 `ae20e692177d7102468ed3ddc462576f39fd2c81ea51a9dad626e138700ac4af`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0367e0709855a394`。
 - `scripts/cdrail.py`：SHA-256 `5caed175e6b1ff5b1033fbbd59105a71dfb952c8dd79bc9b92f3d354a69e5225`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7389d13167df31b6`。
@@ -5811,6 +5851,7 @@
 - `scripts/autosignin.py`：正式访问新闻页可能领取每日签到奖励及触发服务端随机遭遇事件；正式运行在通知启用且模块可用时发送脱敏通知。
 - `scripts/baidu.py`：实际运行向百度提交本站 URL 并消耗提交配额；显式 times 大于 1 时重复提交同一清单；实际运行在通知开启且通知模块可用时发送脱敏任务通知。
 - `scripts/baiduwangpan_checkin.py`：为每个已配置的百度网盘账号执行每日会员签到；为每个已配置的百度网盘账号提交每日会员问题答案；在通知开启且青龙通知模块可用时发送一条脱敏任务汇总通知。
+- `scripts/baiduwp.py`：执行会员签到，增加会员成长值；提交每日题目答案，可能增加会员成长值；启用通知时发送脱敏任务总结。
 - `scripts/bsly_draw.py`：显式开启实跑后消耗抽奖机会并可能获得奖品。；实跑启用通知且桥接可用时向青龙配置的通知渠道发送脱敏总结。。
 - `scripts/bwcj.py`：新版签到产生签到记录及服务端发放的积分或奖励。；显式开启旧版签到后产生旧版签到记录及服务端奖励。；正式运行时通过青龙配置的通知渠道发送脱敏任务总结。。
 - `scripts/cdrail.py`：调用签到接口，完成每日签到并可能增加积分；正式模式通过青龙通知模块发送脱敏结果摘要。
@@ -5932,6 +5973,7 @@
 - `scripts/autosignin.py`：上游 `AkiyaKiko/EhentaiAutoSignIn` / `autosignin.py` / `c00c3d42a61b7f526dd41b8df157444380898e57`。
 - `scripts/baidu.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/baidu/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/baiduwangpan_checkin.py`：上游 `agluo/ql-script-hub` / `baiduwangpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/baiduwp.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/baiduwp/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/bsly_draw.py`：上游 `cloudcranes/some_scripts` / `bsly_draw.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/bwcj.py`：上游 `Rookie-wb-WH/ql_scripts` / `bwcj.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/cdrail.py`：上游 `agluo/ql-script-hub` / `CDRail.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
