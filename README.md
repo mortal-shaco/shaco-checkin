@@ -78,6 +78,7 @@
 | Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `30 14 * * *` |
 | FreeNom 域名续期维护 | `scripts/ck_freenom.py` | `python3 scripts/ck_freenom.py` | `25 7 */10 * *` |
 | 网易云游戏每日签到 | `scripts/ck_game163.py` | `python3 scripts/ck_game163.py` | `20 8 * * *` |
+| 芒果TV每日签到 | `scripts/ck_mgtv.py` | `python3 scripts/ck_mgtv.py` | `15 8 * * *` |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `15 8 * * *` |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `0 9 * * *` |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `0 9 * * *` |
@@ -281,6 +282,7 @@
 - `scripts/ck_fmapp.py`：每日 App 签到并显示下一次及累计签到发米粒奖励信息；查询并原样显示官方返回的非敏感账号昵称；查询发米粒余额；每行一个 JSON 账号，保留上游四个凭据字段及三个可选请求头默认值；完全断网预演、分阶段脱敏日志、账号统计及单行 TASK_SUMMARY 结构化结果；正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭。
 - `scripts/ck_freenom.py`：独立实现 HTTPS 登录并验证官方已登录状态；查询域名距续期天数并判断不足 14 天的续期窗口；显式启用后执行 12 个月免费续期并复核天数增加；保留每 10 天 7:25 的运行计划；多账号逐行配置与旧 FREENOM 账号对象数组兼容；完全断网预演及参数校验；青龙脱敏通知、按阶段输出结果和单行 TASK_SUMMARY 汇总。
 - `scripts/ck_game163.py`：每日网易云游戏签到，保留每天 08:20 的计划和原请求路径、POST 方法及请求头格式。；换行多账号及原 authorization 字段配置兼容，各账号独立处理。；标准库实现 HTTPS 请求，设置超时、响应大小上限并拒绝跳转。；仅接受明确签到成功或已签到文字；空响应、未知业务结果和错误均失败闭合。；官方返回安全的昵称、用户名、显示名或公开 UID 时显示原值，不输出凭据及原始响应。；完全断网预演，通知仅模拟；实际模式在成功、部分失败、失败和配置错误后尝试青龙通知。；时间轴日志、阶段耗时、账号与任务统计，以及恰好一条 TASK_SUMMARY JSON 记录。。
+- `scripts/ck_mgtv.py`：查询官方账号信息并显示返回的非敏感昵称；每日签到领取积分，显示签到积分及累计签到天数；保留原始查询串字段与 JSONP 回调，自动刷新请求时间戳；按行支持多个账号，独立处理并汇总失败；完全断网参数预演；脱敏分阶段日志、账号和任务统计、单行结构化汇总；通过青龙通知模块发送脱敏任务摘要，通知失败保留业务退出码。
 - `scripts/codearts_daily.py`：读取和只读预览福利活动（--preview 不续期、不写台账）；领取 USER_LOGIN 信用积分与一次性 NEW_USER_REGISTER 注册礼；领取、确认后同源回读，仅 CONFIRMED/CONSUMED 且不可再领取算到账；华为云 SDK-HMAC-SHA256 签名和临时凭据自动续期；持久化幂等台账、北京时间每日六次及十分钟间隔限制，--force 显式绕过；--only 按原始账号序号选择、多账号独立执行和失败退出；青龙通知总开关、原有备用推送渠道、脱敏日志及单行任务总结；完全断网预演，不读写状态、不发送通知。
 - `scripts/comicai_ai_cookie.py`：可选 Cookie 登录页访问，保留原流程但不将页面 HTTP 200 当作认证成功；查询签到前积分并展示签到成功响应中的签到后积分；每日签到与已签到业务码识别；展示接口返回的非敏感昵称、用户名、显示名称或公开 UID；逐行多账号及旧环境变量兼容，账号独立执行且任一失败整体失败；完全断网预演及配置校验；分阶段时间轴日志、账号及子任务统计、单行 TASK_SUMMARY JSON；向青龙 notify.py 发送脱敏总结，通知不可用或失败时保留业务退出码。
 - `scripts/crealitycloud_checkin.py`：国内站手机号或邮箱密码登录，手机号自动补 86 区号；直接登录态失效后的 OAuth 授权码登录回退；查询今日签到状态，已签到时避免重复操作；每日签到，展示连续签到天数和积分、经验奖励；查询官方非敏感身份、总积分、经验及创想币余额；默认整体随机延时和多账号间随机等待，保留每日 09:00 定时；每行一个账号、账号独立处理及失败非零退出；断网预演、逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 记录；通过青龙 notify.py 尝试发送脱敏任务总结，支持全局开关和失败隔离。
@@ -492,6 +494,7 @@
 <tr><td rowspan="1"><code>scripts/ck_fmapp.py</code></td><td><code>FMAPP</code></td><td>是</td><td>格式：每个非空行为一个 JSON 对象，必须包含非空字符串 token、cookie、blackbox、device_id。同一账号的全部凭据合并在该对象中；Cookie 中的分号、&amp;、@ 等字符按 JSON 字符串原样保存，不用于账号分隔。可选字段 fmversion 默认 2.2.3、os 默认 ios、useragent 默认 Fa；字段值不可含换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_freenom.py</code></td><td><code>FREENOM_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：用户名|密码；用户名去除首尾空白，密码原样保留；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_game163.py</code></td><td><code>GAME163_AUTHORIZATION</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Authorization 值，保留前缀和内部字符，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ck_mgtv.py</code></td><td><code>MGTV_PARAMS</code></td><td>是</td><td>格式：每个非空行一个账号，查询串采用标准 URL 编码的键=值&amp;键=值格式；&amp; 仅分隔同一账号的字段，禁止用于分隔账号。ticket 和 uuid 必须非空，禁止重复字段。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/codearts_daily.py</code></td><td><code>CODEARTS_CREDENTIALS</code></td><td>是</td><td>格式：每个非空行一个账号：单行 JSON（上述字段，可含 expiration、domain_id、user_name、oauth_context.pkce_pair.code_verifier、oauth_context.dpop_key_pair.private_key_jwk），或 AK|SK|STS；仅前两个 | 分隔字段，后续文本保留。兼容 accessKeyId/secretAccessKey/securityToken 和 ak/sk/sts 别名。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/comicai_ai_cookie.py</code></td><td><code>COMICAI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，token 为必填非空字符串，cookie 为可选字符串；JSON 转义可保留凭据中的分隔符。设置规范变量后不读取旧变量。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/crealitycloud_checkin.py</code></td><td><code>CREALITY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为「手机号或邮箱 空格 密码」；只按第一个空白字段分隔，后续密码文本保留。手机号支持 11 位、86 加 11 位或 +86 加 11 位；邮箱直接填写；以 # 开头的行忽略。兼容脚本内 CONFIG_ACCOUNTS，推荐环境变量。；多账号格式以该脚本文档为准</td></tr>
@@ -955,6 +958,10 @@
 <tr><td><code>GAME163_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认 0；预演不代表业务签到成功，通知仅模拟投递。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/ck_mgtv.py</code></td><td><code>MGTV</code></td><td>是</td><td>格式：每行一个完整查询串，规则与 MGTV_PARAMS 一致。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>MGTV_DRY_RUN</code></td><td>否</td><td>格式：1 启用完全断网预演；默认 0 正式执行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，其他值启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；仅用于可选通知，业务执行不依赖该目录。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="8"><code>scripts/codearts_daily.py</code></td><td><code>CODEARTS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用，其余关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；多账号格式以该脚本文档为准</td></tr>
@@ -2125,6 +2132,7 @@
 - `scripts/ck_fmapp.py`：每个非空行填写一个账号 JSON 对象；账号逐个独立执行，某个账号配置或业务失败不阻止后续账号，任一账号失败时整体非零退出。。
 - `scripts/ck_freenom.py`：每个非空行一个账号，只在第一个竖线处分割用户名和密码；各账号使用独立会话，任何账号失败均非零退出。。
 - `scripts/ck_game163.py`：每个非空行一个账号，完整保留每行凭据，不使用其他账号分隔符；账号独立执行，任一账号失败则整体非零退出。旧 JSON 数组兼容入口也按每个对象独立执行。。
+- `scripts/ck_mgtv.py`：每个非空行一个账号完整查询串，同账号配套凭据置于同一行；逐账号独立执行，任一账号失败整体非零退出。。
 - `scripts/codearts_daily.py`：每个非空行一个账号，JSON 必须为单行；不按 & 或 @ 拆分账号。账号独立执行，无效账号计失败，任一失败整体非零退出。。
 - `scripts/comicai_ai_cookie.py`：每个非空行一个账号 JSON 对象，同账号 Token 和可选 Cookie 放在同一对象内；账号独立执行，任一账号失败整体非零退出。兼容变量按非空行对应，不允许 & 或 @ 分隔账号。。
 - `scripts/crealitycloud_checkin.py`：每个非空非注释行一个账号；同一行以首个空白字段分隔账号与密码，保留密码后续文本。各账号独立处理，格式错误计为失败，任一账号失败则整体非零退出。。
@@ -2613,6 +2621,13 @@
 - 所属脚本：`scripts/ck_game163.py`
 - 获取或设置：登录本人网易云游戏网页 https://cg.163.com/，打开浏览器开发者工具网络面板，从发往 n.cg.163.com 的已认证请求复制完整 Authorization 请求头值；过期后重新登录获取，不要公开凭据。
 - 填写格式：`每个非空行一个账号的完整 Authorization 值，保留前缀和内部字符，不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `MGTV_PARAMS`
+
+- 所属脚本：`scripts/ck_mgtv.py`
+- 获取或设置：登录本人芒果TV账号，在设备网络调试工具中执行签到，找到 https://credits.bz.mgtv.com/user/creditsTake 请求，复制完整原始查询串。保留 ticket、uuid 及 abroad、appVersion、device、did、osType、callback 等原请求字段，不含网址或开头问号；凭据过期后重新登录获取。原私有配置 params 字段直接对应一行。
+- 填写格式：`每个非空行一个账号，查询串采用标准 URL 编码的键=值&键=值格式；& 仅分隔同一账号的字段，禁止用于分隔账号。ticket 和 uuid 必须非空，禁止重复字段。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `CODEARTS_CREDENTIALS`
@@ -5531,6 +5546,31 @@
 - 所属脚本：`scripts/ck_game163.py`
 - 获取或设置：可选，填写青龙现有 notify.py 所在目录。默认尝试导入 notify，再检查 /ql/data/scripts 和 /ql/scripts；无需下载或其他仓库。
 - 填写格式：`本地目录路径；通知不可用或失败不改变业务退出码。`
+
+#### `MGTV`
+
+- 所属脚本：`scripts/ck_mgtv.py`
+- 获取或设置：兼容凭据输入，与 MGTV_PARAMS 获取方式相同；只有 MGTV_PARAMS 为空时使用。
+- 填写格式：`每行一个完整查询串，规则与 MGTV_PARAMS 一致。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `MGTV_DRY_RUN`
+
+- 所属脚本：`scripts/ck_mgtv.py`
+- 获取或设置：在青龙环境变量中自行设置。
+- 填写格式：`1 启用完全断网预演；默认 0 正式执行。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/ck_mgtv.py`
+- 获取或设置：青龙全局通知开关，默认 1；预演仅打印脱敏通知摘要。
+- 填写格式：`0、false、no、off 关闭通知，其他值启用。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/ck_mgtv.py`
+- 获取或设置：通知模块不在标准位置时，填写已配置的青龙 notify.py 所在目录；也支持导入 notify.send 和 /ql/data/scripts、/ql/scripts 标准目录。
+- 填写格式：`本机目录路径；仅用于可选通知，业务执行不依赖该目录。`
 
 #### `CODEARTS_DRY_RUN`
 
@@ -12626,6 +12666,7 @@
 - `scripts/ck_fmapp.py`：SHA-256 `cf54bcf59156219426860a1c43d3467c51b8a7ae3b1f726612aff8d51557d227`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b448219b57620cb7`。
 - `scripts/ck_freenom.py`：SHA-256 `924fc4494dcdf15d6aeb90d7f59dd6438878241af726c137fdad9e5b38099cdb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/563cae20eed18007`。
 - `scripts/ck_game163.py`：SHA-256 `7ed0cd491d05665776eca881d37deab2c42b356bc28ab3b1735f544fc6d56b4d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/86bf0d1d9f07edf8`。
+- `scripts/ck_mgtv.py`：SHA-256 `87ba378186422a2d560ae13c7cb814fbca39b9df9c488955d9db96b83e161ccb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c4712e799078b55`。
 - `scripts/codearts_daily.py`：SHA-256 `c6bdd619ce35cd32e1fca575006e8420c6ac3b55d55cc1ffb48ba9122862d856`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b896028c3fdcd52d`。
 - `scripts/comicai_ai_cookie.py`：SHA-256 `173db2c22758f322022dedfb23fdd735a85d1cff0d39ad308ed5a8c3d0d45c8c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
 - `scripts/crealitycloud_checkin.py`：SHA-256 `65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
@@ -12829,6 +12870,7 @@
 - `scripts/ck_fmapp.py`：向 Fa米家提交每日签到，按服务端规则更新签到记录并发放发米粒。
 - `scripts/ck_freenom.py`：登录建立服务端账号会话；显式启用且表单证明免费时提交域名 12 个月续期；按青龙配置发送任务通知，断网预演除外。
 - `scripts/ck_game163.py`：实际模式向网易云游戏提交每日签到，可能获得服务端签到奖励。；通知开启且实际模式下，通过青龙通知模块发送脱敏任务总结。。
+- `scripts/ck_mgtv.py`：正式执行向芒果TV提交签到，更新签到记录并领取积分；启用通知时发送脱敏任务结果通知。
 - `scripts/codearts_daily.py`：领取福利积分与新人奖励；确认福利到账；使用可选续期材料刷新登录凭据；写入私有凭据缓存和领取幂等台账；发送脱敏通知（预演只模拟）。
 - `scripts/comicai_ai_cookie.py`：向 ComicAI 提交每日签到并可能获得积分；启用通知时发送脱敏任务总结。
 - `scripts/crealitycloud_checkin.py`：登录与 OAuth 授权生成服务端会话；每日签到改变签到记录并领取奖励；正式运行发送已配置的青龙通知；断网预演仅尝试通知调用，不允许联网。
@@ -13034,6 +13076,7 @@
 - `scripts/ck_fmapp.py`：上游 `OreosLab/checkinpanel` / `ck_fmapp.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
 - `scripts/ck_freenom.py`：上游 `OreosLab/checkinpanel` / `ck_freenom.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
 - `scripts/ck_game163.py`：上游 `OreosLab/checkinpanel` / `ck_game163.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
+- `scripts/ck_mgtv.py`：上游 `yuxian158/check` / `dailycheckin_scripts/ck_mgtv.py` / `723c834f121ff4eef2dec7afe521071a7efff1a9`。
 - `scripts/codearts_daily.py`：上游 `L0NE-6/CodeArts-Daily` / `codearts_daily.py` / `c337a9340877cdf7afef0a679f3d020d28183140`。
 - `scripts/comicai_ai_cookie.py`：上游 `CSDN2024/QianDaoMZH` / `comicai-ai-cookie.py` / `b99c67e46d1e74d2fd3a0bff7cac3f83e5ee6903`。
 - `scripts/crealitycloud_checkin.py`：上游 `xz0609/crealitycloud-checkin-ql` / `crealitycloud_checkin.py` / `ba2872b75372f62157b1f0cdcdf57ed59f9bd1fb`。

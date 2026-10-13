@@ -7152,6 +7152,138 @@
       }
     },
     {
+      "catalogId": "3c4712e799078b55",
+      "applicationKey": "yuxian158/check::mgtv",
+      "checkProfile": {
+        "requiredEnv": [
+          "MGTV_PARAMS"
+        ],
+        "optionalEnv": [
+          "MGTV",
+          "MGTV_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MGTV_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MGTV_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功；签到积分：",
+          "最终状态：success"
+        ],
+        "features": [
+          "查询官方账号信息并显示返回的非敏感昵称",
+          "每日签到领取积分，显示签到积分及累计签到天数",
+          "保留原始查询串字段与 JSONP 回调，自动刷新请求时间戳",
+          "按行支持多个账号，独立处理并汇总失败",
+          "完全断网参数预演",
+          "脱敏分阶段日志、账号和任务统计、单行结构化汇总",
+          "通过青龙通知模块发送脱敏任务摘要，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式执行向芒果TV提交签到，更新签到记录并领取积分",
+          "启用通知时发送脱敏任务结果通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "芒果TV每日签到",
+      "path": "scripts/ck_mgtv.py",
+      "sha256": "87ba378186422a2d560ae13c7cb814fbca39b9df9c488955d9db96b83e161ccb",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_mgtv.py"
+      },
+      "cron": "15 8 * * *",
+      "command": "python3 scripts/ck_mgtv.py",
+      "environment": [
+        {
+          "name": "MGTV_PARAMS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人芒果TV账号，在设备网络调试工具中执行签到，找到 https://credits.bz.mgtv.com/user/creditsTake 请求，复制完整原始查询串。保留 ticket、uuid 及 abroad、appVersion、device、did、osType、callback 等原请求字段，不含网址或开头问号；凭据过期后重新登录获取。原私有配置 params 字段直接对应一行。",
+          "format": "每个非空行一个账号，查询串采用标准 URL 编码的键=值&键=值格式；& 仅分隔同一账号的字段，禁止用于分隔账号。ticket 和 uuid 必须非空，禁止重复字段。"
+        },
+        {
+          "name": "MGTV",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容凭据输入，与 MGTV_PARAMS 获取方式相同；只有 MGTV_PARAMS 为空时使用。",
+          "format": "每行一个完整查询串，规则与 MGTV_PARAMS 一致。"
+        },
+        {
+          "name": "MGTV_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中自行设置。",
+          "format": "1 启用完全断网预演；默认 0 正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认 1；预演仅打印脱敏通知摘要。",
+          "format": "0、false、no、off 关闭通知，其他值启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通知模块不在标准位置时，填写已配置的青龙 notify.py 所在目录；也支持导入 notify.send 和 /ql/data/scripts、/ql/scripts 标准目录。",
+          "format": "本机目录路径；仅用于可选通知，业务执行不依赖该目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号完整查询串，同账号配套凭据置于同一行；逐账号独立执行，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询官方账号信息并显示返回的非敏感昵称",
+        "每日签到领取积分，显示签到积分及累计签到天数",
+        "保留原始查询串字段与 JSONP 回调，自动刷新请求时间戳",
+        "按行支持多个账号，独立处理并汇总失败",
+        "完全断网参数预演",
+        "脱敏分阶段日志、账号和任务统计、单行结构化汇总",
+        "通过青龙通知模块发送脱敏任务摘要，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式执行向芒果TV提交签到，更新签到记录并领取积分",
+        "启用通知时发送脱敏任务结果通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3c4712e799078b55",
+        "candidateSha256": "a539f25f149dcc1f12caa7141da25bee983fc1f4c31d530a796f6cd1b150acb8"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "a539f25f149dcc1f12caa7141da25bee983fc1f4c31d530a796f6cd1b150acb8",
+        "releaseSha256": "87ba378186422a2d560ae13c7cb814fbca39b9df9c488955d9db96b83e161ccb",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "b896028c3fdcd52d",
       "applicationKey": "codearts",
       "checkProfile": {
