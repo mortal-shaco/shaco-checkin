@@ -12314,6 +12314,8 @@
         "optionalEnv": [
           "QODER_ACCOUNTS_FILE",
           "QODER_REGION",
+          "QODER_ACTION",
+          "QODER_ONLY",
           "QODER_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
@@ -12323,28 +12325,33 @@
         },
         "liveEnv": {
           "QODER_REGION": "cn",
+          "QODER_ACTION": "checkin",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
           "领取已确认",
           "今日已领取",
-          "\"status\":\"success\""
+          "服务端确认活动已领取",
+          "\"exitCode\":0"
         ],
         "features": [
-          "逐账号显式签到开关，兼容原账号 JSON 和两种令牌字段命名",
-          "优先使用访问令牌，缺少时刷新；活动查询返回 401 后刷新并重试一次",
-          "中国区及国际区活动查询，可领取 Credits 活动逐项领取与额度统计",
-          "识别今日已领取、活动未开放及待下发",
-          "保留可选 Server酱、PushPlus、企业微信逐账号通知，增加青龙汇总通知及全局开关",
-          "指定私有账号文件时写回轮换令牌；仅环境变量时只在内存保存",
-          "官方非敏感身份显示、逐账号结果、分阶段日志及单行结构化汇总",
-          "完全断网预演、参数验证及多账号独立执行"
+          "逐账号显式开关，兼容原账号 JSON 及两种访问、刷新令牌字段命名",
+          "优先使用访问令牌，缺少时刷新；活动查询 401 后刷新并重试一次",
+          "中国区和国际区活动强制刷新查询，支持同批账号指定不同地区",
+          "逐项领取全部可领 Credits 活动，累计额度并显示响应提供的有效期",
+          "识别有效窗口内今日已领取、明确的幂等重放、活动未开放及待下发",
+          "支持仅刷新令牌和指定账号的环境变量及兼容命令行开关",
+          "兼容标准及 data 包装响应、device_token 字段、jobToken 刷新路径和 campaignKey 标识",
+          "保留 Server酱、PushPlus、企业微信逐账号通知以及青龙汇总通知，全局开关控制",
+          "显式配置私有账号文件时原子写回轮换令牌，仅环境变量时只保存于内存",
+          "显示官方返回的非敏感身份，提供分阶段日志、逐账号统计及唯一 TASK_SUMMARY",
+          "完全断网预演，配置校验，多账号独立执行及失败非零退出"
         ],
         "sideEffects": [
-          "显式启用账号领取活动奖励",
-          "必要时刷新令牌，可能导致刷新令牌轮换",
-          "显式配置私有账号文件时写回刷新后的令牌",
-          "通知开启时发送青龙汇总及已配置的逐账号通知"
+          "显式启用账号后领取可领活动奖励",
+          "必要时或仅刷新模式下刷新令牌，可能轮换刷新令牌",
+          "显式配置私有账号文件时写回轮换令牌",
+          "通知开启时投递青龙汇总及已配置的逐账号通知"
         ]
       },
       "postReview": {
@@ -12353,7 +12360,7 @@
       },
       "displayName": "Qoder每日签到",
       "path": "scripts/qoder_airscript.js",
-      "sha256": "f2de4d37431803d0d85df63bf97e7b2e936efbb3e4686d7e2bb2a15f24d91b07",
+      "sha256": "e1e74cc7bb351cb9b95995c142025eebec911240c0b7e54d0a9fb62b60e54480",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -12361,7 +12368,19 @@
         "repository": "wallechfox/qoder-checkin",
         "branch": "main",
         "commit": "19ab6365c1f0759bb424a3d69e7de8dca89bf75d",
-        "originalPath": "qoder-checkin-金山云文档/Qoder签到-金山文档AirScript.js"
+        "originalPath": "qoder-checkin-金山云文档/Qoder签到-金山文档AirScript.js",
+        "related": [
+          {
+            "repository": "L0NE-6/Qoder-Daily",
+            "url": "https://github.com/L0NE-6/Qoder-Daily.git",
+            "branch": "main",
+            "commit": "299aebcb3f3c46ec9a0ae0c51b687ac7c9dfa54a",
+            "originalPath": "qoder_daily.py",
+            "catalogId": "7dae37fb02629e65",
+            "sha256": "a2f2139c41984c6485598539facc7274e8f78a2736f4ba4c2860f7de741c11fa",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "17 8 * * *",
       "command": "node scripts/qoder_airscript.js",
@@ -12370,66 +12389,83 @@
           "name": "QODER_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "在本人已登录的 Qoder 客户端查看本人授权请求，复制 Bearer 访问令牌和 Cosy-* 八项请求头；刷新令牌从本人客户端登录凭据取得。也兼容原取参工具导出的账号 JSON，无需安装或运行上游仓库。配置账号文件时可不设本变量。",
-          "format": "每个非空行一个 JSON 对象；至少有 accessToken/access_token 或 refreshToken/refresh_token。device 包含非空字符串 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version。enabled=true 或 qiandao=\"是\" 才签到，默认跳过。可选 name、uid 保留，serverchan、pushplus、qywx 对应原 C/D/E 列的本人通知凭据；企业微信可用机器人 key 或完整地址。不按符号拆账号。"
+          "howToGet": "在本人已登录的 Qoder 客户端查看本人授权请求的 Authorization 和 Cosy-* 请求头，取得访问令牌及设备字段；刷新令牌从本人客户端登录凭据取得。也兼容原取号工具导出的整行账号 JSON，无需运行该工具。请勿公开或发给第三方。",
+          "format": "每个非空行一个 JSON 对象；accessToken 或 access_token、refreshToken 或 refresh_token 至少一项有效。device 内 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项均为必填单行字符串。enabled=true 或 qiandao=\"是\" 才执行，默认跳过。region 可选 cn/global。可保留 name、uid；serverchan、pushplus、qywx 为可选逐账号通知凭据。仅刷新模式必须有刷新令牌。"
         },
         {
           "name": "QODER_ACCOUNTS_FILE",
           "required": false,
           "sensitive": false,
-          "howToGet": "自行建立权限受限的私有账号文件并填写路径；启用即授权刷新令牌后写回。",
-          "format": "可读写的私有 JSONL 文件路径，每个非空行一个账号 JSON；优先于环境变量。不要放入公开订阅目录。原子写回权限为 0600。"
+          "howToGet": "自行配置私有账号 JSONL 文件的路径；只在显式指定时读取及原子写回轮换令牌，文件权限设为 0600。未设置时完全使用环境变量并仅在内存保存新令牌。",
+          "format": "可选私有 JSONL 文件路径，内容与 QODER_ACCOUNTS 相同，设置后优先读取此文件作为兼容输入。"
         },
         {
           "name": "QODER_REGION",
           "required": false,
           "sensitive": false,
-          "howToGet": "按账号区域选择。",
-          "format": "cn（默认中国区）或 global（国际区）"
+          "howToGet": "按本人账号所属地区设置。",
+          "format": "cn 或 global，默认 cn；账号 region 优先。"
+        },
+        {
+          "name": "QODER_ACTION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需指定任务动作；也可用命令行 --refresh-only。",
+          "format": "checkin（默认）查询并领取活动；refresh 仅刷新令牌，仍须显式启用账号。"
+        },
+        {
+          "name": "QODER_ONLY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从账号列表确定需要执行的序号；命令行 --only 的设置优先。",
+          "format": "可选从 1 开始的正整数，留空表示全部账号。"
         },
         {
           "name": "QODER_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "预演时设为 1。",
-          "format": "1/true/yes/on 开启完全断网预演，不领取、不写回、不真实发送通知。"
+          "howToGet": "测试时设为 1。",
+          "format": "1/true/yes/on 为断网预演，不请求业务或通知接口，不写回文件。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙已有通知配置，默认开启。",
-          "format": "默认 1；0/false/no/off 关闭全部通知。"
+          "howToGet": "按青龙通知需求设置，默认开启。",
+          "format": "0/false/no/off 关闭全部通知；--no-notify 同样关闭通知。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "通知模块不在标准位置时指定含 sendNotify.js 的目录。",
-          "format": "可选目录路径；默认搜索 /ql/data/scripts 和 /ql/scripts。"
+          "howToGet": "可选填写青龙中含 sendNotify.js 的通知目录；未设置时查找 /ql/data/scripts 和 /ql/scripts。",
+          "format": "通知模块所在目录，仅用于通知，业务独立运行；模块不存在或投递失败不改变业务退出码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号 JSON，同账号令牌、设备参数及可选通知凭据合并在同一对象；各账号独立处理，任一账号失败整体非零退出。"
+        "rule": "每个非空行一个完整账号 JSON 对象，配套令牌、设备字段和逐账号通知凭据放在同一对象中；禁止用 &、@ 或其他字符分隔账号。各账号和各活动独立执行，任一账号失败时整体非零退出。"
       },
       "dependencies": [],
       "features": [
-        "逐账号显式签到开关，兼容原账号 JSON 和两种令牌字段命名",
-        "优先使用访问令牌，缺少时刷新；活动查询返回 401 后刷新并重试一次",
-        "中国区及国际区活动查询，可领取 Credits 活动逐项领取与额度统计",
-        "识别今日已领取、活动未开放及待下发",
-        "保留可选 Server酱、PushPlus、企业微信逐账号通知，增加青龙汇总通知及全局开关",
-        "指定私有账号文件时写回轮换令牌；仅环境变量时只在内存保存",
-        "官方非敏感身份显示、逐账号结果、分阶段日志及单行结构化汇总",
-        "完全断网预演、参数验证及多账号独立执行"
+        "逐账号显式开关，兼容原账号 JSON 及两种访问、刷新令牌字段命名",
+        "优先使用访问令牌，缺少时刷新；活动查询 401 后刷新并重试一次",
+        "中国区和国际区活动强制刷新查询，支持同批账号指定不同地区",
+        "逐项领取全部可领 Credits 活动，累计额度并显示响应提供的有效期",
+        "识别有效窗口内今日已领取、明确的幂等重放、活动未开放及待下发",
+        "支持仅刷新令牌和指定账号的环境变量及兼容命令行开关",
+        "兼容标准及 data 包装响应、device_token 字段、jobToken 刷新路径和 campaignKey 标识",
+        "保留 Server酱、PushPlus、企业微信逐账号通知以及青龙汇总通知，全局开关控制",
+        "显式配置私有账号文件时原子写回轮换令牌，仅环境变量时只保存于内存",
+        "显示官方返回的非敏感身份，提供分阶段日志、逐账号统计及唯一 TASK_SUMMARY",
+        "完全断网预演，配置校验，多账号独立执行及失败非零退出"
       ],
       "sideEffects": [
-        "显式启用账号领取活动奖励",
-        "必要时刷新令牌，可能导致刷新令牌轮换",
-        "显式配置私有账号文件时写回刷新后的令牌",
-        "通知开启时发送青龙汇总及已配置的逐账号通知"
+        "显式启用账号后领取可领活动奖励",
+        "必要时或仅刷新模式下刷新令牌，可能轮换刷新令牌",
+        "显式配置私有账号文件时写回轮换令牌",
+        "通知开启时投递青龙汇总及已配置的逐账号通知"
       ],
       "review": {
         "staticPassed": true,
@@ -12442,7 +12478,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/e034e75509550071",
-        "candidateSha256": "f2de4d37431803d0d85df63bf97e7b2e936efbb3e4686d7e2bb2a15f24d91b07"
+        "candidateSha256": "e1e74cc7bb351cb9b95995c142025eebec911240c0b7e54d0a9fb62b60e54480"
       }
     },
     {
