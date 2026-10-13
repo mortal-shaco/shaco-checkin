@@ -60,6 +60,7 @@
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` |
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `0 9 * * *` |
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `17 8 * * *` |
+| 网易云游戏每日签到 | `scripts/cg163_autocheckin.py` | `python3 scripts/cg163_autocheckin.py` | `0 8 * * *` |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `0 8 * * *` |
 | 咔叽网单签到 | `scripts/ck_2nzz.py` | `python3 scripts/ck_2nzz.py` | `30 8 * * *` |
 | AcFun每日签到与可选互动 | `scripts/ck_acfun.py` | `python3 scripts/ck_acfun.py` | `31 7 * * *` |
@@ -246,6 +247,7 @@
 - `scripts/caigamer.js`：每日签到，保留原有每天 11:20 调度和 Cookie 参数名；显示官方非敏感账号身份及签到名次、连续签到天数和奖励的安全字段；明确成功及今日已签到判定，未知业务结果失败闭合；多账号独立运行与失败退出码；完全断网预演、时间轴日志和结构化统计；青龙脱敏通知，通知失败保留业务退出码。
 - `scripts/cdrail.py`：每日签到与积分增量展示；基于明确业务码确认签到成功或今日已签到；每行一个账号，支持 JSON、查询字符串及自定义请求头；签到前随机等待、账号间间隔及超时控制；完全断网预演、青龙脱敏通知及单行结构化汇总；展示接口返回的非敏感昵称、用户名、显示名或公开账号标识。
 - `scripts/cfmoto_checkin.py`：执行每日签到；发帖和评论优先使用接口随机文本，返回出处时拼接作者与作品信息，接口异常时使用本地文案兜底；按配置发布帖子、评论、点赞并完成分享积分任务。
+- `scripts/cg163_autocheckin.py`：校验网易云游戏账号凭据；执行每日签到并核验业务成功标志；显示官方响应中的昵称、用户名、显示名称或公开 UID；按换行处理多账号并隔离失败；兼容原 wyycg_cookies 凭据变量及可选 PPKEY 推送；完全断网预演、分阶段脱敏日志和结构化汇总；所有运行结果均尝试青龙通知，支持全局关闭并保留业务退出码。
 - `scripts/chevrolet.js`：雪佛兰 APP 每日签到，保留上游接口、POST 方法及 cpctoken 请求头参数。；每行一个账号，兼容上游 xflCookie，独立处理并汇总账号结果。；完全断网预演，检查参数及执行流程，不把预演标为业务签到成功。；请求超时及响应大小限制，严格检查 HTTP 状态和明确业务成功标记。；显示官方返回的非秘密昵称、用户名、显示名称或公开 UID，同时抑制凭据、手机号和原始响应。；脱敏时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总。；通过青龙 sendNotify.js 通知成功、部分失败、失败、配置错误及预演结果，通知异常不改变业务退出码；断网预演中通知网络被禁止。。
 - `scripts/ck_2nzz.py`：使用登录 Cookie 获取签到令牌，保留原签到接口路径、请求方法和表单字段。；查询并直接显示官方页面返回的公开 UID。；执行每日签到，区分明确成功、明确已完成与失败；混合已签到或时间未开始提示不判成功。；支持每行一个账号、独立错误处理及任一失败非零退出。；完全断网预演、分阶段脱敏日志、账号和任务统计及单行 TASK_SUMMARY 记录。；成功、部分失败、失败、配置错误发送青龙脱敏通知；预演只展示通知摘要，关闭开关受支持。。
 - `scripts/ck_acfun.py`：独立实现手机号密码登录及多账号处理，不依赖原仓库工具。；保留每天 7:31 调度，默认签到与等级、香蕉余额查询。；按需获取排行榜视频和互动令牌。；显式启用点赞后取消，两步分别检查业务结果。；显式启用公开弹幕，动态提取视频和分区，一言优先并保留作者、来源署名，失败回退本地文本。；显式启用对排行榜视频投一根香蕉。；官方返回的非秘密昵称、用户名和公开用户标识直接显示。；支持完全断网预演、分阶段脱敏日志、账号及任务统计和单行结构化汇总。；正式执行的成功、部分失败、失败及配置错误均尝试青龙通知，通知不可用或失败保留业务退出码；断网预演模拟通知。。
@@ -440,6 +442,7 @@
 <tr><td rowspan="1"><code>scripts/caigamer.js</code></td><td><code>CAIGAMER_COOKIE_LIST</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，包含非空 bbs_sid 和 bbs_token。同一账号字段用分号分隔，只在第一个等号处拆分，保留值中的后续等号。不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/cdrail.py</code></td><td><code>CDRAIL_DATA</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象或 URL 编码查询字符串；必填 token、app-token，Cookie 和设备请求头按本人抓包提供。支持 appToken/app_token 及 device-id/device_id 别名和其他自定义请求头；传输控制头忽略。查询字符串用 &amp; 分字段，各字段仅在第一个 = 处分割，值中的 &amp; 编码为 %26；推荐 JSON 保留复杂凭据。不得以 @ 或 &amp; 分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/cfmoto_checkin.py</code></td><td><code>CFMOTO_COOKIE</code></td><td>是</td><td>格式：ticket=&lt;value&gt; 或裸 ticket；多账号每行一个；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/cg163_autocheckin.py</code></td><td><code>CG163_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 Authorization 值，保留可能存在的认证前缀；不使用 #、&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/chevrolet.js</code></td><td><code>CHEVROLET_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写一个账号的 cpctoken 原始值，不含请求头名称；不使用 &amp;、@ 或其他字符分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_2nzz.py</code></td><td><code>NZZ_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；只填写 Cookie 值，不包含 Cookie: 前缀。Cookie 字段使用分号分隔，字段仅按首个等号拆分，后续等号保留；禁止使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_acfun.py</code></td><td><code>ACFUN_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：手机号|密码。只按第一个 | 分割，密码中的后续 |、&amp;、@ 和空格完整保留。；多账号格式以该脚本文档为准</td></tr>
@@ -801,6 +804,11 @@
 <tr><td><code>CFMOTO_NOTIFY</code></td><td>否</td><td>默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>CFMOTO_USER_AGENT</code></td><td>否</td><td>多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>CFMOTO_DRY_RUN</code></td><td>否</td><td>默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/cg163_autocheckin.py</code></td><td><code>wyycg_cookies</code></td><td>是</td><td>格式：每个非空行一个 Authorization 值；旧 # 分隔配置需要改成换行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PPKEY</code></td><td>是</td><td>格式：单个推送令牌；采用 HTTPS 请求体传输，不写入 URL。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CG163_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用，其他值关闭，默认关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭青龙及 PushPlus 通知；其他值启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；仅用于可选通知，不是业务依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/chevrolet.js</code></td><td><code>xflCookie</code></td><td>是</td><td>格式：每个非空行填写一个 cpctoken；规范变量即使为空也优先，不回退旧变量。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>CHEVROLET_DRY_RUN</code></td><td>否</td><td>格式：1 表示断网预演，其他值表示实际签到。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off（不区分大小写）关闭。；多账号格式以该脚本文档为准</td></tr>
@@ -1925,6 +1933,7 @@
 - `scripts/caigamer.js`：每个非空行一个账号，完整保留 Cookie；顺序独立执行所有账号，任一配置或业务失败均非零退出。。
 - `scripts/cdrail.py`：每个非空行一个账号，同一账号的配套凭据集中在该行；各账号独立处理，任一账号失败整体非零退出。。
 - `scripts/cfmoto_checkin.py`：CFMOTO_COOKIE 每行一个账号。
+- `scripts/cg163_autocheckin.py`：每行一个账号的完整 Authorization 值，忽略空行；账号独立处理，任何账号失败则进程非零退出。。
 - `scripts/chevrolet.js`：每个非空行代表一个账号，按顺序独立签到；行首尾空白去除，行内所有字符保留。任一账号失败整体非零退出，其他账号继续执行。。
 - `scripts/ck_2nzz.py`：NZZ_COOKIE 每个非空行一个账号；空行忽略，独立处理所有账号，任一账号失败则进程非零退出。。
 - `scripts/ck_acfun.py`：每个非空行一个账号，手机号与密码在同一行，只在第一个 | 分割；逐账号独立处理，任一账号失败则整体非零退出。兼容 ACFUN 的旧 JSON 账号数组。。
@@ -2288,6 +2297,13 @@
 - 所属脚本：`scripts/cfmoto_checkin.py`
 - 获取或设置：使用本人测试账号在 CFMOTO App 执行一次相关请求，从本人控制的本地网络调试记录中复制 Cookie 请求头里的 ticket；如 App 阻止调试，不要绕过安全机制。
 - 填写格式：`ticket=<value> 或裸 ticket；多账号每行一个`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CG163_ACCOUNTS`
+
+- 所属脚本：`scripts/cg163_autocheckin.py`
+- 获取或设置：登录 https://cg.163.com/，打开浏览器开发者工具的网络面板，查看 n.cg.163.com 的 client-settings/@current 或 sign-today 请求，复制请求头 Authorization 的完整值；不是整个 Cookie。凭据过期后重新登录并获取。
+- 填写格式：`每个非空行填写一个账号的完整 Authorization 值，保留可能存在的认证前缀；不使用 #、& 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `CHEVROLET_ACCOUNTS`
@@ -4579,6 +4595,38 @@
 - 所属脚本：`scripts/cfmoto_checkin.py`
 - 获取或设置：无需获取；仅预演时手工设为 1。
 - 默认值：`0`
+
+#### `wyycg_cookies`
+
+- 所属脚本：`scripts/cg163_autocheckin.py`
+- 获取或设置：原脚本凭据变量的兼容别名，获取方式与 CG163_ACCOUNTS 相同；优先使用 CG163_ACCOUNTS。
+- 填写格式：`每个非空行一个 Authorization 值；旧 # 分隔配置需要改成换行。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PPKEY`
+
+- 所属脚本：`scripts/cg163_autocheckin.py`
+- 获取或设置：可选，从 PushPlus 官网登录后的个人中心获取推送令牌；不设置时仅尝试青龙通知。
+- 填写格式：`单个推送令牌；采用 HTTPS 请求体传输，不写入 URL。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CG163_DRY_RUN`
+
+- 所属脚本：`scripts/cg163_autocheckin.py`
+- 获取或设置：手动设置为 1 启用完全断网预演，正式运行时移除或设为 0。
+- 填写格式：`1、true、yes、on 启用，其他值关闭，默认关闭。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/cg163_autocheckin.py`
+- 获取或设置：青龙环境变量中配置全局通知开关，默认启用。
+- 填写格式：`0、false、no、off 关闭青龙及 PushPlus 通知；其他值启用。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/cg163_autocheckin.py`
+- 获取或设置：可选，填写本机青龙 notify.py 所在目录；未配置时自动查找可导入的 notify 及青龙标准目录。
+- 填写格式：`本地目录路径；仅用于可选通知，不是业务依赖。`
 
 #### `xflCookie`
 
@@ -11465,6 +11513,7 @@
 - `scripts/caigamer.js`：SHA-256 `fd3bdc3108575c6901f1f9d8626e1a039f85da54bb2d200d3dd28124f794bd01`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8bd252d858b7095c`。
 - `scripts/cdrail.py`：SHA-256 `5caed175e6b1ff5b1033fbbd59105a71dfb952c8dd79bc9b92f3d354a69e5225`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7389d13167df31b6`。
 - `scripts/cfmoto_checkin.py`：SHA-256 `15ecc5e482af800b18360374359667392176fe88ab77c7950509da115f09f07a`；live 业务成功证据位于 `projects/checkin/validation/0ba7bb41fd4c339c`。
+- `scripts/cg163_autocheckin.py`：SHA-256 `fc594db2c57c2b95da1b8dc4bdb49d887ad50e6d22ff58d3f7af82b1bf76d074`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/97b71fc6fc5c5c72`。
 - `scripts/chevrolet.js`：SHA-256 `fc9137b46f1cb49c1d8f9523c145651d9453fbf8beac391fcc85039a950d7cd2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e7302e54a0be513`。
 - `scripts/ck_2nzz.py`：SHA-256 `7f3516766b49802f68470d5adb40d69a59014b79178df5de52a083e60f8af02b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a50eecf80a170dc5`。
 - `scripts/ck_acfun.py`：SHA-256 `1e650693abb1fbf6f49934ed22d3ac1ff876d5c4ab719c232c57a5f15212af15`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21b5208e088c5d34`。
@@ -11651,6 +11700,7 @@
 - `scripts/caigamer.js`：正式运行提交签到并领取站点签到奖励；正式运行在通知启用且通知模块可用时发送脱敏任务统计。
 - `scripts/cdrail.py`：调用签到接口，完成每日签到并可能增加积分；正式模式通过青龙通知模块发送脱敏结果摘要。
 - `scripts/cfmoto_checkin.py`：改变账号的当日签到和积分状态；最多发布三个公开帖子并留下可见内容；最多产生三次公开评论、三次点赞和三次分享任务记录；发帖和评论前访问第三方一言接口获取公开随机文本，不发送春风动力账号凭据。
+- `scripts/cg163_autocheckin.py`：每日签到可能增加账号签到天数及奖励；向青龙通知渠道发送脱敏任务摘要；配置 PPKEY 后向 PushPlus 发送脱敏任务摘要。
 - `scripts/chevrolet.js`：实际运行向雪佛兰签到接口提交签到，可能改变签到状态并获得服务端签到奖励。；通知启用且本地青龙通知器可用时，实际运行发送脱敏任务总结。。
 - `scripts/ck_2nzz.py`：正式运行向咔叽网单提交每日签到，可能获得站点签到奖励。；正式运行且通知开启时通过青龙配置的通知渠道发送脱敏任务摘要。。
 - `scripts/ck_acfun.py`：默认执行每日签到，可能获得签到奖励。；启用 like 时先点赞再取消；取消失败时可能保留点赞状态。；启用 danmu 时公开发布弹幕。；启用 banana 时消耗一根香蕉并投给视频。。
@@ -11839,6 +11889,7 @@
 - `scripts/caigamer.js`：上游 `unitaryhighs/ql_sign_script` / `sign/caigamer.js` / `caa96862c9a31521347217b3b20b8ba3f6413c18`。
 - `scripts/cdrail.py`：上游 `agluo/ql-script-hub` / `CDRail.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/cfmoto_checkin.py`：作者自有来源 `shaco_autowork/cf_sign.py`。
+- `scripts/cg163_autocheckin.py`：上游 `Riku1998/cg163-autocheckin` / `cg163-autocheckin.py` / `d509ef623787ef39cef475a4b76405145e50997c`。
 - `scripts/chevrolet.js`：上游 `NaroisCool/naro-scripts` / `chevrolet.js` / `c2ffa8af2089bd98e1ed623c7a25d49b60ca0fdd`。
 - `scripts/ck_2nzz.py`：上游 `yuxian158/check` / `dailycheckin_scripts/ck_2nzz.py` / `723c834f121ff4eef2dec7afe521071a7efff1a9`。
 - `scripts/ck_acfun.py`：上游 `OreosLab/checkinpanel` / `ck_acfun.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。

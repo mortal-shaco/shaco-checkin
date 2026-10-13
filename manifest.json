@@ -4474,6 +4474,143 @@
       "applicationKey": "cfmoto"
     },
     {
+      "catalogId": "97b71fc6fc5c5c72",
+      "applicationKey": "cg163",
+      "checkProfile": {
+        "requiredEnv": [
+          "CG163_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "wyycg_cookies",
+          "PPKEY",
+          "CG163_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CG163_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CG163_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "每日签到成功（已验证业务状态）",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "校验网易云游戏账号凭据",
+          "执行每日签到并核验业务成功标志",
+          "显示官方响应中的昵称、用户名、显示名称或公开 UID",
+          "按换行处理多账号并隔离失败",
+          "兼容原 wyycg_cookies 凭据变量及可选 PPKEY 推送",
+          "完全断网预演、分阶段脱敏日志和结构化汇总",
+          "所有运行结果均尝试青龙通知，支持全局关闭并保留业务退出码"
+        ],
+        "sideEffects": [
+          "每日签到可能增加账号签到天数及奖励",
+          "向青龙通知渠道发送脱敏任务摘要",
+          "配置 PPKEY 后向 PushPlus 发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "网易云游戏每日签到",
+      "path": "scripts/cg163_autocheckin.py",
+      "sha256": "fc594db2c57c2b95da1b8dc4bdb49d887ad50e6d22ff58d3f7af82b1bf76d074",
+      "stage": "released",
+      "license": "Apache-2.0",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Riku1998/cg163-autocheckin",
+        "branch": "main",
+        "commit": "d509ef623787ef39cef475a4b76405145e50997c",
+        "originalPath": "cg163-autocheckin.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/cg163_autocheckin.py",
+      "environment": [
+        {
+          "name": "CG163_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://cg.163.com/，打开浏览器开发者工具的网络面板，查看 n.cg.163.com 的 client-settings/@current 或 sign-today 请求，复制请求头 Authorization 的完整值；不是整个 Cookie。凭据过期后重新登录并获取。",
+          "format": "每个非空行填写一个账号的完整 Authorization 值，保留可能存在的认证前缀；不使用 #、& 或 @ 分隔账号。"
+        },
+        {
+          "name": "wyycg_cookies",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "原脚本凭据变量的兼容别名，获取方式与 CG163_ACCOUNTS 相同；优先使用 CG163_ACCOUNTS。",
+          "format": "每个非空行一个 Authorization 值；旧 # 分隔配置需要改成换行。"
+        },
+        {
+          "name": "PPKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从 PushPlus 官网登录后的个人中心获取推送令牌；不设置时仅尝试青龙通知。",
+          "format": "单个推送令牌；采用 HTTPS 请求体传输，不写入 URL。"
+        },
+        {
+          "name": "CG163_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置为 1 启用完全断网预演，正式运行时移除或设为 0。",
+          "format": "1、true、yes、on 启用，其他值关闭，默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙环境变量中配置全局通知开关，默认启用。",
+          "format": "0、false、no、off 关闭青龙及 PushPlus 通知；其他值启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写本机青龙 notify.py 所在目录；未配置时自动查找可导入的 notify 及青龙标准目录。",
+          "format": "本地目录路径；仅用于可选通知，不是业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个账号的完整 Authorization 值，忽略空行；账号独立处理，任何账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "校验网易云游戏账号凭据",
+        "执行每日签到并核验业务成功标志",
+        "显示官方响应中的昵称、用户名、显示名称或公开 UID",
+        "按换行处理多账号并隔离失败",
+        "兼容原 wyycg_cookies 凭据变量及可选 PPKEY 推送",
+        "完全断网预演、分阶段脱敏日志和结构化汇总",
+        "所有运行结果均尝试青龙通知，支持全局关闭并保留业务退出码"
+      ],
+      "sideEffects": [
+        "每日签到可能增加账号签到天数及奖励",
+        "向青龙通知渠道发送脱敏任务摘要",
+        "配置 PPKEY 后向 PushPlus 发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/97b71fc6fc5c5c72",
+        "candidateSha256": "fc594db2c57c2b95da1b8dc4bdb49d887ad50e6d22ff58d3f7af82b1bf76d074"
+      }
+    },
+    {
       "catalogId": "5e7302e54a0be513",
       "applicationKey": "naroiscool/naro-scripts::chevrolet",
       "checkProfile": {
