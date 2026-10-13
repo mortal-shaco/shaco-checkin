@@ -60,6 +60,7 @@
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `0 8 * * *` |
 | 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `0 9,18 * * *` |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `0 21 * * *` |
+| i茅台申购与耐力 | `scripts/imaotai.py` | `python3 scripts/imaotai.py` | `5 9 * * *` |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `0 3 * * *` |
 | 爱奇艺账号与抽奖维护 | `scripts/iqiyi.py` | `python3 scripts/iqiyi.py` | `15 9 * * *` |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `5 10 * * *` |
@@ -185,6 +186,7 @@
 - `scripts/hlyl.py`：查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据；查询当日签到状态、周任务进度和月签到天数；每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励；显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖；查询积分余额；逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出；完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录；通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知。
 - `scripts/hsay.py`：查询并显示官方返回的用户昵称，隐藏手机号及凭据；从积分流水获取签到所需的公开用户 ID；查询连续签到天数；按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数；逐行多账号独立运行，失败闭合与断网预演；青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出。
 - `scripts/ikuuu_checkin.py`：使用邮箱和密码登录，要求官方 ret=1；每日签到要求官方 ret=1，或明确的今日已签到说明，不能仅凭 ret=0 判成功；从成功说明中提取并报告流量奖励；可选读取个人资料并核验响应非空，不输出页面内容；开启后资料失败仍尝试签到，但账号整体失败；官方返回安全的昵称、用户名、显示名称或公开 UID 时按返回值展示；换行多账号，保留密码后续分隔字符，账号独立处理且失败时非零退出；可选随机错峰，保留 21:00 调度和云函数 handler 入口；时间轴阶段日志、耗时、每账号统计、任务统计与唯一 TASK_SUMMARY 记录，保留 IKUUU_SUMMARY 输出；通过青龙 notify.py 发送脱敏总结，通知不可用或失败不改变业务退出码；完全断网的参数与请求计划预演，展示通知摘要并跳过请求和等待。
+- `scripts/imaotai.py`：查询官方应用版本、当日北京时间场次及门店资源；按经纬度选择最近有库存门店，或按省市选择库存最多门店；支持多个商品，保留原默认商品列表；显式开启后以原 AES 协议提交申购，仅业务码 2000 判定请求成功；领取耐力，仅业务码 200 判定成功；多账号独立执行及失败闭合退出码；完全断网预演、阶段日志及唯一结构化汇总；显示官方返回的非秘密账号身份；正式任务结果通过青龙通知，通知故障不改变业务退出码。
 - `scripts/index.js`：通过官方收藏页跳转获取并原样显示公开 UID，也支持手动指定公开 UID；分页获取全部公开收藏，校验明确业务成功、总数稳定、无重复以及分页完整性；读取每个作品全部原图页；图片页查询与图片下载分别限制为三个并发任务；以标题加作品 ID 建目录、标题加页码命名图片，保留规范候选保存路径及旧目录兼容检查；跳过已有有效图片，修复无效普通图片文件；原子创建下载结果以避免并发覆盖；原图仅接受 HTTPS 图片域，隔离账号 Cookie，校验图片类型、文件头、大小和完整性，设置请求超时；支持逐行多账号、旧版 cookie/output/proxy 配置和完全断网预演，逐账号隔离失败；按编号阶段打印带时间戳的脱敏结果及耗时、账号和任务统计，保留收藏成功日志并输出唯一单行 TASK_SUMMARY；调用青龙通知组件发送脱敏总结，支持全局通知开关；预演禁止外部投递，通知失败或缺失不改变业务退出码。
 - `scripts/iqiyi.py`：查询 VIP 等级、当前成长、今日成长、升级所需成长和会员到期时间；接口返回公开身份时脱敏展示非凭据身份字段；显式启用普通抽奖：查询剩余次数并逐次校验奖励；显式启用每日摇一摇：展示逐次奖励，确认次数耗尽并限制循环次数；显式启用白金抽奖：执行五次抽奖并展示每次奖励或未中奖结果；显式启用浏览及预约任务次数领取，与白金抽奖组合时先领取次数；显式启用 V7 星钻升级权益领取，校验业务成功响应；多账号独立执行、断网预演、超时限制、失败闭合、分阶段日志和单行结构化任务汇总；青龙通知覆盖成功、部分失败、失败、配置错误及预演；通知故障保留业务退出码。
 - `scripts/iqiyi_checkin.py`：VIP 信息、官方账号身份、会员等级及到期信息查询；自然月签到，显示连签天数并识别已签到状态；网页积分签到，验证各项业务结果；显式启用会员抽奖，展示返回的奖品名称；显式启用摇一摇抽奖，展示返回的奖品名称；逐行多账号及旧 Cookie 参数兼容，保留每日 10:05 调度；完全断网预演、阶段日志、账号统计和单行 TASK_SUMMARY 汇总；青龙通知及 PushPlus、Server酱后备通知，总开关控制，失败不改变业务退出码。
@@ -314,6 +316,7 @@
 <tr><td rowspan="1"><code>scripts/hlyl.py</code></td><td><code>hlylck</code></td><td>是</td><td>格式：每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hsay.py</code></td><td><code>hsayCookie</code></td><td>是</td><td>格式：每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 &amp; 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_ACCOUNT</code></td><td>是</td><td>格式：每行一个邮箱|密码，只在第一个 | 处分割，密码中的后续 | 保留；禁止空行，不用 &amp;、@ 或逗号分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/imaotai.py</code></td><td><code>IMAOTAI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行是一个 JSON 对象；必填 token、userid、device_id，userid 支持字符串或整数。申购另需 province、city、lat、lng。item_codes 是数字字符串数组，默认 [&quot;11318&quot;,&quot;11319&quot;]；reserve_rule 为 0（最近门店）或 1（所在城市库存最多）。mobile 兼容但不使用和输出。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/index.js</code></td><td><code>PIXIV_ACCOUNTS</code></td><td>是</td><td>格式：每行一个账号：公开UID|完整Cookie；只按第一个 | 拆分，后续 Cookie 内容保留；UID 留空时使用 |完整Cookie。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/iqiyi.py</code></td><td><code>IQIYI_COOKIE</code></td><td>是</td><td>格式：每个非空行保存一个账号的完整 Cookie；Cookie 内各字段以分号分隔，字段只按第一个等号拆分，保留后续等号。必需 P00001，选择 draw 时必需 P00003；兼容 P00002、__dfp、QC005，缺少末尾分号也可解析。不得用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/iqiyi_checkin.py</code></td><td><code>IQIYI_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号；同一行以分号组合 P00001、P00003、可选 __dfp，字段以第一个等号拆分，值内后续等号保留。忽略空行和以 # 开头的注释行，__dfp 的 @ 仅在该字段内部处理，不作账号分隔符。；多账号格式以该脚本文档为准</td></tr>
@@ -592,6 +595,11 @@
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 为关闭，默认 1；断网预演仅展示通知摘要。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径，仅用于可选通知模块发现，不是业务依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IKUUU_PROFILE</code></td><td>否</td><td>格式：0、false、no、off 为关闭，其他值开启；默认 0，开启后资料读取失败会计为账号失败，但仍继续签到。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/imaotai.py</code></td><td><code>IMAOTAI_RESERVE</code></td><td>否</td><td>格式：默认 0；1 开启，0、false、no、off 关闭；商品编号按实际活动更新。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IMAOTAI_ENERGY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；至少启用一项任务。申购模式每个商品请求后等待 20 秒领取耐力。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IMAOTAI_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 完全断网预演，不查询接口、不申购、不领奖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用。断网预演仅展示本地脱敏通知总结。正式运行通知失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：notify.py 或 sendNotify.js 所在目录；默认查找标准青龙路径和可导入的 notify 模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/index.js</code></td><td><code>PIXIV_OUTPUT</code></td><td>否</td><td>格式：目录路径；新图片保存为 标题_作品ID/标题_页码.扩展名，兼容检查旧版 标题/标题_页码.扩展名。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PIXIV_DRY_RUN</code></td><td>否</td><td>格式：1 为预演，其他值为正式运行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，大小写不敏感；其他值开启。；多账号格式以该脚本文档为准</td></tr>
@@ -1119,6 +1127,7 @@
 - `scripts/hlyl.py`：每个非空行一个账号，Token 与可选备注仅按首个 # 分隔。账号独立处理；任一账号配置、查询或已启用操作失败时整体非零退出。备注不展示。。
 - `scripts/hsay.py`：每个非空行一个账号，逐账号独立运行；任何账号失败均非零退出。账号凭据保留完整内容，不按 @ 或 & 拆分。。
 - `scripts/ikuuu_checkin.py`：每个非空行代表一个账号，优先读取 IKUUU_ACCOUNT 的邮箱|密码，兼容 ikuuu 的邮箱#密码；仅在第一个字段分隔符处分割。账号分别创建会话，任一账号失败时整体非零退出。。
+- `scripts/imaotai.py`：每个非空行一个 JSON 账号对象；同一账号凭据及定位合并，独立执行；任一账号失败则整体非零退出。。
 - `scripts/index.js`：每个非空行表示一个独立账号，按第一个 | 分隔公开 UID 与完整 Cookie；账号顺序处理，任一账号失败使整体非零退出。旧版 config.json 单账号 cookie/output/proxy 继续兼容；代理使用 host、port、protocol 等 axios 代理字段，无默认代理。。
 - `scripts/iqiyi.py`：IQIYI_COOKIE 每个非空行一个账号，配套字段保存在同一 Cookie 行中。逐账号独立处理，单个动作或账号失败后继续其他动作及账号；任一账号失败整体非零退出。。
 - `scripts/iqiyi_checkin.py`：每个非空行一个账号完整 Cookie，同一账号配套字段以分号组合，字段只在第一个等号处分割；账号之间仅用换行，不用 & 或 @。逐账号独立运行，任一账号或启用步骤失败整体非零退出。。
@@ -1401,6 +1410,13 @@
 - 所属脚本：`scripts/ikuuu_checkin.py`
 - 获取或设置：在 ikuuu 官网注册或使用找回密码功能获取本人的登录邮箱和密码，在青龙环境变量中按账号逐行填写；如使用兼容变量 ikuuu，可不设置本变量。
 - 填写格式：`每行一个邮箱|密码，只在第一个 | 处分割，密码中的后续 | 保留；禁止空行，不用 &、@ 或逗号分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `IMAOTAI_ACCOUNTS`
+
+- 所属脚本：`scripts/imaotai.py`
+- 获取或设置：在本人 i茅台登录后的请求中获取 MT-Token、userId、MT-Device-ID，分别填入 token、userid、device_id；从本人定位填写省市及经纬度。token 过期时在应用重新登录后重新获取。仅检查本人有权查看的流量，不复制他人凭据。参考登录工具可通过短信登录和高德定位获取参数，但不作为定时任务执行。
+- 填写格式：`每个非空行是一个 JSON 对象；必填 token、userid、device_id，userid 支持字符串或整数。申购另需 province、city、lat、lng。item_codes 是数字字符串数组，默认 ["11318","11319"]；reserve_rule 为 0（最近门店）或 1（所在城市库存最多）。mobile 兼容但不使用和输出。禁止用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `PIXIV_ACCOUNTS`
@@ -3128,6 +3144,36 @@
 - 所属脚本：`scripts/ikuuu_checkin.py`
 - 获取或设置：需要合并来源的资料读取能力时在青龙设为 1，默认关闭以保留维护版本的登录签到流程。
 - 填写格式：`0、false、no、off 为关闭，其他值开启；默认 0，开启后资料读取失败会计为账号失败，但仍继续签到。`
+
+#### `IMAOTAI_RESERVE`
+
+- 所属脚本：`scripts/imaotai.py`
+- 获取或设置：在青龙环境变量中按需开启，显式授权申购。
+- 填写格式：`默认 0；1 开启，0、false、no、off 关闭；商品编号按实际活动更新。`
+
+#### `IMAOTAI_ENERGY`
+
+- 所属脚本：`scripts/imaotai.py`
+- 获取或设置：在青龙环境变量中选择是否领取耐力。
+- 填写格式：`默认 1；0、false、no、off 关闭；至少启用一项任务。申购模式每个商品请求后等待 20 秒领取耐力。`
+
+#### `IMAOTAI_DRY_RUN`
+
+- 所属脚本：`scripts/imaotai.py`
+- 获取或设置：验证配置时设置为 1。
+- 填写格式：`默认 0；1 完全断网预演，不查询接口、不申购、不领奖。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/imaotai.py`
+- 获取或设置：青龙全局通知开关，通知渠道通过青龙配置。
+- 填写格式：`默认 1；0、false、no、off 禁用。断网预演仅展示本地脱敏通知总结。正式运行通知失败不改变业务退出码。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/imaotai.py`
+- 获取或设置：可选，填写现有青龙通知模块目录。
+- 填写格式：`notify.py 或 sendNotify.js 所在目录；默认查找标准青龙路径和可导入的 notify 模块。`
 
 #### `PIXIV_OUTPUT`
 
@@ -6201,6 +6247,7 @@
 - `scripts/hlyl.py`：SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
 - `scripts/hsay.py`：SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
 - `scripts/ikuuu_checkin.py`：SHA-256 `d99299a019221a0e8a7d734899bd17c8a1da69017871953d567591c1e9fca7f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
+- `scripts/imaotai.py`：SHA-256 `9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
 - `scripts/index.js`：SHA-256 `b0f670de5353137cb479251c75283cf6960207864f98a92c687c46147f7db3d7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
 - `scripts/iqiyi.py`：SHA-256 `cf55901a3b875992ebab7270ba46d449c61f3cd4df2cfe84bbefd1f2e1458021`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6c1cb801424774c8`。
 - `scripts/iqiyi_checkin.py`：SHA-256 `0c6ed2f9de2eeeedb8b520837543f0703d839647f0aad18a23d8659bcde63442`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7701c083c0ca06d5`。
@@ -6326,6 +6373,7 @@
 - `scripts/hlyl.py`：未签到时提交每日签到，可能获得积分和成长积分；显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品；通知开启且正式运行时通过青龙组件发送任务总结。
 - `scripts/hsay.py`：向沪上阿姨签到接口提交每日签到，领取活动奖励；实际模式下通过青龙通知模块发送脱敏任务总结。
 - `scripts/ikuuu_checkin.py`：实际运行时登录并建立账号会话；提交每日签到，可能增加账号流量；实际运行时通过青龙配置渠道发送脱敏汇总通知。
+- `scripts/imaotai.py`：显式开启后提交商品申购申请；启用耐力任务后领取耐力奖励；正式运行且开启通知时发送脱敏总结。
 - `scripts/index.js`：正式运行时创建明确指定的图片目录并保存收藏原图；替换未通过校验的普通图片文件；下载过程中创建临时文件并在结束时清理；通知开启且组件可用时发送脱敏任务结果通知，断网预演不外部投递。
 - `scripts/iqiyi.py`：选择 draw 时使用普通抽奖次数并领取抽奖奖励；选择 shake 时使用每日摇一摇次数并领取奖励；选择 platinum 时执行五次白金抽奖并领取奖励；选择 grant 时提交两次浏览任务及一次预约任务次数领取；选择 level 时领取 V7 星钻升级权益，可能改变会员权益；实时运行且通知开启时发送脱敏任务统计通知。
 - `scripts/iqiyi_checkin.py`：自然月签到改变签到记录并可能发放积分；网页积分签到改变积分及签到记录；显式启用会员抽奖时消耗抽奖机会并可能获得奖品；显式启用摇一摇时消耗活动抽奖机会并可能获得奖品；正式模式开启通知时向配置的通知渠道发送脱敏总结。
@@ -6453,6 +6501,7 @@
 - `scripts/hlyl.py`：上游 `cloudcranes/some_scripts` / `hlyl.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/hsay.py`：上游 `Rookie-wb-WH/ql_scripts` / `hsay.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/ikuuu_checkin.py`：上游 `agluo/ql-script-hub` / `ikuuu_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/imaotai.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/imaotai/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/index.js`：上游 `cloudcranes/some_scripts` / `Download_pixiv/index.js` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/iqiyi.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/iqiyi/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/iqiyi_checkin.py`：上游 `deeplee/personal-scripts` / `iqiyi_checkin.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。

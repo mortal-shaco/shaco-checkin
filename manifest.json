@@ -4240,6 +4240,161 @@
       }
     },
     {
+      "catalogId": "ef664085f75113bd",
+      "applicationKey": "sitoi/dailycheckin::imaotai",
+      "checkProfile": {
+        "requiredEnv": [
+          "IMAOTAI_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "IMAOTAI_RESERVE",
+          "IMAOTAI_ENERGY",
+          "IMAOTAI_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "IMAOTAI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "IMAOTAI_RESERVE": "0",
+          "IMAOTAI_ENERGY": "1",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询官方应用版本、当日北京时间场次及门店资源",
+          "按经纬度选择最近有库存门店，或按省市选择库存最多门店",
+          "支持多个商品，保留原默认商品列表",
+          "显式开启后以原 AES 协议提交申购，仅业务码 2000 判定请求成功",
+          "领取耐力，仅业务码 200 判定成功",
+          "多账号独立执行及失败闭合退出码",
+          "完全断网预演、阶段日志及唯一结构化汇总",
+          "显示官方返回的非秘密账号身份",
+          "正式任务结果通过青龙通知，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "显式开启后提交商品申购申请",
+          "启用耐力任务后领取耐力奖励",
+          "正式运行且开启通知时发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "i茅台申购与耐力",
+      "path": "scripts/imaotai.py",
+      "sha256": "9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Sitoi/dailycheckin",
+        "branch": "main",
+        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+        "originalPath": "dailycheckin/imaotai/main.py",
+        "related": [
+          {
+            "catalogId": "aa37c40c667a737f",
+            "sha256": "9659c36e217053bdd65f9badd0ef76ed019ac6436e958bf0fa874535db227d57",
+            "repository": "Sitoi/dailycheckin",
+            "url": "https://github.com/Sitoi/dailycheckin.git",
+            "branch": "main",
+            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+            "originalPath": "imaotai_login.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "5 9 * * *",
+      "command": "python3 scripts/imaotai.py",
+      "environment": [
+        {
+          "name": "IMAOTAI_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人 i茅台登录后的请求中获取 MT-Token、userId、MT-Device-ID，分别填入 token、userid、device_id；从本人定位填写省市及经纬度。token 过期时在应用重新登录后重新获取。仅检查本人有权查看的流量，不复制他人凭据。参考登录工具可通过短信登录和高德定位获取参数，但不作为定时任务执行。",
+          "format": "每个非空行是一个 JSON 对象；必填 token、userid、device_id，userid 支持字符串或整数。申购另需 province、city、lat、lng。item_codes 是数字字符串数组，默认 [\"11318\",\"11319\"]；reserve_rule 为 0（最近门店）或 1（所在城市库存最多）。mobile 兼容但不使用和输出。禁止用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "IMAOTAI_RESERVE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中按需开启，显式授权申购。",
+          "format": "默认 0；1 开启，0、false、no、off 关闭；商品编号按实际活动更新。"
+        },
+        {
+          "name": "IMAOTAI_ENERGY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中选择是否领取耐力。",
+          "format": "默认 1；0、false、no、off 关闭；至少启用一项任务。申购模式每个商品请求后等待 20 秒领取耐力。"
+        },
+        {
+          "name": "IMAOTAI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证配置时设置为 1。",
+          "format": "默认 0；1 完全断网预演，不查询接口、不申购、不领奖。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，通知渠道通过青龙配置。",
+          "format": "默认 1；0、false、no、off 禁用。断网预演仅展示本地脱敏通知总结。正式运行通知失败不改变业务退出码。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写现有青龙通知模块目录。",
+          "format": "notify.py 或 sendNotify.js 所在目录；默认查找标准青龙路径和可导入的 notify 模块。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 JSON 账号对象；同一账号凭据及定位合并，独立执行；任一账号失败则整体非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome"
+      ],
+      "features": [
+        "查询官方应用版本、当日北京时间场次及门店资源",
+        "按经纬度选择最近有库存门店，或按省市选择库存最多门店",
+        "支持多个商品，保留原默认商品列表",
+        "显式开启后以原 AES 协议提交申购，仅业务码 2000 判定请求成功",
+        "领取耐力，仅业务码 200 判定成功",
+        "多账号独立执行及失败闭合退出码",
+        "完全断网预演、阶段日志及唯一结构化汇总",
+        "显示官方返回的非秘密账号身份",
+        "正式任务结果通过青龙通知，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "显式开启后提交商品申购申请",
+        "启用耐力任务后领取耐力奖励",
+        "正式运行且开启通知时发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ef664085f75113bd",
+        "candidateSha256": "9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66"
+      }
+    },
+    {
       "catalogId": "b4b3175bb52c98a5",
       "applicationKey": "index",
       "checkProfile": {
