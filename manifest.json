@@ -5968,42 +5968,47 @@
         ],
         "optionalEnv": [
           "ikuuu",
+          "IKUUU_COOKIES",
+          "IKUUU_HOST",
+          "IKUUU_PROFILE",
+          "IKUUU_FLOW",
           "IKUUU_MAX_RANDOM_DELAY",
           "IKUUU_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR",
-          "IKUUU_PROFILE"
+          "PUSHPLUS_TOKEN"
         ],
         "dryRunEnv": {
           "IKUUU_DRY_RUN": "1"
         },
         "liveEnv": {
+          "IKUUU_PROFILE": "0",
           "IKUUU_MAX_RANDOM_DELAY": "0",
-          "QINGLONG_NOTIFY": "1",
-          "IKUUU_PROFILE": "0"
+          "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "签到成功",
-          "今日已签到",
-          "IKUUU_SUMMARY=",
-          "TASK_SUMMARY="
+          "\"event\":\"success\"",
+          "\"failed\":0",
+          "\"exitCode\":0"
         ],
         "features": [
-          "使用邮箱和密码登录，要求官方 ret=1",
-          "每日签到要求官方 ret=1，或明确的今日已签到说明，不能仅凭 ret=0 判成功",
-          "从成功说明中提取并报告流量奖励",
-          "可选读取个人资料并核验响应非空，不输出页面内容；开启后资料失败仍尝试签到，但账号整体失败",
-          "官方返回安全的昵称、用户名、显示名称或公开 UID 时按返回值展示",
-          "换行多账号，保留密码后续分隔字符，账号独立处理且失败时非零退出",
-          "可选随机错峰，保留 21:00 调度和云函数 handler 入口",
-          "时间轴阶段日志、耗时、每账号统计、任务统计与唯一 TASK_SUMMARY 记录，保留 IKUUU_SUMMARY 输出",
-          "通过青龙 notify.py 发送脱敏总结，通知不可用或失败不改变业务退出码",
-          "完全断网的参数与请求计划预演，展示通知摘要并跳过请求和等待"
+          "保留邮箱密码登录与官方 ret=1 核验，兼容 IKUUU_ACCOUNT 和旧 ikuuu 参数",
+          "新增 Cookie 会话签到，支持 IKUUU_COOKIES、备注前缀及同一规范账号变量中的 Cookie 输入",
+          "每日签到要求官方 ret=1 或明确的今日已签到证明，成功说明中提取流量奖励",
+          "保留可选个人资料读取与非空响应核验；资料失败继续签到但账号整体失败",
+          "新增剩余流量查询，解析官方 /user 页面及 originBody 编码页面中明确的剩余流量字段",
+          "保留安全官方昵称、用户名、显示名称或公开 UID 的原值展示；凭据、手机号和会话值不输出",
+          "支持官方主机名配置，未设置时保留邮箱模式原域名及 Cookie 模式上游域名",
+          "换行多账号独立处理、凭据字段仅首次分割、失败非零退出",
+          "保留每天 21:00 调度、可选随机错峰和云函数 handler 入口",
+          "保留分阶段时间轴日志、耗时、账号与任务统计、IKUUU_SUMMARY 及唯一 TASK_SUMMARY",
+          "使用青龙 notify.py 发送脱敏摘要，保留上游可选 PushPlus 通知，通知故障不改变业务退出码",
+          "完全断网预演参数、各模式请求计划及通知摘要，不导入通知模块、不等待、不修改账号状态"
         ],
         "sideEffects": [
-          "实际运行时登录并建立账号会话",
-          "提交每日签到，可能增加账号流量",
-          "实际运行时通过青龙配置渠道发送脱敏汇总通知"
+          "实际运行时邮箱密码登录并建立账号会话",
+          "实际运行时提交每日签到，可能增加账号流量",
+          "实际运行时通过青龙已有渠道及可选 PushPlus 发送脱敏任务摘要"
         ]
       },
       "postReview": {
@@ -6012,7 +6017,7 @@
       },
       "displayName": "ikuuu 签到",
       "path": "scripts/ikuuu_checkin.py",
-      "sha256": "d99299a019221a0e8a7d734899bd17c8a1da69017871953d567591c1e9fca7f7",
+      "sha256": "44c91448c6d2d8ef71df14ee1a232e58f45bd7b232ff8870983ff6379e378694",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -6031,6 +6036,16 @@
             "catalogId": "198b4feb377da679",
             "sha256": "ad7c555bc7ec9d3cb904bc79fa1faa2fffce783efdd8e6e574f66064d3f28781",
             "license": "MIT"
+          },
+          {
+            "repository": "liang97-gz/ikuuu-for-cookies",
+            "url": "https://github.com/liang97-gz/ikuuu-for-cookies.git",
+            "branch": "main",
+            "commit": "1a15fc81a06a0e1ce02ef96accc5ffd9209af4af",
+            "originalPath": "ikuuu for cookies.py",
+            "catalogId": "7b3a8424fe25cb91",
+            "sha256": "a3fa888ec9cdc793e22a348491bb1e7b65e9120232b29cead6ba56b265814034",
+            "license": "Apache-2.0"
           }
         ]
       },
@@ -6041,74 +6056,104 @@
           "name": "IKUUU_ACCOUNT",
           "required": true,
           "sensitive": true,
-          "howToGet": "在 ikuuu 官网注册或使用找回密码功能获取本人的登录邮箱和密码，在青龙环境变量中按账号逐行填写；如使用兼容变量 ikuuu，可不设置本变量。",
-          "format": "每行一个邮箱|密码，只在第一个 | 处分割，密码中的后续 | 保留；禁止空行，不用 &、@ 或逗号分隔账号。"
+          "howToGet": "在 iKuuu 官方网站注册或找回邮箱密码；Cookie 模式需先在浏览器登录，在开发者工具 Network 的 /user 请求中复制 Cookie 请求头，包含 uid、email、key。仅在青龙私密环境变量中保存。",
+          "format": "每行一个账号：邮箱|密码，或 cookie:完整 Cookie；仅在第一个 | 处分割邮箱密码，密码中的后续 | 保留。Cookie 使用分号分隔名称=值，值中的后续 = 保留；禁止用 & 或 @ 分隔账号。"
         },
         {
           "name": "ikuuu",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容原脚本的账号变量；使用本人的 ikuuu 登录邮箱和密码，仅在未设置 IKUUU_ACCOUNT 时读取。",
-          "format": "每行一个邮箱#密码，只在第一个 # 处分割，后续 # 保留；原来的 & 多账号格式须改成换行。"
+          "howToGet": "旧规范脚本的兼容邮箱密码输入，凭据获取方式同 IKUUU_ACCOUNT；仅未设置 IKUUU_ACCOUNT 时读取。",
+          "format": "每行邮箱#密码，仅在第一个 # 处分割，保留后续密码字符。"
         },
         {
-          "name": "IKUUU_MAX_RANDOM_DELAY",
+          "name": "IKUUU_COOKIES",
           "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中自行设置错峰等待上限，默认不等待。",
-          "format": "0 到 3600 的整数，单位秒；预演不等待。"
+          "sensitive": true,
+          "howToGet": "兼容上游 Cookie 输入；在浏览器官网登录后复制 /user 请求的 Cookie 头，与 IKUUU_ACCOUNT 同时设置时追加处理，不自动去重。",
+          "format": "每行完整 Cookie 或 备注||完整 Cookie，只在第一个 || 处分割；备注不输出，# 开头行跳过；每个 Cookie 必须包含 uid、email、key，不用 & 分隔字段或账号。"
         },
         {
-          "name": "IKUUU_DRY_RUN",
+          "name": "IKUUU_HOST",
           "required": false,
           "sensitive": false,
-          "howToGet": "离线检查时设置为 1，实际执行时设置为 0 或删除。",
-          "format": "0、false、no、off 为关闭，其他值开启，默认 0。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "使用青龙已配置的通知渠道，默认开启；可设置此变量关闭通知。",
-          "format": "0、false、no、off 为关闭，默认 1；断网预演仅展示通知摘要。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选填写青龙 notify.py 所在目录；未填写时先导入 notify，再检查青龙标准脚本目录。",
-          "format": "本机目录路径，仅用于可选通知模块发现，不是业务依赖。"
+          "howToGet": "在浏览器核对 iKuuu 官方当前域名后填写。仅使用自己信任的官方域名，所有账号凭据都会发送到该站点。",
+          "format": "仅 HTTPS 主机名，不含协议、端口或路径；未设置时邮箱模式用 ikuuu.nl，Cookie 模式用 ikuuu.win。"
         },
         {
           "name": "IKUUU_PROFILE",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要合并来源的资料读取能力时在青龙设为 1，默认关闭以保留维护版本的登录签到流程。",
-          "format": "0、false、no、off 为关闭，其他值开启；默认 0，开启后资料读取失败会计为账号失败，但仍继续签到。"
+          "howToGet": "按需在青龙环境变量中开启资料读取。",
+          "format": "默认 0；设 1 开启，资料失败仍尝试签到，但该账号整体失败。"
+        },
+        {
+          "name": "IKUUU_FLOW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需在青龙环境变量中控制剩余流量查询；查询在签到之后执行。",
+          "format": "未设置时仅 Cookie 模式开启；设 1 全部开启，设 0/false/no/off 全部关闭。查询失败仍保留签到结果，但账号整体失败。"
+        },
+        {
+          "name": "IKUUU_MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需配置签到前随机错峰等待。",
+          "format": "0 至 3600 整数秒，默认 0；断网预演不等待。"
+        },
+        {
+          "name": "IKUUU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证时设置为 1。",
+          "format": "默认 0；设 1 仅验证参数与请求计划，不请求、不等待、不导入或投递通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙现有通知配置；可通过此总开关同时控制青龙与 PushPlus 通知。",
+          "format": "默认 1；0/false/no/off 关闭；预演仅展示通知摘要。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "当青龙未自动提供 notify 模块时，填写包含现有 notify.py 的通知目录；业务请求本身不依赖该目录。",
+          "format": "可选本地目录；否则尝试 import notify.send、/ql/data/scripts/notify.py、/ql/scripts/notify.py。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，在 PushPlus 官网个人账号获取推送 Token；无需配置即可使用青龙现有通知。",
+          "format": "单个通知 Token；仅向 HTTPS PushPlus 通知接口发送，不进入日志；受 QINGLONG_NOTIFY 控制，预演不投递。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行代表一个账号，优先读取 IKUUU_ACCOUNT 的邮箱|密码，兼容 ikuuu 的邮箱#密码；仅在第一个字段分隔符处分割。账号分别创建会话，任一账号失败时整体非零退出。"
+        "rule": "每个非空行一个账号，IKUUU_ACCOUNT 兼容邮箱密码及 cookie: 前缀；IKUUU_COOKIES 作为可选追加输入。账号独立执行，任一账号失败则进程非零退出；全局配置错误退出 2。不得以 & 或 @ 分隔账号。"
       },
       "dependencies": [],
       "features": [
-        "使用邮箱和密码登录，要求官方 ret=1",
-        "每日签到要求官方 ret=1，或明确的今日已签到说明，不能仅凭 ret=0 判成功",
-        "从成功说明中提取并报告流量奖励",
-        "可选读取个人资料并核验响应非空，不输出页面内容；开启后资料失败仍尝试签到，但账号整体失败",
-        "官方返回安全的昵称、用户名、显示名称或公开 UID 时按返回值展示",
-        "换行多账号，保留密码后续分隔字符，账号独立处理且失败时非零退出",
-        "可选随机错峰，保留 21:00 调度和云函数 handler 入口",
-        "时间轴阶段日志、耗时、每账号统计、任务统计与唯一 TASK_SUMMARY 记录，保留 IKUUU_SUMMARY 输出",
-        "通过青龙 notify.py 发送脱敏总结，通知不可用或失败不改变业务退出码",
-        "完全断网的参数与请求计划预演，展示通知摘要并跳过请求和等待"
+        "保留邮箱密码登录与官方 ret=1 核验，兼容 IKUUU_ACCOUNT 和旧 ikuuu 参数",
+        "新增 Cookie 会话签到，支持 IKUUU_COOKIES、备注前缀及同一规范账号变量中的 Cookie 输入",
+        "每日签到要求官方 ret=1 或明确的今日已签到证明，成功说明中提取流量奖励",
+        "保留可选个人资料读取与非空响应核验；资料失败继续签到但账号整体失败",
+        "新增剩余流量查询，解析官方 /user 页面及 originBody 编码页面中明确的剩余流量字段",
+        "保留安全官方昵称、用户名、显示名称或公开 UID 的原值展示；凭据、手机号和会话值不输出",
+        "支持官方主机名配置，未设置时保留邮箱模式原域名及 Cookie 模式上游域名",
+        "换行多账号独立处理、凭据字段仅首次分割、失败非零退出",
+        "保留每天 21:00 调度、可选随机错峰和云函数 handler 入口",
+        "保留分阶段时间轴日志、耗时、账号与任务统计、IKUUU_SUMMARY 及唯一 TASK_SUMMARY",
+        "使用青龙 notify.py 发送脱敏摘要，保留上游可选 PushPlus 通知，通知故障不改变业务退出码",
+        "完全断网预演参数、各模式请求计划及通知摘要，不导入通知模块、不等待、不修改账号状态"
       ],
       "sideEffects": [
-        "实际运行时登录并建立账号会话",
-        "提交每日签到，可能增加账号流量",
-        "实际运行时通过青龙配置渠道发送脱敏汇总通知"
+        "实际运行时邮箱密码登录并建立账号会话",
+        "实际运行时提交每日签到，可能增加账号流量",
+        "实际运行时通过青龙已有渠道及可选 PushPlus 发送脱敏任务摘要"
       ],
       "review": {
         "staticPassed": true,
@@ -6121,12 +6166,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/7ea70c9e9d579efb",
-        "candidateSha256": "652160cc58d2099152dbfcd0acfd6a0ae06732d5282b77465911cfa0e2fd02b0"
+        "candidateSha256": "6272c76da42ad3fc706213649f392e2dc19748f3325cd2fe221c4bede6a1cfef"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "652160cc58d2099152dbfcd0acfd6a0ae06732d5282b77465911cfa0e2fd02b0",
-        "releaseSha256": "d99299a019221a0e8a7d734899bd17c8a1da69017871953d567591c1e9fca7f7",
+        "validatedSha256": "6272c76da42ad3fc706213649f392e2dc19748f3325cd2fe221c4bede6a1cfef",
+        "releaseSha256": "44c91448c6d2d8ef71df14ee1a232e58f45bd7b232ff8870983ff6379e378694",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },

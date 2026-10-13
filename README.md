@@ -211,7 +211,7 @@
 - `scripts/hifiti_checkin.py`：HiFiTi 每日签到与明确业务结果核验；HiFiHi 每日签到与明确业务结果核验；兼容原凭据参数和旧版值格式，完整 Cookie 不截断；每行一个账号，两个站点与不同账号之间隔离会话；保留每天 06:30 的计划、随机启动等待和同站点账号间等待；读取官方非敏感昵称、用户名或公开身份字段并显示，禁止凭据片段充当身份；完全断网预演、配置检查、按账号阶段日志与单行结构化任务汇总；成功、部分失败、失败、配置错误和预演均生成脱敏通知摘要，真实模式通过可用青龙通知模块发送，预演仅模拟发送。
 - `scripts/hlyl.py`：查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据；查询当日签到状态、周任务进度和月签到天数；每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励；显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖；查询积分余额；逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出；完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录；通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知。
 - `scripts/hsay.py`：查询并显示官方返回的用户昵称，隐藏手机号及凭据；从积分流水获取签到所需的公开用户 ID；查询连续签到天数；按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数；逐行多账号独立运行，失败闭合与断网预演；青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出。
-- `scripts/ikuuu_checkin.py`：使用邮箱和密码登录，要求官方 ret=1；每日签到要求官方 ret=1，或明确的今日已签到说明，不能仅凭 ret=0 判成功；从成功说明中提取并报告流量奖励；可选读取个人资料并核验响应非空，不输出页面内容；开启后资料失败仍尝试签到，但账号整体失败；官方返回安全的昵称、用户名、显示名称或公开 UID 时按返回值展示；换行多账号，保留密码后续分隔字符，账号独立处理且失败时非零退出；可选随机错峰，保留 21:00 调度和云函数 handler 入口；时间轴阶段日志、耗时、每账号统计、任务统计与唯一 TASK_SUMMARY 记录，保留 IKUUU_SUMMARY 输出；通过青龙 notify.py 发送脱敏总结，通知不可用或失败不改变业务退出码；完全断网的参数与请求计划预演，展示通知摘要并跳过请求和等待。
+- `scripts/ikuuu_checkin.py`：保留邮箱密码登录与官方 ret=1 核验，兼容 IKUUU_ACCOUNT 和旧 ikuuu 参数；新增 Cookie 会话签到，支持 IKUUU_COOKIES、备注前缀及同一规范账号变量中的 Cookie 输入；每日签到要求官方 ret=1 或明确的今日已签到证明，成功说明中提取流量奖励；保留可选个人资料读取与非空响应核验；资料失败继续签到但账号整体失败；新增剩余流量查询，解析官方 /user 页面及 originBody 编码页面中明确的剩余流量字段；保留安全官方昵称、用户名、显示名称或公开 UID 的原值展示；凭据、手机号和会话值不输出；支持官方主机名配置，未设置时保留邮箱模式原域名及 Cookie 模式上游域名；换行多账号独立处理、凭据字段仅首次分割、失败非零退出；保留每天 21:00 调度、可选随机错峰和云函数 handler 入口；保留分阶段时间轴日志、耗时、账号与任务统计、IKUUU_SUMMARY 及唯一 TASK_SUMMARY；使用青龙 notify.py 发送脱敏摘要，保留上游可选 PushPlus 通知，通知故障不改变业务退出码；完全断网预演参数、各模式请求计划及通知摘要，不导入通知模块、不等待、不修改账号状态。
 - `scripts/imaotai.py`：查询官方应用版本、当日北京时间场次及门店资源；按经纬度选择最近有库存门店，或按省市选择库存最多门店；支持多个商品，保留原默认商品列表；显式开启后以原 AES 协议提交申购，仅业务码 2000 判定请求成功；领取耐力，仅业务码 200 判定成功；多账号独立执行及失败闭合退出码；完全断网预演、阶段日志及唯一结构化汇总；显示官方返回的非秘密账号身份；正式任务结果通过青龙通知，通知故障不改变业务退出码。
 - `scripts/index.js`：通过官方收藏页跳转获取并原样显示公开 UID，也支持手动指定公开 UID；分页获取全部公开收藏，校验明确业务成功、总数稳定、无重复以及分页完整性；读取每个作品全部原图页；图片页查询与图片下载分别限制为三个并发任务；以标题加作品 ID 建目录、标题加页码命名图片，保留规范候选保存路径及旧目录兼容检查；跳过已有有效图片，修复无效普通图片文件；原子创建下载结果以避免并发覆盖；原图仅接受 HTTPS 图片域，隔离账号 Cookie，校验图片类型、文件头、大小和完整性，设置请求超时；支持逐行多账号、旧版 cookie/output/proxy 配置和完全断网预演，逐账号隔离失败；按编号阶段打印带时间戳的脱敏结果及耗时、账号和任务统计，保留收藏成功日志并输出唯一单行 TASK_SUMMARY；调用青龙通知组件发送脱敏总结，支持全局通知开关；预演禁止外部投递，通知失败或缺失不改变业务退出码。
 - `scripts/iqiyi_checkin.py`：VIP信息、官方身份、会员等级、到期时间及成长值查询；自然月签到、连签天数及已签到识别；网页积分签到及逐项业务确认；可选普通抽奖次数查询，保留单次会员抽奖并支持全部机会抽奖和奖品展示；保留单次摇一摇并支持显式连续摇一摇、奖品展示和机会耗尽识别；显式领取白金任务次数及五次白金抽奖，逐次验证结果；显式领取V7免费升级星钻权益，变更后查询会员状态；逐行多账号、旧 Cookie 参数兼容和每日10:05调度；完全断网预演、阶段日志、账号统计及单行 TASK_SUMMARY；青龙通知、PushPlus与Server酱后备及总开关，通知失败保留业务退出码；显式启用 VIP 自动签到并展示当月成长值，不误报为本次新增成长；显式启用每日成长任务查询、任务参与、完成通知和奖励领取，逐项检查业务代码并刷新状态，最多六轮；兼容上游 dfp Cookie 字段，保留 __dfp 优先级及字段值中的等号。
@@ -355,7 +355,7 @@
 <tr><td rowspan="1"><code>scripts/hifiti_checkin.py</code></td><td><code>HiFiTi_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；填写完整 Cookie（字段之间使用分号），兼容旧版仅填写 cloudmusic.net 的值；字段值中的等号完整保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hlyl.py</code></td><td><code>hlylck</code></td><td>是</td><td>格式：每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hsay.py</code></td><td><code>hsayCookie</code></td><td>是</td><td>格式：每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 &amp; 分隔。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_ACCOUNT</code></td><td>是</td><td>格式：每行一个邮箱|密码，只在第一个 | 处分割，密码中的后续 | 保留；禁止空行，不用 &amp;、@ 或逗号分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：邮箱|密码，或 cookie:完整 Cookie；仅在第一个 | 处分割邮箱密码，密码中的后续 | 保留。Cookie 使用分号分隔名称=值，值中的后续 = 保留；禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/imaotai.py</code></td><td><code>IMAOTAI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行是一个 JSON 对象；必填 token、userid、device_id，userid 支持字符串或整数。申购另需 province、city、lat、lng。item_codes 是数字字符串数组，默认 [&quot;11318&quot;,&quot;11319&quot;]；reserve_rule 为 0（最近门店）或 1（所在城市库存最多）。mobile 兼容但不使用和输出。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/index.js</code></td><td><code>PIXIV_ACCOUNTS</code></td><td>是</td><td>格式：每行一个账号：公开UID|完整Cookie；只按第一个 | 拆分，后续 Cookie 内容保留；UID 留空时使用 |完整Cookie。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/iqiyi_checkin.py</code></td><td><code>IQIYI_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号，形如 P00001=&lt;登录凭据&gt;; P00003=&lt;用户编号&gt;; __dfp=&lt;设备字段&gt;。分号分隔同账号字段，每个字段仅按第一个等号拆分；保留值中其余等号。设备字段仅使用 @ 前段，@ 不分隔账号。优先使用 __dfp；P00002、QC005 等额外 Cookie 字段允许保留，不单独要求。# 开头的行作为注释。；多账号格式以该脚本文档为准</td></tr>
@@ -703,12 +703,16 @@
 <tr><td><code>HSAY_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启；默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余值开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="6"><code>scripts/ikuuu_checkin.py</code></td><td><code>ikuuu</code></td><td>是</td><td>格式：每行一个邮箱#密码，只在第一个 # 处分割，后续 # 保留；原来的 &amp; 多账号格式须改成换行。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>IKUUU_MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0 到 3600 的整数，单位秒；预演不等待。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>IKUUU_DRY_RUN</code></td><td>否</td><td>格式：0、false、no、off 为关闭，其他值开启，默认 0。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 为关闭，默认 1；断网预演仅展示通知摘要。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径，仅用于可选通知模块发现，不是业务依赖。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>IKUUU_PROFILE</code></td><td>否</td><td>格式：0、false、no、off 为关闭，其他值开启；默认 0，开启后资料读取失败会计为账号失败，但仍继续签到。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="10"><code>scripts/ikuuu_checkin.py</code></td><td><code>ikuuu</code></td><td>是</td><td>格式：每行邮箱#密码，仅在第一个 # 处分割，保留后续密码字符。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IKUUU_COOKIES</code></td><td>是</td><td>格式：每行完整 Cookie 或 备注||完整 Cookie，只在第一个 || 处分割；备注不输出，# 开头行跳过；每个 Cookie 必须包含 uid、email、key，不用 &amp; 分隔字段或账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IKUUU_HOST</code></td><td>否</td><td>格式：仅 HTTPS 主机名，不含协议、端口或路径；未设置时邮箱模式用 ikuuu.nl，Cookie 模式用 ikuuu.win。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IKUUU_PROFILE</code></td><td>否</td><td>格式：默认 0；设 1 开启，资料失败仍尝试签到，但该账号整体失败。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IKUUU_FLOW</code></td><td>否</td><td>格式：未设置时仅 Cookie 模式开启；设 1 全部开启，设 0/false/no/off 全部关闭。查询失败仍保留签到结果，但账号整体失败。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IKUUU_MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：0 至 3600 整数秒，默认 0；断网预演不等待。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>IKUUU_DRY_RUN</code></td><td>否</td><td>格式：默认 0；设 1 仅验证参数与请求计划，不请求、不等待、不导入或投递通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭；预演仅展示通知摘要。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选本地目录；否则尝试 import notify.send、/ql/data/scripts/notify.py、/ql/scripts/notify.py。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：单个通知 Token；仅向 HTTPS PushPlus 通知接口发送，不进入日志；受 QINGLONG_NOTIFY 控制，预演不投递。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/imaotai.py</code></td><td><code>IMAOTAI_RESERVE</code></td><td>否</td><td>格式：默认 0；1 开启，0、false、no、off 关闭；商品编号按实际活动更新。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IMAOTAI_ENERGY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；至少启用一项任务。申购模式每个商品请求后等待 20 秒领取耐力。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IMAOTAI_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 完全断网预演，不查询接口、不申购、不领奖。；多账号格式以该脚本文档为准</td></tr>
@@ -1300,7 +1304,7 @@
 - `scripts/hifiti_checkin.py`：HiFiTi_COOKIE 和 HIFIHI_COOKIE 各自每个非空行一个账号，账号独立会话并顺序处理。两者至少一项非空；单个账号失败不阻止其他账号，任一失败整体非零退出。。
 - `scripts/hlyl.py`：每个非空行一个账号，Token 与可选备注仅按首个 # 分隔。账号独立处理；任一账号配置、查询或已启用操作失败时整体非零退出。备注不展示。。
 - `scripts/hsay.py`：每个非空行一个账号，逐账号独立运行；任何账号失败均非零退出。账号凭据保留完整内容，不按 @ 或 & 拆分。。
-- `scripts/ikuuu_checkin.py`：每个非空行代表一个账号，优先读取 IKUUU_ACCOUNT 的邮箱|密码，兼容 ikuuu 的邮箱#密码；仅在第一个字段分隔符处分割。账号分别创建会话，任一账号失败时整体非零退出。。
+- `scripts/ikuuu_checkin.py`：每个非空行一个账号，IKUUU_ACCOUNT 兼容邮箱密码及 cookie: 前缀；IKUUU_COOKIES 作为可选追加输入。账号独立执行，任一账号失败则进程非零退出；全局配置错误退出 2。不得以 & 或 @ 分隔账号。。
 - `scripts/imaotai.py`：每个非空行一个 JSON 账号对象；同一账号凭据及定位合并，独立执行；任一账号失败则整体非零退出。。
 - `scripts/index.js`：每个非空行表示一个独立账号，按第一个 | 分隔公开 UID 与完整 Cookie；账号顺序处理，任一账号失败使整体非零退出。旧版 config.json 单账号 cookie/output/proxy 继续兼容；代理使用 host、port、protocol 等 axios 代理字段，无默认代理。。
 - `scripts/iqiyi_checkin.py`：每个非空行一个账号完整 Cookie；同账号字段以分号分隔且只按第一个等号拆分，不使用 & 或 @ 分隔账号。逐账号独立运行，任一账号失败则整体非零退出。。
@@ -1667,8 +1671,8 @@
 #### `IKUUU_ACCOUNT`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
-- 获取或设置：在 ikuuu 官网注册或使用找回密码功能获取本人的登录邮箱和密码，在青龙环境变量中按账号逐行填写；如使用兼容变量 ikuuu，可不设置本变量。
-- 填写格式：`每行一个邮箱|密码，只在第一个 | 处分割，密码中的后续 | 保留；禁止空行，不用 &、@ 或逗号分隔账号。`
+- 获取或设置：在 iKuuu 官方网站注册或找回邮箱密码；Cookie 模式需先在浏览器登录，在开发者工具 Network 的 /user 请求中复制 Cookie 请求头，包含 uid、email、key。仅在青龙私密环境变量中保存。
+- 填写格式：`每行一个账号：邮箱|密码，或 cookie:完整 Cookie；仅在第一个 | 处分割邮箱密码，密码中的后续 | 保留。Cookie 使用分号分隔名称=值，值中的后续 = 保留；禁止用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `IMAOTAI_ACCOUNTS`
@@ -3829,39 +3833,65 @@
 #### `ikuuu`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
-- 获取或设置：兼容原脚本的账号变量；使用本人的 ikuuu 登录邮箱和密码，仅在未设置 IKUUU_ACCOUNT 时读取。
-- 填写格式：`每行一个邮箱#密码，只在第一个 # 处分割，后续 # 保留；原来的 & 多账号格式须改成换行。`
+- 获取或设置：旧规范脚本的兼容邮箱密码输入，凭据获取方式同 IKUUU_ACCOUNT；仅未设置 IKUUU_ACCOUNT 时读取。
+- 填写格式：`每行邮箱#密码，仅在第一个 # 处分割，保留后续密码字符。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `IKUUU_MAX_RANDOM_DELAY`
+#### `IKUUU_COOKIES`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
-- 获取或设置：在青龙环境变量中自行设置错峰等待上限，默认不等待。
-- 填写格式：`0 到 3600 的整数，单位秒；预演不等待。`
+- 获取或设置：兼容上游 Cookie 输入；在浏览器官网登录后复制 /user 请求的 Cookie 头，与 IKUUU_ACCOUNT 同时设置时追加处理，不自动去重。
+- 填写格式：`每行完整 Cookie 或 备注||完整 Cookie，只在第一个 || 处分割；备注不输出，# 开头行跳过；每个 Cookie 必须包含 uid、email、key，不用 & 分隔字段或账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `IKUUU_DRY_RUN`
-
-- 所属脚本：`scripts/ikuuu_checkin.py`
-- 获取或设置：离线检查时设置为 1，实际执行时设置为 0 或删除。
-- 填写格式：`0、false、no、off 为关闭，其他值开启，默认 0。`
-
-#### `QINGLONG_NOTIFY`
+#### `IKUUU_HOST`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
-- 获取或设置：使用青龙已配置的通知渠道，默认开启；可设置此变量关闭通知。
-- 填写格式：`0、false、no、off 为关闭，默认 1；断网预演仅展示通知摘要。`
-
-#### `QINGLONG_NOTIFY_DIR`
-
-- 所属脚本：`scripts/ikuuu_checkin.py`
-- 获取或设置：可选填写青龙 notify.py 所在目录；未填写时先导入 notify，再检查青龙标准脚本目录。
-- 填写格式：`本机目录路径，仅用于可选通知模块发现，不是业务依赖。`
+- 获取或设置：在浏览器核对 iKuuu 官方当前域名后填写。仅使用自己信任的官方域名，所有账号凭据都会发送到该站点。
+- 填写格式：`仅 HTTPS 主机名，不含协议、端口或路径；未设置时邮箱模式用 ikuuu.nl，Cookie 模式用 ikuuu.win。`
 
 #### `IKUUU_PROFILE`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
-- 获取或设置：需要合并来源的资料读取能力时在青龙设为 1，默认关闭以保留维护版本的登录签到流程。
-- 填写格式：`0、false、no、off 为关闭，其他值开启；默认 0，开启后资料读取失败会计为账号失败，但仍继续签到。`
+- 获取或设置：按需在青龙环境变量中开启资料读取。
+- 填写格式：`默认 0；设 1 开启，资料失败仍尝试签到，但该账号整体失败。`
+
+#### `IKUUU_FLOW`
+
+- 所属脚本：`scripts/ikuuu_checkin.py`
+- 获取或设置：按需在青龙环境变量中控制剩余流量查询；查询在签到之后执行。
+- 填写格式：`未设置时仅 Cookie 模式开启；设 1 全部开启，设 0/false/no/off 全部关闭。查询失败仍保留签到结果，但账号整体失败。`
+
+#### `IKUUU_MAX_RANDOM_DELAY`
+
+- 所属脚本：`scripts/ikuuu_checkin.py`
+- 获取或设置：按需配置签到前随机错峰等待。
+- 填写格式：`0 至 3600 整数秒，默认 0；断网预演不等待。`
+
+#### `IKUUU_DRY_RUN`
+
+- 所属脚本：`scripts/ikuuu_checkin.py`
+- 获取或设置：离线验证时设置为 1。
+- 填写格式：`默认 0；设 1 仅验证参数与请求计划，不请求、不等待、不导入或投递通知。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/ikuuu_checkin.py`
+- 获取或设置：使用青龙现有通知配置；可通过此总开关同时控制青龙与 PushPlus 通知。
+- 填写格式：`默认 1；0/false/no/off 关闭；预演仅展示通知摘要。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/ikuuu_checkin.py`
+- 获取或设置：当青龙未自动提供 notify 模块时，填写包含现有 notify.py 的通知目录；业务请求本身不依赖该目录。
+- 填写格式：`可选本地目录；否则尝试 import notify.send、/ql/data/scripts/notify.py、/ql/scripts/notify.py。`
+
+#### `PUSHPLUS_TOKEN`
+
+- 所属脚本：`scripts/ikuuu_checkin.py`
+- 获取或设置：可选，在 PushPlus 官网个人账号获取推送 Token；无需配置即可使用青龙现有通知。
+- 填写格式：`单个通知 Token；仅向 HTTPS PushPlus 通知接口发送，不进入日志；受 QINGLONG_NOTIFY 控制，预演不投递。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `IMAOTAI_RESERVE`
 
@@ -7285,7 +7315,7 @@
 - `scripts/hifiti_checkin.py`：SHA-256 `ae18f25d6d7ad768ae64880761732b510e7bc3e75179bb9d66790f8203e4faf9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
 - `scripts/hlyl.py`：SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
 - `scripts/hsay.py`：SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
-- `scripts/ikuuu_checkin.py`：SHA-256 `d99299a019221a0e8a7d734899bd17c8a1da69017871953d567591c1e9fca7f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
+- `scripts/ikuuu_checkin.py`：SHA-256 `44c91448c6d2d8ef71df14ee1a232e58f45bd7b232ff8870983ff6379e378694`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 - `scripts/imaotai.py`：SHA-256 `9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
 - `scripts/index.js`：SHA-256 `b0f670de5353137cb479251c75283cf6960207864f98a92c687c46147f7db3d7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
 - `scripts/iqiyi_checkin.py`：SHA-256 `2829c7add08087e4c054a99ebc6b3f88c9e665a7a9310b713d19b2467acebed2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7701c083c0ca06d5`。
@@ -7425,7 +7455,7 @@
 - `scripts/hifiti_checkin.py`：向 HiFiTi 提交每日签到；向 HiFiHi 提交每日签到；真实模式按全局通知开关向青龙配置的渠道发送脱敏任务通知。
 - `scripts/hlyl.py`：未签到时提交每日签到，可能获得积分和成长积分；显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品；通知开启且正式运行时通过青龙组件发送任务总结。
 - `scripts/hsay.py`：向沪上阿姨签到接口提交每日签到，领取活动奖励；实际模式下通过青龙通知模块发送脱敏任务总结。
-- `scripts/ikuuu_checkin.py`：实际运行时登录并建立账号会话；提交每日签到，可能增加账号流量；实际运行时通过青龙配置渠道发送脱敏汇总通知。
+- `scripts/ikuuu_checkin.py`：实际运行时邮箱密码登录并建立账号会话；实际运行时提交每日签到，可能增加账号流量；实际运行时通过青龙已有渠道及可选 PushPlus 发送脱敏任务摘要。
 - `scripts/imaotai.py`：显式开启后提交商品申购申请；启用耐力任务后领取耐力奖励；正式运行且开启通知时发送脱敏总结。
 - `scripts/index.js`：正式运行时创建明确指定的图片目录并保存收藏原图；替换未通过校验的普通图片文件；下载过程中创建临时文件并在结束时清理；通知开启且组件可用时发送脱敏任务结果通知，断网预演不外部投递。
 - `scripts/iqiyi_checkin.py`：自然月签到改变签到记录并可能发放积分；网页积分签到改变积分及签到记录；启用会员抽奖时消耗机会并可能获得奖品；启用摇一摇时消耗活动机会并可能获得奖品；启用任务次数领取时记录浏览、预约电影任务并增加白金次数；启用白金抽奖时消耗活动机会并可能获得奖品；启用V7领取时可能改变会员权益或类型；正式模式开启通知时向配置渠道发送脱敏总结；启用 VIP 自动签到时改变签到记录并可能增加成长值；启用每日成长任务时记录任务参与、浏览或预约、完成通知，并可能领取成长奖励。
