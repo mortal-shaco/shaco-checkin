@@ -8,6 +8,141 @@
   "releaseLicense": "GPL-3.0-only",
   "scripts": [
     {
+      "catalogId": "8ea0312febc74515",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::999",
+      "checkProfile": {
+        "requiredEnv": [
+          "HRT999_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "HRT999_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HRT999_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "HRT999_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 答题成功",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "按原接口获取华润通999题目",
+          "展示题目、选项和接口标记的正确答案",
+          "支持单选或多选正确选项并提交答案",
+          "按上游 resultCode 字符串 0 验证获取和提交成功，不推断积分到账",
+          "多账号独立处理和失败退出",
+          "本地模拟完整答题流程的断网预演",
+          "按时间轴记录阶段耗时、账号和任务统计，并输出单条结构化汇总",
+          "正式执行通过青龙通知发送脱敏摘要，断网预演在本地输出摘要",
+          "展示官方接口返回的非敏感昵称、用户名、显示名称或公开标识"
+        ],
+        "sideEffects": [
+          "正式执行提交答题选项，可能按活动规则产生积分奖励",
+          "正式执行在通知开启且模块可用时外发脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "华润通999答题",
+      "path": "scripts/999.py",
+      "sha256": "c42405330b4bfbd4f50bdc0b0e37203134a0ea24701f9d51e3e5a5a680419b84",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/huaruntong/999/main.py",
+        "related": [
+          {
+            "catalogId": "ab06b1df82bca017",
+            "sha256": "13b6d05bd1df4a63ff820911186d25d539247ca7d09662caefd608454c040696",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/huaruntong/999/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "1 1 1 1 1",
+      "command": "python3 scripts/999.py",
+      "environment": [
+        {
+          "name": "HRT999_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "本人登录华润通999答题页面，使用浏览器开发者工具或本人设备抓包查看 api4.jiankangyouyi.com 的答题请求。取请求头 token 与 customdata 中的 mobile；可选 user_agent 使用同一请求的 User-Agent。仅保存在青龙环境变量中，不分享抓包数据。上游未提供更详细的登录入口或令牌有效期，请以本人实际请求为准。",
+          "format": "每个非空行为一个完整 JSON 对象；必填 mobile（十一位中国大陆手机号）和 token（非空字符串）；可选 user_agent（无换行字符串）及 account_name（原有账号备注兼容字段，不用于业务验证）。JSON 可无歧义保留凭据中的分隔符。不要用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "HRT999_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地预演时设置为 1，正式执行时设为 0 或不设置。",
+          "format": "1、true、yes、on 启用完全断网预演，其余值正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙现有通知配置；默认开启，关闭时设置为 0。",
+          "format": "0、false、no、off 关闭，其他值开启；断网预演仅在日志输出通知摘要，不外发。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 或 sendNotify.js 所在目录；默认自动发现常用青龙目录。",
+          "format": "本地通知模块目录；缺失或发送失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 JSON 账号对象，手机号和令牌须属于同一账号。账号按行独立处理，任一账号配置或业务失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "按原接口获取华润通999题目",
+        "展示题目、选项和接口标记的正确答案",
+        "支持单选或多选正确选项并提交答案",
+        "按上游 resultCode 字符串 0 验证获取和提交成功，不推断积分到账",
+        "多账号独立处理和失败退出",
+        "本地模拟完整答题流程的断网预演",
+        "按时间轴记录阶段耗时、账号和任务统计，并输出单条结构化汇总",
+        "正式执行通过青龙通知发送脱敏摘要，断网预演在本地输出摘要",
+        "展示官方接口返回的非敏感昵称、用户名、显示名称或公开标识"
+      ],
+      "sideEffects": [
+        "正式执行提交答题选项，可能按活动规则产生积分奖励",
+        "正式执行在通知开启且模块可用时外发脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/8ea0312febc74515",
+        "candidateSha256": "c42405330b4bfbd4f50bdc0b0e37203134a0ea24701f9d51e3e5a5a680419b84"
+      }
+    },
+    {
       "catalogId": "9c6fa7a75879fa8b",
       "displayName": "阿里云盘签到",
       "path": "scripts/aliyunpan_checkin.py",
@@ -4713,7 +4848,7 @@
     },
     {
       "catalogId": "7701c083c0ca06d5",
-      "applicationKey": "deeplee/personal-scripts::iqiyi",
+      "applicationKey": "iqiyi",
       "checkProfile": {
         "requiredEnv": [
           "IQIYI_COOKIES"
