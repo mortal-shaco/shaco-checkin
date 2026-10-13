@@ -17866,6 +17866,130 @@
       }
     },
     {
+      "catalogId": "4cc5f70c13c67bbd",
+      "applicationKey": "sitoi/dailycheckin::youdao",
+      "checkProfile": {
+        "requiredEnv": [
+          "YOUDAO_COOKIE"
+        ],
+        "optionalEnv": [
+          "YOUDAO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "YOUDAO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\"",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "刷新登录会话，保留已有 Cookie 并接收服务端更新。",
+          "每日同步空间奖励，验证 rewardSpace 字段。",
+          "每日签到，验证 space 字段。",
+          "连续领取三次广告空间奖励，分别验证 space 字段。",
+          "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，不从 Cookie 提取身份。",
+          "多账号独立处理，统计已确认奖励、阶段耗时及账号结果，输出单行结构化任务总结。",
+          "完全断网预演及青龙脱敏通知，通知失败不改变业务退出码。"
+        ],
+        "sideEffects": [
+          "刷新账号登录会话。",
+          "领取每日同步奖励并增加账号空间。",
+          "提交每日签到并领取空间奖励。",
+          "提交三次广告奖励请求并增加账号空间。",
+          "实际运行时通过青龙发送脱敏通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "有道云笔记每日空间奖励",
+      "path": "scripts/youdao.py",
+      "sha256": "0c740bfa5e0616e362c80e44bb42aedacc6cf7785d7a0665f4f9be29f4ddb799",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Sitoi/dailycheckin",
+        "branch": "main",
+        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+        "originalPath": "dailycheckin/youdao/main.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/youdao.py",
+      "environment": [
+        {
+          "name": "YOUDAO_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://note.youdao.com 后打开开发者工具网络面板，复制发往 note.youdao.com 已登录请求的完整 Cookie 请求头，不含 Cookie: 前缀。必须包含 YNOTE_PERS；过期后重新登录获取，勿公开凭据。",
+          "format": "每个非空行一个账号；Cookie 字段用分号分隔，字段仅按第一个等号拆分，保留值中的后续等号。"
+        },
+        {
+          "name": "YOUDAO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 进行完全断网预演，通知仅模拟，不验证真实登录；默认 0。",
+          "format": "1 启用；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认 1；实际运行通过已有 notify.py 或 sendNotify.js 发送脱敏总结。",
+          "format": "0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已有青龙通知模块所在目录。未设置时自动发现青龙标准目录。",
+          "format": "本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；同一账号的 Cookie 字段以分号连接，字段仅按首个等号拆分。独立处理账号，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "刷新登录会话，保留已有 Cookie 并接收服务端更新。",
+        "每日同步空间奖励，验证 rewardSpace 字段。",
+        "每日签到，验证 space 字段。",
+        "连续领取三次广告空间奖励，分别验证 space 字段。",
+        "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，不从 Cookie 提取身份。",
+        "多账号独立处理，统计已确认奖励、阶段耗时及账号结果，输出单行结构化任务总结。",
+        "完全断网预演及青龙脱敏通知，通知失败不改变业务退出码。"
+      ],
+      "sideEffects": [
+        "刷新账号登录会话。",
+        "领取每日同步奖励并增加账号空间。",
+        "提交每日签到并领取空间奖励。",
+        "提交三次广告奖励请求并增加账号空间。",
+        "实际运行时通过青龙发送脱敏通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/4cc5f70c13c67bbd",
+        "candidateSha256": "0c740bfa5e0616e362c80e44bb42aedacc6cf7785d7a0665f4f9be29f4ddb799"
+      }
+    },
+    {
       "catalogId": "a0a7b04503bfb900",
       "applicationKey": "zcode",
       "checkProfile": {
