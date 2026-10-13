@@ -68,6 +68,7 @@
 | i茅台申购与耐力 | `scripts/imaotai.py` | `python3 scripts/imaotai.py` | `5 9 * * *` |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `0 3 * * *` |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `5 10 * * *` |
+| 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `0 8 * * *` |
 | jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `0 9 * * *` |
 | 杰士邦安心福利社 | `scripts/jissbon.py` | `python3 scripts/jissbon.py` | `9 9 * * *` |
 | 劲友家日常任务 | `scripts/jyj.py` | `python3 scripts/jyj.py` | `0 8 * * *` |
@@ -205,6 +206,7 @@
 - `scripts/imaotai.py`：查询官方应用版本、当日北京时间场次及门店资源；按经纬度选择最近有库存门店，或按省市选择库存最多门店；支持多个商品，保留原默认商品列表；显式开启后以原 AES 协议提交申购，仅业务码 2000 判定请求成功；领取耐力，仅业务码 200 判定成功；多账号独立执行及失败闭合退出码；完全断网预演、阶段日志及唯一结构化汇总；显示官方返回的非秘密账号身份；正式任务结果通过青龙通知，通知故障不改变业务退出码。
 - `scripts/index.js`：通过官方收藏页跳转获取并原样显示公开 UID，也支持手动指定公开 UID；分页获取全部公开收藏，校验明确业务成功、总数稳定、无重复以及分页完整性；读取每个作品全部原图页；图片页查询与图片下载分别限制为三个并发任务；以标题加作品 ID 建目录、标题加页码命名图片，保留规范候选保存路径及旧目录兼容检查；跳过已有有效图片，修复无效普通图片文件；原子创建下载结果以避免并发覆盖；原图仅接受 HTTPS 图片域，隔离账号 Cookie，校验图片类型、文件头、大小和完整性，设置请求超时；支持逐行多账号、旧版 cookie/output/proxy 配置和完全断网预演，逐账号隔离失败；按编号阶段打印带时间戳的脱敏结果及耗时、账号和任务统计，保留收藏成功日志并输出唯一单行 TASK_SUMMARY；调用青龙通知组件发送脱敏总结，支持全局通知开关；预演禁止外部投递，通知失败或缺失不改变业务退出码。
 - `scripts/iqiyi_checkin.py`：VIP信息、官方身份、会员等级、到期时间及成长值查询；自然月签到、连签天数及已签到识别；网页积分签到及逐项业务确认；可选普通抽奖次数查询，保留单次会员抽奖并支持全部机会抽奖和奖品展示；保留单次摇一摇并支持显式连续摇一摇、奖品展示和机会耗尽识别；显式领取白金任务次数及五次白金抽奖，逐次验证结果；显式领取V7免费升级星钻权益，变更后查询会员状态；逐行多账号、旧 Cookie 参数兼容和每日10:05调度；完全断网预演、阶段日志、账号统计及单行 TASK_SUMMARY；青龙通知、PushPlus与Server酱后备及总开关，通知失败保留业务退出码。
+- `scripts/jc_checkin.py`：初始化会话并使用邮箱密码登录机场面板；每日签到及严格业务结果校验；逐行多账号及上游单账号参数兼容；返回非敏感官方账号身份时显示原值；HTTPS 证书校验、请求超时、响应大小限制和拒绝重定向；断网预演、阶段统计及单行 TASK_SUMMARY 汇总；青龙脱敏通知及显式开启的 HTTPS PushPlus 兼容推送。
 - `scripts/jcqd.py`：默认 ikuuu 官方导航域名发现、登录及每日签到；通过明确任务开关保留上游可选 v2free 和 gw树洞登录签到，各站独立会话；多账号逐行配置、旧单账号参数兼容、账号及站点失败隔离；HTTPS 证书校验、超时、响应大小限制、拒绝重定向和登录失败闭合；官方非凭据昵称、用户名、显示名称或公开 UID 核对；断网预演、逐阶段日志、账号统计、单行 TASK_SUMMARY 汇总及青龙通知。
 - `scripts/jissbon.py`：查询官方昵称与当前积分；每日签到；分享奖励登记，不发布分享文字；显式开启后最多执行十次活动抽奖；换行多账号独立处理与失败非零退出；完全断网预演、脱敏通知和时间轴任务统计。
 - `scripts/jyj.py`：查询官方昵称及可用积分、历史使用和历史总积分；每日签到和每日水滴领取；显式开启三轮拍一拍实际计时游戏和三次幸运转盘；显式开启文章点赞、订阅、调研、分享任务奖励；分享接口不发布文本；兼容jyjRun健康运动领取开关，默认关闭；查询庄园种植状态及可种植药材，显式指定种植和浇水上限；独立活动开关支持本人照片上传、AI识别、春日活动拍照打卡及打卡查询；独立活动开关支持酒柜抽奖和红包雨；显式提供本人真实成绩后执行一轮药材游戏；换行多账号、断网预演、脱敏日志、业务失败退出与青龙通知。
@@ -346,6 +348,8 @@
 <tr><td rowspan="1"><code>scripts/imaotai.py</code></td><td><code>IMAOTAI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行是一个 JSON 对象；必填 token、userid、device_id，userid 支持字符串或整数。申购另需 province、city、lat、lng。item_codes 是数字字符串数组，默认 [&quot;11318&quot;,&quot;11319&quot;]；reserve_rule 为 0（最近门店）或 1（所在城市库存最多）。mobile 兼容但不使用和输出。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/index.js</code></td><td><code>PIXIV_ACCOUNTS</code></td><td>是</td><td>格式：每行一个账号：公开UID|完整Cookie；只按第一个 | 拆分，后续 Cookie 内容保留；UID 留空时使用 |完整Cookie。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/iqiyi_checkin.py</code></td><td><code>IQIYI_COOKIES</code></td><td>是</td><td>格式：每个非空行一个账号完整 Cookie，以分号组合字段，字段只按首个等号拆分；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="2"><code>scripts/jc_checkin.py</code></td><td><code>JC_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个邮箱|密码；仅按首个 | 分割，后续 | 和密码空格保留；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>BASE_URL</code></td><td>否</td><td>格式：所有账号共用的 HTTPS 面板根地址，可包含部署子路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/jcqd.py</code></td><td><code>JCQD_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：登录邮箱|密码；只在第一个 | 分割，密码后续字符保持原样；不使用 &amp; 或 @ 分隔账号；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/jissbon.py</code></td><td><code>jsbaxfls</code></td><td>是</td><td>格式：每个非空行填写一个完整Access-Token；保留原变量名，旧#分隔须改为换行；不使用&amp;或@分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/jyj.py</code></td><td><code>jyjck</code></td><td>是</td><td>格式：每个非空行一个账号：authorization#userid；只按第一个#分割，后续字段原样保留，不支持@@、&amp;或@分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -678,6 +682,13 @@
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的目录；为空则自动发现。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：单个令牌。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SENDKEY</code></td><td>是</td><td>格式：单个 SendKey。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="7"><code>scripts/jc_checkin.py</code></td><td><code>EMAIL</code></td><td>是</td><td>格式：单个注册邮箱；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PASSWORD</code></td><td>是</td><td>格式：单个密码，不可用换行分隔多个账号；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JC_DRY_RUN</code></td><td>否</td><td>格式：1/0、true/false、yes/no 或 on/off；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：通知开关；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JC_PUSHPLUS</code></td><td>否</td><td>格式：1/0、true/false、yes/no 或 on/off；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SCKEY</code></td><td>是</td><td>格式：PushPlus 推送令牌，不放入请求 URL；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="7"><code>scripts/jcqd.py</code></td><td><code>jcuname</code></td><td>是</td><td>格式：单账号登录邮箱；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>jcpasswd</code></td><td>是</td><td>格式：单账号完整密码；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>JCQD_TASKS</code></td><td>否</td><td>格式：ikuuu、v2free、gw，可用逗号组合；默认 ikuuu；多账号格式以该脚本文档为准</td></tr>
@@ -1237,6 +1248,7 @@
 - `scripts/imaotai.py`：每个非空行一个 JSON 账号对象；同一账号凭据及定位合并，独立执行；任一账号失败则整体非零退出。。
 - `scripts/index.js`：每个非空行表示一个独立账号，按第一个 | 分隔公开 UID 与完整 Cookie；账号顺序处理，任一账号失败使整体非零退出。旧版 config.json 单账号 cookie/output/proxy 继续兼容；代理使用 host、port、protocol 等 axios 代理字段，无默认代理。。
 - `scripts/iqiyi_checkin.py`：每个非空行一个账号完整 Cookie，优先规范变量，未设置时兼容旧变量；各账号独立处理，任一账号失败则整体非零退出。。
+- `scripts/jc_checkin.py`：JC_ACCOUNTS 每个非空行一个邮箱|密码，仅按首个 | 分割；密码中的后续 | 和空格保留。所有账号共用 BASE_URL，独立执行；任一账号业务失败整体非零退出。EMAIL/PASSWORD 只兼容单账号。。
 - `scripts/jcqd.py`：每个非空行一个账号，登录邮箱|密码，仅按首个 | 分割；各账号和站点独立会话，任一账号失败整体非零退出。旧变量保留单账号兼容。。
 - `scripts/jissbon.py`：每个非空行一个账号Access-Token，逐账号独立执行；任一账号失败整体非零退出。。
 - `scripts/jyj.py`：每个非空行一个账号，authorization#userid，只分割第一个#；逐账号独立处理，任一失败整体非零退出。。
@@ -1580,6 +1592,19 @@
 - 获取或设置：浏览器登录爱奇艺官网，打开开发者工具的应用或存储页，从爱奇艺域名 Cookie 获取本人 P00001、P00003，建议同时包含 __dfp。
 - 填写格式：`每个非空行一个账号完整 Cookie，以分号组合字段，字段只按首个等号拆分；不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JC_ACCOUNTS`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：取自本人机场注册邮箱及登录密码；无需抓取 Cookie，仅支持无验证码或二步验证的邮箱密码登录。兼容单账号可使用 EMAIL 与 PASSWORD。
+- 填写格式：`每个非空行一个邮箱|密码；仅按首个 | 分割，后续 | 和密码空格保留`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `BASE_URL`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：从本人机场面板浏览器地址栏取得最终 HTTPS 根地址；去掉 /auth/login 或 /user，不带凭据、查询参数或片段。重定向被拒绝，需填写最终地址。
+- 填写格式：`所有账号共用的 HTTPS 面板根地址，可包含部署子路径`
 
 #### `JCQD_ACCOUNTS`
 
@@ -3639,6 +3664,51 @@
 - 所属脚本：`scripts/iqiyi_checkin.py`
 - 获取或设置：在 Server酱官网获取本人 SendKey，作为青龙及 PushPlus 的后备。
 - 填写格式：`单个 SendKey。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `EMAIL`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：兼容上游单账号邮箱；未配置 JC_ACCOUNTS 时与 PASSWORD 配套使用。
+- 填写格式：`单个注册邮箱`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PASSWORD`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：兼容上游单账号密码，取自本人面板登录密码。
+- 填写格式：`单个密码，不可用换行分隔多个账号`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JC_DRY_RUN`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：设置为 1 启用断网预演，默认 0。
+- 填写格式：`1/0、true/false、yes/no 或 on/off`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：默认 1；设置为 0、false、no 或 off 关闭所有通知；通知失败不改变业务退出码。
+- 填写格式：`通知开关`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：可选：设置青龙 notify.py 所在目录；也尝试导入 notify 及青龙标准脚本目录。
+- 填写格式：`本地通知模块目录`
+
+#### `JC_PUSHPLUS`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：设置为 1 开启原 SCKEY 的推送功能，改为 HTTPS，默认关闭；受 QINGLONG_NOTIFY 总开关控制。
+- 填写格式：`1/0、true/false、yes/no 或 on/off`
+
+#### `SCKEY`
+
+- 所属脚本：`scripts/jc_checkin.py`
+- 获取或设置：从本人 PushPlus 控制台获取 token，仅在 JC_PUSHPLUS=1 时必须提供。
+- 填写格式：`PushPlus 推送令牌，不放入请求 URL`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `jcuname`
@@ -6871,6 +6941,7 @@
 - `scripts/imaotai.py`：SHA-256 `9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
 - `scripts/index.js`：SHA-256 `b0f670de5353137cb479251c75283cf6960207864f98a92c687c46147f7db3d7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
 - `scripts/iqiyi_checkin.py`：SHA-256 `37cd294e3b9f6aec9fb0c81bc7d978caad6df9dee694a8cf83a6c11aac968fff`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7701c083c0ca06d5`。
+- `scripts/jc_checkin.py`：SHA-256 `a9e3d7940077da25253b9b49f7a39552ffe129ebf250bf5036d3a1dad18cc787`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fd9b2a23e39332a5`。
 - `scripts/jcqd.py`：SHA-256 `ddbc8159cadbfeb3332e7ecfed3200f268bc1950c4fd4a6f6597b461ac7ad731`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/757bc6292780fb17`。
 - `scripts/jissbon.py`：SHA-256 `6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dff518c351ef674e`。
 - `scripts/jyj.py`：SHA-256 `28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d484be6cd2a617db`。
@@ -7008,6 +7079,7 @@
 - `scripts/imaotai.py`：显式开启后提交商品申购申请；启用耐力任务后领取耐力奖励；正式运行且开启通知时发送脱敏总结。
 - `scripts/index.js`：正式运行时创建明确指定的图片目录并保存收藏原图；替换未通过校验的普通图片文件；下载过程中创建临时文件并在结束时清理；通知开启且组件可用时发送脱敏任务结果通知，断网预演不外部投递。
 - `scripts/iqiyi_checkin.py`：自然月签到改变签到记录并可能发放积分；网页积分签到改变积分及签到记录；启用会员抽奖时消耗机会并可能获得奖品；启用摇一摇时消耗活动机会并可能获得奖品；启用任务次数领取时记录浏览、预约电影任务并增加白金次数；启用白金抽奖时消耗活动机会并可能获得奖品；启用V7领取时可能改变会员权益或类型；正式模式开启通知时向配置渠道发送脱敏总结。
+- `scripts/jc_checkin.py`：正式运行登录并建立账号会话；正式运行每日签到，可能增加机场签到流量或奖励；启用通知时发送脱敏统计；显式开启兼容推送时向 PushPlus 发送脱敏统计。
 - `scripts/jcqd.py`：向所选站点提交登录并建立会话；向所选站点提交每日签到，可能获得流量或站点签到奖励；正式运行通过青龙通知模块发送脱敏任务摘要。
 - `scripts/jissbon.py`：实际执行时提交每日签到；实际执行时登记分享奖励；显式开启抽奖时消耗抽奖机会，可能消耗积分并获得奖品；启用通知时通过青龙通知模块发送脱敏总结。
 - `scripts/jyj.py`：签到并领取积分或水滴奖励；创建及提交拍一拍和药材游戏记录，领取游戏奖励；转盘、酒柜及红包雨抽奖，可能消耗活动次数或积分；点赞文章及记录订阅、调研、分享和运动任务；种植指定药材及消耗水滴浇水；上传本人照片至官方授权存储，提交AI识别及活动拍照打卡；通知启用且适配器可用时向青龙通知渠道发送脱敏结果。
@@ -7147,6 +7219,7 @@
 - `scripts/imaotai.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/imaotai/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/index.js`：上游 `cloudcranes/some_scripts` / `Download_pixiv/index.js` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/iqiyi_checkin.py`：上游 `deeplee/personal-scripts` / `iqiyi_checkin.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
+- `scripts/jc_checkin.py`：上游 `kerncoola/JC_CheckIn` / `JC_CheckIn.py` / `71362b20abdad2711ddc2e4321ef33b3ebcc64c5`。
 - `scripts/jcqd.py`：上游 `Rookie-wb-WH/ql_scripts` / `jcqd.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/jissbon.py`：上游 `Rookie-wb-WH/ql_scripts` / `jissbon.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/jyj.py`：上游 `Rookie-wb-WH/ql_scripts` / `jingyoujia/jyj.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。

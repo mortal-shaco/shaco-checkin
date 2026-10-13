@@ -5612,6 +5612,167 @@
       }
     },
     {
+      "catalogId": "fd9b2a23e39332a5",
+      "applicationKey": "jc",
+      "checkProfile": {
+        "requiredEnv": [
+          "JC_ACCOUNTS",
+          "BASE_URL"
+        ],
+        "optionalEnv": [
+          "EMAIL",
+          "PASSWORD",
+          "JC_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "JC_PUSHPLUS",
+          "SCKEY"
+        ],
+        "dryRunEnv": {
+          "JC_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "JC_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1",
+          "JC_PUSHPLUS": "0"
+        },
+        "successPatterns": [
+          "每日签到成功",
+          "最终状态：success"
+        ],
+        "features": [
+          "初始化会话并使用邮箱密码登录机场面板",
+          "每日签到及严格业务结果校验",
+          "逐行多账号及上游单账号参数兼容",
+          "返回非敏感官方账号身份时显示原值",
+          "HTTPS 证书校验、请求超时、响应大小限制和拒绝重定向",
+          "断网预演、阶段统计及单行 TASK_SUMMARY 汇总",
+          "青龙脱敏通知及显式开启的 HTTPS PushPlus 兼容推送"
+        ],
+        "sideEffects": [
+          "正式运行登录并建立账号会话",
+          "正式运行每日签到，可能增加机场签到流量或奖励",
+          "启用通知时发送脱敏统计；显式开启兼容推送时向 PushPlus 发送脱敏统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "机场面板每日签到",
+      "path": "scripts/jc_checkin.py",
+      "sha256": "a9e3d7940077da25253b9b49f7a39552ffe129ebf250bf5036d3a1dad18cc787",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "kerncoola/JC_CheckIn",
+        "branch": "main",
+        "commit": "71362b20abdad2711ddc2e4321ef33b3ebcc64c5",
+        "originalPath": "JC_CheckIn.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/jc_checkin.py",
+      "environment": [
+        {
+          "name": "JC_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "取自本人机场注册邮箱及登录密码；无需抓取 Cookie，仅支持无验证码或二步验证的邮箱密码登录。兼容单账号可使用 EMAIL 与 PASSWORD。",
+          "format": "每个非空行一个邮箱|密码；仅按首个 | 分割，后续 | 和密码空格保留"
+        },
+        {
+          "name": "BASE_URL",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "从本人机场面板浏览器地址栏取得最终 HTTPS 根地址；去掉 /auth/login 或 /user，不带凭据、查询参数或片段。重定向被拒绝，需填写最终地址。",
+          "format": "所有账号共用的 HTTPS 面板根地址，可包含部署子路径"
+        },
+        {
+          "name": "EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号邮箱；未配置 JC_ACCOUNTS 时与 PASSWORD 配套使用。",
+          "format": "单个注册邮箱"
+        },
+        {
+          "name": "PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号密码，取自本人面板登录密码。",
+          "format": "单个密码，不可用换行分隔多个账号"
+        },
+        {
+          "name": "JC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 启用断网预演，默认 0。",
+          "format": "1/0、true/false、yes/no 或 on/off"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认 1；设置为 0、false、no 或 off 关闭所有通知；通知失败不改变业务退出码。",
+          "format": "通知开关"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：设置青龙 notify.py 所在目录；也尝试导入 notify 及青龙标准脚本目录。",
+          "format": "本地通知模块目录"
+        },
+        {
+          "name": "JC_PUSHPLUS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 开启原 SCKEY 的推送功能，改为 HTTPS，默认关闭；受 QINGLONG_NOTIFY 总开关控制。",
+          "format": "1/0、true/false、yes/no 或 on/off"
+        },
+        {
+          "name": "SCKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人 PushPlus 控制台获取 token，仅在 JC_PUSHPLUS=1 时必须提供。",
+          "format": "PushPlus 推送令牌，不放入请求 URL"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "JC_ACCOUNTS 每个非空行一个邮箱|密码，仅按首个 | 分割；密码中的后续 | 和空格保留。所有账号共用 BASE_URL，独立执行；任一账号业务失败整体非零退出。EMAIL/PASSWORD 只兼容单账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "初始化会话并使用邮箱密码登录机场面板",
+        "每日签到及严格业务结果校验",
+        "逐行多账号及上游单账号参数兼容",
+        "返回非敏感官方账号身份时显示原值",
+        "HTTPS 证书校验、请求超时、响应大小限制和拒绝重定向",
+        "断网预演、阶段统计及单行 TASK_SUMMARY 汇总",
+        "青龙脱敏通知及显式开启的 HTTPS PushPlus 兼容推送"
+      ],
+      "sideEffects": [
+        "正式运行登录并建立账号会话",
+        "正式运行每日签到，可能增加机场签到流量或奖励",
+        "启用通知时发送脱敏统计；显式开启兼容推送时向 PushPlus 发送脱敏统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/fd9b2a23e39332a5",
+        "candidateSha256": "a9e3d7940077da25253b9b49f7a39552ffe129ebf250bf5036d3a1dad18cc787"
+      }
+    },
+    {
       "catalogId": "757bc6292780fb17",
       "applicationKey": "jcqd",
       "checkProfile": {
