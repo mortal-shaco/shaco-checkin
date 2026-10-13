@@ -14043,6 +14043,151 @@
       }
     },
     {
+      "catalogId": "79a75a8c4715aa96",
+      "applicationKey": "deeplee/personal-scripts::tencent",
+      "checkProfile": {
+        "requiredEnv": [
+          "TENCENT_VIDEO_COOKIES"
+        ],
+        "optionalEnv": [
+          "TENCENT_VIDEO_COOKIE",
+          "TENCENT_VIDEO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "SENDKEY"
+        ],
+        "dryRunEnv": {
+          "TENCENT_VIDEO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日签到获取 V力值",
+          "领取每日观看任务奖励（不自动播放视频）",
+          "查询会员积分、等级和 V力值，保留零值展示",
+          "查询 VIP 到期时间",
+          "多账号逐行处理、兼容旧单账号变量、独立校验与失败汇总",
+          "返回官方非敏感昵称、用户名、显示名称或公开 UID 时显示身份",
+          "青龙通知及 PushPlus、Server酱顺序回退，支持全局通知开关",
+          "完全断网预演、分阶段日志和单行 TASK_SUMMARY 结构化总结"
+        ],
+        "sideEffects": [
+          "实际执行时提交每日签到，可能增加 V力值",
+          "实际执行时领取每日观看奖励，可能增加 V力值",
+          "通知开启且实际执行时通过可用渠道发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "腾讯视频签到",
+      "path": "scripts/tencent_video_checkin.py",
+      "sha256": "22ae305cd2e4196c0574785ab58f4dc0fb54266676ba599ea71971c4dc973ec6",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "deeplee/personal-scripts",
+        "branch": "main",
+        "commit": "c8c7c0f4fd1802df86c32a86c26b5c26cfef5023",
+        "originalPath": "tencent_video_checkin.py"
+      },
+      "cron": "45 9 * * *",
+      "command": "python3 scripts/tencent_video_checkin.py",
+      "environment": [
+        {
+          "name": "TENCENT_VIDEO_COOKIES",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录腾讯视频，在开发者工具网络页找到 vip.video.qq.com 请求，复制请求头中的完整 Cookie，保留原始字段，不伪造设备信息。",
+          "format": "每个非空行一个完整 Cookie，字段以分号分隔，仅按第一个等号拆分字段值。必需非空字段 vqq_openid、vqq_access_token、main_login；建议保留 vqq_vuserid、vqq_appid、vdevice_qimei36 和 ip。支持空行及 # 开头注释，不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "TENCENT_VIDEO_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与规范变量获取方式相同；仅在 TENCENT_VIDEO_COOKIES 为空时使用，兼容旧单账号配置。",
+          "format": "完整 Cookie；也按每行一个账号解析。"
+        },
+        {
+          "name": "TENCENT_VIDEO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，用于断网验证配置。",
+          "format": "1/true/yes/on 开启预演，默认实际执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需在青龙环境变量中设置，控制全部通知渠道。",
+          "format": "默认 1；0/false/no/off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙已有 notify.py 或 sendNotify.js 所在目录；默认发现标准路径。",
+          "format": "已有通知模块的目录路径；业务运行不依赖此目录。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 PushPlus 官网个人中心取得推送令牌；青龙通知不可用时尝试。",
+          "format": "单个推送令牌，与账号 Cookie 分开配置。"
+        },
+        {
+          "name": "SENDKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 Server酱官网取得 SendKey；青龙及 PushPlus 不可用时尝试。",
+          "format": "单个 SendKey，与账号 Cookie 分开配置。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个完整账号 Cookie，同账号字段组合在同一行；忽略空行和 # 开头注释。规范变量优先，兼容旧单账号变量；独立处理账号，任一账号或步骤失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到获取 V力值",
+        "领取每日观看任务奖励（不自动播放视频）",
+        "查询会员积分、等级和 V力值，保留零值展示",
+        "查询 VIP 到期时间",
+        "多账号逐行处理、兼容旧单账号变量、独立校验与失败汇总",
+        "返回官方非敏感昵称、用户名、显示名称或公开 UID 时显示身份",
+        "青龙通知及 PushPlus、Server酱顺序回退，支持全局通知开关",
+        "完全断网预演、分阶段日志和单行 TASK_SUMMARY 结构化总结"
+      ],
+      "sideEffects": [
+        "实际执行时提交每日签到，可能增加 V力值",
+        "实际执行时领取每日观看奖励，可能增加 V力值",
+        "通知开启且实际执行时通过可用渠道发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/79a75a8c4715aa96",
+        "candidateSha256": "22ae305cd2e4196c0574785ab58f4dc0fb54266676ba599ea71971c4dc973ec6"
+      }
+    },
+    {
       "catalogId": "e608052390d250da",
       "applicationKey": "tieba",
       "checkProfile": {
