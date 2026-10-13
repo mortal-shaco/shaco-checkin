@@ -5392,6 +5392,214 @@
       }
     },
     {
+      "catalogId": "d4bfc257a45d9e8d",
+      "applicationKey": "raccoon",
+      "checkProfile": {
+        "requiredEnv": [
+          "RACCOON_TOKENS"
+        ],
+        "optionalEnv": [
+          "RACCOON_DRY_RUN",
+          "RACCOON_STATE_FILE",
+          "RACCOON_MAIN_SITE_URL",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "BARK_URL",
+          "WECOM_WEBHOOK",
+          "DINGTALK_WEBHOOK",
+          "DINGTALK_SECRET",
+          "QL_URL",
+          "QL_TOKEN"
+        ],
+        "dryRunEnv": {
+          "RACCOON_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "账单核验成功：今日",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日触发积分发放，以北京时间今日正积分账单核验签到成功。",
+          "分别领取首次电脑端、手机端登录奖励，检查业务码和 granted，哈希台账避免重复探测。",
+          "--query 只查询今日入账，不触发发放、不领取奖励、不写台账。",
+          "--skip-onboarding 跳过新手奖励、--only N 筛选账号、--no-notify 关闭通知。",
+          "每行一个账号，支持备注|令牌与 Bearer 格式，各账号和奖励独立处理。",
+          "支持配置 HTTPS 站点和本地台账路径。",
+          "优先青龙通知，保留 PushPlus、Bark、企业微信、钉钉和面板通知兼容渠道。",
+          "完全断网预演、时间轴日志、官方非秘密账号身份及单行 TASK_SUMMARY 汇总。"
+        ],
+        "sideEffects": [
+          "正式模式请求 setting_info 触发每日积分发放。",
+          "正式模式默认领取桌面端、手机端一次性登录积分。",
+          "正式模式将确认结算的奖励状态写入本地哈希台账。",
+          "通知开启时尝试发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "小浣熊每日积分",
+      "path": "scripts/raccoon_daily.py",
+      "sha256": "3ebdbfeaf41c75c467fdeb6f2e11889b5a985cacfc3b7203679348087ed36b63",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/Raccoon-Daily",
+        "branch": "main",
+        "commit": "4e99a3b53829faf3ae228755b0f4c32859d25425",
+        "originalPath": "raccoon_daily.py",
+        "related": [
+          {
+            "catalogId": "8854dd56226e18b4",
+            "sha256": "ea8d5d634267aad7f70342a208908b722f00b6fe057211d57ca5e98061a6455c",
+            "repository": "L0NE-6/Raccoon-Daily",
+            "url": "https://github.com/L0NE-6/Raccoon-Daily.git",
+            "branch": "main",
+            "commit": "4e99a3b53829faf3ae228755b0f4c32859d25425",
+            "originalPath": "raccoon_login.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/raccoon_daily.py",
+      "environment": [
+        {
+          "name": "RACCOON_TOKENS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在小浣熊官网登录，在浏览器开发者工具网络面板查看本站已登录请求的 Authorization，将 Bearer 后令牌私下保存到青龙；过期后重新登录获取。",
+          "format": "每个非空行一个账号：令牌或备注|令牌，只在第一个 | 拆分，支持 Bearer 前缀，不支持 & 或 @ 分隔账号。备注不输出。"
+        },
+        {
+          "name": "RACCOON_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演设置为 1，正式运行不设置或设为 0。",
+          "format": "1 完全断网、通知模拟、不写台账；0 正式执行。"
+        },
+        {
+          "name": "RACCOON_STATE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写脚本运行用户可写的台账路径。",
+          "format": "默认脚本旁 raccoon_onboarding.json，仅保存令牌哈希和奖励结算时间。"
+        },
+        {
+          "name": "RACCOON_MAIN_SITE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通常无需设置，仅在确认官方站点变化时调整。",
+          "format": "默认 https://xiaohuanxiong.com；无内嵌凭据、无路径及查询串的 HTTPS 站点。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启。",
+          "format": "0、false、no、off 关闭；其他非空值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录。",
+          "format": "目录路径；也尝试导入 notify.send 和标准青龙目录。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，在 PushPlus 管理页面获取推送令牌。",
+          "format": "单个推送令牌，仅用于通知。"
+        },
+        {
+          "name": "BARK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，在 Bark 应用获取推送地址。",
+          "format": "完整 HTTPS 推送地址，仅用于通知。"
+        },
+        {
+          "name": "WECOM_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，在企业微信群机器人设置获取 Webhook。",
+          "format": "完整 HTTPS Webhook 或机器人密钥，仅用于通知。"
+        },
+        {
+          "name": "DINGTALK_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，在钉钉机器人设置获取 Webhook。",
+          "format": "完整 HTTPS Webhook，仅用于通知。"
+        },
+        {
+          "name": "DINGTALK_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，在同一钉钉机器人安全设置获取加签密钥。",
+          "format": "与 DINGTALK_WEBHOOK 配套，仅用于通知签名。"
+        },
+        {
+          "name": "QL_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写本人青龙面板 HTTPS 地址，优先配置 notify.py。",
+          "format": "完整 HTTPS 面板地址，不包含登录凭据。"
+        },
+        {
+          "name": "QL_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从本人青龙合法授权会话获取通知接口令牌，通常只需配置 notify.py。",
+          "format": "与 QL_URL 配套，仅用于兼容通知接口。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，令牌或备注|令牌；仅在第一个 | 拆分，保留后续凭据文本，支持 Bearer 前缀。账号和两端奖励独立处理，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日触发积分发放，以北京时间今日正积分账单核验签到成功。",
+        "分别领取首次电脑端、手机端登录奖励，检查业务码和 granted，哈希台账避免重复探测。",
+        "--query 只查询今日入账，不触发发放、不领取奖励、不写台账。",
+        "--skip-onboarding 跳过新手奖励、--only N 筛选账号、--no-notify 关闭通知。",
+        "每行一个账号，支持备注|令牌与 Bearer 格式，各账号和奖励独立处理。",
+        "支持配置 HTTPS 站点和本地台账路径。",
+        "优先青龙通知，保留 PushPlus、Bark、企业微信、钉钉和面板通知兼容渠道。",
+        "完全断网预演、时间轴日志、官方非秘密账号身份及单行 TASK_SUMMARY 汇总。"
+      ],
+      "sideEffects": [
+        "正式模式请求 setting_info 触发每日积分发放。",
+        "正式模式默认领取桌面端、手机端一次性登录积分。",
+        "正式模式将确认结算的奖励状态写入本地哈希台账。",
+        "通知开启时尝试发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d4bfc257a45d9e8d",
+        "candidateSha256": "3ebdbfeaf41c75c467fdeb6f2e11889b5a985cacfc3b7203679348087ed36b63"
+      }
+    },
+    {
       "catalogId": "89f2e9b460331a75",
       "applicationKey": "rainyun",
       "checkProfile": {
