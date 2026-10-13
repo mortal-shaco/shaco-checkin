@@ -530,6 +530,142 @@
       }
     },
     {
+      "catalogId": "7919605278826396",
+      "applicationKey": "ehentai",
+      "checkProfile": {
+        "requiredEnv": [
+          "E_COOKIE"
+        ],
+        "optionalEnv": [
+          "E_PROXY",
+          "E_USER_AGENT",
+          "E_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "E_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "E_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功：事件区返回明确奖励",
+          "今日已完成：事件区明确确认"
+        ],
+        "features": [
+          "访问 E-Hentai 新闻页完成签到，并核验事件区明确奖励或今日已完成提示",
+          "识别随机遭遇，提示手动处理或等待结束；未确认签到时非零退出",
+          "保留默认 TLS 三次请求及 TLS 1.2 三次回退，设置超时、响应大小限制与证书校验",
+          "兼容 E_COOKIE、E_PROXY、E_USER_AGENT，多账号按非空行独立运行",
+          "解析服务端 Cookie 到期时间并提醒更新，不输出或写回 Cookie 值",
+          "显示官方返回的公开账号身份；其他响应内容保持脱敏",
+          "完全断网预演、时间轴阶段日志、账号统计、任务统计和单行 TASK_SUMMARY 汇总",
+          "正式运行通过青龙通知模块发送脱敏汇总，通知不可用不改变业务退出码；预演生成摘要并禁止外部投递"
+        ],
+        "sideEffects": [
+          "正式访问新闻页可能领取每日签到奖励及触发服务端随机遭遇事件",
+          "正式运行在通知启用且模块可用时发送脱敏通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "E-Hentai 自动签到",
+      "path": "scripts/autosignin.py",
+      "sha256": "cd2b330788aa14bc2e020a5451329f291e5d1dd97f66ad0a6ed2c921b6dee3d8",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "AkiyaKiko/EhentaiAutoSignIn",
+        "branch": "main",
+        "commit": "c00c3d42a61b7f526dd41b8df157444380898e57",
+        "originalPath": "autosignin.py"
+      },
+      "cron": "1 */6 * * *",
+      "command": "python3 scripts/autosignin.py",
+      "environment": [
+        {
+          "name": "E_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 E-Hentai，打开开发者工具的网络面板，访问 https://e-hentai.org/news.php，复制该请求的完整 Cookie 请求头值。至少包含 ipb_member_id 与 ipb_pass_hash；Cookie 失效或服务提示更新时重新获取。不要公开分享。",
+          "format": "每个非空行一个账号的完整 Cookie；字段用分号分隔，每个字段只按第一个等号拆分，后续等号保留。不要使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "E_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从自己有权使用的 HTTP 或 HTTPS 代理服务获取；默认直连，不读取系统代理。",
+          "format": "HTTP 或 HTTPS 代理地址，所有账号共用；可包含代理认证信息但不会输出。"
+        },
+        {
+          "name": "E_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，从浏览器 news.php 请求头复制 User-Agent；不设置时沿用上游浏览器标识。",
+          "format": "单行浏览器标识，禁止换行和空字符。"
+        },
+        {
+          "name": "E_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1；正式运行不设置或设为 0。",
+          "format": "1、true、yes、on 启用完全断网预演，其他值正式运行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认启用青龙通知；不需要通知时设为 0。",
+          "format": "0、false、no、off 关闭；预演始终只生成通知摘要，不调用外部通知提供方。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙已有 notify.py 或 sendNotify.js 所在目录；默认尝试导入 notify 及青龙标准脚本目录。无需此目录即可执行业务。",
+          "format": "本机通知模块目录路径；通知失败保持业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "E_COOKIE 每个非空行一个账号；同一行保留该账号所有 Cookie 字段。账号独立处理，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "访问 E-Hentai 新闻页完成签到，并核验事件区明确奖励或今日已完成提示",
+        "识别随机遭遇，提示手动处理或等待结束；未确认签到时非零退出",
+        "保留默认 TLS 三次请求及 TLS 1.2 三次回退，设置超时、响应大小限制与证书校验",
+        "兼容 E_COOKIE、E_PROXY、E_USER_AGENT，多账号按非空行独立运行",
+        "解析服务端 Cookie 到期时间并提醒更新，不输出或写回 Cookie 值",
+        "显示官方返回的公开账号身份；其他响应内容保持脱敏",
+        "完全断网预演、时间轴阶段日志、账号统计、任务统计和单行 TASK_SUMMARY 汇总",
+        "正式运行通过青龙通知模块发送脱敏汇总，通知不可用不改变业务退出码；预演生成摘要并禁止外部投递"
+      ],
+      "sideEffects": [
+        "正式访问新闻页可能领取每日签到奖励及触发服务端随机遭遇事件",
+        "正式运行在通知启用且模块可用时发送脱敏通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/7919605278826396",
+        "candidateSha256": "cd2b330788aa14bc2e020a5451329f291e5d1dd97f66ad0a6ed2c921b6dee3d8"
+      }
+    },
+    {
       "catalogId": "d9230b69d9462c7c",
       "displayName": "百度网盘签到",
       "path": "scripts/baiduwangpan_checkin.py",
