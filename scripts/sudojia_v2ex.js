@@ -9,7 +9,29 @@
  * V2EX_COOKIE：登录 https://www.v2ex.com 后，在开发者工具网络面板复制
  * 发往该站点的请求 Cookie 请求头值；每个非空行一个账号，不使用 & 分隔。
  * V2EX_DRY_RUN=1：完全断网预演（通知也仅模拟）；QINGLONG_NOTIFY=0 关闭通知。
- * Node.js >=18，无第三方依赖；仅领取每日奖励，不更新脚本或发布内容。
+ * V2EX_COOKIE 兼容原有完整 Cookie 行；也可每行填写 JSON 对象：
+ * {"cookie":"完整 Cookie","proxy":"代理 URL"}，同一行组合一个账号的配置。
+ * V2EX_PROXY：可选公共 HTTP/HTTPS 代理 URL；账号 proxy 优先，空值直连。
+ * 代理由公开 npm 包 https-proxy-agent（7.x）提供；脚本不会下载或安装依赖。
+ * Node.js >=18；仅领取每日奖励，不更新脚本或发布内容。
+ * 合并参考 Sitoi/dailycheckin dailycheckin/v2ex/main.py（MIT）。
+ * 原有维护版本 GPL-3.0-only，合并版本继续按 GPL-3.0-only 发布。
+ * MIT 许可声明（适用于上述 MIT 来源）：
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 'use strict';
 const https = require('node:https');
@@ -30,18 +52,45 @@ function decode(s) {
   }).replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
 }
 const plain = s => decode(s.replace(/<[^>]*>/g, '')).replace(/[\r\n\t]/g, ' ').trim();
-function request(route, cookie, depth = 0) {
+function accountConfig(line) {
+  let cookie = line, proxy = process.env.V2EX_PROXY || '';
+  if (line.startsWith('{')) {
+    let data;
+    try { data = JSON.parse(line); } catch { throw Error('账号 JSON 格式错误'); }
+    if (!data || typeof data.cookie !== 'string') throw Error('账号 JSON 缺少 cookie 字符串');
+    cookie = data.cookie;
+    if (data.proxy !== undefined) proxy = data.proxy;
+  }
+  // 不分割 Cookie 内的等号、分号或其他凭据文本。
+  if (!cookie.includes('=') || /[\x00-\x1f\x7f]/.test(cookie)) throw Error('Cookie 格式错误');
+  if (typeof proxy !== 'string') throw Error('代理必须是 URL 字符串');
+  let agent;
+  if (proxy) {
+    try {
+      const url = new URL(proxy);
+      if (!['http:', 'https:'].includes(url.protocol) || !url.hostname || url.hash) throw Error();
+    } catch { throw Error('代理格式错误：仅支持 HTTP/HTTPS URL'); }
+    if (!dry) {
+      let ProxyAgent;
+      try { ProxyAgent = require('https-proxy-agent').HttpsProxyAgent; }
+      catch { throw Error('代理依赖不可用：请在青龙依赖管理安装 https-proxy-agent 7.x'); }
+      try { agent = new ProxyAgent(proxy); } catch { throw Error('代理初始化失败'); }
+    }
+  }
+  return { cookie, agent };
+}
+function request(route, config, depth = 0) {
   if (dry) throw Error('预演禁止网络请求');
   return new Promise((resolve, reject) => {
     const url = new URL(route, 'https://www.v2ex.com');
     if (url.origin !== 'https://www.v2ex.com') return reject(Error('拒绝跨站跳转'));
-    const req = https.get(url, { headers: { Cookie: cookie, Accept: 'text/html', 'Accept-Encoding': 'identity', 'User-Agent': 'Mozilla/5.0 V2EXDaily/1.0' } }, res => {
+    const req = https.get(url, { agent: config.agent, headers: { Cookie: config.cookie, Referer: 'https://www.v2ex.com/mission/daily', Accept: 'text/html', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8', 'Accept-Encoding': 'identity', 'User-Agent': 'Mozilla/5.0 V2EXDaily/1.0' } }, res => {
       if ([301, 302, 303, 307, 308].includes(res.statusCode)) {
         res.resume();
         if (depth >= 3 || !res.headers.location) return reject(Error('跳转异常'));
         let next;
         try { next = new URL(res.headers.location, url); } catch { return reject(Error('跳转异常')); }
-        return resolve(request(next.href, cookie, depth + 1));
+        return resolve(request(next.href, config, depth + 1));
       }
       if (res.statusCode !== 200) { res.resume(); return reject(Error(`HTTP ${res.statusCode}`)); }
       let size = 0; const chunks = [];
@@ -69,6 +118,18 @@ function balance(html) {
   const values = nums.map(Number); while (values.length < 3) values.unshift(0);
   return `${values[0]}金币 ${values[1]}银币 ${values[2]}铜币`;
 }
+function rewardDetails(html) {
+  // 只读取签到有关的账目，避免记录其他交易或账号数据。
+  for (const row of html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const cells = [...row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)].map(m => plain(m[1]));
+    const description = cells.find(x => /每日登录奖励|每日签到|登录奖励/.test(x));
+    if (!description) continue;
+    const amount = cells.find(x => /^[+−-]?\d+(?:\.\d+)?$/.test(x));
+    log('今日签到账目：' + description + (amount ? '；金额：' + amount : ''));
+    return;
+  }
+  log('今日签到账目：页面未提供可识别的奖励记录');
+}
 async function notify(body) {
   if (/^(0|false|no|off)$/i.test(process.env.QINGLONG_NOTIFY || '1')) return '已关闭';
   if (dry) { log('通知预演：' + body); return '预演模拟，未发送'; }
@@ -76,7 +137,7 @@ async function notify(body) {
   const file = files.find(x => fs.existsSync(x));
   if (!file) return '不可用：未找到 sendNotify.js';
   return new Promise(resolve => {
-    const env = { ...process.env }; delete env.V2EX_COOKIE;
+    const env = { ...process.env }; delete env.V2EX_COOKIE; delete env.V2EX_PROXY;
     const child = spawn(process.execPath, ['-e', 'Promise.resolve().then(()=>require(process.argv[1]).sendNotify(process.argv[2],process.argv[3])).then(()=>process.exit(0),()=>process.exit(1))', file, 'V2EX每日签到', body], { env, stdio: 'ignore' });
     const timer = setTimeout(() => child.kill('SIGKILL'), 20000);
     child.on('error', () => { clearTimeout(timer); resolve('发送失败'); });
@@ -89,17 +150,17 @@ async function main() {
   if (!accounts.length) log('❌ 配置错误：V2EX_COOKIE 未提供非空账号行');
   for (let i = 0; i < accounts.length; i++) {
     const begin = Date.now(); const stats = { total: 3, success: 0, alreadyComplete: 0, skipped: 0, failed: 0 };
-    let html = ''; let failed = false;
+    let html = ''; let failed = false; let config;
     const stages = ['登录校验及用户名', '每日奖励及连续天数', '账户余额'];
     for (let n = 0; n < 3; n++) {
       const tick = Date.now(); log(`账号[${i + 1}] 阶段 ${n + 1}/3 ${stages[n]} 开始`);
       let outcome = 'success';
       try {
-        if (dry) { outcome = 'skipped'; log('⏭️ 仅验证流程，不请求站点、不领取奖励'); }
+        if (dry) { if (n === 0) { config = accountConfig(accounts[i]); log('✅ Cookie 和代理参数格式校验通过'); } outcome = 'skipped'; log('⏭️ 仅验证流程，不请求站点、不领取奖励'); }
         else if (failed && n < 2) { outcome = 'skipped'; log('⏭️ 前置阶段失败'); }
         else if (n === 0) {
-          if (!accounts[i].includes('=') || /[\x00-\x1f\x7f]/.test(accounts[i])) throw Error('Cookie 格式错误');
-          html = await request('/mission/daily', accounts[i]); loggedIn(html);
+          config = accountConfig(accounts[i]);
+          html = await request('/mission/daily', config); loggedIn(html);
           const name = identity(html); log(name ? `✅ 用户名称：${name}` : '✅ 登录有效；未返回用户名');
         } else if (n === 1) {
           if (html.includes('每日登录奖励已领取')) { outcome = 'alreadyComplete'; log('☑️ 已经签到过了'); }
@@ -107,7 +168,7 @@ async function main() {
             const once = html.match(/\/mission\/daily\/redeem\?once=(\d+)/);
             if (!once) throw Error('领取入口缺失或响应已变化');
             await new Promise(r => setTimeout(r, 2000));
-            html = await request(`/mission/daily/redeem?once=${once[1]}`, accounts[i]);
+            html = await request(`/mission/daily/redeem?once=${once[1]}`, config);
             loggedIn(html);
             if (!html.includes('每日登录奖励已领取')) throw Error('未验证到奖励领取成功');
             log('✅ 签到成功');
@@ -115,7 +176,8 @@ async function main() {
           const days = plain(html).match(/已连续登录\s*(\d+)\s*天/);
           log(days ? `连续签到：${days[1]}天` : '连续签到天数：页面未提供');
         } else {
-          const data = await request('/balance', accounts[i]); loggedIn(data); log('✅ 账户余额：' + balance(data));
+          if (!config) { outcome = 'skipped'; log('⏭️ 账号参数不可用'); }
+          else { const data = await request('/balance', config); loggedIn(data); log('✅ 账户余额：' + balance(data)); rewardDetails(data); }
         }
       } catch (e) { outcome = 'failed'; failed = true; log('❌ ' + e.message); }
       stats[outcome]++; log(`账号[${i + 1}] 阶段 ${n + 1}/3 耗时 ${Date.now() - tick}ms`);
