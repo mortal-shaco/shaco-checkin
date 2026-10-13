@@ -8,6 +8,13 @@
 默认只执行签到、查询、已完成任务领奖及旅行；消耗资源、同意协议与模拟成长事件均需显式选择。
 WORKBUDDY_TASKS / --tasks：逗号或空格分隔任务名；WORKBUDDY_SKIP_TASKS / --skip-tasks：排除。
 WORKBUDDY_ALLOW_REPORT=1 才能执行成长事件任务；不表示真实桌面业务成功。
+国际版用 --intl（仍按 0 7,12 * * * 调度），WORKBUDDY_INTL_TOKENS 每行 AT 或 备注|AT|uid|RT。
+国际版与国内版凭据不通用；国际版仅配置 WORKBUDDY_TOKEN 时兼容单账号。
+国际版默认探测及领奖；--keepalive 或 WORKBUDDY_INTL_KEEPALIVE=1 显式允许一次模型调用（可能消耗积分）。
+--no-keepalive 优先关闭；WORKBUDDY_INTL_MODELS 逗号分隔模型链，保留上游四模型回退。
+国际版 --refresh 显式轮换，WORKBUDDY_INTL_TOKEN_STORE 指向本人0600缓存，续期前检查可写。
+WORKBUDDY_INTL_DRY_RUN=1 或 WORKBUDDY_DRY_RUN=1 完全断网预演。
+国际版 AT/RT 从本人 www.workbuddy.ai 官方授权登录响应获取，不依赖登录脚本或本地应用执行。
 夜猫子 black_cat 需单独按 30 23 * * * 调度。国际版凭据不通用；已结束开学季与手动登录不合并。
 WORKBUDDY_DRY_RUN=1：完全断网，不轮换令牌、不写文件、不发送实际通知。
 续期令牌仅保存至本人指定 WORKBUDDY_TOKEN_STORE（0600）；默认不轮换尚有效的 AT。
@@ -2183,7 +2190,7 @@ except ImportError:
             break
 if notify is None or not callable(getattr(notify,'send',None)):
     sys.exit(2)
-notify.send('WorkBuddy 国内版日常维护', sys.argv[1])
+notify.send('WorkBuddy 日常维护', sys.argv[1])
 """
     try:
         result = subprocess.run([sys.executable,'-c',script,body], timeout=20,
@@ -2437,11 +2444,281 @@ def main():
     body = '状态：%s；账号总数%d，成功%d，失败%d；子任务成功%d，已完成%d，跳过%d，失败%d' % (status,stats['accounts'],stats['success'],stats['failed'],stats['steps']['success'],stats['steps']['alreadyComplete'],stats['steps']['skipped'],stats['steps']['failed'])
     stats.update(status=status, exitCode=code, notification=notify_summary(body), durationSeconds=round(time.monotonic()-started,2))
     timeline('----------------------------------------')
-    timeline(body)
+    if not stats['accounts']:
+        timeline('账号数：0')
+    timeline(body+'；总耗时%.2f秒' % stats['durationSeconds'])
+    timeline('通知状态：'+stats['notification'])
+    timeline('结束时间：'+datetime.datetime.now().isoformat(timespec='seconds')+'；最终状态：'+status)
+    print('TASK_SUMMARY='+json.dumps(stats,ensure_ascii=False,separators=(',',':')))
+    return code
+
+
+# 国际版接口来源：L0NE-6/WorkBuddy-Daily/workbuddy_intl_daily.py，MIT。
+# 续期头 X-Domain / Authorization 参考同源 workbuddy_intl_login.py。
+INTL_BASE = 'https://www.workbuddy.ai'
+INTL_MODELS = ('deepseek-v4.1-flash', 'hy3', 'hy4-preview', 'hy4-preview-f')
+
+def intl_accounts(raw):
+    accounts = []
+    for line in raw.splitlines():
+        line = line.strip().strip('"').strip("'")
+        if not line or line.startswith('#'):
+            continue
+        first, sep, tail = line.partition('|')
+        if not sep:
+            note, at, uid, rt = '', first, '', ''
+        else:
+            note = first
+            at, sep, tail = tail.partition('|')
+            uid, _, rt = tail.partition('|') if sep else ('', '', '')
+        accounts.append((note, at, uid, rt))
+    return accounts
+
+def intl_headers(at, uid):
+    h = {'Accept':'application/json', 'Content-Type':'application/json',
+         'Authorization':'Bearer '+at,
+         'User-Agent':'WorkBuddy/5.5.2 WorkBuddy AI/5.5.2 CLI/2.137.1',
+         'X-IDE-Type':'WorkBuddy', 'X-IDE-Name':'WorkBuddy AI',
+         'X-IDE-Version':'5.5.2', 'X-Product':'WorkBuddy AI'}
+    if uid:
+        h['X-User-Id'] = uid
+    return h
+
+def intl_post(path, headers, body=None, stream=False):
+    global REQUEST_COUNT
+    if DRY:
+        raise SafeError('断网预演禁止 HTTP')
+    if path not in {'/billing/meter/checkin-activity-status', '/v2/billing/meter/daily-checkin',
+                    '/v2/chat/completions', '/v2/plugin/auth/token/refresh'}:
+        raise SafeError('非许可国际版接口')
+    REQUEST_COUNT += 1
+    try:
+        r = RealSession().post(INTL_BASE+path, headers=headers, json=body or {},
+                               timeout=25, stream=stream)
+        timeline('POST 请求：HTTP %d' % r.status_code)
+        return r
+    except Exception:
+        raise SafeError('国际版网络请求失败，详情已脱敏') from None
+
+def intl_json(path, headers):
+    r = intl_post(path, headers)
+    try:
+        d = r.json()
+    except Exception:
+        raise SafeError('国际版响应不是有效JSON') from None
+    if not isinstance(d, dict):
+        raise SafeError('国际版响应结构变化')
+    return r.status_code, d
+
+def intl_status(headers):
+    http, d = intl_json('/billing/meter/checkin-activity-status', headers)
+    # 41000 的关闭含义由国际版原始业务码表支持；认证/未知失败不可冒充关闭。
+    if http in (200,400,409) and d.get('code') == 41000:
+        timeline('⏭️ 官方业务码41000：活动未开始或已结束')
+        return False, False
+    data = d.get('data')
+    if http != 200 or d.get('code') != 0 or not isinstance(data, dict):
+        raise SafeError('活动探测失败，不能确认活动关闭')
+    identity(data)
+    active = data.get('active')
+    checked = data.get('today_checked_in', data.get('todayCheckedIn'))
+    if not isinstance(active,bool) or (active and not isinstance(checked,bool)):
+        raise SafeError('活动状态字段缺失或类型变化')
+    timeline('活动状态：' + ('已关闭' if not active else ('今日已领取' if checked else '开放，今日未领取')))
+    return active, checked
+
+def intl_daily(headers):
+    active, checked = intl_status(headers)
+    if not active:
+        return 'skipped'
+    if checked:
+        return 'alreadyComplete'
+    http, d = intl_json('/v2/billing/meter/daily-checkin', headers)
+    message = d.get('msg', d.get('message',''))
+    duplicate = isinstance(message,str) and any(x in message.lower() for x in ('已签','已领','already'))
+    if not (http == 200 and d.get('code') == 0) and not (http in (400,409) and duplicate):
+        raise SafeError('每日奖励领取未通过业务校验')
+    active, checked = intl_status(headers)
+    if not checked:
+        raise SafeError('领取后未回读到今日已领取状态')
+    timeline('✅ 每日奖励领取与服务端回读均已验证')
+    return 'alreadyComplete' if duplicate else 'success'
+
+def intl_keepalive(headers):
+    models = [v.strip() for v in os.getenv('WORKBUDDY_INTL_MODELS','').split(',') if v.strip()] or list(INTL_MODELS)
+    for index, model in enumerate(models,1):
+        timeline('免费模型链尝试 %d/%d（可能消耗积分）' % (index,len(models)))
+        request_id = str(uuid.uuid4())
+        h = dict(headers, Accept='text/event-stream', Origin=INTL_BASE, Referer=INTL_BASE+'/',
+                 **{'X-Requested-With':'XMLHttpRequest','X-Agent-Purpose':'conversation'})
+        for key in ('X-Request-ID','X-Conversation-Request-ID','X-Conversation-ID','X-Session-ID',
+                    'X-Conversation-Message-ID','X-Root-Request-ID'):
+            h[key] = request_id
+        body = {'model':model,'stream':True,'max_tokens':16,'messages':[
+            {'role':'system','content':'You are a helpful assistant.'},{'role':'user','content':'hi'}]}
+        try:
+            with intl_post('/v2/chat/completions',h,body,stream=True) as r:
+                if r.status_code != 200:
+                    raise SafeError('模型HTTP失败')
+                content = False
+                finished = False
+                for line in r.iter_lines(decode_unicode=True):
+                    if not line.startswith('data:'):
+                        continue
+                    value = line[5:].strip()
+                    if value == '[DONE]':
+                        finished = True
+                        break
+                    event = json.loads(value)
+                    if not isinstance(event,dict) or event.get('error') or event.get('code',0) not in (0,200):
+                        raise SafeError('模型返回业务错误')
+                    for choice in event.get('choices',[]):
+                        delta = choice.get('delta') or {}
+                        if isinstance(delta.get('content'),str) and delta['content'].strip():
+                            content = True
+                        if choice.get('finish_reason') in ('stop','length'):
+                            finished = True
+                if not content or not finished:
+                    raise SafeError('模型流未包含有效回答与完成标志')
+            timeline('✅ 模型调用已验证；保活不等于签到成功')
+            return 'success'
+        except Exception:
+            timeline('⚠️ 当前模型未通过流式业务核验，继续下一模型（响应不输出）')
+    raise SafeError('全部模型调用失败或未确认完成')
+
+def intl_rotate(idx, at, rt, path, cache):
+    if not rt or not path:
+        raise SafeError('国际版续期需RT和 WORKBUDDY_INTL_TOKEN_STORE')
+    target = pathlib.Path(path).expanduser()
+    if target.is_symlink() or (target.exists() and (not target.is_file() or target.stat().st_mode & 0o077)):
+        raise SafeError('国际版缓存必须为本人专用普通文件，权限0600')
+    if not target.parent.is_dir():
+        raise SafeError('缓存目录不存在')
+    fd, temp = tempfile.mkstemp(prefix='.wb-intl-', dir=str(target.parent))
+    try:
+        os.fchmod(fd,0o600)
+        h = {'User-Agent':'WorkBuddy/5.4.2','Accept':'application/json','Content-Type':'application/json',
+             'X-Refresh-Token':rt,'X-Auth-Refresh-Source':'plugin',
+             'X-Domain':'www.workbuddy.ai','Authorization':'Bearer '+at}
+        http, d = intl_json('/v2/plugin/auth/token/refresh',h)
+        data = d.get('data')
+        if http != 200 or d.get('code') != 0 or not isinstance(data,dict):
+            raise SafeError('国际版续期业务失败')
+        new_at = data.get('accessToken',data.get('access_token'))
+        new_rt = data.get('refreshToken',data.get('refresh_token',rt))
+        if not isinstance(new_at,str) or not new_at or not isinstance(new_rt,str) or not new_rt:
+            raise SafeError('国际版续期响应缺少令牌')
+        SECRETS.extend([new_at,new_rt])
+        cache[str(idx)] = {'access_token':new_at,'refresh_token':new_rt,
+                          'source_hash':hashlib.sha256(rt.encode()).hexdigest(),'updated':time.time()}
+        with os.fdopen(fd,'w',encoding='utf-8') as f:
+            fd = None
+            json.dump(cache,f)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp,target)
+        timeline('✅ 国际版令牌已续期并保存至私有缓存')
+        return new_at,new_rt
+    finally:
+        if fd is not None:
+            os.close(fd)
+        if os.path.exists(temp):
+            os.unlink(temp)
+
+def intl_main():
+    global DRY, ACTIVE_TAG
+    truth = ('1','true','yes','on')
+    DRY = any(os.getenv(k,'0').lower() in truth for k in ('WORKBUDDY_DRY_RUN','WORKBUDDY_INTL_DRY_RUN'))
+    started = time.monotonic()
+    stats = {'accounts':0,'success':0,'failed':0,'steps':dict.fromkeys(('success','alreadyComplete','skipped','failed'),0),'dryRun':DRY}
+    status = 'configuration-error'
+    timeline('WorkBuddy 国际版日常维护 | 开始时间：'+datetime.datetime.now().isoformat(timespec='seconds'))
+    timeline('模式：'+('断网预演' if DRY else '实际执行'))
+    try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--intl',action='store_true')
+        parser.add_argument('--only',type=int)
+        parser.add_argument('--refresh',action='store_true')
+        parser.add_argument('--keepalive',action='store_true')
+        parser.add_argument('--no-keepalive',action='store_true')
+        args = parser.parse_args()
+        accounts = intl_accounts(os.getenv('WORKBUDDY_INTL_TOKENS','').strip() or os.getenv('WORKBUDDY_TOKEN',''))
+        if not accounts:
+            raise SafeError('缺少 WORKBUDDY_INTL_TOKENS；每行一个国际版账号')
+        selected = list(enumerate(accounts,1))
+        if args.only is not None:
+            if not 1 <= args.only <= len(accounts):
+                raise SafeError('--only 超出账号范围')
+            selected = [selected[args.only-1]]
+        stats['accounts'] = len(selected)
+        timeline('账号数：%d' % len(selected))
+        enabled = (args.keepalive or os.getenv('WORKBUDDY_INTL_KEEPALIVE','0').lower() in truth) and not args.no_keepalive
+        path = os.getenv('WORKBUDDY_INTL_TOKEN_STORE','')
+        cache = {}
+        if path and not DRY and pathlib.Path(path).exists():
+            p = pathlib.Path(path)
+            if p.is_symlink() or not p.is_file() or p.stat().st_mode & 0o077:
+                raise SafeError('国际版缓存必须为权限0600的普通文件')
+            cache = json.loads(p.read_text())
+            if not isinstance(cache,dict):
+                raise SafeError('国际版缓存结构错误')
+        for idx,(note,at,uid,rt) in selected:
+            ACTIVE_TAG = '国际账号%d' % idx
+            mark = time.monotonic()
+            counts = dict.fromkeys(stats['steps'],0)
+            SECRETS.extend([note,at,rt])
+            def stage(n,label,fn):
+                t = time.monotonic()
+                timeline('阶段%d：%s' % (n,label))
+                try:
+                    result = fn()
+                    if result not in counts:
+                        raise SafeError('阶段结果无效')
+                except Exception as e:
+                    result = 'failed'
+                    timeline('❌ '+(str(e) if isinstance(e,SafeError) else '执行失败，详情已脱敏'))
+                counts[result] += 1
+                stats['steps'][result] += 1
+                timeline('阶段%d结果：%s；耗时%.2f秒%s' % (n,result,time.monotonic()-t,'（仅本地预演，无业务成功断言）' if DRY else ''))
+                return result != 'failed'
+            def auth():
+                nonlocal at,rt,uid
+                if not at or any(c in at+uid+rt for c in ('&','@','\r','\n')):
+                    raise SafeError('国际版凭据格式错误；账号只能换行分隔')
+                if DRY:
+                    return 'success'
+                cached = cache.get(str(idx),{})
+                if rt and cached.get('source_hash') == hashlib.sha256(rt.encode()).hexdigest():
+                    at,rt = cached.get('access_token',at),cached.get('refresh_token',rt)
+                if args.refresh:
+                    at,rt = intl_rotate(idx,at,rt,path,cache)
+                elif _jwt_claims(at).get('exp',time.time()+60) <= time.time():
+                    raise SafeError('国际版AT已过期，请显式 --refresh 并配置私有缓存')
+                uid = uid or str(_jwt_claims(at).get('sub') or '')
+                return 'success'
+            if stage(1,'凭据检查与显式续期',auth) and not args.refresh:
+                h = intl_headers(at,uid)
+                stage(2,'活动探测、每日奖励领取与回读',lambda:'success' if DRY else intl_daily(h))
+                stage(3,'独立模型保活',lambda:'skipped' if not enabled else ('success' if DRY else intl_keepalive(h)))
+            failed = counts['failed'] > 0
+            stats['failed' if failed else 'success'] += 1
+            timeline('账号统计：总任务%d，成功%d，已完成%d，跳过%d，失败%d，耗时%.2f秒' %
+                     (sum(counts.values()),counts['success'],counts['alreadyComplete'],counts['skipped'],counts['failed'],time.monotonic()-mark))
+        status = ('failure' if stats['failed']==stats['accounts'] else 'partial-failure') if stats['failed'] else ('dry-run' if DRY else 'success')
+    except (Exception,SystemExit) as e:
+        timeline('❌ 配置错误：'+(str(e) if isinstance(e,SafeError) else '参数或缓存无效'))
+    ACTIVE_TAG = '任务'
+    if not stats['accounts']:
+        timeline('账号数：0')
+    code = 0 if status in ('success','dry-run') else 1
+    body = '状态：%s；账号总数%d，成功%d，失败%d；子任务成功%d，已完成%d，跳过%d，失败%d' % (status,stats['accounts'],stats['success'],stats['failed'],stats['steps']['success'],stats['steps']['alreadyComplete'],stats['steps']['skipped'],stats['steps']['failed'])
+    stats.update(status=status,exitCode=code,notification=notify_summary(body),durationSeconds=round(time.monotonic()-started,2))
+    timeline('----------------------------------------')
+    timeline(body+'；总耗时%.2f秒' % stats['durationSeconds'])
     timeline('通知状态：'+stats['notification'])
     timeline('结束时间：'+datetime.datetime.now().isoformat(timespec='seconds')+'；最终状态：'+status)
     print('TASK_SUMMARY='+json.dumps(stats,ensure_ascii=False,separators=(',',':')))
     return code
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(intl_main() if '--intl' in sys.argv[1:] else main())
