@@ -14844,6 +14844,159 @@
       }
     },
     {
+      "catalogId": "beffaf1692cf33d5",
+      "applicationKey": "trae-work",
+      "checkProfile": {
+        "requiredEnv": [
+          "TRAE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "TRAE_DRY_RUN",
+          "RANDOM_SIGNIN",
+          "MAX_RANDOM_DELAY",
+          "TRAE_SAVE_CREDENTIALS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TRAE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TRAE_DRY_RUN": "0",
+          "RANDOM_SIGNIN": "true",
+          "MAX_RANDOM_DELAY": "3600",
+          "TRAE_SAVE_CREDENTIALS": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "领取成功",
+          "今日已领取",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日签到状态查询与积分领取，默认或 checkin 命令执行。",
+          "到期前刷新凭据，认证失败时刷新并重试一次。",
+          "查询总额减消耗的剩余积分，兼容权益包及多种余额字段，支持零余额。",
+          "status 命令查询状态与积分，不领取积分；认证需要时仍可刷新凭据。",
+          "显式 login 命令交互式 OAuth 登录，支持浏览器回调和保密粘贴回调，成功后保密保存凭据。",
+          "换行 JSON 多账号与旧版凭据文件兼容，独立执行并汇总退出码。",
+          "沿用每日 8 点、20 点调度与默认每账号最大一小时随机延时。",
+          "通知、分阶段脱敏日志、每账号与任务统计、单行 TASK_SUMMARY 汇总和完全断网预演。"
+        ],
+        "sideEffects": [
+          "checkin 命令为账号领取每日积分。",
+          "凭据刷新会请求官方接口更新会话凭据。",
+          "显式 login 或 TRAE_SAVE_CREDENTIALS=1 会保存本地敏感凭据文件。",
+          "正式执行且通知开启时发送脱敏任务通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Trae Work 签到",
+      "path": "scripts/trae_work_checkin.py",
+      "sha256": "8d93d71623e3677727614cd67282379102d38919c5528146f09f868932560bfe",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "xz0609/trae-work-checkin-ql",
+        "branch": "main",
+        "commit": "54ce4564ae714d9aa3140defa06308acce12942e",
+        "originalPath": "trae_work_checkin.py"
+      },
+      "cron": "0 8,20 * * *",
+      "command": "python3 scripts/trae_work_checkin.py",
+      "environment": [
+        {
+          "name": "TRAE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人官方国内版 Trae 账号，在本人授权请求中取得 Authorization 中 Cloud-IDE-JWT 后的 accessToken，以及 x-device-id、x-device-brand、x-device-type、x-os-version，分别填入 claimDeviceId 与 fingerprint.brand/type/os。refreshToken 来自本人 OAuth 登录回调或旧版登录凭据。可显式运行 python candidate.py login 登录并保密生成凭据文件，再补充本人真实注册设备和匹配指纹，将每个文件压缩为一行 JSON 写入本变量。不要公开请求、回调或凭据。",
+          "format": "每个非空行一个 JSON 对象，必须含 accessToken、claimDeviceId（兼容 deviceId）与 fingerprint 对象（brand、type、os）；可选 refreshToken、expiresAt（秒或毫秒时间戳）、userId、screenName。只用换行分隔账号，各账号使用属于本人的不同真实注册设备。未设置时兼容读取脚本目录 auths/auth-*.json；环境变量优先，文件不是运行依赖。"
+        },
+        {
+          "name": "TRAE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "1 启用完全断网预演，0 关闭，默认 0。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "沿用旧版随机延时参数，按需要设置。",
+          "format": "默认 true；0、false、no、off 关闭；预演不延时。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要设置每个账号签到前最大随机延时。",
+          "format": "0 至 86400 的整数秒，默认 3600；预演仍校验格式。"
+        },
+        {
+          "name": "TRAE_SAVE_CREDENTIALS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在确认需要保存刷新后凭据时启用。",
+          "format": "默认 0；1 允许保存到脚本目录 auths 中的权限 0600 文件。login 命令本身显式授权保存；预演不写文件。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "由青龙通知配置控制，也可手动关闭。",
+          "format": "默认 1；0、false、no、off 关闭。预演仅模拟通知；通知不可用不影响业务退出码。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 所在目录；也会尝试导入 notify 和青龙常见目录。",
+          "format": "本机通知模块目录路径，仅正式执行且通知开启时使用；不是业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON，独立执行，单个账号失败不阻止后续账号，任一失败整体非零退出。不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到状态查询与积分领取，默认或 checkin 命令执行。",
+        "到期前刷新凭据，认证失败时刷新并重试一次。",
+        "查询总额减消耗的剩余积分，兼容权益包及多种余额字段，支持零余额。",
+        "status 命令查询状态与积分，不领取积分；认证需要时仍可刷新凭据。",
+        "显式 login 命令交互式 OAuth 登录，支持浏览器回调和保密粘贴回调，成功后保密保存凭据。",
+        "换行 JSON 多账号与旧版凭据文件兼容，独立执行并汇总退出码。",
+        "沿用每日 8 点、20 点调度与默认每账号最大一小时随机延时。",
+        "通知、分阶段脱敏日志、每账号与任务统计、单行 TASK_SUMMARY 汇总和完全断网预演。"
+      ],
+      "sideEffects": [
+        "checkin 命令为账号领取每日积分。",
+        "凭据刷新会请求官方接口更新会话凭据。",
+        "显式 login 或 TRAE_SAVE_CREDENTIALS=1 会保存本地敏感凭据文件。",
+        "正式执行且通知开启时发送脱敏任务通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/beffaf1692cf33d5",
+        "candidateSha256": "8d93d71623e3677727614cd67282379102d38919c5528146f09f868932560bfe"
+      }
+    },
+    {
       "catalogId": "82616d06df4e5f53",
       "displayName": "塔斯汀汉堡签到",
       "path": "scripts/tsthb_checkin.py",
