@@ -10,7 +10,17 @@ cron: 0 15 9 * * *
 DAILYNEWSCN_DRY_RUN=1：完全断网预演，包括模拟通知，不加载通知模块。
 QINGLONG_NOTIFY 默认 1，可用 0、false、no、off 禁用。
 QINGLONG_NOTIFY_DIR 可选：青龙 sendNotify.js 所在目录。
-仅访问上游公开日报接口，不写表格、不发布帖子、不修改账号。
+DAILYNEWSCN_TASK 默认 dailynewscn；填写 bdhot 仅获取百度热搜榜。
+日报保持 cron: 0 15 9 * * *；百度榜另建青龙任务指向同一文件，
+设置 DAILYNEWSCN_TASK=bdhot，定时 0 0 9 * * *，无需复制脚本。
+BDHOT_LIST 为百度榜执行标记，填写 1 即可；无需获取账号或凭据。
+BDHOT_DRY_RUN=1 兼容百度榜断网预演；DAILYNEWSCN_DRY_RUN=1 对所有模式生效。
+源功能盘点：百度前五热搜 09:00、日报 09:15；均公开读取并通知。
+参考：抽签 CHOUQ_LIST 09:10、世界新闻 DAY60S_LIST 09:20、
+抖音榜 DYHOT_LIST 09:25；均免账号，按不同内容和调度保留独立维护边界。
+已维护覆盖仅日报，未覆盖百度榜；本文件保留所有既有日报功能。
+不复用上游私有 airscriptShim、工作表写入和自定义推送凭据。
+仅访问上游公开日报或百度热搜接口，不写表格、不发布帖子、不修改账号。
 
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,9 +44,13 @@ const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
-const TITLE = '中国日报';
-const URL = 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
-const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1';
+const requestedTask = process.env.DAILYNEWSCN_TASK === undefined ? 'dailynewscn' : process.env.DAILYNEWSCN_TASK.trim();
+const task = ['dailynewscn', 'bdhot'].includes(requestedTask) ? requestedTask : 'invalid';
+const isBaidu = task === 'bdhot';
+const TITLE = isBaidu ? '百度热搜榜' : '中国日报';
+const marker = isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
+const URL = isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
+const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1');
 const started = Date.now();
 const stamp = () => new Date().toLocaleTimeString('zh-CN', { hour12: false });
 const log = text => console.log(`[${stamp()}] ${text}`);
@@ -54,13 +68,13 @@ function getReport() {
     };
     const request = https.get(URL, { headers: { Accept: 'text/plain', 'User-Agent': 'Qinglong-DailyNews/1.0' } }, response => {
       if (response.statusCode !== 200) {
-        finish(new Error('日报接口 HTTP 状态异常'));
+        finish(new Error(TITLE + '接口 HTTP 状态异常'));
         response.destroy();
         return;
       }
       const type = String(response.headers['content-type'] || '');
       if (/html|json|image|octet-stream/i.test(type)) {
-        finish(new Error('日报响应格式与上游文本契约不符'));
+        finish(new Error(TITLE + '响应格式与上游文本契约不符'));
         response.destroy();
         return;
       }
@@ -69,19 +83,19 @@ function getReport() {
       response.on('data', chunk => {
         size += chunk.length;
         if (size > 128 * 1024) {
-          finish(new Error('日报响应超过安全大小'));
+          finish(new Error(TITLE + '响应超过安全大小'));
           response.destroy();
         } else chunks.push(chunk);
       });
-      response.on('error', () => finish(new Error('日报响应接收失败')));
-      response.on('aborted', () => finish(new Error('日报响应中断')));
+      response.on('error', () => finish(new Error(TITLE + '响应接收失败')));
+      response.on('aborted', () => finish(new Error(TITLE + '响应中断')));
       response.on('end', () => finish(null, Buffer.concat(chunks).toString('utf8')));
     });
     const timer = setTimeout(() => {
-      finish(new Error('日报请求超时'));
+      finish(new Error(TITLE + '请求超时'));
       request.destroy();
     }, 10000);
-    request.on('error', () => finish(new Error('日报网络请求失败')));
+    request.on('error', () => finish(new Error(TITLE + '网络请求失败')));
   });
 }
 
@@ -91,7 +105,7 @@ function parseReport(text) {
   if (cleaned.length < 20 || !/[\u3400-\u9fff]/u.test(cleaned) ||
       /^[\[{]/.test(cleaned) || /<\/?(?:html|body|script|head)\b/i.test(cleaned) ||
       /(?:接口|请求|服务|参数).{0,12}(?:失败|错误|异常|限流|无效|维护)|访问频繁|请求过多|额度不足|今日暂无|暂无数据|暂无新闻|access denied|unauthorized|rate limit|internal server error/i.test(cleaned)) {
-    throw new Error('日报内容为空、错误提示或无法验证为新闻文本');
+    throw new Error(isBaidu ? '热搜内容为空、错误提示或无法验证为榜单文本' : '日报内容为空、错误提示或无法验证为新闻文本');
   }
   const lines = cleaned.split(/\r?\n/).map(line => line.replace(/[\u0000-\u001f\u007f-\u009f]/g, '').trim()).filter(Boolean);
   return lines.map(line => line
@@ -129,49 +143,52 @@ async function notify(body) {
 }
 
 async function main() {
-  console.log('========== 中国日报 ==========');
+  console.log(`========== ${TITLE} ==========`);
   log(`开始时间：${new Date(started).toISOString()}；模式：${dryRun ? '断网预演' : '正式运行'}`);
-  log('账号总数：0（公开日报，无需账号）；任务总数：1');
+  log('账号总数：0（公开资讯，无需账号）；任务总数：1');
   let status = 'configuration-error', success = 0, failure = 0, skipped = 0, report = [];
   const stageStart = Date.now();
   log('阶段 1/3：检查执行参数');
-  const entries = (process.env.DAILYNEWSCN_LIST || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-  if (!entries.length) {
+  const entries = (process.env[marker] || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  if (!['dailynewscn', 'bdhot'].includes(task) || !entries.length) {
     failure = 1;
-    log('❌ 缺少 DAILYNEWSCN_LIST；此免账号任务填写 1 即可，不需要凭据');
+    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn 或 bdhot；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
+    log('阶段 2/3：⏭️ 配置错误，跳过获取；阶段耗时 0 毫秒');
   } else {
     log(`✅ 执行标记检查通过；阶段耗时 ${Date.now() - stageStart} 毫秒`);
     const fetchStart = Date.now();
-    log('阶段 2/3：获取并验证日报');
+    log(`阶段 2/3：获取并验证${TITLE}`);
     try {
       if (dryRun) {
-        report = parseReport('中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
+        report = parseReport(isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
         skipped = 1;
         status = 'dry-run';
-        log('✅ DRY_RUN_OK：本地日报解析通过，HTTP 请求已跳过');
+        log(`✅ DRY_RUN_OK：本地${TITLE}解析通过，HTTP 请求已跳过`);
       } else {
         report = parseReport(await getReport());
         success = 1;
         status = 'success';
-        log(`✅ DAILYNEWSCN_SUCCESS：日报获取及文本检查通过，共 ${report.length} 行`);
-        console.log('【中国日报】\n' + report.join('\n'));
+        log(`✅ ${isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及文本检查通过，共 ${report.length} 行`);
+        console.log(`【${TITLE}】\n` + report.join('\n'));
       }
     } catch (error) {
       failure = 1;
       status = 'failure';
       log(`❌ ${error.message}`);
     }
-    log(`日报任务统计：总任务 1，成功 ${success}，已完成 0，跳过 ${skipped}，失败 ${failure}；阶段耗时 ${Date.now() - fetchStart} 毫秒`);
+    log(`${TITLE}任务统计：总任务 1，成功 ${success}，已完成 0，跳过 ${skipped}，失败 ${failure}；阶段耗时 ${Date.now() - fetchStart} 毫秒`);
   }
+  const notifyStart = Date.now();
   log('阶段 3/3：发送任务总结');
   const body = `账号总数：0（无需账号）\n任务总数：1；成功：${success}；失败：${failure}；跳过：${skipped}\n状态：${status}` +
-    (status === 'success' ? '\n【中国日报】\n' + report.join('\n') : '');
+    (status === 'success' ? `\n【${TITLE}】\n` + report.join('\n') : '');
   const notification = await notify(body);
+  log(`通知结果：${notification}；阶段耗时 ${Date.now() - notifyStart} 毫秒`);
   const finishedAt = new Date().toISOString();
   console.log('--------------------------------');
   log(`账号统计：总数 0，成功 0，失败 0；子任务统计：总数 1，成功 ${success}，已完成 0，跳过 ${skipped}，失败 ${failure}`);
   log(`完成时间：${finishedAt}；总耗时：${Date.now() - started} 毫秒；通知状态：${notification}；最终状态：${status}`);
-  console.log('TASK_SUMMARY=' + JSON.stringify({ task: 'dailynewscn', mode: dryRun ? 'dry-run' : 'live', status, accounts: { total: 0, success: 0, failure: 0 }, tasks: { total: 1, success, alreadyComplete: 0, skipped, failure }, notification, startedAt: new Date(started).toISOString(), finishedAt, elapsedMs: Date.now() - started }));
+  console.log('TASK_SUMMARY=' + JSON.stringify({ task, mode: dryRun ? 'dry-run' : 'live', status, accounts: { total: 0, success: 0, failure: 0 }, tasks: { total: 1, success, alreadyComplete: 0, skipped, failure }, notification, startedAt: new Date(started).toISOString(), finishedAt, elapsedMs: Date.now() - started }));
   process.exitCode = failure ? 1 : 0;
 }
 main();

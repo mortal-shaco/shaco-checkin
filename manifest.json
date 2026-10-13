@@ -4889,7 +4889,10 @@
           "DAILYNEWSCN_LIST"
         ],
         "optionalEnv": [
+          "BDHOT_LIST",
+          "DAILYNEWSCN_TASK",
           "DAILYNEWSCN_DRY_RUN",
+          "BDHOT_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
@@ -4897,22 +4900,25 @@
           "DAILYNEWSCN_DRY_RUN": "1"
         },
         "liveEnv": {
+          "DAILYNEWSCN_TASK": "dailynewscn",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
           "DAILYNEWSCN_SUCCESS",
-          "\"status\":\"success\""
+          "BDHOT_SUCCESS"
         ],
         "features": [
-          "按原定每天 09:15 获取中国日报公开新闻摘要。",
-          "保持上游 HTTPS 地址及 GET 方法，使用标准 Node.js 库独立请求，不依赖私有仓库。",
-          "验证 HTTP 200 和非空新闻文本，拒绝错误页、未知结构、超时、过大或中断响应，失败非零退出。",
-          "输出整理脱敏后的日报，并通过青龙通知发送日报和任务统计。",
-          "支持完全断网预演，验证本地文本处理，模拟通知且不加载通知模块。",
-          "兼容 DAILYNEWSCN_LIST 非空执行标记，提供分阶段时间轴日志及唯一 TASK_SUMMARY 结构化总结。"
+          "保留默认每天 09:15 的中国日报 HTTPS GET 文本获取、整理输出与通知。",
+          "在同一维护文件中使用 DAILYNEWSCN_TASK=bdhot 获取百度前五条热搜；使用原 HTTPS GET 地址及 limit=5。",
+          "日报与百度榜分别读取原 DAILYNEWSCN_LIST、BDHOT_LIST 执行标记，不发送标记，无需账号。",
+          "以 HTTP 200、非空中文文本及错误页检查判断成功，拒绝未知 JSON、HTML、过大、中断和超时响应；业务失败非零退出。",
+          "标准 Node.js 库独立请求，十秒请求超时、128 KiB 响应上限，无私有仓库或外部安装依赖。",
+          "完全断网预演采用本地文本并模拟通知，不加载通知模块。",
+          "脱敏通知支持全局开关、模块发现、十五秒超时与输出隔离，通知不可用不改变业务退出码。",
+          "提供时间轴分阶段结果、任务统计及唯一单行 TASK_SUMMARY，保留日报原成功标记和汇总结构。"
         ],
         "sideEffects": [
-          "正式运行且启用通知时，调用青龙通知模块向已配置的渠道发送日报或脱敏任务总结。"
+          "正式运行并启用通知时，通过青龙通知模块向已配置的渠道发送资讯和脱敏总结。"
         ]
       },
       "postReview": {
@@ -4921,7 +4927,7 @@
       },
       "displayName": "中国日报",
       "path": "scripts/dailynewscn.js",
-      "sha256": "288f8a194e4896e2a9c08ebad44efa4aa5125b65f036439c540ec57b34e82df9",
+      "sha256": "94296da462707211d175c768ce6e631af7abc71a9fd5644304f8c5db7b7bc6b5",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -4929,7 +4935,19 @@
         "repository": "unitaryhighs/ql_sign_script",
         "branch": "main",
         "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
-        "originalPath": "hot/dailynewscn.js"
+        "originalPath": "hot/dailynewscn.js",
+        "related": [
+          {
+            "repository": "unitaryhighs/ql_sign_script",
+            "url": "https://github.com/unitaryhighs/ql_sign_script.git",
+            "branch": "main",
+            "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+            "originalPath": "hot/bdhot.js",
+            "catalogId": "63c9cae41015e912",
+            "sha256": "6160ccc4a5571d7641e8f730242ee223daff885d6217382f97c27338fceb9f10",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "0 15 9 * * *",
       "command": "node scripts/dailynewscn.js",
@@ -4938,48 +4956,71 @@
           "name": "DAILYNEWSCN_LIST",
           "required": true,
           "sensitive": false,
-          "howToGet": "此任务读取公开日报，无需账号或凭据。在青龙环境变量中新增 DAILYNEWSCN_LIST，填写 1 作为执行标记即可；兼容原变量的非空值，不输出或发送其内容。",
-          "format": "非空执行标记，建议填写 1；兼容每行一个旧执行标记，忽略空行，多行仍只获取一次同一公开日报。"
+          "howToGet": "中国日报模式在青龙环境变量中填写 1，无需注册或账号凭据；百度榜模式不读取此变量。",
+          "format": "非空执行标记；兼容旧非空值及每行一条标记，公开数据只获取一次。"
+        },
+        {
+          "name": "BDHOT_LIST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "百度榜模式必须在青龙环境变量中填写 1，无需注册或账号凭据；日报模式不读取此变量。",
+          "format": "非空执行标记；按非空行读取但只获取一次前五条热搜，不向接口发送标记。"
+        },
+        {
+          "name": "DAILYNEWSCN_TASK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认无需配置；百度榜任务配置 bdhot。",
+          "format": "dailynewscn 为日报；bdhot 为百度榜；不支持其他值。"
         },
         {
           "name": "DAILYNEWSCN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要断网预演时手动设置为 1；正式运行删除此变量或设置为 0。",
-          "format": "1 表示断网预演，其他值表示正式运行。"
+          "howToGet": "在青龙环境变量中配置 1 进行完全断网预演。",
+          "format": "1 开启；其他值正式运行。"
+        },
+        {
+          "name": "BDHOT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "百度榜模式兼容此预演开关。",
+          "format": "1 开启；日报模式忽略。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙已有通知配置，默认启用；需要关闭时设置为 0。",
-          "format": "0、false、no、off 表示禁用，大小写不限；默认 1。"
+          "howToGet": "使用青龙已配置的通知渠道；无需填写通知凭据到本脚本。",
+          "format": "默认 1；0、false、no、off 禁用，忽略大小写。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可填写青龙自带 sendNotify.js 所在目录；未设置时依次查找 /ql/data/scripts 和 /ql/scripts。通知模块缺失不影响日报业务退出码。",
-          "format": "本机通知模块所在目录，不填文件名。"
+          "howToGet": "可选填写青龙已有 sendNotify.js 的目录；默认检查 /ql/data/scripts 和 /ql/scripts。",
+          "format": "通知模块所在目录，不下载或安装任何文件。"
         }
       ],
       "multiAccount": {
         "supported": false,
         "separator": null,
-        "rule": "公开日报无需账号。执行标记按非空行读取，但不代表账号，不传给服务端，日报仅获取一次。",
-        "unsupportedReason": "公开接口不接受账号凭据，重复请求不会产生独立账号结果。"
+        "rule": "公开资讯无需账号；执行标记按非空行读取，不代表账号，多行也只获取一次。",
+        "unsupportedReason": "接口不接受账号凭据，多账号执行没有意义。"
       },
       "dependencies": [],
       "features": [
-        "按原定每天 09:15 获取中国日报公开新闻摘要。",
-        "保持上游 HTTPS 地址及 GET 方法，使用标准 Node.js 库独立请求，不依赖私有仓库。",
-        "验证 HTTP 200 和非空新闻文本，拒绝错误页、未知结构、超时、过大或中断响应，失败非零退出。",
-        "输出整理脱敏后的日报，并通过青龙通知发送日报和任务统计。",
-        "支持完全断网预演，验证本地文本处理，模拟通知且不加载通知模块。",
-        "兼容 DAILYNEWSCN_LIST 非空执行标记，提供分阶段时间轴日志及唯一 TASK_SUMMARY 结构化总结。"
+        "保留默认每天 09:15 的中国日报 HTTPS GET 文本获取、整理输出与通知。",
+        "在同一维护文件中使用 DAILYNEWSCN_TASK=bdhot 获取百度前五条热搜；使用原 HTTPS GET 地址及 limit=5。",
+        "日报与百度榜分别读取原 DAILYNEWSCN_LIST、BDHOT_LIST 执行标记，不发送标记，无需账号。",
+        "以 HTTP 200、非空中文文本及错误页检查判断成功，拒绝未知 JSON、HTML、过大、中断和超时响应；业务失败非零退出。",
+        "标准 Node.js 库独立请求，十秒请求超时、128 KiB 响应上限，无私有仓库或外部安装依赖。",
+        "完全断网预演采用本地文本并模拟通知，不加载通知模块。",
+        "脱敏通知支持全局开关、模块发现、十五秒超时与输出隔离，通知不可用不改变业务退出码。",
+        "提供时间轴分阶段结果、任务统计及唯一单行 TASK_SUMMARY，保留日报原成功标记和汇总结构。"
       ],
       "sideEffects": [
-        "正式运行且启用通知时，调用青龙通知模块向已配置的渠道发送日报或脱敏任务总结。"
+        "正式运行并启用通知时，通过青龙通知模块向已配置的渠道发送资讯和脱敏总结。"
       ],
       "review": {
         "staticPassed": true,
@@ -4992,12 +5033,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/f3d5ae90c3c979bf",
-        "candidateSha256": "fe4c8ade2d5bc156367c5bdaf6fcfe1b5fd5924c3376c0025150887ed426d1b7"
+        "candidateSha256": "6dce54ef865a811e820967e80fde20ecbfc3863b25959a196f6749aa96ae27c5"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "fe4c8ade2d5bc156367c5bdaf6fcfe1b5fd5924c3376c0025150887ed426d1b7",
-        "releaseSha256": "288f8a194e4896e2a9c08ebad44efa4aa5125b65f036439c540ec57b34e82df9",
+        "validatedSha256": "6dce54ef865a811e820967e80fde20ecbfc3863b25959a196f6749aa96ae27c5",
+        "releaseSha256": "94296da462707211d175c768ce6e631af7abc71a9fd5644304f8c5db7b7bc6b5",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
