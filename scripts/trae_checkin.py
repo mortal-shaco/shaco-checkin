@@ -4,7 +4,10 @@
 # cron: 7,23,37 * * * *
 """Trae 每日签到（默认）与积分查询（TRAE_TASK=credits）。
 来源：L0NE-6/Trae-AutoCheckin trae_checkin.py，以及 task.json 中同应用 MIT 参考。
+合并来源：xz0609/trae-work-checkin-ql trae_work_checkin.py（MIT）；
+同应用参考：03_checkin.py、trae_core.py、trae_credit_monitor.py。
 原定时：23 0 * * * 主签，7,37 * * * * 补签；可分别创建青龙任务。
+Trae Work 原定时 0 8,20 * * * 可继续使用同一脚本 checkin 命令。
 TRAE_ACCOUNTS：每个非空行一个 JSON 对象，配套凭据放在同一对象中。
 字段：accessToken 或 refreshToken，deviceId（同账号官方客户端真实设备号），
 deviceKeyPem、devicePubPem、machineId（新版续期需要同设备证明），uid、name 可选。
@@ -12,6 +15,19 @@ deviceKeyPem、devicePubPem、machineId（新版续期需要同设备证明）�
 不要提交、分享或打印凭据；不需要在青龙安装客户端或其他仓库。
 兼容旧 JSON 数组、TRAE_REFRESH_TOKEN[_2.._9]、TRAE_ACCESS_TOKEN[_2.._9]。
 TRAE_ICUBE_AUTH / TRAE_STORAGE_PATH 仅显式提供时读取，不自动扫描桌面目录。
+兼容 auth 文件：每行可写 {"authPath":"本人上传的 auth-用户.json 路径"}，
+或显式设置 TRAE_AUTH_DIR 指向 auths 目录；均不会自动扫描客户端或改写源文件。
+文件中的 claimDeviceId 优先于 deviceId，保留同设备 fingerprint 的 brand/type/os。
+在本人客户端 storage.json 的 iCubeAuthInfo://icube-dc:<数字> 键取得真实设备号，
+配套密钥与 machineId 必须属于同一设备；不要生成设备号或借用其他账号设备。
+交互登录：TRAE_DEVICE_ID 配置真实设备号后执行 python candidate.py login，
+按终端提示在浏览器打开本地登录入口；自动捕获回调或在本地表单隐藏粘贴完整回调。
+登录最长 TRAE_LOGIN_TIMEOUT 秒（默认 300），新会话保存为权限 0600 的 auth 文件。
+TRAE_AUTH_DIR 默认为脚本同目录 auths（只用于显式 login 的写入；签到读取须显式配置）。
+后续可使用 authPath 或 TRAE_AUTH_DIR；令牌轮换仍写 TRAE_TOKEN_CACHE 而不改源文件。
+复制客户端的刷新凭据会共用轮换链，建议交互登录建立单独会话。
+上游 RANDOM_SIGNIN/MAX_RANDOM_DELAY 显式设置时兼容每账号随机等待；
+未设置时保持规范脚本原有启动及账号间错峰，不增加默认一小时等待。
 TRAE_DRY_RUN=1：只验证配置及列出动作；禁止所有联网和文件写入。
 本脚本不会发布帖子、评论或分享。不会自动切换其他账号设备或改写账号源文件。
 令牌续期会轮换服务端 refreshToken，并以 0600 权限缓存最新凭据。
@@ -44,11 +60,14 @@ import platform
 import random
 import re
 import subprocess
+import secrets
 import sys
 import tempfile
 import time
 import urllib.error
 import urllib.request
+import urllib.parse
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 UgHost = 'https://api.trae.cn'
@@ -157,7 +176,7 @@ def identity(data):
 
 SECRETS = []
 
-def ug_headers(token, device_id):
+def ug_headers(token, device_id, acc=None):
     # 与桌面端 _applyUgDeviceHeaders 对齐：缺这些设备头会被服务端拒成 9074
     headers = {'Authorization': 'Cloud-IDE-JWT ' + token, 'X-User-Region': 'CN',
                'User-Agent': UA, 'Content-Type': 'application/json'}
@@ -169,6 +188,12 @@ def ug_headers(token, device_id):
     brand = os.getenv('TRAE_DEVICE_BRAND', '').strip()
     if brand:
         headers['x-device-brand'] = brand
+    # 兼容 Trae Work 登录文件的同设备指纹；不探测或轮换其他设备。
+    fingerprint = (acc or {}).get('fingerprint') or {}
+    if isinstance(fingerprint, dict):
+        for field, header in (('brand', 'x-device-brand'), ('type', 'x-device-type'), ('os', 'x-os-version')):
+            if isinstance(fingerprint.get(field), str) and fingerprint[field].strip():
+                headers[header] = fingerprint[field].strip()
     return headers
 
 
@@ -340,6 +365,16 @@ def jwt_exp(token):
         return 0
 
 
+def expiry_seconds(value):
+    try:
+        value = float(value)
+        if not math.isfinite(value) or value <= 0:
+            return 0
+        return value / 1000 if value > 1e12 else value
+    except (TypeError, ValueError):
+        return 0
+
+
 def exchange(acc, cache, cache_path):
     refresh_token = acc.get('refreshToken', '')
     if not refresh_token:
@@ -366,7 +401,7 @@ def exchange(acc, cache, cache_path):
             url = EP_EXCHANGE_PROOF
             headers = {'Content-Type': 'application/json', 'x-cloudide-token': ''}
         else:
-            body = {'ClientID': cid, 'RefreshToken': refresh_token, 'ClientSecret': '-', 'UserID': ''}
+            body = {'ClientID': cid, 'RefreshToken': refresh_token, 'ClientSecret': '-', 'UserID': str(acc.get('uid') or '')}
             url = EP_EXCHANGE
             headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'User-Agent': UA}
         status, data = http(url, headers, body)
@@ -379,16 +414,19 @@ def exchange(acc, cache, cache_path):
             hint = {20405: '需要同设备证明', 20403: '设备与凭据不匹配', 10101: '客户端与凭据不匹配',
                     20101: '刷新凭据已失效'}.get(error_code, '接口未确认成功')
             raise TaskError('令牌续期失败：' + hint)
-        result = data.get('Result')
-        if not isinstance(result, dict) or not isinstance(result.get('Token'), str) or not result['Token']:
+        result = data.get('Result') or data.get('data')
+        token = (result.get('Token') or result.get('AccessToken') or result.get('access_token')) if isinstance(result, dict) else None
+        if not isinstance(token, str) or not token:
             raise TaskError('令牌续期响应缺少 Token')
-        new_refresh = result.get('RefreshToken') or refresh_token
+        new_refresh = result.get('RefreshToken') or result.get('refresh_token') or refresh_token
         if not isinstance(new_refresh, str):
             raise TaskError('续期响应的刷新凭据格式错误')
-        acc.update(accessToken=result['Token'], refreshToken=new_refresh)
-        SECRETS.extend([result['Token'], new_refresh])
-        cache[acc['_key']] = {'accessToken': result['Token'], 'refreshToken': new_refresh,
-                              'expiresAt': jwt_exp(result['Token'])}
+        acc.update(accessToken=token, refreshToken=new_refresh)
+        SECRETS.extend([token, new_refresh])
+        expiry = expiry_seconds(result.get('TokenExpireAt') or result.get('expiresAt')) or jwt_exp(token)
+        acc['expiresAt'] = expiry
+        cache[acc['_key']] = {'accessToken': token, 'refreshToken': new_refresh,
+                              'expiresAt': expiry}
         # 轮换后立即落盘，后续任何业务失败都不能丢掉刷新链。
         write_json(cache_path, cache)
         log('✅ 令牌续期并安全保存成功')
@@ -398,12 +436,13 @@ def exchange(acc, cache, cache_path):
 
 
 def request_account(acc, url, body, cache, cache_path, refresh_allowed=True):
-    if not acc.get('accessToken') or (jwt_exp(acc['accessToken']) and jwt_exp(acc['accessToken']) <= time.time() + 60):
+    expiry = jwt_exp(acc.get('accessToken', '')) or expiry_seconds(acc.get('expiresAt'))
+    if not acc.get('accessToken') or (expiry and expiry <= time.time() + 60):
         exchange(acc, cache, cache_path)
-    status, data = http(url, ug_headers(acc['accessToken'], acc['deviceId']), body, 20)
+    status, data = http(url, ug_headers(acc['accessToken'], acc['deviceId'], acc), body, 20)
     if refresh_allowed and (status in (401, 403) or code_of(data) in AUTH_FAIL_CODES) and acc.get('refreshToken'):
         exchange(acc, cache, cache_path)
-        status, data = http(url, ug_headers(acc['accessToken'], acc['deviceId']), body, 20)
+        status, data = http(url, ug_headers(acc['accessToken'], acc['deviceId'], acc), body, 20)
     log('请求结果：HTTP %d，业务码 %s' % (status, code_of(data) if code_of(data) is not None else '未提供'))
     identity(data)
     return status, data
@@ -443,20 +482,39 @@ def parse_accounts():
             entries = [{'icubeAuth': os.getenv('TRAE_ICUBE_AUTH'), 'deviceId': os.getenv('TRAE_DEVICE_ID', '')}]
         if not entries and os.getenv('TRAE_STORAGE_PATH'):
             entries = [{'storagePath': os.getenv('TRAE_STORAGE_PATH')}]
+        if not entries and os.getenv('TRAE_AUTH_DIR'):
+            if DRY:
+                raise TaskError('预演不读取 auth 目录，请用 TRAE_ACCOUNTS 提供占位明文凭据')
+            directory = Path(os.environ['TRAE_AUTH_DIR'])
+            entries = [{'authPath': str(p)} for p in sorted(directory.glob('auth-*.json'))]
     if not entries:
         raise TaskError('请配置 TRAE_ACCOUNTS：每行一个账号 JSON 对象')
     accounts = []
     for index, raw_account in enumerate(entries, 1):
         acc = dict(raw_account) if isinstance(raw_account, dict) else {'_error': '账号必须是 JSON 对象'}
         acc.pop('_error', None) if isinstance(raw_account, dict) else None
+        if acc.get('authPath') and not DRY:
+            try:
+                with open(acc['authPath'], encoding='utf-8') as handle:
+                    stored = json.load(handle)
+                if not isinstance(stored, dict):
+                    raise ValueError()
+                stored.update(acc)
+                acc = stored
+            except Exception:
+                acc['_error'] = '显式 auth 凭据文件无法读取或格式错误'
         acc['_index'] = index
         aliases = {'accessToken': ('token', 'access_token'), 'refreshToken': ('refresh_token',),
-                   'deviceId': ('realDeviceId', 'device_id'), 'deviceKeyPem': ('device_key_pem', 'privateKeyPem'),
+                   'deviceId': ('claimDeviceId', 'realDeviceId', 'device_id'), 'deviceKeyPem': ('device_key_pem', 'privateKeyPem'),
                    'devicePubPem': ('device_pub_pem', 'publicKeyPem'), 'machineId': ('machine_id',),
                    'uid': ('userId', 'user_id')}
         for canonical, alternatives in aliases.items():
             if not acc.get(canonical):
                 acc[canonical] = next((acc[k] for k in alternatives if acc.get(k)), '')
+        if acc.get('claimDeviceId'):
+            acc['deviceId'] = acc['claimDeviceId']
+        if not acc.get('name'):
+            acc['name'] = acc.get('screenName', '')
         for field in ('accessToken', 'refreshToken', 'deviceId', 'deviceKeyPem', 'devicePubPem', 'machineId'):
             if not isinstance(acc.get(field, ''), str):
                 acc['_error'] = '凭据字段必须是字符串'
@@ -465,7 +523,7 @@ def parse_accounts():
         if not acc['deviceId'] and len(entries) == 1:
             acc['deviceId'] = os.getenv('TRAE_DEVICE_ID', '').strip()
             SECRETS.append(acc['deviceId'])
-        seed = acc.get('refreshToken') or acc.get('accessToken') or str(index)
+        seed = ('authPath:' + str(acc['authPath'])) if acc.get('authPath') else acc.get('refreshToken') or acc.get('accessToken') or str(index)
         acc['_key'] = hashlib.sha256(('uid:' + str(acc['uid']) if acc.get('uid') else 'credential:' + seed).encode()).hexdigest()
         accounts.append(acc)
     only = os.getenv('TRAE_ONLY', '').strip()
@@ -635,7 +693,7 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
         if acc.get('_error'):
             raise TaskError(acc['_error'])
         if not acc.get('accessToken') and not acc.get('refreshToken'):
-            if DRY and (acc.get('icubeAuth') or acc.get('storagePath')):
+            if DRY and (acc.get('icubeAuth') or acc.get('storagePath') or acc.get('authPath')):
                 raise TaskError('预演请提供占位明文凭据，不读取桌面凭据')
             load_explicit_credentials(acc)
         if not acc.get('accessToken') and not acc.get('refreshToken'):
@@ -648,10 +706,22 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
     if DRY:
         run.stage('断网预演', lambda: log('DRY_RUN_OK：配置有效；计划' + ('查询积分' if task == 'credits' else '查询状态、按需签到、查询余额') + '，未发送请求或写入文件'))
         return 'dry-run'
+    if task == 'checkin' and os.getenv('RANDOM_SIGNIN', 'false').strip().lower() not in DISABLED:
+        delay = random.randint(0, integer_env('MAX_RANDOM_DELAY', 3600, 0, 86400))
+        if delay:
+            def wait_random():
+                remaining = delay
+                while remaining:
+                    log('兼容随机等待：剩余 %d 秒' % remaining)
+                    step = min(30, remaining)
+                    time.sleep(step)
+                    remaining -= step
+            run.stage('显式随机错峰', wait_random)
     saved = cache.get(acc['_key'], {})
     if isinstance(saved, dict) and saved.get('accessToken') and saved.get('refreshToken'):
         acc['accessToken'] = saved['accessToken']
         acc['refreshToken'] = saved['refreshToken']
+        acc['expiresAt'] = saved.get('expiresAt', 0)
         SECRETS.extend([acc['accessToken'], acc['refreshToken']])
     key = acc['_key']
     if task == 'checkin':
@@ -824,6 +894,176 @@ def load_explicit_credentials(acc):
         raise TaskError('显式凭据解密或读取失败，不扫描其他目录') from None
 
 
+def callback_credentials(url, expected_host, expected_path):
+    """只接受本次登录回调；不输出完整地址或异常详情。"""
+    parsed = urllib.parse.urlsplit(url)
+    if parsed.scheme != 'http' or parsed.netloc != expected_host or parsed.path != expected_path or len(url) > 65536:
+        raise TaskError('回调地址与本次登录会话不匹配')
+    query = urllib.parse.parse_qs(parsed.query, max_num_fields=30)
+    def one(key):
+        return query.get(key, [''])[0]
+    def obj(key):
+        value = one(key)
+        for raw in (value, urllib.parse.unquote(value)):
+            try:
+                data = json.loads(raw)
+                if isinstance(data, dict):
+                    return data
+            except ValueError:
+                pass
+        return {}
+    info, jwt = obj('userInfo'), obj('userJwt')
+    refresh = one('refreshToken') or one('refresh_token') or one('data') or jwt.get('RefreshToken')
+    access = jwt.get('Token') or jwt.get('token') or jwt.get('AccessToken') or ''
+    if not isinstance(refresh, str) or not refresh or not isinstance(access, str):
+        raise TaskError('登录回调缺少有效刷新凭据')
+    SECRETS.extend([refresh, access])
+    return {'refreshToken': refresh, 'accessToken': access,
+            'uid': str(info.get('UserID') or jwt.get('UserID') or ''),
+            'screenName': str(info.get('ScreenName') or info.get('screenName') or ''),
+            'expiresAt': expiry_seconds(jwt.get('TokenExpireAt'))}
+
+
+def interactive_login(device_id, timeout):
+    """独立 HTTP OAuth 登录，无客户端、仓库或安装引导依赖。"""
+    path = '/authorize/' + secrets.token_urlsafe(24)
+    machine_id = os.getenv('TRAE_MACHINE_ID', '').strip() or secrets.token_hex(16)
+    SECRETS.extend([device_id, machine_id])
+    captured = []
+    auth_url = ''
+    host = ''
+
+    class CallbackHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            if self.headers.get('Host') != host:
+                self.send_error(400)
+                return
+            if self.path == '/login':
+                self.send_response(302)
+                self.send_header('Location', auth_url)
+                self.send_header('Cache-Control', 'no-store')
+                self.send_header('Referrer-Policy', 'no-referrer')
+                self.end_headers()
+                return
+            if self.path == '/paste':
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Cache-Control', 'no-store')
+                self.end_headers()
+                page = ('<!doctype html><meta charset="utf-8"><title>Trae 本地回调</title>'
+                        '<p>仅在本机隐藏粘贴本次官方登录的完整回调地址，勿分享。</p>'
+                        '<form method="post" action="' + path + '">'
+                        '<input type="password" name="callback_url" autocomplete="off" required>'
+                        '<button>提交回调</button></form>')
+                self.wfile.write(page.encode('utf-8'))
+                return
+            try:
+                cred = callback_credentials('http://' + host + self.path, host, path)
+            except (TaskError, ValueError):
+                self.send_error(400)
+                return
+            if not captured:
+                captured.append(cred)
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.send_header('Cache-Control', 'no-store')
+            self.end_headers()
+            self.wfile.write('授权回调已接收，请回终端查看最终核验结果。'.encode('utf-8'))
+
+        def do_POST(self):
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if self.headers.get('Host') != host or self.path != path or not 0 < length <= 65536:
+                    raise ValueError()
+                if self.headers.get_content_type() != 'application/x-www-form-urlencoded':
+                    raise ValueError()
+                fields = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'), max_num_fields=1)
+                cred = callback_credentials(fields.get('callback_url', [''])[0], host, path)
+            except (TaskError, ValueError, UnicodeError):
+                self.send_error(400)
+                return
+            if not captured:
+                captured.append(cred)
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.send_header('Cache-Control', 'no-store')
+            self.end_headers()
+            self.wfile.write('已接收回调，请回终端查看最终核验结果。'.encode('utf-8'))
+
+        def log_message(self, *args):
+            pass
+
+    class BoundedServer(HTTPServer):
+        def get_request(self):
+            connection, address = super().get_request()
+            connection.settimeout(3)
+            return connection, address
+
+        def handle_error(self, *args):
+            log('⚠️ 本地回调处理失败（详情已脱敏）')
+
+    server = None
+    for port in range(18080, 18100):
+        try:
+            server = BoundedServer(('127.0.0.1', port), CallbackHandler)
+            break
+        except OSError:
+            continue
+    if server is None:
+        raise TaskError('本地回调端口 18080 至 18099 均不可用')
+    server.timeout = 0.5
+    host = '127.0.0.1:%d' % server.server_address[1]
+    params = {'client_id': ClientID, 'auth_from': 'solo', 'login_channel': 'native_ide',
+              'plugin_version': '2.3.62834', 'auth_callback_url': 'http://' + host + path,
+              'x_app_version': '0.1.52', 'x_app_type': 'stable',
+              'device_id': device_id, 'machine_id': machine_id}
+    auth_url = 'https://www.trae.cn/authorization?' + urllib.parse.urlencode(params)
+    log('请在运行脚本的电脑浏览器打开 http://' + host + '/login ，完成官方授权。')
+    log('如需手动粘贴，请打开 http://' + host + '/paste 的隐藏输入表单；请勿分享回调或凭据文件。')
+    deadline = time.monotonic() + timeout
+    next_report = time.monotonic() + 30
+    try:
+        while time.monotonic() < deadline and not captured:
+            server.handle_request()
+            if time.monotonic() >= next_report:
+                log('等待官方授权回调，剩余 %d 秒' % max(0, deadline - time.monotonic()))
+                next_report = time.monotonic() + 30
+        if not captured:
+            raise TaskError('交互登录超时，未取得有效回调')
+    finally:
+        server.server_close()
+    acc = captured[0]
+    acc.update(deviceId=device_id, claimDeviceId=device_id, machineId=machine_id,
+               fingerprint={'brand': os.getenv('TRAE_DEVICE_BRAND', '').strip(),
+                            'type': platform.system(), 'os': platform.version()})
+    # 文件名不采用未经验证的用户输入，避免目录穿越。
+    filename = 'auth-' + hashlib.sha256((acc['uid'] or secrets.token_hex(16)).encode()).hexdigest()[:24] + '.json'
+    destination = Path(os.getenv('TRAE_AUTH_DIR') or str(Path(__file__).parent / 'auths')) / filename
+    acc['_key'] = hashlib.sha256(('uid:' + acc['uid'] if acc['uid'] else 'credential:authPath:' + str(destination)).encode()).hexdigest()
+    # 原始回调不是业务成功证据；使用现有带设备证明的续期链验证并立即缓存轮换值。
+    cache_path = Path(os.getenv('TRAE_TOKEN_CACHE') or str(Path(__file__).parent / '.trae_token_cache.json'))
+    cache = read_json(cache_path)
+    exchange(acc, cache, cache_path)
+    identity({'uid': acc['uid'], 'displayName': acc['screenName']})
+    saved = {key: value for key, value in acc.items() if not key.startswith('_')}
+    write_json(destination, saved)
+    log('✅ 登录成功：已通过续期接口核验，凭据已按 0600 权限保存；后续显式配置 authPath 或 TRAE_AUTH_DIR')
+    return 'success'
+
+
+def run_login(run):
+    def validate():
+        device_id = os.getenv('TRAE_DEVICE_ID', '').strip()
+        if not is_valid_device_id(device_id):
+            raise TaskError('交互登录请配置 TRAE_DEVICE_ID：同账号官方客户端真实设备号')
+        return device_id, integer_env('TRAE_LOGIN_TIMEOUT', 300, 30, 900)
+    device_id, timeout = run.stage('登录配置核验', validate)
+    if DRY:
+        run.stage('断网预演', lambda: log('DRY_RUN_OK：交互登录计划有效；未打开浏览器、监听端口、读取或写入凭据、发送请求'))
+        return 'dry-run'
+    return run.stage('交互授权、续期核验及安全保存', lambda: interactive_login(device_id, timeout))
+
+
 def main():
     started = time.monotonic()
     start_time = stamp()
@@ -834,13 +1074,15 @@ def main():
     log('开始时间：' + start_time)
     log('运行模式：' + ('断网预演' if DRY else '正式'))
     try:
-        accounts = parse_accounts()
+        if len(sys.argv) > 2:
+            raise TaskError('用法：python candidate.py [checkin|credits|login]')
+        task = (sys.argv[1] if len(sys.argv) == 2 else os.getenv('TRAE_TASK', 'checkin')).strip().lower()
+        if task not in ('checkin', 'credits', 'login'):
+            raise TaskError('任务动作只能为 checkin、credits 或 login')
+        accounts = [{'_index': 1, '_key': 'login'}] if task == 'login' else parse_accounts()
         account_count = len(accounts)
         log('账号数量：%d' % account_count)
-        task = os.getenv('TRAE_TASK', 'checkin').strip().lower()
-        if task not in ('checkin', 'credits'):
-            raise TaskError('TRAE_TASK 只能为 checkin 或 credits')
-        log('任务动作：' + ('每日签到与余额' if task == 'checkin' else '只查积分余额'))
+        log('任务动作：' + {'checkin': '每日签到与余额', 'credits': '只查积分余额', 'login': '显式交互登录'}[task])
         peak = datetime.datetime.now(BJ).hour in parse_hours(os.getenv('TRAE_PEAK_HOURS', '0'))
         options = {'cooldown': integer_env('TRAE_PEAK_COOLDOWN_MIN' if peak else 'TRAE_COOLDOWN_MIN', 12 if peak else 55, 1, 1440),
                    'tries': integer_env('CLAIM_TRIES', 1, 1, 5)}
@@ -849,8 +1091,8 @@ def main():
         cache_path = Path(os.getenv('TRAE_TOKEN_CACHE') or str(Path(__file__).parent / '.trae_token_cache.json'))
         state_path = Path(os.getenv('TRAE_STATE_FILE') or str(Path(__file__).parent / '.trae_checkin_state.json'))
         # 预演完全不接触缓存和凭据文件。
-        cache = {} if DRY else read_json(cache_path)
-        state = {} if DRY else read_json(state_path)
+        cache = {} if DRY or task == 'login' else read_json(cache_path)
+        state = {} if DRY or task == 'login' else read_json(state_path)
         date = stamp()[:10]
         if state.get('date') != date:
             state = {'date': date, 'done': {}, 'cooldown': {}}
@@ -872,7 +1114,9 @@ def main():
             run = AccountRun(acc['_index'])
             log('---------- 账号%d ----------' % acc['_index'])
             try:
-                if circuit or (acc['_index'] not in selected and state['done'].get(acc['_key']) is not True):
+                if task == 'login':
+                    status = run_login(run)
+                elif circuit or (acc['_index'] not in selected and state['done'].get(acc['_key']) is not True):
                     run.counts['skipped'] += 1
                     status = 'skipped'
                     log('⏭️ 显式轮签或熔断设置：本轮未处理，该账号尚未核验成功')

@@ -17077,32 +17077,36 @@
           "TRAE_ACCOUNTS"
         ],
         "optionalEnv": [
-          "TRAE_REFRESH_TOKEN",
+          "TRAE_TASK",
+          "TRAE_DRY_RUN",
+          "TRAE_AUTH_DIR",
+          "TRAE_LOGIN_TIMEOUT",
           "TRAE_ACCESS_TOKEN",
+          "TRAE_REFRESH_TOKEN",
           "TRAE_DEVICE_ID",
-          "TRAE_DEVICE_KEY_PEM",
-          "TRAE_DEVICE_PUB_PEM",
-          "TRAE_MACHINE_ID",
           "TRAE_UID",
           "TRAE_NAME",
           "TRAE_ICUBE_AUTH",
           "TRAE_STORAGE_PATH",
-          "TRAE_TASK",
-          "TRAE_DRY_RUN",
-          "TRAE_BATCH",
-          "TRAE_ONLY",
-          "TRAE_JITTER",
-          "TRAE_PEAK_HOURS",
-          "TRAE_COOLDOWN_MIN",
-          "TRAE_PEAK_COOLDOWN_MIN",
-          "TRAE_CIRCUIT",
-          "CLAIM_TRIES",
-          "TRAE_TOKEN_CACHE",
-          "TRAE_STATE_FILE",
+          "TRAE_DEVICE_KEY_PEM",
+          "TRAE_DEVICE_PUB_PEM",
+          "TRAE_MACHINE_ID",
           "TRAE_CLIENT_ID",
           "TRAE_DEVICE_BRAND",
           "TRAE_DEVICE_NAME",
           "TRAE_DEVICE_MODEL",
+          "TRAE_ONLY",
+          "TRAE_BATCH",
+          "TRAE_PEAK_HOURS",
+          "TRAE_COOLDOWN_MIN",
+          "TRAE_PEAK_COOLDOWN_MIN",
+          "CLAIM_TRIES",
+          "TRAE_JITTER",
+          "TRAE_CIRCUIT",
+          "RANDOM_SIGNIN",
+          "MAX_RANDOM_DELAY",
+          "TRAE_TOKEN_CACHE",
+          "TRAE_STATE_FILE",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR",
           "QYWX_TOKEN",
@@ -17114,33 +17118,32 @@
         },
         "liveEnv": {
           "TRAE_TASK": "checkin",
-          "TRAE_BATCH": "all",
-          "CLAIM_TRIES": "1",
+          "TRAE_DRY_RUN": "0",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "签到成功（code=0）",
-          "官方领取接口确认今日已签（9095）",
-          "当天已核验签到",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
+          "最终状态：success"
         ],
         "features": [
-          "每日状态查询与按需签到，官方已签不重复领取",
-          "签到后查询真实积分余额，独立只查积分模式显示总额、已用和余额",
-          "访问凭据复用，过期或鉴权失败时自动续期；保留新版设备证明和旧客户端兼容链",
-          "轮换刷新凭据安全缓存，后续运行继续使用最新凭据",
+          "每日查询签到状态、按需签到，官方已签不重复领取；签到后查询真实积分余额",
+          "独立 credits 模式显示总额、已用及余额，保留权益接口到用量接口的回退链",
+          "访问凭据复用、过期或鉴权失败自动续期，保留新版设备证明、IDE_PC、SOLO_PC 与旧客户端兼容链",
+          "即时安全缓存轮换后的凭据，后续复用最新访问及刷新凭据",
           "多账号独立处理、指定账号筛选、北京时间小时轮签及早窗全签",
-          "北京时间当日去重、账号独立限流冷却、启动及账号间错峰",
+          "北京时间当日去重、账号独立限流冷却、可选熔断、启动及账号间错峰",
           "青龙通知、可选企业微信与 PushPlus，通知失败保留业务退出码",
-          "断网预演、编号时间轴、分账号统计和唯一单行 TASK_SUMMARY 汇总",
-          "兼容显式加密凭据输入，不要求桌面端、其他仓库或凭据文件"
+          "完全断网预演、编号时间轴、官方非敏感身份展示、分账号统计和唯一单行 TASK_SUMMARY",
+          "兼容显式明文及加密凭据、storage 文件和旧参数，无需桌面端或私有仓库",
+          "显式 login 交互登录，自带本机 HTTP 授权回调及隐藏粘贴表单，有限等待并通过续期接口核验",
+          "显式兼容 Trae Work auth 文件及 auth 目录，优先使用绑定 claimDeviceId 和同设备 fingerprint",
+          "兼容显式 RANDOM_SIGNIN、MAX_RANDOM_DELAY，保留规范脚本默认错峰及上游 8 点、20 点定时配置能力"
         ],
         "sideEffects": [
           "签到领取积分",
           "续期在服务端轮换刷新凭据",
-          "以限制权限更新本地令牌缓存、签到状态和冷却文件",
-          "正式运行发送脱敏青龙通知及显式配置的企业微信或 PushPlus 通知"
+          "以 0600 权限原子更新本地令牌缓存、签到状态及冷却文件",
+          "显式 login 发起官方授权、轮换刷新凭据并以 0600 权限保存新 auth 文件",
+          "正式运行向青龙通知器及显式配置的企业微信、PushPlus 发送脱敏摘要"
         ]
       },
       "postReview": {
@@ -17149,7 +17152,7 @@
       },
       "displayName": "Trae 每日签到与积分查询",
       "path": "scripts/trae_checkin.py",
-      "sha256": "9772bf28cca609669b1499cc35c1eee8274f71152a49eda453b0289f17992fab",
+      "sha256": "a41362cb79fc79b65e1974ee225dd6e6ae30fe48ade167675075e701de8941b8",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -17178,6 +17181,16 @@
             "commit": "38b1d919760ed9a36dfe6873be8765f8cafaff3f",
             "originalPath": "trae_credit_monitor.py",
             "license": "MIT"
+          },
+          {
+            "repository": "xz0609/trae-work-checkin-ql",
+            "url": "https://github.com/xz0609/trae-work-checkin-ql.git",
+            "branch": "main",
+            "commit": "54ce4564ae714d9aa3140defa06308acce12942e",
+            "originalPath": "trae_work_checkin.py",
+            "catalogId": "beffaf1692cf33d5",
+            "sha256": "3fb11c5335e0d3cba5f8a33d7bb8bb85421700c37fe865c27904d387210a278c",
+            "license": "MIT"
           }
         ]
       },
@@ -17188,251 +17201,283 @@
           "name": "TRAE_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "在本人已登录的官方 Trae 中国版或 SOLO 客户端中，从登录或续期响应取得 accessToken、refreshToken；真实 deviceId 位于 storage.json 的 iCubeAuthInfo://icube-dc:<数字> 键。设备证明私钥和公钥来自同一键对应的凭据内容，machineId 来自 telemetry.machineId。请在本机安全查看，不上传、打印或共享凭据；青龙只需填入这些值，不需要安装客户端或提取器。accessToken 可单独使用直至过期；仅 refreshToken 的账号会先续期，新接口需要同设备证明。",
-          "format": "推荐每个非空行一个 JSON 对象：accessToken 或 refreshToken 至少一个，deviceId 为同账号注册的 12 至 20 位数字；可选 deviceKeyPem、devicePubPem、machineId、uid、name。PEM 换行用 JSON 转义。兼容旧 JSON 数组；不以 & 或 @ 分隔账号。"
-        },
-        {
-          "name": "TRAE_REFRESH_TOKEN",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。",
-          "format": "单账号刷新凭据；兼容 _2 至 _9 后缀"
-        },
-        {
-          "name": "TRAE_ACCESS_TOKEN",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。",
-          "format": "单账号访问凭据；兼容 _2 至 _9 后缀"
-        },
-        {
-          "name": "TRAE_DEVICE_ID",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。",
-          "format": "同账号真实设备号；12 至 20 位数字；兼容 _2 至 _9 后缀"
-        },
-        {
-          "name": "TRAE_DEVICE_KEY_PEM",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。",
-          "format": "同设备 P-256 私钥 PEM，支持字面量 \\n"
-        },
-        {
-          "name": "TRAE_DEVICE_PUB_PEM",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。",
-          "format": "同设备公钥 PEM，支持字面量 \\n"
-        },
-        {
-          "name": "TRAE_MACHINE_ID",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选旧部署兼容输入；从本人已登录官方客户端取得；优先将配套值合并到 TRAE_ACCOUNTS 的同一账号对象中。",
-          "format": "同设备 machineId 字符串"
-        },
-        {
-          "name": "TRAE_UID",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选本人设置的旧账号筛选标识；兼容 _2 至 _9 后缀。",
-          "format": "字符串；仅用于筛选，不作为官方返回身份打印"
-        },
-        {
-          "name": "TRAE_NAME",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选本人设置的旧账号筛选标识；兼容 _2 至 _9 后缀。",
-          "format": "字符串；仅用于筛选，不作为官方返回身份打印"
-        },
-        {
-          "name": "TRAE_ICUBE_AUTH",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选兼容输入，从本人 storage.json 的 iCubeAuthInfo://icube.cloudide 值取得；不要共享。不是运行前提。",
-          "format": "加密凭据串；解密需要公共包 cryptography，且需另填真实 TRAE_DEVICE_ID"
-        },
-        {
-          "name": "TRAE_STORAGE_PATH",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "可选兼容输入，显式指定本人客户端凭据文件。推荐改用 TRAE_ACCOUNTS，脚本不会自动扫描目录。",
-          "format": "本人可读 storage.json 文件路径；不是必需依赖；预演不读取"
+          "howToGet": "推荐在本机执行 login 建立独立会话，将生成 auth 文件内容压缩为单行 JSON；也可从本人官方客户端登录响应或 storage.json 获取访问和刷新凭据。真实设备号来自 iCubeAuthInfo://icube-dc:<数字> 键或 ahanet/tt_net_config.config 的 device_id 字段。配套设备证明密钥和 machineId 必须属于同一设备；不要求在青龙安装客户端。复制客户端刷新凭据会共用其轮换链。也可上传本人 auth 文件后用 authPath 指向文件。",
+          "format": "每个非空行一个账号 JSON，不用 & 或 @ 分账号；字段 accessToken 或 refreshToken、deviceId（12 至 20 位真实十进制设备号），可选 uid、name、deviceKeyPem、devicePubPem、machineId、expiresAt、fingerprint（brand/type/os）。兼容旧 JSON 数组及 authPath、icubeAuth、storagePath。签到和积分模式的规范必需输入；旧变量或显式 auth 目录可兼容替代。"
         },
         {
           "name": "TRAE_TASK",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需在青龙环境变量中设置。",
-          "format": "checkin 默认签到并查询余额；credits 仅查询积分总额、已用和余额"
+          "howToGet": "按需要选择动作，命令行参数优先。login 仅在本人明确运行时交互授权，不用于无人值守定时。",
+          "format": "checkin（默认，按需签到后查余额）、credits（只查积分）、login（交互登录）。"
         },
         {
           "name": "TRAE_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "断网预演时设为 1。",
-          "format": "默认 0；1 启用断网预演，不读取凭据文件、不访问接口、不写缓存；通知器尝试在禁网子进程中执行"
+          "howToGet": "离线验证时设为 1，并提供占位明文账号；不读取 auth、storage、缓存或状态文件，不监听端口、联网或写文件。",
+          "format": "1 开启；0、false、no、off 关闭，默认 0。"
         },
         {
-          "name": "TRAE_BATCH",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要按小时轮签时设置。",
-          "format": "默认 all 一轮全签；0 同 all；1 至 9999 每轮账号数，早窗全签；未处理账号不算成功，退出非零"
-        },
-        {
-          "name": "TRAE_ONLY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需设置账号序号、uid 或 name。",
-          "format": "从 1 开始的序号或精确标识；未匹配停止运行，避免误操作全部账号"
-        },
-        {
-          "name": "TRAE_JITTER",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需设置错峰等待。",
-          "format": "默认 1 启用 0 至 20 秒启动等待；0、false、no、off 关闭；预演不等待"
-        },
-        {
-          "name": "TRAE_PEAK_HOURS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按北京时间配置签到早窗。",
-          "format": "默认 0；逗号分隔的小时或范围，如 0-1；小时须在 0 至 23 内"
-        },
-        {
-          "name": "TRAE_COOLDOWN_MIN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选运行控制，在青龙按需设置。",
-          "format": "默认 55；1 至 1440 分钟"
-        },
-        {
-          "name": "TRAE_PEAK_COOLDOWN_MIN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选运行控制，在青龙按需设置。",
-          "format": "默认 12；1 至 1440 分钟"
-        },
-        {
-          "name": "TRAE_CIRCUIT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选运行控制，在青龙按需设置。",
-          "format": "默认 0；1 表示一个账号限流后跳过剩余账号；跳过不算成功"
-        },
-        {
-          "name": "CLAIM_TRIES",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选运行控制，在青龙按需设置。",
-          "format": "默认 1；1 至 5；只对限流进行显式退避重试，建议保留 1"
-        },
-        {
-          "name": "TRAE_TOKEN_CACHE",
+          "name": "TRAE_AUTH_DIR",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选缓存位置；使用仅本人可读写的持久目录，不应进入公开仓库。",
-          "format": "默认脚本目录 .trae_token_cache.json，保存轮换后凭据，权限 0600；预演不读写"
+          "howToGet": "将本人 Trae Work auths/auth-用户.json 上传到安全目录后显式配置。每个文件一个账号，保留 claimDeviceId 和 fingerprint，不改写源文件。未配置时仅显式 login 写入脚本同目录 auths，签到不会自动读取。",
+          "format": "本地目录路径，仅显式配置后读取 auth-*.json；预演改用 TRAE_ACCOUNTS 占位凭据。"
         },
         {
-          "name": "TRAE_STATE_FILE",
+          "name": "TRAE_LOGIN_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "配置真实 TRAE_DEVICE_ID 后运行 python candidate.py login，按提示打开本机 /login 入口完成官方授权；自动捕获回调，也可在 /paste 本地表单隐藏粘贴本次完整回调。登录凭据通过续期接口核验后保存。",
+          "format": "30 至 900 秒，默认 300；交互登录一次一个账号，可重复执行。"
+        },
+        {
+          "name": "TRAE_ACCESS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选缓存位置；使用仅本人可读写的持久目录，不应进入公开仓库。",
-          "format": "默认脚本目录 .trae_checkin_state.json，保存北京时间当日完成及冷却状态，权限 0600；预演不读写"
+          "howToGet": "旧部署兼容，从本人官方登录响应取得访问凭据；建议迁移到 TRAE_ACCOUNTS。",
+          "format": "单账号访问凭据，兼容 _2 至 _9 后缀，与同后缀设备号和刷新凭据配套。"
+        },
+        {
+          "name": "TRAE_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧部署兼容，从本人授权回调或登录响应取得刷新凭据，推荐用独立 login 会话。",
+          "format": "单账号刷新凭据，兼容 _2 至 _9 后缀，与访问凭据不同，后续使用缓存中的最新轮换值。"
+        },
+        {
+          "name": "TRAE_DEVICE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人客户端 storage.json 的 iCubeAuthInfo://icube-dc:<数字> 键或 ahanet/tt_net_config.config 的 device_id 字段取得。必须是当前账号真实注册的设备号，不可自行生成。login 模式必须配置此项。",
+          "format": "12 至 20 位十进制数字；兼容旧账号 _2 至 _9 后缀，多账号推荐分别填入 TRAE_ACCOUNTS。"
+        },
+        {
+          "name": "TRAE_UID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧部署兼容，从本人官方用户信息取得公开 UID，推荐填写账号 JSON 的 uid 字段。",
+          "format": "公开 UID 字符串，支持 _2 至 _9 后缀。"
+        },
+        {
+          "name": "TRAE_NAME",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧部署兼容，填写本人账号名称用于筛选；官方返回的非敏感身份仍按原值显示。",
+          "format": "名称字符串，支持 _2 至 _9 后缀。"
+        },
+        {
+          "name": "TRAE_ICUBE_AUTH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "显式复制本人 storage.json 中 iCubeAuthInfo://icube.cloudide 的值。加密输入需公开包 cryptography，明文及交互登录无需此包。",
+          "format": "加密字符串或明文凭据 JSON，与 TRAE_DEVICE_ID 配套；多账号放入每行 JSON 的 icubeAuth 字段。"
+        },
+        {
+          "name": "TRAE_STORAGE_PATH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "显式指定本人上传的 storage.json，仅读取该文件的凭据和设备号，不扫描目录，不改写源文件。加密解密需 cryptography。",
+          "format": "单个本地路径，多账号用每行 JSON 的 storagePath；预演不读取。"
+        },
+        {
+          "name": "TRAE_DEVICE_KEY_PEM",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人同设备安全存储取得 P-256 私钥，与公钥和设备号配套用于新版证明；推荐按账号填写 deviceKeyPem。",
+          "format": "PEM 字符串，支持字面量 \\n 转换为换行。"
+        },
+        {
+          "name": "TRAE_DEVICE_PUB_PEM",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人同设备安全存储取得与私钥配套的 P-256 公钥，推荐填写 devicePubPem。",
+          "format": "PEM 字符串，支持字面量 \\n 转换为换行。"
+        },
+        {
+          "name": "TRAE_MACHINE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人同设备登录数据取得 machineId，推荐按账号填写；login 未提供时生成本次登录用 machineId，不用于生成签到设备号。",
+          "format": "同设备字符串。"
         },
         {
           "name": "TRAE_CLIENT_ID",
           "required": false,
           "sensitive": false,
-          "howToGet": "从本人官方客户端请求配置取得；未设置时保留上游默认值。",
-          "format": "默认 ono9krqynydwx5；新版续期后兼容 en1oxy7wnw8j9n 的 IDE_PC 和 SOLO_PC"
+          "howToGet": "仅有本人官方客户端数据佐证客户端标识变化时设置。保留新版及旧客户端组合链。",
+          "format": "默认 ono9krqynydwx5；兼容链保留 en1oxy7wnw8j9n。"
         },
         {
           "name": "TRAE_DEVICE_BRAND",
           "required": false,
           "sensitive": false,
-          "howToGet": "从本人官方客户端请求配置取得；未设置时保留上游默认值。",
-          "format": "可选官方客户端设备品牌"
+          "howToGet": "根据本人官方客户端同设备品牌显式填写；auth 文件的 fingerprint 可按账号覆盖业务请求头。",
+          "format": "可选品牌字符串。"
         },
         {
           "name": "TRAE_DEVICE_NAME",
           "required": false,
-          "sensitive": false,
-          "howToGet": "从本人官方客户端请求配置取得；未设置时保留上游默认值。",
-          "format": "可选同设备名称；默认当前主机名"
+          "sensitive": true,
+          "howToGet": "按本人官方客户端同设备名称填写，不输出到日志。",
+          "format": "可选设备名称，未设置时保留维护脚本默认行为。"
         },
         {
           "name": "TRAE_DEVICE_MODEL",
           "required": false,
           "sensitive": false,
-          "howToGet": "从本人官方客户端请求配置取得；未设置时保留上游默认值。",
-          "format": "可选同设备型号"
+          "howToGet": "按本人官方客户端同设备型号填写。",
+          "format": "可选型号字符串。"
+        },
+        {
+          "name": "TRAE_ONLY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "指定要单独处理的原始序号、uid 或 name。不匹配则配置失败，不扩大处理范围。",
+          "format": "单个序号、公开 UID 或名称，默认全部账号。"
+        },
+        {
+          "name": "TRAE_BATCH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置非早窗的北京时间按小时轮签批量；早窗全签，已完成账号保持去重。",
+          "format": "默认 all；all、0 或空表示全部，或填写 1 至 9999。"
+        },
+        {
+          "name": "TRAE_PEAK_HOURS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "指定北京时间全签及短冷却时段。",
+          "format": "0 至 23 小时的逗号列表或范围，默认 0；这是时间列表，不是账号分隔符。"
+        },
+        {
+          "name": "TRAE_COOLDOWN_MIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "遇到 HTTP 限流或业务码 9074 时独立记录账号冷却，等待后续定时重试，不计为成功。",
+          "format": "1 至 1440 分钟，默认 55。"
+        },
+        {
+          "name": "TRAE_PEAK_COOLDOWN_MIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "控制早窗限流冷却。",
+          "format": "1 至 1440 分钟，默认 12。"
+        },
+        {
+          "name": "CLAIM_TRIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要时显式增加领取限流后的短退避重试次数。",
+          "format": "1 至 5，默认 1。"
+        },
+        {
+          "name": "TRAE_JITTER",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "控制签到启动错峰，账号间领取后的随机间隔仍保留。",
+          "format": "默认 1；0、false、no、off 关闭启动 0 至 20 秒错峰；账号间间隔为 12 至 25 秒。"
+        },
+        {
+          "name": "TRAE_CIRCUIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需限流后停止其他账号时显式开启；被跳过账号未核验成功，整体非零退出。",
+          "format": "1 开启，默认 0。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容 Trae Work 的逐账号随机等待，仅显式开启时追加；未设置保持规范脚本原有错峰。",
+          "format": "true 或 1 开启，默认 false；0、false、no、off 关闭。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "开启 RANDOM_SIGNIN 后设置逐账号随机等待上限。",
+          "format": "0 至 86400 秒，默认 3600；预演不等待。"
+        },
+        {
+          "name": "TRAE_TOKEN_CACHE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "需要更换轮换凭据缓存位置时设置。即时以 0600 权限原子缓存轮换值，后续使用最新凭据。",
+          "format": "本地路径，默认脚本同目录 .trae_token_cache.json，预演不读写。"
+        },
+        {
+          "name": "TRAE_STATE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要更换北京时间当日去重及账号冷却文件位置时设置。",
+          "format": "本地路径，默认脚本同目录 .trae_checkin_state.json，预演不读写。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙通知全局开关。",
-          "format": "默认 1；0、false、no、off 关闭；通知失败不改变业务退出码"
+          "howToGet": "成功、部分失败、失败、配置错误、预演均生成脱敏摘要，按开关提交通知器；通知不可用不改变业务退出码。",
+          "format": "默认 1；0、false、no、off 关闭；预演通知器受断网保护，无法联网投递。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选指定青龙通知模块目录；也自动尝试 import notify 和标准青龙 scripts 路径。",
-          "format": "包含 notify.py 或 sendNotify.js 的目录；不是业务 HTTP 依赖"
+          "howToGet": "通知文件不在默认位置时指定目录。兼容 import notify.send、/ql/data/scripts、/ql/scripts；正式运行可回退 sendNotify.js。",
+          "format": "notify.py 或 sendNotify.js 所在本地目录，仅通知适配，不是业务代码依赖。"
         },
         {
           "name": "QYWX_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选附加推送，从本人企业微信群机器人设置或 PushPlus 控制台取得；仍遵守 QINGLONG_NOTIFY 全局开关。",
-          "format": "企业微信群机器人 key 或完整 webhook；通知失败不改变业务退出码；预演不调用"
+          "howToGet": "可选，从本人企业微信群机器人设置取得 key。固定官方通知主机，不发送账号凭据。",
+          "format": "机器人 key 或完整官方 webhook；预演及通知开关关闭时不发送。"
         },
         {
           "name": "WECHAT_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选附加推送，从本人企业微信群机器人设置或 PushPlus 控制台取得；仍遵守 QINGLONG_NOTIFY 全局开关。",
-          "format": "QYWX_TOKEN 的旧兼容输入；通知失败不改变业务退出码；预演不调用"
+          "howToGet": "QYWX_TOKEN 的旧部署兼容输入，从本人企业微信群机器人取得。",
+          "format": "机器人 key 或完整官方 webhook，优先使用 QYWX_TOKEN。"
         },
         {
           "name": "PLUSPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选附加推送，从本人企业微信群机器人设置或 PushPlus 控制台取得；仍遵守 QINGLONG_NOTIFY 全局开关。",
-          "format": "PushPlus 推送凭据；通知失败不改变业务退出码；预演不调用"
+          "howToGet": "可选，从本人 PushPlus 获取通知凭据，保留规范脚本变量名。",
+          "format": "通知凭据字符串，预演及通知开关关闭时不发送。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号 JSON 对象，账号间仅使用换行；配套访问凭据、刷新凭据和设备证明放在同一对象。兼容旧 JSON 数组和带序号的旧环境变量。逐账号独立处理，任一失败或轮签跳过均非零退出。"
+        "rule": "每个非空行一个账号 JSON 对象，配套凭据放同一对象；仅兼容读取旧 JSON 数组或旧后缀变量。auth 文件每个文件一个账号，须显式配置。账号独立处理，任一失败或未完成跳过均非零退出。login 一次登录一个账号，可重复运行。"
       },
       "dependencies": [
         "cryptography"
       ],
       "features": [
-        "每日状态查询与按需签到，官方已签不重复领取",
-        "签到后查询真实积分余额，独立只查积分模式显示总额、已用和余额",
-        "访问凭据复用，过期或鉴权失败时自动续期；保留新版设备证明和旧客户端兼容链",
-        "轮换刷新凭据安全缓存，后续运行继续使用最新凭据",
+        "每日查询签到状态、按需签到，官方已签不重复领取；签到后查询真实积分余额",
+        "独立 credits 模式显示总额、已用及余额，保留权益接口到用量接口的回退链",
+        "访问凭据复用、过期或鉴权失败自动续期，保留新版设备证明、IDE_PC、SOLO_PC 与旧客户端兼容链",
+        "即时安全缓存轮换后的凭据，后续复用最新访问及刷新凭据",
         "多账号独立处理、指定账号筛选、北京时间小时轮签及早窗全签",
-        "北京时间当日去重、账号独立限流冷却、启动及账号间错峰",
+        "北京时间当日去重、账号独立限流冷却、可选熔断、启动及账号间错峰",
         "青龙通知、可选企业微信与 PushPlus，通知失败保留业务退出码",
-        "断网预演、编号时间轴、分账号统计和唯一单行 TASK_SUMMARY 汇总",
-        "兼容显式加密凭据输入，不要求桌面端、其他仓库或凭据文件"
+        "完全断网预演、编号时间轴、官方非敏感身份展示、分账号统计和唯一单行 TASK_SUMMARY",
+        "兼容显式明文及加密凭据、storage 文件和旧参数，无需桌面端或私有仓库",
+        "显式 login 交互登录，自带本机 HTTP 授权回调及隐藏粘贴表单，有限等待并通过续期接口核验",
+        "显式兼容 Trae Work auth 文件及 auth 目录，优先使用绑定 claimDeviceId 和同设备 fingerprint",
+        "兼容显式 RANDOM_SIGNIN、MAX_RANDOM_DELAY，保留规范脚本默认错峰及上游 8 点、20 点定时配置能力"
       ],
       "sideEffects": [
         "签到领取积分",
         "续期在服务端轮换刷新凭据",
-        "以限制权限更新本地令牌缓存、签到状态和冷却文件",
-        "正式运行发送脱敏青龙通知及显式配置的企业微信或 PushPlus 通知"
+        "以 0600 权限原子更新本地令牌缓存、签到状态及冷却文件",
+        "显式 login 发起官方授权、轮换刷新凭据并以 0600 权限保存新 auth 文件",
+        "正式运行向青龙通知器及显式配置的企业微信、PushPlus 发送脱敏摘要"
       ],
       "review": {
         "staticPassed": true,
@@ -17445,160 +17490,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/71de90498a3a6ded",
-        "candidateSha256": "9772bf28cca609669b1499cc35c1eee8274f71152a49eda453b0289f17992fab"
-      }
-    },
-    {
-      "catalogId": "beffaf1692cf33d5",
-      "applicationKey": "trae-work",
-      "checkProfile": {
-        "requiredEnv": [
-          "TRAE_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "TRAE_DRY_RUN",
-          "RANDOM_SIGNIN",
-          "MAX_RANDOM_DELAY",
-          "TRAE_SAVE_CREDENTIALS",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "TRAE_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "TRAE_DRY_RUN": "0",
-          "RANDOM_SIGNIN": "true",
-          "MAX_RANDOM_DELAY": "3600",
-          "TRAE_SAVE_CREDENTIALS": "0",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "领取成功",
-          "今日已领取",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
-        ],
-        "features": [
-          "每日签到状态查询与积分领取，默认或 checkin 命令执行。",
-          "到期前刷新凭据，认证失败时刷新并重试一次。",
-          "查询总额减消耗的剩余积分，兼容权益包及多种余额字段，支持零余额。",
-          "status 命令查询状态与积分，不领取积分；认证需要时仍可刷新凭据。",
-          "显式 login 命令交互式 OAuth 登录，支持浏览器回调和保密粘贴回调，成功后保密保存凭据。",
-          "换行 JSON 多账号与旧版凭据文件兼容，独立执行并汇总退出码。",
-          "沿用每日 8 点、20 点调度与默认每账号最大一小时随机延时。",
-          "通知、分阶段脱敏日志、每账号与任务统计、单行 TASK_SUMMARY 汇总和完全断网预演。"
-        ],
-        "sideEffects": [
-          "checkin 命令为账号领取每日积分。",
-          "凭据刷新会请求官方接口更新会话凭据。",
-          "显式 login 或 TRAE_SAVE_CREDENTIALS=1 会保存本地敏感凭据文件。",
-          "正式执行且通知开启时发送脱敏任务通知。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "Trae Work 签到",
-      "path": "scripts/trae_work_checkin.py",
-      "sha256": "8d93d71623e3677727614cd67282379102d38919c5528146f09f868932560bfe",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "xz0609/trae-work-checkin-ql",
-        "branch": "main",
-        "commit": "54ce4564ae714d9aa3140defa06308acce12942e",
-        "originalPath": "trae_work_checkin.py"
-      },
-      "cron": "0 8,20 * * *",
-      "command": "python3 scripts/trae_work_checkin.py",
-      "environment": [
-        {
-          "name": "TRAE_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录本人官方国内版 Trae 账号，在本人授权请求中取得 Authorization 中 Cloud-IDE-JWT 后的 accessToken，以及 x-device-id、x-device-brand、x-device-type、x-os-version，分别填入 claimDeviceId 与 fingerprint.brand/type/os。refreshToken 来自本人 OAuth 登录回调或旧版登录凭据。可显式运行 python candidate.py login 登录并保密生成凭据文件，再补充本人真实注册设备和匹配指纹，将每个文件压缩为一行 JSON 写入本变量。不要公开请求、回调或凭据。",
-          "format": "每个非空行一个 JSON 对象，必须含 accessToken、claimDeviceId（兼容 deviceId）与 fingerprint 对象（brand、type、os）；可选 refreshToken、expiresAt（秒或毫秒时间戳）、userId、screenName。只用换行分隔账号，各账号使用属于本人的不同真实注册设备。未设置时兼容读取脚本目录 auths/auth-*.json；环境变量优先，文件不是运行依赖。"
-        },
-        {
-          "name": "TRAE_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中手动设置。",
-          "format": "1 启用完全断网预演，0 关闭，默认 0。"
-        },
-        {
-          "name": "RANDOM_SIGNIN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "沿用旧版随机延时参数，按需要设置。",
-          "format": "默认 true；0、false、no、off 关闭；预演不延时。"
-        },
-        {
-          "name": "MAX_RANDOM_DELAY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需要设置每个账号签到前最大随机延时。",
-          "format": "0 至 86400 的整数秒，默认 3600；预演仍校验格式。"
-        },
-        {
-          "name": "TRAE_SAVE_CREDENTIALS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "仅在确认需要保存刷新后凭据时启用。",
-          "format": "默认 0；1 允许保存到脚本目录 auths 中的权限 0600 文件。login 命令本身显式授权保存；预演不写文件。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "由青龙通知配置控制，也可手动关闭。",
-          "format": "默认 1；0、false、no、off 关闭。预演仅模拟通知；通知不可用不影响业务退出码。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选指定青龙 notify.py 所在目录；也会尝试导入 notify 和青龙常见目录。",
-          "format": "本机通知模块目录路径，仅正式执行且通知开启时使用；不是业务依赖。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "每个非空行一个账号 JSON，独立执行，单个账号失败不阻止后续账号，任一失败整体非零退出。不使用 & 或 @ 分隔账号。"
-      },
-      "dependencies": [],
-      "features": [
-        "每日签到状态查询与积分领取，默认或 checkin 命令执行。",
-        "到期前刷新凭据，认证失败时刷新并重试一次。",
-        "查询总额减消耗的剩余积分，兼容权益包及多种余额字段，支持零余额。",
-        "status 命令查询状态与积分，不领取积分；认证需要时仍可刷新凭据。",
-        "显式 login 命令交互式 OAuth 登录，支持浏览器回调和保密粘贴回调，成功后保密保存凭据。",
-        "换行 JSON 多账号与旧版凭据文件兼容，独立执行并汇总退出码。",
-        "沿用每日 8 点、20 点调度与默认每账号最大一小时随机延时。",
-        "通知、分阶段脱敏日志、每账号与任务统计、单行 TASK_SUMMARY 汇总和完全断网预演。"
-      ],
-      "sideEffects": [
-        "checkin 命令为账号领取每日积分。",
-        "凭据刷新会请求官方接口更新会话凭据。",
-        "显式 login 或 TRAE_SAVE_CREDENTIALS=1 会保存本地敏感凭据文件。",
-        "正式执行且通知开启时发送脱敏任务通知。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/beffaf1692cf33d5",
-        "candidateSha256": "8d93d71623e3677727614cd67282379102d38919c5528146f09f868932560bfe"
+        "candidateSha256": "a41362cb79fc79b65e1974ee225dd6e6ae30fe48ade167675075e701de8941b8"
       }
     },
     {
