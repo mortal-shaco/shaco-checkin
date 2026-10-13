@@ -107,6 +107,7 @@
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `1 1 1 1 1` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
+| PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `0 8 * * *` |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` |
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `0 9 * * *` |
@@ -273,6 +274,7 @@
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
 - `scripts/ole.py`：Ole 微信小程序账号签到；保留原账号字段、门店与城市默认值及定时表达式；多账号独立执行与失败闭合退出；完全断网预演及参数检查；脱敏分阶段日志、账号统计与单行任务汇总；青龙通知摘要与全局开关；断网预演模拟通知。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
+- `scripts/psnine.py`：每日 PSNINE 祈祷签到；识别当天已经签到并展示累计祈祷天数；保留上游 do 接口及 psnid、shell 配套凭据；多账号独立执行和失败非零退出；完全断网预演、分阶段日志和单行结构化总结；实时任务结束时发送脱敏青龙通知，预演展示本地通知摘要；响应提供公开用户名时展示账号身份。
 - `scripts/qoder_airscript.js`：逐账号显式签到开关，兼容原账号 JSON 和两种令牌字段命名；优先使用访问令牌，缺少时刷新；活动查询返回 401 后刷新并重试一次；中国区及国际区活动查询，可领取 Credits 活动逐项领取与额度统计；识别今日已领取、活动未开放及待下发；保留可选 Server酱、PushPlus、企业微信逐账号通知，增加青龙汇总通知及全局开关；指定私有账号文件时写回轮换令牌；仅环境变量时只在内存保存；官方非敏感身份显示、逐账号结果、分阶段日志及单行结构化汇总；完全断网预演、参数验证及多账号独立执行。
 - `scripts/quark_signin.py`：验证夸克账号 Cookie 并显示官方返回的昵称或公开身份；查询当日签到状态，识别今日已签到；领取每日存储空间奖励并展示奖励和连签进度；换行配置多账号，独立处理并汇总失败；可选随机延迟、请求超时、完全断网预演；脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知；失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应。
 - `scripts/raccoon_daily.py`：每日触发积分发放，以北京时间今日正积分账单核验签到成功。；分别领取首次电脑端、手机端登录奖励，检查业务码和 granted，哈希台账避免重复探测。；--query 只查询今日入账，不触发发放、不领取奖励、不写台账。；--skip-onboarding 跳过新手奖励、--only N 筛选账号、--no-notify 关闭通知。；每行一个账号，支持备注|令牌与 Bearer 格式，各账号和奖励独立处理。；支持配置 HTTPS 站点和本地台账路径。；优先青龙通知，保留 PushPlus、Bark、企业微信、钉钉和面板通知兼容渠道。；完全断网预演、时间轴日志、官方非秘密账号身份及单行 TASK_SUMMARY 汇总。。
@@ -449,6 +451,7 @@
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ole.py</code></td><td><code>OLE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；四个必填字段均为非空字符串。可选 shop_code 默认 205368，city_id 默认 c_region_11122，user_agent 默认保留上游值。兼容 account_name 字段但不输出用户填写的标签，避免泄漏手机号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/psnine.py</code></td><td><code>PSNINE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写 psnid|shell，只按首个 | 分割；字段不能含分号、换行或非 ASCII 字符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；至少有 accessToken/access_token 或 refreshToken/refresh_token。device 包含非空字符串 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version。enabled=true 或 qiandao=&quot;是&quot; 才签到，默认跳过。可选 name、uid 保留，serverchan、pushplus、qywx 对应原 C/D/E 列的本人通知凭据；企业微信可用机器人 key 或完整地址。不按符号拆账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/quark_signin.py</code></td><td><code>QUARK_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留分号及等号，不使用 &amp;、&amp;&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/raccoon_daily.py</code></td><td><code>RACCOON_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号：令牌或备注|令牌，只在第一个 | 拆分，支持 Bearer 前缀，不支持 &amp; 或 @ 分隔账号。备注不输出。；多账号格式以该脚本文档为准</td></tr>
@@ -1059,6 +1062,11 @@
 <tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：非负整数秒，默认 0；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：布尔值；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/psnine.py</code></td><td><code>PSNID</code></td><td>是</td><td>格式：单账号 psnid，必须配合 SHELL。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHELL</code></td><td>是</td><td>格式：单账号 shell 凭据，必须配合 PSNID。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PSNINE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS_FILE</code></td><td>否</td><td>格式：可读写的私有 JSONL 文件路径，每个非空行一个账号 JSON；优先于环境变量。不要放入公开订阅目录。原子写回权限为 0600。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QODER_REGION</code></td><td>否</td><td>格式：cn（默认中国区）或 global（国际区）；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QODER_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启完全断网预演，不领取、不写回、不真实发送通知。；多账号格式以该脚本文档为准</td></tr>
@@ -1623,6 +1631,7 @@
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
 - `scripts/ole.py`：每个非空行一个完整 JSON 账号对象，同一账号凭据合并在一行；逐账号独立执行，任一失败时整体非零退出。。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
+- `scripts/psnine.py`：每个非空行一个账号，psnid 与 shell 同行，仅按首个 | 分割。逐账号独立处理，任一账号失败则进程非零退出。。
 - `scripts/qoder_airscript.js`：每个非空行一个账号 JSON，同账号令牌、设备参数及可选通知凭据合并在同一对象；各账号独立处理，任一账号失败整体非零退出。。
 - `scripts/quark_signin.py`：每个非空行一个账号，完整 Cookie 作为一个字段保留；账号独立执行，任一账号失败则进程非零退出。。
 - `scripts/raccoon_daily.py`：每个非空行一个账号，令牌或备注|令牌；仅在第一个 | 拆分，保留后续凭据文本，支持 Bearer 前缀。账号和两端奖励独立处理，任一账号失败整体非零退出。。
@@ -2262,6 +2271,13 @@
 - 所属脚本：`scripts/passnat_checkin.py`
 - 获取或设置：登录 PassNAT 网页端，在浏览器开发者工具的网络面板中查看已登录 API 请求，复制 Authorization 请求头的完整值；每个账号单独一行，切勿公开。
 - 填写格式：`每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PSNINE_ACCOUNTS`
+
+- 所属脚本：`scripts/psnine.py`
+- 获取或设置：登录 https://psnine.com，在浏览器开发者工具的应用或存储面板读取本站 Cookie：__Psnine_psnid 与 __Psnine_shell。两项必须来自同一账号。不要复制整段 Cookie 或分享凭据。
+- 填写格式：`每个非空行填写 psnid|shell，只按首个 | 分割；字段不能含分号、换行或非 ASCII 字符。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `QODER_ACCOUNTS`
@@ -6040,6 +6056,38 @@
 - 获取或设置：如 notify.py 不在青龙标准目录，可设置为其所在目录。
 - 填写格式：`包含 notify.py 的本地目录路径`
 
+#### `PSNID`
+
+- 所属脚本：`scripts/psnine.py`
+- 获取或设置：可选单账号兼容输入，取自本站 Cookie 的 __Psnine_psnid；规范变量非空时忽略。
+- 填写格式：`单账号 psnid，必须配合 SHELL。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SHELL`
+
+- 所属脚本：`scripts/psnine.py`
+- 获取或设置：可选单账号兼容输入，取自本站 Cookie 的 __Psnine_shell；使用 PSNID 时须显式覆盖此值，不能使用系统默认登录 shell 路径。
+- 填写格式：`单账号 shell 凭据，必须配合 PSNID。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `PSNINE_DRY_RUN`
+
+- 所属脚本：`scripts/psnine.py`
+- 获取或设置：自行设置为 1 启用完全断网预演。
+- 填写格式：`1、true、yes、on 启用；默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/psnine.py`
+- 获取或设置：青龙全局通知开关；实时运行通过 notify.py 发送，预演仅打印本地摘要以保证断网。
+- 填写格式：`默认 1；0、false、no、off 关闭。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/psnine.py`
+- 获取或设置：可选填写青龙现有 notify.py 所在目录；也会尝试直接导入 notify 和青龙标准目录。
+- 填写格式：`本地目录路径；通知不可用或失败不改变业务退出码。`
+
 #### `QODER_ACCOUNTS_FILE`
 
 - 所属脚本：`scripts/qoder_airscript.js`
@@ -9160,6 +9208,7 @@
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
 - `scripts/ole.py`：SHA-256 `5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
+- `scripts/psnine.py`：SHA-256 `c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
 - `scripts/qoder_airscript.js`：SHA-256 `f2de4d37431803d0d85df63bf97e7b2e936efbb3e4686d7e2bb2a15f24d91b07`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 - `scripts/quark_signin.py`：SHA-256 `2487b5cd4a53457b8d0ce2000f154668060333a0483b846a52a9d329da18a5bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
 - `scripts/raccoon_daily.py`：SHA-256 `3ebdbfeaf41c75c467fdeb6f2e11889b5a985cacfc3b7203679348087ed36b63`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
@@ -9326,6 +9375,7 @@
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
 - `scripts/ole.py`：正式模式向 Ole 提交会员签到，可能增加签到记录及奖励积分；正式模式按青龙配置发送任务通知。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
+- `scripts/psnine.py`：向 PSNINE 提交每日祈祷签到，改变签到记录及服务发放的奖励；实时模式向配置的青龙通知渠道发送脱敏任务摘要。
 - `scripts/qoder_airscript.js`：显式启用账号领取活动奖励；必要时刷新令牌，可能导致刷新令牌轮换；显式配置私有账号文件时写回刷新后的令牌；通知开启时发送青龙汇总及已配置的逐账号通知。
 - `scripts/quark_signin.py`：实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励；实时模式下启用通知时通过青龙发送脱敏任务摘要。
 - `scripts/raccoon_daily.py`：正式模式请求 setting_info 触发每日积分发放。；正式模式默认领取桌面端、手机端一次性登录积分。；正式模式将确认结算的奖励状态写入本地哈希台账。；通知开启时尝试发送脱敏任务摘要。。
@@ -9494,6 +9544,7 @@
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/ole.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/ole/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/psnine.py`：上游 `nuthx/auto-sign` / `src/special/psnine.py` / `a8d2c229bac693daebe1535bca4cfd49733b632d`。
 - `scripts/qoder_airscript.js`：上游 `wallechfox/qoder-checkin` / `qoder-checkin-金山云文档/Qoder签到-金山文档AirScript.js` / `19ab6365c1f0759bb424a3d69e7de8dca89bf75d`。
 - `scripts/quark_signin.py`：上游 `agluo/ql-script-hub` / `quark_signin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/raccoon_daily.py`：上游 `L0NE-6/Raccoon-Daily` / `raccoon_daily.py` / `4e99a3b53829faf3ae228755b0f4c32859d25425`。

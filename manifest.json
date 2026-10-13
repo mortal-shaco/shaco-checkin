@@ -12171,6 +12171,140 @@
       }
     },
     {
+      "catalogId": "190d89a73fbfe28e",
+      "applicationKey": "nuthx/auto-sign::special",
+      "checkProfile": {
+        "requiredEnv": [
+          "PSNINE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "PSNID",
+          "SHELL",
+          "PSNINE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "PSNINE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "PSNINE_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 已祈祷",
+          "☑️ 今天已经签过了"
+        ],
+        "features": [
+          "每日 PSNINE 祈祷签到",
+          "识别当天已经签到并展示累计祈祷天数",
+          "保留上游 do 接口及 psnid、shell 配套凭据",
+          "多账号独立执行和失败非零退出",
+          "完全断网预演、分阶段日志和单行结构化总结",
+          "实时任务结束时发送脱敏青龙通知，预演展示本地通知摘要",
+          "响应提供公开用户名时展示账号身份"
+        ],
+        "sideEffects": [
+          "向 PSNINE 提交每日祈祷签到，改变签到记录及服务发放的奖励",
+          "实时模式向配置的青龙通知渠道发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "PSNINE 每日祈祷",
+      "path": "scripts/psnine.py",
+      "sha256": "c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "nuthx/auto-sign",
+        "branch": "main",
+        "commit": "a8d2c229bac693daebe1535bca4cfd49733b632d",
+        "originalPath": "src/special/psnine.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/psnine.py",
+      "environment": [
+        {
+          "name": "PSNINE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://psnine.com，在浏览器开发者工具的应用或存储面板读取本站 Cookie：__Psnine_psnid 与 __Psnine_shell。两项必须来自同一账号。不要复制整段 Cookie 或分享凭据。",
+          "format": "每个非空行填写 psnid|shell，只按首个 | 分割；字段不能含分号、换行或非 ASCII 字符。"
+        },
+        {
+          "name": "PSNID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选单账号兼容输入，取自本站 Cookie 的 __Psnine_psnid；规范变量非空时忽略。",
+          "format": "单账号 psnid，必须配合 SHELL。"
+        },
+        {
+          "name": "SHELL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选单账号兼容输入，取自本站 Cookie 的 __Psnine_shell；使用 PSNID 时须显式覆盖此值，不能使用系统默认登录 shell 路径。",
+          "format": "单账号 shell 凭据，必须配合 PSNID。"
+        },
+        {
+          "name": "PSNINE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 启用完全断网预演。",
+          "format": "1、true、yes、on 启用；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关；实时运行通过 notify.py 发送，预演仅打印本地摘要以保证断网。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙现有 notify.py 所在目录；也会尝试直接导入 notify 和青龙标准目录。",
+          "format": "本地目录路径；通知不可用或失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，psnid 与 shell 同行，仅按首个 | 分割。逐账号独立处理，任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日 PSNINE 祈祷签到",
+        "识别当天已经签到并展示累计祈祷天数",
+        "保留上游 do 接口及 psnid、shell 配套凭据",
+        "多账号独立执行和失败非零退出",
+        "完全断网预演、分阶段日志和单行结构化总结",
+        "实时任务结束时发送脱敏青龙通知，预演展示本地通知摘要",
+        "响应提供公开用户名时展示账号身份"
+      ],
+      "sideEffects": [
+        "向 PSNINE 提交每日祈祷签到，改变签到记录及服务发放的奖励",
+        "实时模式向配置的青龙通知渠道发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/190d89a73fbfe28e",
+        "candidateSha256": "c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4"
+      }
+    },
+    {
       "catalogId": "e034e75509550071",
       "applicationKey": "qoder",
       "checkProfile": {
