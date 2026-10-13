@@ -494,6 +494,204 @@
       }
     },
     {
+      "catalogId": "81684dd327c48211",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::agentrouter",
+      "checkProfile": {
+        "requiredEnv": [
+          "AGENTROUTER_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "AGENTROUTER_CONFIG",
+          "AGENTROUTER_BASE_URL",
+          "AGENTROUTER_PROXY",
+          "HTTPS_PROXY",
+          "HTTP_PROXY",
+          "NO_PROXY",
+          "AGENTROUTER_CA_BUNDLE",
+          "AGENTROUTER_ALLOW_AUTHORIZE",
+          "AGENTROUTER_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AGENTROUTER_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "AGENTROUTER_ALLOW_AUTHORIZE": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "今日签到已确认",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "通过 GitHub OAuth 重新登录触发每日签到，以服务端 checked_in 严格确认为成功。",
+          "查询并展示官方账号身份、当前余额美元换算及已用额度。",
+          "保留站点公开客户端配置、已知客户端编号和额度换算比例兜底。",
+          "支持每行一个账号、原 JSON 配置格式、账号站点与用户编号配置、代理与可信 CA 证书。",
+          "支持显式启用首次 GitHub OAuth 授权；默认要求浏览器手动授权。",
+          "每天 09:20 运行，多账号间隔五秒。",
+          "完全断网预演、分阶段日志、账号与子任务统计、单行 TASK_SUMMARY 汇总及青龙脱敏通知。"
+        ],
+        "sideEffects": [
+          "重新登录 AgentRouter，创建登录会话并可能发放当日签到额度。",
+          "仅显式启用 AGENTROUTER_ALLOW_AUTHORIZE 后可提交 GitHub 首次应用授权。",
+          "正式运行按 QINGLONG_NOTIFY 设置发送青龙通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AgentRouter签到",
+      "path": "scripts/agentrouter.py",
+      "sha256": "a22e06bb7c32b2ce57c1dbbea73b86dac505381bde53a818ec84254669f4c888",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/agentrouter/main.py",
+        "related": [
+          {
+            "catalogId": "1845fb182f927ef2",
+            "sha256": "05d0dbfadbba50a56ed8b7e59855deaf2dcc507a1f4e8852a6a42859a2f6011d",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/agentrouter/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "20 9 * * *",
+      "command": "python3 scripts/agentrouter.py",
+      "environment": [
+        {
+          "name": "AGENTROUTER_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "先在浏览器登录 GitHub 并手动完成 AgentRouter 的 GitHub 授权；在开发者工具的 Application/Cookies/github.com 中复制 user_session 值。每行一个账号，也可用 JSON 对象组合该账号配置。",
+          "format": "每个非空行一个 user_session 值或 JSON 对象；对象必填 github_session，可填 account_name、base_url、user_id、proxy、verify；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "AGENTROUTER_CONFIG",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入：显式指定原配置文件路径；AGENTROUTER_ACCOUNTS 非空时优先使用账号变量。文件内容无需另一仓库。",
+          "format": "本地 JSON 文件路径，结构为 agentrouter.accounts 数组；账号字段与账号变量的 JSON 对象相同。user_id 可从站点用户信息取得，正常登录自动获取；verify 只允许 true 或可信 CA 文件路径，不接受 false。"
+        },
+        {
+          "name": "AGENTROUTER_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认使用上游备用站点；需要时从本人使用的 AgentRouter 站点确认根地址。",
+          "format": "HTTPS 根地址，默认 https://ps.air-outer.com；账号 base_url 优先。"
+        },
+        {
+          "name": "AGENTROUTER_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从自己的代理服务取得；账号 proxy 优先。",
+          "format": "HTTP 或 HTTPS 代理地址，可含代理认证；仅用于请求，不输出。"
+        },
+        {
+          "name": "HTTPS_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从自己的代理服务取得；无显式代理时由 requests 使用系统代理环境。",
+          "format": "HTTP 或 HTTPS 代理地址；支持标准小写变量及 NO_PROXY。"
+        },
+        {
+          "name": "HTTP_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从自己的代理服务取得；保留标准 requests 代理环境兼容。",
+          "format": "HTTP 或 HTTPS 代理地址。"
+        },
+        {
+          "name": "NO_PROXY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，按代理服务要求填写无需代理的主机；沿用 requests 标准行为。",
+          "format": "逗号分隔的主机名或域名规则。"
+        },
+        {
+          "name": "AGENTROUTER_CA_BUNDLE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，从可信证书管理员获取 PEM CA 文件；默认使用 requests 受信任证书，并在 Windows 合并系统根证书。",
+          "format": "本地 CA 文件路径；账号 verify 路径优先，始终开启 TLS 校验。"
+        },
+        {
+          "name": "AGENTROUTER_ALLOW_AUTHORIZE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在理解 GitHub 应用授权权限后自行启用；默认要求先在浏览器手动授权。",
+          "format": "默认 0；设为 1 允许首次授权表单提交，会授予应用权限。"
+        },
+        {
+          "name": "AGENTROUTER_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证配置时设为 1；也支持 --dry-run。",
+          "format": "1 为完全断网预演，不登录、不查询、不发送通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙自带通知配置，默认开启；不需要填写通知凭据到本脚本。",
+          "format": "默认 1；0、false、no、off 关闭；预演只展示通知摘要。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定青龙 notify.py 或 sendNotify.js 所在目录；默认自动查找标准青龙目录。",
+          "format": "本地目录路径，通知失败或不可用不影响业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；每行可为独立 GitHub user_session 值或包含 github_session 的 JSON 对象，配套账号配置在同一对象中；账号独立处理，任一失败整体非零退出。"
+      },
+      "dependencies": [
+        "requests>=2.31.0"
+      ],
+      "features": [
+        "通过 GitHub OAuth 重新登录触发每日签到，以服务端 checked_in 严格确认为成功。",
+        "查询并展示官方账号身份、当前余额美元换算及已用额度。",
+        "保留站点公开客户端配置、已知客户端编号和额度换算比例兜底。",
+        "支持每行一个账号、原 JSON 配置格式、账号站点与用户编号配置、代理与可信 CA 证书。",
+        "支持显式启用首次 GitHub OAuth 授权；默认要求浏览器手动授权。",
+        "每天 09:20 运行，多账号间隔五秒。",
+        "完全断网预演、分阶段日志、账号与子任务统计、单行 TASK_SUMMARY 汇总及青龙脱敏通知。"
+      ],
+      "sideEffects": [
+        "重新登录 AgentRouter，创建登录会话并可能发放当日签到额度。",
+        "仅显式启用 AGENTROUTER_ALLOW_AUTHORIZE 后可提交 GitHub 首次应用授权。",
+        "正式运行按 QINGLONG_NOTIFY 设置发送青龙通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/81684dd327c48211",
+        "candidateSha256": "a22e06bb7c32b2ce57c1dbbea73b86dac505381bde53a818ec84254669f4c888"
+      }
+    },
+    {
       "catalogId": "8cd72e9849a3c893",
       "applicationKey": "cn-grace/qinglongscripts::airport",
       "checkProfile": {
