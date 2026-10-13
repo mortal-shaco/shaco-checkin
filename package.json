@@ -3,9 +3,9 @@
   "version": "1.0.1",
   "private": true,
   "dependencies": {
+    "cheerio": "1.0.0",
     "axios": "^1.12.2",
     "https-proxy-agent": "7",
-    "tough-cookie": "^6.0.0",
-    "cheerio": "1.0.0"
+    "tough-cookie": "^6.0.0"
   }
 }
