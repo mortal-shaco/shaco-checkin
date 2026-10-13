@@ -20,6 +20,17 @@
  * 使用上游 receiveVoucher 原接口及默认语义，不猜测新的奖励类型参数。
  * 待选奖励未授权时报告未完成并非零退出；最多补签一次，避免递归重复领取。
  * JLC_YJ_DRY_RUN=1 或 JLC_DRY_RUN=1 完全离线预演（含模拟通知）。
+ * 合并来源：xz0609/oshwhub-checkin-ql oshwhub-checkin-ql.py（原许可 MIT）。
+ * 原脚本 cron: 10 8 * * *；如需保留原签到时点，可为同一文件设该调度。
+ * OSHW_COOKIE 为 JLC_COOKIE 的兼容别名，二者同时存在时优先 JLC_COOKIE。
+ * Cookie 获取：登录 oshwhub.com，F12 → Network，刷新 sign_in 页面，
+ * 找到 getSignInProfile，复制请求头完整 Cookie；每行一个账号，勿复制响应。
+ * 签到前后查询 getSignInProfile，确认今日状态并展示积分增量、周/月统计。
+ * RANDOM_SIGNIN=true 可启用随机延迟；保持维护版默认无延迟。
+ * MAX_RANDOM_DELAY 默认 1800 秒，仅在启用延迟时生效，上限 1800。
+ * 只读查询遇到网络错误最多重试三次；不自动重试签到/领取等写入。
+ * 不沿用 X_FORWARDED_FOR 伪装来源 IP，也不从 Cookie 提取身份用于日志。
+ * OSHW_DRY_RUN=1 为兼容离线开关，离线不等待随机延迟。
  * 不更新账号资料，不关注、不发帖、不评论，不访问文本提供方。
  * 合并来源：sudojia/AutoTaskScript src/web/sudojia_jlc.js
  * 原作者 Telegram@sudojia；https://blog.imzjw.cn；2024/08/30
@@ -32,6 +43,8 @@ const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');
 const { fork } = require('node:child_process');
+const { randomInt } = require('node:crypto');
+function isDry() { return ['JLC_YJ_DRY_RUN', 'JLC_DRY_RUN', 'OSHW_DRY_RUN'].some(name => process.env[name] === '1'); }
 
 // 通知单独进程运行，防止通知模块输出敏感内容、挂起或改变业务退出码。
 if (process.argv[2] === '--notification-worker') {
@@ -51,10 +64,10 @@ if (process.argv[2] === '--notification-worker') {
 function stamp() { return new Date().toTimeString().slice(0, 8); }
 function log(text) { console.log(`[${stamp()}] ${text}`); }
 function request(cookie, method, endpoint, body, mappHeaders) {
-  if (process.env.JLC_YJ_DRY_RUN === '1' || process.env.JLC_DRY_RUN === '1') throw new Error('离线模式禁止网络请求');
+  if (isDry()) throw new Error('离线模式禁止网络请求');
   return new Promise((resolve, reject) => {
     const payload = body === undefined ? undefined : JSON.stringify(body);
-    const headers = mappHeaders || { Cookie: cookie, Accept: 'application/json', 'User-Agent': 'Qinglong-OSHWHub/1.0' };
+    const headers = mappHeaders || { Cookie: cookie, Accept: 'application/json', 'User-Agent': 'Qinglong-OSHWHub/1.0', Referer: 'https://oshwhub.com/sign_in', 'Accept-Language': 'zh-CN,zh;q=0.9' };
     if (payload) { headers['Content-Type'] = 'application/json'; headers['Content-Length'] = Buffer.byteLength(payload); }
     let settled = false;
     let timer;
@@ -97,7 +110,7 @@ async function notify(body, dry) {
       let child; let timer; let done = false;
       const finish = value => { if (done) return; done = true; clearTimeout(timer); if (child) child.kill(); resolve(value); };
       try {
-        const env = { ...process.env }; delete env.JLC_COOKIE; delete env.JLC_TOKEN;
+        const env = { ...process.env }; delete env.JLC_COOKIE; delete env.JLC_TOKEN; delete env.OSHW_COOKIE;
         child = fork(__filename, ['--notification-worker'], { silent: true, env });
         child.stdout.resume(); child.stderr.resume();
         child.on('error', () => finish(false));
@@ -142,19 +155,63 @@ function gain(data) {
   if (!numeric(data.data.gainNum)) throw new Error('签到奖励响应字段无效');
   return true;
 }
+// 只读查询可重试；写入请求始终仅执行一次，避免未知响应引起重复副作用。
+async function readOsh(account, endpoint) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try { return await request(account.value, 'GET', endpoint); }
+    catch (err) {
+      if (attempt === 3 || !['网络请求失败', '请求超时', '响应中断', '响应读取失败'].includes(err.message)) throw err;
+      log(`开源平台只读查询第 ${attempt}/3 次失败，进行有界重试（不输出响应）`);
+    }
+  }
+}
+async function profile(account) {
+  const data = await readOsh(account, `/api/users/getSignInProfile?_t=${Date.now()}`);
+  const result = data.result;
+  if (!result || typeof result.isTodaySignIn !== 'boolean') throw new Error('签到状态响应字段无效');
+  if (result.total_point !== undefined && !numeric(result.total_point)) throw new Error('积分响应字段无效');
+  return result;
+}
+function profileStats(before, after) {
+  const details = [];
+  if (numeric(after.total_point)) details.push(`当前总积分：${after.total_point}`);
+  if (numeric(before.total_point) && numeric(after.total_point)) {
+    const delta = Number(after.total_point) - Number(before.total_point);
+    details.push(`本次积分变化：${delta}`);
+  }
+  if (numeric(after.week_signIn_days)) details.push(`本周签到 ${after.week_signIn_days} 天`);
+  if (numeric(after.month_signIn_days)) details.push(`本月连续签到 ${after.month_signIn_days} 天`);
+  return details.join('；');
+}
 async function oshStage(account, j, dry) {
   if (j > 0 && !account.identified) return { kind: 'skipped', text: '身份查询未成功，跳过' };
   if (dry) {
     if (j === 0) account.identified = true;
-    return { kind: 'success', text: `离线预演：${j === 1 ? 'POST /api/users/signIn，正文仅含 _t' : 'GET /api/users'}；未发起请求` };
+    return { kind: 'success', text: `离线预演：${j === 1 ? 'GET getSignInProfile → 未签时 POST /api/users/signIn，正文仅含 _t → GET getSignInProfile 复查；统计积分变化及周/月签到；随机延迟不等待' : 'GET /api/users'}；未发起请求` };
   }
-  const data = await request(account.value, j === 1 ? 'POST' : 'GET', j === 1 ? '/api/users/signIn' : '/api/users', j === 1 ? { _t: Date.now() } : undefined);
+  if (j === 1) {
+    const before = await profile(account);
+    if (before.isTodaySignIn) return { kind: 'alreadyComplete', text: `今日已签到，不重复写入；${profileStats(before, before)}` };
+    if ((process.env.RANDOM_SIGNIN || 'false').toLowerCase() === 'true') {
+      const maximum = Number(process.env.MAX_RANDOM_DELAY || '1800');
+      const delay = randomInt(maximum + 1);
+      log(`签到前随机延迟 ${delay} 秒；阶段计时包含等待`);
+      await new Promise(resolve => setTimeout(resolve, delay * 1000));
+      // 延迟期间另一任务可能已经签到，写入前再次查询。
+      const latest = await profile(account);
+      if (latest.isTodaySignIn) return { kind: 'alreadyComplete', text: `等待后确认今日已签到，不重复写入；${profileStats(before, latest)}` };
+    }
+    await request(account.value, 'POST', '/api/users/signIn', { _t: Date.now() });
+    const after = await profile(account);
+    if (!after.isTodaySignIn) throw new Error('签到复查未确认今日已签到');
+    return { kind: 'success', text: `签到成功（官方 success=true 且复查今日已签到）；${profileStats(before, after)}` };
+  }
+  const data = await readOsh(account, '/api/users');
   if (j === 0) {
     if (!data.result || typeof data.result.nickname !== 'string' || !data.result.nickname.trim()) throw new Error('身份响应缺少昵称');
     account.identified = true;
-    return { kind: 'success', text: `昵称：${data.result.nickname}` };
+    return { kind: 'success', text: `昵称：${JSON.stringify(data.result.nickname)}` };
   }
-  if (j === 1) return { kind: 'success', text: '签到成功（官方 success=true）' };
   const points = data.result && data.result.points;
   if (!numeric(points)) throw new Error('积分响应字段无效');
   return { kind: 'success', text: `当前积分：${points}` };
@@ -206,18 +263,26 @@ async function mappStage(account, j, dry, claim) {
 }
 async function main() {
   const start = Date.now();
-  const dry = process.env.JLC_YJ_DRY_RUN === '1' || process.env.JLC_DRY_RUN === '1';
+  const dry = isDry();
   const selection = process.env.JLC_TASKS || 'oshwhub';
   const claimValue = process.env.JLC_CLAIM_REWARD || '0';
   const claim = claimValue === '1';
   const accounts = [];
   let configurationError = false;
   const errors = [];
+  const randomValue = (process.env.RANDOM_SIGNIN || 'false').toLowerCase();
+  const delayValue = process.env.MAX_RANDOM_DELAY || '1800';
+  const usesOsh = selection === 'oshwhub' || selection === 'all';
+  const delayInvalid = usesOsh && randomValue === 'true' && (!/^\d+$/.test(delayValue) || Number(delayValue) > 1800);
+  const randomInvalid = usesOsh && !['true', 'false'].includes(randomValue);
+  if (randomInvalid) errors.push('RANDOM_SIGNIN 仅支持 true 或 false');
+  if (delayInvalid) errors.push('MAX_RANDOM_DELAY 必须为 0 至 1800 的整数秒');
   if (!['oshwhub', 'mapp', 'all'].includes(selection)) errors.push('JLC_TASKS 仅支持 oshwhub、mapp、all');
   if (!['0', '1'].includes(claimValue)) errors.push('JLC_CLAIM_REWARD 仅支持 0 或 1');
   for (const [type, name] of [['oshwhub', 'JLC_COOKIE'], ['mapp', 'JLC_TOKEN']]) {
     if (selection !== type && selection !== 'all') continue;
-    const values = lines(process.env[name]);
+    const raw = type === 'oshwhub' ? (process.env.JLC_COOKIE || process.env.OSHW_COOKIE) : process.env[name];
+    const values = lines(raw).filter(value => type !== 'oshwhub' || !value.startsWith('#'));
     if (!values.length) errors.push(`${name} 必须包含至少一个账号凭据`);
     for (const value of values) accounts.push({ type, value });
   }
@@ -228,7 +293,7 @@ async function main() {
   log(`开始时间：${new Date(start).toISOString()}；模式：${dry ? '完全离线预演' : '正式执行'}；账号数：${accounts.length}`);
   for (const error of errors) log(`❌ 配置错误：${error}`);
   // 无效开关阻止写入；一组缺失凭据不阻塞另一组有效账号。
-  const invalidSwitch = !['oshwhub', 'mapp', 'all'].includes(selection) || !['0', '1'].includes(claimValue);
+  const invalidSwitch = randomInvalid || delayInvalid || !['oshwhub', 'mapp', 'all'].includes(selection) || !['0', '1'].includes(claimValue);
   for (let i = 0; i < accounts.length; i++) {
     const account = accounts[i]; const accountStart = Date.now();
     const stages = account.type === 'oshwhub' ? ['查询账号身份', '每日签到', '查询积分'] : ['查询账号身份', '查询签到状态', '每日签到', '待选奖励领取', '签到复查', '查询金豆余额'];
