@@ -3017,6 +3017,128 @@
       }
     },
     {
+      "catalogId": "8bd252d858b7095c",
+      "applicationKey": "unitaryhighs/ql_sign_script::sign",
+      "checkProfile": {
+        "requiredEnv": [
+          "CAIGAMER_COOKIE_LIST"
+        ],
+        "optionalEnv": [
+          "CAIGAMER_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CAIGAMER_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CAIGAMER_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到成功",
+          "☑️ 今日已签到"
+        ],
+        "features": [
+          "每日签到，保留原有每天 11:20 调度和 Cookie 参数名",
+          "显示官方非敏感账号身份及签到名次、连续签到天数和奖励的安全字段",
+          "明确成功及今日已签到判定，未知业务结果失败闭合",
+          "多账号独立运行与失败退出码",
+          "完全断网预演、时间轴日志和结构化统计",
+          "青龙脱敏通知，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行提交签到并领取站点签到奖励",
+          "正式运行在通知启用且通知模块可用时发送脱敏任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "菜玩社区每日签到",
+      "path": "scripts/caigamer.js",
+      "sha256": "fd3bdc3108575c6901f1f9d8626e1a039f85da54bb2d200d3dd28124f794bd01",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "sign/caigamer.js"
+      },
+      "cron": "0 20 11 * * *",
+      "command": "node scripts/caigamer.js",
+      "environment": [
+        {
+          "name": "CAIGAMER_COOKIE_LIST",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://caigamer.cn，在浏览器开发者工具的网络面板选择本站已登录请求，复制 Cookie 请求头，需包含 bbs_sid 和 bbs_token。过期后重新登录获取。不要复制响应头或向他人提供凭据。",
+          "format": "每个非空行一个账号的完整 Cookie，包含非空 bbs_sid 和 bbs_token。同一账号字段用分号分隔，只在第一个等号处拆分，保留值中的后续等号。不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "CAIGAMER_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置为 1 进行完全断网预演，正式执行时删除或设置为 0。",
+          "format": "1、true、yes、on 开启；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中按需设置，默认开启通知。",
+          "format": "0、false、no、off 关闭，其余值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可填写本机青龙 sendNotify.js 所在目录；未设置时查找 /ql/data/scripts 与 /ql/scripts。",
+          "format": "本机通知目录的绝对路径，仅用于可选通知，不影响业务独立运行。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，完整保留 Cookie；顺序独立执行所有账号，任一配置或业务失败均非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到，保留原有每天 11:20 调度和 Cookie 参数名",
+        "显示官方非敏感账号身份及签到名次、连续签到天数和奖励的安全字段",
+        "明确成功及今日已签到判定，未知业务结果失败闭合",
+        "多账号独立运行与失败退出码",
+        "完全断网预演、时间轴日志和结构化统计",
+        "青龙脱敏通知，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行提交签到并领取站点签到奖励",
+        "正式运行在通知启用且通知模块可用时发送脱敏任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/8bd252d858b7095c",
+        "candidateSha256": "effc3076935de7c10bbe5ab758faa54bd97ef867612c9844115e22eb09604810"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "effc3076935de7c10bbe5ab758faa54bd97ef867612c9844115e22eb09604810",
+        "releaseSha256": "fd3bdc3108575c6901f1f9d8626e1a039f85da54bb2d200d3dd28124f794bd01",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
       "catalogId": "7389d13167df31b6",
       "applicationKey": "cdrail",
       "checkProfile": {
@@ -11994,6 +12116,142 @@
       }
     },
     {
+      "catalogId": "01041a1995eb1f55",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::kanxue",
+      "checkProfile": {
+        "requiredEnv": [
+          "KANXUE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "KANXUE_CONFIG",
+          "KANXUE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "KANXUE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "KANXUE_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "业务码 0，签到成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "多账号看雪论坛签到，支持同账号 Cookie、CSRF token 和可选 User-Agent",
+          "兼容显式指定的旧配置文件及嵌套账号结构",
+          "使用独立标准库 HTTP 请求，固定原签到端点，限制超时及响应大小并核验业务码 0",
+          "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，并展示纯数字奖励积分",
+          "完全离线参数预演、按阶段脱敏日志及单行结构化任务汇总",
+          "青龙通知及全局通知开关，通知不可用不改变业务退出码"
+        ],
+        "sideEffects": [
+          "正式执行时向看雪论坛提交签到，可能增加账号积分",
+          "正式执行且通知开启时通过青龙发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "看雪论坛签到",
+      "path": "scripts/sign_in.py",
+      "sha256": "d2d3f6610f0aaf4c6866b93fc47751f18a8004bf53c9eae43b560cde380d6cef",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/kanxue/sign_in.py",
+        "related": [
+          {
+            "catalogId": "e99f6344b3c920fd",
+            "sha256": "1535b7ceb4b6198c9673490a87b512f29e7d19ae00498060fa0d16821940e9ca",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/kanxue/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "1 1 1 1 1",
+      "command": "python3 scripts/sign_in.py",
+      "environment": [
+        {
+          "name": "KANXUE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://bbs.kanxue.com，在浏览器开发者工具网络面板查看 user-signin.htm 签到请求，取得同一账号的 Cookie 请求头和 csrf_token 表单值。可选复制 User-Agent；抓取请求可能已完成当天签到。凭据过期后重新登录获取，不要公开。旧配置兼容入口为 KANXUE_CONFIG。",
+          "format": "每个非空行一个 JSON 对象，必填 cookie、csrf_token 字符串，可选 user_agent、account_name；JSON 内保留完整凭据，不用任何分隔符拆分账号。"
+        },
+        {
+          "name": "KANXUE_CONFIG",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅用于迁移已有 token.json，指定自己保管的文件路径；无需原仓库。KANXUE_ACCOUNTS 非空时优先使用账号变量。",
+          "format": "本地文件路径；文件含 kanxue.accounts 或 kanxue.kanxue.accounts 数组，每个对象包含 cookie、csrf_token，可选 user_agent、account_name。"
+        },
+        {
+          "name": "KANXUE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置为 1 开启完全离线预演；正式执行设置为 0。",
+          "format": "1 开启，0、false、no、off 或空值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认开启青龙通知；如需关闭，在青龙环境变量设置为 0。预演只模拟通知，不调用通知模块。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "若 notify.py 无法直接导入且不在青龙标准脚本目录，可指定自己信任的通知模块目录。无需安装其他仓库；通知不可用不影响业务退出码。",
+          "format": "包含 notify.py 的本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，同一对象组合 Cookie 与 CSRF token；逐个独立执行，任一失败时整体非零退出。旧配置使用账号数组。"
+      },
+      "dependencies": [],
+      "features": [
+        "多账号看雪论坛签到，支持同账号 Cookie、CSRF token 和可选 User-Agent",
+        "兼容显式指定的旧配置文件及嵌套账号结构",
+        "使用独立标准库 HTTP 请求，固定原签到端点，限制超时及响应大小并核验业务码 0",
+        "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，并展示纯数字奖励积分",
+        "完全离线参数预演、按阶段脱敏日志及单行结构化任务汇总",
+        "青龙通知及全局通知开关，通知不可用不改变业务退出码"
+      ],
+      "sideEffects": [
+        "正式执行时向看雪论坛提交签到，可能增加账号积分",
+        "正式执行且通知开启时通过青龙发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/01041a1995eb1f55",
+        "candidateSha256": "d2d3f6610f0aaf4c6866b93fc47751f18a8004bf53c9eae43b560cde380d6cef"
+      }
+    },
+    {
       "catalogId": "621df252c315f2d1",
       "applicationKey": "smzdm",
       "checkProfile": {
@@ -19128,6 +19386,150 @@
       }
     },
     {
+      "catalogId": "a5e811acce266569",
+      "applicationKey": "hellager/weibo_supertopic_sign::supertopicsign",
+      "checkProfile": {
+        "requiredEnv": [
+          "WEIBO_SUPERTOPIC_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ROW_URL",
+          "IS_SORT",
+          "SIGN_ONCE_COUNT",
+          "WEIBO_SUPERTOPIC_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WEIBO_SUPERTOPIC_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "IS_SORT": "NONE",
+          "SIGN_ONCE_COUNT": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "读取关注超话完整分页列表，检查分页结构和循环上限",
+          "识别已签到状态并跳过重复签到",
+          "按超话等级升序、降序或接口原始顺序执行",
+          "逐账号限制单次签到请求数量",
+          "多账号独立处理、显式业务成功校验与失败非零退出",
+          "从官方只读列表响应展示非敏感账号昵称或公开身份",
+          "离线凭据格式校验及模拟签到预演",
+          "分阶段脱敏日志、账号及任务统计与单行 TASK_SUMMARY 记录",
+          "青龙结果通知及全局通知开关"
+        ],
+        "sideEffects": [
+          "对关注的超话执行签到，改变签到状态"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "微博超话签到",
+      "path": "scripts/supertopicsign.py",
+      "sha256": "7ec766c350e8734acddc724e720a0073d8838430e1885a9e699e13d907fbacb4",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Hellager/weibo_supertopic_sign",
+        "branch": "main",
+        "commit": "66e46ec082cc87100e7d99e8ed8e6c478c5e3833",
+        "originalPath": "supertopicsign.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/supertopicsign.py",
+      "environment": [
+        {
+          "name": "WEIBO_SUPERTOPIC_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在已登录的微博国际版中打开关注超话页，通过自己设备上已授权的 HTTPS 抓包工具取得 api.weibo.cn/2/cardlist 请求的完整 URL 或查询参数。保留全部原始参数，尤其是 gsid、s、containerid、aid 及客户端参数；密码变更或登录保护可能使其失效，需要重新获取。请勿公开凭据。",
+          "format": "每行一个账号；完整 HTTPS URL 或 URL 编码查询字符串；按第一个等号解析字段并保留后续内容；& 仅分隔同一账号的查询字段，不分隔账号"
+        },
+        {
+          "name": "ROW_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置 ROW_URL 的可选兼容输入；优先使用 WEIBO_SUPERTOPIC_ACCOUNTS。",
+          "format": "与规范变量相同，每行一个账号；原分号账号格式需要改为换行"
+        },
+        {
+          "name": "IS_SORT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动选择超话签到排序；原配置默认值未提供，本版本默认保持接口顺序。",
+          "format": "NONE、INCREASE（等级升序）或 DECREASE（等级降序）"
+        },
+        {
+          "name": "SIGN_ONCE_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置每账号本次签到请求次数上限；已签到项不占用次数。达到上限仍有待签项时以非零退出，避免误报全量成功。",
+          "format": "非负整数，默认 0 表示不限"
+        },
+        {
+          "name": "WEIBO_SUPERTOPIC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 进行完全离线预演，使用模拟列表，不验证真实凭据，不发送通知网络请求。",
+          "format": "默认 0；0、false、no、off 为关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知全局开关；实网运行在所有结果后调用可用的 notify.py/send，通知失败保留业务退出码。",
+          "format": "默认 1；0、false、no、off 为关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 notify.py 所在目录；也自动检查 Python 导入路径及 /ql/data/scripts、/ql/scripts。",
+          "format": "本地目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行代表一个账号，依次独立执行；任一账号失败或有未完成签到则整体非零退出。重复昵称不会覆盖账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "读取关注超话完整分页列表，检查分页结构和循环上限",
+        "识别已签到状态并跳过重复签到",
+        "按超话等级升序、降序或接口原始顺序执行",
+        "逐账号限制单次签到请求数量",
+        "多账号独立处理、显式业务成功校验与失败非零退出",
+        "从官方只读列表响应展示非敏感账号昵称或公开身份",
+        "离线凭据格式校验及模拟签到预演",
+        "分阶段脱敏日志、账号及任务统计与单行 TASK_SUMMARY 记录",
+        "青龙结果通知及全局通知开关"
+      ],
+      "sideEffects": [
+        "对关注的超话执行签到，改变签到状态"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a5e811acce266569",
+        "candidateSha256": "7ec766c350e8734acddc724e720a0073d8838430e1885a9e699e13d907fbacb4"
+      }
+    },
+    {
       "catalogId": "8060442233509c9a",
       "applicationKey": "synspoint",
       "checkProfile": {
@@ -20730,6 +21132,156 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/afa2f50b7baa69db",
         "candidateSha256": "f91a3a6a1873b350c695cc5466ff224a18d90d01e59e013c5a319dfc55facc24"
+      }
+    },
+    {
+      "catalogId": "af0ae4c86279f8da",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::workbuddy",
+      "checkProfile": {
+        "requiredEnv": [
+          "WORKBUDDY_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WORKBUDDY_DRY_RUN",
+          "WORKBUDDY_JITTER_MAX",
+          "WORKBUDDY_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WORKBUDDY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WORKBUDDY_JITTER_MAX": "600",
+          "WORKBUDDY_TIMEOUT": "30",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "官方确认签到活动未开启或不适用"
+        ],
+        "features": [
+          "每日签到和今日状态查询；主状态接口失败时回退兼容接口，令牌失效不盲目回退。",
+          "展示每日积分、签到获得积分、连续签到天数及连签奖励标记。",
+          "识别官方确认的活动关闭或今日已签；签到失败后复查，确认已签则视为完成。",
+          "可选刷新令牌续期并重试一次，兼容企业、租户、域名及自定义浏览器请求头。",
+          "逐行 JSON 多账号和驼峰凭据字段兼容，保留每日 08:30 定时与启动错峰参数。",
+          "完全断网预演、逐阶段脱敏日志、账号与子任务统计、单行结构化汇总和青龙通知。",
+          "官方返回公开昵称、用户名、显示名称或公开 UID 时显示可核对身份；不打印凭据或原始响应。"
+        ],
+        "sideEffects": [
+          "每日签到及服务端积分、连签奖励状态变更。",
+          "配置刷新令牌且访问令牌过期时向服务端申请续期，仅在进程内更新凭据。",
+          "正式运行且通知启用时发送脱敏青龙任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "WorkBuddy签到",
+      "path": "scripts/workbuddy.py",
+      "sha256": "c20f62f74b4c3a50a42852229dff9b40dc79baa5f6854e8d40e01a4f361c5a7a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/workbuddy/main.py",
+        "related": [
+          {
+            "catalogId": "7a18ec12f5cfc808",
+            "sha256": "47505fe28c5de8c621fa093f75dd584b51dfca27f0a7b8608b6e2f27534c521a",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/workbuddy/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "30 8 * * *",
+      "command": "python3 scripts/workbuddy.py",
+      "environment": [
+        {
+          "name": "WORKBUDDY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录官方 WorkBuddy／CodeBuddy CN 客户端，在本人授权的接口请求中取得 Authorization 的 Bearer 令牌。可选 refresh_token 来自本人可读取的官方登录态 auth.refreshToken；uid、enterprise_id、domain 分别对应 X-User-Id、X-Enterprise-Id、X-Domain。可手动将旧配置 workbuddy.accounts 的对象逐行复制到此变量。不自动解密登录态、不要求安装其他工具或读取私有仓库。加密字段不可直接填写，应重新登录并取得可用凭据。",
+          "format": "每个非空行一个 JSON 对象；access_token 为必填字符串，refresh_token、uid、enterprise_id、domain、user_agent 为同账号的可选字符串。兼容 accessToken、refreshToken、enterpriseId、userAgent。JSON 保留完整字段内容，不按 &、@ 或其他字符分割账号。"
+        },
+        {
+          "name": "WORKBUDDY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "由用户设置，开启完全断网预演。",
+          "format": "1、true、yes、on 开启；默认 0。"
+        },
+        {
+          "name": "WORKBUDDY_JITTER_MAX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "沿用上游启动随机延迟参数，按需要设置。",
+          "format": "0～3600 的整数秒；默认 600，0 关闭。正式运行账号间保留 5～10 秒等待。"
+        },
+        {
+          "name": "WORKBUDDY_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络环境设置单次 HTTP 超时。",
+          "format": "1～120 的整数秒；默认 30。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，由用户设置。",
+          "format": "默认 1；0、false、no、off 关闭。断网预演仅模拟通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可指定本人青龙 notify.py 所在目录；也检查常用青龙脚本目录和可导入的 notify 模块。",
+          "format": "可选本机目录路径，仅用于通知，不用于业务 HTTP。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个独立账号 JSON 对象，配套凭据合并在同一行；逐账号独立运行，任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到和今日状态查询；主状态接口失败时回退兼容接口，令牌失效不盲目回退。",
+        "展示每日积分、签到获得积分、连续签到天数及连签奖励标记。",
+        "识别官方确认的活动关闭或今日已签；签到失败后复查，确认已签则视为完成。",
+        "可选刷新令牌续期并重试一次，兼容企业、租户、域名及自定义浏览器请求头。",
+        "逐行 JSON 多账号和驼峰凭据字段兼容，保留每日 08:30 定时与启动错峰参数。",
+        "完全断网预演、逐阶段脱敏日志、账号与子任务统计、单行结构化汇总和青龙通知。",
+        "官方返回公开昵称、用户名、显示名称或公开 UID 时显示可核对身份；不打印凭据或原始响应。"
+      ],
+      "sideEffects": [
+        "每日签到及服务端积分、连签奖励状态变更。",
+        "配置刷新令牌且访问令牌过期时向服务端申请续期，仅在进程内更新凭据。",
+        "正式运行且通知启用时发送脱敏青龙任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/af0ae4c86279f8da",
+        "candidateSha256": "c20f62f74b4c3a50a42852229dff9b40dc79baa5f6854e8d40e01a4f361c5a7a"
       }
     },
     {
