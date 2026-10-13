@@ -85,6 +85,7 @@
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `0 8 * * *` |
 | 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `0 9,18 * * *` |
 | 华润通微信版签到 | `scripts/huaruntong_wx.py` | `python3 scripts/huaruntong_wx.py` | `1 1 1 1 1` |
+| 好游快爆游戏签到 | `scripts/hykb_gamesign.js` | `node scripts/hykb_gamesign.js` | `15 8 * * *` |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `0 21 * * *` |
 | i茅台申购与耐力 | `scripts/imaotai.py` | `python3 scripts/imaotai.py` | `5 9 * * *` |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `0 3 * * *` |
@@ -267,6 +268,7 @@
 - `scripts/hlyl.py`：查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据；查询当日签到状态、周任务进度和月签到天数；每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励；显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖；查询积分余额；逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出；完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录；通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知。
 - `scripts/hsay.py`：查询并显示官方返回的用户昵称，隐藏手机号及凭据；从积分流水获取签到所需的公开用户 ID；查询连续签到天数；按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数；逐行多账号独立运行，失败闭合与断网预演；青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出。
 - `scripts/huaruntong_wx.py`：华润通微信版加密签到，仅以官方业务码 S0A00000 确认成功；兼容原签到请求全部可配置参数及默认值，保持原 cron；逐行多账号独立执行、参数校验和失败非零退出；展示官方返回的非敏感昵称、用户名、显示名称或公开身份；完全断网预演、逐阶段耗时和脱敏结构化统计；青龙通知汇总，通知不可用不影响业务退出码。
+- `scripts/hykb_gamesign.js`：发现官方游戏签到集合中未结束的活动并去重，无法解析时失败闭合。；逐活动登录并每日签到，明确识别签到成功及今日已签，返回累计签到天数时显示。；可选择记录试玩前置动作，真实运行等待 65 秒后重新登录、签到并核验结果。；可选择记录分享前置动作，重新登录、签到并核验结果，不发布公开文字。；识别失效凭据，显示官方返回的非敏感昵称、用户名、显示名或公开 UID。；多账号独立执行，失败非零退出，完全断网预演、时间轴日志、逐账号统计和单行 TASK_SUMMARY 汇总。；真实执行后使用青龙通知模块发送脱敏汇总，通知失败不改变业务退出码；预演仅展示通知内容。。
 - `scripts/ikuuu_checkin.py`：保留邮箱密码登录与官方 ret=1 核验，兼容 IKUUU_ACCOUNT 和旧 ikuuu 参数；新增 Cookie 会话签到，支持 IKUUU_COOKIES、备注前缀及同一规范账号变量中的 Cookie 输入；每日签到要求官方 ret=1 或明确的今日已签到证明，成功说明中提取流量奖励；保留可选个人资料读取与非空响应核验；资料失败继续签到但账号整体失败；新增剩余流量查询，解析官方 /user 页面及 originBody 编码页面中明确的剩余流量字段；保留安全官方昵称、用户名、显示名称或公开 UID 的原值展示；凭据、手机号和会话值不输出；支持官方主机名配置，未设置时保留邮箱模式原域名及 Cookie 模式上游域名；换行多账号独立处理、凭据字段仅首次分割、失败非零退出；保留每天 21:00 调度、可选随机错峰和云函数 handler 入口；保留分阶段时间轴日志、耗时、账号与任务统计、IKUUU_SUMMARY 及唯一 TASK_SUMMARY；使用青龙 notify.py 发送脱敏摘要，保留上游可选 PushPlus 通知，通知故障不改变业务退出码；完全断网预演参数、各模式请求计划及通知摘要，不导入通知模块、不等待、不修改账号状态。
 - `scripts/imaotai.py`：查询官方应用版本、当日北京时间场次及门店资源；按经纬度选择最近有库存门店，或按省市选择库存最多门店；支持多个商品，保留原默认商品列表；显式开启后以原 AES 协议提交申购，仅业务码 2000 判定请求成功；领取耐力，仅业务码 200 判定成功；多账号独立执行及失败闭合退出码；完全断网预演、阶段日志及唯一结构化汇总；显示官方返回的非秘密账号身份；正式任务结果通过青龙通知，通知故障不改变业务退出码。
 - `scripts/index.js`：通过官方收藏页跳转获取并原样显示公开 UID，也支持手动指定公开 UID；分页获取全部公开收藏，校验明确业务成功、总数稳定、无重复以及分页完整性；读取每个作品全部原图页；图片页查询与图片下载分别限制为三个并发任务；以标题加作品 ID 建目录、标题加页码命名图片，保留规范候选保存路径及旧目录兼容检查；跳过已有有效图片，修复无效普通图片文件；原子创建下载结果以避免并发覆盖；原图仅接受 HTTPS 图片域，隔离账号 Cookie，校验图片类型、文件头、大小和完整性，设置请求超时；支持逐行多账号、旧版 cookie/output/proxy 配置和完全断网预演，逐账号隔离失败；按编号阶段打印带时间戳的脱敏结果及耗时、账号和任务统计，保留收藏成功日志并输出唯一单行 TASK_SUMMARY；调用青龙通知组件发送脱敏总结，支持全局通知开关；预演禁止外部投递，通知失败或缺失不改变业务退出码。
@@ -457,6 +459,7 @@
 <tr><td rowspan="1"><code>scripts/hlyl.py</code></td><td><code>hlylck</code></td><td>是</td><td>格式：每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hsay.py</code></td><td><code>hsayCookie</code></td><td>是</td><td>格式：每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 &amp; 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/huaruntong_wx.py</code></td><td><code>HRT_WX_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：可直接填写完整 token，也可填写含 token 字段的单行 JSON 对象。JSON 兼容 answerResult（整数，默认 1）、channelId（默认 APP）、merchantCode（默认 1641000001532）、storeCode（默认 qiandaosonjifen）、sysId（默认 T0000001）、transactionUuid 和 inviteCode（默认空字符串）、user_agent（默认原 iPhone 浏览器标识）、account_name。字符串字段使用 JSON 转义；不使用 &amp;、@ 分隔账号，token 内这些字符保留。account_name 兼容输入但日志使用账号序号和官方公开身份。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/hykb_gamesign.js</code></td><td><code>HYKB_SCOOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，只填写 scookie 值，不添加 scookie= 或 Cookie 请求头。支持原始值及已百分号编码的值；内部 |、&amp;、@ 等字符保留，不作为账号分隔符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：邮箱|密码，或 cookie:完整 Cookie；仅在第一个 | 处分割邮箱密码，密码中的后续 | 保留。Cookie 使用分号分隔名称=值，值中的后续 = 保留；禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/imaotai.py</code></td><td><code>IMAOTAI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行是一个 JSON 对象；必填 token、userid、device_id，userid 支持字符串或整数。申购另需 province、city、lat、lng。item_codes 是数字字符串数组，默认 [&quot;11318&quot;,&quot;11319&quot;]；reserve_rule 为 0（最近门店）或 1（所在城市库存最多）。mobile 兼容但不使用和输出。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/index.js</code></td><td><code>PIXIV_ACCOUNTS</code></td><td>是</td><td>格式：每行一个账号：公开UID|完整Cookie；只按第一个 | 拆分，后续 Cookie 内容保留；UID 留空时使用 |完整Cookie。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -951,6 +954,11 @@
 <tr><td rowspan="3"><code>scripts/huaruntong_wx.py</code></td><td><code>HRT_WX_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes 或 on 启用断网预演，默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。断网预演仅模拟发送通知，不调用任何通知模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；不下载或安装通知程序。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/hykb_gamesign.js</code></td><td><code>HYKB_DRY_RUN</code></td><td>否</td><td>格式：1 或 0；默认 0。预演不请求业务接口，也不载入通知发送模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>HYKB_ALLOW_EXPERIENCE</code></td><td>否</td><td>格式：1 或 0，默认 0。关闭时如活动要求试玩则记失败，不伪报已签到。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>HYKB_ALLOW_SHARE</code></td><td>否</td><td>格式：1 或 0，默认 0。仅记录官方 sharelimit 动作，不发布公开文本；关闭时如需分享则记失败。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：1、true、yes、on 开启；0、false、no、off 关闭。通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，只用于可选通知；业务功能不依赖该文件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="10"><code>scripts/ikuuu_checkin.py</code></td><td><code>ikuuu</code></td><td>是</td><td>格式：每行邮箱#密码，仅在第一个 # 处分割，保留后续密码字符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IKUUU_COOKIES</code></td><td>是</td><td>格式：每行完整 Cookie 或 备注||完整 Cookie，只在第一个 || 处分割；备注不输出，# 开头行跳过；每个 Cookie 必须包含 uid、email、key，不用 &amp; 分隔字段或账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IKUUU_HOST</code></td><td>否</td><td>格式：仅 HTTPS 主机名，不含协议、端口或路径；未设置时邮箱模式用 ikuuu.nl，Cookie 模式用 ikuuu.win。；多账号格式以该脚本文档为准</td></tr>
@@ -1919,6 +1927,7 @@
 - `scripts/hlyl.py`：每个非空行一个账号，Token 与可选备注仅按首个 # 分隔。账号独立处理；任一账号配置、查询或已启用操作失败时整体非零退出。备注不展示。。
 - `scripts/hsay.py`：每个非空行一个账号，逐账号独立运行；任何账号失败均非零退出。账号凭据保留完整内容，不按 @ 或 & 拆分。。
 - `scripts/huaruntong_wx.py`：每个非空行一个账号，配套参数放在同一行 JSON 对象中；逐账号独立处理，任一账号失败则整体非零退出。。
+- `scripts/hykb_gamesign.js`：HYKB_SCOOKIE 每个非空行一个账号，逐账号独立执行；不按 &、@ 或 | 分割。任一账号参数或任务失败，整体退出码为 1，其他账号继续处理。。
 - `scripts/ikuuu_checkin.py`：每个非空行一个账号，IKUUU_ACCOUNT 兼容邮箱密码及 cookie: 前缀；IKUUU_COOKIES 作为可选追加输入。账号独立执行，任一账号失败则进程非零退出；全局配置错误退出 2。不得以 & 或 @ 分隔账号。。
 - `scripts/imaotai.py`：每个非空行一个 JSON 账号对象；同一账号凭据及定位合并，独立执行；任一账号失败则整体非零退出。。
 - `scripts/index.js`：每个非空行表示一个独立账号，按第一个 | 分隔公开 UID 与完整 Cookie；账号顺序处理，任一账号失败使整体非零退出。旧版 config.json 单账号 cookie/output/proxy 继续兼容；代理使用 host、port、protocol 等 axios 代理字段，无默认代理。。
@@ -2428,6 +2437,13 @@
 - 所属脚本：`scripts/huaruntong_wx.py`
 - 获取或设置：登录华润通微信版官方页面，在本人授权的网络调试中查看 mid.huaruntong.cn/api/points/saveQuestionSignin 请求加密前的 token 和业务参数；请求体 key/data 是密文，不能直接当作 token。不得分享抓包内容。失效后重新登录获取。将原配置 huaruntong.huaruntong_wx.accounts 中每个对象复制为单独一行亦可，不读取原私有配置文件。
 - 填写格式：`每个非空行一个账号：可直接填写完整 token，也可填写含 token 字段的单行 JSON 对象。JSON 兼容 answerResult（整数，默认 1）、channelId（默认 APP）、merchantCode（默认 1641000001532）、storeCode（默认 qiandaosonjifen）、sysId（默认 T0000001）、transactionUuid 和 inviteCode（默认空字符串）、user_agent（默认原 iPhone 浏览器标识）、account_name。字符串字段使用 JSON 转义；不使用 &、@ 分隔账号，token 内这些字符保留。account_name 兼容输入但日志使用账号序号和官方公开身份。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `HYKB_SCOOKIE`
+
+- 所属脚本：`scripts/hykb_gamesign.js`
+- 获取或设置：在自己的好游快爆账号登录后，进入游戏签到活动，使用本地抓包工具读取 https://huodong3.3839.com/n/hykb/signcard/ajax.php 请求表单中的 scookie 值。只在本地青龙环境变量中保存，不提交仓库或分享截图。原脚本 config.hykb.scookie 的值可直接迁入本变量。
+- 填写格式：`每个非空行一个账号，只填写 scookie 值，不添加 scookie= 或 Cookie 请求头。支持原始值及已百分号编码的值；内部 |、&、@ 等字符保留，不作为账号分隔符。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `IKUUU_ACCOUNT`
@@ -5509,6 +5525,36 @@
 - 所属脚本：`scripts/huaruntong_wx.py`
 - 获取或设置：可选，填写青龙现有 notify.py 或 sendNotify.js 所在目录。默认尝试导入 notify，再查找 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：`本机目录路径；不下载或安装通知程序。`
+
+#### `HYKB_DRY_RUN`
+
+- 所属脚本：`scripts/hykb_gamesign.js`
+- 获取或设置：本地预演时设为 1，真实运行时设为 0 或不设置。
+- 填写格式：`1 或 0；默认 0。预演不请求业务接口，也不载入通知发送模块。`
+
+#### `HYKB_ALLOW_EXPERIENCE`
+
+- 所属脚本：`scripts/hykb_gamesign.js`
+- 获取或设置：只有明确同意向官方活动记录试玩动作时才设为 1。遇到试玩前置条件后记录试玩、等待 65 秒并再次核验签到；预演不实际等待。
+- 填写格式：`1 或 0，默认 0。关闭时如活动要求试玩则记失败，不伪报已签到。`
+
+#### `HYKB_ALLOW_SHARE`
+
+- 所属脚本：`scripts/hykb_gamesign.js`
+- 获取或设置：只有明确同意向官方活动记录分享动作时才设为 1。遇到分享前置条件后记录分享，再登录并核验签到。
+- 填写格式：`1 或 0，默认 0。仅记录官方 sharelimit 动作，不发布公开文本；关闭时如需分享则记失败。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/hykb_gamesign.js`
+- 获取或设置：使用青龙现有通知配置，默认开启；可设为 0、false、no 或 off 关闭。
+- 填写格式：`1、true、yes、on 开启；0、false、no、off 关闭。通知不可用或失败不改变业务退出码。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/hykb_gamesign.js`
+- 获取或设置：可选填写青龙现有 sendNotify.js 所在目录；不填写时依次查找 /ql/data/scripts/sendNotify.js 和 /ql/scripts/sendNotify.js。无需另行安装或下载。
+- 填写格式：`本地目录路径，只用于可选通知；业务功能不依赖该文件。`
 
 #### `ikuuu`
 
@@ -11339,6 +11385,7 @@
 - `scripts/hlyl.py`：SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
 - `scripts/hsay.py`：SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
 - `scripts/huaruntong_wx.py`：SHA-256 `6fb8e542eeeed076b41be51b9c90430571698ff02226f25d85b83b54562a7c8e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/13902b7b1dd570d1`。
+- `scripts/hykb_gamesign.js`：SHA-256 `11f5887f78f37ed569c9d8c0e75944c30a98d62dca54cb30bddab8644d2e75ae`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b7f05744373113a8`。
 - `scripts/ikuuu_checkin.py`：SHA-256 `44c91448c6d2d8ef71df14ee1a232e58f45bd7b232ff8870983ff6379e378694`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 - `scripts/imaotai.py`：SHA-256 `9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
 - `scripts/index.js`：SHA-256 `b0f670de5353137cb479251c75283cf6960207864f98a92c687c46147f7db3d7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
@@ -11521,6 +11568,7 @@
 - `scripts/hlyl.py`：未签到时提交每日签到，可能获得积分和成长积分；显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品；通知开启且正式运行时通过青龙组件发送任务总结。
 - `scripts/hsay.py`：向沪上阿姨签到接口提交每日签到，领取活动奖励；实际模式下通过青龙通知模块发送脱敏任务总结。
 - `scripts/huaruntong_wx.py`：正式运行提交签到与答题结果，可能获得签到积分；正式运行通过青龙通知组件发送脱敏任务汇总。
+- `scripts/hykb_gamesign.js`：默认向所发现的未结束游戏活动提交每日签到，可能领取相应活动奖励。；仅在 HYKB_ALLOW_EXPERIENCE=1 且活动要求试玩时，记录官方试玩前置动作。；仅在 HYKB_ALLOW_SHARE=1 且活动要求分享时，记录官方分享前置动作。；真实模式且 QINGLONG_NOTIFY 开启、通知模块可用时，发送脱敏任务通知。。
 - `scripts/ikuuu_checkin.py`：实际运行时邮箱密码登录并建立账号会话；实际运行时提交每日签到，可能增加账号流量；实际运行时通过青龙已有渠道及可选 PushPlus 发送脱敏任务摘要。
 - `scripts/imaotai.py`：显式开启后提交商品申购申请；启用耐力任务后领取耐力奖励；正式运行且开启通知时发送脱敏总结。
 - `scripts/index.js`：正式运行时创建明确指定的图片目录并保存收藏原图；替换未通过校验的普通图片文件；下载过程中创建临时文件并在结束时清理；通知开启且组件可用时发送脱敏任务结果通知，断网预演不外部投递。
@@ -11705,6 +11753,7 @@
 - `scripts/hlyl.py`：上游 `cloudcranes/some_scripts` / `hlyl.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/hsay.py`：上游 `Rookie-wb-WH/ql_scripts` / `hsay.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/huaruntong_wx.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/huaruntong_wx/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
+- `scripts/hykb_gamesign.js`：上游 `qidouhai/checkbox` / `scripts/hykb_gamesign.js` / `048a5d58b54a90489e6508ae1f90525d6b21b8b1`。
 - `scripts/ikuuu_checkin.py`：上游 `agluo/ql-script-hub` / `ikuuu_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/imaotai.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/imaotai/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/index.js`：上游 `cloudcranes/some_scripts` / `Download_pixiv/index.js` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
