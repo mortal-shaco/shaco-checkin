@@ -5390,6 +5390,127 @@
       }
     },
     {
+      "catalogId": "cbcac1d0442bb8ef",
+      "applicationKey": "oreoslab/checkinpanel::baidu",
+      "checkProfile": {
+        "requiredEnv": [
+          "BAIDU_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "BAIDU",
+          "BAIDU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BAIDU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "推送成功，接受",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "按原每日 07:32 计划获取 UTF-8 URL 列表并向百度推送本站 URL",
+          "支持多站点独立执行及显式重复推送次数，统计接受条数、成功次数、失败次数与剩余配额",
+          "保留 data_url、submit_url、times 字段和 BAIDU 数组兼容输入",
+          "完全断网参数预演、请求超时、响应大小限制、禁止重定向、本站 URL 检查和明确业务成功判定",
+          "脱敏时间轴日志、账号及任务统计、单行 TASK_SUMMARY 结构化总结和青龙通知；通知失败不改变业务退出码"
+        ],
+        "sideEffects": [
+          "实际运行向百度提交本站 URL 并消耗每日配额，显式设置 times 大于 1 时重复提交同一列表",
+          "实际运行且通知开启时通过青龙通知模块发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "百度搜索资源平台",
+      "path": "scripts/ck_baidu_url_submit.py",
+      "sha256": "ab3ff2232123e9a8d0a05f1a738b6b3c632ff7797d6fb51ecc32f0565ed12423",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_baidu_url_submit.py"
+      },
+      "cron": "32 7 * * *",
+      "command": "python3 scripts/ck_baidu_url_submit.py",
+      "environment": [
+        {
+          "name": "BAIDU_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录百度搜索资源平台验证站点，在普通收录的 API 提交页面获取含 site 和 token 的接口地址，使用 HTTPS。自行提供公开可读取的 UTF-8 URL 列表，每行一条本站 URL。",
+          "format": "每个非空行为一个 JSON 对象，data_url 为 HTTPS 列表地址，submit_url 为 https://data.zz.baidu.com/urls?site=已验证站点地址&token=站点令牌。times 可选整数 1 至 100，默认 1。"
+        },
+        {
+          "name": "BAIDU",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容输入，优先迁移到 BAIDU_ACCOUNTS；使用百度站点 API 提交页面的令牌与自己的列表地址。",
+          "format": "非空 JSON 数组，元素字段与 BAIDU_ACCOUNTS 相同，仅在规范变量为空时读取。"
+        },
+        {
+          "name": "BAIDU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置为 1 进行断网预演。",
+          "format": "1 开启；0、false、no、off 或空值关闭。预演不调用任何网络或外部通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认开启。",
+          "format": "0、false、no、off 或空值关闭，其他非空值开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；也查找可导入的 notify 模块及青龙标准脚本目录。",
+          "format": "本地目录路径，仅用于可选通知，业务 HTTP 不依赖本地文件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，将该账号的列表地址与含令牌的接口地址放在同一对象中。逐账号独立执行，任一失败整体非零退出；兼容旧 BAIDU 数组，不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "按原每日 07:32 计划获取 UTF-8 URL 列表并向百度推送本站 URL",
+        "支持多站点独立执行及显式重复推送次数，统计接受条数、成功次数、失败次数与剩余配额",
+        "保留 data_url、submit_url、times 字段和 BAIDU 数组兼容输入",
+        "完全断网参数预演、请求超时、响应大小限制、禁止重定向、本站 URL 检查和明确业务成功判定",
+        "脱敏时间轴日志、账号及任务统计、单行 TASK_SUMMARY 结构化总结和青龙通知；通知失败不改变业务退出码"
+      ],
+      "sideEffects": [
+        "实际运行向百度提交本站 URL 并消耗每日配额，显式设置 times 大于 1 时重复提交同一列表",
+        "实际运行且通知开启时通过青龙通知模块发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/cbcac1d0442bb8ef",
+        "candidateSha256": "ab3ff2232123e9a8d0a05f1a738b6b3c632ff7797d6fb51ecc32f0565ed12423"
+      }
+    },
+    {
       "catalogId": "93e0b2068d55d68f",
       "applicationKey": "oreoslab/checkinpanel::ccava",
       "checkProfile": {
@@ -5505,6 +5626,270 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/93e0b2068d55d68f",
         "candidateSha256": "de4c8a9cb4f76800d04f9aca4d80b49599231295f1a1f0dff1e922c5eb4bd360"
+      }
+    },
+    {
+      "catalogId": "90f965ebca645fae",
+      "applicationKey": "oreoslab/checkinpanel::csdn",
+      "checkProfile": {
+        "requiredEnv": [
+          "CSDN_COOKIE"
+        ],
+        "optionalEnv": [
+          "CSDN_DRAW",
+          "CSDN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CSDN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CSDN_DRAW": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "\"status\": \"success\""
+        ],
+        "features": [
+          "每日签到，保留上游每天 10:30 的执行时间",
+          "通过 CSDN_DRAW 显式启用签到后的抽奖",
+          "每行一个 Cookie 的多账号独立处理，保留 Cookie 值中的等号",
+          "显示官方响应中的昵称、用户名、显示名称或公开 UID，抑制手机号等敏感字段",
+          "完全离线预演、请求超时、响应大小限制、禁止重定向转发凭据和明确业务成功校验",
+          "按账号和编号阶段记录脱敏结果、耗时和统计，输出唯一 TASK_SUMMARY JSON",
+          "通过青龙 notify.py 通知正式运行的成功、部分失败、失败与配置错误；预演生成摘要并记录离线跳过，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "签到改变当天签到状态并可能领取奖励",
+          "显式开启抽奖后消耗抽奖机会并可能领取奖品",
+          "正式运行向配置的青龙通知渠道发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "CSDN签到与可选抽奖",
+      "path": "scripts/ck_csdn.py",
+      "sha256": "5ee4485d4cbbe36ccff6b5fd298dc3d0cba445e2a35d6dab5929a48454d7159b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_csdn.py"
+      },
+      "cron": "30 10 * * *",
+      "command": "python3 scripts/ck_csdn.py",
+      "environment": [
+        {
+          "name": "CSDN_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 CSDN，打开开发者工具网络面板，从发往 me.csdn.net 的已登录请求中复制 Cookie 请求头值；勿公开或提交凭据。",
+          "format": "每个非空行一个账号的完整 Cookie，字段用分号分隔，字段仅按第一个等号切分，保留值中的后续等号；不含 Cookie: 前缀，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "CSDN_DRAW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需在青龙环境变量中设置；抽奖可能消耗机会，默认关闭。",
+          "format": "默认 0；1、true、yes、on 开启，0、false、no、off 关闭。"
+        },
+        {
+          "name": "CSDN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线预演时设置为 1；正式执行时设置为 0 或不设置。",
+          "format": "默认 0；1、true、yes、on 开启，0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关；在青龙 notify.py 中配置通知渠道。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定可信的青龙 notify.py 所在目录；也支持导入 notify 或使用青龙标准脚本目录。",
+          "format": "本地目录路径；仅用于可选通知，不是业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，独立执行；任一账号参数、请求或业务校验失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到，保留上游每天 10:30 的执行时间",
+        "通过 CSDN_DRAW 显式启用签到后的抽奖",
+        "每行一个 Cookie 的多账号独立处理，保留 Cookie 值中的等号",
+        "显示官方响应中的昵称、用户名、显示名称或公开 UID，抑制手机号等敏感字段",
+        "完全离线预演、请求超时、响应大小限制、禁止重定向转发凭据和明确业务成功校验",
+        "按账号和编号阶段记录脱敏结果、耗时和统计，输出唯一 TASK_SUMMARY JSON",
+        "通过青龙 notify.py 通知正式运行的成功、部分失败、失败与配置错误；预演生成摘要并记录离线跳过，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "签到改变当天签到状态并可能领取奖励",
+        "显式开启抽奖后消耗抽奖机会并可能领取奖品",
+        "正式运行向配置的青龙通知渠道发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/90f965ebca645fae",
+        "candidateSha256": "f0db6c24d95b12149b23e26b1a152acd7959f6437d45859238c6a3a0c2d9b606"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "f0db6c24d95b12149b23e26b1a152acd7959f6437d45859238c6a3a0c2d9b606",
+        "releaseSha256": "5ee4485d4cbbe36ccff6b5fd298dc3d0cba445e2a35d6dab5929a48454d7159b",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "08575e47b55daffb",
+      "applicationKey": "oreoslab/checkinpanel::everphoto",
+      "checkProfile": {
+        "requiredEnv": [
+          "EVERPHOTO"
+        ],
+        "optionalEnv": [
+          "EVERPHOTO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "EVERPHOTO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "EVERPHOTO_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 登录成功",
+          "✅ 签到成功",
+          "☑️ 今日已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用手机号与密码字段值登录时光相册",
+          "执行每日签到并区分首次签到与今日已签到",
+          "显示接口返回的累积签到天数及非敏感账号身份",
+          "支持每行一个账号与原有账号对象列表格式",
+          "完全断网预演与逐账号失败隔离",
+          "带阶段耗时、账号统计和单行 TASK_SUMMARY 的脱敏日志",
+          "通过青龙 notify.py 发送脱敏汇总，通知不可用时保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式执行登录请求创建认证会话",
+          "正式执行每日签到改变签到状态",
+          "正式执行按通知开关投递任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "时光相册每日签到",
+      "path": "scripts/ck_everphoto.py",
+      "sha256": "1c503ab4c6801ad18b37fa4b979bf3bf3bdb87dadace5ebb8d44c038966e35ae",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_everphoto.py"
+      },
+      "cron": "3 22 * * *",
+      "command": "python3 scripts/ck_everphoto.py",
+      "environment": [
+        {
+          "name": "EVERPHOTO",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人时光相册账号，在浏览器开发者工具的网络面板查找 https://web.everphoto.cn/api/auth 请求，获取 mobile 和 password 字段。密码若已由客户端转换，应填写请求中的字段值，本脚本不猜测或转换密码。不要分享凭据或完整请求。",
+          "format": "每个非空行一个账号：手机号|密码字段值；仅按首个 | 分隔，后续 | 保留在密码内。不使用 & 或 @ 分隔账号。兼容原上游 EVERPHOTO 账号对象列表的 JSON 表示，字段为 mobile、password，均为字符串。"
+        },
+        {
+          "name": "EVERPHOTO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "1、true、yes 或 on 开启完全断网预演；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置；使用青龙已有的 notify.py 通知配置。",
+          "format": "默认 1；0、false、no、off 关闭。预演只展示脱敏通知内容，不实际投递，以保持完全断网。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写本人青龙安装中已有 notify.py 所在目录；不需要其他仓库。",
+          "format": "本地目录路径；未设置时尝试导入 notify，再查找 /ql/data/scripts/notify.py 和 /ql/scripts/notify.py。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，手机号与密码字段值使用首个 | 合并；各账号独立执行，任何账号失败时整体非零退出。兼容原有账号对象列表 JSON 格式。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用手机号与密码字段值登录时光相册",
+        "执行每日签到并区分首次签到与今日已签到",
+        "显示接口返回的累积签到天数及非敏感账号身份",
+        "支持每行一个账号与原有账号对象列表格式",
+        "完全断网预演与逐账号失败隔离",
+        "带阶段耗时、账号统计和单行 TASK_SUMMARY 的脱敏日志",
+        "通过青龙 notify.py 发送脱敏汇总，通知不可用时保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式执行登录请求创建认证会话",
+        "正式执行每日签到改变签到状态",
+        "正式执行按通知开关投递任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/08575e47b55daffb",
+        "candidateSha256": "19759deb5e4a95619f349e9283a758e2b60c11460aba60d6d180418e4d2c09f7"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "19759deb5e4a95619f349e9283a758e2b60c11460aba60d6d180418e4d2c09f7",
+        "releaseSha256": "1c503ab4c6801ad18b37fa4b979bf3bf3bdb87dadace5ebb8d44c038966e35ae",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
     {

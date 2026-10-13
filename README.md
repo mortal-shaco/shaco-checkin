@@ -66,7 +66,10 @@
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `0 8 * * *` |
 | 咔叽网单签到 | `scripts/ck_2nzz.py` | `python3 scripts/ck_2nzz.py` | `30 8 * * *` |
 | AcFun每日签到与可选互动 | `scripts/ck_acfun.py` | `python3 scripts/ck_acfun.py` | `31 7 * * *` |
+| 百度搜索资源平台 | `scripts/ck_baidu_url_submit.py` | `python3 scripts/ck_baidu_url_submit.py` | `32 7 * * *` |
 | CCAVA每日签到 | `scripts/ck_ccava.py` | `python3 scripts/ck_ccava.py` | `55 18 * * *` |
+| CSDN签到与可选抽奖 | `scripts/ck_csdn.py` | `python3 scripts/ck_csdn.py` | `30 10 * * *` |
+| 时光相册每日签到 | `scripts/ck_everphoto.py` | `python3 scripts/ck_everphoto.py` | `3 22 * * *` |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `15 8 * * *` |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `0 9 * * *` |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `0 9 * * *` |
@@ -258,7 +261,10 @@
 - `scripts/chevrolet.js`：雪佛兰 APP 每日签到，保留上游接口、POST 方法及 cpctoken 请求头参数。；每行一个账号，兼容上游 xflCookie，独立处理并汇总账号结果。；完全断网预演，检查参数及执行流程，不把预演标为业务签到成功。；请求超时及响应大小限制，严格检查 HTTP 状态和明确业务成功标记。；显示官方返回的非秘密昵称、用户名、显示名称或公开 UID，同时抑制凭据、手机号和原始响应。；脱敏时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总。；通过青龙 sendNotify.js 通知成功、部分失败、失败、配置错误及预演结果，通知异常不改变业务退出码；断网预演中通知网络被禁止。。
 - `scripts/ck_2nzz.py`：使用登录 Cookie 获取签到令牌，保留原签到接口路径、请求方法和表单字段。；查询并直接显示官方页面返回的公开 UID。；执行每日签到，区分明确成功、明确已完成与失败；混合已签到或时间未开始提示不判成功。；支持每行一个账号、独立错误处理及任一失败非零退出。；完全断网预演、分阶段脱敏日志、账号和任务统计及单行 TASK_SUMMARY 记录。；成功、部分失败、失败、配置错误发送青龙脱敏通知；预演只展示通知摘要，关闭开关受支持。。
 - `scripts/ck_acfun.py`：独立实现手机号密码登录及多账号处理，不依赖原仓库工具。；保留每天 7:31 调度，默认签到与等级、香蕉余额查询。；按需获取排行榜视频和互动令牌。；显式启用点赞后取消，两步分别检查业务结果。；显式启用公开弹幕，动态提取视频和分区，一言优先并保留作者、来源署名，失败回退本地文本。；显式启用对排行榜视频投一根香蕉。；官方返回的非秘密昵称、用户名和公开用户标识直接显示。；支持完全断网预演、分阶段脱敏日志、账号及任务统计和单行结构化汇总。；正式执行的成功、部分失败、失败及配置错误均尝试青龙通知，通知不可用或失败保留业务退出码；断网预演模拟通知。。
+- `scripts/ck_baidu_url_submit.py`：按原每日 07:32 计划获取 UTF-8 URL 列表并向百度推送本站 URL；支持多站点独立执行及显式重复推送次数，统计接受条数、成功次数、失败次数与剩余配额；保留 data_url、submit_url、times 字段和 BAIDU 数组兼容输入；完全断网参数预演、请求超时、响应大小限制、禁止重定向、本站 URL 检查和明确业务成功判定；脱敏时间轴日志、账号及任务统计、单行 TASK_SUMMARY 结构化总结和青龙通知；通知失败不改变业务退出码。
 - `scripts/ck_ccava.py`：每日签到，保留每天 18:55 的上游计划；显示签到响应中有效的月光币余额；识别今天已签到和失效凭据，未知响应不视为成功；官方返回昵称、用户名、显示名称或公开 UID 时显示可核对身份并抑制凭据及手机号；支持逐行多账号，独立处理并汇总失败；完全断网预演、带时间戳的分阶段日志、账号统计和单行结构化任务总结；通过青龙 notify.py 发送脱敏结果通知，支持全局关闭；断网模式仅预演通知。
+- `scripts/ck_csdn.py`：每日签到，保留上游每天 10:30 的执行时间；通过 CSDN_DRAW 显式启用签到后的抽奖；每行一个 Cookie 的多账号独立处理，保留 Cookie 值中的等号；显示官方响应中的昵称、用户名、显示名称或公开 UID，抑制手机号等敏感字段；完全离线预演、请求超时、响应大小限制、禁止重定向转发凭据和明确业务成功校验；按账号和编号阶段记录脱敏结果、耗时和统计，输出唯一 TASK_SUMMARY JSON；通过青龙 notify.py 通知正式运行的成功、部分失败、失败与配置错误；预演生成摘要并记录离线跳过，通知故障不改变业务退出码。
+- `scripts/ck_everphoto.py`：使用手机号与密码字段值登录时光相册；执行每日签到并区分首次签到与今日已签到；显示接口返回的累积签到天数及非敏感账号身份；支持每行一个账号与原有账号对象列表格式；完全断网预演与逐账号失败隔离；带阶段耗时、账号统计和单行 TASK_SUMMARY 的脱敏日志；通过青龙 notify.py 发送脱敏汇总，通知不可用时保留业务退出码。
 - `scripts/codearts_daily.py`：读取和只读预览福利活动（--preview 不续期、不写台账）；领取 USER_LOGIN 信用积分与一次性 NEW_USER_REGISTER 注册礼；领取、确认后同源回读，仅 CONFIRMED/CONSUMED 且不可再领取算到账；华为云 SDK-HMAC-SHA256 签名和临时凭据自动续期；持久化幂等台账、北京时间每日六次及十分钟间隔限制，--force 显式绕过；--only 按原始账号序号选择、多账号独立执行和失败退出；青龙通知总开关、原有备用推送渠道、脱敏日志及单行任务总结；完全断网预演，不读写状态、不发送通知。
 - `scripts/comicai_ai_cookie.py`：可选 Cookie 登录页访问，保留原流程但不将页面 HTTP 200 当作认证成功；查询签到前积分并展示签到成功响应中的签到后积分；每日签到与已签到业务码识别；展示接口返回的非敏感昵称、用户名、显示名称或公开 UID；逐行多账号及旧环境变量兼容，账号独立执行且任一失败整体失败；完全断网预演及配置校验；分阶段时间轴日志、账号及子任务统计、单行 TASK_SUMMARY JSON；向青龙 notify.py 发送脱敏总结，通知不可用或失败时保留业务退出码。
 - `scripts/crealitycloud_checkin.py`：国内站手机号或邮箱密码登录，手机号自动补 86 区号；直接登录态失效后的 OAuth 授权码登录回退；查询今日签到状态，已签到时避免重复操作；每日签到，展示连续签到天数和积分、经验奖励；查询官方非敏感身份、总积分、经验及创想币余额；默认整体随机延时和多账号间随机等待，保留每日 09:00 定时；每行一个账号、账号独立处理及失败非零退出；断网预演、逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 记录；通过青龙 notify.py 尝试发送脱敏任务总结，支持全局开关和失败隔离。
@@ -458,7 +464,10 @@
 <tr><td rowspan="1"><code>scripts/chevrolet.js</code></td><td><code>CHEVROLET_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行填写一个账号的 cpctoken 原始值，不含请求头名称；不使用 &amp;、@ 或其他字符分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_2nzz.py</code></td><td><code>NZZ_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；只填写 Cookie 值，不包含 Cookie: 前缀。Cookie 字段使用分号分隔，字段仅按首个等号拆分，后续等号保留；禁止使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_acfun.py</code></td><td><code>ACFUN_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：手机号|密码。只按第一个 | 分割，密码中的后续 |、&amp;、@ 和空格完整保留。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ck_baidu_url_submit.py</code></td><td><code>BAIDU_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个 JSON 对象，data_url 为 HTTPS 列表地址，submit_url 为 https://data.zz.baidu.com/urls?site=已验证站点地址&amp;token=站点令牌。times 可选整数 1 至 100，默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_ccava.py</code></td><td><code>CCAVA_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留 Cookie 内部分号和等号，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ck_csdn.py</code></td><td><code>CSDN_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，字段用分号分隔，字段仅按第一个等号切分，保留值中的后续等号；不含 Cookie: 前缀，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ck_everphoto.py</code></td><td><code>EVERPHOTO</code></td><td>是</td><td>格式：每个非空行一个账号：手机号|密码字段值；仅按首个 | 分隔，后续 | 保留在密码内。不使用 &amp; 或 @ 分隔账号。兼容原上游 EVERPHOTO 账号对象列表的 JSON 表示，字段为 mobile、password，均为字符串。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/codearts_daily.py</code></td><td><code>CODEARTS_CREDENTIALS</code></td><td>是</td><td>格式：每个非空行一个账号：单行 JSON（上述字段，可含 expiration、domain_id、user_name、oauth_context.pkce_pair.code_verifier、oauth_context.dpop_key_pair.private_key_jwk），或 AK|SK|STS；仅前两个 | 分隔字段，后续文本保留。兼容 accessKeyId/secretAccessKey/securityToken 和 ak/sk/sts 别名。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/comicai_ai_cookie.py</code></td><td><code>COMICAI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，token 为必填非空字符串，cookie 为可选字符串；JSON 转义可保留凭据中的分隔符。设置规范变量后不读取旧变量。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/crealitycloud_checkin.py</code></td><td><code>CREALITY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为「手机号或邮箱 空格 密码」；只按第一个空白字段分隔，后续密码文本保留。手机号支持 11 位、86 加 11 位或 +86 加 11 位；邮箱直接填写；以 # 开头的行忽略。兼容脚本内 CONFIG_ACCOUNTS，推荐环境变量。；多账号格式以该脚本文档为准</td></tr>
@@ -856,9 +865,20 @@
 <tr><td><code>ACFUN_DRY_RUN</code></td><td>否</td><td>格式：1 启用；0、false、no、off 或空值关闭。预演也不调用通知插件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 或空值关闭，其余值开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，不是下载地址。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/ck_baidu_url_submit.py</code></td><td><code>BAIDU</code></td><td>是</td><td>格式：非空 JSON 数组，元素字段与 BAIDU_ACCOUNTS 相同，仅在规范变量为空时读取。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>BAIDU_DRY_RUN</code></td><td>否</td><td>格式：1 开启；0、false、no、off 或空值关闭。预演不调用任何网络或外部通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 或空值关闭，其他非空值开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于可选通知，业务 HTTP 不依赖本地文件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/ck_ccava.py</code></td><td><code>CCAVA_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes 或 on 开启；默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no 或 off 关闭；默认 1。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；通知失败不会改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/ck_csdn.py</code></td><td><code>CSDN_DRAW</code></td><td>否</td><td>格式：默认 0；1、true、yes、on 开启，0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CSDN_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1、true、yes、on 开启，0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；仅用于可选通知，不是业务依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/ck_everphoto.py</code></td><td><code>EVERPHOTO_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes 或 on 开启完全断网预演；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。预演只展示脱敏通知内容，不实际投递，以保持完全断网。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径；未设置时尝试导入 notify，再查找 /ql/data/scripts/notify.py 和 /ql/scripts/notify.py。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="8"><code>scripts/codearts_daily.py</code></td><td><code>CODEARTS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用，其余关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；多账号格式以该脚本文档为准</td></tr>
@@ -2017,7 +2037,10 @@
 - `scripts/chevrolet.js`：每个非空行代表一个账号，按顺序独立签到；行首尾空白去除，行内所有字符保留。任一账号失败整体非零退出，其他账号继续执行。。
 - `scripts/ck_2nzz.py`：NZZ_COOKIE 每个非空行一个账号；空行忽略，独立处理所有账号，任一账号失败则进程非零退出。。
 - `scripts/ck_acfun.py`：每个非空行一个账号，手机号与密码在同一行，只在第一个 | 分割；逐账号独立处理，任一账号失败则整体非零退出。兼容 ACFUN 的旧 JSON 账号数组。。
+- `scripts/ck_baidu_url_submit.py`：每个非空行一个账号 JSON 对象，将该账号的列表地址与含令牌的接口地址放在同一对象中。逐账号独立执行，任一失败整体非零退出；兼容旧 BAIDU 数组，不使用 & 或 @ 分隔账号。。
 - `scripts/ck_ccava.py`：CCAVA_COOKIE 的每个非空行表示一个账号，逐行独立执行；任意账号失败均整体非零退出。。
+- `scripts/ck_csdn.py`：每个非空行一个账号，独立执行；任一账号参数、请求或业务校验失败时整体非零退出。。
+- `scripts/ck_everphoto.py`：每个非空行一个账号，手机号与密码字段值使用首个 | 合并；各账号独立执行，任何账号失败时整体非零退出。兼容原有账号对象列表 JSON 格式。。
 - `scripts/codearts_daily.py`：每个非空行一个账号，JSON 必须为单行；不按 & 或 @ 拆分账号。账号独立执行，无效账号计失败，任一失败整体非零退出。。
 - `scripts/comicai_ai_cookie.py`：每个非空行一个账号 JSON 对象，同账号 Token 和可选 Cookie 放在同一对象内；账号独立执行，任一账号失败整体非零退出。兼容变量按非空行对应，不允许 & 或 @ 分隔账号。。
 - `scripts/crealitycloud_checkin.py`：每个非空非注释行一个账号；同一行以首个空白字段分隔账号与密码，保留密码后续文本。各账号独立处理，格式错误计为失败，任一账号失败则整体非零退出。。
@@ -2424,11 +2447,32 @@
 - 填写格式：`每个非空行一个账号：手机号|密码。只按第一个 | 分割，密码中的后续 |、&、@ 和空格完整保留。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `BAIDU_ACCOUNTS`
+
+- 所属脚本：`scripts/ck_baidu_url_submit.py`
+- 获取或设置：登录百度搜索资源平台验证站点，在普通收录的 API 提交页面获取含 site 和 token 的接口地址，使用 HTTPS。自行提供公开可读取的 UTF-8 URL 列表，每行一条本站 URL。
+- 填写格式：`每个非空行为一个 JSON 对象，data_url 为 HTTPS 列表地址，submit_url 为 https://data.zz.baidu.com/urls?site=已验证站点地址&token=站点令牌。times 可选整数 1 至 100，默认 1。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `CCAVA_COOKIE`
 
 - 所属脚本：`scripts/ck_ccava.py`
 - 获取或设置：在 https://pc.ccava.net 登录后，打开浏览器开发者工具的网络面板，从该站点已登录请求的请求头复制完整 Cookie 值，不含 Cookie: 前缀。上游私有 get_data 配置中 CCAVA 列表的每个 cookie 值可原样迁移为一行。不要公开或上传此值。
 - 填写格式：`每个非空行一个账号的完整 Cookie；保留 Cookie 内部分号和等号，不用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CSDN_COOKIE`
+
+- 所属脚本：`scripts/ck_csdn.py`
+- 获取或设置：在浏览器登录 CSDN，打开开发者工具网络面板，从发往 me.csdn.net 的已登录请求中复制 Cookie 请求头值；勿公开或提交凭据。
+- 填写格式：`每个非空行一个账号的完整 Cookie，字段用分号分隔，字段仅按第一个等号切分，保留值中的后续等号；不含 Cookie: 前缀，不使用 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `EVERPHOTO`
+
+- 所属脚本：`scripts/ck_everphoto.py`
+- 获取或设置：登录本人时光相册账号，在浏览器开发者工具的网络面板查找 https://web.everphoto.cn/api/auth 请求，获取 mobile 和 password 字段。密码若已由客户端转换，应填写请求中的字段值，本脚本不猜测或转换密码。不要分享凭据或完整请求。
+- 填写格式：`每个非空行一个账号：手机号|密码字段值；仅按首个 | 分隔，后续 | 保留在密码内。不使用 & 或 @ 分隔账号。兼容原上游 EVERPHOTO 账号对象列表的 JSON 表示，字段为 mobile、password，均为字符串。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `CODEARTS_CREDENTIALS`
@@ -4943,6 +4987,31 @@
 - 获取或设置：如青龙通知模块不在默认位置，可填写已有 notify.py 所在目录；通知模块是可选集成，缺失不影响业务退出码。
 - 填写格式：`本地目录路径，不是下载地址。`
 
+#### `BAIDU`
+
+- 所属脚本：`scripts/ck_baidu_url_submit.py`
+- 获取或设置：旧配置兼容输入，优先迁移到 BAIDU_ACCOUNTS；使用百度站点 API 提交页面的令牌与自己的列表地址。
+- 填写格式：`非空 JSON 数组，元素字段与 BAIDU_ACCOUNTS 相同，仅在规范变量为空时读取。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `BAIDU_DRY_RUN`
+
+- 所属脚本：`scripts/ck_baidu_url_submit.py`
+- 获取或设置：在青龙环境变量中设置为 1 进行断网预演。
+- 填写格式：`1 开启；0、false、no、off 或空值关闭。预演不调用任何网络或外部通知模块。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/ck_baidu_url_submit.py`
+- 获取或设置：青龙全局通知开关，默认开启。
+- 填写格式：`0、false、no、off 或空值关闭，其他非空值开启。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/ck_baidu_url_submit.py`
+- 获取或设置：可选，填写青龙 notify.py 所在目录；也查找可导入的 notify 模块及青龙标准脚本目录。
+- 填写格式：`本地目录路径，仅用于可选通知，业务 HTTP 不依赖本地文件。`
+
 #### `CCAVA_DRY_RUN`
 
 - 所属脚本：`scripts/ck_ccava.py`
@@ -4960,6 +5029,48 @@
 - 所属脚本：`scripts/ck_ccava.py`
 - 获取或设置：可选，填写青龙现有 notify.py 所在目录；优先使用可导入的 notify.send，再检查此目录及青龙标准脚本目录。无需安装私有工作流工具。
 - 填写格式：`本机目录路径；通知失败不会改变业务退出码。`
+
+#### `CSDN_DRAW`
+
+- 所属脚本：`scripts/ck_csdn.py`
+- 获取或设置：按需在青龙环境变量中设置；抽奖可能消耗机会，默认关闭。
+- 填写格式：`默认 0；1、true、yes、on 开启，0、false、no、off 关闭。`
+
+#### `CSDN_DRY_RUN`
+
+- 所属脚本：`scripts/ck_csdn.py`
+- 获取或设置：离线预演时设置为 1；正式执行时设置为 0 或不设置。
+- 填写格式：`默认 0；1、true、yes、on 开启，0、false、no、off 关闭。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/ck_csdn.py`
+- 获取或设置：青龙全局通知开关；在青龙 notify.py 中配置通知渠道。
+- 填写格式：`默认 1；0、false、no、off 关闭。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/ck_csdn.py`
+- 获取或设置：可选指定可信的青龙 notify.py 所在目录；也支持导入 notify 或使用青龙标准脚本目录。
+- 填写格式：`本地目录路径；仅用于可选通知，不是业务依赖。`
+
+#### `EVERPHOTO_DRY_RUN`
+
+- 所属脚本：`scripts/ck_everphoto.py`
+- 获取或设置：在青龙环境变量中手动设置。
+- 填写格式：`1、true、yes 或 on 开启完全断网预演；默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/ck_everphoto.py`
+- 获取或设置：在青龙环境变量中手动设置；使用青龙已有的 notify.py 通知配置。
+- 填写格式：`默认 1；0、false、no、off 关闭。预演只展示脱敏通知内容，不实际投递，以保持完全断网。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/ck_everphoto.py`
+- 获取或设置：可选：填写本人青龙安装中已有 notify.py 所在目录；不需要其他仓库。
+- 填写格式：`本地目录路径；未设置时尝试导入 notify，再查找 /ql/data/scripts/notify.py 和 /ql/scripts/notify.py。`
 
 #### `CODEARTS_DRY_RUN`
 
@@ -12043,7 +12154,10 @@
 - `scripts/chevrolet.js`：SHA-256 `fc9137b46f1cb49c1d8f9523c145651d9453fbf8beac391fcc85039a950d7cd2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e7302e54a0be513`。
 - `scripts/ck_2nzz.py`：SHA-256 `7f3516766b49802f68470d5adb40d69a59014b79178df5de52a083e60f8af02b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a50eecf80a170dc5`。
 - `scripts/ck_acfun.py`：SHA-256 `1e650693abb1fbf6f49934ed22d3ac1ff876d5c4ab719c232c57a5f15212af15`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21b5208e088c5d34`。
+- `scripts/ck_baidu_url_submit.py`：SHA-256 `ab3ff2232123e9a8d0a05f1a738b6b3c632ff7797d6fb51ecc32f0565ed12423`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cbcac1d0442bb8ef`。
 - `scripts/ck_ccava.py`：SHA-256 `de4c8a9cb4f76800d04f9aca4d80b49599231295f1a1f0dff1e922c5eb4bd360`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/93e0b2068d55d68f`。
+- `scripts/ck_csdn.py`：SHA-256 `5ee4485d4cbbe36ccff6b5fd298dc3d0cba445e2a35d6dab5929a48454d7159b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/90f965ebca645fae`。
+- `scripts/ck_everphoto.py`：SHA-256 `1c503ab4c6801ad18b37fa4b979bf3bf3bdb87dadace5ebb8d44c038966e35ae`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/08575e47b55daffb`。
 - `scripts/codearts_daily.py`：SHA-256 `c6bdd619ce35cd32e1fca575006e8420c6ac3b55d55cc1ffb48ba9122862d856`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b896028c3fdcd52d`。
 - `scripts/comicai_ai_cookie.py`：SHA-256 `173db2c22758f322022dedfb23fdd735a85d1cff0d39ad308ed5a8c3d0d45c8c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
 - `scripts/crealitycloud_checkin.py`：SHA-256 `65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
@@ -12235,7 +12349,10 @@
 - `scripts/chevrolet.js`：实际运行向雪佛兰签到接口提交签到，可能改变签到状态并获得服务端签到奖励。；通知启用且本地青龙通知器可用时，实际运行发送脱敏任务总结。。
 - `scripts/ck_2nzz.py`：正式运行向咔叽网单提交每日签到，可能获得站点签到奖励。；正式运行且通知开启时通过青龙配置的通知渠道发送脱敏任务摘要。。
 - `scripts/ck_acfun.py`：默认执行每日签到，可能获得签到奖励。；启用 like 时先点赞再取消；取消失败时可能保留点赞状态。；启用 danmu 时公开发布弹幕。；启用 banana 时消耗一根香蕉并投给视频。。
+- `scripts/ck_baidu_url_submit.py`：实际运行向百度提交本站 URL 并消耗每日配额，显式设置 times 大于 1 时重复提交同一列表；实际运行且通知开启时通过青龙通知模块发送脱敏总结。
 - `scripts/ck_ccava.py`：实际模式调用 CCAVA 每日签到接口，可能增加账号月光币；实际模式通知开启且工具可用时发送脱敏任务结果通知。
+- `scripts/ck_csdn.py`：签到改变当天签到状态并可能领取奖励；显式开启抽奖后消耗抽奖机会并可能领取奖品；正式运行向配置的青龙通知渠道发送脱敏任务摘要。
+- `scripts/ck_everphoto.py`：正式执行登录请求创建认证会话；正式执行每日签到改变签到状态；正式执行按通知开关投递任务汇总。
 - `scripts/codearts_daily.py`：领取福利积分与新人奖励；确认福利到账；使用可选续期材料刷新登录凭据；写入私有凭据缓存和领取幂等台账；发送脱敏通知（预演只模拟）。
 - `scripts/comicai_ai_cookie.py`：向 ComicAI 提交每日签到并可能获得积分；启用通知时发送脱敏任务总结。
 - `scripts/crealitycloud_checkin.py`：登录与 OAuth 授权生成服务端会话；每日签到改变签到记录并领取奖励；正式运行发送已配置的青龙通知；断网预演仅尝试通知调用，不允许联网。
@@ -12429,7 +12546,10 @@
 - `scripts/chevrolet.js`：上游 `NaroisCool/naro-scripts` / `chevrolet.js` / `c2ffa8af2089bd98e1ed623c7a25d49b60ca0fdd`。
 - `scripts/ck_2nzz.py`：上游 `yuxian158/check` / `dailycheckin_scripts/ck_2nzz.py` / `723c834f121ff4eef2dec7afe521071a7efff1a9`。
 - `scripts/ck_acfun.py`：上游 `OreosLab/checkinpanel` / `ck_acfun.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
+- `scripts/ck_baidu_url_submit.py`：上游 `OreosLab/checkinpanel` / `ck_baidu_url_submit.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
 - `scripts/ck_ccava.py`：上游 `OreosLab/checkinpanel` / `ck_ccava.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
+- `scripts/ck_csdn.py`：上游 `OreosLab/checkinpanel` / `ck_csdn.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
+- `scripts/ck_everphoto.py`：上游 `OreosLab/checkinpanel` / `ck_everphoto.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
 - `scripts/codearts_daily.py`：上游 `L0NE-6/CodeArts-Daily` / `codearts_daily.py` / `c337a9340877cdf7afef0a679f3d020d28183140`。
 - `scripts/comicai_ai_cookie.py`：上游 `CSDN2024/QianDaoMZH` / `comicai-ai-cookie.py` / `b99c67e46d1e74d2fd3a0bff7cac3f83e5ee6903`。
 - `scripts/crealitycloud_checkin.py`：上游 `xz0609/crealitycloud-checkin-ql` / `crealitycloud_checkin.py` / `ba2872b75372f62157b1f0cdcdf57ed59f9bd1fb`。
