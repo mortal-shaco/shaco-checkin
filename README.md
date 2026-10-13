@@ -40,6 +40,7 @@
 | 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `3 11 * * *` |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `0 8 * * *` |
 | Hax 与 Woiden 可开通区域监控 | `scripts/api_hax.py` | `python3 scripts/api_hax.py` | `21 */6 * * *` |
+| 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `0 10 * * *` |
 | 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `9 10,23 * * *` |
 | 上海杨浦商城定时抢购 | `scripts/auto_buy.py` | `python3 scripts/auto_buy.py` | `0 0 10 * * *` |
 | AutoClaw 国内版每日签到 | `scripts/autoclaw_cn_daily.py` | `python3 scripts/autoclaw_cn_daily.py` | `15 8 * * *` |
@@ -74,6 +75,7 @@
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `0 8 * * *` |
 | 阴阳师官网视频与原画 | `scripts/get_yys_cgvideo.py` | `python3 scripts/get_yys_cgvideo.py` | `0 9 * * 0` |
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `0 9 * * 0` |
+| HelloGitHub月刊提醒 | `scripts/hellogithub.py` | `python3 scripts/hellogithub.py` | `0 8 1 * *` |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `30 6 * * *` |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `0 8 * * *` |
 | 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `0 9,18 * * *` |
@@ -202,6 +204,7 @@
 - `scripts/aliyunpan_checkin.py`：刷新登录凭据并识别令牌轮换，全程不输出凭据；查询官方公开身份与存储容量；查询失败继续签到与领奖，最终非零退出；每日签到并输出本月累计签到天数；输出逐日签到状态、奖励名称及说明、已领奖与待领奖天数；默认领取当日奖励并识别已领取状态，支持显式关闭领奖；显式开启后补领本月全部已签到未领奖励，单日失败仍继续其余奖励，最终失败退出；保留可选设备会话及设备签名；ecdsa 仅在正式启用时导入；保留随机延迟、新旧参数兼容和多账号独立执行；显式开启时安全持久化轮换令牌文件；完全断网预演、青龙脱敏总结通知、分阶段时间轴日志及原机器汇总。
 - `scripts/aolaxing.py`：查询每日任务列表、今日任务总数及完成数。；按显式指定任务 ID 执行未完成任务，执行后重新读取列表核验已完成状态；已完成任务不重复执行。；查询当前积分、累计获得积分和累计签到次数。；官方响应返回昵称、用户名、显示名称或公开 UID 时显示非敏感身份；抑制手机号和凭据。；逐行多账号、上游配置键名兼容、断网预演、独立 HTTPS 请求、超时和失败非零退出。；时间轴阶段日志、账号与任务统计、单行机器汇总和青龙脱敏通知。。
 - `scripts/api_hax.py`：查询并按地区汇总 Hax 开通数量。；按虚拟化类型分组展示 Hax 可开通区域及开通页面链接。；展示 Woiden 可开通区域及开通页面链接。；保留 HAX 启用开关和每六小时第 21 分钟定时。；完全断网预演、独立查询失败隔离、页面校验及结构化汇总。；通过青龙通知模块发送公开结果和统计，通知失败保留业务退出码。。
+- `scripts/arknightsbanner.py`：每天 10 点监控明日方舟官方寻访公告，无需游戏账号；无第三方业务依赖。；扫描 LATEST 至末页或最多 50 页；ACTIVITY 前 5 页兜底，整页已知时停止，按公告标识去重并按发布时间排序。；逐条抓取公告正文，不依赖标题或摘要预筛；移除脚本与健康提示页脚后识别卡池出率关键词。；提取寻访名称、类型、活动时间、六星与五星 UP 干员、出率、保底规则、寻访数据契约兑换所及公告链接。；首次记录全部扫描公告，仅推送最新一期卡池；后续增量处理新公告，未知详情或通知失败保留重试，损坏状态文件不会静默重置。；通过青龙通知发送分段文字；有封面时附封面链接，并可通过自己实现的 Telegram HTTP 接口发送图片至多个换行配置目标。；兼容原状态字段与原定时安排，原子写入状态；请求有超时、体积限制、HTTPS 约束和业务结构检查。；完全断网预演验证正文、结构化解析、封面与报告，不读写状态、不请求公告、不加载通知或发送图片。；输出中文时间轴、阶段耗时、监控源统计、最终状态及唯一 TASK_SUMMARY JSON；每次运行尝试脱敏总结通知，通知故障保持业务退出码。。
 - `scripts/atxyq.py`：查询并直接展示官方昵称，查询学校启用状态与积分任务列表。；每日签到，核验连续天数与获得积分。；领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。；查询当前可用积分。；显式开启最多两篇校园文章的点赞与取消点赞。；显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。；显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。；使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。；逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。。
 - `scripts/auto_buy.py`：指定商品、数量、活动编号和促销类型抢购；按完整日期或时分秒定时执行，也支持立即执行；明确业务拒绝后按配置次数和间隔重试，未知结果停止重试；按行配置多账号，独立处理及失败非零退出；断网预演、脱敏时间轴日志、账号和任务统计及结构化汇总；真实执行发送青龙通知汇总，预演生成通知摘要；展示接口明确返回的非敏感昵称、用户名、显示名或公开用户编号。
 - `scripts/autoclaw_cn_daily.py`：国内版每日签到及积分奖励结果显示，明确业务码及成功标记校验；登录态过期后自动续期并重试签到，签名校验失败时使用 agent-refresh 备用接口；无明确领取结果时只读查询任务清单用于诊断，不将诊断冒充领取成功；支持 --refresh-only 仅续期、--only N 选择账号和 --no-notify 关闭通知；显式启用的私有凭据缓存读取和安全原子保存；默认不落盘登录态；换行多账号独立执行，任一失败整体非零退出；断网预演、分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY 汇总；官方返回昵称、用户名、显示名称或公开 UID 时显示该非秘密身份；青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送；显式 --region intl 或 AUTOCLAW_REGION=intl 使用国际版官方接口及独立凭据；保留国内版默认行为；显式 --region both 按同一每日时机独立执行两地区账号，缓存按地区配置；某地区缺配置仍处理另一地区账号并整体失败。
@@ -236,6 +239,7 @@
 - `scripts/fxh.js`：每日查询当前积分；每日执行芬享汇签到，显示可解析的奖励积分与已签到状态；官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示；逐行多账号独立执行和失败退出；完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总；实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网。
 - `scripts/get_yys_cgvideo.py`：官网 CG 视频目录解析、按标题去重；显式开启后的媒体下载和校验清单；新增下载数量限制及视频下载成功后两秒间隔；可选官网原画首分组六链接条目的第三链接下载；已有文件经大小及摘要验证后跳过；安全文件名和链接摘要防碰撞、拒绝覆盖文件；断网预演、超时、媒体签名和传输完整性校验；任务独立处理，任一资源失败均非零退出；时间轴日志、结构化统计和脱敏青龙通知。
 - `scripts/get_yys_imagelinks.py`：读取阴阳师官网原画页面，保留首个 tab-cont 内六个链接的第三个原画链接选择规则。；默认仅核验并列出素材；显式开启后保存原画，保留数字路径命名与原画目录默认值，修复未知文件名及同名碰撞。；通过任务开关读取全部官网 CG 视频分组，保存标题命名的 MP4 视频并记录 downloaded_videos.txt 标题历史。；校验已有素材文件格式并跳过下载；视频新下载数量限制与默认两秒间隔均保留。；独立实现带超时和 HTTPS 重定向校验的 HTTP 请求；检查状态码、页面结构、素材格式、大小及已知响应长度；原子落盘且不覆盖已有文件。；每种素材及每个下载项独立处理，任一失败即整体非零退出；输出中文分阶段耗时、子任务统计和唯一 TASK_SUMMARY JSON。；提供无账号、无网络、无文件写入的断网预演，覆盖原画和视频解析。；所有结果发送脱敏青龙通知；预演输出通知摘要且不调用通知服务，通知失败保留业务退出码。。
+- `scripts/hellogithub.py`：每月 1 日 08:00 查询 HelloGitHub 最新月刊及发布时间；比较持久化期号，跳过已经提醒的月刊；动态提取页面构建标识并读取完整分类项目内容；展示刊名、简介、发布时间、期号、项目与分类数量、项目名称、语言、描述、星标、复刻、关注数及项目链接；按最多 3900 字符分段推送全部内容，保留在线阅读和上游 GitHub 链接；支持旧版期号状态文件迁移、断网预演、时间轴日志和结构化总结；通过青龙通知助手发送月刊和脱敏任务总结。
 - `scripts/hifiti_checkin.py`：HiFiTi 每日签到与明确业务结果核验；HiFiHi 每日签到与明确业务结果核验；兼容原凭据参数和旧版值格式，完整 Cookie 不截断；每行一个账号，两个站点与不同账号之间隔离会话；保留每天 06:30 的计划、随机启动等待和同站点账号间等待；读取官方非敏感昵称、用户名或公开身份字段并显示，禁止凭据片段充当身份；完全断网预演、配置检查、按账号阶段日志与单行结构化任务汇总；成功、部分失败、失败、配置错误和预演均生成脱敏通知摘要，真实模式通过可用青龙通知模块发送，预演仅模拟发送。
 - `scripts/hlyl.py`：查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据；查询当日签到状态、周任务进度和月签到天数；每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励；显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖；查询积分余额；逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出；完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录；通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知。
 - `scripts/hsay.py`：查询并显示官方返回的用户昵称，隐藏手机号及凭据；从积分流水获取签到所需的公开用户 ID；查询连续签到天数；按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数；逐行多账号独立运行，失败闭合与断网预演；青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出。
@@ -369,6 +373,7 @@
 <tr><td rowspan="1"><code>scripts/aliyunpan_checkin.py</code></td><td><code>ALIYUN_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的刷新令牌；不用 &amp;、@ 或其他符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/aolaxing.py</code></td><td><code>AOLAXING_COOKIE</code></td><td>是</td><td>格式：每行一个账号的完整 Cookie；不按 &amp;、@ 或分号拆分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/api_hax.py</code></td><td><code>HAX</code></td><td>否</td><td>格式：单个非敏感开关；1 启用；0、false、no、off 或空值不启用。未启用报告配置错误并非零退出。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/arknightsbanner.py</code></td><td><code>ARKNIGHTS_STATE_FILE</code></td><td>否</td><td>格式：一个本地 JSON 文件路径；首次正式运行自动创建文件和父目录，已有文件需包含数组 known_cids 与 notified_cids。断网预演不读写文件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/atxyq.py</code></td><td><code>atxyqs</code></td><td>是</td><td>格式：每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/auto_buy.py</code></td><td><code>SHYP_BUY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为 Authorization|Cookie，仅按第一个竖线分割；没有 Cookie 时只填写 Authorization；多个账号用换行分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SHYP_BUY_SKU_ID</code></td><td>否</td><td>格式：数字商品编号；多账号格式以该脚本文档为准</td></tr>
@@ -404,6 +409,7 @@
 <tr><td rowspan="1"><code>scripts/fwxs_checkin.js</code></td><td><code>fwxs</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；兼容 Cookie#昵称备注，仅按首个 # 分割，后续备注完整保留但为防泄漏不输出。禁止用 @ 或 &amp; 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fxh.js</code></td><td><code>fxhOpenId</code></td><td>是</td><td>格式：每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/get_yys_cgvideo.py</code></td><td><code>YYS_OUTPUT_DIR</code></td><td>否</td><td>格式：一个本地目录路径；预演也必须提供占位目录；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/hellogithub.py</code></td><td><code>HELLOGITHUB_STATE_FILE</code></td><td>否</td><td>格式：单个绝对文件路径；文件不存在时从未发送开始，文件损坏时停止。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hifiti_checkin.py</code></td><td><code>HiFiTi_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；填写完整 Cookie（字段之间使用分号），兼容旧版仅填写 cloudmusic.net 的值；字段值中的等号完整保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hlyl.py</code></td><td><code>hlylck</code></td><td>是</td><td>格式：每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hsay.py</code></td><td><code>hsayCookie</code></td><td>是</td><td>格式：每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 &amp; 分隔。；多账号格式以该脚本文档为准</td></tr>
@@ -586,6 +592,10 @@
 <tr><td rowspan="3"><code>scripts/api_hax.py</code></td><td><code>HAX_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 使用内置样本且不加载通知模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于可选通知，不是业务运行依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/arknightsbanner.py</code></td><td><code>ARKNIGHTS_DRY_RUN</code></td><td>否</td><td>格式：1 表示断网预演；0、false、no、off 表示正式运行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>ARKNIGHTS_TELEGRAM</code></td><td>是</td><td>格式：每个非空行一个机器人 Token|聊天 ID，只在第一个 | 拆分字段；多个接收目标用换行分隔，支持负数群组 ID。图片失败独立记录，任一目标失败则本次非零退出并保留公告重试。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。断网预演仅模拟通知，不加载通知代码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：一个本地目录路径；不需要其他仓库、程序或安装引导。通知模块缺失不阻止扫描，但待推送公告会失败并保留重试；最终总结通知故障保持业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="12"><code>scripts/atxyq.py</code></td><td><code>ATXYQ_DRY_RUN</code></td><td>否</td><td>格式：默认 0；1 开启，模拟所有已启用动作与通知，不表示业务成功。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>atxyqDel</code></td><td>否</td><td>格式：整数，默认 0 不删除；非零删除本人最近十篇列表内帖子。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>ATXYQ_LIKE</code></td><td>否</td><td>格式：默认 0；1 对最多两篇文章各点赞后取消点赞，保持上游成对动作。；多账号格式以该脚本文档为准</td></tr>
@@ -794,6 +804,9 @@
 <tr><td><code>YYS_DRY_RUN</code></td><td>否</td><td>格式：1 使用内置页面样本且不联网、不写素材、不调用通知服务；默认 0；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；通知模块不可用不改变任务退出码；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/hellogithub.py</code></td><td><code>HELLOGITHUB_DRY_RUN</code></td><td>否</td><td>格式：1 启用完全断网预演，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用；新刊未提交通知时不更新状态且退出非零。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="6"><code>scripts/hifiti_checkin.py</code></td><td><code>HIFIHI_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；完整 Cookie 或旧版 cloudmusic.net 的值，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>HIFITI_DRY_RUN</code></td><td>否</td><td>格式：1/0、true/false、yes/no 或 on/off；默认 0。预演不请求站点或通知服务，不等待。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：1/0、true/false、yes/no 或 on/off；多个账号时生效。；多账号格式以该脚本文档为准</td></tr>
@@ -1718,6 +1731,12 @@
 - 获取或设置：无需凭据，手动设置青龙环境变量 HAX=1，替代上游私有配置启用开关。
 - 填写格式：`单个非敏感开关；1 启用；0、false、no、off 或空值不启用。未启用报告配置错误并非零退出。`
 
+#### `ARKNIGHTS_STATE_FILE`
+
+- 所属脚本：`scripts/arknightsbanner.py`
+- 获取或设置：由用户指定青龙可写的独立 JSON 文件路径，用于公告增量状态。无需游戏账号或登录凭据。沿用上游历史状态时指向原脚本旁 config/.arknights_banner_state.json；新安装选择自己的数据目录。不要指向其他脚本、配置或已有非状态文件。
+- 填写格式：`一个本地 JSON 文件路径；首次正式运行自动创建文件和父目录，已有文件需包含数组 known_cids 与 notified_cids。断网预演不读写文件。`
+
 #### `atxyqs`
 
 - 所属脚本：`scripts/atxyq.py`
@@ -1958,6 +1977,12 @@
 - 所属脚本：`scripts/get_yys_cgvideo.py`
 - 获取或设置：自行选择本地保存目录；无需登录或凭据。原脚本的固定盘符已移除。
 - 填写格式：`一个本地目录路径；预演也必须提供占位目录`
+
+#### `HELLOGITHUB_STATE_FILE`
+
+- 所属脚本：`scripts/hellogithub.py`
+- 获取或设置：选择青龙脚本可写的持久化目录，自行指定 JSON 状态文件；迁移时填旧脚本目录/config/.hellogithub_bot_state.json 的绝对路径，以保留已发送期号。公开月刊接口无需账号凭据。
+- 填写格式：`单个绝对文件路径；文件不存在时从未发送开始，文件损坏时停止。`
 
 #### `HiFiTi_COOKIE`
 
@@ -3120,6 +3145,31 @@
 - 所属脚本：`scripts/api_hax.py`
 - 获取或设置：可选填写青龙已有 notify.py 所在目录；默认自动查找标准目录或导入 notify。
 - 填写格式：`本地目录路径，仅用于可选通知，不是业务运行依赖。`
+
+#### `ARKNIGHTS_DRY_RUN`
+
+- 所属脚本：`scripts/arknightsbanner.py`
+- 获取或设置：测试时设置为 1，正式运行设为 0 或不设置。
+- 填写格式：`1 表示断网预演；0、false、no、off 表示正式运行。`
+
+#### `ARKNIGHTS_TELEGRAM`
+
+- 所属脚本：`scripts/arknightsbanner.py`
+- 获取或设置：可选封面图片补充通道：通过 Telegram 的 BotFather 创建自己的机器人并取得 Token，通过自己的机器人 getUpdates 接口取得聊天 ID；确保机器人有发送权限。文字公告仍由青龙通知发送。不得公开或上传 Token。
+- 填写格式：`每个非空行一个机器人 Token|聊天 ID，只在第一个 | 拆分字段；多个接收目标用换行分隔，支持负数群组 ID。图片失败独立记录，任一目标失败则本次非零退出并保留公告重试。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/arknightsbanner.py`
+- 获取或设置：使用青龙既有通知配置；默认启用，设置为 0 可关闭全部通知和图片。关闭期间不把待推送卡池标为已处理，重新开启后重试。
+- 填写格式：`默认 1；0、false、no、off 关闭。断网预演仅模拟通知，不加载通知代码。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/arknightsbanner.py`
+- 获取或设置：如青龙通知脚本不在默认位置，指定包含 notify.py 的目录。也会查找可导入的 notify 模块以及 /ql/data/scripts/notify.py、/ql/scripts/notify.py。通知渠道凭据在青龙通知配置中设置，不需要游戏凭据。
+- 填写格式：`一个本地目录路径；不需要其他仓库、程序或安装引导。通知模块缺失不阻止扫描，但待推送公告会失败并保留重试；最终总结通知故障保持业务退出码。`
 
 #### `ATXYQ_DRY_RUN`
 
@@ -4392,6 +4442,24 @@
 - 所属脚本：`scripts/get_yys_imagelinks.py`
 - 获取或设置：选填青龙自带 notify.py 所在目录；未设置则自动发现 notify 模块及青龙常用目录。
 - 填写格式：`目录路径；通知模块不可用不改变任务退出码`
+
+#### `HELLOGITHUB_DRY_RUN`
+
+- 所属脚本：`scripts/hellogithub.py`
+- 获取或设置：预演时设置为 1。
+- 填写格式：`1 启用完全断网预演，默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/hellogithub.py`
+- 获取或设置：使用青龙全局通知开关，渠道凭据在青龙 notify.py 内配置。
+- 填写格式：`默认 1；0、false、no、off 禁用；新刊未提交通知时不更新状态且退出非零。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/hellogithub.py`
+- 获取或设置：需要时填写青龙 notify.py 所在目录；默认查找脚本同目录及青龙标准目录，也支持导入 notify.send。
+- 填写格式：`本地目录路径。`
 
 #### `HIFIHI_COOKIE`
 
@@ -8786,6 +8854,7 @@
 - `scripts/aliyunpan_checkin.py`：SHA-256 `ed1ba9f840e3411c993266ae1b29c1db3cd968bf49f318d682fea69aab37815c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
 - `scripts/aolaxing.py`：SHA-256 `5e2e40940a4bd132b7f240273fe1e6850ace43aa93856a8ee9871aa263ee7b46`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ca8984737c9322f`。
 - `scripts/api_hax.py`：SHA-256 `b82b5df5898bca09afb910abd7db43507e0fa2b93866ffd7fec97e722e3b8d49`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbf36f8697d4cc45`。
+- `scripts/arknightsbanner.py`：SHA-256 `e8f9017bbd7ddf89573d8a0e04bc5bdef09d8f3aa0da333b42a57e5df74e9161`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/918364c17c412528`。
 - `scripts/atxyq.py`：SHA-256 `6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
 - `scripts/auto_buy.py`：SHA-256 `0113fe2351817b3134acb742c3e73c091ba32696965db2d00b38760724cba839`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0196c3c6c89dc959`。
 - `scripts/autoclaw_cn_daily.py`：SHA-256 `f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3813c988ddc0c592`。
@@ -8820,6 +8889,7 @@
 - `scripts/fxh.js`：SHA-256 `228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
 - `scripts/get_yys_cgvideo.py`：SHA-256 `5acaf38a721b681a7ea5a7ac0240d4116214d54ea3dde624435202a040af09cd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8edbbefea99ad1fb`。
 - `scripts/get_yys_imagelinks.py`：SHA-256 `ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21c2272d2f618e0f`。
+- `scripts/hellogithub.py`：SHA-256 `9ba47639b981f682c235acbddab2d09e14f1e0bc0737fc1d07171debe254a8ce`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e249d85fcb6de594`。
 - `scripts/hifiti_checkin.py`：SHA-256 `ae18f25d6d7ad768ae64880761732b510e7bc3e75179bb9d66790f8203e4faf9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
 - `scripts/hlyl.py`：SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
 - `scripts/hsay.py`：SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
@@ -8948,6 +9018,7 @@
 - `scripts/aliyunpan_checkin.py`：执行账号每日签到；默认领取当日奖励，显式全量模式下补领其他已签到未领奖励；ENABLE_DEVICE_SESSION=1 时注册设备会话；ALIYUN_PERSIST_ROTATED_TOKENS=1 且令牌轮换时写入安全凭据文件；正式执行且通知启用时发送脱敏任务通知。
 - `scripts/aolaxing.py`：配置 AOLAXING_TASK_IDS 时触发对应每日任务完成及服务端关联积分或签到状态变更，具体效果以用户审阅的任务为准。；在线运行且通知开启时发送青龙任务汇总通知。。
 - `scripts/api_hax.py`：正式模式且启用通知时，通过青龙通知渠道发送查询结果和统计。。
+- `scripts/arknightsbanner.py`：正式运行在用户明确指定的位置创建或原子更新公告去重状态文件。；启用通知时向青龙配置的通知渠道发送卡池公告与运行总结；配置图片接收目标且公告有封面时向 Telegram 发送图片。。
 - `scripts/atxyq.py`：默认每日签到，记录签到并可能增加积分。；默认领取普通任务奖励，可能增加积分。；开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。；开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。；atxyqDel 非零时删除本人最近十篇列表内帖子。；开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。；开启 ATXYQ_INVITE 后创建所选邀请关系。；正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。。
 - `scripts/auto_buy.py`：显式开启后提交商城抢购请求，可能兑换商品、扣除积分或产生付费订单；明确业务拒绝时可能重复提交抢购请求；真实运行发送青龙任务汇总通知。
 - `scripts/autoclaw_cn_daily.py`：真实运行提交所选地区 daily_signin 签到任务，可能获得积分；登录态过期或 --refresh-only 时续期登录态，可能使旧登录态失效；仅显式配置对应地区 STORE_FILE 时写入受保护的本地凭据缓存；通知开启时通过已配置渠道发送脱敏摘要；预演仅模拟通知。
@@ -8982,6 +9053,7 @@
 - `scripts/fxh.js`：实际执行每日签到，改变签到状态并由服务端发放积分；启用通知时调用青龙通知模块发送任务总结。
 - `scripts/get_yys_cgvideo.py`：显式下载且非预演时创建保存目录、媒体文件和校验清单；实际运行且通知开启时调用青龙通知发送摘要。
 - `scripts/get_yys_imagelinks.py`：仅在 YYS_DOWNLOAD 显式开启时创建素材目录并保存原画或视频文件；视频同时维护标题历史记录。；正式运行且通知开启时调用青龙通知模块发送脱敏任务结果。。
+- `scripts/hellogithub.py`：正式运行时提交月刊内容及任务总结到青龙通知渠道；所有月刊消息提交成功后原子更新本地已发送期号状态文件。
 - `scripts/hifiti_checkin.py`：向 HiFiTi 提交每日签到；向 HiFiHi 提交每日签到；真实模式按全局通知开关向青龙配置的渠道发送脱敏任务通知。
 - `scripts/hlyl.py`：未签到时提交每日签到，可能获得积分和成长积分；显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品；通知开启且正式运行时通过青龙组件发送任务总结。
 - `scripts/hsay.py`：向沪上阿姨签到接口提交每日签到，领取活动奖励；实际模式下通过青龙通知模块发送脱敏任务总结。
@@ -9112,6 +9184,7 @@
 - `scripts/aliyunpan_checkin.py`：上游 `agluo/ql-script-hub` / `aliyunpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/aolaxing.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/aolaxing/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/api_hax.py`：上游 `OreosLab/checkinpanel` / `api_hax.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
+- `scripts/arknightsbanner.py`：上游 `CN-Grace/QinglongScripts` / `ArknightsBanner.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/atxyq.py`：上游 `Rookie-wb-WH/ql_scripts` / `atxyq.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
 - `scripts/auto_buy.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/shyp/auto_buy.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/autoclaw_cn_daily.py`：上游 `L0NE-6/AutoClaw-Daily` / `autoclaw_cn_daily.py` / `745a15b42d58bcaf9bb50920f5405e04b4f4964b`。
@@ -9146,6 +9219,7 @@
 - `scripts/fxh.js`：上游 `xingly-cn/QLPanelScript` / `fxh.js` / `8c0323999253b7a0d8e47ff1136a562fedb3c980`。
 - `scripts/get_yys_cgvideo.py`：上游 `qluser-alan/some_scripts` / `阴阳师/get_yys_cgvideo.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/get_yys_imagelinks.py`：上游 `cloudcranes/some_scripts` / `阴阳师/get_yys_imagelinks.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
+- `scripts/hellogithub.py`：上游 `CN-Grace/QinglongScripts` / `HelloGithub.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/hifiti_checkin.py`：上游 `agluo/ql-script-hub` / `HiFiti_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/hlyl.py`：上游 `cloudcranes/some_scripts` / `hlyl.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/hsay.py`：上游 `Rookie-wb-WH/ql_scripts` / `hsay.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。

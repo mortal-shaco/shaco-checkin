@@ -1299,6 +1299,138 @@
       }
     },
     {
+      "catalogId": "918364c17c412528",
+      "applicationKey": "cn-grace/qinglongscripts::arknightsbanner",
+      "checkProfile": {
+        "requiredEnv": [
+          "ARKNIGHTS_STATE_FILE"
+        ],
+        "optionalEnv": [
+          "ARKNIGHTS_DRY_RUN",
+          "ARKNIGHTS_TELEGRAM",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ARKNIGHTS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ARKNIGHTS_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "状态写入完成",
+          "\"status\":\"success\"",
+          "\"exit_code\":0"
+        ],
+        "features": [
+          "每天 10 点监控明日方舟官方寻访公告，无需游戏账号；无第三方业务依赖。",
+          "扫描 LATEST 至末页或最多 50 页；ACTIVITY 前 5 页兜底，整页已知时停止，按公告标识去重并按发布时间排序。",
+          "逐条抓取公告正文，不依赖标题或摘要预筛；移除脚本与健康提示页脚后识别卡池出率关键词。",
+          "提取寻访名称、类型、活动时间、六星与五星 UP 干员、出率、保底规则、寻访数据契约兑换所及公告链接。",
+          "首次记录全部扫描公告，仅推送最新一期卡池；后续增量处理新公告，未知详情或通知失败保留重试，损坏状态文件不会静默重置。",
+          "通过青龙通知发送分段文字；有封面时附封面链接，并可通过自己实现的 Telegram HTTP 接口发送图片至多个换行配置目标。",
+          "兼容原状态字段与原定时安排，原子写入状态；请求有超时、体积限制、HTTPS 约束和业务结构检查。",
+          "完全断网预演验证正文、结构化解析、封面与报告，不读写状态、不请求公告、不加载通知或发送图片。",
+          "输出中文时间轴、阶段耗时、监控源统计、最终状态及唯一 TASK_SUMMARY JSON；每次运行尝试脱敏总结通知，通知故障保持业务退出码。"
+        ],
+        "sideEffects": [
+          "正式运行在用户明确指定的位置创建或原子更新公告去重状态文件。",
+          "启用通知时向青龙配置的通知渠道发送卡池公告与运行总结；配置图片接收目标且公告有封面时向 Telegram 发送图片。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "明日方舟寻访公告",
+      "path": "scripts/arknightsbanner.py",
+      "sha256": "e8f9017bbd7ddf89573d8a0e04bc5bdef09d8f3aa0da333b42a57e5df74e9161",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "CN-Grace/QinglongScripts",
+        "branch": "main",
+        "commit": "a40a2b080e0160bd8e0b0b807081115537b87153",
+        "originalPath": "ArknightsBanner.py"
+      },
+      "cron": "0 10 * * *",
+      "command": "python3 scripts/arknightsbanner.py",
+      "environment": [
+        {
+          "name": "ARKNIGHTS_STATE_FILE",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "由用户指定青龙可写的独立 JSON 文件路径，用于公告增量状态。无需游戏账号或登录凭据。沿用上游历史状态时指向原脚本旁 config/.arknights_banner_state.json；新安装选择自己的数据目录。不要指向其他脚本、配置或已有非状态文件。",
+          "format": "一个本地 JSON 文件路径；首次正式运行自动创建文件和父目录，已有文件需包含数组 known_cids 与 notified_cids。断网预演不读写文件。"
+        },
+        {
+          "name": "ARKNIGHTS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "测试时设置为 1，正式运行设为 0 或不设置。",
+          "format": "1 表示断网预演；0、false、no、off 表示正式运行。"
+        },
+        {
+          "name": "ARKNIGHTS_TELEGRAM",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选封面图片补充通道：通过 Telegram 的 BotFather 创建自己的机器人并取得 Token，通过自己的机器人 getUpdates 接口取得聊天 ID；确保机器人有发送权限。文字公告仍由青龙通知发送。不得公开或上传 Token。",
+          "format": "每个非空行一个机器人 Token|聊天 ID，只在第一个 | 拆分字段；多个接收目标用换行分隔，支持负数群组 ID。图片失败独立记录，任一目标失败则本次非零退出并保留公告重试。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙既有通知配置；默认启用，设置为 0 可关闭全部通知和图片。关闭期间不把待推送卡池标为已处理，重新开启后重试。",
+          "format": "默认 1；0、false、no、off 关闭。断网预演仅模拟通知，不加载通知代码。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如青龙通知脚本不在默认位置，指定包含 notify.py 的目录。也会查找可导入的 notify 模块以及 /ql/data/scripts/notify.py、/ql/scripts/notify.py。通知渠道凭据在青龙通知配置中设置，不需要游戏凭据。",
+          "format": "一个本地目录路径；不需要其他仓库、程序或安装引导。通知模块缺失不阻止扫描，但待推送公告会失败并保留重试；最终总结通知故障保持业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": "",
+        "rule": "公开公告监控无需游戏登录或账号；全局状态用于一个官方公告源。可选图片接收目标按每行一个配置处理，目标之间独立执行。",
+        "unsupportedReason": "官方公开列表与公告详情不涉及账号，因此不声明必填游戏凭据或伪造账号任务。"
+      },
+      "dependencies": [],
+      "features": [
+        "每天 10 点监控明日方舟官方寻访公告，无需游戏账号；无第三方业务依赖。",
+        "扫描 LATEST 至末页或最多 50 页；ACTIVITY 前 5 页兜底，整页已知时停止，按公告标识去重并按发布时间排序。",
+        "逐条抓取公告正文，不依赖标题或摘要预筛；移除脚本与健康提示页脚后识别卡池出率关键词。",
+        "提取寻访名称、类型、活动时间、六星与五星 UP 干员、出率、保底规则、寻访数据契约兑换所及公告链接。",
+        "首次记录全部扫描公告，仅推送最新一期卡池；后续增量处理新公告，未知详情或通知失败保留重试，损坏状态文件不会静默重置。",
+        "通过青龙通知发送分段文字；有封面时附封面链接，并可通过自己实现的 Telegram HTTP 接口发送图片至多个换行配置目标。",
+        "兼容原状态字段与原定时安排，原子写入状态；请求有超时、体积限制、HTTPS 约束和业务结构检查。",
+        "完全断网预演验证正文、结构化解析、封面与报告，不读写状态、不请求公告、不加载通知或发送图片。",
+        "输出中文时间轴、阶段耗时、监控源统计、最终状态及唯一 TASK_SUMMARY JSON；每次运行尝试脱敏总结通知，通知故障保持业务退出码。"
+      ],
+      "sideEffects": [
+        "正式运行在用户明确指定的位置创建或原子更新公告去重状态文件。",
+        "启用通知时向青龙配置的通知渠道发送卡池公告与运行总结；配置图片接收目标且公告有封面时向 Telegram 发送图片。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/918364c17c412528",
+        "candidateSha256": "e8f9017bbd7ddf89573d8a0e04bc5bdef09d8f3aa0da333b42a57e5df74e9161"
+      }
+    },
+    {
       "catalogId": "6b6ae91490051bce",
       "applicationKey": "atxyq",
       "checkProfile": {
@@ -6561,6 +6693,130 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/21c2272d2f618e0f",
         "candidateSha256": "ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3"
+      }
+    },
+    {
+      "catalogId": "e249d85fcb6de594",
+      "applicationKey": "cn-grace/qinglongscripts::hellogithub",
+      "checkProfile": {
+        "requiredEnv": [
+          "HELLOGITHUB_STATE_FILE"
+        ],
+        "optionalEnv": [
+          "HELLOGITHUB_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HELLOGITHUB_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "HELLOGITHUB_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "HELLOGITHUB_SUCCESS"
+        ],
+        "features": [
+          "每月 1 日 08:00 查询 HelloGitHub 最新月刊及发布时间",
+          "比较持久化期号，跳过已经提醒的月刊",
+          "动态提取页面构建标识并读取完整分类项目内容",
+          "展示刊名、简介、发布时间、期号、项目与分类数量、项目名称、语言、描述、星标、复刻、关注数及项目链接",
+          "按最多 3900 字符分段推送全部内容，保留在线阅读和上游 GitHub 链接",
+          "支持旧版期号状态文件迁移、断网预演、时间轴日志和结构化总结",
+          "通过青龙通知助手发送月刊和脱敏任务总结"
+        ],
+        "sideEffects": [
+          "正式运行时提交月刊内容及任务总结到青龙通知渠道",
+          "所有月刊消息提交成功后原子更新本地已发送期号状态文件"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "HelloGitHub月刊提醒",
+      "path": "scripts/hellogithub.py",
+      "sha256": "9ba47639b981f682c235acbddab2d09e14f1e0bc0737fc1d07171debe254a8ce",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "CN-Grace/QinglongScripts",
+        "branch": "main",
+        "commit": "a40a2b080e0160bd8e0b0b807081115537b87153",
+        "originalPath": "HelloGithub.py"
+      },
+      "cron": "0 8 1 * *",
+      "command": "python3 scripts/hellogithub.py",
+      "environment": [
+        {
+          "name": "HELLOGITHUB_STATE_FILE",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "选择青龙脚本可写的持久化目录，自行指定 JSON 状态文件；迁移时填旧脚本目录/config/.hellogithub_bot_state.json 的绝对路径，以保留已发送期号。公开月刊接口无需账号凭据。",
+          "format": "单个绝对文件路径；文件不存在时从未发送开始，文件损坏时停止。"
+        },
+        {
+          "name": "HELLOGITHUB_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1。",
+          "format": "1 启用完全断网预演，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙全局通知开关，渠道凭据在青龙 notify.py 内配置。",
+          "format": "默认 1；0、false、no、off 禁用；新刊未提交通知时不更新状态且退出非零。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要时填写青龙 notify.py 所在目录；默认查找脚本同目录及青龙标准目录，也支持导入 notify.send。",
+          "format": "本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": "",
+        "rule": "读取公开月刊，不涉及账号或账号凭据。",
+        "unsupportedReason": "此任务是公共内容订阅提醒，服务没有账号任务契约。"
+      },
+      "dependencies": [],
+      "features": [
+        "每月 1 日 08:00 查询 HelloGitHub 最新月刊及发布时间",
+        "比较持久化期号，跳过已经提醒的月刊",
+        "动态提取页面构建标识并读取完整分类项目内容",
+        "展示刊名、简介、发布时间、期号、项目与分类数量、项目名称、语言、描述、星标、复刻、关注数及项目链接",
+        "按最多 3900 字符分段推送全部内容，保留在线阅读和上游 GitHub 链接",
+        "支持旧版期号状态文件迁移、断网预演、时间轴日志和结构化总结",
+        "通过青龙通知助手发送月刊和脱敏任务总结"
+      ],
+      "sideEffects": [
+        "正式运行时提交月刊内容及任务总结到青龙通知渠道",
+        "所有月刊消息提交成功后原子更新本地已发送期号状态文件"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e249d85fcb6de594",
+        "candidateSha256": "26b0a6de7f546a29b525ff621d705b6b8f8415ffe9608fcaf318549df631990f"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "26b0a6de7f546a29b525ff621d705b6b8f8415ffe9608fcaf318549df631990f",
+        "releaseSha256": "9ba47639b981f682c235acbddab2d09e14f1e0bc0737fc1d07171debe254a8ce",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
     {
