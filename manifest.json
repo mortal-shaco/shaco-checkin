@@ -346,8 +346,12 @@
           "AUTOCLAW_CN_TOKENS"
         ],
         "optionalEnv": [
+          "AUTOCLAW_INTL_TOKENS",
+          "AUTOCLAW_REGION",
           "AUTOCLAW_CN_DRY_RUN",
+          "AUTOCLAW_INTL_DRY_RUN",
           "AUTOCLAW_CN_STORE_FILE",
+          "AUTOCLAW_INTL_STORE_FILE",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR",
           "PUSHPLUS_TOKEN",
@@ -362,12 +366,14 @@
           "AUTOCLAW_CN_DRY_RUN": "1"
         },
         "liveEnv": {
+          "AUTOCLAW_REGION": "cn",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "签到成功",
+          "签到成功，获得",
           "今天已签到（接口明确确认）",
           "token 续期成功",
+          "\"status\":\"success\"",
           "\"exitCode\":0"
         ],
         "features": [
@@ -379,13 +385,15 @@
           "换行多账号独立执行，任一失败整体非零退出",
           "断网预演、分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY 汇总",
           "官方返回昵称、用户名、显示名称或公开 UID 时显示该非秘密身份",
-          "青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送"
+          "青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送",
+          "显式 --region intl 或 AUTOCLAW_REGION=intl 使用国际版官方接口及独立凭据；保留国内版默认行为",
+          "显式 --region both 按同一每日时机独立执行两地区账号，缓存按地区配置；某地区缺配置仍处理另一地区账号并整体失败"
         ],
         "sideEffects": [
-          "真实运行提交 daily_signin 签到任务并可能获得积分",
-          "登录态过期或 --refresh-only 时向官方接口续期登录态，可能使旧登录态失效",
-          "仅显式配置 AUTOCLAW_CN_STORE_FILE 时写入受保护的本地凭据缓存",
-          "通知开启时通过已配置渠道发送脱敏结果摘要"
+          "真实运行提交所选地区 daily_signin 签到任务，可能获得积分",
+          "登录态过期或 --refresh-only 时续期登录态，可能使旧登录态失效",
+          "仅显式配置对应地区 STORE_FILE 时写入受保护的本地凭据缓存",
+          "通知开启时通过已配置渠道发送脱敏摘要；预演仅模拟通知"
         ]
       },
       "postReview": {
@@ -394,7 +402,7 @@
       },
       "displayName": "AutoClaw 国内版每日签到",
       "path": "scripts/autoclaw_cn_daily.py",
-      "sha256": "d96a30e9b66e3c6505afc6241273d9f2842adf29eeb8f3960dbc9a12fc8e9714",
+      "sha256": "f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -402,7 +410,19 @@
         "repository": "L0NE-6/AutoClaw-Daily",
         "branch": "main",
         "commit": "745a15b42d58bcaf9bb50920f5405e04b4f4964b",
-        "originalPath": "autoclaw_cn_daily.py"
+        "originalPath": "autoclaw_cn_daily.py",
+        "related": [
+          {
+            "repository": "L0NE-6/AutoClaw-Daily",
+            "url": "https://github.com/L0NE-6/AutoClaw-Daily.git",
+            "branch": "main",
+            "commit": "745a15b42d58bcaf9bb50920f5405e04b4f4964b",
+            "originalPath": "autoclaw_intl_daily.py",
+            "catalogId": "8e8ba0ac423781b3",
+            "sha256": "47ace8da3ff03ba2736bfac346a49a59762ec2b6d53c31e2c281ee021f5f3dc6",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "15 8 * * *",
       "command": "python3 scripts/autoclaw_cn_daily.py",
@@ -411,91 +431,119 @@
           "name": "AUTOCLAW_CN_TOKENS",
           "required": true,
           "sensitive": true,
-          "howToGet": "在 AutoClaw 国内版官方桌面端登录，从本人登录响应中安全提取 access_token、refresh_token 和同次登录的 device_id。只有登录态也可签到，但不能自动续期；过期需重新登录。不要使用其他产品接口密钥，不要公开登录响应。无需在青龙安装桌面端。",
-          "format": "每个非空行一个账号，推荐 JSON 对象，字段 access 必填，refresh 和 device_id 可选且必须来自同一账号。兼容 token、token|refresh_token、token|refresh_token|device_id、备注|token|refresh_token|device_id 以及原备注|JWT 格式；可带 Bearer 前缀。不用 & 或 @ 分隔账号，有特殊分隔符或歧义时使用 JSON。最后字段保留剩余文本。"
+          "howToGet": "默认国内模式必填。在国内版官方桌面端登录，从自己的登录响应安全提取 access_token、refresh_token 和同次登录的 device_id。只有登录态也可签到，过期后须重新登录。国际模式改用 AUTOCLAW_INTL_TOKENS；两地区凭据不能混用。不要分享或提交登录响应。",
+          "format": "每个非空行一个账号。推荐 JSON 对象，access 必填，refresh、device_id 可选。兼容 token、token|refresh_token、token|refresh_token|device_id、备注|token|refresh_token|device_id 和旧备注|JWT 格式。逐次只按首个 | 切分，最后字段保留剩余文本；可带 Bearer 前缀。禁止用 &、@ 分隔账号；特殊字符或歧义格式使用 JSON。"
+        },
+        {
+          "name": "AUTOCLAW_INTL_TOKENS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "选择 intl 或 both 时必填。在国际版官方桌面端登录，提取自己的登录响应；也可在自己的电脑检查 ~/.openclaw-autoclaw/openclaw.json，定位 models.providers 下 models[].headers.X-Authorization 并移除 Bearer 前缀。脚本运行不读取该文件或依赖桌面端。该来源通常没有续期登录态，失效后重新登录并更新变量。",
+          "format": "每个非空行一个账号；字段和国内变量相同，推荐 JSON 对象。无续期登录态时只填 access，不伪造 refresh。"
+        },
+        {
+          "name": "AUTOCLAW_REGION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按登录态所属地区自行设置，命令 --region 优先。",
+          "format": "cn 默认国内版；intl 国际版；both 两地区执行，先国内后国际，所选每个地区均须配置账号。"
         },
         {
           "name": "AUTOCLAW_CN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "预演时设置为 1；真实运行时留空或设置为 0。",
-          "format": "1 表示完全断网预演，不调用通知组件、不读写凭据缓存；日志模拟通知。"
+          "howToGet": "预演时自行启用；默认关闭。",
+          "format": "1、true、yes、on 启用全任务断网预演，不请求接口、不读写缓存、不实际推送。"
+        },
+        {
+          "name": "AUTOCLAW_INTL_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "国际版兼容预演开关，任一地区开关启用均使整个任务断网。",
+          "format": "1、true、yes、on 启用；默认关闭。"
         },
         {
           "name": "AUTOCLAW_CN_STORE_FILE",
           "required": false,
           "sensitive": true,
-          "howToGet": "默认留空，不保存登录态。需要持久化续期结果时自行选择受保护、排除出公开仓库及订阅的私有路径，并确保父目录私有且可写。旧明文缓存不会自动读取；应先安全清理旧缓存。",
-          "format": "私有绝对路径，禁止符号链接。读取已有文件要求权限 0600，写入为原子替换且权限 0600。"
+          "howToGet": "需要保存续期结果时显式选择私有缓存路径，排除出订阅和仓库；默认不落盘。",
+          "format": "非符号链接的私有绝对路径；已有文件须为 0600，父目录须存在；以 0600 原子写入。"
+        },
+        {
+          "name": "AUTOCLAW_INTL_STORE_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "需要保存国际版续期结果时显式选择独立私有缓存路径，不与国内版共用；默认不落盘。",
+          "format": "非符号链接的私有绝对路径；已有文件须为 0600，父目录须存在；以 0600 原子写入。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "默认开启，使用青龙已有通知设置。",
-          "format": "0、false、no、off 关闭；命令 --no-notify 也可关闭。"
+          "howToGet": "使用青龙已配置通知渠道，默认开启；--no-notify 也可关闭。",
+          "format": "默认 1；0、false、no、off 关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选：青龙 notify.py 或 sendNotify.js 所在目录；否则按已安装模块及标准青龙目录查找。",
-          "format": "目录路径；通知不可用不改变业务退出码。"
+          "howToGet": "可选指定现有青龙通知组件目录；默认发现可导入 notify、/ql/data/scripts、/ql/scripts。",
+          "format": "目录内为 notify.py 或 sendNotify.js，不下载或安装组件。"
         },
         {
           "name": "PUSHPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "在自己的 PushPlus 控制台获取推送令牌。",
-          "format": "推送令牌，仅在青龙组件不可用时作为备用通道。"
+          "howToGet": "可选从自己的 PushPlus 官方账号获取，青龙组件不可用时备用。",
+          "format": "单个推送令牌。"
         },
         {
           "name": "BARK_URL",
           "required": false,
           "sensitive": true,
-          "howToGet": "从自己的 Bark 应用中获取推送地址。",
-          "format": "完整 HTTPS 推送地址。"
+          "howToGet": "可选从自己的 Bark 客户端获取推送地址。",
+          "format": "含推送密钥的完整 HTTPS 地址。"
         },
         {
           "name": "WECOM_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "从本人有权限使用的企业微信机器人设置获取。",
-          "format": "HTTPS 机器人地址或机器人密钥。"
+          "howToGet": "可选从自己的企业微信群机器人配置页获取。",
+          "format": "完整 HTTPS 机器人地址或机器人密钥。"
         },
         {
           "name": "DINGTALK_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "从本人有权限使用的钉钉机器人设置获取。",
+          "howToGet": "可选从自己的钉钉群机器人配置页获取。",
           "format": "完整 HTTPS 机器人地址。"
         },
         {
           "name": "DINGTALK_SECRET",
           "required": false,
           "sensitive": true,
-          "howToGet": "从同一钉钉机器人的安全设置获取加签密钥。",
-          "format": "加签密钥；与 DINGTALK_WEBHOOK 对应。"
+          "howToGet": "启用加签时从同一钉钉机器人配置页获取。",
+          "format": "与 DINGTALK_WEBHOOK 配套的加签密钥。"
         },
         {
           "name": "QL_URL",
           "required": false,
-          "sensitive": true,
-          "howToGet": "仅用于兼容旧脚本的显式青龙 API 通知；通常无需配置。",
-          "format": "HTTPS 青龙地址，需与 QL_TOKEN 同时配置。"
+          "sensitive": false,
+          "howToGet": "可选显式配置支持原通知接口的青龙面板地址，仅作为组件备用通道。",
+          "format": "HTTPS 面板根地址，需配套 QL_TOKEN。"
         },
         {
           "name": "QL_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "从自己的青龙授权配置获取；通常使用通知组件即可。",
-          "format": "青龙 API 通知令牌，与 QL_URL 配套。"
+          "howToGet": "可选从自己的青龙面板获取对应 API 令牌。",
+          "format": "与 QL_URL 配套的访问令牌。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，独立处理；同一账号的登录态、续期登录态和设备标识放在同一行 JSON 或兼容字段中。命令 --only N 可选择原始账号序号，任一执行账号失败则整体非零退出。"
+        "rule": "每个非空行一个账号，同账号配套凭据合并在对应地区的一个变量内，推荐 JSON。账号独立执行，任一账号失败或所选地区缺少配置时整体非零退出。--only N 选择所选地区列表中的第 N 个账号；both 时先国内后国际。"
       },
       "dependencies": [],
       "features": [
@@ -507,13 +555,15 @@
         "换行多账号独立执行，任一失败整体非零退出",
         "断网预演、分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY 汇总",
         "官方返回昵称、用户名、显示名称或公开 UID 时显示该非秘密身份",
-        "青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送"
+        "青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送",
+        "显式 --region intl 或 AUTOCLAW_REGION=intl 使用国际版官方接口及独立凭据；保留国内版默认行为",
+        "显式 --region both 按同一每日时机独立执行两地区账号，缓存按地区配置；某地区缺配置仍处理另一地区账号并整体失败"
       ],
       "sideEffects": [
-        "真实运行提交 daily_signin 签到任务并可能获得积分",
-        "登录态过期或 --refresh-only 时向官方接口续期登录态，可能使旧登录态失效",
-        "仅显式配置 AUTOCLAW_CN_STORE_FILE 时写入受保护的本地凭据缓存",
-        "通知开启时通过已配置渠道发送脱敏结果摘要"
+        "真实运行提交所选地区 daily_signin 签到任务，可能获得积分",
+        "登录态过期或 --refresh-only 时续期登录态，可能使旧登录态失效",
+        "仅显式配置对应地区 STORE_FILE 时写入受保护的本地凭据缓存",
+        "通知开启时通过已配置渠道发送脱敏摘要；预演仅模拟通知"
       ],
       "review": {
         "staticPassed": true,
@@ -526,7 +576,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/3813c988ddc0c592",
-        "candidateSha256": "d96a30e9b66e3c6505afc6241273d9f2842adf29eeb8f3960dbc9a12fc8e9714"
+        "candidateSha256": "f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426"
       }
     },
     {

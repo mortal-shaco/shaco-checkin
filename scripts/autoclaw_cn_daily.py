@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # name: AutoClaw 国内版每日签到
 # cron: 15 8 * * *
-# 来源: L0NE-6/AutoClaw-Daily, autoclaw_cn_daily.py
+# 来源: L0NE-6/AutoClaw-Daily, autoclaw_cn_daily.py、autoclaw_intl_daily.py
+# 协议和参数获取参考: autoclaw_login.py（MIT）
 # 上游许可: MIT；维护版本采用 MIT，保留上游署名。
 # MIT License
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-AutoClaw 国内版每日签到（独立维护版）
+AutoClaw 国内版每日签到（兼容国际版的独立维护版）
 功能：每日签到、登录态过期续期（含 agent-refresh 备用接口）、只读任务清单诊断。
 原脚本未提供 cron；此处建议每天北京时间 08:15 运行，可在青龙调整。
 参数：AUTOCLAW_CN_TOKENS 每个非空行一个账号，禁止用 & 或 @ 分隔账号。
@@ -31,6 +32,17 @@ AutoClaw 国内版每日签到（独立维护版）
 获取：在 AutoClaw 国内版官方桌面端自行登录，从自己的登录响应安全提取
 access_token、refresh_token 和同次登录的 device_id（不是接口 X-Authorization 的其他产品密钥）。
 不要将登录响应发给他人。只有 access_token 时仍可签到，过期后需重新登录。
+国际版：--region intl 使用 AUTOCLAW_INTL_TOKENS（同样的逐行格式）；
+--region both 同时处理两地区；也可设置 AUTOCLAW_REGION=cn/intl/both。
+默认 --region cn 保持国内版既有行为；--only N 使用所选地区列表中的序号，
+both 时先国内版再国际版；显式选择的每个地区均须配置账号。
+国际版必须使用国际版官方桌面端登录态。可从自己的登录响应提取；
+若官方客户端只提供本机配置，在自己的电脑查看 ~/.openclaw-autoclaw/openclaw.json，
+定位 models.providers 下 models[].headers 的 X-Authorization，去掉 Bearer 前缀后
+填入 AUTOCLAW_INTL_TOKENS。运行脚本不读取、不依赖该文件或桌面端程序。
+该来源通常只有 access，无法续期；失效后须重新登录并更新环境变量。
+国际版可选 AUTOCLAW_INTL_STORE_FILE 与国内缓存隔离；国际凭据绝不发往国内接口。
+AUTOCLAW_INTL_DRY_RUN=1 也启用全任务断网预演。
 命令：--refresh-only 只续期；--only N 只运行第 N 个账号；--no-notify 关闭通知。
 默认不落盘凭据；如需保存续期结果，显式设置 AUTOCLAW_CN_STORE_FILE 为受保护的
 私有绝对路径，文件以 0600 原子写入，必须排除出公开订阅/仓库。续期仅刷新本次内存。
@@ -59,6 +71,7 @@ import urllib.request
 from urllib.parse import quote
 
 USERAPI = "https://autoglm-acceleration-api.zhipuai.cn"
+REGION_APIS = {"cn": USERAPI, "intl": "https://autoglm-api.autoglm.ai"}
 TASK_COMPLETE_PATH = "/autoclaw-proxy/proxy/autoclaw-task-complete"
 TASK_LIST_PATH = "/autoclaw-proxy/proxy/autoclaw-task-list"
 REFRESH_PATH = "/userapi/v1/refresh"
@@ -68,7 +81,8 @@ APP_ID = "100003"
 APP_KEY = "38d2391985e2369a5fb8227d8e6cd5e5"
 CLIENT_VERSION = "1.18.5"
 AUTH_EXPIRED_CODES = (410000, 400000)
-DRY = os.environ.get("AUTOCLAW_CN_DRY_RUN", "").lower() in ("1", "true", "yes", "on")
+DRY = any(os.environ.get(name, "").lower() in ("1", "true", "yes", "on")
+          for name in ("AUTOCLAW_CN_DRY_RUN", "AUTOCLAW_INTL_DRY_RUN"))
 TITLE = "AutoClaw 国内版每日签到"
 
 
@@ -236,8 +250,9 @@ def cache_keys(account):
     return [hashlib.sha256(v.encode()).hexdigest() for v in (account.get("refresh"), account["access"]) if v]
 
 
-def store_path():
-    value = os.environ.get("AUTOCLAW_CN_STORE_FILE", "").strip()
+def store_path(account):
+    variable = "AUTOCLAW_INTL_STORE_FILE" if account.get("region") == "intl" else "AUTOCLAW_CN_STORE_FILE"
+    value = os.environ.get(variable, "").strip()
     if not value:
         return None
     path = Path(value)
@@ -261,7 +276,7 @@ def read_store(path):
 
 
 def apply_store(account):
-    path = store_path()
+    path = store_path(account)
     if not path:
         return
     store = read_store(path)
@@ -277,7 +292,7 @@ def apply_store(account):
 
 
 def persist(account, old_keys):
-    path = store_path()
+    path = store_path(account)
     if not path:
         log("续期成功，仅更新本次内存；未启用凭据落盘")
         return
@@ -310,7 +325,7 @@ def refresh_account(account):
         body = {"refresh_token": account["refresh"], "source_id": "autoclaw"}
         if account.get("device_id"):
             body["device_id"] = account["device_id"]
-        response = request("POST", USERAPI + path, signed_headers(account["access"]), body)
+        response = request("POST", REGION_APIS[account.get("region", "cn")] + path, signed_headers(account["access"]), body)
         payload = json_of(response)
         if payload.get("code") == 400002 and path == REFRESH_PATH:
             log("主接口签名校验未通过，尝试上游支持的备用接口")
@@ -329,7 +344,7 @@ def refresh_account(account):
 
 def task_list_hint(account):
     log("阶段诊断：读取任务清单（只读）")
-    response = request("GET", USERAPI + TASK_LIST_PATH, signed_headers(account["access"]))
+    response = request("GET", REGION_APIS[account.get("region", "cn")] + TASK_LIST_PATH, signed_headers(account["access"]))
     payload = json_of(response)
     if not accepted(response, payload):
         raise TaskError("任务清单未通过业务校验")
@@ -344,7 +359,7 @@ def task_list_hint(account):
 
 def do_checkin(account):
     def complete():
-        response = request("POST", USERAPI + TASK_COMPLETE_PATH, signed_headers(account["access"]), {"task_id": TASK_ID})
+        response = request("POST", REGION_APIS[account.get("region", "cn")] + TASK_COMPLETE_PATH, signed_headers(account["access"]), {"task_id": TASK_ID})
         return response, json_of(response)
     log("提交每日签到任务")
     response, payload = complete()
@@ -501,7 +516,7 @@ def notify_all(content, disabled):
 
 class SafeParser(argparse.ArgumentParser):
     def error(self, message):
-        raise TaskError("命令参数无效；支持 --only 正整数、--refresh-only、--no-notify")
+        raise TaskError("命令参数无效；支持 --region cn/intl/both、--only 正整数、--refresh-only、--no-notify")
 
 
 def main():
@@ -509,29 +524,44 @@ def main():
     log("========== " + TITLE + " ==========")
     log("开始时间：" + time.strftime("%Y-%m-%d %H:%M:%S"))
     log("运行模式：" + ("断网预演" if DRY else "真实运行"))
-    lines = [line.strip() for line in _env("AUTOCLAW_CN_TOKENS").splitlines() if line.strip() and not line.strip().startswith("#")]
-    log("配置账号数：%d" % len(lines))
+    lines = []
     results = []
     configuration_error = False
     disabled = "--no-notify" in sys.argv
     try:
         parser = SafeParser(description=TITLE)
+        parser.add_argument("--region", choices=("cn", "intl", "both"), default=_env("AUTOCLAW_REGION") or "cn")
         parser.add_argument("--only", type=int)
         parser.add_argument("--refresh-only", action="store_true")
         parser.add_argument("--no-notify", action="store_true")
         args = parser.parse_args()
         disabled = args.no_notify
+        if args.region not in ("cn", "intl", "both"):
+            raise TaskError("AUTOCLAW_REGION 只能为 cn、intl 或 both")
+        regions = ("cn", "intl") if args.region == "both" else (args.region,)
+        missing = []
+        for region in regions:
+            variable = "AUTOCLAW_CN_TOKENS" if region == "cn" else "AUTOCLAW_INTL_TOKENS"
+            entries = [line.strip() for line in _env(variable).splitlines()
+                       if line.strip() and not line.strip().startswith("#")]
+            if not entries:
+                missing.append(variable)
+            lines.extend((region, line) for line in entries)
+        log("地区模式：" + args.region + "；配置账号数：%d" % len(lines))
+        if missing:
+            log("❌ 缺少所选地区凭据：" + "、".join(missing))
+            configuration_error = True
         if not lines:
-            raise TaskError("未配置 AUTOCLAW_CN_TOKENS；请按每个非空行一个账号填写")
+            raise TaskError("所选地区未配置账号；请按每个非空行一个账号填写")
         if args.only is not None and not 1 <= args.only <= len(lines):
             raise TaskError("--only 必须指定存在的账号序号")
-        for index, line in enumerate(lines, 1):
+        for index, (region, line) in enumerate(lines, 1):
             if args.only is not None and index != args.only:
                 continue
             account_start = time.monotonic()
             stats = {"total": 0, "success": 0, "alreadyComplete": 0, "skipped": 0, "failure": 0}
             failed = False
-            log("----- 账号 %d -----" % index)
+            log("----- 账号 %d（%s）-----" % (index, "国际版" if region == "intl" else "国内版"))
             stages = [("参数校验", None), ("凭据缓存", None), ("仅续期" if args.refresh_only else "每日签到", None)]
             account = None
             for number, (name, _) in enumerate(stages, 1):
@@ -545,6 +575,7 @@ def main():
                         log("⏭️ 前置阶段失败，跳过")
                     elif number == 1:
                         account = parse_account(line)
+                        account["region"] = region
                         log("✅ 参数校验通过（凭据不显示）")
                     elif DRY:
                         outcome = "skipped"
@@ -566,8 +597,9 @@ def main():
                 stats[outcome] += 1
                 log("阶段 %d 耗时 %.2f 秒" % (number, time.monotonic() - stage_start))
             log("账号 %d 统计：总任务 %d，成功 %d，已完成 %d，跳过 %d，失败 %d，耗时 %.2f 秒" % (index, stats["total"], stats["success"], stats["alreadyComplete"], stats["skipped"], stats["failure"], time.monotonic() - account_start))
-            results.append({"account": index, "status": "failure" if failed else ("dry-run" if DRY else "success"), "tasks": stats})
+            results.append({"account": index, "region": region, "status": "failure" if failed else ("dry-run" if DRY else "success"), "tasks": stats})
     except TaskError as error:
+        log("配置账号数：%d" % len(lines))
         log("❌ 配置错误：" + str(error))
         configuration_error = True
     failures = sum(r["status"] == "failure" for r in results)
