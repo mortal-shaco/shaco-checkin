@@ -17,6 +17,8 @@ Required environment:
 
 Optional environment:
   ALIYUN_CLAIM_REWARD=1             Claim today's reward; 0 means check-in only.
+  ALIYUN_CLAIM_ALL_REWARDS=1         Opt in to all unclaimed signed-day rewards.
+  refreshToken                     Legacy alias; one account per non-empty line.
   ALIYUN_DRIVE_DRY_RUN=1             Simulate all HTTP operations.
   ALIYUN_MAX_DELAY_SECONDS=0          Random delay before live execution.
   ALIYUN_PERSIST_ROTATED_TOKENS=1     Opt in to the file adapter below.
@@ -26,6 +28,13 @@ Optional environment:
 查看当前站点的 token 项，复制 refresh_token 字段（不要复制整段 JSON）。
 ALIYUN_REFRESH_TOKEN 每个非空行放一个账号，不使用 & 或 @ 分隔。
 默认签到后领取当日奖励；ALIYUN_CLAIM_REWARD=0 只签到。
+ALIYUN_CLAIM_ALL_REWARDS=1 显式补领本月所有已签到且未领奖的奖励；
+仅在 ALIYUN_CLAIM_REWARD=1 时生效，默认 0 保留当日领奖语义。
+refreshToken 为旧变量别名；ALIYUN_REFRESH_TOKEN 设置时优先，别名也按行分账号。
+每天输出签到明细及已领、待领奖天数；不会自动改写青龙环境变量。
+合并 TangTang0812/aliyun autoSignin.js（MIT），提交
+fb6c6aa9c49c315f2e5c32949eef06689aa2ea7e；保留该来源署名。
+原来源定时为 0 9 * * *，与每日签到兼容；规范脚本保留 3 11 * * *。
 预演模拟 HTTP、通知及领奖，不联网、不等待、不写入凭据文件。
 QINGLONG_NOTIFY 默认 1；设为 0/false/no/off 可关闭。QINGLONG_NOTIFY_DIR
 可指定青龙 notify.py 所在目录，通知故障不改变业务退出码。
@@ -230,7 +239,7 @@ def parse_nonnegative_int(name: str, default: int = 0) -> int:
 
 
 def parse_tokens() -> list[str]:
-    raw = os.getenv("ALIYUN_REFRESH_TOKEN", "")
+    raw = os.environ.get("ALIYUN_REFRESH_TOKEN", os.getenv("refreshToken", ""))
     tokens = [line.strip() for line in raw.splitlines() if line.strip()]
     if not tokens:
         raise CheckinError(
@@ -307,7 +316,7 @@ class AliyunDriveClient:
             },
             "token refresh",
         )
-        if status != 200:
+        if status != 200 or payload.get("code") or payload.get("success") is False:
             raise CheckinError(f"token refresh rejected (HTTP {status})")
 
         access_token = payload.get("access_token")
@@ -429,7 +438,72 @@ class AliyunDriveClient:
             label += f" {amount}" + ("MB" if kind == "backupSpaceMb" else "张")
         return label
 
-    def claim_reward(self, access_token, sign_days):
+    def sign_details(self):
+        _, rows = self.sign_details_for_claim()
+        pending = []
+        claimed = []
+        for day, entry in rows:
+            if entry.get("status") != "normal":
+                label = "未签到或未开放"
+            elif entry.get("isReward") is True:
+                label = "已领奖"
+                claimed.append(day)
+            elif entry.get("isReward") is False:
+                label = "待领奖"
+                pending.append(day)
+            else:
+                raise CheckinError("已签到记录缺少明确的领奖状态")
+            description = self.log_reward_description(entry)
+            timeline(f"第 {day} 天：{label}" + ("；" + description if description else ""), "└─")
+        return pending, f"签到明细 {len(rows)} 天；已领奖 {len(claimed)} 天；待领奖 {len(pending)} 天"
+
+    def claim_all_rewards(self, access_token):
+        pending, _ = self.sign_details_for_claim()
+        if not pending:
+            return "already", "全部已签到奖励均已领取或暂无可领奖励"
+        # Each eligible day is independent: a failed claim must not stop later days.
+        self.prepare_device_session(access_token)
+        successes, failures = 0, 0
+        for day in pending:
+            try:
+                outcome, detail = self.claim_reward(access_token, day, prepare=False)
+                timeline(f"第 {day} 天：{detail}", "└─")
+                successes += 1
+            except Exception as exc:
+                failures += 1
+                detail = str(exc) if isinstance(exc, CheckinError) else "处理异常，详情已隐藏"
+                timeline(f"❌ 第 {day} 天奖励领取失败：{detail}", "└─")
+        self.reward_stats = {"total": len(pending), "success": successes, "failed": failures}
+        if failures:
+            raise CheckinError(f"全量领奖：成功 {successes} 天，失败 {failures} 天")
+        return "success", f"全量领奖成功，共领取 {successes} 天奖励"
+
+    def sign_details_for_claim(self):
+        # Validate the same response fields as the displayed detail without logging twice.
+        logs = self.sign_result.get("signInLogs")
+        if not isinstance(logs, list):
+            raise CheckinError("签到接口缺少签到明细列表")
+        pending = []
+        seen = set()
+        rows = []
+        for entry in logs:
+            if not isinstance(entry, dict):
+                raise CheckinError("签到明细记录格式异常")
+            day = entry.get("day")
+            if isinstance(day, str) and day.isdecimal():
+                day = int(day)
+            if isinstance(day, bool) or not isinstance(day, int) or not 1 <= day <= 31 or day in seen:
+                raise CheckinError("签到明细日期无效或重复")
+            seen.add(day)
+            rows.append((day, entry))
+            if entry.get("status") == "normal":
+                if not isinstance(entry.get("isReward"), bool):
+                    raise CheckinError("已签到记录缺少明确的领奖状态")
+                if entry["isReward"] is False:
+                    pending.append(day)
+        return pending, rows
+
+    def claim_reward(self, access_token, sign_days, prepare=True):
         if sign_days < 1:
             return "skipped", "签到累计为零，无当日奖励可领取"
         logs = self.sign_result.get("signInLogs", [])
@@ -442,25 +516,26 @@ class AliyunDriveClient:
             return "already", "当日奖励已领取 " + self.log_reward_description(today)
         if self.dry_run:
             return "success", "领奖成功（预演奖励）"
-        self.prepare_device_session(access_token)
-        status, payload = post_json(REWARD_URL, {"signInDay": sign_days}, "领取当日奖励", access_token, self.device_headers)
+        if prepare:
+            self.prepare_device_session(access_token)
+        status, payload = post_json(REWARD_URL, {"signInDay": sign_days}, f"领取第 {sign_days} 天奖励", access_token, self.device_headers)
         if status != 200 or payload.get("success") is not True:
             # A vague error string or a failed claim must never become success.
-            raise CheckinError(f"领奖未获接口确认（HTTP {status}），请核对当日奖励状态")
+            raise CheckinError(f"领奖未获接口确认（HTTP {status}），请核对该日奖励状态")
         info = self.reward_description(payload.get("result"))
         if not info and today:
             info = self.log_reward_description(today)
         return "success", "领奖成功" + ("：" + info if info else "")
 
-    def run(self, index=1, claim=True) -> AccountResult:
+    def run(self, index=1, claim=True, claim_all=False) -> AccountResult:
         next_token, rotated, days = self.refresh_token, False, None
         self.stats = {"success": 0, "already": 0, "skipped": 0, "failed": 0}
-        operations = [("刷新登录凭据", None), ("查询身份与容量", None), ("执行签到", None), ("领取当日奖励", None)]
+        operations = [("刷新登录凭据", None), ("查询身份与容量", None), ("执行签到", None), ("显示签到明细", None), ("领取全部未领奖励" if claim_all else "领取当日奖励", None)]
         access_token = ""
         error = ""
         for number, (name, _) in enumerate(operations, 1):
             began = time.monotonic()
-            timeline(f"账号 {index:02d}：[{number}/4] {name}")
+            timeline(f"账号 {index:02d}：[{number}/5] {name}")
             outcome, detail = "success", ""
             try:
                 if error:
@@ -475,14 +550,18 @@ class AliyunDriveClient:
                 elif number == 3:
                     days = self.sign_in(access_token)
                     detail = f"签到成功，累计 {days} 天"
+                elif number == 4:
+                    _, detail = self.sign_details()
                 elif not claim:
                     outcome, detail = "skipped", "已明确关闭领奖"
+                elif claim_all:
+                    outcome, detail = self.claim_all_rewards(access_token)
                 else:
                     outcome, detail = self.claim_reward(access_token, days)
             except Exception as exc:
                 outcome = "failed"
                 detail = str(exc) if isinstance(exc, CheckinError) else "处理异常，详情已隐藏"
-                if number == 2:
+                if number in (2, 4):
                     # Read-only enrichment must not prevent check-in or reward actions.
                     detail += "；继续签到与领奖，整体将返回失败"
                 else:
@@ -555,6 +634,10 @@ def main() -> int:
         if raw_claim not in TRUE_VALUES | FALSE_VALUES:
             raise CheckinError("ALIYUN_CLAIM_REWARD 必须为 1 或 0")
         claim = raw_claim in TRUE_VALUES
+        raw_all = os.getenv("ALIYUN_CLAIM_ALL_REWARDS", "0").strip().lower()
+        if raw_all not in TRUE_VALUES | FALSE_VALUES:
+            raise CheckinError("ALIYUN_CLAIM_ALL_REWARDS 必须为 1 或 0")
+        claim_all = raw_all in TRUE_VALUES
     except CheckinError as exc:
         log_banner("预演" if dry_run else "正式执行", len(tokens))
         timeline(f"❌ 配置失败：{exc}")
@@ -573,13 +656,13 @@ def main() -> int:
     for index, token in enumerate(tokens, 1):
         account_started = time.monotonic()
         client = AliyunDriveClient(token, dry_run)
-        result = client.run(index, claim)
+        result = client.run(index, claim, claim_all)
         results.append(result)
         stats = client.stats
         for key in task_stats:
             task_stats[key] += stats[key]
         timeline(f"账号 {index:02d}：{'✅ 成功' if result.success else '❌ 失败'}")
-        timeline(f"总任务 4 │ 成功 {stats['success']} │ 已完成 {stats['already']} │ 跳过 {stats['skipped']} │ 失败 {stats['failed']} │ 用时 {time.monotonic() - account_started:.1f} 秒", "└─")
+        timeline(f"总任务 5 │ 成功 {stats['success']} │ 已完成 {stats['already']} │ 跳过 {stats['skipped']} │ 失败 {stats['failed']} │ 用时 {time.monotonic() - account_started:.1f} 秒", "└─")
 
     rotated_count = sum(result.rotated for result in results)
     if persistence_enabled and rotated_count and not dry_run:
