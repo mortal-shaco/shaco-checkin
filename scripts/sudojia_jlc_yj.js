@@ -10,7 +10,22 @@
  * 从 oshwhub.com 已登录请求复制完整 Cookie 到 JLC_COOKIE，每个非空行一个账号。
  * 不以 & 或 @ 分隔账号。JLC_YJ_DRY_RUN=1 完全离线预演。
  * QINGLONG_NOTIFY 默认开启；0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定通知模块目录。
- * 正式运行仅执行查询身份、每日签到和查询积分，不领取奖励、不更新账号资料。
+ * 默认 JLC_TASKS=oshwhub，保留开源平台身份、签到、积分和 44 5 * * * 调度。
+ * JLC_TASKS=mapp：下单助手，原调度 30 6 * * *；all：依次执行两套流程。
+ * 可在青龙为同一文件设置两条任务，分别注入上述开关，保留各自调度。
+ * JLC_TOKEN：登录 https://m.jlc.com/mapp/ 或嘉立创下单助手小程序，
+ * 从 m.jlc.com 已登录请求头获取 x-jlc-accesstoken 与 secretkey，
+ * 合并为 令牌#密钥；只在第一个 # 切分，每个非空行一个账号，不以 & 或 @ 分隔。
+ * JLC_CLAIM_REWARD=1 显式授权领取待选奖励；默认关闭，不擅自选择奖励类型。
+ * 使用上游 receiveVoucher 原接口及默认语义，不猜测新的奖励类型参数。
+ * 待选奖励未授权时报告未完成并非零退出；最多补签一次，避免递归重复领取。
+ * JLC_YJ_DRY_RUN=1 或 JLC_DRY_RUN=1 完全离线预演（含模拟通知）。
+ * 不更新账号资料，不关注、不发帖、不评论，不访问文本提供方。
+ * 合并来源：sudojia/AutoTaskScript src/web/sudojia_jlc.js
+ * 原作者 Telegram@sudojia；https://blog.imzjw.cn；2024/08/30
+ * 官网：https://m.jlc.com/mapp/；小程序：嘉立创下单助手
+ * 机械行业可以跑跑，基本兑换的实物都是有关机械的
+ * 许可：GPL-3.0（保留上述两个来源的版权与归属）。
  */
 'use strict';
 const https = require('node:https');
@@ -29,15 +44,17 @@ if (process.argv[2] === '--notification-worker') {
     } catch { process.exit(1); }
   });
 } else {
-  main().catch(() => { process.exitCode = 1; });
+  // 等待所有接口常量初始化后再启动，支持直接选择下单助手。
+  Promise.resolve().then(main).catch(() => { process.exitCode = 1; });
 }
 
 function stamp() { return new Date().toTimeString().slice(0, 8); }
 function log(text) { console.log(`[${stamp()}] ${text}`); }
-function request(cookie, method, endpoint, body) {
+function request(cookie, method, endpoint, body, mappHeaders) {
+  if (process.env.JLC_YJ_DRY_RUN === '1' || process.env.JLC_DRY_RUN === '1') throw new Error('离线模式禁止网络请求');
   return new Promise((resolve, reject) => {
     const payload = body === undefined ? undefined : JSON.stringify(body);
-    const headers = { Cookie: cookie, Accept: 'application/json', 'User-Agent': 'Qinglong-OSHWHub/1.0' };
+    const headers = mappHeaders || { Cookie: cookie, Accept: 'application/json', 'User-Agent': 'Qinglong-OSHWHub/1.0' };
     if (payload) { headers['Content-Type'] = 'application/json'; headers['Content-Length'] = Buffer.byteLength(payload); }
     let settled = false;
     let timer;
@@ -46,7 +63,7 @@ function request(cookie, method, endpoint, body) {
       settled = true; clearTimeout(timer);
       err ? reject(new Error(err)) : resolve(data);
     };
-    const req = https.request({ hostname: 'oshwhub.com', path: endpoint, method, headers }, res => {
+    const req = https.request({ hostname: mappHeaders ? 'm.jlc.com' : 'oshwhub.com', path: endpoint, method, headers }, res => {
       if (res.statusCode !== 200) { res.resume(); finish(`HTTP 状态异常（${res.statusCode}）`); return; }
       const chunks = []; let bytes = 0;
       res.on('data', chunk => {
@@ -80,7 +97,7 @@ async function notify(body, dry) {
       let child; let timer; let done = false;
       const finish = value => { if (done) return; done = true; clearTimeout(timer); if (child) child.kill(); resolve(value); };
       try {
-        const env = { ...process.env }; delete env.JLC_COOKIE;
+        const env = { ...process.env }; delete env.JLC_COOKIE; delete env.JLC_TOKEN;
         child = fork(__filename, ['--notification-worker'], { silent: true, env });
         child.stdout.resume(); child.stderr.resume();
         child.on('error', () => finish(false));
@@ -93,51 +110,152 @@ async function notify(body, dry) {
   }
   return '通知不可用或发送失败（保留业务退出码）';
 }
+function lines(value) { return (value || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean); }
+function numeric(value) { return (typeof value === 'number' && Number.isFinite(value)) || (typeof value === 'string' && /^\d+(\.\d+)?$/.test(value)); }
+function credential(account) {
+  const value = account.value;
+  if (/[\x00-\x1f\x7f]/.test(value)) throw new Error('凭据格式无效');
+  if (account.type === 'oshwhub') {
+    if (!value.includes('=')) throw new Error('Cookie 格式无效');
+    return;
+  }
+  const delimiter = value.indexOf('#');
+  if (delimiter <= 0 || delimiter === value.length - 1) throw new Error('JLC_TOKEN 格式无效，应为令牌#密钥');
+  account.headers = {
+    'x-jlc-accesstoken': value.slice(0, delimiter), secretkey: value.slice(delimiter + 1),
+    'user-agent': 'Mozilla/5.0 Qinglong-JLC/1.0', 'x-jlc-clienttype': 'WEB',
+    accept: 'application/json, text/plain, */*', Referer: 'https://m.jlc.com/mapp/pages/my/index'
+  };
+}
+function api(account, endpoint) { return request(undefined, 'GET', endpoint, undefined, account.headers); }
+const SIGN_CONFIG = '/api/activity/sign/getCurrentUserSignInConfig';
+const SIGN = '/api/activity/sign/signIn?source=4';
+const REWARD = '/api/activity/sign/receiveVoucher';
+function signed(data) {
+  if (!data.data || typeof data.data.haveSignIn !== 'boolean') throw new Error('签到状态响应字段无效');
+  return data.data.haveSignIn;
+}
+function gain(data) {
+  if (!data.data || typeof data.data !== 'object') throw new Error('签到响应字段无效');
+  // 上游以 gainNum 缺失或为零表示待选奖励，不猜测奖励类型或附加参数。
+  if (data.data.gainNum === undefined || data.data.gainNum === null || data.data.gainNum === 0 || data.data.gainNum === '0') return false;
+  if (!numeric(data.data.gainNum)) throw new Error('签到奖励响应字段无效');
+  return true;
+}
+async function oshStage(account, j, dry) {
+  if (j > 0 && !account.identified) return { kind: 'skipped', text: '身份查询未成功，跳过' };
+  if (dry) {
+    if (j === 0) account.identified = true;
+    return { kind: 'success', text: `离线预演：${j === 1 ? 'POST /api/users/signIn，正文仅含 _t' : 'GET /api/users'}；未发起请求` };
+  }
+  const data = await request(account.value, j === 1 ? 'POST' : 'GET', j === 1 ? '/api/users/signIn' : '/api/users', j === 1 ? { _t: Date.now() } : undefined);
+  if (j === 0) {
+    if (!data.result || typeof data.result.nickname !== 'string' || !data.result.nickname.trim()) throw new Error('身份响应缺少昵称');
+    account.identified = true;
+    return { kind: 'success', text: `昵称：${data.result.nickname}` };
+  }
+  if (j === 1) return { kind: 'success', text: '签到成功（官方 success=true）' };
+  const points = data.result && data.result.points;
+  if (!numeric(points)) throw new Error('积分响应字段无效');
+  return { kind: 'success', text: `当前积分：${points}` };
+}
+async function mappStage(account, j, dry, claim) {
+  if (j > 0 && !account.identified) return { kind: 'skipped', text: '身份查询未成功，跳过' };
+  if (dry) {
+    if (j === 0) account.identified = true;
+    const routes = ['/api/appPlatform/center/setting/selectPersonalInfo', SIGN_CONFIG, SIGN, REWARD, SIGN_CONFIG, '/api/activity/front/getCustomerIntegral'];
+    return { kind: 'success', text: `离线预演：GET ${routes[j]}；未发起请求${j === 3 ? (claim ? '；奖励领取已授权，正式运行仅在待选时领取' : '；奖励领取默认关闭，待选时需显式授权') : ''}` };
+  }
+  if (j === 0) {
+    const data = await api(account, '/api/appPlatform/center/setting/selectPersonalInfo');
+    const identity = data.data && data.data.customerCode;
+    if (!((typeof identity === 'string' && identity.trim()) || (typeof identity === 'number' && Number.isFinite(identity)))) throw new Error('身份响应缺少公开账号标识');
+    account.identified = true;
+    return { kind: 'success', text: `昵称：${identity}` };
+  }
+  if (j === 1) {
+    account.signed = signed(await api(account, SIGN_CONFIG));
+    account.checked = true;
+    return { kind: account.signed ? 'alreadyComplete' : 'success', text: account.signed ? '今日已签到' : '今日尚未签到' };
+  }
+  if (j === 2) {
+    if (!account.checked) return { kind: 'skipped', text: '签到状态未确认，跳过写入' };
+    if (account.signed) return { kind: 'alreadyComplete', text: '今日已签到，不重复写入' };
+    const data = await api(account, SIGN);
+    account.pending = !gain(data);
+    return { kind: 'success', text: account.pending ? '官方确认签到请求成功，有待选奖励；等待领取与复查' : `签到成功，金豆+${data.data.gainNum}` };
+  }
+  if (j === 3) {
+    if (!account.pending) return { kind: 'skipped', optional: true, text: '未发现待选奖励，不调用领取接口' };
+    if (!claim) throw new Error('待选奖励未领取；请确认默认奖励语义后设置 JLC_CLAIM_REWARD=1');
+    await api(account, REWARD);
+    log('待选奖励领取成功（官方 success=true）；进行一次有界补签');
+    // 原来源领取后重新签到；最多一次，不递归、不重复领取。
+    const data = await api(account, SIGN);
+    if (!gain(data)) throw new Error('补签后仍有待选奖励，停止重试');
+    return { kind: 'success', text: `领取成功，补签金豆+${data.data.gainNum}` };
+  }
+  if (j === 4) {
+    if (!signed(await api(account, SIGN_CONFIG))) throw new Error('签到复查未确认今日已签到');
+    return { kind: 'success', text: '签到复查成功：今日已签到' };
+  }
+  const data = await api(account, '/api/activity/front/getCustomerIntegral');
+  const points = data.data && data.data.integralVoucher;
+  if (!numeric(points)) throw new Error('金豆余额响应字段无效');
+  return { kind: 'success', text: `当前金豆：${points}` };
+}
 async function main() {
   const start = Date.now();
-  const dry = process.env.JLC_YJ_DRY_RUN === '1';
-  const accounts = (process.env.JLC_COOKIE || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+  const dry = process.env.JLC_YJ_DRY_RUN === '1' || process.env.JLC_DRY_RUN === '1';
+  const selection = process.env.JLC_TASKS || 'oshwhub';
+  const claimValue = process.env.JLC_CLAIM_REWARD || '0';
+  const claim = claimValue === '1';
+  const accounts = [];
+  let configurationError = false;
+  const errors = [];
+  if (!['oshwhub', 'mapp', 'all'].includes(selection)) errors.push('JLC_TASKS 仅支持 oshwhub、mapp、all');
+  if (!['0', '1'].includes(claimValue)) errors.push('JLC_CLAIM_REWARD 仅支持 0 或 1');
+  for (const [type, name] of [['oshwhub', 'JLC_COOKIE'], ['mapp', 'JLC_TOKEN']]) {
+    if (selection !== type && selection !== 'all') continue;
+    const values = lines(process.env[name]);
+    if (!values.length) errors.push(`${name} 必须包含至少一个账号凭据`);
+    for (const value of values) accounts.push({ type, value });
+  }
+  configurationError = errors.length > 0;
   const totals = { total: 0, success: 0, alreadyComplete: 0, skipped: 0, failed: 0 };
   const results = [];
   log('========== 嘉立创硬件开源平台 ==========');
   log(`开始时间：${new Date(start).toISOString()}；模式：${dry ? '完全离线预演' : '正式执行'}；账号数：${accounts.length}`);
-  let configurationError = false;
-  if (!accounts.length) { configurationError = true; log('❌ 配置错误：JLC_COOKIE 必须包含至少一个账号的完整 Cookie'); }
+  for (const error of errors) log(`❌ 配置错误：${error}`);
+  // 无效开关阻止写入；一组缺失凭据不阻塞另一组有效账号。
+  const invalidSwitch = !['oshwhub', 'mapp', 'all'].includes(selection) || !['0', '1'].includes(claimValue);
   for (let i = 0; i < accounts.length; i++) {
-    const cookie = accounts[i]; const accountStart = Date.now();
-    const stats = { total: 3, success: 0, alreadyComplete: 0, skipped: 0, failed: 0 };
-    let identified = false;
-    log(`----- 账号 ${i + 1} -----`);
-    const stages = ['查询账号身份', '每日签到', '查询积分'];
+    const account = accounts[i]; const accountStart = Date.now();
+    const stages = account.type === 'oshwhub' ? ['查询账号身份', '每日签到', '查询积分'] : ['查询账号身份', '查询签到状态', '每日签到', '待选奖励领取', '签到复查', '查询金豆余额'];
+    const stats = { total: stages.length, success: 0, alreadyComplete: 0, skipped: 0, failed: 0 };
+    let blockingSkip = false;
+    log(`----- 账号 ${i + 1}（${account.type === 'oshwhub' ? '硬件开源平台' : '下单助手'}） -----`);
+    let valid = !invalidSwitch;
+    try { credential(account); } catch { valid = false; }
     for (let j = 0; j < stages.length; j++) {
       const stageStart = Date.now();
       let outcome;
       try {
-        if (j > 0 && !identified) { stats.skipped++; outcome = '⏭️ 身份查询未成功，跳过'; }
-        else if (dry) {
-          if (j === 0) identified = true;
-          stats.success++; outcome = `✅ 离线预演：${j === 1 ? 'POST /api/users/signIn，正文仅含 _t' : 'GET /api/users'}；未发起请求`;
-        } else {
-          if (/[\x00-\x1f\x7f]/.test(cookie) || !cookie.includes('=')) throw new Error('Cookie 格式无效');
-          const data = await request(cookie, j === 1 ? 'POST' : 'GET', j === 1 ? '/api/users/signIn' : '/api/users', j === 1 ? { _t: Date.now() } : undefined);
-          if (j === 0) {
-            if (!data.result || typeof data.result.nickname !== 'string' || !data.result.nickname.trim()) throw new Error('身份响应缺少昵称');
-            identified = true;
-            // 只读取官方指定的公开昵称字段，不输出 UUID、Cookie 或原始响应。
-            outcome = `✅ 昵称：${data.result.nickname}`;
-          } else if (j === 1) outcome = '✅ 签到成功（官方 success=true）';
-          else {
-            const points = data.result && data.result.points;
-            if (!((typeof points === 'number' && Number.isFinite(points)) || (typeof points === 'string' && /^\d+(\.\d+)?$/.test(points)))) throw new Error('积分响应字段无效');
-            outcome = `✅ 当前积分：${points}`;
-          }
-          stats.success++;
-        }
-      } catch (err) { stats.failed++; outcome = `❌ ${/^(HTTP 状态异常|官方未确认|响应|请求超时|网络请求失败|Cookie 格式无效|身份响应缺少昵称|积分响应字段无效)/.test(err.message) ? err.message : '请求配置或执行失败'}`; }
-      log(`账号 ${i + 1} 阶段 ${j + 1}/3 ${stages[j]}：${outcome}；耗时 ${Date.now() - stageStart}ms`);
+        if (!valid) throw new Error('凭据或任务开关格式无效');
+        const result = account.type === 'oshwhub' ? await oshStage(account, j, dry) : await mappStage(account, j, dry, claim);
+        stats[result.kind]++;
+        if (result.kind === 'skipped' && !result.optional) blockingSkip = true;
+        outcome = `${{ success: '✅', alreadyComplete: '☑️', skipped: '⏭️' }[result.kind]} ${result.text}`;
+      } catch (err) {
+        stats.failed++;
+        // 仅输出固定内部错误；不输出官方 message、异常对象或响应。
+        const safe = /^(HTTP 状态异常（\d+）|官方未确认业务成功，请检查登录状态|响应超过大小限制|响应读取失败|响应中断|响应格式无效|请求超时|网络请求失败|身份响应缺少昵称|身份响应缺少公开账号标识|积分响应字段无效|签到状态响应字段无效|签到响应字段无效|签到奖励响应字段无效|金豆余额响应字段无效|签到复查未确认今日已签到|补签后仍有待选奖励，停止重试|待选奖励未领取；请确认默认奖励语义后设置 JLC_CLAIM_REWARD=1|凭据或任务开关格式无效)$/;
+        outcome = `❌ ${safe.test(err.message) ? err.message : '请求配置或执行失败'}`;
+      }
+      log(`账号 ${i + 1} 阶段 ${j + 1}/${stages.length} ${stages[j]}：${outcome}；耗时 ${Date.now() - stageStart}ms`);
     }
-    const ok = stats.failed === 0 && stats.skipped === 0;
-    results.push({ account: i + 1, ...stats, ok, durationMs: Date.now() - accountStart });
+    const ok = stats.failed === 0 && !blockingSkip;
+    results.push({ account: i + 1, workflow: account.type, ...stats, ok, durationMs: Date.now() - accountStart });
     for (const key of Object.keys(totals)) totals[key] += stats[key];
     log(`账号 ${i + 1} 统计：总任务 ${stats.total}；成功 ${stats.success}；已完成 ${stats.alreadyComplete}；跳过 ${stats.skipped}；失败 ${stats.failed}；耗时 ${Date.now() - accountStart}ms`);
   }

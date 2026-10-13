@@ -111,7 +111,6 @@
 | 江淮卡友 | `scripts/sudojia_jhcard.js` | `node scripts/sudojia_jhcard.js` | `55 5 * * *` |
 | 多娇江山 | `scripts/sudojia_jiangshan.js` | `node scripts/sudojia_jiangshan.js` | `26 9 * * *` |
 | 金典有机生活+ | `scripts/sudojia_jindian.js` | `node scripts/sudojia_jindian.js` | `56 7 * * *` |
-| 嘉立创每日签到 | `scripts/sudojia_jlc.js` | `node scripts/sudojia_jlc.js` | `30 6 * * *` |
 | 嘉立创硬件开源平台 | `scripts/sudojia_jlc_yj.js` | `node scripts/sudojia_jlc_yj.js` | `44 5 * * *` |
 | 稀土掘金每日签到 | `scripts/sudojia_juejin.js` | `node scripts/sudojia_juejin.js` | `5 10 * * *` |
 | 植白说官方商城 | `scripts/sudojia_kozbs.js` | `node scripts/sudojia_kozbs.js` | `18 9 * * *` |
@@ -246,8 +245,7 @@
 - `scripts/sudojia_jhcard.js`：登录并展示官方返回的账号姓名，不展示手机号或凭据；每日签到；查询连续签到天数；查询当前积分；显式开启后执行五次随机帖子评论；公开评论优先使用一言文案及作者、出处署名，失败时采用本地文案；每行一个账号、独立处理、失败非零退出；完全断网预演、脱敏通知、时间轴日志及结构化汇总。
 - `scripts/sudojia_jiangshan.js`：每日签到并查询连续签到天数；读取新闻并复查任务完成进度；可选分享任务上报、评论、点赞与本地服务任务上报；评论优先使用一言正文与作者出处署名，所有声明异常均回退本地文本；查询官方账号昵称、用户名、显示名或公开 UID 及当前积分；逐行多账号、独立失败统计、断网预演、脱敏青龙通知与结构化汇总。
 - `scripts/sudojia_jindian.js`：查询并显示官方账号昵称等非秘密身份信息；检查每日签到状态，已签到时避免重复写入；执行每日签到，显示奖励并复查签到状态；查询当前积分，包括已经签到的账号；支持逐行配置多账号并隔离失败；支持断网预演、青龙脱敏通知和带时间戳的阶段日志、账号统计及单行结构化汇总。
-- `scripts/sudojia_jlc.js`：查询并显示官方返回的公开账号身份；查询当日签到状态，已签到时不重复操作；执行每日签到并复查官方签到状态；显式授权后领取待选奖励，领取后最多重试签到一次；查询金豆余额；按行配置多账号并独立统计，失败时整体非零退出；完全断网预演、时间轴日志及单行结构化汇总；通过青龙发送脱敏任务通知，预演仅本地模拟通知。
-- `scripts/sudojia_jlc_yj.js`：查询并显示官方返回的公开昵称；每日签到并检查官方 success 严格为 true；查询并校验当前积分；每行一个账号，独立处理与失败非零退出；完全离线预演，不调用业务接口和通知服务；请求超时、响应大小限制及脱敏错误处理；时间轴阶段日志、账号与任务统计及单行 TASK_SUMMARY 汇总；通过青龙 sendNotify.js 发送脱敏总结，支持全局开关并保留业务退出码。
+- `scripts/sudojia_jlc_yj.js`：保留开源平台官方昵称查询、每日签到与积分查询；下单助手查询公开账号标识和签到状态；下单助手每日签到及签到复查；显式授权后领取待选奖励并最多补签一次；下单助手金豆余额查询；单一规范脚本按开关运行两套凭据独立的流程并保留原调度说明；多账号独立执行、超时、响应大小限制及业务成功判断；完全断网预演、脱敏通知、时间轴日志和单行 TASK_SUMMARY 汇总。
 - `scripts/sudojia_juejin.js`：检查登录和今日签到状态；显示官方返回的账号昵称；每日签到，已签到时不重复提交，重复签到业务码须经状态复核；查询矿石余额；统计连续和累计签到天数；换行多账号独立处理和失败退出；完全断网参数预演；青龙脱敏汇总通知和阶段日志、单行结构化统计。
 - `scripts/sudojia_kozbs.js`：查询官方返回的公开昵称和当前积分。；检查今日签到状态，已签到时避免重复签到。；未签到时执行每日签到，以业务码 errno 严格等于数字 0 确认接口成功。；支持换行多账号、独立失败处理和整体失败退出码。；提供完全断网预演、阶段耗时、账号与任务统计以及单行结构化汇总。；正式执行后通过青龙发送脱敏汇总，支持全局关闭及通知失败不影响业务退出码。。
 - `scripts/sudojia_ktgzs.js`：查询并显示官方返回的账号名称，不输出手机号；每日签到，显示签到奖励和连续签到天数；查询最近积分流水中的当前积分；每行一个账号，独立处理并汇总失败退出码；完全断网预演，校验账号配置并展示三个业务阶段；通过青龙通知模块发送脱敏任务总结，支持总开关和通知目录设置；带时间戳的阶段日志、账号统计、任务统计及单行 TASK_SUMMARY 结构化汇总。
@@ -388,8 +386,8 @@
 <tr><td rowspan="1"><code>scripts/sudojia_jhcard.js</code></td><td><code>JHCARD_BODY</code></td><td>是</td><td>格式：每个非空行一个完整 JSON，必需 phone、password、sendMessageKey、deviceType、appType、sign；行末可追加 #true 开启五次公开评论，#false 或省略均关闭。JSON 内的分隔字符原样保留，不使用 &amp; 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_jiangshan.js</code></td><td><code>JIANG_SHAN_SESSION</code></td><td>是</td><td>格式：每行一个账号的会话值，仅以换行分隔；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_jindian.js</code></td><td><code>JINDIAN_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的 access-token，不含请求头名称；不使用 &amp;、@ 等符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/sudojia_jlc.js</code></td><td><code>JLC_TOKEN</code></td><td>是</td><td>格式：每行一个账号：x-jlc-accesstoken值#secretkey值；仅以首个 # 分割，其后的 # 保留；不支持用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/sudojia_jlc_yj.js</code></td><td><code>JLC_COOKIE</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整 Cookie，保留分号及值中的 &amp;、@ 等字符，不添加 export 或包裹引号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="2"><code>scripts/sudojia_jlc_yj.js</code></td><td><code>JLC_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号完整 Cookie；保留分号、等号、&amp; 和 @，不用这些符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JLC_TOKEN</code></td><td>是</td><td>格式：令牌#密钥，每个非空行一个账号，只在第一个 # 分割；后续密钥文本原样保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_juejin.js</code></td><td><code>JUEJIN_COOKIE</code></td><td>是</td><td>格式：每行 sessionid#原始查询串；仅以首个 # 分隔，查询串中的 &amp; 保留；可包含 aid=2608。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_kozbs.js</code></td><td><code>KOZBS_TOKEN</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整令牌；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_ktgzs.js</code></td><td><code>KTGZS_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的 Authorization 完整值；保留值内字符，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -939,13 +937,12 @@
 <tr><td rowspan="3"><code>scripts/sudojia_jindian.js</code></td><td><code>JINDIAN_DRY_RUN</code></td><td>否</td><td>格式：1 为预演，其他值为正式运行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off（不区分大小写）关闭通知，其他值开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于青龙通知集成；业务执行不依赖此目录。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="4"><code>scripts/sudojia_jlc.js</code></td><td><code>JLC_CLAIM_REWARD</code></td><td>否</td><td>格式：0（默认）或 1（授权领取并最多再签到一次）；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>JLC_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演，其余值为正式执行；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，不区分大小写；默认 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录绝对路径；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="3"><code>scripts/sudojia_jlc_yj.js</code></td><td><code>JLC_YJ_DRY_RUN</code></td><td>否</td><td>格式：1 开启完全离线预演；其他值正式执行。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；无需额外仓库，模块缺失不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="6"><code>scripts/sudojia_jlc_yj.js</code></td><td><code>JLC_TASKS</code></td><td>否</td><td>格式：oshwhub：开源平台；mapp：下单助手；all：依次执行两套流程，各组账号独立统计，不假定不同凭据属于同一账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JLC_CLAIM_REWARD</code></td><td>否</td><td>格式：0：不领取；1：仅发现待选奖励时领取并最多补签一次；未授权的待选奖励视为未完成并非零退出。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JLC_YJ_DRY_RUN</code></td><td>否</td><td>格式：1：完全断网预演并模拟通知；其他值：正式执行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JLC_DRY_RUN</code></td><td>否</td><td>格式：1：完全断网预演；其他值：不启用此别名。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：通知模块目录；发送失败或不可用仅记录通知状态，保留业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/sudojia_juejin.js</code></td><td><code>JUEJIN_DRY_RUN</code></td><td>否</td><td>格式：1 启用，其余值执行正式任务。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录绝对路径。；多账号格式以该脚本文档为准</td></tr>
@@ -1287,8 +1284,7 @@
 - `scripts/sudojia_jhcard.js`：每个非空行一个账号，登录 JSON 与该账号的可选评论开关放在同一行；账号独立执行，任一失败整体非零退出。。
 - `scripts/sudojia_jiangshan.js`：每个非空行一个账号，逐个独立执行；任一账号失败则整体非零退出。。
 - `scripts/sudojia_jindian.js`：每个非空行一个账号，忽略空行，各账号独立处理；任一账号失败则整体非零退出。。
-- `scripts/sudojia_jlc.js`：每个非空行一个账号，按首个 # 拆分同一账号的两项凭据；账号独立处理，任一账号失败时整体非零退出。。
-- `scripts/sudojia_jlc_yj.js`：每个非空行一个账号的完整 Cookie，忽略空行；账号独立处理，任一失败整体非零退出。。
+- `scripts/sudojia_jlc_yj.js`：每个非空行一个账号。JLC_COOKIE 与 JLC_TOKEN 是两套独立服务凭据，分别执行；令牌和配套密钥合并为一行，只在第一个 # 分割；不用 & 或 @ 分隔账号；任一账号失败时整体非零退出。。
 - `scripts/sudojia_juejin.js`：每个非空行对应一个账号，配套凭据以首个 # 分隔；逐账号独立处理，任一账号失败整体非零退出。。
 - `scripts/sudojia_kozbs.js`：每个非空行一个账号，去掉行首尾空白；账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/sudojia_ktgzs.js`：每个非空行一个账号，各账号独立处理；任一账号失败，整体退出码非零。。
@@ -1906,18 +1902,18 @@
 - 填写格式：`每个非空行一个账号的 access-token，不含请求头名称；不使用 &、@ 等符号分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
-#### `JLC_TOKEN`
-
-- 所属脚本：`scripts/sudojia_jlc.js`
-- 获取或设置：登录嘉立创下单助手或 https://m.jlc.com/mapp/，抓取发送到 m.jlc.com 的请求头 x-jlc-accesstoken 和 secretkey；取同一账号的两个字段，不要分享抓包内容。
-- 填写格式：`每行一个账号：x-jlc-accesstoken值#secretkey值；仅以首个 # 分割，其后的 # 保留；不支持用 & 或 @ 分隔账号。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
 #### `JLC_COOKIE`
 
 - 所属脚本：`scripts/sudojia_jlc_yj.js`
-- 获取或设置：登录 https://oshwhub.com/sign_in 后打开浏览器开发者工具的网络面板，从发往 oshwhub.com 的已登录请求头复制完整 Cookie；过期后重新登录获取。不要从 m.jlc.com 获取。
-- 填写格式：`每个非空行填写一个账号的完整 Cookie，保留分号及值中的 &、@ 等字符，不添加 export 或包裹引号。`
+- 获取或设置：登录 https://oshwhub.com/sign_in，打开浏览器开发者工具网络面板，从 oshwhub.com 已登录请求复制完整 Cookie。默认开源平台及 all 模式必填；仅下单助手模式不需要。
+- 填写格式：`每个非空行一个账号完整 Cookie；保留分号、等号、& 和 @，不用这些符号分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JLC_TOKEN`
+
+- 所属脚本：`scripts/sudojia_jlc_yj.js`
+- 获取或设置：登录 https://m.jlc.com/mapp/ 或嘉立创下单助手小程序，抓取 m.jlc.com 已登录请求头 x-jlc-accesstoken 与 secretkey。下单助手及 all 模式必填；仅默认开源平台模式不需要。
+- 填写格式：`令牌#密钥，每个非空行一个账号，只在第一个 # 分割；后续密钥文本原样保留，不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `JUEJIN_COOKIE`
@@ -5284,47 +5280,41 @@
 - 获取或设置：可选：填写青龙 sendNotify.js 所在目录；未设置时自动查找 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：`本地目录路径，仅用于青龙通知集成；业务执行不依赖此目录。`
 
+#### `JLC_TASKS`
+
+- 所属脚本：`scripts/sudojia_jlc_yj.js`
+- 获取或设置：手动选择流程；默认 oshwhub。可为同一文件设两条青龙任务：oshwhub 使用 44 5 * * *，mapp 使用原调度 30 6 * * *，分别注入对应开关。
+- 填写格式：`oshwhub：开源平台；mapp：下单助手；all：依次执行两套流程，各组账号独立统计，不假定不同凭据属于同一账号。`
+
 #### `JLC_CLAIM_REWARD`
 
-- 所属脚本：`scripts/sudojia_jlc.js`
-- 获取或设置：可选，确认接受官方接口默认奖励后手动设置；上游描述默认奖励为金豆，但接口没有显式奖励类型参数。默认不自动选择奖励。
-- 填写格式：`0（默认）或 1（授权领取并最多再签到一次）`
-
-#### `JLC_DRY_RUN`
-
-- 所属脚本：`scripts/sudojia_jlc.js`
-- 获取或设置：本地验证时设为 1，不调用业务接口或通知网络。
-- 填写格式：`1 为完全断网预演，其余值为正式执行`
-
-#### `QINGLONG_NOTIFY`
-
-- 所属脚本：`scripts/sudojia_jlc.js`
-- 获取或设置：使用青龙已配置的 sendNotify.js；默认开启，预演时仅模拟通知以保证断网。
-- 填写格式：`0、false、no、off 关闭，不区分大小写；默认 1`
-
-#### `QINGLONG_NOTIFY_DIR`
-
-- 所属脚本：`scripts/sudojia_jlc.js`
-- 获取或设置：可选，填写青龙 sendNotify.js 所在目录；未设置时查找 /ql/data/scripts 和 /ql/scripts。通知不可用或失败时保留业务退出码。
-- 填写格式：`本机目录绝对路径`
+- 所属脚本：`scripts/sudojia_jlc_yj.js`
+- 获取或设置：默认关闭。确认下单助手原 receiveVoucher 接口的默认奖励符合本人意愿后，手动设置为 1。脚本不猜测奖励类型参数。
+- 填写格式：`0：不领取；1：仅发现待选奖励时领取并最多补签一次；未授权的待选奖励视为未完成并非零退出。`
 
 #### `JLC_YJ_DRY_RUN`
 
 - 所属脚本：`scripts/sudojia_jlc_yj.js`
-- 获取或设置：在青龙环境变量中手动设置。
-- 填写格式：`1 开启完全离线预演；其他值正式执行。`
+- 获取或设置：手动设为 1，保留规范脚本的离线入口。
+- 填写格式：`1：完全断网预演并模拟通知；其他值：正式执行。`
+
+#### `JLC_DRY_RUN`
+
+- 所属脚本：`scripts/sudojia_jlc_yj.js`
+- 获取或设置：手动设为 1，作为统一离线预演别名；与 JLC_YJ_DRY_RUN 任一为 1 均离线。
+- 填写格式：`1：完全断网预演；其他值：不启用此别名。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/sudojia_jlc_yj.js`
-- 获取或设置：在青龙环境变量中手动设置；默认开启。
-- 填写格式：`0、false、no、off 关闭通知，不区分大小写。`
+- 获取或设置：沿用青龙通知配置，默认开启，预演仅模拟发送。
+- 填写格式：`0、false、no、off 关闭，其他值开启。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/sudojia_jlc_yj.js`
-- 获取或设置：可选填写已有青龙 sendNotify.js 所在目录；否则依次查找 /ql/data/scripts 和 /ql/scripts。
-- 填写格式：`本机目录路径；无需额外仓库，模块缺失不改变业务退出码。`
+- 获取或设置：可选，填写青龙 sendNotify.js 所在目录；未配置时查找 /ql/data/scripts、/ql/scripts。业务流程不依赖通知模块存在。
+- 填写格式：`通知模块目录；发送失败或不可用仅记录通知状态，保留业务退出码。`
 
 #### `JUEJIN_DRY_RUN`
 
@@ -7002,8 +6992,7 @@
 - `scripts/sudojia_jhcard.js`：SHA-256 `ac86d6cc9fda1657bb61169b9feecbb9cadba6a61b95a92bec66912155d2eff6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0dc8d7553d45c649`。
 - `scripts/sudojia_jiangshan.js`：SHA-256 `6aeecd07cf2173fa8e1a7775bd17849dd373ce9ca102ba5d5e5e48b9af78f04d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/db8583cdb3a987c1`。
 - `scripts/sudojia_jindian.js`：SHA-256 `d9c3bef3a86ccd7da990e856f7567029c688349b162cb554fd9b8407bd515f22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1ee8bcd72ce624b6`。
-- `scripts/sudojia_jlc.js`：SHA-256 `2048a9c7c28a9c35a13f26ba694c6b6608c12aa80e2c77565088ab0b5e778ad3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/78d21d1077d4682f`。
-- `scripts/sudojia_jlc_yj.js`：SHA-256 `4e996c250a1f8a9db7ad1ef10a450599856f38c7518038d8a0b42f9b29cf2451`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/38602005c4e13646`。
+- `scripts/sudojia_jlc_yj.js`：SHA-256 `6c1a5a4b18f1873cf843bc1f7dcea14330ce0feabd34d34f4407e551bbd6a04b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/38602005c4e13646`。
 - `scripts/sudojia_juejin.js`：SHA-256 `a3ab6439b1c72f4195f35551584cb573e8f9d0515eadd0cb1e60cd712436ea36`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f86741e6210934e9`。
 - `scripts/sudojia_kozbs.js`：SHA-256 `a9390adda3bb8938f8d40627ede49a6106dba6267805d7c285f6024e36ef6f58`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/34763140840b492a`。
 - `scripts/sudojia_ktgzs.js`：SHA-256 `180d6b848c37e9703d05e65962b1eaf2200052389c048b88f739381b7270346e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c1b078ac7332577`。
@@ -7137,8 +7126,7 @@
 - `scripts/sudojia_jhcard.js`：签到并领取服务端发放的积分；仅在账号显式追加 #true 时发表五次公开评论。
 - `scripts/sudojia_jiangshan.js`：签到及阅读可能增加积分、经验和任务进度；显式启用 share 后上报分享任务并改变进度；显式启用 comment 后发表公开评论；显式启用 like 后点赞文章；显式启用 local 后上报本地服务任务并改变进度。
 - `scripts/sudojia_jindian.js`：对尚未签到的账号执行每日签到，可能增加积分。
-- `scripts/sudojia_jlc.js`：正式执行时进行每日签到；仅 JLC_CLAIM_REWARD=1 时领取官方默认奖励；正式执行且通知开启时发送青龙任务通知。
-- `scripts/sudojia_jlc_yj.js`：正式执行时进行硬件开源平台每日签到；正式执行且通知开启时发送青龙任务通知。
+- `scripts/sudojia_jlc_yj.js`：开源平台每日签到增加积分；下单助手每日签到增加金豆；显式授权后领取待选奖励并进行最多一次补签。
 - `scripts/sudojia_juejin.js`：尚未签到时提交每日签到，领取矿石奖励；正式运行且启用通知时发送青龙任务摘要。
 - `scripts/sudojia_kozbs.js`：未签到时提交每日签到，可能增加账号积分和签到记录。；通知开启且模块可用时向已配置的通知渠道发送脱敏任务汇总。。
 - `scripts/sudojia_ktgzs.js`：正式运行调用每日签到接口，产生签到记录及服务端奖励积分。
@@ -7274,7 +7262,6 @@
 - `scripts/sudojia_jhcard.js`：上游 `sudojia/AutoTaskScript` / `src/client/sudojia_jhcard.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_jiangshan.js`：上游 `sudojia/AutoTaskScript` / `src/client/sudojia_jiangshan.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_jindian.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_jindian.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
-- `scripts/sudojia_jlc.js`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_jlc.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_jlc_yj.js`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_jlc_yj.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_juejin.js`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_juejin.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_kozbs.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_kozbs.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。

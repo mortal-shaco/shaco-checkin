@@ -12213,150 +12213,18 @@
       }
     },
     {
-      "catalogId": "78d21d1077d4682f",
-      "applicationKey": "jlc",
-      "checkProfile": {
-        "requiredEnv": [
-          "JLC_TOKEN"
-        ],
-        "optionalEnv": [
-          "JLC_CLAIM_REWARD",
-          "JLC_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "JLC_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "JLC_CLAIM_REWARD": "0",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
-        ],
-        "features": [
-          "查询并显示官方返回的公开账号身份",
-          "查询当日签到状态，已签到时不重复操作",
-          "执行每日签到并复查官方签到状态",
-          "显式授权后领取待选奖励，领取后最多重试签到一次",
-          "查询金豆余额",
-          "按行配置多账号并独立统计，失败时整体非零退出",
-          "完全断网预演、时间轴日志及单行结构化汇总",
-          "通过青龙发送脱敏任务通知，预演仅本地模拟通知"
-        ],
-        "sideEffects": [
-          "正式执行时进行每日签到",
-          "仅 JLC_CLAIM_REWARD=1 时领取官方默认奖励",
-          "正式执行且通知开启时发送青龙任务通知"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "嘉立创每日签到",
-      "path": "scripts/sudojia_jlc.js",
-      "sha256": "2048a9c7c28a9c35a13f26ba694c6b6608c12aa80e2c77565088ab0b5e778ad3",
-      "stage": "released",
-      "license": "GPL-3.0",
-      "licenseGate": "allowed-copyleft",
-      "source": {
-        "repository": "sudojia/AutoTaskScript",
-        "branch": "script",
-        "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
-        "originalPath": "src/web/sudojia_jlc.js"
-      },
-      "cron": "30 6 * * *",
-      "command": "node scripts/sudojia_jlc.js",
-      "environment": [
-        {
-          "name": "JLC_TOKEN",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录嘉立创下单助手或 https://m.jlc.com/mapp/，抓取发送到 m.jlc.com 的请求头 x-jlc-accesstoken 和 secretkey；取同一账号的两个字段，不要分享抓包内容。",
-          "format": "每行一个账号：x-jlc-accesstoken值#secretkey值；仅以首个 # 分割，其后的 # 保留；不支持用 & 或 @ 分隔账号。"
-        },
-        {
-          "name": "JLC_CLAIM_REWARD",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，确认接受官方接口默认奖励后手动设置；上游描述默认奖励为金豆，但接口没有显式奖励类型参数。默认不自动选择奖励。",
-          "format": "0（默认）或 1（授权领取并最多再签到一次）"
-        },
-        {
-          "name": "JLC_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "本地验证时设为 1，不调用业务接口或通知网络。",
-          "format": "1 为完全断网预演，其余值为正式执行"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "使用青龙已配置的 sendNotify.js；默认开启，预演时仅模拟通知以保证断网。",
-          "format": "0、false、no、off 关闭，不区分大小写；默认 1"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，填写青龙 sendNotify.js 所在目录；未设置时查找 /ql/data/scripts 和 /ql/scripts。通知不可用或失败时保留业务退出码。",
-          "format": "本机目录绝对路径"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "每个非空行一个账号，按首个 # 拆分同一账号的两项凭据；账号独立处理，任一账号失败时整体非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "查询并显示官方返回的公开账号身份",
-        "查询当日签到状态，已签到时不重复操作",
-        "执行每日签到并复查官方签到状态",
-        "显式授权后领取待选奖励，领取后最多重试签到一次",
-        "查询金豆余额",
-        "按行配置多账号并独立统计，失败时整体非零退出",
-        "完全断网预演、时间轴日志及单行结构化汇总",
-        "通过青龙发送脱敏任务通知，预演仅本地模拟通知"
-      ],
-      "sideEffects": [
-        "正式执行时进行每日签到",
-        "仅 JLC_CLAIM_REWARD=1 时领取官方默认奖励",
-        "正式执行且通知开启时发送青龙任务通知"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/78d21d1077d4682f",
-        "candidateSha256": "8739602d2b34354762ef99f33bd7de96c0c7cabf2e48e4cbaf94a885b005e12e"
-      },
-      "packaging": {
-        "type": "qinglong-discovery-metadata",
-        "validatedSha256": "8739602d2b34354762ef99f33bd7de96c0c7cabf2e48e4cbaf94a885b005e12e",
-        "releaseSha256": "2048a9c7c28a9c35a13f26ba694c6b6608c12aa80e2c77565088ab0b5e778ad3",
-        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
-      }
-    },
-    {
       "catalogId": "38602005c4e13646",
       "applicationKey": "oshwhub",
       "checkProfile": {
         "requiredEnv": [
-          "JLC_COOKIE"
+          "JLC_COOKIE",
+          "JLC_TOKEN"
         ],
         "optionalEnv": [
+          "JLC_TASKS",
+          "JLC_CLAIM_REWARD",
           "JLC_YJ_DRY_RUN",
+          "JLC_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
@@ -12364,26 +12232,30 @@
           "JLC_YJ_DRY_RUN": "1"
         },
         "liveEnv": {
+          "JLC_TASKS": "oshwhub",
+          "JLC_CLAIM_REWARD": "0",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
           "签到成功（官方 success=true）",
-          "当前积分：",
-          "最终状态：success"
+          "签到复查成功：今日已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
         ],
         "features": [
-          "查询并显示官方返回的公开昵称",
-          "每日签到并检查官方 success 严格为 true",
-          "查询并校验当前积分",
-          "每行一个账号，独立处理与失败非零退出",
-          "完全离线预演，不调用业务接口和通知服务",
-          "请求超时、响应大小限制及脱敏错误处理",
-          "时间轴阶段日志、账号与任务统计及单行 TASK_SUMMARY 汇总",
-          "通过青龙 sendNotify.js 发送脱敏总结，支持全局开关并保留业务退出码"
+          "保留开源平台官方昵称查询、每日签到与积分查询",
+          "下单助手查询公开账号标识和签到状态",
+          "下单助手每日签到及签到复查",
+          "显式授权后领取待选奖励并最多补签一次",
+          "下单助手金豆余额查询",
+          "单一规范脚本按开关运行两套凭据独立的流程并保留原调度说明",
+          "多账号独立执行、超时、响应大小限制及业务成功判断",
+          "完全断网预演、脱敏通知、时间轴日志和单行 TASK_SUMMARY 汇总"
         ],
         "sideEffects": [
-          "正式执行时进行硬件开源平台每日签到",
-          "正式执行且通知开启时发送青龙任务通知"
+          "开源平台每日签到增加积分",
+          "下单助手每日签到增加金豆",
+          "显式授权后领取待选奖励并进行最多一次补签"
         ]
       },
       "postReview": {
@@ -12392,7 +12264,7 @@
       },
       "displayName": "嘉立创硬件开源平台",
       "path": "scripts/sudojia_jlc_yj.js",
-      "sha256": "4e996c250a1f8a9db7ad1ef10a450599856f38c7518038d8a0b42f9b29cf2451",
+      "sha256": "6c1a5a4b18f1873cf843bc1f7dcea14330ce0feabd34d34f4407e551bbd6a04b",
       "stage": "released",
       "license": "GPL-3.0",
       "licenseGate": "allowed-copyleft",
@@ -12400,7 +12272,19 @@
         "repository": "sudojia/AutoTaskScript",
         "branch": "script",
         "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
-        "originalPath": "src/web/sudojia_jlc_yj.js"
+        "originalPath": "src/web/sudojia_jlc_yj.js",
+        "related": [
+          {
+            "repository": "sudojia/AutoTaskScript",
+            "url": "https://github.com/sudojia/AutoTaskScript.git",
+            "branch": "script",
+            "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
+            "originalPath": "src/web/sudojia_jlc.js",
+            "catalogId": "78d21d1077d4682f",
+            "sha256": "208200c7208dcc4cd9be3c6d42e3787bc7d7084af9aa6b6c8a1fd1daad410570",
+            "license": "GPL-3.0"
+          }
+        ]
       },
       "cron": "44 5 * * *",
       "command": "node scripts/sudojia_jlc_yj.js",
@@ -12409,50 +12293,79 @@
           "name": "JLC_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录 https://oshwhub.com/sign_in 后打开浏览器开发者工具的网络面板，从发往 oshwhub.com 的已登录请求头复制完整 Cookie；过期后重新登录获取。不要从 m.jlc.com 获取。",
-          "format": "每个非空行填写一个账号的完整 Cookie，保留分号及值中的 &、@ 等字符，不添加 export 或包裹引号。"
+          "howToGet": "登录 https://oshwhub.com/sign_in，打开浏览器开发者工具网络面板，从 oshwhub.com 已登录请求复制完整 Cookie。默认开源平台及 all 模式必填；仅下单助手模式不需要。",
+          "format": "每个非空行一个账号完整 Cookie；保留分号、等号、& 和 @，不用这些符号分隔账号。"
+        },
+        {
+          "name": "JLC_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://m.jlc.com/mapp/ 或嘉立创下单助手小程序，抓取 m.jlc.com 已登录请求头 x-jlc-accesstoken 与 secretkey。下单助手及 all 模式必填；仅默认开源平台模式不需要。",
+          "format": "令牌#密钥，每个非空行一个账号，只在第一个 # 分割；后续密钥文本原样保留，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "JLC_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动选择流程；默认 oshwhub。可为同一文件设两条青龙任务：oshwhub 使用 44 5 * * *，mapp 使用原调度 30 6 * * *，分别注入对应开关。",
+          "format": "oshwhub：开源平台；mapp：下单助手；all：依次执行两套流程，各组账号独立统计，不假定不同凭据属于同一账号。"
+        },
+        {
+          "name": "JLC_CLAIM_REWARD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认关闭。确认下单助手原 receiveVoucher 接口的默认奖励符合本人意愿后，手动设置为 1。脚本不猜测奖励类型参数。",
+          "format": "0：不领取；1：仅发现待选奖励时领取并最多补签一次；未授权的待选奖励视为未完成并非零退出。"
         },
         {
           "name": "JLC_YJ_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量中手动设置。",
-          "format": "1 开启完全离线预演；其他值正式执行。"
+          "howToGet": "手动设为 1，保留规范脚本的离线入口。",
+          "format": "1：完全断网预演并模拟通知；其他值：正式执行。"
+        },
+        {
+          "name": "JLC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设为 1，作为统一离线预演别名；与 JLC_YJ_DRY_RUN 任一为 1 均离线。",
+          "format": "1：完全断网预演；其他值：不启用此别名。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量中手动设置；默认开启。",
-          "format": "0、false、no、off 关闭通知，不区分大小写。"
+          "howToGet": "沿用青龙通知配置，默认开启，预演仅模拟发送。",
+          "format": "0、false、no、off 关闭，其他值开启。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选填写已有青龙 sendNotify.js 所在目录；否则依次查找 /ql/data/scripts 和 /ql/scripts。",
-          "format": "本机目录路径；无需额外仓库，模块缺失不改变业务退出码。"
+          "howToGet": "可选，填写青龙 sendNotify.js 所在目录；未配置时查找 /ql/data/scripts、/ql/scripts。业务流程不依赖通知模块存在。",
+          "format": "通知模块目录；发送失败或不可用仅记录通知状态，保留业务退出码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号的完整 Cookie，忽略空行；账号独立处理，任一失败整体非零退出。"
+        "rule": "每个非空行一个账号。JLC_COOKIE 与 JLC_TOKEN 是两套独立服务凭据，分别执行；令牌和配套密钥合并为一行，只在第一个 # 分割；不用 & 或 @ 分隔账号；任一账号失败时整体非零退出。"
       },
       "dependencies": [],
       "features": [
-        "查询并显示官方返回的公开昵称",
-        "每日签到并检查官方 success 严格为 true",
-        "查询并校验当前积分",
-        "每行一个账号，独立处理与失败非零退出",
-        "完全离线预演，不调用业务接口和通知服务",
-        "请求超时、响应大小限制及脱敏错误处理",
-        "时间轴阶段日志、账号与任务统计及单行 TASK_SUMMARY 汇总",
-        "通过青龙 sendNotify.js 发送脱敏总结，支持全局开关并保留业务退出码"
+        "保留开源平台官方昵称查询、每日签到与积分查询",
+        "下单助手查询公开账号标识和签到状态",
+        "下单助手每日签到及签到复查",
+        "显式授权后领取待选奖励并最多补签一次",
+        "下单助手金豆余额查询",
+        "单一规范脚本按开关运行两套凭据独立的流程并保留原调度说明",
+        "多账号独立执行、超时、响应大小限制及业务成功判断",
+        "完全断网预演、脱敏通知、时间轴日志和单行 TASK_SUMMARY 汇总"
       ],
       "sideEffects": [
-        "正式执行时进行硬件开源平台每日签到",
-        "正式执行且通知开启时发送青龙任务通知"
+        "开源平台每日签到增加积分",
+        "下单助手每日签到增加金豆",
+        "显式授权后领取待选奖励并进行最多一次补签"
       ],
       "review": {
         "staticPassed": true,
@@ -12465,12 +12378,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/38602005c4e13646",
-        "candidateSha256": "821d73f2ff30874fb8b91a4152bfb4ce25d96cca27ad618a76d924a0098a407a"
+        "candidateSha256": "2ef037bc2bbd95d2b2c9913eabafe7fe89a609bd11c2ee4df6ff43d6cf646178"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "821d73f2ff30874fb8b91a4152bfb4ce25d96cca27ad618a76d924a0098a407a",
-        "releaseSha256": "4e996c250a1f8a9db7ad1ef10a450599856f38c7518038d8a0b42f9b29cf2451",
+        "validatedSha256": "2ef037bc2bbd95d2b2c9913eabafe7fe89a609bd11c2ee4df6ff43d6cf646178",
+        "releaseSha256": "6c1a5a4b18f1873cf843bc1f7dcea14330ce0feabd34d34f4407e551bbd6a04b",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
