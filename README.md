@@ -67,6 +67,7 @@
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `39 12 * * *` |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `1 1 1 1 1` |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `0 8 * * *` |
+| Discuz 论坛日常维护 | `scripts/forum_download.py` | `python3 scripts/forum_download.py` | `20 8 * * *` |
 | 废文网签到 | `scripts/fwxs_checkin.js` | `node scripts/fwxs_checkin.js` | `5 8 * * *` |
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `0 8 * * *` |
 | 阴阳师官网视频与原画 | `scripts/get_yys_cgvideo.py` | `python3 scripts/get_yys_cgvideo.py` | `0 9 * * 0` |
@@ -111,6 +112,7 @@
 | 看雪论坛签到 | `scripts/sign_in.py` | `python3 scripts/sign_in.py` | `1 1 1 1 1` |
 | 森空岛签到 | `scripts/skyland.py` | `python3 scripts/skyland.py` | `0 8 * * *` |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `31 8 * * *` |
+| SSL证书检查 | `scripts/ssl.py` | `python3 scripts/ssl.py` | `0 0 * * *` |
 | 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `1 11 * * *` |
 | 所有女生会员签到 | `scripts/sudojia_allgirls.js` | `node scripts/sudojia_allgirls.js` | `19 16 * * *` |
 | 安慕希每日签到 | `scripts/sudojia_amx.js` | `node scripts/sudojia_amx.js` | `33 14 * * *` |
@@ -220,6 +222,7 @@
 - `scripts/enshan_checkin.py`：使用 Cookie 验证登录，保留签到页 WAF 解码、论坛页回退和响应 Cookie 更新。；获取隐藏字段、退出链接或 JavaScript 中的 formhash，提交每日签到，严格识别成功及今日已签到。；在已验证的签到响应提供连续签到天数时展示天数，并在结构化账号结果中输出；未提供时不推测。；签到前后查询恩山币和积分，保留四个积分页地址回退与临时错误重试，展示余额变化。；展示官方公开用户名、用户组及贡献，隐藏 Cookie、会话及原始响应。；每行一个账号独立执行，任一失败非零退出，配置错误同样非零退出。；保持每日 12:39 定时、兼容旧参数及可选随机启动延迟，默认无等待。；完全断网配置预演，跳过登录、查询、签到和通知网络发送，不宣称真实业务成功。；带时间戳的分阶段日志、账号及任务统计，保留 SUMMARY_JSON 并输出唯一单行 TASK_SUMMARY。；按全局开关生成或发送青龙脱敏通知，通知不可用或失败不改变业务退出码。；已验证签到后，按上游移动签到页与既有桌面签到页顺序读取今日签到积分和总签到天数；连续签到天数优先保留签到响应的值，缺失时补充页面值。；仅展示明确提供的非负签到统计，缺失项显示未知；可选统计读取失败不覆盖已验证签到结果。；兼容 EST_cookie 和 EST_ENABLE_RANDOM_WAIT，不再依赖浏览器可执行文件或本地凭据配置文件；Cookie 中自动获取登录身份。；正式通知增加各成功账号的余额、贡献及签到统计；配置错误、失败和断网预演也生成或发送摘要。。
 - `scripts/erke.py`：查询积分明细第一页五条，展示累计积分、冻结积分、可用积分和积分记录数；会员签到及明确已签到状态识别；每行一个账号，保留上游账号字段兼容，逐账号与逐阶段统计；展示接口返回的非敏感官方账号身份；完全断网预演、阶段耗时日志及单行 TASK_SUMMARY 结构化汇总；青龙脱敏通知，通知失败不覆盖业务退出码。
 - `scripts/fnnasclub.py`：显示论坛提供的公开昵称；获取签到参数并执行每日签到；识别今日已打卡并避免重复签到；读取并脱敏显示我的打卡动态；每行一个账号，独立执行与失败汇总；完全断网预演、时间轴日志和单行结构化汇总；正式运行后发送青龙脱敏通知，通知失败保留业务退出码。
+- `scripts/forum_download.py`：读取指定版块的主题列表，并按上游顺序读取前三个帖子的附件；下载显式启用，不保存文件，间隔两秒。；访问论坛首页并验证登录状态，不把首页访问成功推断为奖励到账。；提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。；独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。；官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。；多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。。
 - `scripts/fwxs_checkin.js`：登录有效性检查并展示官方公开 UID；废文网每日签到；以个人中心总签到天数增长确认成功；查询总签到天数与连续签到天数；明确的北京时间当天签到记录支持已签到判定；每行一个账号独立执行，兼容原 fwxs 变量与首个 # 后的昵称备注解析；完全断网预演及参数检查；青龙通知、分阶段脱敏日志、逐账号统计与单行结构化任务汇总。
 - `scripts/fxh.js`：每日查询当前积分；每日执行芬享汇签到，显示可解析的奖励积分与已签到状态；官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示；逐行多账号独立执行和失败退出；完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总；实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网。
 - `scripts/get_yys_cgvideo.py`：官网 CG 视频目录解析、按标题去重；显式开启后的媒体下载和校验清单；新增下载数量限制及视频下载成功后两秒间隔；可选官网原画首分组六链接条目的第三链接下载；已有文件经大小及摘要验证后跳过；安全文件名和链接摘要防碰撞、拒绝覆盖文件；断网预演、超时、媒体签名和传输完整性校验；任务独立处理，任一资源失败均非零退出；时间轴日志、结构化统计和脱敏青龙通知。
@@ -264,6 +267,7 @@
 - `scripts/sign_in.py`：多账号看雪论坛签到，支持同账号 Cookie、CSRF token 和可选 User-Agent；兼容显式指定的旧配置文件及嵌套账号结构；使用独立标准库 HTTP 请求，固定原签到端点，限制超时及响应大小并核验业务码 0；显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，并展示纯数字奖励积分；完全离线参数预演、按阶段脱敏日志及单行结构化任务汇总；青龙通知及全局通知开关，通知不可用不改变业务退出码。
 - `scripts/skyland.py`：保留数美设备指纹协议及进程内设备凭据缓存；服务器时间校准，失败时使用本地时间；鹰角 Token 授权并登录森空岛；查询账号绑定的明日方舟与终末地角色并显示官方昵称或公开角色标识；遍历全部明日方舟绑定角色每日签到并显示奖励；遍历全部终末地角色每日签到并显示奖励；每行一个账号，独立处理账号与角色，汇总失败并非零退出；完全断网预演、分阶段耗时日志与唯一 TASK_SUMMARY 结构化汇总；通过青龙通知模块发送脱敏统计，支持全局关闭及通知失败保持业务退出码。
 - `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总；展示签到天数、补签卡、普通奖励和礼包明细；查询值会员总经验、等级经验及有效期；通过显式任务开关查询两处会员转盘活动并各执行一次抽奖；可显式启用原上游未默认运行的生活频道转盘入口；仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk；保留原抽奖独立调度说明及请求间等待；可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应；兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk；按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果；通过显式开关执行好价点值与好文点赞，每类最多七条且逐项验证业务结果；互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化；查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟。
+- `scripts/ssl.py`：支持 Cloudflare API Token 和邮箱配套 Global API Key 两种认证，兼容原有环境变量；按区域分页读取 A 记录，多个区域合并去重，检查业务成功及完整分页，单个区域失败继续检查其余区域；多个账号逐行独立运行，配置错误、区域读取失败、无 A 记录、过期或证书检查失败均返回非零；依次尝试443、8443、4443、4433、9443端口，并保留指定端口检查函数；使用系统信任库校验主机名和证书；输出证书到期时间、剩余天数及颁发者，按正常、警告、过期、失败分类并按主域名报告；保留每日零点计划及默认30天警告阈值；仅到期警告且验证成功时可返回零；完全断网预演、带时间戳的分阶段日志、逐账号与整体统计及单行 TASK_SUMMARY JSON；成功、部分失败、失败及配置错误均尝试通过青龙 notify.py 发送脱敏报告；支持全局开关及通知超时，预演仅记录摘要预览。
 - `scripts/sudojia_33agilestudio.js`：邮箱密码登录并获取会话令牌；查询账户信息，显示返回的非敏感昵称、用户名、显示名称或公开 UID；每日签到获得积分；查询当前积分；按换行配置多账号，失败独立统计并非零退出；完全断网预演及配置校验；青龙脱敏通知、分阶段日志和单行结构化汇总。
 - `scripts/sudojia_allgirls.js`：获取并显示官方昵称；查询每日签到状态，已签到时避免重复请求；未签到时执行签到并复查已签到状态；查询当前积分；支持逐行多账号、请求超时与账号独立失败统计；支持完全断网预演、青龙通知和单行结构化汇总。
 - `scripts/sudojia_amx.js`：查询账号信息并显示接口返回的昵称，不输出手机号；查询今日签到状态，已签到则跳过重复签到；未签到时执行每日签到，并再次查询签到状态核验结果，显示可用的奖励积分；查询当前积分；按非空行支持多账号，逐账号统计，失败时非零退出；完全断网预演、阶段日志和单行 TASK_SUMMARY 结构化汇总；通过青龙 sendNotify.js 发送脱敏总结；支持全局开关、通知超时和失败隔离。
@@ -380,6 +384,7 @@
 <tr><td rowspan="1"><code>scripts/enshan_checkin.py</code></td><td><code>ENSHAN_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；同一账号各字段用分号分隔，字段值内的等号保留；不得用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/erke.py</code></td><td><code>ERKE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个 JSON 对象，五项字段均为非空字符串；可选 account_name 和 user_agent，兼容上游字段。account_name 保留输入兼容，日志优先使用官方身份，没有官方身份时用账号序号。JSON 内部文本与标点保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_COOKIE</code></td><td>是</td><td>格式：每个非空行为一个账号的完整 Cookie 值，保留分号及等号，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/forum_download.py</code></td><td><code>FORUM_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；必填 url、cookie；可选 name；启用 download 时必填数字 fid。Cookie 作为 JSON 字符串完整保存，双引号和反斜杠按 JSON 转义，不拆分分号、&amp; 或 @。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fwxs_checkin.js</code></td><td><code>fwxs</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；兼容 Cookie#昵称备注，仅按首个 # 分割，后续备注完整保留但为防泄漏不输出。禁止用 @ 或 &amp; 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fxh.js</code></td><td><code>fxhOpenId</code></td><td>是</td><td>格式：每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/get_yys_cgvideo.py</code></td><td><code>YYS_OUTPUT_DIR</code></td><td>否</td><td>格式：一个本地目录路径；预演也必须提供占位目录；多账号格式以该脚本文档为准</td></tr>
@@ -426,6 +431,7 @@
 <tr><td rowspan="1"><code>scripts/sign_in.py</code></td><td><code>KANXUE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必填 cookie、csrf_token 字符串，可选 user_agent、account_name；JSON 内保留完整凭据，不用任何分隔符拆分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/skyland.py</code></td><td><code>SKYLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整账号 Token；禁止用逗号、&amp; 或 @ 分隔多个账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号：sk|完整 Cookie；仅抽奖可用 |完整 Cookie。只按首个竖线分割，保留 Cookie 后续字符。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ssl.py</code></td><td><code>SSL_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；token 或 email/key 配套认证；zone_ids 和 domains 为一一对应的非空数组，区域标识为32位十六进制；例如字段结构 {&quot;token&quot;:&quot;占位凭据&quot;,&quot;zone_ids&quot;:[&quot;区域标识&quot;],&quot;domains&quot;:[&quot;主域名&quot;]}。凭据文本由 JSON 解析完整保留，不使用符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_33agilestudio.js</code></td><td><code>AGILE_STUDIO_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个邮箱#密码，只按第一个 # 分隔，密码中的后续 #、&amp; 和 @ 均保留；禁止使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_allgirls.js</code></td><td><code>ALL_GIRLS_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的 AccessToken；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_amx.js</code></td><td><code>AMX_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整 Token；不使用 &amp; 或 @ 分隔账号，行内字符保持不变，首尾空白忽略。；多账号格式以该脚本文档为准</td></tr>
@@ -728,6 +734,11 @@
 <tr><td rowspan="3"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启断网预演，默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：现有通知模块所在目录路径；业务运行不依赖通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/forum_download.py</code></td><td><code>FORUM_TASKS</code></td><td>否</td><td>格式：逗号分隔的动作：visit,credits,download,sign,sign_plus；默认 visit,credits。所有账号使用相同动作。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>FORUM_ALLOW_DOWNLOAD</code></td><td>否</td><td>格式：1 启用下载；默认 0。仅与 FORUM_TASKS 的 download 联用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>FORUM_DRY_RUN</code></td><td>否</td><td>格式：1 为断网预演；默认 0。预演成功不表示真实业务成功。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。预演只打印脱敏通知总结。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：已有通知模块目录路径；不下载或安装通知模块。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/fwxs_checkin.js</code></td><td><code>FWXS_DRY_RUN</code></td><td>否</td><td>格式：1 表示完全断网预演，包括模拟通知；不会验证真实账号或执行签到。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，其他值启用；断网预演仅模拟通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；通知模块不可用或失败时不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
@@ -1028,6 +1039,15 @@
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知组件目录，不是业务运行依赖。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：单个推送 Token，受 QINGLONG_NOTIFY 开关控制。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SENDKEY</code></td><td>是</td><td>格式：单个 SendKey，受 QINGLONG_NOTIFY 开关控制。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="9"><code>scripts/ssl.py</code></td><td><code>CF_API_TOKEN</code></td><td>是</td><td>格式：单账号令牌，优先于 CF_API_EMAIL 和 CF_API_KEY；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CF_API_EMAIL</code></td><td>是</td><td>格式：单账号邮箱；无需与令牌同时填写；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CF_API_KEY</code></td><td>是</td><td>格式：单账号全局密钥；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CF_ZONE_IDS</code></td><td>否</td><td>格式：逗号分隔32位十六进制标识，与 CF_DOMAINS 顺序对应；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>CF_DOMAINS</code></td><td>否</td><td>格式：逗号分隔主域名，与 CF_ZONE_IDS 顺序对应；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SSL_WARNING_DAYS</code></td><td>否</td><td>格式：非负整数；警告证书通过验证则检查成功，过期或检查失败返回非零；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SSL_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用，默认关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值启用；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知目录；不影响独立业务运行，通知失败不更改业务退出码；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/sudojia_33agilestudio.js</code></td><td><code>AGILE_STUDIO_DRY_RUN</code></td><td>否</td><td>格式：1 为断网预演，其他值为正式运行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，不区分大小写；预演始终只生成摘要，不联网投递。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径，仅用于可选通知，业务无此依赖。；多账号格式以该脚本文档为准</td></tr>
@@ -1406,6 +1426,7 @@
 - `scripts/enshan_checkin.py`：每个非空行一个账号的完整 Cookie，账号独立执行；任一账号失败整体非零退出。。
 - `scripts/erke.py`：每个非空行一个账号 JSON，同账号五项凭据组合在同一对象；逐账号、逐阶段独立处理，任一账号或配置失败时整体非零退出。。
 - `scripts/fnnasclub.py`：每个非空行填写一个账号的完整 Cookie，各账号独立执行；任何账号失败均整体非零退出。。
+- `scripts/forum_download.py`：每个非空行一个账号 JSON 对象，同账号的论坛地址、版块和 Cookie 放在同一个对象内。逐账号独立处理，任一账号失败整体非零退出；不使用 & 或 @ 分隔账号。。
 - `scripts/fwxs_checkin.js`：fwxs 每个非空行一个账号；同一账号仅需完整 Cookie。逐账号独立执行，任一账号失败时整体非零退出。昵称备注兼容解析，日志采用账号序号与官方公开 UID，防止备注泄露凭据。。
 - `scripts/fxh.js`：fxhOpenId 每个非空行一个账号，逐个独立执行；任一账号失败整体非零退出，不使用 @ 或 & 分隔。。
 - `scripts/hifiti_checkin.py`：HiFiTi_COOKIE 和 HIFIHI_COOKIE 各自每个非空行一个账号，账号独立会话并顺序处理。两者至少一项非空；单个账号失败不阻止其他账号，任一失败整体非零退出。。
@@ -1447,6 +1468,7 @@
 - `scripts/sign_in.py`：每个非空行一个账号 JSON 对象，同一对象组合 Cookie 与 CSRF token；逐个独立执行，任一失败时整体非零退出。旧配置使用账号数组。。
 - `scripts/skyland.py`：SKYLAND_TOKEN 每个非空行一个账号，忽略空行；账号与角色独立执行，任一失败整体非零退出。。
 - `scripts/smzdm_checkin.js`：每个非空行一个账号，首个竖线分隔同账号 sk 和完整 Cookie；各账号独立处理，任一失败整体非零退出。旧 Cookie 别名也逐行处理，签到需同顺序配套 sk。。
+- `scripts/ssl.py`：SSL_ACCOUNTS 每个非空行一个完整 JSON 账号对象，认证与区域配置放在同一行；逐账号独立处理，任一账号失败整体非零。旧版 CF_* 变量仅兼容一个账号。。
 - `scripts/sudojia_33agilestudio.js`：每个非空行一个邮箱#密码，仅第一个 # 为字段分隔符，各账号独立执行；任一账号失败则整体非零退出。。
 - `scripts/sudojia_allgirls.js`：每个非空行一个账号；按行独立处理，任一账号失败则整体非零退出。。
 - `scripts/sudojia_amx.js`：每个非空行一个账号的 access-token，按行独立处理；任一账号失败时整体非零退出。。
@@ -1777,6 +1799,13 @@
 - 填写格式：`每个非空行为一个账号的完整 Cookie 值，保留分号及等号，不使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `FORUM_ACCOUNTS`
+
+- 所属脚本：`scripts/forum_download.py`
+- 获取或设置：登录本人论坛，在浏览器开发者工具网络面板选择同站请求，复制完整 Cookie；url 使用 HTTPS 论坛根地址，含安装子目录；fid 从版块地址的 fid 参数取得。上游 name、url、fid、cookie 字段直接沿用，原配置需转成每行 JSON。
+- 填写格式：`每个非空行一个 JSON 对象；必填 url、cookie；可选 name；启用 download 时必填数字 fid。Cookie 作为 JSON 字符串完整保存，双引号和反斜杠按 JSON 转义，不拆分分号、& 或 @。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `fwxs`
 
 - 所属脚本：`scripts/fwxs_checkin.js`
@@ -2093,6 +2122,13 @@
 - 所属脚本：`scripts/smzdm_checkin.js`
 - 获取或设置：登录本人的什么值得买客户端，从本人 /checkin 请求取得 sk，并复制同一账号请求头的完整 Cookie（必须包含 sess）。仅抽奖可从本人已登录网页请求头获取 Cookie，sk 留空。请勿公开凭据。
 - 填写格式：`每个非空行一个账号：sk|完整 Cookie；仅抽奖可用 |完整 Cookie。只按首个竖线分割，保留 Cookie 后续字符。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SSL_ACCOUNTS`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：在 Cloudflare 个人资料的 API Tokens 中创建令牌，授予对应区域 DNS Read 权限；Zone ID 在区域概览获取；domains 填对应主域名。也可在个人资料获取 Global API Key 并配套登录邮箱。推荐受限令牌。旧版单账号变量可作为兼容输入。
+- 填写格式：`每个非空行一个 JSON 对象；token 或 email/key 配套认证；zone_ids 和 domains 为一一对应的非空数组，区域标识为32位十六进制；例如字段结构 {"token":"占位凭据","zone_ids":["区域标识"],"domains":["主域名"]}。凭据文本由 JSON 解析完整保留，不使用符号分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `AGILE_STUDIO_ACCOUNTS`
@@ -3952,6 +3988,36 @@
 - 获取或设置：可选，填写已有青龙 notify.py 或 sendNotify.js 所在目录；未设置时自动寻找青龙标准目录及可导入的 notify 模块。
 - 填写格式：`现有通知模块所在目录路径；业务运行不依赖通知模块。`
 
+#### `FORUM_TASKS`
+
+- 所属脚本：`scripts/forum_download.py`
+- 获取或设置：根据站点插件选择动作。sign 使用 dsu_paulsign 插件，sign_plus 使用 qiandao.php；同一账号只能选一种签到。默认仅访问和查询积分。
+- 填写格式：`逗号分隔的动作：visit,credits,download,sign,sign_plus；默认 visit,credits。所有账号使用相同动作。`
+
+#### `FORUM_ALLOW_DOWNLOAD`
+
+- 所属脚本：`scripts/forum_download.py`
+- 获取或设置：确认附件下载可能扣积分、计下载次数且允许读取附件后显式开启。
+- 填写格式：`1 启用下载；默认 0。仅与 FORUM_TASKS 的 download 联用。`
+
+#### `FORUM_DRY_RUN`
+
+- 所属脚本：`scripts/forum_download.py`
+- 获取或设置：验证参数和执行流程时启用；不发送任何 HTTP 请求，包括青龙通知。
+- 填写格式：`1 为断网预演；默认 0。预演成功不表示真实业务成功。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/forum_download.py`
+- 获取或设置：使用青龙全局通知开关；真实运行会调用青龙 notify.py 的 send，失败时不改变业务退出码。
+- 填写格式：`默认 1；0、false、no、off 关闭。预演只打印脱敏通知总结。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/forum_download.py`
+- 获取或设置：可选填已有青龙 notify.py 所在目录；否则尝试导入 notify 或使用青龙标准脚本目录。
+- 填写格式：`已有通知模块目录路径；不下载或安装通知模块。`
+
 #### `FWXS_DRY_RUN`
 
 - 所属脚本：`scripts/fwxs_checkin.js`
@@ -5809,6 +5875,63 @@
 - 获取或设置：可选，从本人 Server酱控制台获取；青龙与 PushPlus 不可用或失败时回退使用。
 - 填写格式：`单个 SendKey，受 QINGLONG_NOTIFY 开关控制。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CF_API_TOKEN`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：兼容旧版单账号：在 Cloudflare 个人资料创建具有区域 DNS Read 权限的 API Token。SSL_ACCOUNTS 非空时忽略旧版变量。
+- 填写格式：`单账号令牌，优先于 CF_API_EMAIL 和 CF_API_KEY`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CF_API_EMAIL`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：兼容旧版：填写 Cloudflare 登录邮箱，必须与 CF_API_KEY 属于同一账号。
+- 填写格式：`单账号邮箱；无需与令牌同时填写`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CF_API_KEY`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：兼容旧版：在 Cloudflare 个人资料获取 Global API Key，与 CF_API_EMAIL 配套。
+- 填写格式：`单账号全局密钥`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `CF_ZONE_IDS`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：兼容旧版：各区域概览页面的 Zone ID；使用旧版认证时必填。
+- 填写格式：`逗号分隔32位十六进制标识，与 CF_DOMAINS 顺序对应`
+
+#### `CF_DOMAINS`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：兼容旧版：填写各区域的主域名；使用旧版认证时必填。
+- 填写格式：`逗号分隔主域名，与 CF_ZONE_IDS 顺序对应`
+
+#### `SSL_WARNING_DAYS`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：自行设置证书到期警告阈值，默认保留上游30天。
+- 填写格式：`非负整数；警告证书通过验证则检查成功，过期或检查失败返回非零`
+
+#### `SSL_DRY_RUN`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：设置为1执行完全断网预演，配置仍须完整；不验证实际凭据或证书。
+- 填写格式：`1、true、yes、on 启用，默认关闭`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：青龙通知全局开关，默认1；断网预演只生成摘要并记录通知预览。
+- 填写格式：`0、false、no、off 关闭，其他值启用`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/ssl.py`
+- 获取或设置：可选：填写青龙已有 notify.py 所在目录；否则自动发现标准青龙位置或可导入的 notify 模块。
+- 填写格式：`本地通知目录；不影响独立业务运行，通知失败不更改业务退出码`
 
 #### `AGILE_STUDIO_DRY_RUN`
 
@@ -7913,6 +8036,7 @@
 - `scripts/enshan_checkin.py`：SHA-256 `bbf4daf1880caeb8d30c22e335df244f0aec8756937d3e810ef62da534899504`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
 - `scripts/erke.py`：SHA-256 `887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
 - `scripts/fnnasclub.py`：SHA-256 `80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
+- `scripts/forum_download.py`：SHA-256 `0e9f16e998792dc859f4d18e97c0af3e52a72ef2f84a4ea80d2e8eb63745a149`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
 - `scripts/fwxs_checkin.js`：SHA-256 `e9f6410e225fbef75b20d661e4122ea2bece6b41b7908f17f4f42244f151780c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
 - `scripts/fxh.js`：SHA-256 `228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
 - `scripts/get_yys_cgvideo.py`：SHA-256 `5acaf38a721b681a7ea5a7ac0240d4116214d54ea3dde624435202a040af09cd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8edbbefea99ad1fb`。
@@ -7957,6 +8081,7 @@
 - `scripts/sign_in.py`：SHA-256 `d2d3f6610f0aaf4c6866b93fc47751f18a8004bf53c9eae43b560cde380d6cef`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01041a1995eb1f55`。
 - `scripts/skyland.py`：SHA-256 `4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
 - `scripts/smzdm_checkin.js`：SHA-256 `49c3e52ace7d3f96e5756eab063bca14083942bac7d08c44e1754c5a88a3fbfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
+- `scripts/ssl.py`：SHA-256 `6fc3c3040959c04d815c2ba897050e99994e591f34fbdd4ab6ca2b894ed54766`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cf6fb60f0d69e9ed`。
 - `scripts/sudojia_33agilestudio.js`：SHA-256 `7677c43b5720b0556f6d0b2949405b7c91d218dbc5d020ad6be0dd46ce2308d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
 - `scripts/sudojia_allgirls.js`：SHA-256 `c553619d6534fdf01df62c381df54bfb5557104402a27aa037bf381b075d8934`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e8776198aafad33e`。
 - `scripts/sudojia_amx.js`：SHA-256 `74c9e4adc427ad5b11fa3790b55857eb5a928af78cabc6c0d7c7d04ee8694c65`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2afe8ef7e443b92b`。
@@ -8066,6 +8191,7 @@
 - `scripts/enshan_checkin.py`：正式运行提交每日签到，可能增加恩山币和积分。；正式访问论坛可能产生论坛自身的登录奖励或访问记录。；正式运行且通知开启时，通过青龙通知模块发送脱敏任务汇总。。
 - `scripts/erke.py`：正式运行提交会员签到，可能增加积分和签到记录。
 - `scripts/fnnasclub.py`：执行论坛签到，更新签到记录及论坛对应奖励；正式运行向已配置的青龙通知渠道发送脱敏总结。
+- `scripts/forum_download.py`：启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。；首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。；显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。。
 - `scripts/fwxs_checkin.js`：通过 GET /qiandao 完成废文网签到，增加签到天数及服务端签到奖励（以站点规则为准）；正式执行结束后通过青龙通知渠道发送脱敏任务统计（可关闭）。
 - `scripts/fxh.js`：实际执行每日签到，改变签到状态并由服务端发放积分；启用通知时调用青龙通知模块发送任务总结。
 - `scripts/get_yys_cgvideo.py`：显式下载且非预演时创建保存目录、媒体文件和校验清单；实际运行且通知开启时调用青龙通知发送摘要。
@@ -8110,6 +8236,7 @@
 - `scripts/sign_in.py`：正式执行时向看雪论坛提交签到，可能增加账号积分；正式执行且通知开启时通过青龙发送脱敏任务总结。
 - `scripts/skyland.py`：向数美服务提交模拟浏览器指纹并生成设备凭据；通过鹰角授权接口生成登录授权并取得森空岛会话凭据；为明日方舟绑定角色每日签到并领取签到奖励；为终末地绑定角色每日签到并领取签到奖励；正式运行时通过青龙通知渠道发送脱敏任务统计。
 - `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态；显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励；显式启用 value 或 both 后对好价提交点值，改变账号投票状态；显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态。
+- `scripts/ssl.py`：实际模式下通过青龙通知通道发送证书检查报告；不修改 Cloudflare DNS、证书或账号数据。
 - `scripts/sudojia_33agilestudio.js`：登录建立账户会话；提交每日签到，按服务端规则获得积分；正式运行且启用通知时，通过青龙通知模块发送脱敏任务摘要。
 - `scripts/sudojia_allgirls.js`：未签到时执行每日签到，可能获得平台签到积分。
 - `scripts/sudojia_amx.js`：未签到时执行每日签到，可能获得积分。
@@ -8221,6 +8348,7 @@
 - `scripts/enshan_checkin.py`：上游 `agluo/ql-script-hub` / `enshan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/erke.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/erke/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/fnnasclub.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/fnnasclub/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
+- `scripts/forum_download.py`：上游 `nuthx/auto-sign` / `src/general/forum_download.py` / `a8d2c229bac693daebe1535bca4cfd49733b632d`。
 - `scripts/fwxs_checkin.js`：上游 `zhui-zi/fwcheckin` / `fwxs_checkin.js` / `7793a795d603df34f0ebdbc7d6810427f84f59c6`。
 - `scripts/fxh.js`：上游 `xingly-cn/QLPanelScript` / `fxh.js` / `8c0323999253b7a0d8e47ff1136a562fedb3c980`。
 - `scripts/get_yys_cgvideo.py`：上游 `qluser-alan/some_scripts` / `阴阳师/get_yys_cgvideo.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
@@ -8265,6 +8393,7 @@
 - `scripts/sign_in.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/kanxue/sign_in.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/skyland.py`：上游 `CN-Grace/QinglongScripts` / `skyland.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/smzdm_checkin.js`：上游 `ump45nose/smzdm-checkin-ql` / `checkin.js` / `6b9eaced964c348efb46d2c13a45ab5c66caaea8`。
+- `scripts/ssl.py`：上游 `CN-Grace/QinglongScripts` / `SSL.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/sudojia_33agilestudio.js`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_33agilestudio.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_allgirls.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_allGirls.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/sudojia_amx.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_amx.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。

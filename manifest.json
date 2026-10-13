@@ -5501,6 +5501,173 @@
       }
     },
     {
+      "catalogId": "e60b615a6554e2b6",
+      "applicationKey": "nuthx/auto-sign::general",
+      "checkProfile": {
+        "requiredEnv": [
+          "FORUM_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "FORUM_TASKS",
+          "FORUM_ALLOW_DOWNLOAD",
+          "FORUM_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "FORUM_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "FORUM_TASKS": "visit,credits",
+          "FORUM_ALLOW_DOWNLOAD": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "读取指定版块的主题列表，并按上游顺序读取前三个帖子的附件；下载显式启用，不保存文件，间隔两秒。",
+          "访问论坛首页并验证登录状态，不把首页访问成功推断为奖励到账。",
+          "提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。",
+          "独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。",
+          "官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。",
+          "多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。"
+        ],
+        "sideEffects": [
+          "启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。",
+          "首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。",
+          "显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Discuz 论坛日常维护",
+      "path": "scripts/forum_download.py",
+      "sha256": "0e9f16e998792dc859f4d18e97c0af3e52a72ef2f84a4ea80d2e8eb63745a149",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "nuthx/auto-sign",
+        "branch": "main",
+        "commit": "a8d2c229bac693daebe1535bca4cfd49733b632d",
+        "originalPath": "src/general/forum_download.py",
+        "related": [
+          {
+            "catalogId": "2caf2a65835afb29",
+            "sha256": "8a884170a2a7ab225983d091499bd2ca9f8a31151be24a51c994d88634039453",
+            "repository": "nuthx/auto-sign",
+            "url": "https://github.com/nuthx/auto-sign.git",
+            "branch": "main",
+            "commit": "a8d2c229bac693daebe1535bca4cfd49733b632d",
+            "originalPath": "src/general/forum_sign.py",
+            "license": "GPL-3.0"
+          },
+          {
+            "catalogId": "5e8e848d1c79ebf6",
+            "sha256": "2f7e91792cf883cae1704a03adbc7fd81a0f8bed908deae8fdf5178520a5e19c",
+            "repository": "nuthx/auto-sign",
+            "url": "https://github.com/nuthx/auto-sign.git",
+            "branch": "main",
+            "commit": "a8d2c229bac693daebe1535bca4cfd49733b632d",
+            "originalPath": "src/general/forum_sign_plus.py",
+            "license": "GPL-3.0"
+          },
+          {
+            "catalogId": "0db701af8549956a",
+            "sha256": "15d88328bb59065ce48236452681930c7fdd16bbff190b4827f9ff46da30c1d9",
+            "repository": "nuthx/auto-sign",
+            "url": "https://github.com/nuthx/auto-sign.git",
+            "branch": "main",
+            "commit": "a8d2c229bac693daebe1535bca4cfd49733b632d",
+            "originalPath": "src/general/forum_visit.py",
+            "license": "GPL-3.0"
+          }
+        ]
+      },
+      "cron": "20 8 * * *",
+      "command": "python3 scripts/forum_download.py",
+      "environment": [
+        {
+          "name": "FORUM_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人论坛，在浏览器开发者工具网络面板选择同站请求，复制完整 Cookie；url 使用 HTTPS 论坛根地址，含安装子目录；fid 从版块地址的 fid 参数取得。上游 name、url、fid、cookie 字段直接沿用，原配置需转成每行 JSON。",
+          "format": "每个非空行一个 JSON 对象；必填 url、cookie；可选 name；启用 download 时必填数字 fid。Cookie 作为 JSON 字符串完整保存，双引号和反斜杠按 JSON 转义，不拆分分号、& 或 @。"
+        },
+        {
+          "name": "FORUM_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据站点插件选择动作。sign 使用 dsu_paulsign 插件，sign_plus 使用 qiandao.php；同一账号只能选一种签到。默认仅访问和查询积分。",
+          "format": "逗号分隔的动作：visit,credits,download,sign,sign_plus；默认 visit,credits。所有账号使用相同动作。"
+        },
+        {
+          "name": "FORUM_ALLOW_DOWNLOAD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认附件下载可能扣积分、计下载次数且允许读取附件后显式开启。",
+          "format": "1 启用下载；默认 0。仅与 FORUM_TASKS 的 download 联用。"
+        },
+        {
+          "name": "FORUM_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证参数和执行流程时启用；不发送任何 HTTP 请求，包括青龙通知。",
+          "format": "1 为断网预演；默认 0。预演成功不表示真实业务成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙全局通知开关；真实运行会调用青龙 notify.py 的 send，失败时不改变业务退出码。",
+          "format": "默认 1；0、false、no、off 关闭。预演只打印脱敏通知总结。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填已有青龙 notify.py 所在目录；否则尝试导入 notify 或使用青龙标准脚本目录。",
+          "format": "已有通知模块目录路径；不下载或安装通知模块。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，同账号的论坛地址、版块和 Cookie 放在同一个对象内。逐账号独立处理，任一账号失败整体非零退出；不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "读取指定版块的主题列表，并按上游顺序读取前三个帖子的附件；下载显式启用，不保存文件，间隔两秒。",
+        "访问论坛首页并验证登录状态，不把首页访问成功推断为奖励到账。",
+        "提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。",
+        "独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。",
+        "官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。",
+        "多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。"
+      ],
+      "sideEffects": [
+        "启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。",
+        "首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。",
+        "显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e60b615a6554e2b6",
+        "candidateSha256": "0e9f16e998792dc859f4d18e97c0af3e52a72ef2f84a4ea80d2e8eb63745a149"
+      }
+    },
+    {
       "catalogId": "be3b140cb6fdd0e3",
       "applicationKey": "fw",
       "checkProfile": {
@@ -12676,6 +12843,172 @@
         "validatedSha256": "4b78cd005896336e0ea96883ba355ed734cd5b30c88b1ce8f6cb8bab275a345f",
         "releaseSha256": "49c3e52ace7d3f96e5756eab063bca14083942bac7d08c44e1754c5a88a3fbfc",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "cf6fb60f0d69e9ed",
+      "applicationKey": "cn-grace/qinglongscripts::ssl",
+      "checkProfile": {
+        "requiredEnv": [
+          "SSL_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "CF_API_TOKEN",
+          "CF_API_EMAIL",
+          "CF_API_KEY",
+          "CF_ZONE_IDS",
+          "CF_DOMAINS",
+          "SSL_WARNING_DAYS",
+          "SSL_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "SSL_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "SSL_WARNING_DAYS": "30",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "支持 Cloudflare API Token 和邮箱配套 Global API Key 两种认证，兼容原有环境变量",
+          "按区域分页读取 A 记录，多个区域合并去重，检查业务成功及完整分页，单个区域失败继续检查其余区域",
+          "多个账号逐行独立运行，配置错误、区域读取失败、无 A 记录、过期或证书检查失败均返回非零",
+          "依次尝试443、8443、4443、4433、9443端口，并保留指定端口检查函数；使用系统信任库校验主机名和证书",
+          "输出证书到期时间、剩余天数及颁发者，按正常、警告、过期、失败分类并按主域名报告",
+          "保留每日零点计划及默认30天警告阈值；仅到期警告且验证成功时可返回零",
+          "完全断网预演、带时间戳的分阶段日志、逐账号与整体统计及单行 TASK_SUMMARY JSON",
+          "成功、部分失败、失败及配置错误均尝试通过青龙 notify.py 发送脱敏报告；支持全局开关及通知超时，预演仅记录摘要预览"
+        ],
+        "sideEffects": [
+          "实际模式下通过青龙通知通道发送证书检查报告；不修改 Cloudflare DNS、证书或账号数据"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "SSL证书检查",
+      "path": "scripts/ssl.py",
+      "sha256": "6fc3c3040959c04d815c2ba897050e99994e591f34fbdd4ab6ca2b894ed54766",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "CN-Grace/QinglongScripts",
+        "branch": "main",
+        "commit": "a40a2b080e0160bd8e0b0b807081115537b87153",
+        "originalPath": "SSL.py"
+      },
+      "cron": "0 0 * * *",
+      "command": "python3 scripts/ssl.py",
+      "environment": [
+        {
+          "name": "SSL_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 Cloudflare 个人资料的 API Tokens 中创建令牌，授予对应区域 DNS Read 权限；Zone ID 在区域概览获取；domains 填对应主域名。也可在个人资料获取 Global API Key 并配套登录邮箱。推荐受限令牌。旧版单账号变量可作为兼容输入。",
+          "format": "每个非空行一个 JSON 对象；token 或 email/key 配套认证；zone_ids 和 domains 为一一对应的非空数组，区域标识为32位十六进制；例如字段结构 {\"token\":\"占位凭据\",\"zone_ids\":[\"区域标识\"],\"domains\":[\"主域名\"]}。凭据文本由 JSON 解析完整保留，不使用符号分隔账号。"
+        },
+        {
+          "name": "CF_API_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧版单账号：在 Cloudflare 个人资料创建具有区域 DNS Read 权限的 API Token。SSL_ACCOUNTS 非空时忽略旧版变量。",
+          "format": "单账号令牌，优先于 CF_API_EMAIL 和 CF_API_KEY"
+        },
+        {
+          "name": "CF_API_EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧版：填写 Cloudflare 登录邮箱，必须与 CF_API_KEY 属于同一账号。",
+          "format": "单账号邮箱；无需与令牌同时填写"
+        },
+        {
+          "name": "CF_API_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧版：在 Cloudflare 个人资料获取 Global API Key，与 CF_API_EMAIL 配套。",
+          "format": "单账号全局密钥"
+        },
+        {
+          "name": "CF_ZONE_IDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容旧版：各区域概览页面的 Zone ID；使用旧版认证时必填。",
+          "format": "逗号分隔32位十六进制标识，与 CF_DOMAINS 顺序对应"
+        },
+        {
+          "name": "CF_DOMAINS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容旧版：填写各区域的主域名；使用旧版认证时必填。",
+          "format": "逗号分隔主域名，与 CF_ZONE_IDS 顺序对应"
+        },
+        {
+          "name": "SSL_WARNING_DAYS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置证书到期警告阈值，默认保留上游30天。",
+          "format": "非负整数；警告证书通过验证则检查成功，过期或检查失败返回非零"
+        },
+        {
+          "name": "SSL_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为1执行完全断网预演，配置仍须完整；不验证实际凭据或证书。",
+          "format": "1、true、yes、on 启用，默认关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知全局开关，默认1；断网预演只生成摘要并记录通知预览。",
+          "format": "0、false、no、off 关闭，其他值启用"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙已有 notify.py 所在目录；否则自动发现标准青龙位置或可导入的 notify 模块。",
+          "format": "本地通知目录；不影响独立业务运行，通知失败不更改业务退出码"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "SSL_ACCOUNTS 每个非空行一个完整 JSON 账号对象，认证与区域配置放在同一行；逐账号独立处理，任一账号失败整体非零。旧版 CF_* 变量仅兼容一个账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "支持 Cloudflare API Token 和邮箱配套 Global API Key 两种认证，兼容原有环境变量",
+        "按区域分页读取 A 记录，多个区域合并去重，检查业务成功及完整分页，单个区域失败继续检查其余区域",
+        "多个账号逐行独立运行，配置错误、区域读取失败、无 A 记录、过期或证书检查失败均返回非零",
+        "依次尝试443、8443、4443、4433、9443端口，并保留指定端口检查函数；使用系统信任库校验主机名和证书",
+        "输出证书到期时间、剩余天数及颁发者，按正常、警告、过期、失败分类并按主域名报告",
+        "保留每日零点计划及默认30天警告阈值；仅到期警告且验证成功时可返回零",
+        "完全断网预演、带时间戳的分阶段日志、逐账号与整体统计及单行 TASK_SUMMARY JSON",
+        "成功、部分失败、失败及配置错误均尝试通过青龙 notify.py 发送脱敏报告；支持全局开关及通知超时，预演仅记录摘要预览"
+      ],
+      "sideEffects": [
+        "实际模式下通过青龙通知通道发送证书检查报告；不修改 Cloudflare DNS、证书或账号数据"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/cf6fb60f0d69e9ed",
+        "candidateSha256": "6fc3c3040959c04d815c2ba897050e99994e591f34fbdd4ab6ca2b894ed54766"
       }
     },
     {
