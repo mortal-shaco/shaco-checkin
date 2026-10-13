@@ -6882,6 +6882,142 @@
       }
     },
     {
+      "catalogId": "563cae20eed18007",
+      "applicationKey": "oreoslab/checkinpanel::freenom",
+      "checkProfile": {
+        "requiredEnv": [
+          "FREENOM_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "FREENOM",
+          "FREENOM_RENEW",
+          "FREENOM_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "FREENOM_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "FREENOM_RENEW": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "独立实现 HTTPS 登录并验证官方已登录状态",
+          "查询域名距续期天数并判断不足 14 天的续期窗口",
+          "显式启用后执行 12 个月免费续期并复核天数增加",
+          "保留每 10 天 7:25 的运行计划",
+          "多账号逐行配置与旧 FREENOM 账号对象数组兼容",
+          "完全断网预演及参数校验",
+          "青龙脱敏通知、按阶段输出结果和单行 TASK_SUMMARY 汇总"
+        ],
+        "sideEffects": [
+          "登录建立服务端账号会话",
+          "显式启用且表单证明免费时提交域名 12 个月续期",
+          "按青龙配置发送任务通知，断网预演除外"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "FreeNom 域名续期维护",
+      "path": "scripts/ck_freenom.py",
+      "sha256": "924fc4494dcdf15d6aeb90d7f59dd6438878241af726c137fdad9e5b38099cdb",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_freenom.py"
+      },
+      "cron": "25 7 */10 * *",
+      "command": "python3 scripts/ck_freenom.py",
+      "environment": [
+        {
+          "name": "FREENOM_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人 Freenom 网站账号的登录用户名和密码。将同一账号的两项凭据合并为一行；密码含竖线时会保留第一个竖线之后的全部内容。不要将凭据提交到仓库。",
+          "format": "每个非空行一个账号：用户名|密码；用户名去除首尾空白，密码原样保留"
+        },
+        {
+          "name": "FREENOM",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅为旧配置兼容输入；从原有配置中取出 Freenom 账号对象数组。设置 FREENOM_ACCOUNTS 时优先使用规范变量。",
+          "format": "JSON 数组，每项包含 username 和 password 字符串；不再依赖私有配置文件或工具"
+        },
+        {
+          "name": "FREENOM_RENEW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "希望自动续期时显式设为 1；默认 0 仅查询。续期仅限不足 14 天且官方表单明确显示 12 个月免费的域名。",
+          "format": "0 或 1"
+        },
+        {
+          "name": "FREENOM_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设为 1；不登录、不查询、不续期、不发送网络通知。",
+          "format": "0 或 1"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有通知配置；默认启用。设为 0、false、no 或 off 关闭；通知不可用不改变业务退出码。断网预演仅生成脱敏通知内容并记录跳过发送。",
+          "format": "默认 1"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定现有青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准脚本目录。",
+          "format": "本地通知模块目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，只在第一个竖线处分割用户名和密码；各账号使用独立会话，任何账号失败均非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "独立实现 HTTPS 登录并验证官方已登录状态",
+        "查询域名距续期天数并判断不足 14 天的续期窗口",
+        "显式启用后执行 12 个月免费续期并复核天数增加",
+        "保留每 10 天 7:25 的运行计划",
+        "多账号逐行配置与旧 FREENOM 账号对象数组兼容",
+        "完全断网预演及参数校验",
+        "青龙脱敏通知、按阶段输出结果和单行 TASK_SUMMARY 汇总"
+      ],
+      "sideEffects": [
+        "登录建立服务端账号会话",
+        "显式启用且表单证明免费时提交域名 12 个月续期",
+        "按青龙配置发送任务通知，断网预演除外"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/563cae20eed18007",
+        "candidateSha256": "924fc4494dcdf15d6aeb90d7f59dd6438878241af726c137fdad9e5b38099cdb"
+      }
+    },
+    {
       "catalogId": "b896028c3fdcd52d",
       "applicationKey": "codearts",
       "checkProfile": {

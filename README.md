@@ -76,6 +76,7 @@
 | 多看阅读 | `scripts/ck_duokan.py` | `python3 scripts/ck_duokan.py` | `30 20 * * *` |
 | 时光相册每日签到 | `scripts/ck_everphoto.py` | `python3 scripts/ck_everphoto.py` | `3 22 * * *` |
 | Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `30 14 * * *` |
+| FreeNom 域名续期维护 | `scripts/ck_freenom.py` | `python3 scripts/ck_freenom.py` | `25 7 */10 * *` |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `15 8 * * *` |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `0 9 * * *` |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `0 9 * * *` |
@@ -277,6 +278,7 @@
 - `scripts/ck_duokan.py`：每日签到，保留上游时间戳与设备字段校验算法。；查询当前书豆总量、各批次数量、到期日期和可延期状态。；可选延长符合条件的书豆有效期。；可选领取频道限免图书，仅提交零价格请求。；可选消耗已有机会参加上游抽奖活动，最多六次且失败即停止。；多账号独立处理、凭据格式检查、无网络预演、请求超时和明确业务成功核验。；显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。；脱敏时间轴、阶段与账号统计、唯一单行结构化任务汇总以及青龙通知。。
 - `scripts/ck_everphoto.py`：使用手机号与密码字段值登录时光相册；执行每日签到并区分首次签到与今日已签到；显示接口返回的累积签到天数及非敏感账号身份；支持每行一个账号与原有账号对象列表格式；完全断网预演与逐账号失败隔离；带阶段耗时、账号统计和单行 TASK_SUMMARY 的脱敏日志；通过青龙 notify.py 发送脱敏汇总，通知不可用时保留业务退出码。
 - `scripts/ck_fmapp.py`：每日 App 签到并显示下一次及累计签到发米粒奖励信息；查询并原样显示官方返回的非敏感账号昵称；查询发米粒余额；每行一个 JSON 账号，保留上游四个凭据字段及三个可选请求头默认值；完全断网预演、分阶段脱敏日志、账号统计及单行 TASK_SUMMARY 结构化结果；正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭。
+- `scripts/ck_freenom.py`：独立实现 HTTPS 登录并验证官方已登录状态；查询域名距续期天数并判断不足 14 天的续期窗口；显式启用后执行 12 个月免费续期并复核天数增加；保留每 10 天 7:25 的运行计划；多账号逐行配置与旧 FREENOM 账号对象数组兼容；完全断网预演及参数校验；青龙脱敏通知、按阶段输出结果和单行 TASK_SUMMARY 汇总。
 - `scripts/codearts_daily.py`：读取和只读预览福利活动（--preview 不续期、不写台账）；领取 USER_LOGIN 信用积分与一次性 NEW_USER_REGISTER 注册礼；领取、确认后同源回读，仅 CONFIRMED/CONSUMED 且不可再领取算到账；华为云 SDK-HMAC-SHA256 签名和临时凭据自动续期；持久化幂等台账、北京时间每日六次及十分钟间隔限制，--force 显式绕过；--only 按原始账号序号选择、多账号独立执行和失败退出；青龙通知总开关、原有备用推送渠道、脱敏日志及单行任务总结；完全断网预演，不读写状态、不发送通知。
 - `scripts/comicai_ai_cookie.py`：可选 Cookie 登录页访问，保留原流程但不将页面 HTTP 200 当作认证成功；查询签到前积分并展示签到成功响应中的签到后积分；每日签到与已签到业务码识别；展示接口返回的非敏感昵称、用户名、显示名称或公开 UID；逐行多账号及旧环境变量兼容，账号独立执行且任一失败整体失败；完全断网预演及配置校验；分阶段时间轴日志、账号及子任务统计、单行 TASK_SUMMARY JSON；向青龙 notify.py 发送脱敏总结，通知不可用或失败时保留业务退出码。
 - `scripts/crealitycloud_checkin.py`：国内站手机号或邮箱密码登录，手机号自动补 86 区号；直接登录态失效后的 OAuth 授权码登录回退；查询今日签到状态，已签到时避免重复操作；每日签到，展示连续签到天数和积分、经验奖励；查询官方非敏感身份、总积分、经验及创想币余额；默认整体随机延时和多账号间随机等待，保留每日 09:00 定时；每行一个账号、账号独立处理及失败非零退出；断网预演、逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 记录；通过青龙 notify.py 尝试发送脱敏任务总结，支持全局开关和失败隔离。
@@ -486,6 +488,7 @@
 <tr><td rowspan="1"><code>scripts/ck_duokan.py</code></td><td><code>DUOKAN_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；字段以分号分隔，各字段仅在第一个等号处分割，保留值中的后续等号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_everphoto.py</code></td><td><code>EVERPHOTO</code></td><td>是</td><td>格式：每个非空行一个账号：手机号|密码字段值；仅按首个 | 分隔，后续 | 保留在密码内。不使用 &amp; 或 @ 分隔账号。兼容原上游 EVERPHOTO 账号对象列表的 JSON 表示，字段为 mobile、password，均为字符串。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ck_fmapp.py</code></td><td><code>FMAPP</code></td><td>是</td><td>格式：每个非空行为一个 JSON 对象，必须包含非空字符串 token、cookie、blackbox、device_id。同一账号的全部凭据合并在该对象中；Cookie 中的分号、&amp;、@ 等字符按 JSON 字符串原样保存，不用于账号分隔。可选字段 fmversion 默认 2.2.3、os 默认 ios、useragent 默认 Fa；字段值不可含换行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ck_freenom.py</code></td><td><code>FREENOM_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：用户名|密码；用户名去除首尾空白，密码原样保留；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/codearts_daily.py</code></td><td><code>CODEARTS_CREDENTIALS</code></td><td>是</td><td>格式：每个非空行一个账号：单行 JSON（上述字段，可含 expiration、domain_id、user_name、oauth_context.pkce_pair.code_verifier、oauth_context.dpop_key_pair.private_key_jwk），或 AK|SK|STS；仅前两个 | 分隔字段，后续文本保留。兼容 accessKeyId/secretAccessKey/securityToken 和 ak/sk/sts 别名。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/comicai_ai_cookie.py</code></td><td><code>COMICAI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，token 为必填非空字符串，cookie 为可选字符串；JSON 转义可保留凭据中的分隔符。设置规范变量后不读取旧变量。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/crealitycloud_checkin.py</code></td><td><code>CREALITY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为「手机号或邮箱 空格 密码」；只按第一个空白字段分隔，后续密码文本保留。手机号支持 11 位、86 加 11 位或 +86 加 11 位；邮箱直接填写；以 # 开头的行忽略。兼容脚本内 CONFIG_ACCOUNTS，推荐环境变量。；多账号格式以该脚本文档为准</td></tr>
@@ -940,6 +943,11 @@
 <tr><td rowspan="3"><code>scripts/ck_fmapp.py</code></td><td><code>FMAPP_DRY_RUN</code></td><td>否</td><td>格式：1 启用完全断网预演；默认 0 正式执行。预演校验账号配置和请求构造，不签到、不查询、不实际发送通知，不代表真实业务成功。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。正式运行在成功、部分失败、失败和配置错误后调用青龙发送器；预演仅打印脱敏通知总结。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 或 sendNotify.js 的本机目录；也会自动检查可导入的 notify 模块及 /ql/data/scripts、/ql/scripts。通知不可用不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/ck_freenom.py</code></td><td><code>FREENOM</code></td><td>是</td><td>格式：JSON 数组，每项包含 username 和 password 字符串；不再依赖私有配置文件或工具；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>FREENOM_RENEW</code></td><td>否</td><td>格式：0 或 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>FREENOM_DRY_RUN</code></td><td>否</td><td>格式：0 或 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录路径；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="8"><code>scripts/codearts_daily.py</code></td><td><code>CODEARTS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用，其余关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；多账号格式以该脚本文档为准</td></tr>
@@ -2108,6 +2116,7 @@
 - `scripts/ck_duokan.py`：每个非空行一个账号，使用同一账号的完整 Cookie 合并设备字段和登录会话字段；不得以 & 或 @ 分隔账号。各账号独立执行，任一账号失败则进程非零退出。。
 - `scripts/ck_everphoto.py`：每个非空行一个账号，手机号与密码字段值使用首个 | 合并；各账号独立执行，任何账号失败时整体非零退出。兼容原有账号对象列表 JSON 格式。。
 - `scripts/ck_fmapp.py`：每个非空行填写一个账号 JSON 对象；账号逐个独立执行，某个账号配置或业务失败不阻止后续账号，任一账号失败时整体非零退出。。
+- `scripts/ck_freenom.py`：每个非空行一个账号，只在第一个竖线处分割用户名和密码；各账号使用独立会话，任何账号失败均非零退出。。
 - `scripts/codearts_daily.py`：每个非空行一个账号，JSON 必须为单行；不按 & 或 @ 拆分账号。账号独立执行，无效账号计失败，任一失败整体非零退出。。
 - `scripts/comicai_ai_cookie.py`：每个非空行一个账号 JSON 对象，同账号 Token 和可选 Cookie 放在同一对象内；账号独立执行，任一账号失败整体非零退出。兼容变量按非空行对应，不允许 & 或 @ 分隔账号。。
 - `scripts/crealitycloud_checkin.py`：每个非空非注释行一个账号；同一行以首个空白字段分隔账号与密码，保留密码后续文本。各账号独立处理，格式错误计为失败，任一账号失败则整体非零退出。。
@@ -2582,6 +2591,13 @@
 - 所属脚本：`scripts/ck_fmapp.py`
 - 获取或设置：在自己的手机登录 Fa米家 App，使用本人授权的抓包工具查看 fmapp.chinafamilymart.com.cn 的 App 请求头。将 token、cookie、blackBox、deviceId 分别填入 token、cookie、blackbox、device_id；可从同一请求头获取 fmVersion、os、User-Agent，分别填入可选字段 fmversion、os、useragent。不要公开或分享抓包内容，登录失效后重新获取。
 - 填写格式：`每个非空行为一个 JSON 对象，必须包含非空字符串 token、cookie、blackbox、device_id。同一账号的全部凭据合并在该对象中；Cookie 中的分号、&、@ 等字符按 JSON 字符串原样保存，不用于账号分隔。可选字段 fmversion 默认 2.2.3、os 默认 ios、useragent 默认 Fa；字段值不可含换行。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `FREENOM_ACCOUNTS`
+
+- 所属脚本：`scripts/ck_freenom.py`
+- 获取或设置：使用本人 Freenom 网站账号的登录用户名和密码。将同一账号的两项凭据合并为一行；密码含竖线时会保留第一个竖线之后的全部内容。不要将凭据提交到仓库。
+- 填写格式：`每个非空行一个账号：用户名|密码；用户名去除首尾空白，密码原样保留`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `CODEARTS_CREDENTIALS`
@@ -5444,6 +5460,37 @@
 - 所属脚本：`scripts/ck_fmapp.py`
 - 获取或设置：使用自定义青龙通知模块目录时设置，通常无需配置。
 - 填写格式：`包含 notify.py 或 sendNotify.js 的本机目录；也会自动检查可导入的 notify 模块及 /ql/data/scripts、/ql/scripts。通知不可用不改变业务退出码。`
+
+#### `FREENOM`
+
+- 所属脚本：`scripts/ck_freenom.py`
+- 获取或设置：仅为旧配置兼容输入；从原有配置中取出 Freenom 账号对象数组。设置 FREENOM_ACCOUNTS 时优先使用规范变量。
+- 填写格式：`JSON 数组，每项包含 username 和 password 字符串；不再依赖私有配置文件或工具`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `FREENOM_RENEW`
+
+- 所属脚本：`scripts/ck_freenom.py`
+- 获取或设置：希望自动续期时显式设为 1；默认 0 仅查询。续期仅限不足 14 天且官方表单明确显示 12 个月免费的域名。
+- 填写格式：`0 或 1`
+
+#### `FREENOM_DRY_RUN`
+
+- 所属脚本：`scripts/ck_freenom.py`
+- 获取或设置：离线检查时设为 1；不登录、不查询、不续期、不发送网络通知。
+- 填写格式：`0 或 1`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/ck_freenom.py`
+- 获取或设置：使用青龙已有通知配置；默认启用。设为 0、false、no 或 off 关闭；通知不可用不改变业务退出码。断网预演仅生成脱敏通知内容并记录跳过发送。
+- 填写格式：`默认 1`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/ck_freenom.py`
+- 获取或设置：可选，指定现有青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准脚本目录。
+- 填写格式：`本地通知模块目录路径`
 
 #### `CODEARTS_DRY_RUN`
 
@@ -12537,6 +12584,7 @@
 - `scripts/ck_duokan.py`：SHA-256 `761187366b78083a2345c626db63d1ed6104b63f726bfd37fd2bc99f4348861a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c722e904dffeaf49`。
 - `scripts/ck_everphoto.py`：SHA-256 `1c503ab4c6801ad18b37fa4b979bf3bf3bdb87dadace5ebb8d44c038966e35ae`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/08575e47b55daffb`。
 - `scripts/ck_fmapp.py`：SHA-256 `cf54bcf59156219426860a1c43d3467c51b8a7ae3b1f726612aff8d51557d227`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b448219b57620cb7`。
+- `scripts/ck_freenom.py`：SHA-256 `924fc4494dcdf15d6aeb90d7f59dd6438878241af726c137fdad9e5b38099cdb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/563cae20eed18007`。
 - `scripts/codearts_daily.py`：SHA-256 `c6bdd619ce35cd32e1fca575006e8420c6ac3b55d55cc1ffb48ba9122862d856`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b896028c3fdcd52d`。
 - `scripts/comicai_ai_cookie.py`：SHA-256 `173db2c22758f322022dedfb23fdd735a85d1cff0d39ad308ed5a8c3d0d45c8c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
 - `scripts/crealitycloud_checkin.py`：SHA-256 `65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
@@ -12738,6 +12786,7 @@
 - `scripts/ck_duokan.py`：每日签到改变签到状态并可能获得书豆。；开启 DUOKAN_FREE 时领取图书并改变书架或购买记录。；开启 DUOKAN_DELAY 时修改可延期书豆批次的有效期。；开启 DUOKAN_DRAW 时消耗已有抽奖机会并可能领取活动奖励。；真实模式且通知启用时，通过青龙通知模块发送脱敏任务总结。。
 - `scripts/ck_everphoto.py`：正式执行登录请求创建认证会话；正式执行每日签到改变签到状态；正式执行按通知开关投递任务汇总。
 - `scripts/ck_fmapp.py`：向 Fa米家提交每日签到，按服务端规则更新签到记录并发放发米粒。
+- `scripts/ck_freenom.py`：登录建立服务端账号会话；显式启用且表单证明免费时提交域名 12 个月续期；按青龙配置发送任务通知，断网预演除外。
 - `scripts/codearts_daily.py`：领取福利积分与新人奖励；确认福利到账；使用可选续期材料刷新登录凭据；写入私有凭据缓存和领取幂等台账；发送脱敏通知（预演只模拟）。
 - `scripts/comicai_ai_cookie.py`：向 ComicAI 提交每日签到并可能获得积分；启用通知时发送脱敏任务总结。
 - `scripts/crealitycloud_checkin.py`：登录与 OAuth 授权生成服务端会话；每日签到改变签到记录并领取奖励；正式运行发送已配置的青龙通知；断网预演仅尝试通知调用，不允许联网。
@@ -12941,6 +12990,7 @@
 - `scripts/ck_duokan.py`：上游 `OreosLab/checkinpanel` / `ck_duokan.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
 - `scripts/ck_everphoto.py`：上游 `OreosLab/checkinpanel` / `ck_everphoto.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
 - `scripts/ck_fmapp.py`：上游 `OreosLab/checkinpanel` / `ck_fmapp.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
+- `scripts/ck_freenom.py`：上游 `OreosLab/checkinpanel` / `ck_freenom.py` / `911402e4b2e559ffd62c4949a971ddd6834edd7d`。
 - `scripts/codearts_daily.py`：上游 `L0NE-6/CodeArts-Daily` / `codearts_daily.py` / `c337a9340877cdf7afef0a679f3d020d28183140`。
 - `scripts/comicai_ai_cookie.py`：上游 `CSDN2024/QianDaoMZH` / `comicai-ai-cookie.py` / `b99c67e46d1e74d2fd3a0bff7cac3f83e5ee6903`。
 - `scripts/crealitycloud_checkin.py`：上游 `xz0609/crealitycloud-checkin-ql` / `crealitycloud_checkin.py` / `ba2872b75372f62157b1f0cdcdf57ed59f9bd1fb`。
