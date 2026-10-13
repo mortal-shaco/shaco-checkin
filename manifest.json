@@ -3967,6 +3967,177 @@
       }
     },
     {
+      "catalogId": "5e0e668122f2807b",
+      "applicationKey": "loomy",
+      "checkProfile": {
+        "requiredEnv": [
+          "LOOMY_TOKENS"
+        ],
+        "optionalEnv": [
+          "LOOMY_ONBOARDING",
+          "LOOMY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PUSHPLUS_TOKEN",
+          "BARK_URL",
+          "WECOM_WEBHOOK",
+          "DINGTALK_WEBHOOK",
+          "DINGTALK_SECRET"
+        ],
+        "dryRunEnv": {
+          "LOOMY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LOOMY_ONBOARDING": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。",
+          "--tasks 查询八项新手任务的分组、标题、积分与完成进度。",
+          "显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。",
+          "八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。",
+          "结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。",
+          "换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。",
+          "完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。",
+          "青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。"
+        ],
+        "sideEffects": [
+          "正式默认执行刷新账号每日赠送积分。",
+          "显式批量或单项领取时上报新手任务完成状态并领取积分。",
+          "正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。",
+          "启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Loomy 每日积分与新手任务",
+      "path": "scripts/loomy_daily.py",
+      "sha256": "31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/Loomy-Daily",
+        "branch": "main",
+        "commit": "3d0f19b0b6486ff9096507805a5f9d061604058f",
+        "originalPath": "loomy_daily.py"
+      },
+      "cron": "0 8 * * *",
+      "command": "python3 scripts/loomy_daily.py",
+      "environment": [
+        {
+          "name": "LOOMY_TOKENS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在官方 Loomy 客户端登录，在本人授权的开发者工具或网络抓包中读取 loomyad.xunfei.cn 请求的 token 头，或 Authorization: Bearer 后的 session。登录态失效时重新登录并更新。不要公开凭据。",
+          "format": "每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "LOOMY_ONBOARDING",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户自行设置；默认关闭。仅在实际完成任务并确认领取时启用。",
+          "format": "0（默认，仅每日积分）或 1（批量领取）；--no-onboarding 优先关闭"
+        },
+        {
+          "name": "LOOMY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时自行设置；不会发出请求、调用通知组件或写入结清记录。",
+          "format": "1 启用，0 默认正式执行"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户自行设置青龙全局通知开关。",
+          "format": "默认 1；0、false、no、off 关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 或 sendNotify.js 所在目录；同时自动发现标准青龙目录及可导入的 notify 模块。",
+          "format": "本机通知目录路径"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人 PushPlus 后台获取推送令牌。 青龙通知不可用时作为兼容推送通道。",
+          "format": "推送令牌"
+        },
+        {
+          "name": "BARK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人 Bark 应用获取 HTTPS 推送地址。 青龙通知不可用时作为兼容推送通道。",
+          "format": "完整 HTTPS 地址"
+        },
+        {
+          "name": "WECOM_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人企业微信群机器人设置获取 Webhook 地址或 key。 青龙通知不可用时作为兼容推送通道。",
+          "format": "HTTPS Webhook 地址或机器人 key"
+        },
+        {
+          "name": "DINGTALK_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人钉钉群机器人设置获取 HTTPS Webhook 地址。 青龙通知不可用时作为兼容推送通道。",
+          "format": "完整 HTTPS 地址"
+        },
+        {
+          "name": "DINGTALK_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人钉钉群机器人的加签设置获取密钥，仅和相应 Webhook 配套使用。 青龙通知不可用时作为兼容推送通道。",
+          "format": "加签密钥"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；兼容 session 和 备注|session，仅在第一个 | 处分割。独立处理各账号，任一账号失败则整体非零退出。--only N 可选择账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。",
+        "--tasks 查询八项新手任务的分组、标题、积分与完成进度。",
+        "显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。",
+        "八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。",
+        "结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。",
+        "换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。",
+        "完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。",
+        "青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。"
+      ],
+      "sideEffects": [
+        "正式默认执行刷新账号每日赠送积分。",
+        "显式批量或单项领取时上报新手任务完成状态并领取积分。",
+        "正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。",
+        "启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/5e0e668122f2807b",
+        "candidateSha256": "31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9"
+      }
+    },
+    {
       "catalogId": "c0137ce8eaf72832",
       "applicationKey": "main",
       "checkProfile": {

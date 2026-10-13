@@ -58,6 +58,7 @@
 | 科技玩家签到 | `scripts/kjwj.py` | `python3 scripts/kjwj.py` | `30 7 * * *` |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `38 8,14,20 * * *` |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` |
+| Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `0 8 * * *` |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 8 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
@@ -162,6 +163,7 @@
 - `scripts/kjwj.py`：使用邮箱密码登录科技玩家，获取签到令牌；查询当日签到状态、当日获得积分和总积分；未签到时自动签到，并复查当日状态确认完成；已签到时跳过写操作并显示积分；显示官方返回的非秘密账号身份，屏蔽凭据和手机号；每行一个账号独立执行，失败返回非零退出码；完全断网预演、分阶段日志、每账号统计和单行结构化任务总结；正式执行后通过青龙通知发送脱敏总结，预演时显示通知摘要；通知失败保留业务退出码。
 - `scripts/kuaishou_reward_status.py`：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：使用 Cookie 执行 Leaflow 每日签到；自动识别 CSRF 隐藏字段并提交签到表单；明确识别成功、今日已完成、会话失效和失败结果；在服务返回时提取当日签到奖励；支持换行多账号独立处理并生成结构化汇总；提供有限重试、请求超时和可选随机执行窗口；提供完全断网的预演配置校验；在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份；支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码；输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY；兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小。
+- `scripts/loomy_daily.py`：每日首次登录刷新每日赠送积分，按天幂等，以 HTTP 成功且业务码 000000 核验。；--tasks 查询八项新手任务的分组、标题、积分与完成进度。；显式设置 LOOMY_ONBOARDING=1 批量领取未完成新手任务，--no-onboarding 可关闭；--claim KEY 单独领取一项。；八项任务共 10000 分：首次消息、选择技能、生成 PPT、设置定时、安装技能、远程控制、创建搭子与分享搭子；仅上报领取，不实际执行对应应用操作。；结清后保存凭据指纹与任务进度，避免重复查询；--refresh 忽略本地记录强制核验。；换行多账号独立执行，--only N 筛选；官方响应提供公开身份时显示，凭据和原始响应不输出。；完全断网预演、分阶段时间轴日志、每账号与最终统计、一条 TASK_SUMMARY 结构化汇总。；青龙组件推送脱敏总结，支持全局及 --no-notify 开关，保留四种上游可选推送渠道作为兼容后备；通知故障不改变业务退出码。。
 - `scripts/main.py`：抓取 Wallhaven 最新列表，默认保留第 1 至 5 页。；按上游 thumb-info 中的六位壁纸编号及 PNG 标记下载 JPG 或 PNG 原图。；按当天日期归档壁纸，校验图片格式；已有有效图片跳过，跨页重复去重。；支持显式设置保存目录和抓取页数；请求设定超时、响应类型与大小限制。；各页面及图片独立处理，任何失败使整体非零退出。；完全断网预演、分阶段时间轴日志与单行 TASK_SUMMARY 汇总。；通过青龙 notify.py 发送脱敏任务总结；支持全局通知开关，通知不可用保持业务退出码。。
 - `scripts/nga_checkin.py`：NGA每日签到（重复签到按成功处理）；可选执行任务2、任务131和任务30计数；可选执行4次免广告视频及5次N币视频任务计数；可选记录5次分享事件并领取分享奖励；签到后查询账户资产响应是否有效；每行一个 UID|Token 账号的独立处理与失败汇总；执行前可选随机延迟；完全离线的配置预演；青龙脱敏汇总通知。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
@@ -270,6 +272,7 @@
 <tr><td rowspan="1"><code>scripts/kjwj.py</code></td><td><code>kjwj_info</code></td><td>是</td><td>格式：邮箱#密码，每行一个账号，仅首个 # 为分隔符，密码中后续字符原样保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/kuaishou_reward_status.py</code></td><td><code>KUAISHOU_COOKIE</code></td><td>是</td><td>格式：每个账号一行完整 Cookie；每行至少包含 kuaishou.api_st=...；不使用 &amp; 或 @ 分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/leaflow_checkin_pyleaflow_checkin.py</code></td><td><code>LEAFLOW_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、&amp; 和 @ 原样保留。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/main.py</code></td><td><code>WALLHAVEN_SAVE_DIR</code></td><td>否</td><td>格式：绝对目录路径；自动追加当天日期子目录。预演可使用 /tmp/wallhaven-dry-run-placeholder。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：access_uid|access_token；只用第一个竖线分隔；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
@@ -529,6 +532,15 @@
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录，可选；亦支持 import notify.send、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>HTTP_PROXY</code></td><td>是</td><td>格式：标准库支持的代理地址；兼容 http_proxy。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>HTTPS_PROXY</code></td><td>是</td><td>格式：标准库支持的代理地址；兼容 https_proxy。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="9"><code>scripts/loomy_daily.py</code></td><td><code>LOOMY_ONBOARDING</code></td><td>否</td><td>格式：0（默认，仅每日积分）或 1（批量领取）；--no-onboarding 优先关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>LOOMY_DRY_RUN</code></td><td>否</td><td>格式：1 启用，0 默认正式执行；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知目录路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>PUSHPLUS_TOKEN</code></td><td>是</td><td>格式：推送令牌；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>BARK_URL</code></td><td>是</td><td>格式：完整 HTTPS 地址；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>WECOM_WEBHOOK</code></td><td>是</td><td>格式：HTTPS Webhook 地址或机器人 key；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DINGTALK_WEBHOOK</code></td><td>是</td><td>格式：完整 HTTPS 地址；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>DINGTALK_SECRET</code></td><td>是</td><td>格式：加签密钥；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="4"><code>scripts/main.py</code></td><td><code>WALLHAVEN_PAGES</code></td><td>否</td><td>格式：1 至 100 的整数，默认 5。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>WALLHAVEN_DRY_RUN</code></td><td>否</td><td>格式：0、false、no、off 表示正式运行；其他值表示断网预演。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。断网预演仅生成通知摘要，不调用通知模块。；多账号格式以该脚本文档为准</td></tr>
@@ -867,6 +879,7 @@
 - `scripts/kjwj.py`：每个非空行表示一个账号，仅按首个 # 拆分邮箱和密码；逐账号独立执行，任一账号失败整体返回非零退出码。。
 - `scripts/kuaishou_reward_status.py`：KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务整体非零退出。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。。
+- `scripts/loomy_daily.py`：每个非空行一个账号；兼容 session 和 备注|session，仅在第一个 | 处分割。独立处理各账号，任一账号失败则整体非零退出。--only N 可选择账号。。
 - `scripts/nga_checkin.py`：NGA_ACCOUNT 每个非空行表示一个账号，行内格式为 access_uid|access_token；账号之间只使用换行。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
@@ -1116,6 +1129,13 @@
 - 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
 - 获取或设置：浏览器登录 https://checkin.leaflow.net，打开开发者工具的网络面板，刷新页面后选择本站请求，复制请求头 Cookie 的完整值；不要复制响应头 Set-Cookie，不要公开。
 - 填写格式：`每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、& 和 @ 原样保留。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LOOMY_TOKENS`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：在官方 Loomy 客户端登录，在本人授权的开发者工具或网络抓包中读取 loomyad.xunfei.cn 请求的 token 头，或 Authorization: Bearer 后的 session。登录态失效时重新登录并更新。不要公开凭据。
+- 填写格式：`每个非空行一个账号，填写 session 或 备注|session；仅在第一个 | 处分割，后续凭据文本完整保留。不得使用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WALLHAVEN_SAVE_DIR`
@@ -2703,6 +2723,65 @@
 - 所属脚本：`scripts/leaflow_checkin_pyleaflow_checkin.py`
 - 获取或设置：需要代理时按运行环境配置，脚本不记录代理值。
 - 填写格式：`标准库支持的代理地址；兼容 https_proxy。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `LOOMY_ONBOARDING`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：用户自行设置；默认关闭。仅在实际完成任务并确认领取时启用。
+- 填写格式：`0（默认，仅每日积分）或 1（批量领取）；--no-onboarding 优先关闭`
+
+#### `LOOMY_DRY_RUN`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：预演时自行设置；不会发出请求、调用通知组件或写入结清记录。
+- 填写格式：`1 启用，0 默认正式执行`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：用户自行设置青龙全局通知开关。
+- 填写格式：`默认 1；0、false、no、off 关闭`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：可选，填写青龙 notify.py 或 sendNotify.js 所在目录；同时自动发现标准青龙目录及可导入的 notify 模块。
+- 填写格式：`本机通知目录路径`
+
+#### `PUSHPLUS_TOKEN`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：从本人 PushPlus 后台获取推送令牌。 青龙通知不可用时作为兼容推送通道。
+- 填写格式：`推送令牌`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `BARK_URL`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：从本人 Bark 应用获取 HTTPS 推送地址。 青龙通知不可用时作为兼容推送通道。
+- 填写格式：`完整 HTTPS 地址`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `WECOM_WEBHOOK`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：从本人企业微信群机器人设置获取 Webhook 地址或 key。 青龙通知不可用时作为兼容推送通道。
+- 填写格式：`HTTPS Webhook 地址或机器人 key`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `DINGTALK_WEBHOOK`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：从本人钉钉群机器人设置获取 HTTPS Webhook 地址。 青龙通知不可用时作为兼容推送通道。
+- 填写格式：`完整 HTTPS 地址`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `DINGTALK_SECRET`
+
+- 所属脚本：`scripts/loomy_daily.py`
+- 获取或设置：从本人钉钉群机器人的加签设置获取密钥，仅和相应 Webhook 配套使用。 青龙通知不可用时作为兼容推送通道。
+- 填写格式：`加签密钥`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `WALLHAVEN_PAGES`
@@ -4593,6 +4672,7 @@
 - `scripts/kjwj.py`：SHA-256 `6867c355c23ccfdd7deafbcbeef48865c1001d7e274c9b9e265dced5047eaaab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f4e13633e05b6a28`。
 - `scripts/kuaishou_reward_status.py`：SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：SHA-256 `1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
+- `scripts/loomy_daily.py`：SHA-256 `31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
 - `scripts/main.py`：SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 - `scripts/nga_checkin.py`：SHA-256 `15a008af4247c2904f9acb1acff562d2062fbc6b1a606da368fc6d6b97fe45cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
@@ -4697,6 +4777,7 @@
 - `scripts/kjwj.py`：未签到时提交每日签到并获得积分；正式执行时按通知开关发送青龙任务通知。
 - `scripts/kuaishou_reward_status.py`：。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励；正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总。
+- `scripts/loomy_daily.py`：正式默认执行刷新账号每日赠送积分。；显式批量或单项领取时上报新手任务完成状态并领取积分。；正式查询或领取确认全部结清时更新脚本目录中的 loomy_onboarding.json 本地结清记录，只存凭据指纹和任务进度。；启用通知且非预演时通过青龙组件或可选兼容通道发送脱敏总结。。
 - `scripts/main.py`：正式运行时在显式指定目录创建日期子目录并保存已验证的壁纸文件；不覆盖已有文件。；正式运行且启用通知时，调用青龙通知模块发送脱敏总结。。
 - `scripts/nga_checkin.py`：提交NGA每日签到；启用日常任务选项时增加任务计数；启用视频任务选项时增加视频任务计数并可能获得奖励；启用分享任务选项时记录分享事件并领取奖励。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
@@ -4803,6 +4884,7 @@
 - `scripts/kjwj.py`：上游 `cloudcranes/some_scripts` / `kjwj.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。
 - `scripts/leaflow_checkin_pyleaflow_checkin.py`：上游 `agluo/ql-script-hub` / `archive/leaflow_checkin.pyleaflow_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/loomy_daily.py`：上游 `L0NE-6/Loomy-Daily` / `loomy_daily.py` / `3d0f19b0b6486ff9096507805a5f9d061604058f`。
 - `scripts/main.py`：上游 `cloudcranes/some_scripts` / `Download_wallhaven/main.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
