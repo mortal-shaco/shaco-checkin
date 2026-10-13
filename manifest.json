@@ -11024,6 +11024,187 @@
       }
     },
     {
+      "catalogId": "68feda0fb9579305",
+      "applicationKey": "meefan-daily",
+      "checkProfile": {
+        "requiredEnv": [
+          "MIFAN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "MIFAN_USER",
+          "MIFAN_PASSWORD",
+          "MIFAN_TASKS",
+          "ENABLE_REPAIR",
+          "MIFAN_DRY_RUN",
+          "MIFAN_LOCAL_TEXT",
+          "MIFAN_STATE_DIR",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MIFAN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MIFAN_TASKS": "sign",
+          "ENABLE_REPAIR": "false",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "用户名和密码登录及登出，保留上游gid与MD5密码协议",
+          "查询米粒余额及展示官方非凭据账户身份",
+          "每日签到与已签到识别",
+          "显式动态点赞，每次最多20条并保存成功进度",
+          "显式自动评论，每次最多10条并保存成功进度；无奖励时停止",
+          "评论优先一言，保留作者与出处，所有声明故障回退本地文本",
+          "显式查询最近签到记录并补签",
+          "多账号逐行配置与账号隔离进度",
+          "完全断网预演、分阶段脱敏日志、机器汇总及青龙通知"
+        ],
+        "sideEffects": [
+          "登录创建会话、登出结束本次会话",
+          "每日签到改变签到状态并可能获得米粒",
+          "显式点赞改变文章点赞状态",
+          "显式评论公开发布文本并可能获得米粒",
+          "显式补签改变历史签到状态并可能消耗资源",
+          "正式执行点赞或评论后保存本地账号进度",
+          "通知启用且可用时向已配置青龙渠道发送脱敏摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "米饭APP日常维护",
+      "path": "scripts/mifan_optimized.py",
+      "sha256": "7fbd32635c2c61d2e89c6ef056726314c439ad70655c0295af47364e565f8ffb",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "eggv/MeeFan-DailyCheckIn",
+        "branch": "main",
+        "commit": "dd3668c8b870fe172ac97bcf96055ddcfceb6d49",
+        "originalPath": "mifan_optimized.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/mifan_optimized.py",
+      "environment": [
+        {
+          "name": "MIFAN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在米饭APP或米饭官方网站使用本人的注册用户名与登录密码；忘记密码时先通过官方渠道重置。无需抓包或提供Token。",
+          "format": "每个非空行一个账号，用户名|密码；只在第一个竖线分割，密码后续竖线保留；用户名不能含竖线。"
+        },
+        {
+          "name": "MIFAN_USER",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入，与MIFAN_PASSWORD配套；MIFAN_ACCOUNTS优先。",
+          "format": "每个非空行一个用户名；不支持旧版分号多账号分隔。"
+        },
+        {
+          "name": "MIFAN_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人账户登录密码，与MIFAN_USER逐行对应。",
+          "format": "每个非空行一个密码，行数必须与用户名一致。"
+        },
+        {
+          "name": "MIFAN_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中按所需操作设置；默认仅每日签到，公开操作需要显式选择。",
+          "format": "sign、like、comment、repair 用逗号组合；默认sign；点赞每次最多20条，评论每次最多10条。"
+        },
+        {
+          "name": "ENABLE_REPAIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版补签开关；补签可能消耗账户资源，仅按本人意愿开启。",
+          "format": "true或1开启补签；默认false。"
+        },
+        {
+          "name": "MIFAN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，用于断网预演。",
+          "format": "1开启；默认0；不调用业务、文本提供商或通知网络，不读写进度。"
+        },
+        {
+          "name": "MIFAN_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行填写失败回退时使用的公开评论文本；默认使用脚本内置短句。",
+          "format": "单段文本，空白折叠后最多280字；不要填写任何隐私或凭据。"
+        },
+        {
+          "name": "MIFAN_STATE_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定本机可写进度目录；默认脚本旁的.mifan-state。",
+          "format": "目录路径；按账号哈希隔离点赞和评论进度，不保存密码或Token。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关；配置青龙自身的通知渠道。",
+          "format": "默认1；0、false、no、off关闭；预演仅记录通知摘要准备状态。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙已有notify.py或sendNotify.js所在目录；不需要下载其他仓库。",
+          "format": "本机目录路径；通知组件可选，缺失或失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，使用MIFAN_ACCOUNTS合并用户名和密码；只在第一个竖线分割，不使用分号、&或@分隔账号。账号独立执行，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "用户名和密码登录及登出，保留上游gid与MD5密码协议",
+        "查询米粒余额及展示官方非凭据账户身份",
+        "每日签到与已签到识别",
+        "显式动态点赞，每次最多20条并保存成功进度",
+        "显式自动评论，每次最多10条并保存成功进度；无奖励时停止",
+        "评论优先一言，保留作者与出处，所有声明故障回退本地文本",
+        "显式查询最近签到记录并补签",
+        "多账号逐行配置与账号隔离进度",
+        "完全断网预演、分阶段脱敏日志、机器汇总及青龙通知"
+      ],
+      "sideEffects": [
+        "登录创建会话、登出结束本次会话",
+        "每日签到改变签到状态并可能获得米粒",
+        "显式点赞改变文章点赞状态",
+        "显式评论公开发布文本并可能获得米粒",
+        "显式补签改变历史签到状态并可能消耗资源",
+        "正式执行点赞或评论后保存本地账号进度",
+        "通知启用且可用时向已配置青龙渠道发送脱敏摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/68feda0fb9579305",
+        "candidateSha256": "7fbd32635c2c61d2e89c6ef056726314c439ad70655c0295af47364e565f8ffb"
+      }
+    },
+    {
       "catalogId": "4b7d4969e07369fa",
       "applicationKey": "sitoi/dailycheckin::mimotion",
       "checkProfile": {
