@@ -71,6 +71,7 @@
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `30 6 * * *` |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `0 8 * * *` |
 | 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `0 9,18 * * *` |
+| 华润通微信版签到 | `scripts/huaruntong_wx.py` | `python3 scripts/huaruntong_wx.py` | `1 1 1 1 1` |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `0 21 * * *` |
 | i茅台申购与耐力 | `scripts/imaotai.py` | `python3 scripts/imaotai.py` | `5 9 * * *` |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `0 3 * * *` |
@@ -92,7 +93,9 @@
 | 小米运动账号验证与步数上传 | `scripts/mimotion.py` | `python3 scripts/mimotion.py` | `0 20 * * *` |
 | 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `30 9 * * *` |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `1 17 * * *` |
+| NodeSeek签到 | `scripts/nodeseek.py` | `python3 scripts/nodeseek.py` | `0 0 * * *` |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `23 14 * * *` |
+| 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `1 1 1 1 1` |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `18 0 * * *` |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` |
@@ -212,6 +215,7 @@
 - `scripts/hifiti_checkin.py`：HiFiTi 每日签到与明确业务结果核验；HiFiHi 每日签到与明确业务结果核验；兼容原凭据参数和旧版值格式，完整 Cookie 不截断；每行一个账号，两个站点与不同账号之间隔离会话；保留每天 06:30 的计划、随机启动等待和同站点账号间等待；读取官方非敏感昵称、用户名或公开身份字段并显示，禁止凭据片段充当身份；完全断网预演、配置检查、按账号阶段日志与单行结构化任务汇总；成功、部分失败、失败、配置错误和预演均生成脱敏通知摘要，真实模式通过可用青龙通知模块发送，预演仅模拟发送。
 - `scripts/hlyl.py`：查询账号信息，展示接口提供的非敏感公开身份，屏蔽手机号和凭据；查询当日签到状态、周任务进度和月签到天数；每日签到，已签到时跳过；签到后复查状态并显示可用积分和成长积分奖励；显式开启的有界活动抽奖，显示安全奖品名称，单次失败即停止后续抽奖；查询积分余额；逐行多账号独立执行、超时及明确业务核验、任一账号失败时非零退出；完全断网预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY 记录；通过青龙通知组件发送脱敏总结，通知失败保持业务退出码；断网预演禁止远程通知。
 - `scripts/hsay.py`：查询并显示官方返回的用户昵称，隐藏手机号及凭据；从积分流水获取签到所需的公开用户 ID；查询连续签到天数；按原活动和门店参数生成签名并签到，显示奖励名称、数量和计算的连续签到天数；逐行多账号独立运行，失败闭合与断网预演；青龙脱敏通知、阶段耗时、账号及任务统计和唯一 TASK_SUMMARY 输出。
+- `scripts/huaruntong_wx.py`：华润通微信版加密签到，仅以官方业务码 S0A00000 确认成功；兼容原签到请求全部可配置参数及默认值，保持原 cron；逐行多账号独立执行、参数校验和失败非零退出；展示官方返回的非敏感昵称、用户名、显示名称或公开身份；完全断网预演、逐阶段耗时和脱敏结构化统计；青龙通知汇总，通知不可用不影响业务退出码。
 - `scripts/ikuuu_checkin.py`：保留邮箱密码登录与官方 ret=1 核验，兼容 IKUUU_ACCOUNT 和旧 ikuuu 参数；新增 Cookie 会话签到，支持 IKUUU_COOKIES、备注前缀及同一规范账号变量中的 Cookie 输入；每日签到要求官方 ret=1 或明确的今日已签到证明，成功说明中提取流量奖励；保留可选个人资料读取与非空响应核验；资料失败继续签到但账号整体失败；新增剩余流量查询，解析官方 /user 页面及 originBody 编码页面中明确的剩余流量字段；保留安全官方昵称、用户名、显示名称或公开 UID 的原值展示；凭据、手机号和会话值不输出；支持官方主机名配置，未设置时保留邮箱模式原域名及 Cookie 模式上游域名；换行多账号独立处理、凭据字段仅首次分割、失败非零退出；保留每天 21:00 调度、可选随机错峰和云函数 handler 入口；保留分阶段时间轴日志、耗时、账号与任务统计、IKUUU_SUMMARY 及唯一 TASK_SUMMARY；使用青龙 notify.py 发送脱敏摘要，保留上游可选 PushPlus 通知，通知故障不改变业务退出码；完全断网预演参数、各模式请求计划及通知摘要，不导入通知模块、不等待、不修改账号状态。
 - `scripts/imaotai.py`：查询官方应用版本、当日北京时间场次及门店资源；按经纬度选择最近有库存门店，或按省市选择库存最多门店；支持多个商品，保留原默认商品列表；显式开启后以原 AES 协议提交申购，仅业务码 2000 判定请求成功；领取耐力，仅业务码 200 判定成功；多账号独立执行及失败闭合退出码；完全断网预演、阶段日志及唯一结构化汇总；显示官方返回的非秘密账号身份；正式任务结果通过青龙通知，通知故障不改变业务退出码。
 - `scripts/index.js`：通过官方收藏页跳转获取并原样显示公开 UID，也支持手动指定公开 UID；分页获取全部公开收藏，校验明确业务成功、总数稳定、无重复以及分页完整性；读取每个作品全部原图页；图片页查询与图片下载分别限制为三个并发任务；以标题加作品 ID 建目录、标题加页码命名图片，保留规范候选保存路径及旧目录兼容检查；跳过已有有效图片，修复无效普通图片文件；原子创建下载结果以避免并发覆盖；原图仅接受 HTTPS 图片域，隔离账号 Cookie，校验图片类型、文件头、大小和完整性，设置请求超时；支持逐行多账号、旧版 cookie/output/proxy 配置和完全断网预演，逐账号隔离失败；按编号阶段打印带时间戳的脱敏结果及耗时、账号和任务统计，保留收藏成功日志并输出唯一单行 TASK_SUMMARY；调用青龙通知组件发送脱敏总结，支持全局通知开关；预演禁止外部投递，通知失败或缺失不改变业务退出码。
@@ -233,7 +237,9 @@
 - `scripts/mimotion.py`：手机号或邮箱及密码登录 Zepp Life，核验授权与完整登录凭据，显示官方非敏感账号身份。；显式开启后在设定的随机范围内修改本人当天运动记录的步数并上传，要求接口 code=0 且 message=success。；优先获取远程时间戳，失败使用本地毫秒时间；HTTP 表单编码、超时、响应大小限制及禁止凭据重定向。；多账号独立执行、失败非零退出、断网预演、脱敏分阶段日志、单行 TASK_SUMMARY 汇总及青龙通知。。
 - `scripts/netease_task.py`：登录确认并显示官方非敏感昵称或公开 UID；手机签到与网页签到，识别业务码 -2 的今日已完成；可选官方 weapi 网页签到，显示返回积分；云贝签到与已完成任务奖励领取；VIP 成长值批量领取，保留任务查询与按任务 ID 领取备用接口；显式开启的模拟听歌，保留四个榜单获取链路及 300 首成功判定；等级与累计听歌数量查询；每行多账号、旧 Cookie 变量、注释与整行引号兼容；青龙通知失败后依次尝试 PushPlus 与 Server酱，保留独立 Bark 通知；完全断网预演、编号时间轴日志、逐账号统计与唯一结构化任务汇总。
 - `scripts/nga_checkin.py`：每日签到，明确识别签到成功与今日已签到；兼容原 UID|Token 凭据与 iOS 校验码、旧版小写环境变量；展示官方返回的非敏感身份及签到连续天数、累计天数；登录失效和 iOS 客户端校验异常提示；可选日常任务 2、131、30；可选免广告及 N币视频任务；可选五次分享记录与分享奖励；默认查询资产统计；保留随机启动延时、动作间隔与请求超时设置；多账号独立执行与整体失败退出码；完全断网预演、时间轴日志、结构化汇总、青龙脱敏通知。
+- `scripts/nodeseek.py`：每日零点签到，支持随机奖励或固定奖励。；保留 curl_cffi 指纹模拟及默认 chrome110。；保留签到前随机延迟 0～5 分钟。；完整 Cookie 按行配置多账号，各账号独立执行。；完全断网预演、分阶段脱敏日志和单行结构化统计。；显示接口返回的非敏感昵称、用户名、显示名称或公开 UID。；正式运行通过青龙通知助手发送成功、部分失败、失败或配置错误摘要；预演只输出摘要。。
 - `scripts/nodeseek_checkin.py`：NodeSeek 每日签到；已签到状态识别；近 N 天签到鸡腿收益统计；可选随机奖励模式与多账号错峰执行；多账号独立处理与脱敏汇总通知；断网预演配置验证。
+- `scripts/ole.py`：Ole 微信小程序账号签到；保留原账号字段、门店与城市默认值及定时表达式；多账号独立执行与失败闭合退出；完全断网预演及参数检查；脱敏分阶段日志、账号统计与单行任务汇总；青龙通知摘要与全局开关；断网预演模拟通知。
 - `scripts/passnat_checkin.py`：PassNAT 每日签到；今日已签到的幂等成功识别；查询并显示套餐、流量、隧道、状态和到期时间；显示最近登录地区、运营商和 IP；可选随机错峰执行；换行分隔的多账号独立处理；青龙脱敏汇总通知；完全断网预演。
 - `scripts/qoder_airscript.js`：逐账号显式签到开关，兼容原账号 JSON 和两种令牌字段命名；优先使用访问令牌，缺少时刷新；活动查询返回 401 后刷新并重试一次；中国区及国际区活动查询，可领取 Credits 活动逐项领取与额度统计；识别今日已领取、活动未开放及待下发；保留可选 Server酱、PushPlus、企业微信逐账号通知，增加青龙汇总通知及全局开关；指定私有账号文件时写回轮换令牌；仅环境变量时只在内存保存；官方非敏感身份显示、逐账号结果、分阶段日志及单行结构化汇总；完全断网预演、参数验证及多账号独立执行。
 - `scripts/quark_signin.py`：验证夸克账号 Cookie 并显示官方返回的昵称或公开身份；查询当日签到状态，识别今日已签到；领取每日存储空间奖励并展示奖励和连签进度；换行配置多账号，独立处理并汇总失败；可选随机延迟、请求超时、完全断网预演；脱敏时间轴日志、账号及任务统计、结构化汇总和青龙通知；失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应。
@@ -357,6 +363,7 @@
 <tr><td rowspan="1"><code>scripts/hifiti_checkin.py</code></td><td><code>HiFiTi_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；填写完整 Cookie（字段之间使用分号），兼容旧版仅填写 cloudmusic.net 的值；字段值中的等号完整保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hlyl.py</code></td><td><code>hlylck</code></td><td>是</td><td>格式：每个非空行一个账号：access-token 或 access-token#备注；仅按首个 # 分隔，后续备注内容保留。不使用 &amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/hsay.py</code></td><td><code>hsayCookie</code></td><td>是</td><td>格式：每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 &amp; 分隔。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/huaruntong_wx.py</code></td><td><code>HRT_WX_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：可直接填写完整 token，也可填写含 token 字段的单行 JSON 对象。JSON 兼容 answerResult（整数，默认 1）、channelId（默认 APP）、merchantCode（默认 1641000001532）、storeCode（默认 qiandaosonjifen）、sysId（默认 T0000001）、transactionUuid 和 inviteCode（默认空字符串）、user_agent（默认原 iPhone 浏览器标识）、account_name。字符串字段使用 JSON 转义；不使用 &amp;、@ 分隔账号，token 内这些字符保留。account_name 兼容输入但日志使用账号序号和官方公开身份。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/ikuuu_checkin.py</code></td><td><code>IKUUU_ACCOUNT</code></td><td>是</td><td>格式：每行一个账号：邮箱|密码，或 cookie:完整 Cookie；仅在第一个 | 处分割邮箱密码，密码中的后续 | 保留。Cookie 使用分号分隔名称=值，值中的后续 = 保留；禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/imaotai.py</code></td><td><code>IMAOTAI_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行是一个 JSON 对象；必填 token、userid、device_id，userid 支持字符串或整数。申购另需 province、city、lat、lng。item_codes 是数字字符串数组，默认 [&quot;11318&quot;,&quot;11319&quot;]；reserve_rule 为 0（最近门店）或 1（所在城市库存最多）。mobile 兼容但不使用和输出。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/index.js</code></td><td><code>PIXIV_ACCOUNTS</code></td><td>是</td><td>格式：每行一个账号：公开UID|完整Cookie；只按第一个 | 拆分，后续 Cookie 内容保留；UID 留空时使用 |完整Cookie。禁止用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -381,7 +388,9 @@
 <tr><td rowspan="2"><code>scripts/netease_task.py</code></td><td><code>NETEASE_COOKIE</code></td><td>是</td><td>格式：每个非空行一条完整 Cookie，必须包含非空 MUSIC_U 和 __csrf；字段用分号分隔，值中的 =、&amp;、@ 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NETEASE_API_BASE</code></td><td>否</td><td>格式：正式执行必填，断网预演可省略；HTTPS 地址，不含认证信息、查询参数或片段，该服务会接收账号 Cookie。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nga_checkin.py</code></td><td><code>NGA_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号；兼容 access_uid|access_token，仅按首个竖线分割；iOS 使用单行 JSON 对象，字段为 access_uid、access_token、client_checksum，全部为字符串。JSON 也适用于 Token 含竖线的账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/nodeseek.py</code></td><td><code>NS_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，保留完整 Cookie 中的分号、等号与其他字符；不以 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_COOKIE</code></td><td>是</td><td>格式：每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 &amp; 和 @ 保持原样；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/ole.py</code></td><td><code>OLE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；四个必填字段均为非空字符串。可选 shop_code 默认 205368，city_id 默认 c_region_11122，user_agent 默认保留上游值。兼容 account_name 字段但不输出用户填写的标签，避免泄漏手机号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_SK</code></td><td>是</td><td>格式：每个非空行是一个账号的完整 Authorization 值；仅以换行分隔账号，不使用其他分隔符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/qoder_airscript.js</code></td><td><code>QODER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；至少有 accessToken/access_token 或 refreshToken/refresh_token。device 包含非空字符串 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version。enabled=true 或 qiandao=&quot;是&quot; 才签到，默认跳过。可选 name、uid 保留，serverchan、pushplus、qywx 对应原 C/D/E 列的本人通知凭据；企业微信可用机器人 key 或完整地址。不按符号拆账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/quark_signin.py</code></td><td><code>QUARK_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留分号及等号，不使用 &amp;、&amp;&amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -706,6 +715,9 @@
 <tr><td><code>HSAY_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启；默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其余值开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/huaruntong_wx.py</code></td><td><code>HRT_WX_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes 或 on 启用断网预演，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。断网预演仅模拟发送通知，不调用任何通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；不下载或安装通知程序。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="10"><code>scripts/ikuuu_checkin.py</code></td><td><code>ikuuu</code></td><td>是</td><td>格式：每行邮箱#密码，仅在第一个 # 处分割，保留后续密码字符。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IKUUU_COOKIES</code></td><td>是</td><td>格式：每行完整 Cookie 或 备注||完整 Cookie，只在第一个 || 处分割；备注不输出，# 开头行跳过；每个 Cookie 必须包含 uid、email、key，不用 &amp; 分隔字段或账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>IKUUU_HOST</code></td><td>否</td><td>格式：仅 HTTPS 主机名，不含协议、端口或路径；未设置时邮箱模式用 ikuuu.nl，Cookie 模式用 ikuuu.win。；多账号格式以该脚本文档为准</td></tr>
@@ -883,6 +895,11 @@
 <tr><td><code>NGA_HTTP_TIMEOUT</code></td><td>否</td><td>格式：默认 20；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：默认 未设置；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="5"><code>scripts/nodeseek.py</code></td><td><code>NS_RANDOM</code></td><td>否</td><td>格式：true 随机奖励，false 固定奖励。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NS_IMPERSONATE</code></td><td>否</td><td>格式：curl_cffi 支持的浏览器指纹名称。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>NS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用，默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；其他值启用。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录；通知不可用或失败不影响业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="7"><code>scripts/nodeseek_checkin.py</code></td><td><code>NODESEEK_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 表示启用；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>NS_RANDOM</code></td><td>否</td><td>格式：布尔值，默认 true；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：布尔值，默认 false；多账号格式以该脚本文档为准</td></tr>
@@ -890,6 +907,10 @@
 <tr><td><code>NS_STATS_DAYS</code></td><td>否</td><td>格式：1..365 整数天，默认 30；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0/false/no/off 表示禁用，默认启用；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录绝对路径；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/ole.py</code></td><td><code>OLE_CONFIG_JSON</code></td><td>是</td><td>格式：JSON 对象，结构为 huaruntong.ole.accounts 数组；数组内保留原账号字段。无需私有文件路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>OLE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用；默认 0。预演不代表真实业务成功。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。断网预演生成摘要并模拟投递，不运行通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选本地目录路径，仅用于青龙通知；不可用或失败不会改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="5"><code>scripts/passnat_checkin.py</code></td><td><code>PASSNAT_DRY_RUN</code></td><td>否</td><td>格式：布尔值；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>RANDOM_SIGNIN</code></td><td>否</td><td>格式：布尔值；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>MAX_RANDOM_DELAY</code></td><td>否</td><td>格式：非负整数秒，默认 0；多账号格式以该脚本文档为准</td></tr>
@@ -1312,6 +1333,7 @@
 - `scripts/hifiti_checkin.py`：HiFiTi_COOKIE 和 HIFIHI_COOKIE 各自每个非空行一个账号，账号独立会话并顺序处理。两者至少一项非空；单个账号失败不阻止其他账号，任一失败整体非零退出。。
 - `scripts/hlyl.py`：每个非空行一个账号，Token 与可选备注仅按首个 # 分隔。账号独立处理；任一账号配置、查询或已启用操作失败时整体非零退出。备注不展示。。
 - `scripts/hsay.py`：每个非空行一个账号，逐账号独立运行；任何账号失败均非零退出。账号凭据保留完整内容，不按 @ 或 & 拆分。。
+- `scripts/huaruntong_wx.py`：每个非空行一个账号，配套参数放在同一行 JSON 对象中；逐账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/ikuuu_checkin.py`：每个非空行一个账号，IKUUU_ACCOUNT 兼容邮箱密码及 cookie: 前缀；IKUUU_COOKIES 作为可选追加输入。账号独立执行，任一账号失败则进程非零退出；全局配置错误退出 2。不得以 & 或 @ 分隔账号。。
 - `scripts/imaotai.py`：每个非空行一个 JSON 账号对象；同一账号凭据及定位合并，独立执行；任一账号失败则整体非零退出。。
 - `scripts/index.js`：每个非空行表示一个独立账号，按第一个 | 分隔公开 UID 与完整 Cookie；账号顺序处理，任一账号失败使整体非零退出。旧版 config.json 单账号 cookie/output/proxy 继续兼容；代理使用 host、port、protocol 等 axios 代理字段，无默认代理。。
@@ -1332,7 +1354,9 @@
 - `scripts/mimotion.py`：每个非空行一个账号，仅在首个 | 分割账号和密码，密码中的其它分隔符保留；上传参数同属该行 JSON 对象。每个账号独立执行，任一失败均非零退出。旧 MIMOTION 数组只作为兼容输入。。
 - `scripts/netease_task.py`：每个非空行一个账号的完整 Cookie；同账号 MUSIC_U 与 __csrf 放在同一行，不以 & 或 @ 分隔账号。逐账号独立处理，任一账号失败时整体非零退出。。
 - `scripts/nga_checkin.py`：每个非空行一个账号；优先使用 NGA_ACCOUNT；旧版三个变量逐行对应。账号执行互不影响，任一账号失败整体非零退出。。
+- `scripts/nodeseek.py`：NS_COOKIE 每个非空行一个账号，逐个独立签到；任意账号失败整体非零退出。。
 - `scripts/nodeseek_checkin.py`：NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出。
+- `scripts/ole.py`：每个非空行一个完整 JSON 账号对象，同一账号凭据合并在一行；逐账号独立执行，任一失败时整体非零退出。。
 - `scripts/passnat_checkin.py`：PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账号失败时进程整体返回非零。。
 - `scripts/qoder_airscript.js`：每个非空行一个账号 JSON，同账号令牌、设备参数及可选通知凭据合并在同一对象；各账号独立处理，任一账号失败整体非零退出。。
 - `scripts/quark_signin.py`：每个非空行一个账号，完整 Cookie 作为一个字段保留；账号独立执行，任一账号失败则进程非零退出。。
@@ -1677,6 +1701,13 @@
 - 填写格式：`每个非空行填写一个完整 Token；账号之间只使用换行，不使用 @ 或 & 分隔。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `HRT_WX_ACCOUNTS`
+
+- 所属脚本：`scripts/huaruntong_wx.py`
+- 获取或设置：登录华润通微信版官方页面，在本人授权的网络调试中查看 mid.huaruntong.cn/api/points/saveQuestionSignin 请求加密前的 token 和业务参数；请求体 key/data 是密文，不能直接当作 token。不得分享抓包内容。失效后重新登录获取。将原配置 huaruntong.huaruntong_wx.accounts 中每个对象复制为单独一行亦可，不读取原私有配置文件。
+- 填写格式：`每个非空行一个账号：可直接填写完整 token，也可填写含 token 字段的单行 JSON 对象。JSON 兼容 answerResult（整数，默认 1）、channelId（默认 APP）、merchantCode（默认 1641000001532）、storeCode（默认 qiandaosonjifen）、sysId（默认 T0000001）、transactionUuid 和 inviteCode（默认空字符串）、user_agent（默认原 iPhone 浏览器标识）、account_name。字符串字段使用 JSON 转义；不使用 &、@ 分隔账号，token 内这些字符保留。account_name 兼容输入但日志使用账号序号和官方公开身份。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `IKUUU_ACCOUNT`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
@@ -1842,11 +1873,25 @@
 - 填写格式：`每个非空行一个账号；兼容 access_uid|access_token，仅按首个竖线分割；iOS 使用单行 JSON 对象，字段为 access_uid、access_token、client_checksum，全部为字符串。JSON 也适用于 Token 含竖线的账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
+#### `NS_COOKIE`
+
+- 所属脚本：`scripts/nodeseek.py`
+- 获取或设置：登录 NodeSeek，从浏览器开发者工具网络面板中的本站请求复制完整 Cookie 请求头值，不含 Cookie: 前缀；仅存入青龙环境变量，勿公开。
+- 填写格式：`每个非空行一个账号，保留完整 Cookie 中的分号、等号与其他字符；不以 & 或 @ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
 #### `NODESEEK_COOKIE`
 
 - 所属脚本：`scripts/nodeseek_checkin.py`
 - 获取或设置：登录 nodeseek.com，打开浏览器开发者工具的 Network，刷新页面，选择同站请求，复制 Request Headers 中完整的 cookie 值。请妥善保存，不要发送给他人。
 - 填写格式：`每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 & 和 @ 保持原样`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `OLE_ACCOUNTS`
+
+- 所属脚本：`scripts/ole.py`
+- 获取或设置：在本人授权登录的 Ole 微信小程序中抓取 member_sign 请求；将 sessionId、Device-Name、unique、oleWxOpenId 请求头分别填入 session_id、device_name、unique、ole_wx_open_id。可同时取得 shopCode、cityId、User-Agent；不要向他人提供这些值。
+- 填写格式：`每个非空行一个 JSON 对象；四个必填字段均为非空字符串。可选 shop_code 默认 205368，city_id 默认 c_region_11122，user_agent 默认保留上游值。兼容 account_name 字段但不输出用户填写的标签，避免泄漏手机号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `PASSNAT_SK`
@@ -3846,6 +3891,24 @@
 - 获取或设置：如通知模块不在标准青龙脚本目录，填写包含 notify.py 的现有本地目录。仅通知可选，业务不依赖该文件。
 - 填写格式：`本地目录路径。`
 
+#### `HRT_WX_DRY_RUN`
+
+- 所属脚本：`scripts/huaruntong_wx.py`
+- 获取或设置：青龙环境变量中自行设置。
+- 填写格式：`1、true、yes 或 on 启用断网预演，默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/huaruntong_wx.py`
+- 获取或设置：青龙环境变量中自行设置。
+- 填写格式：`默认 1；0、false、no、off 关闭通知。断网预演仅模拟发送通知，不调用任何通知模块。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/huaruntong_wx.py`
+- 获取或设置：可选，填写青龙现有 notify.py 或 sendNotify.js 所在目录。默认尝试导入 notify，再查找 /ql/data/scripts 和 /ql/scripts。
+- 填写格式：`本机目录路径；不下载或安装通知程序。`
+
 #### `ikuuu`
 
 - 所属脚本：`scripts/ikuuu_checkin.py`
@@ -4949,6 +5012,36 @@
 - 获取或设置：可选青龙通知模块目录，含 notify.py 或 sendNotify.js；业务运行不依赖该目录。
 - 填写格式：`默认 未设置`
 
+#### `NS_RANDOM`
+
+- 所属脚本：`scripts/nodeseek.py`
+- 获取或设置：自行选择签到奖励模式；默认 true；其他值按 true 处理，兼容原脚本。
+- 填写格式：`true 随机奖励，false 固定奖励。`
+
+#### `NS_IMPERSONATE`
+
+- 所属脚本：`scripts/nodeseek.py`
+- 获取或设置：按所安装 curl_cffi 支持的浏览器指纹设置，默认 chrome110。
+- 填写格式：`curl_cffi 支持的浏览器指纹名称。`
+
+#### `NS_DRY_RUN`
+
+- 所属脚本：`scripts/nodeseek.py`
+- 获取或设置：预演时设为 1；不发 HTTP 请求、不等待、不调用外部通知助手。
+- 填写格式：`1、true、yes、on 启用，默认 0。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/nodeseek.py`
+- 获取或设置：默认 1，正式运行调用青龙 notify.py；预演仅输出脱敏通知摘要。
+- 填写格式：`0、false、no、off 关闭；其他值启用。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/nodeseek.py`
+- 获取或设置：可填青龙通知模块目录；默认先导入 notify.send，再查找 /ql/data/scripts/notify.py 和 /ql/scripts/notify.py。
+- 填写格式：`包含 notify.py 的本地目录；通知不可用或失败不影响业务退出码。`
+
 #### `NODESEEK_DRY_RUN`
 
 - 所属脚本：`scripts/nodeseek_checkin.py`
@@ -4990,6 +5083,31 @@
 - 所属脚本：`scripts/nodeseek_checkin.py`
 - 获取或设置：仅当青龙通知脚本不在默认路径时，设为 notify.py 或 sendNotify.js 所在目录
 - 填写格式：`本地目录绝对路径`
+
+#### `OLE_CONFIG_JSON`
+
+- 所属脚本：`scripts/ole.py`
+- 获取或设置：可将既有 token.json 内容复制到此变量，作为旧配置结构兼容输入；配置 OLE_ACCOUNTS 时优先使用后者。
+- 填写格式：`JSON 对象，结构为 huaruntong.ole.accounts 数组；数组内保留原账号字段。无需私有文件路径。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `OLE_DRY_RUN`
+
+- 所属脚本：`scripts/ole.py`
+- 获取或设置：在青龙环境变量中设置，用于完全断网预演。
+- 填写格式：`1、true、yes、on 启用；默认 0。预演不代表真实业务成功。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/ole.py`
+- 获取或设置：在青龙环境变量中设置全局通知开关。
+- 填写格式：`默认 1；0、false、no、off 关闭。断网预演生成摘要并模拟投递，不运行通知模块。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/ole.py`
+- 获取或设置：如青龙通知模块不在默认路径，将 notify.py 所在目录填入；无需配置即可尝试导入 notify 和青龙常见目录。
+- 填写格式：`可选本地目录路径，仅用于青龙通知；不可用或失败不会改变业务退出码。`
 
 #### `PASSNAT_DRY_RUN`
 
@@ -7361,6 +7479,7 @@
 - `scripts/hifiti_checkin.py`：SHA-256 `ae18f25d6d7ad768ae64880761732b510e7bc3e75179bb9d66790f8203e4faf9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
 - `scripts/hlyl.py`：SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
 - `scripts/hsay.py`：SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
+- `scripts/huaruntong_wx.py`：SHA-256 `6fb8e542eeeed076b41be51b9c90430571698ff02226f25d85b83b54562a7c8e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/13902b7b1dd570d1`。
 - `scripts/ikuuu_checkin.py`：SHA-256 `44c91448c6d2d8ef71df14ee1a232e58f45bd7b232ff8870983ff6379e378694`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 - `scripts/imaotai.py`：SHA-256 `9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
 - `scripts/index.js`：SHA-256 `b0f670de5353137cb479251c75283cf6960207864f98a92c687c46147f7db3d7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
@@ -7382,7 +7501,9 @@
 - `scripts/mimotion.py`：SHA-256 `4e8149eb7fd9f48b6a92c4b22190c633a40d7def1754bb196a3c26bcbf30d7cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
 - `scripts/netease_task.py`：SHA-256 `a94fc863e187c81a29f6c44ab88c30162bc3d1570ebbe602a70ed4824a198fbe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a8a311f3f5aaa2e6`。
 - `scripts/nga_checkin.py`：SHA-256 `147ff1cce75da800dc48ed5dade6222282afff8f7bd6f1bbbdebda74ede5242e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
+- `scripts/nodeseek.py`：SHA-256 `9e38011e2840ce76dc24111e8c6d6522aeb75b71d8212be4551def23840e5549`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c28f0207e2b02a7b`。
 - `scripts/nodeseek_checkin.py`：SHA-256 `bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
+- `scripts/ole.py`：SHA-256 `5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
 - `scripts/passnat_checkin.py`：SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
 - `scripts/qoder_airscript.js`：SHA-256 `f2de4d37431803d0d85df63bf97e7b2e936efbb3e4686d7e2bb2a15f24d91b07`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 - `scripts/quark_signin.py`：SHA-256 `2487b5cd4a53457b8d0ce2000f154668060333a0483b846a52a9d329da18a5bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
@@ -7502,6 +7623,7 @@
 - `scripts/hifiti_checkin.py`：向 HiFiTi 提交每日签到；向 HiFiHi 提交每日签到；真实模式按全局通知开关向青龙配置的渠道发送脱敏任务通知。
 - `scripts/hlyl.py`：未签到时提交每日签到，可能获得积分和成长积分；显式开启时执行活动抽奖，可能消耗活动次数或积分并获得奖品；通知开启且正式运行时通过青龙组件发送任务总结。
 - `scripts/hsay.py`：向沪上阿姨签到接口提交每日签到，领取活动奖励；实际模式下通过青龙通知模块发送脱敏任务总结。
+- `scripts/huaruntong_wx.py`：正式运行提交签到与答题结果，可能获得签到积分；正式运行通过青龙通知组件发送脱敏任务汇总。
 - `scripts/ikuuu_checkin.py`：实际运行时邮箱密码登录并建立账号会话；实际运行时提交每日签到，可能增加账号流量；实际运行时通过青龙已有渠道及可选 PushPlus 发送脱敏任务摘要。
 - `scripts/imaotai.py`：显式开启后提交商品申购申请；启用耐力任务后领取耐力奖励；正式运行且开启通知时发送脱敏总结。
 - `scripts/index.js`：正式运行时创建明确指定的图片目录并保存收藏原图；替换未通过校验的普通图片文件；下载过程中创建临时文件并在结束时清理；通知开启且组件可用时发送脱敏任务结果通知，断网预演不外部投递。
@@ -7523,7 +7645,9 @@
 - `scripts/mimotion.py`：正式登录会申请 Zepp 授权及登录令牌。；仅 MIMOTION_ACTION=upload 时上传本人提供的当天运动记录，修改 summary.stp.ttl；其它提供的记录字段保持原样，不合成心率或睡眠数据。；启用通知时调用青龙通知模块发送脱敏汇总，预演禁止联网。。
 - `scripts/netease_task.py`：手机、网页与云贝签到改变签到记录或积分；领取已完成云贝任务奖励；领取 VIP 成长值；仅显式开启时提交模拟播放历史记录；正式执行且通知开启时发送青龙或备用渠道通知，并按配置发送 Bark 通知。
 - `scripts/nga_checkin.py`：每日签到改变签到及奖励状态；显式开启时增加日常任务计数及奖励状态；显式开启时增加视频任务计数、免广告与 N币奖励状态；显式开启时提交分享记录并领取分享奖励。
+- `scripts/nodeseek.py`：正式运行向 NodeSeek 提交签到并领取随机或固定奖励。；通知启用且助手可用时发送脱敏任务通知。。
 - `scripts/nodeseek_checkin.py`：成功请求会记录 NodeSeek 当日签到并可能增加鸡腿余额；启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总。
+- `scripts/ole.py`：正式模式向 Ole 提交会员签到，可能增加签到记录及奖励积分；正式模式按青龙配置发送任务通知。
 - `scripts/passnat_checkin.py`：向 PassNAT 提交每日签到并可能增加账号流量。
 - `scripts/qoder_airscript.js`：显式启用账号领取活动奖励；必要时刷新令牌，可能导致刷新令牌轮换；显式配置私有账号文件时写回刷新后的令牌；通知开启时发送青龙汇总及已配置的逐账号通知。
 - `scripts/quark_signin.py`：实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励；实时模式下启用通知时通过青龙发送脱敏任务摘要。
@@ -7645,6 +7769,7 @@
 - `scripts/hifiti_checkin.py`：上游 `agluo/ql-script-hub` / `HiFiti_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/hlyl.py`：上游 `cloudcranes/some_scripts` / `hlyl.py` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
 - `scripts/hsay.py`：上游 `Rookie-wb-WH/ql_scripts` / `hsay.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
+- `scripts/huaruntong_wx.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/huaruntong_wx/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/ikuuu_checkin.py`：上游 `agluo/ql-script-hub` / `ikuuu_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/imaotai.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/imaotai/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/index.js`：上游 `cloudcranes/some_scripts` / `Download_pixiv/index.js` / `f62b50fe0a961ea8a8707682723b080c0a5d1142`。
@@ -7666,7 +7791,9 @@
 - `scripts/mimotion.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/mimotion/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/netease_task.py`：上游 `Han-cy77/Qinglong_auto` / `netease_task.py` / `4bac7c4f709db60a648c4bd498e99f9c7e66b63b`。
 - `scripts/nga_checkin.py`：上游 `agluo/ql-script-hub` / `nga_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/nodeseek.py`：上游 `CN-Grace/QinglongScripts` / `Nodeseek.py` / `a40a2b080e0160bd8e0b0b807081115537b87153`。
 - `scripts/nodeseek_checkin.py`：上游 `agluo/ql-script-hub` / `nodeseek_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
+- `scripts/ole.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/ole/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/passnat_checkin.py`：上游 `agluo/ql-script-hub` / `passnat_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。
 - `scripts/qoder_airscript.js`：上游 `wallechfox/qoder-checkin` / `qoder-checkin-金山云文档/Qoder签到-金山文档AirScript.js` / `19ab6365c1f0759bb424a3d69e7de8dca89bf75d`。
 - `scripts/quark_signin.py`：上游 `agluo/ql-script-hub` / `quark_signin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。

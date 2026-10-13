@@ -5960,6 +5960,137 @@
       }
     },
     {
+      "catalogId": "13902b7b1dd570d1",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::huaruntong-wx",
+      "checkProfile": {
+        "requiredEnv": [
+          "HRT_WX_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "HRT_WX_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HRT_WX_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "HRT_WX_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功：业务码 S0A00000",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "华润通微信版加密签到，仅以官方业务码 S0A00000 确认成功",
+          "兼容原签到请求全部可配置参数及默认值，保持原 cron",
+          "逐行多账号独立执行、参数校验和失败非零退出",
+          "展示官方返回的非敏感昵称、用户名、显示名称或公开身份",
+          "完全断网预演、逐阶段耗时和脱敏结构化统计",
+          "青龙通知汇总，通知不可用不影响业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行提交签到与答题结果，可能获得签到积分",
+          "正式运行通过青龙通知组件发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "华润通微信版签到",
+      "path": "scripts/huaruntong_wx.py",
+      "sha256": "6fb8e542eeeed076b41be51b9c90430571698ff02226f25d85b83b54562a7c8e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/huaruntong/huaruntong_wx/main.py",
+        "related": [
+          {
+            "catalogId": "e8cdcb77480ffeea",
+            "sha256": "bae9376511d175153ffe836720f1821d10f86e33e5b40593175b6a43d8581aa9",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/huaruntong/huaruntong_wx/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "1 1 1 1 1",
+      "command": "python3 scripts/huaruntong_wx.py",
+      "environment": [
+        {
+          "name": "HRT_WX_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录华润通微信版官方页面，在本人授权的网络调试中查看 mid.huaruntong.cn/api/points/saveQuestionSignin 请求加密前的 token 和业务参数；请求体 key/data 是密文，不能直接当作 token。不得分享抓包内容。失效后重新登录获取。将原配置 huaruntong.huaruntong_wx.accounts 中每个对象复制为单独一行亦可，不读取原私有配置文件。",
+          "format": "每个非空行一个账号：可直接填写完整 token，也可填写含 token 字段的单行 JSON 对象。JSON 兼容 answerResult（整数，默认 1）、channelId（默认 APP）、merchantCode（默认 1641000001532）、storeCode（默认 qiandaosonjifen）、sysId（默认 T0000001）、transactionUuid 和 inviteCode（默认空字符串）、user_agent（默认原 iPhone 浏览器标识）、account_name。字符串字段使用 JSON 转义；不使用 &、@ 分隔账号，token 内这些字符保留。account_name 兼容输入但日志使用账号序号和官方公开身份。"
+        },
+        {
+          "name": "HRT_WX_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙环境变量中自行设置。",
+          "format": "1、true、yes 或 on 启用断网预演，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙环境变量中自行设置。",
+          "format": "默认 1；0、false、no、off 关闭通知。断网预演仅模拟发送通知，不调用任何通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙现有 notify.py 或 sendNotify.js 所在目录。默认尝试导入 notify，再查找 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本机目录路径；不下载或安装通知程序。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，配套参数放在同一行 JSON 对象中；逐账号独立处理，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome"
+      ],
+      "features": [
+        "华润通微信版加密签到，仅以官方业务码 S0A00000 确认成功",
+        "兼容原签到请求全部可配置参数及默认值，保持原 cron",
+        "逐行多账号独立执行、参数校验和失败非零退出",
+        "展示官方返回的非敏感昵称、用户名、显示名称或公开身份",
+        "完全断网预演、逐阶段耗时和脱敏结构化统计",
+        "青龙通知汇总，通知不可用不影响业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行提交签到与答题结果，可能获得签到积分",
+        "正式运行通过青龙通知组件发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/13902b7b1dd570d1",
+        "candidateSha256": "6fb8e542eeeed076b41be51b9c90430571698ff02226f25d85b83b54562a7c8e"
+      }
+    },
+    {
       "catalogId": "7ea70c9e9d579efb",
       "applicationKey": "ikuuu",
       "checkProfile": {
@@ -9695,6 +9826,143 @@
       }
     },
     {
+      "catalogId": "c28f0207e2b02a7b",
+      "applicationKey": "cn-grace/qinglongscripts::nodeseek",
+      "checkProfile": {
+        "requiredEnv": [
+          "NS_COOKIE"
+        ],
+        "optionalEnv": [
+          "NS_RANDOM",
+          "NS_IMPERSONATE",
+          "NS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NS_RANDOM": "true",
+          "NS_IMPERSONATE": "chrome110",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功（接口 success=true）",
+          "今日已完成签到"
+        ],
+        "features": [
+          "每日零点签到，支持随机奖励或固定奖励。",
+          "保留 curl_cffi 指纹模拟及默认 chrome110。",
+          "保留签到前随机延迟 0～5 分钟。",
+          "完整 Cookie 按行配置多账号，各账号独立执行。",
+          "完全断网预演、分阶段脱敏日志和单行结构化统计。",
+          "显示接口返回的非敏感昵称、用户名、显示名称或公开 UID。",
+          "正式运行通过青龙通知助手发送成功、部分失败、失败或配置错误摘要；预演只输出摘要。"
+        ],
+        "sideEffects": [
+          "正式运行向 NodeSeek 提交签到并领取随机或固定奖励。",
+          "通知启用且助手可用时发送脱敏任务通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "NodeSeek签到",
+      "path": "scripts/nodeseek.py",
+      "sha256": "9e38011e2840ce76dc24111e8c6d6522aeb75b71d8212be4551def23840e5549",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "CN-Grace/QinglongScripts",
+        "branch": "main",
+        "commit": "a40a2b080e0160bd8e0b0b807081115537b87153",
+        "originalPath": "Nodeseek.py"
+      },
+      "cron": "0 0 * * *",
+      "command": "python3 scripts/nodeseek.py",
+      "environment": [
+        {
+          "name": "NS_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 NodeSeek，从浏览器开发者工具网络面板中的本站请求复制完整 Cookie 请求头值，不含 Cookie: 前缀；仅存入青龙环境变量，勿公开。",
+          "format": "每个非空行一个账号，保留完整 Cookie 中的分号、等号与其他字符；不以 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "NS_RANDOM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择签到奖励模式；默认 true；其他值按 true 处理，兼容原脚本。",
+          "format": "true 随机奖励，false 固定奖励。"
+        },
+        {
+          "name": "NS_IMPERSONATE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按所安装 curl_cffi 支持的浏览器指纹设置，默认 chrome110。",
+          "format": "curl_cffi 支持的浏览器指纹名称。"
+        },
+        {
+          "name": "NS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设为 1；不发 HTTP 请求、不等待、不调用外部通知助手。",
+          "format": "1、true、yes、on 启用，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认 1，正式运行调用青龙 notify.py；预演仅输出脱敏通知摘要。",
+          "format": "0、false、no、off 关闭；其他值启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可填青龙通知模块目录；默认先导入 notify.send，再查找 /ql/data/scripts/notify.py 和 /ql/scripts/notify.py。",
+          "format": "包含 notify.py 的本地目录；通知不可用或失败不影响业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "NS_COOKIE 每个非空行一个账号，逐个独立签到；任意账号失败整体非零退出。"
+      },
+      "dependencies": [
+        "curl_cffi"
+      ],
+      "features": [
+        "每日零点签到，支持随机奖励或固定奖励。",
+        "保留 curl_cffi 指纹模拟及默认 chrome110。",
+        "保留签到前随机延迟 0～5 分钟。",
+        "完整 Cookie 按行配置多账号，各账号独立执行。",
+        "完全断网预演、分阶段脱敏日志和单行结构化统计。",
+        "显示接口返回的非敏感昵称、用户名、显示名称或公开 UID。",
+        "正式运行通过青龙通知助手发送成功、部分失败、失败或配置错误摘要；预演只输出摘要。"
+      ],
+      "sideEffects": [
+        "正式运行向 NodeSeek 提交签到并领取随机或固定奖励。",
+        "通知启用且助手可用时发送脱敏任务通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c28f0207e2b02a7b",
+        "candidateSha256": "9e38011e2840ce76dc24111e8c6d6522aeb75b71d8212be4551def23840e5549"
+      }
+    },
+    {
       "catalogId": "4196e654f2a752f8",
       "applicationKey": "nodeseek",
       "checkProfile": {
@@ -9849,6 +10117,142 @@
         "validatedSha256": "8dde0f5d49686dd145732a5b58cab8dc5dd9e0916ef7d53eed095c398aa7f720",
         "releaseSha256": "bc4d97b59c92bda264dd477193a902490e25641b333bfe8feab8406d233ef505",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
+      }
+    },
+    {
+      "catalogId": "89d9992e56504271",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::ole",
+      "checkProfile": {
+        "requiredEnv": [
+          "OLE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "OLE_CONFIG_JSON",
+          "OLE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "OLE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "OLE_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功（业务 success=true）",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "Ole 微信小程序账号签到",
+          "保留原账号字段、门店与城市默认值及定时表达式",
+          "多账号独立执行与失败闭合退出",
+          "完全断网预演及参数检查",
+          "脱敏分阶段日志、账号统计与单行任务汇总",
+          "青龙通知摘要与全局开关；断网预演模拟通知"
+        ],
+        "sideEffects": [
+          "正式模式向 Ole 提交会员签到，可能增加签到记录及奖励积分",
+          "正式模式按青龙配置发送任务通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "华润通Ole签到",
+      "path": "scripts/ole.py",
+      "sha256": "5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/huaruntong/ole/main.py",
+        "related": [
+          {
+            "catalogId": "3afc97138d2877f8",
+            "sha256": "09f9fbe0eeee89c5de82851285f9363d3436828fcaf0c001e670dfa2a5bd71ae",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/huaruntong/ole/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "1 1 1 1 1",
+      "command": "python3 scripts/ole.py",
+      "environment": [
+        {
+          "name": "OLE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人授权登录的 Ole 微信小程序中抓取 member_sign 请求；将 sessionId、Device-Name、unique、oleWxOpenId 请求头分别填入 session_id、device_name、unique、ole_wx_open_id。可同时取得 shopCode、cityId、User-Agent；不要向他人提供这些值。",
+          "format": "每个非空行一个 JSON 对象；四个必填字段均为非空字符串。可选 shop_code 默认 205368，city_id 默认 c_region_11122，user_agent 默认保留上游值。兼容 account_name 字段但不输出用户填写的标签，避免泄漏手机号。"
+        },
+        {
+          "name": "OLE_CONFIG_JSON",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可将既有 token.json 内容复制到此变量，作为旧配置结构兼容输入；配置 OLE_ACCOUNTS 时优先使用后者。",
+          "format": "JSON 对象，结构为 huaruntong.ole.accounts 数组；数组内保留原账号字段。无需私有文件路径。"
+        },
+        {
+          "name": "OLE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，用于完全断网预演。",
+          "format": "1、true、yes、on 启用；默认 0。预演不代表真实业务成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置全局通知开关。",
+          "format": "默认 1；0、false、no、off 关闭。断网预演生成摘要并模拟投递，不运行通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如青龙通知模块不在默认路径，将 notify.py 所在目录填入；无需配置即可尝试导入 notify 和青龙常见目录。",
+          "format": "可选本地目录路径，仅用于青龙通知；不可用或失败不会改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个完整 JSON 账号对象，同一账号凭据合并在一行；逐账号独立执行，任一失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "Ole 微信小程序账号签到",
+        "保留原账号字段、门店与城市默认值及定时表达式",
+        "多账号独立执行与失败闭合退出",
+        "完全断网预演及参数检查",
+        "脱敏分阶段日志、账号统计与单行任务汇总",
+        "青龙通知摘要与全局开关；断网预演模拟通知"
+      ],
+      "sideEffects": [
+        "正式模式向 Ole 提交会员签到，可能增加签到记录及奖励积分",
+        "正式模式按青龙配置发送任务通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/89d9992e56504271",
+        "candidateSha256": "5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796"
       }
     },
     {
