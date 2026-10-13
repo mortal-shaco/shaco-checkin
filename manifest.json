@@ -474,6 +474,145 @@
       }
     },
     {
+      "catalogId": "0ee602c1c54b9470",
+      "applicationKey": "nobyda/script::52pojie-dailybonus",
+      "checkProfile": {
+        "requiredEnv": [
+          "POJIE_COOKIE"
+        ],
+        "optionalEnv": [
+          "CookieWA",
+          "POJIE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "BARK_KEY",
+          "barkKey"
+        ],
+        "dryRunEnv": {
+          "POJIE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "✅ 签到成功（服务端确认）",
+          "☑️ 已签到（服务端确认）"
+        ],
+        "features": [
+          "每日 9 点吾爱破解签到，保留上游地址、PUT 方法和浏览器请求头。",
+          "判断签到成功、已签到、登录失效、HTTP 异常和未知响应，失败闭合。",
+          "支持 UTF-8 和 GBK 系列网页编码，逐行多账号 Cookie 和旧变量别名。",
+          "显示官方当前登录用户名，抑制凭据与原始响应。",
+          "完全断网预演、总超时、响应大小限制、阶段日志、账号统计和单行 TASK_SUMMARY。",
+          "青龙脱敏总结通知、可选 Bark 推送及全局通知开关。"
+        ],
+        "sideEffects": [
+          "正式执行申请论坛每日签到任务，可能增加签到奖励。",
+          "通知启用且通道可用时发送脱敏总结，配置 Bark 时发送可选推送。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "吾爱破解每日签到",
+      "path": "scripts/52pojie.js",
+      "sha256": "8477d0f2eec2d4cc38799acc921cd04b11d9648be363ee519d8bb51d3d15f664",
+      "stage": "released",
+      "license": "GPL-3.0-only",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "NobyDa/Script",
+        "branch": "master",
+        "commit": "0b8d083d444f4476700cb9d5d059c07b42da85eb",
+        "originalPath": "52pojie-DailyBonus/52pojie.js"
+      },
+      "cron": "0 9 * * *",
+      "command": "node scripts/52pojie.js",
+      "environment": [
+        {
+          "name": "POJIE_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.52pojie.cn/home.php，打开开发者工具网络面板并刷新，复制该站请求头的完整 Cookie，保存到青龙环境变量；失效后重新登录获取，不公开分享。",
+          "format": "每个非空行一个账号的完整 Cookie，包含非空站点前缀_auth 字段；保留同一行所有分号分隔字段，不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "CookieWA",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版 CookieWA 的兼容输入，获取方式与 POJIE_COOKIE 相同；规范变量优先。",
+          "format": "每个非空行一个完整 Cookie。"
+        },
+        {
+          "name": "POJIE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "完全断网预演时设置为 1。",
+          "format": "1、true、yes 或 on 启用，默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙全局通知开关，默认 1；预演模拟通知以保证断网。",
+          "format": "0、false、no 或 off 关闭所有通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 sendNotify.js 所在目录；默认检查 /ql/data/scripts 和 /ql/scripts，通知缺失或失败不改变业务退出码。",
+          "format": "本地通知模块目录，仅用于可选通知。"
+        },
+        {
+          "name": "BARK_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从 Bark 应用复制个人推送密钥，仅用于脱敏总结通知。",
+          "format": "一个 Bark 推送密钥。"
+        },
+        {
+          "name": "barkKey",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版 barkKey 的兼容输入，BARK_KEY 优先。",
+          "format": "一个 Bark 推送密钥。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，忽略空行；各账号独立执行，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日 9 点吾爱破解签到，保留上游地址、PUT 方法和浏览器请求头。",
+        "判断签到成功、已签到、登录失效、HTTP 异常和未知响应，失败闭合。",
+        "支持 UTF-8 和 GBK 系列网页编码，逐行多账号 Cookie 和旧变量别名。",
+        "显示官方当前登录用户名，抑制凭据与原始响应。",
+        "完全断网预演、总超时、响应大小限制、阶段日志、账号统计和单行 TASK_SUMMARY。",
+        "青龙脱敏总结通知、可选 Bark 推送及全局通知开关。"
+      ],
+      "sideEffects": [
+        "正式执行申请论坛每日签到任务，可能增加签到奖励。",
+        "通知启用且通道可用时发送脱敏总结，配置 Bark 时发送可选推送。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0ee602c1c54b9470",
+        "candidateSha256": "8477d0f2eec2d4cc38799acc921cd04b11d9648be363ee519d8bb51d3d15f664"
+      }
+    },
+    {
       "catalogId": "8ea0312febc74515",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::999",
       "checkProfile": {
@@ -21293,17 +21432,52 @@
           "JUEJIN_COOKIE"
         ],
         "optionalEnv": [
+          "JUEJIN_COOKIE_2",
+          "JUEJIN_COOKIE_3",
+          "JUEJIN_COOKIE_4",
+          "JUEJIN_COOKIE_5",
+          "JUEJIN_AID",
+          "JUEJIN_UUID",
+          "JUEJIN_MSTOKEN",
+          "JUEJIN_A_BOGUS",
+          "JUEJIN_AID_2",
+          "JUEJIN_UUID_2",
+          "JUEJIN_MSTOKEN_2",
+          "JUEJIN_A_BOGUS_2",
+          "JUEJIN_AID_3",
+          "JUEJIN_UUID_3",
+          "JUEJIN_MSTOKEN_3",
+          "JUEJIN_A_BOGUS_3",
+          "JUEJIN_AID_4",
+          "JUEJIN_UUID_4",
+          "JUEJIN_MSTOKEN_4",
+          "JUEJIN_A_BOGUS_4",
+          "JUEJIN_AID_5",
+          "JUEJIN_UUID_5",
+          "JUEJIN_MSTOKEN_5",
+          "JUEJIN_A_BOGUS_5",
+          "JUEJIN_FREE_LOTTERY",
+          "JUEJIN_DIP_LUCKY",
+          "JUEJIN_BUG_FIX",
+          "JUEJIN_LUCKY_QUERY",
           "JUEJIN_DRY_RUN",
           "QINGLONG_NOTIFY",
+          "JUEJIN_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "JUEJIN_DRY_RUN": "1"
         },
         "liveEnv": {
+          "JUEJIN_FREE_LOTTERY": "0",
+          "JUEJIN_DIP_LUCKY": "0",
+          "JUEJIN_BUG_FIX": "0",
+          "JUEJIN_LUCKY_QUERY": "1",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
+          "签到成功，获得",
+          "今日已签到",
           "\"status\":\"success\""
         ],
         "features": [
@@ -21314,11 +21488,19 @@
           "统计连续和累计签到天数",
           "换行多账号独立处理和失败退出",
           "完全断网参数预演",
-          "青龙脱敏汇总通知和阶段日志、单行结构化统计"
+          "青龙脱敏汇总通知和阶段日志、单行结构化统计",
+          "兼容完整 Cookie、旧分开签名参数及 JUEJIN_COOKIE_2 至 JUEJIN_COOKIE_5，推荐每行合并一个账号",
+          "显式开关控制免费抽奖，只在验证免费次数后抽取一次",
+          "显式开关控制沾喜气，无幸运记录时跳过",
+          "显式开关控制首个未收集 Bug 的消除并复核状态",
+          "查询幸运值，可独立关闭新增查询"
         ],
         "sideEffects": [
           "尚未签到时提交每日签到，领取矿石奖励",
-          "正式运行且启用通知时发送青龙任务摘要"
+          "显式启用后在免费次数大于零时提交一次抽奖，使用一次免费机会",
+          "显式启用后提交沾喜气，改变幸运值",
+          "显式启用后收集首个未收集 Bug，改变收集及奖励状态",
+          "正式运行且通知启用并可用时发送青龙脱敏摘要"
         ]
       },
       "postReview": {
@@ -21327,7 +21509,7 @@
       },
       "displayName": "稀土掘金每日签到",
       "path": "scripts/sudojia_juejin.js",
-      "sha256": "a3ab6439b1c72f4195f35551584cb573e8f9d0515eadd0cb1e60cd712436ea36",
+      "sha256": "6d8be6058694325cf547c831c4d33f9ce732a7d681ff94b96f42d26056f3406f",
       "stage": "released",
       "license": "GPL-3.0",
       "licenseGate": "allowed-copyleft",
@@ -21335,7 +21517,19 @@
         "repository": "sudojia/AutoTaskScript",
         "branch": "script",
         "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
-        "originalPath": "src/web/sudojia_juejin.js"
+        "originalPath": "src/web/sudojia_juejin.js",
+        "related": [
+          {
+            "repository": "huwangkeji/juejin_checkin",
+            "url": "https://github.com/huwangkeji/juejin_checkin.git",
+            "branch": "main",
+            "commit": "8a46bdf8f66c99b2e1de632475d36ec91b691651",
+            "originalPath": "juejin_checkin.js",
+            "catalogId": "0fc51fd1cb349c19",
+            "sha256": "6f8a138b51c397220444c9312040dbe3407af5aeed4fa4467a36672aeb8bcfd1",
+            "license": "GPL-3.0"
+          }
+        ]
       },
       "cron": "5 10 * * *",
       "command": "node scripts/sudojia_juejin.js",
@@ -21344,35 +21538,238 @@
           "name": "JUEJIN_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录稀土掘金网页，在开发者工具的 Cookie 中复制 sessionid 的值；在网络面板手动签到，找到 api.juejin.cn/growth_api/v1/check_in 请求，复制问号之后的原始查询串。须含 uuid、spider、msToken、a_bogus；签名过期或登录失效后重新抓取，不自动生成签名。",
-          "format": "每行 sessionid#原始查询串；仅以首个 # 分隔，查询串中的 & 保留；可包含 aid=2608。"
+          "howToGet": "登录自己的掘金账号，在浏览器开发者工具网络面板查看签到请求。复制请求头中的完整 Cookie 或在应用面板取得 sessionid；复制 check_in 请求问号后的原始查询串，不要复制网址、重新排序或混用账号。须含 uuid、spider、msToken、a_bogus，aid 如提供须为 2608。签名可能随时过期，应重新抓取，不保证三十天有效。扩展 document.cookie 可能缺少 HttpOnly 会话，优先使用真实请求头。",
+          "format": "每个非空行一个账号，格式为 sessionid#原始查询串或完整 Cookie#原始查询串，仅在第一个 # 分隔。账号之间只用换行，查询串的 & 是字段分隔符。兼容旧 Cookie 配置加本账号分开的签名变量，推荐合并配置。"
+        },
+        {
+          "name": "JUEJIN_COOKIE_2",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧多账号兼容输入，获取方法与 JUEJIN_COOKIE 相同。新配置推荐全部放入 JUEJIN_COOKIE。",
+          "format": "每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_2、JUEJIN_MSTOKEN_2、JUEJIN_A_BOGUS_2，不继承主账号签名。"
+        },
+        {
+          "name": "JUEJIN_COOKIE_3",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧多账号兼容输入，获取方法与 JUEJIN_COOKIE 相同。新配置推荐全部放入 JUEJIN_COOKIE。",
+          "format": "每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_3、JUEJIN_MSTOKEN_3、JUEJIN_A_BOGUS_3，不继承主账号签名。"
+        },
+        {
+          "name": "JUEJIN_COOKIE_4",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧多账号兼容输入，获取方法与 JUEJIN_COOKIE 相同。新配置推荐全部放入 JUEJIN_COOKIE。",
+          "format": "每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_4、JUEJIN_MSTOKEN_4、JUEJIN_A_BOGUS_4，不继承主账号签名。"
+        },
+        {
+          "name": "JUEJIN_COOKIE_5",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧多账号兼容输入，获取方法与 JUEJIN_COOKIE 相同。新配置推荐全部放入 JUEJIN_COOKIE。",
+          "format": "每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_5、JUEJIN_MSTOKEN_5、JUEJIN_A_BOGUS_5，不继承主账号签名。"
+        },
+        {
+          "name": "JUEJIN_AID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "固定 2608，默认 2608；附加账号可继承主账号的 aid。"
+        },
+        {
+          "name": "JUEJIN_UUID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_MSTOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_A_BOGUS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_AID_2",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "固定 2608，默认 2608；附加账号可继承主账号的 aid。"
+        },
+        {
+          "name": "JUEJIN_UUID_2",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_MSTOKEN_2",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_A_BOGUS_2",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_AID_3",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "固定 2608，默认 2608；附加账号可继承主账号的 aid。"
+        },
+        {
+          "name": "JUEJIN_UUID_3",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_MSTOKEN_3",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_A_BOGUS_3",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_AID_4",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "固定 2608，默认 2608；附加账号可继承主账号的 aid。"
+        },
+        {
+          "name": "JUEJIN_UUID_4",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_MSTOKEN_4",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_A_BOGUS_4",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_AID_5",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "固定 2608，默认 2608；附加账号可继承主账号的 aid。"
+        },
+        {
+          "name": "JUEJIN_UUID_5",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_MSTOKEN_5",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_A_BOGUS_5",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。",
+          "format": "非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。"
+        },
+        {
+          "name": "JUEJIN_FREE_LOTTERY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户按需设置。启用免费抽奖，明确剩余免费次数大于零时只提交一次，不重试。",
+          "format": "仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。"
+        },
+        {
+          "name": "JUEJIN_DIP_LUCKY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户按需设置。启用沾喜气。",
+          "format": "仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。"
+        },
+        {
+          "name": "JUEJIN_BUG_FIX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户按需设置。启用首个未收集 Bug 的消除及状态复核。",
+          "format": "仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。"
+        },
+        {
+          "name": "JUEJIN_LUCKY_QUERY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用户按需设置。启用幸运值只读查询。",
+          "format": "仅支持 0 或 1；默认 1，无效设置导致配置失败并禁止请求。"
         },
         {
           "name": "JUEJIN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "设置为 1 进行完全断网预演。",
-          "format": "1 启用，其余值执行正式任务。"
+          "howToGet": "验证参数时设置为 1。",
+          "format": "1 为完全断网预演，其余值为正式运行；预演不调用业务接口或通知模块。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙全局通知开关，默认启用。断网预演生成通知摘要但不投递，以保证零网络访问。",
-          "format": "0、false、no、off 关闭，不区分大小写。"
+          "howToGet": "青龙全局通知开关，按需设置。",
+          "format": "默认 1；0、false、no、off 不区分大小写表示关闭。"
+        },
+        {
+          "name": "JUEJIN_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧通知开关兼容输入。",
+          "format": "false 表示关闭；默认启用，全局关闭始终生效。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选：填写青龙 sendNotify.js 所在目录；未设置时查找 /ql/data/scripts 和 /ql/scripts。",
-          "format": "本机目录绝对路径。"
+          "howToGet": "可选，青龙自带 sendNotify.js 所在目录；未设置时查找青龙标准路径。",
+          "format": "本地目录路径，仅用于可选摘要通知，不影响业务退出码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行对应一个账号，配套凭据以首个 # 分隔；逐账号独立处理，任一账号失败整体非零退出。"
+        "rule": "每个非空行一个账号；同账号会话和查询串在首个 # 合并，后面的原始查询串完整保留。绝不以 & 或 @ 分割账号。旧附加账号变量依次追加，每个账号独立执行；任一账号或全局配置失败则非零退出。"
       },
       "dependencies": [],
       "features": [
@@ -21383,11 +21780,19 @@
         "统计连续和累计签到天数",
         "换行多账号独立处理和失败退出",
         "完全断网参数预演",
-        "青龙脱敏汇总通知和阶段日志、单行结构化统计"
+        "青龙脱敏汇总通知和阶段日志、单行结构化统计",
+        "兼容完整 Cookie、旧分开签名参数及 JUEJIN_COOKIE_2 至 JUEJIN_COOKIE_5，推荐每行合并一个账号",
+        "显式开关控制免费抽奖，只在验证免费次数后抽取一次",
+        "显式开关控制沾喜气，无幸运记录时跳过",
+        "显式开关控制首个未收集 Bug 的消除并复核状态",
+        "查询幸运值，可独立关闭新增查询"
       ],
       "sideEffects": [
         "尚未签到时提交每日签到，领取矿石奖励",
-        "正式运行且启用通知时发送青龙任务摘要"
+        "显式启用后在免费次数大于零时提交一次抽奖，使用一次免费机会",
+        "显式启用后提交沾喜气，改变幸运值",
+        "显式启用后收集首个未收集 Bug，改变收集及奖励状态",
+        "正式运行且通知启用并可用时发送青龙脱敏摘要"
       ],
       "review": {
         "staticPassed": true,
@@ -21400,12 +21805,12 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/f86741e6210934e9",
-        "candidateSha256": "6247fbcd8b0e45373b86b653a5c8eb5f625381af7d803480d0a2ba46fe122b58"
+        "candidateSha256": "375065a49efeb922f57a7f8e65375fc3ab7e8eb6592f92f71b33dfd5fa9caacf"
       },
       "packaging": {
         "type": "qinglong-discovery-metadata",
-        "validatedSha256": "6247fbcd8b0e45373b86b653a5c8eb5f625381af7d803480d0a2ba46fe122b58",
-        "releaseSha256": "a3ab6439b1c72f4195f35551584cb573e8f9d0515eadd0cb1e60cd712436ea36",
+        "validatedSha256": "375065a49efeb922f57a7f8e65375fc3ab7e8eb6592f92f71b33dfd5fa9caacf",
+        "releaseSha256": "6d8be6058694325cf547c831c4d33f9ce732a7d681ff94b96f42d26056f3406f",
         "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
@@ -26046,6 +26451,135 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/8060442233509c9a",
         "candidateSha256": "f343af6c80ac9ca40e51f0fb72a81d41acb2af51233623d6fa2f1fca4e636f7f"
+      }
+    },
+    {
+      "catalogId": "ef2d3863a5184a74",
+      "applicationKey": "yunzimo/apchinkin::autosignin",
+      "checkProfile": {
+        "requiredEnv": [
+          "refreshToken"
+        ],
+        "optionalEnv": [
+          "ALIYUNDRIVE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ALIYUNDRIVE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "TASK_SUMMARY=.*\"status\":\"success\""
+        ],
+        "features": [
+          "使用刷新令牌获取访问令牌，显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。",
+          "每日签到，核验业务成功字段与当天签到状态，显示本月累计签到天数。",
+          "依次补领全部正常且未领取的签到奖励，显示公开奖励名称与说明；今日已领取时显示今日奖励。",
+          "多账号独立处理，单次领奖失败继续后续奖励，任一失败影响整体退出码。",
+          "保留每天 9 点、22 点定时以及 refreshToken 凭据变量；提供完全断网预演。",
+          "固定 HTTPS 接口、15 秒总请求超时、响应大小限制及明确业务成功核验。",
+          "按阶段输出脱敏日志、每账号统计及唯一单行 TASK_SUMMARY 汇总。",
+          "成功、部分失败、失败或配置错误时尝试通过青龙 sendNotify.js 发送脱敏总结；遵循全局开关，断网预演仅预演通知。"
+        ],
+        "sideEffects": [
+          "正式运行刷新账号访问会话，服务端可能轮换刷新令牌。",
+          "正式运行提交阿里云盘每日签到。",
+          "正式运行领取正常且尚未领取的签到奖励。",
+          "通知启用且模块可用时发送任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "阿里云盘签到",
+      "path": "scripts/task_ef2d3863.js",
+      "sha256": "8586de43a2f596862d6cb8d81ed151c476292dca5f800bcc20985219e3d892a4",
+      "stage": "released",
+      "license": "Apache-2.0",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yunzimo/APChinkin",
+        "branch": "main",
+        "commit": "017f5685f1b59a8695bbb3a0a35a80cf5f7f5e79",
+        "originalPath": "autoSignin.js"
+      },
+      "cron": "0 9,22 * * *",
+      "command": "node scripts/task_ef2d3863.js",
+      "environment": [
+        {
+          "name": "refreshToken",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人阿里云盘网页版，在浏览器开发者工具的本地存储 token 对象或本人登录刷新请求中提取 refresh_token；不要使用 access_token，不要公开存储内容。服务端轮换或凭据失效后，重新通过官方登录流程获取并更新。沿用上游变量名，不读取青龙管理接口。",
+          "format": "每个非空行一个账号的 refresh_token，支持换行及 Windows 换行；不支持 &、@、空格分隔账号。"
+        },
+        {
+          "name": "ALIYUNDRIVE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置为 1 开启完全断网预演；正式执行时移除或设置为 0。",
+          "format": "1 表示断网预演，其他值表示正式运行。预演不证明真实签到成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙全局通知开关；默认启用。",
+          "format": "0、false、no、off 关闭通知，忽略大小写；其他值启用。断网预演仅生成通知总结，不调用通知网络。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已配置的青龙公开通知模块 sendNotify.js 所在目录；未设置时检查 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本地目录路径，仅用于可选通知；缺失、失败或超时不会改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "refreshToken 每个非空行对应一个账号，顺序独立执行；一个账号失败仍继续其他账号，任何账号或领奖失败均非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用刷新令牌获取访问令牌，显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。",
+        "每日签到，核验业务成功字段与当天签到状态，显示本月累计签到天数。",
+        "依次补领全部正常且未领取的签到奖励，显示公开奖励名称与说明；今日已领取时显示今日奖励。",
+        "多账号独立处理，单次领奖失败继续后续奖励，任一失败影响整体退出码。",
+        "保留每天 9 点、22 点定时以及 refreshToken 凭据变量；提供完全断网预演。",
+        "固定 HTTPS 接口、15 秒总请求超时、响应大小限制及明确业务成功核验。",
+        "按阶段输出脱敏日志、每账号统计及唯一单行 TASK_SUMMARY 汇总。",
+        "成功、部分失败、失败或配置错误时尝试通过青龙 sendNotify.js 发送脱敏总结；遵循全局开关，断网预演仅预演通知。"
+      ],
+      "sideEffects": [
+        "正式运行刷新账号访问会话，服务端可能轮换刷新令牌。",
+        "正式运行提交阿里云盘每日签到。",
+        "正式运行领取正常且尚未领取的签到奖励。",
+        "通知启用且模块可用时发送任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ef2d3863a5184a74",
+        "candidateSha256": "3c27c4a5d4c2c61ec6d2198398f56b6c164d3fddc5ec9d97c2c12aa2b89d344f"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "3c27c4a5d4c2c61ec6d2198398f56b6c164d3fddc5ec9d97c2c12aa2b89d344f",
+        "releaseSha256": "8586de43a2f596862d6cb8d81ed151c476292dca5f800bcc20985219e3d892a4",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
     {

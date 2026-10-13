@@ -35,6 +35,7 @@
 | 139云盘云朵任务 | `scripts/139_yunduo.py` | `python3 scripts/139_yunduo.py` | `0 9 * * *` |
 | 2cycdx自动签到 | `scripts/2cycdx.py` | `python3 scripts/2cycdx.py` | `0 8 * * *` |
 | 51CTO博客每日签到 | `scripts/51cto_sign.js` | `node scripts/51cto_sign.js` | `0 8 * * *` |
+| 吾爱破解每日签到 | `scripts/52pojie.js` | `node scripts/52pojie.js` | `0 9 * * *` |
 | 华润通999答题 | `scripts/999.py` | `python3 scripts/999.py` | `1 1 1 1 1` |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `0 8 * * *` |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `20 9 * * *` |
@@ -194,6 +195,7 @@
 | 甄稀冰淇淋每日签到 | `scripts/sudojia_zxice.js` | `node scripts/sudojia_zxice.js` | `22 15 * * *` |
 | 微博超话签到 | `scripts/supertopicsign.py` | `python3 scripts/supertopicsign.py` | `0 8 * * *` |
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `8 8,12 * * *` |
+| 阿里云盘签到 | `scripts/task_ef2d3863.js` | `node scripts/task_ef2d3863.js` | `0 9,22 * * *` |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `45 9 * * *` |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `23 8 * * *` |
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `30 9 * * *` |
@@ -222,6 +224,7 @@
 - `scripts/139_yunduo.py`：标准库实现完整SSO与JWT认证链，展示官方返回的非敏感账号身份；获取执行前后AI豆余额；检查当日签到状态并执行每日签到，验证返回结果；列出云朵任务与奖励说明，完成小云互动礼319、问卷118及605、606、431点击任务并复查FINISH；显式启用后尝试其他未完成任务的点击接口；显式启用后上传随机小文件完成任务106，完成后可选择移入回收站；按最新AI豆余额展示可兑换奖品、分类、价格与今日余量，不执行兑换；逐行多账号及旧版单账号参数兼容，失败闭合；完全断网预演、时间轴日志、阶段统计和单行结构化任务汇总；青龙通知及PushPlus、Server酱通知回退，通知故障保留业务退出码。
 - `scripts/2cycdx.py`：获取论坛签到页面及 formhash 登录参数。；每天 08:00 签到领取贡献，明确识别签到成功和今日已签到。；逐行多账号独立处理，任一账号失败返回非零退出码。；使用一言 HTTPS 随机签到文案，解析文本、作者和来源并保留署名格式；失败时使用本地文案，不向文案服务发送凭据。；保留页面编码识别、中文表单编码和 XML CDATA 业务结果解析。；返回官方非敏感用户名时显示，凭据、原始响应和敏感身份不输出。；提供完全断网预演，模拟签到、文案获取和通知。；青龙通知覆盖成功、部分失败、失败、配置错误及预演；不可用或失败时保留业务退出码。；输出时间轴阶段日志、账号和任务统计及单行 TASK_SUMMARY JSON。；独立标准库 HTTP 实现，带超时、响应大小限制及跨站重定向保护。。
 - `scripts/51cto_sign.js`：账号密码登录并同步博客会话；获取签到Token并沿用原始MD5接口签名；查询每日签到状态，已经签到时避免重复提交；未签到时执行签到并重新查询验证完成；每行一个账号，兼容单行旧式用户名@密码；完全断网预演、阶段日志、账号及任务统计和结构化汇总；青龙通知及全局开关，通知失败保留业务退出码。
+- `scripts/52pojie.js`：每日 9 点吾爱破解签到，保留上游地址、PUT 方法和浏览器请求头。；判断签到成功、已签到、登录失效、HTTP 异常和未知响应，失败闭合。；支持 UTF-8 和 GBK 系列网页编码，逐行多账号 Cookie 和旧变量别名。；显示官方当前登录用户名，抑制凭据与原始响应。；完全断网预演、总超时、响应大小限制、阶段日志、账号统计和单行 TASK_SUMMARY。；青龙脱敏总结通知、可选 Bark 推送及全局通知开关。。
 - `scripts/999.py`：按原接口获取华润通999题目；展示题目、选项和接口标记的正确答案；支持单选或多选正确选项并提交答案；按上游 resultCode 字符串 0 验证获取和提交成功，不推断积分到账；多账号独立处理和失败退出；本地模拟完整答题流程的断网预演；按时间轴记录阶段耗时、账号和任务统计，并输出单条结构化汇总；正式执行通过青龙通知发送脱敏摘要，断网预演在本地输出摘要；展示官方接口返回的非敏感昵称、用户名、显示名称或公开标识。
 - `scripts/acfun.py`：手机号密码登录及多账号独立执行；每日签到及等级、香蕉余额查询；显示官方返回的非秘密昵称、用户名或公开用户标识；排行榜选择视频，支持显式点赞、点赞后取消和投一根香蕉；读取实际视频及分区信息后显式发布弹幕；禁止硬编码目标回退；弹幕优先使用独立无凭据的一言请求，保留正文与作者、来源署名；各类失败均回退本地文案；使用配套 App 登录凭据显式上报分享任务；完全断网预演、通知入口、带时间戳的分阶段统计和单行机器可读汇总。
 - `scripts/agentrouter.py`：通过 GitHub OAuth 重新登录触发每日签到，以服务端 checked_in 严格确认为成功。；查询并展示官方账号身份、当前余额美元换算及已用额度。；保留站点公开客户端配置、已知客户端编号和额度换算比例兜底。；支持每行一个账号、原 JSON 配置格式、账号站点与用户编号配置、代理与可信 CA 证书。；支持显式启用首次 GitHub OAuth 授权；默认要求浏览器手动授权。；每天 09:20 运行，多账号间隔五秒。；完全断网预演、分阶段日志、账号与子任务统计、单行 TASK_SUMMARY 汇总及青龙脱敏通知。。
@@ -345,7 +348,7 @@
 - `scripts/sudojia_jiangshan.js`：每日签到并查询连续签到天数；读取新闻并复查任务完成进度；可选分享任务上报、评论、点赞与本地服务任务上报；评论优先使用一言正文与作者出处署名，所有声明异常均回退本地文本；查询官方账号昵称、用户名、显示名或公开 UID 及当前积分；逐行多账号、独立失败统计、断网预演、脱敏青龙通知与结构化汇总。
 - `scripts/sudojia_jindian.js`：查询并显示官方账号昵称等非秘密身份信息；检查每日签到状态，已签到时避免重复写入；执行每日签到，显示奖励并复查签到状态；查询当前积分，包括已经签到的账号；支持逐行配置多账号并隔离失败；支持断网预演、青龙脱敏通知和带时间戳的阶段日志、账号统计及单行结构化汇总。
 - `scripts/sudojia_jlc_yj.js`：保留开源平台官方昵称查询、每日签到与积分查询，以及维护版默认调度和请求接口；合并原脚本签到前后状态复查、总积分及积分变化、本周签到和本月连续签到统计；已签到避免重复写入；兼容 OSHW_COOKIE 和可选随机签到延迟，保留原脚本调度说明；只读查询网络异常最多重试三次；保留下单助手公开账号标识、签到状态、每日签到、签到复查及金豆余额查询；保留显式授权后领取待选奖励并最多补签一次，未完成则失败闭合；单一规范脚本按 JLC_TASKS 开关运行两套凭据独立的流程，并保留各自调度说明；多账号独立执行、请求超时、响应大小限制、明确业务成功判断和失败非零退出；完全断网预演、脱敏青龙通知、时间轴阶段日志、逐账号统计和唯一单行 TASK_SUMMARY 汇总。
-- `scripts/sudojia_juejin.js`：检查登录和今日签到状态；显示官方返回的账号昵称；每日签到，已签到时不重复提交，重复签到业务码须经状态复核；查询矿石余额；统计连续和累计签到天数；换行多账号独立处理和失败退出；完全断网参数预演；青龙脱敏汇总通知和阶段日志、单行结构化统计。
+- `scripts/sudojia_juejin.js`：检查登录和今日签到状态；显示官方返回的账号昵称；每日签到，已签到时不重复提交，重复签到业务码须经状态复核；查询矿石余额；统计连续和累计签到天数；换行多账号独立处理和失败退出；完全断网参数预演；青龙脱敏汇总通知和阶段日志、单行结构化统计；兼容完整 Cookie、旧分开签名参数及 JUEJIN_COOKIE_2 至 JUEJIN_COOKIE_5，推荐每行合并一个账号；显式开关控制免费抽奖，只在验证免费次数后抽取一次；显式开关控制沾喜气，无幸运记录时跳过；显式开关控制首个未收集 Bug 的消除并复核状态；查询幸运值，可独立关闭新增查询。
 - `scripts/sudojia_kozbs.js`：查询官方返回的公开昵称和当前积分。；检查今日签到状态，已签到时避免重复签到。；未签到时执行每日签到，以业务码 errno 严格等于数字 0 确认接口成功。；支持换行多账号、独立失败处理和整体失败退出码。；提供完全断网预演、阶段耗时、账号与任务统计以及单行结构化汇总。；正式执行后通过青龙发送脱敏汇总，支持全局关闭及通知失败不影响业务退出码。。
 - `scripts/sudojia_ktgzs.js`：查询并显示官方返回的账号名称，不输出手机号；每日签到，显示签到奖励和连续签到天数；查询最近积分流水中的当前积分；每行一个账号，独立处理并汇总失败退出码；完全断网预演，校验账号配置并展示三个业务阶段；通过青龙通知模块发送脱敏任务总结，支持总开关和通知目录设置；带时间戳的阶段日志、账号统计、任务统计及单行 TASK_SUMMARY 结构化汇总。
 - `scripts/sudojia_kukahome.js`：读取并显示官方返回的账号昵称，不输出手机号或原始响应；每日签到并校验业务状态与积分结果；查询连续签到天数与当前积分；逐行多账号独立执行及失败非零退出；完全断网预演、分阶段日志及单行结构化任务总结；青龙脱敏通知，通知异常不改变业务退出码。
@@ -381,6 +384,7 @@
 - `scripts/sudojia_zxice.js`：校验账号登录状态并展示官方返回的非敏感昵称；查询今日签到状态，已签到时避免重复操作；每日签到并展示接口确认的奶滴奖励；查询当前奶滴值；支持每行一个账号，独立处理并汇总失败退出码；完全断网预演、分阶段时间轴日志、账号统计和单行 TASK_SUMMARY 汇总；通过青龙 sendNotify.js 发送脱敏结果通知，支持全局开关；完全断网预演生成本地通知摘要。
 - `scripts/supertopicsign.py`：读取关注超话完整分页列表，检查分页结构和循环上限；识别已签到状态并跳过重复签到；按超话等级升序、降序或接口原始顺序执行；逐账号限制单次签到请求数量；多账号独立处理、显式业务成功校验与失败非零退出；从官方只读列表响应展示非敏感账号昵称或公开身份；离线凭据格式校验及模拟签到预演；分阶段脱敏日志、账号及任务统计与单行 TASK_SUMMARY 记录；青龙结果通知及全局通知开关。
 - `scripts/synspoint.py`：查询官方昵称并显示非敏感身份；查询任务前后积分；执行会员签到；执行浏览会员商城积分任务（任务编号 38）；显式开启上播预约后取消，保留原活动、商品列表和等待时间，可配置活动及商品；按原定时执行，支持每行一个账号及账号间失败隔离；断网预演、脱敏通知、分阶段日志及单行结构化任务汇总。
+- `scripts/task_ef2d3863.js`：使用刷新令牌获取访问令牌，显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。；每日签到，核验业务成功字段与当天签到状态，显示本月累计签到天数。；依次补领全部正常且未领取的签到奖励，显示公开奖励名称与说明；今日已领取时显示今日奖励。；多账号独立处理，单次领奖失败继续后续奖励，任一失败影响整体退出码。；保留每天 9 点、22 点定时以及 refreshToken 凭据变量；提供完全断网预演。；固定 HTTPS 接口、15 秒总请求超时、响应大小限制及明确业务成功核验。；按阶段输出脱敏日志、每账号统计及唯一单行 TASK_SUMMARY 汇总。；成功、部分失败、失败或配置错误时尝试通过青龙 sendNotify.js 发送脱敏总结；遵循全局开关，断网预演仅预演通知。。
 - `scripts/tencent_video_checkin.py`：每日签到获取 V力值；领取每日观看任务奖励（不自动播放视频）；查询会员积分、等级和 V力值，保留零值展示；查询 VIP 到期时间；多账号逐行处理、兼容旧单账号变量、独立校验与失败汇总；返回官方非敏感昵称、用户名、显示名称或公开 UID 时显示身份；青龙通知及 PushPlus、Server酱顺序回退，支持全局通知开关；完全断网预演、分阶段日志和单行 TASK_SUMMARY 结构化总结。
 - `scripts/tieba_checkin.py`：保留登录验证和 TBS 获取、读取关注贴吧、识别当日已签到项目、为未签到贴吧逐吧签到，沿用明确成功码和已签到判断。；直接显示官方接口返回的昵称、用户名或公开 UID，方便核对账号。；显式开启后通过 APP 成长接口验证登录、取得独立 TBS，并执行成长任务每日签到，要求业务码明确为 0。；显式开启后查询当前成长值、贴贝余额、当前等级及距离下一等级所需成长值，保留上游等级差值算法。；沿用 TIEBA_COOKIE，兼容 TIE_BA_COOKIE 的完整 Cookie 或 BDUSS 单值，每行一个账号；成长字段在同一账号 Cookie 中提供。；保留规范任务每日 08:23 计划、逐吧详情开关与可配置请求间隔；成长任务默认关闭。；完全断网预演校验账号必要字段、不加载通知组件、不产生账号副作用，并展示脱敏通知汇总。；正式执行、配置失败、部分失败或成功后尝试青龙脱敏通知，支持全局关闭，通知失败保持业务退出码。；输出逐阶段时间轴、账号及任务统计、最终状态和恰好一个单行 TASK_SUMMARY 结构化汇总。；逐吧流程和成长任务独立处理，任一任务或账号失败返回非零退出码；HTTP 有超时、响应大小限制及同主机 HTTPS 重定向限制。。
 - `scripts/tjd_daily.py`：社区每日签到并复核服务端任务进度；浏览推荐帖子，按服务端剩余次数执行和复核；显式启用帖子点赞，跳过已点赞帖子并复核进度；显式启用帖子分享回调，保留平台参数并复核进度；查询绑定游戏角色昵称、等级和服务器；绑定游戏每日签到，保留 H5 鉴权及已签到业务码 5052，执行后查询确认；查询任务进度、今日及累计金币、游戏签到状态；凭据失效时用可选账号密码自动重登一次，内置 AES 加密和签名，凭据仅在内存更新；支持 --only、--account、--config、--no-notify 和 --loop；预演只运行一轮；换行多账号及旧变量兼容、断网预演、阶段日志、青龙脱敏通知和单行机器汇总。
@@ -414,6 +418,7 @@
 <tr><td rowspan="1"><code>scripts/139_yunduo.py</code></td><td><code>YDYP_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：手机号|Basic 授权值；也兼容省略 Basic 前缀的完整编码值或原始授权令牌。仅在第一个竖线处分割，后续凭据原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/2cycdx.py</code></td><td><code>cycd_cookie</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；保留行内分号、等号、&amp; 和 @，不用这些符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/51cto_sign.js</code></td><td><code>ICTO_BLOG_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，推荐用户名|密码；在首个竖线拆分，后续密码原样保留。兼容不含竖线的用户名@密码，在首个@拆分；邮箱用户名须使用竖线。旧版&amp;多账号配置必须迁移为换行。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/52pojie.js</code></td><td><code>POJIE_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie，包含非空站点前缀_auth 字段；保留同一行所有分号分隔字段，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/999.py</code></td><td><code>HRT999_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个完整 JSON 对象；必填 mobile（十一位中国大陆手机号）和 token（非空字符串）；可选 user_agent（无换行字符串）及 account_name（原有账号备注兼容字段，不用于业务验证）。JSON 可无歧义保留凭据中的分隔符。不要用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/acfun.py</code></td><td><code>ACFUN_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号，格式为 手机号|密码；仅在第一个 | 分割，密码中的后续 | 和首尾空格原样保留。手机号两侧空格忽略；不得使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/agentrouter.py</code></td><td><code>AGENTROUTER_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 user_session 值或 JSON 对象；对象必填 github_session，可填 account_name、base_url、user_id、proxy、verify；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -545,7 +550,7 @@
 <tr><td rowspan="1"><code>scripts/sudojia_jiangshan.js</code></td><td><code>JIANG_SHAN_SESSION</code></td><td>是</td><td>格式：每行一个账号的会话值，仅以换行分隔；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_jindian.js</code></td><td><code>JINDIAN_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的 access-token，不含请求头名称；不使用 &amp;、@ 等符号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_jlc_yj.js</code></td><td><code>JLC_COOKIE</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie；兼容 OSHW_COOKIE，二者同时设置时优先使用 JLC_COOKIE；不以 &amp; 或 @ 分隔账号；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/sudojia_juejin.js</code></td><td><code>JUEJIN_COOKIE</code></td><td>是</td><td>格式：每行 sessionid#原始查询串；仅以首个 # 分隔，查询串中的 &amp; 保留；可包含 aid=2608。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/sudojia_juejin.js</code></td><td><code>JUEJIN_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号，格式为 sessionid#原始查询串或完整 Cookie#原始查询串，仅在第一个 # 分隔。账号之间只用换行，查询串的 &amp; 是字段分隔符。兼容旧 Cookie 配置加本账号分开的签名变量，推荐合并配置。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_kozbs.js</code></td><td><code>KOZBS_TOKEN</code></td><td>是</td><td>格式：每个非空行填写一个账号的完整令牌；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sudojia_ktgzs.js</code></td><td><code>KTGZS_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号的 Authorization 完整值；保留值内字符，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="2"><code>scripts/sudojia_kukahome.js</code></td><td><code>GU_HOME_TOKEN</code></td><td>是</td><td>格式：每行 AccessToken#X-Customer，仅在首个 # 处分割，后续字符原样保留；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -583,6 +588,7 @@
 <tr><td rowspan="1"><code>scripts/sudojia_zxice.js</code></td><td><code>ZX_ICE_TOKEN</code></td><td>是</td><td>格式：每个非空行填写一个账号的 access-token 原值；不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/supertopicsign.py</code></td><td><code>WEIBO_SUPERTOPIC_ACCOUNTS</code></td><td>是</td><td>格式：每行一个账号；完整 HTTPS URL 或 URL 编码查询字符串；按第一个等号解析字段并保留后续内容；&amp; 仅分隔同一账号的查询字段，不分隔账号；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/synspoint.py</code></td><td><code>synshd</code></td><td>是</td><td>格式：每个非空行一个账号凭据，可带 Bearer 前缀；不使用 #、&amp;、@ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/task_ef2d3863.js</code></td><td><code>refreshToken</code></td><td>是</td><td>格式：每个非空行一个账号的 refresh_token，支持换行及 Windows 换行；不支持 &amp;、@、空格分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tencent_video_checkin.py</code></td><td><code>TENCENT_VIDEO_COOKIES</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie，字段以分号分隔，仅按第一个等号拆分字段值。必需非空字段 vqq_openid、vqq_access_token、main_login；建议保留 vqq_vuserid、vqq_appid、vdevice_qimei36 和 ip。支持空行及 # 开头注释，不用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tieba_checkin.py</code></td><td><code>TIEBA_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号；支持 BDUSS 单值或完整 Cookie。成长任务要求同一行含 BDUSS=值; CUID=值，字段值按首个等号分割，后续等号保留；不能按 &amp; 或 @ 分账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/tjd_daily.py</code></td><td><code>TJD_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必含 token、deviceid 字符串；可选 uid（默认 0）、name、phone、password、openudid、vendorid、account_uid。兼容旧 JSON 对象或数组，不以 &amp; 或 @ 分账号。；多账号格式以该脚本文档为准</td></tr>
@@ -632,6 +638,12 @@
 <tr><td rowspan="3"><code>scripts/51cto_sign.js</code></td><td><code>ICTO_BLOG_DRY_RUN</code></td><td>否</td><td>格式：1开启完全断网预演；其他值为真实运行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off关闭通知，其他值开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选本地目录；同时自动查找青龙标准脚本目录和当前目录。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="6"><code>scripts/52pojie.js</code></td><td><code>CookieWA</code></td><td>是</td><td>格式：每个非空行一个完整 Cookie。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>POJIE_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes 或 on 启用，默认关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no 或 off 关闭所有通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录，仅用于可选通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>BARK_KEY</code></td><td>是</td><td>格式：一个 Bark 推送密钥。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>barkKey</code></td><td>是</td><td>格式：一个 Bark 推送密钥。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/999.py</code></td><td><code>HRT999_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演，其余值正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，其他值开启；断网预演仅在日志输出通知摘要，不外发。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录；缺失或发送失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
@@ -1554,9 +1566,38 @@
 <tr><td><code>OSHW_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，不区分大小写；其他值开启；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地通知模块目录；通知失败不改变业务退出码；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="3"><code>scripts/sudojia_juejin.js</code></td><td><code>JUEJIN_DRY_RUN</code></td><td>否</td><td>格式：1 启用，其余值执行正式任务。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，不区分大小写。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录绝对路径。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="32"><code>scripts/sudojia_juejin.js</code></td><td><code>JUEJIN_COOKIE_2</code></td><td>是</td><td>格式：每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_2、JUEJIN_MSTOKEN_2、JUEJIN_A_BOGUS_2，不继承主账号签名。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_COOKIE_3</code></td><td>是</td><td>格式：每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_3、JUEJIN_MSTOKEN_3、JUEJIN_A_BOGUS_3，不继承主账号签名。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_COOKIE_4</code></td><td>是</td><td>格式：每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_4、JUEJIN_MSTOKEN_4、JUEJIN_A_BOGUS_4，不继承主账号签名。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_COOKIE_5</code></td><td>是</td><td>格式：每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_5、JUEJIN_MSTOKEN_5、JUEJIN_A_BOGUS_5，不继承主账号签名。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_AID</code></td><td>否</td><td>格式：固定 2608，默认 2608；附加账号可继承主账号的 aid。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_UUID</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_MSTOKEN</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_A_BOGUS</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_AID_2</code></td><td>否</td><td>格式：固定 2608，默认 2608；附加账号可继承主账号的 aid。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_UUID_2</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_MSTOKEN_2</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_A_BOGUS_2</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_AID_3</code></td><td>否</td><td>格式：固定 2608，默认 2608；附加账号可继承主账号的 aid。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_UUID_3</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_MSTOKEN_3</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_A_BOGUS_3</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_AID_4</code></td><td>否</td><td>格式：固定 2608，默认 2608；附加账号可继承主账号的 aid。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_UUID_4</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_MSTOKEN_4</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_A_BOGUS_4</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_AID_5</code></td><td>否</td><td>格式：固定 2608，默认 2608；附加账号可继承主账号的 aid。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_UUID_5</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_MSTOKEN_5</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_A_BOGUS_5</code></td><td>是</td><td>格式：非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_FREE_LOTTERY</code></td><td>否</td><td>格式：仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_DIP_LUCKY</code></td><td>否</td><td>格式：仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_BUG_FIX</code></td><td>否</td><td>格式：仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_LUCKY_QUERY</code></td><td>否</td><td>格式：仅支持 0 或 1；默认 1，无效设置导致配置失败并禁止请求。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演，其余值为正式运行；预演不调用业务接口或通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 不区分大小写表示关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>JUEJIN_NOTIFY</code></td><td>否</td><td>格式：false 表示关闭；默认启用，全局关闭始终生效。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于可选摘要通知，不影响业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/sudojia_kozbs.js</code></td><td><code>KOZBS_DRY_RUN</code></td><td>否</td><td>格式：1 为完全断网预演，其余值为正式执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭，大小写不敏感；其余值开启。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机通知模块目录路径，仅用于可选通知，不影响独立业务执行。；多账号格式以该脚本文档为准</td></tr>
@@ -1691,6 +1732,9 @@
 <tr><td><code>SYNSPOINT_GOODS_ID</code></td><td>否</td><td>格式：正整数；可选，不影响默认关闭预约。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；断网预演只模拟通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，不作为业务运行依赖。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="3"><code>scripts/task_ef2d3863.js</code></td><td><code>ALIYUNDRIVE_DRY_RUN</code></td><td>否</td><td>格式：1 表示断网预演，其他值表示正式运行。预演不证明真实签到成功。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，忽略大小写；其他值启用。断网预演仅生成通知总结，不调用通知网络。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，仅用于可选通知；缺失、失败或超时不会改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="6"><code>scripts/tencent_video_checkin.py</code></td><td><code>TENCENT_VIDEO_COOKIE</code></td><td>是</td><td>格式：完整 Cookie；也按每行一个账号解析。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>TENCENT_VIDEO_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 开启预演，默认实际执行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭。；多账号格式以该脚本文档为准</td></tr>
@@ -1910,6 +1954,7 @@
 - `scripts/139_yunduo.py`：每个非空行一个手机号与配套授权凭据，格式为手机号|授权值；仅在第一个竖线处分割。空行及以井号开头的注释行忽略，错误行计为账号失败。逐账号独立执行，任一账号失败时整体非零退出。。
 - `scripts/2cycdx.py`：每个非空行一个账号；使用完整 Cookie，不拆分行内字符。逐个独立执行，任一账号失败则整体非零退出。。
 - `scripts/51cto_sign.js`：每个非空行一个账号，配套用户名和密码合并；独立处理，任一账号失败则整体非零退出。。
+- `scripts/52pojie.js`：每个非空行一个账号，忽略空行；各账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/999.py`：每个非空行一个 JSON 账号对象，手机号和令牌须属于同一账号。账号按行独立处理，任一账号配置或业务失败则整体非零退出。。
 - `scripts/acfun.py`：每个非空行一个 手机号|密码；仅拆分第一个 |，逐账号独立登录和执行任务；任一账号失败则整个进程非零退出。。
 - `scripts/agentrouter.py`：每个非空行一个账号；每行可为独立 GitHub user_session 值或包含 github_session 的 JSON 对象，配套账号配置在同一对象中；账号独立处理，任一失败整体非零退出。。
@@ -2026,7 +2071,7 @@
 - `scripts/sudojia_jiangshan.js`：每个非空行一个账号，逐个独立执行；任一账号失败则整体非零退出。。
 - `scripts/sudojia_jindian.js`：每个非空行一个账号，忽略空行，各账号独立处理；任一账号失败则整体非零退出。。
 - `scripts/sudojia_jlc_yj.js`：每个非空行一个账号；两套凭据分别独立处理；同账号下单助手令牌和密钥合并，仅在第一个 # 切分；任一账号失败或配置错误整体非零退出。。
-- `scripts/sudojia_juejin.js`：每个非空行对应一个账号，配套凭据以首个 # 分隔；逐账号独立处理，任一账号失败整体非零退出。。
+- `scripts/sudojia_juejin.js`：每个非空行一个账号；同账号会话和查询串在首个 # 合并，后面的原始查询串完整保留。绝不以 & 或 @ 分割账号。旧附加账号变量依次追加，每个账号独立执行；任一账号或全局配置失败则非零退出。。
 - `scripts/sudojia_kozbs.js`：每个非空行一个账号，去掉行首尾空白；账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/sudojia_ktgzs.js`：每个非空行一个账号，各账号独立处理；任一账号失败，整体退出码非零。。
 - `scripts/sudojia_kukahome.js`：每个非空行对应一个账号，按首个 # 分割同账号的两个请求头；各账号独立处理，任一账号失败则整体非零退出。。
@@ -2062,6 +2107,7 @@
 - `scripts/sudojia_zxice.js`：每行一个非空账号凭据，按顺序独立运行；任何账号失败均以非零状态退出。。
 - `scripts/supertopicsign.py`：每个非空行代表一个账号，依次独立执行；任一账号失败或有未完成签到则整体非零退出。重复昵称不会覆盖账号。。
 - `scripts/synspoint.py`：synshd 每个非空行一个账号，移除完整 Bearer 前缀后保留整行凭据；逐账号独立处理，任一账号失败则整体非零退出。。
+- `scripts/task_ef2d3863.js`：refreshToken 每个非空行对应一个账号，顺序独立执行；一个账号失败仍继续其他账号，任何账号或领奖失败均非零退出。。
 - `scripts/tencent_video_checkin.py`：每个非空行一个完整账号 Cookie，同账号字段组合在同一行；忽略空行和 # 开头注释。规范变量优先，兼容旧单账号变量；独立处理账号，任一账号或步骤失败整体非零退出。。
 - `scripts/tieba_checkin.py`：每个非空行一个账号，整行保留为 Cookie；重复行去重，不按 & 或 @ 拆分。账号独立执行，任一账号失败则进程非零退出。。
 - `scripts/tjd_daily.py`：每个非空行一个账号 JSON 对象，同账号凭据组合在一行。兼容旧 JSON 数组和换行对齐的旧变量。各账号独立执行，任一失败整体非零退出。。
@@ -2105,6 +2151,13 @@
 - 所属脚本：`scripts/51cto_sign.js`
 - 获取或设置：在51CTO官网注册或使用已有账号的登录用户名和密码；验证码或额外验证须先人工处理，无需抓取Cookie。
 - 填写格式：`每个非空行一个账号，推荐用户名|密码；在首个竖线拆分，后续密码原样保留。兼容不含竖线的用户名@密码，在首个@拆分；邮箱用户名须使用竖线。旧版&多账号配置必须迁移为换行。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `POJIE_COOKIE`
+
+- 所属脚本：`scripts/52pojie.js`
+- 获取或设置：浏览器登录 https://www.52pojie.cn/home.php，打开开发者工具网络面板并刷新，复制该站请求头的完整 Cookie，保存到青龙环境变量；失效后重新登录获取，不公开分享。
+- 填写格式：`每个非空行一个账号的完整 Cookie，包含非空站点前缀_auth 字段；保留同一行所有分号分隔字段，不用 & 或 @ 分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `HRT999_ACCOUNTS`
@@ -3016,8 +3069,8 @@
 #### `JUEJIN_COOKIE`
 
 - 所属脚本：`scripts/sudojia_juejin.js`
-- 获取或设置：登录稀土掘金网页，在开发者工具的 Cookie 中复制 sessionid 的值；在网络面板手动签到，找到 api.juejin.cn/growth_api/v1/check_in 请求，复制问号之后的原始查询串。须含 uuid、spider、msToken、a_bogus；签名过期或登录失效后重新抓取，不自动生成签名。
-- 填写格式：`每行 sessionid#原始查询串；仅以首个 # 分隔，查询串中的 & 保留；可包含 aid=2608。`
+- 获取或设置：登录自己的掘金账号，在浏览器开发者工具网络面板查看签到请求。复制请求头中的完整 Cookie 或在应用面板取得 sessionid；复制 check_in 请求问号后的原始查询串，不要复制网址、重新排序或混用账号。须含 uuid、spider、msToken、a_bogus，aid 如提供须为 2608。签名可能随时过期，应重新抓取，不保证三十天有效。扩展 document.cookie 可能缺少 HttpOnly 会话，优先使用真实请求头。
+- 填写格式：`每个非空行一个账号，格式为 sessionid#原始查询串或完整 Cookie#原始查询串，仅在第一个 # 分隔。账号之间只用换行，查询串的 & 是字段分隔符。兼容旧 Cookie 配置加本账号分开的签名变量，推荐合并配置。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `KOZBS_TOKEN`
@@ -3277,6 +3330,13 @@
 - 所属脚本：`scripts/synspoint.py`
 - 获取或设置：登录微信小程序“所有女生会员服务中心”，用本人授权的网络调试工具查看 7.wawo.cc 请求头 Authorization，复制 bearer 后的凭据；过期后重新登录获取。保留原变量名，原 # 多账号分隔改为换行。
 - 填写格式：`每个非空行一个账号凭据，可带 Bearer 前缀；不使用 #、&、@ 分隔账号。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `refreshToken`
+
+- 所属脚本：`scripts/task_ef2d3863.js`
+- 获取或设置：登录本人阿里云盘网页版，在浏览器开发者工具的本地存储 token 对象或本人登录刷新请求中提取 refresh_token；不要使用 access_token，不要公开存储内容。服务端轮换或凭据失效后，重新通过官方登录流程获取并更新。沿用上游变量名，不读取青龙管理接口。
+- 填写格式：`每个非空行一个账号的 refresh_token，支持换行及 Windows 换行；不支持 &、@、空格分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `TENCENT_VIDEO_COOKIES`
@@ -3539,6 +3599,45 @@
 - 所属脚本：`scripts/51cto_sign.js`
 - 获取或设置：填写已有青龙sendNotify.js所在目录，不需另一个项目仓库。
 - 填写格式：`可选本地目录；同时自动查找青龙标准脚本目录和当前目录。`
+
+#### `CookieWA`
+
+- 所属脚本：`scripts/52pojie.js`
+- 获取或设置：旧版 CookieWA 的兼容输入，获取方式与 POJIE_COOKIE 相同；规范变量优先。
+- 填写格式：`每个非空行一个完整 Cookie。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `POJIE_DRY_RUN`
+
+- 所属脚本：`scripts/52pojie.js`
+- 获取或设置：完全断网预演时设置为 1。
+- 填写格式：`1、true、yes 或 on 启用，默认关闭。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/52pojie.js`
+- 获取或设置：青龙全局通知开关，默认 1；预演模拟通知以保证断网。
+- 填写格式：`0、false、no 或 off 关闭所有通知。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/52pojie.js`
+- 获取或设置：可选，填写青龙 sendNotify.js 所在目录；默认检查 /ql/data/scripts 和 /ql/scripts，通知缺失或失败不改变业务退出码。
+- 填写格式：`本地通知模块目录，仅用于可选通知。`
+
+#### `BARK_KEY`
+
+- 所属脚本：`scripts/52pojie.js`
+- 获取或设置：可选，从 Bark 应用复制个人推送密钥，仅用于脱敏总结通知。
+- 填写格式：`一个 Bark 推送密钥。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `barkKey`
+
+- 所属脚本：`scripts/52pojie.js`
+- 获取或设置：旧版 barkKey 的兼容输入，BARK_KEY 优先。
+- 填写格式：`一个 Bark 推送密钥。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `HRT999_DRY_RUN`
 
@@ -9323,23 +9422,216 @@
 - 获取或设置：可选指定青龙 sendNotify.js 所在目录；同时自动检查 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：`本地通知模块目录；通知失败不改变业务退出码`
 
+#### `JUEJIN_COOKIE_2`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧多账号兼容输入，获取方法与 JUEJIN_COOKIE 相同。新配置推荐全部放入 JUEJIN_COOKIE。
+- 填写格式：`每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_2、JUEJIN_MSTOKEN_2、JUEJIN_A_BOGUS_2，不继承主账号签名。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_COOKIE_3`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧多账号兼容输入，获取方法与 JUEJIN_COOKIE 相同。新配置推荐全部放入 JUEJIN_COOKIE。
+- 填写格式：`每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_3、JUEJIN_MSTOKEN_3、JUEJIN_A_BOGUS_3，不继承主账号签名。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_COOKIE_4`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧多账号兼容输入，获取方法与 JUEJIN_COOKIE 相同。新配置推荐全部放入 JUEJIN_COOKIE。
+- 填写格式：`每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_4、JUEJIN_MSTOKEN_4、JUEJIN_A_BOGUS_4，不继承主账号签名。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_COOKIE_5`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧多账号兼容输入，获取方法与 JUEJIN_COOKIE 相同。新配置推荐全部放入 JUEJIN_COOKIE。
+- 填写格式：`每个非空行一个账号，合并格式优先。不含 # 时使用对应的 JUEJIN_UUID_5、JUEJIN_MSTOKEN_5、JUEJIN_A_BOGUS_5，不继承主账号签名。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_AID`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`固定 2608，默认 2608；附加账号可继承主账号的 aid。`
+
+#### `JUEJIN_UUID`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_MSTOKEN`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_A_BOGUS`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_AID_2`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`固定 2608，默认 2608；附加账号可继承主账号的 aid。`
+
+#### `JUEJIN_UUID_2`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_MSTOKEN_2`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_A_BOGUS_2`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_AID_3`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`固定 2608，默认 2608；附加账号可继承主账号的 aid。`
+
+#### `JUEJIN_UUID_3`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_MSTOKEN_3`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_A_BOGUS_3`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_AID_4`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`固定 2608，默认 2608；附加账号可继承主账号的 aid。`
+
+#### `JUEJIN_UUID_4`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_MSTOKEN_4`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_A_BOGUS_4`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_AID_5`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 aid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`固定 2608，默认 2608；附加账号可继承主账号的 aid。`
+
+#### `JUEJIN_UUID_5`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 uuid。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_MSTOKEN_5`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 msToken。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_A_BOGUS_5`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧配置兼容：从同一账号真实签到请求的查询参数复制 a_bogus。仅对应 Cookie 行不含 # 时使用；合并格式忽略这些变量。
+- 填写格式：`非空单行原始值，不要填变量赋值语句；旧参数模式的 spider 固定为 0。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `JUEJIN_FREE_LOTTERY`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：用户按需设置。启用免费抽奖，明确剩余免费次数大于零时只提交一次，不重试。
+- 填写格式：`仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。`
+
+#### `JUEJIN_DIP_LUCKY`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：用户按需设置。启用沾喜气。
+- 填写格式：`仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。`
+
+#### `JUEJIN_BUG_FIX`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：用户按需设置。启用首个未收集 Bug 的消除及状态复核。
+- 填写格式：`仅支持 0 或 1；默认 0，无效设置导致配置失败并禁止请求。`
+
+#### `JUEJIN_LUCKY_QUERY`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：用户按需设置。启用幸运值只读查询。
+- 填写格式：`仅支持 0 或 1；默认 1，无效设置导致配置失败并禁止请求。`
+
 #### `JUEJIN_DRY_RUN`
 
 - 所属脚本：`scripts/sudojia_juejin.js`
-- 获取或设置：设置为 1 进行完全断网预演。
-- 填写格式：`1 启用，其余值执行正式任务。`
+- 获取或设置：验证参数时设置为 1。
+- 填写格式：`1 为完全断网预演，其余值为正式运行；预演不调用业务接口或通知模块。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/sudojia_juejin.js`
-- 获取或设置：青龙全局通知开关，默认启用。断网预演生成通知摘要但不投递，以保证零网络访问。
-- 填写格式：`0、false、no、off 关闭，不区分大小写。`
+- 获取或设置：青龙全局通知开关，按需设置。
+- 填写格式：`默认 1；0、false、no、off 不区分大小写表示关闭。`
+
+#### `JUEJIN_NOTIFY`
+
+- 所属脚本：`scripts/sudojia_juejin.js`
+- 获取或设置：旧通知开关兼容输入。
+- 填写格式：`false 表示关闭；默认启用，全局关闭始终生效。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/sudojia_juejin.js`
-- 获取或设置：可选：填写青龙 sendNotify.js 所在目录；未设置时查找 /ql/data/scripts 和 /ql/scripts。
-- 填写格式：`本机目录绝对路径。`
+- 获取或设置：可选，青龙自带 sendNotify.js 所在目录；未设置时查找青龙标准路径。
+- 填写格式：`本地目录路径，仅用于可选摘要通知，不影响业务退出码。`
 
 #### `KOZBS_DRY_RUN`
 
@@ -10147,6 +10439,24 @@
 - 所属脚本：`scripts/synspoint.py`
 - 获取或设置：可选，填写青龙 notify.py 或 sendNotify.js 所在目录；不填时自动发现 notify 模块及标准青龙脚本目录。
 - 填写格式：`本地目录路径，不作为业务运行依赖。`
+
+#### `ALIYUNDRIVE_DRY_RUN`
+
+- 所属脚本：`scripts/task_ef2d3863.js`
+- 获取或设置：手动设置为 1 开启完全断网预演；正式执行时移除或设置为 0。
+- 填写格式：`1 表示断网预演，其他值表示正式运行。预演不证明真实签到成功。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/task_ef2d3863.js`
+- 获取或设置：使用青龙全局通知开关；默认启用。
+- 填写格式：`0、false、no、off 关闭通知，忽略大小写；其他值启用。断网预演仅生成通知总结，不调用通知网络。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/task_ef2d3863.js`
+- 获取或设置：可选，填写已配置的青龙公开通知模块 sendNotify.js 所在目录；未设置时检查 /ql/data/scripts 和 /ql/scripts。
+- 填写格式：`本地目录路径，仅用于可选通知；缺失、失败或超时不会改变业务退出码。`
 
 #### `TENCENT_VIDEO_COOKIE`
 
@@ -11488,6 +11798,7 @@
 - `scripts/139_yunduo.py`：SHA-256 `c37eff8c6b1d510213e6ec929a3f4505e7ecf43f6934c655d924fd0165024942`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/117317c83fa5c3cc`。
 - `scripts/2cycdx.py`：SHA-256 `50e848475c664acc9e2f665f75dd6c0f4b72d770e94fea08f421185fdbd77d1b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4a0d6e0728deb3f6`。
 - `scripts/51cto_sign.js`：SHA-256 `0f62a8d10db8c2b4dd354e467d57274ec1ed97c9734cd4ac1965a96be9e43410`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d81ca9fcd4ad24e1`。
+- `scripts/52pojie.js`：SHA-256 `8477d0f2eec2d4cc38799acc921cd04b11d9648be363ee519d8bb51d3d15f664`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0ee602c1c54b9470`。
 - `scripts/999.py`：SHA-256 `c42405330b4bfbd4f50bdc0b0e37203134a0ea24701f9d51e3e5a5a680419b84`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ea0312febc74515`。
 - `scripts/acfun.py`：SHA-256 `006ac42bec4fba6c9e41599da022e9b425b4ca5b6617bcd66c0403ab8917ed65`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
 - `scripts/agentrouter.py`：SHA-256 `a22e06bb7c32b2ce57c1dbbea73b86dac505381bde53a818ec84254669f4c888`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/81684dd327c48211`。
@@ -11611,7 +11922,7 @@
 - `scripts/sudojia_jiangshan.js`：SHA-256 `6aeecd07cf2173fa8e1a7775bd17849dd373ce9ca102ba5d5e5e48b9af78f04d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/db8583cdb3a987c1`。
 - `scripts/sudojia_jindian.js`：SHA-256 `d9c3bef3a86ccd7da990e856f7567029c688349b162cb554fd9b8407bd515f22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1ee8bcd72ce624b6`。
 - `scripts/sudojia_jlc_yj.js`：SHA-256 `1f7a49e30dd7a0e4da2a1298bd24b1ca0578cf86e10fec9406d001aa872cb493`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/38602005c4e13646`。
-- `scripts/sudojia_juejin.js`：SHA-256 `a3ab6439b1c72f4195f35551584cb573e8f9d0515eadd0cb1e60cd712436ea36`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f86741e6210934e9`。
+- `scripts/sudojia_juejin.js`：SHA-256 `6d8be6058694325cf547c831c4d33f9ce732a7d681ff94b96f42d26056f3406f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f86741e6210934e9`。
 - `scripts/sudojia_kozbs.js`：SHA-256 `a9390adda3bb8938f8d40627ede49a6106dba6267805d7c285f6024e36ef6f58`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/34763140840b492a`。
 - `scripts/sudojia_ktgzs.js`：SHA-256 `180d6b848c37e9703d05e65962b1eaf2200052389c048b88f739381b7270346e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c1b078ac7332577`。
 - `scripts/sudojia_kukahome.js`：SHA-256 `e7081807d92d65a4516d0d1c2c6359451127abbed1f4fffbba0f5e1d645075da`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cea8801e001e143d`。
@@ -11647,6 +11958,7 @@
 - `scripts/sudojia_zxice.js`：SHA-256 `eb50f784e85263452ae010edf81d6b0e1d6c864532f2c6f1a170aa168ddc8c5d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4b0810d476bc5e`。
 - `scripts/supertopicsign.py`：SHA-256 `7ec766c350e8734acddc724e720a0073d8838430e1885a9e699e13d907fbacb4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5e811acce266569`。
 - `scripts/synspoint.py`：SHA-256 `f343af6c80ac9ca40e51f0fb72a81d41acb2af51233623d6fa2f1fca4e636f7f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8060442233509c9a`。
+- `scripts/task_ef2d3863.js`：SHA-256 `8586de43a2f596862d6cb8d81ed151c476292dca5f800bcc20985219e3d892a4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef2d3863a5184a74`。
 - `scripts/tencent_video_checkin.py`：SHA-256 `22ae305cd2e4196c0574785ab58f4dc0fb54266676ba599ea71971c4dc973ec6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
 - `scripts/tieba_checkin.py`：SHA-256 `2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
 - `scripts/tjd_daily.py`：SHA-256 `95bb1d686b6e91e37c588601be134a99e9715c943ea99b63f6fda75fd0d51943`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e096ba77bcda7172`。
@@ -11675,6 +11987,7 @@
 - `scripts/139_yunduo.py`：执行每日签到并领取AI豆；点击互动、问卷及其他已选择任务，可能改变任务进度或领取AI豆；启用YDYP_UPLOAD后在云盘根目录上传10字节任务文件；启用YDYP_DELETE_AFTER后将本轮上传文件移入回收站；正式执行通知时向已配置的通知渠道发送脱敏统计。
 - `scripts/2cycdx.py`：正式运行提交论坛签到及签到文案，领取对应贡献奖励。；正式运行且开启通知时发送脱敏任务通知。。
 - `scripts/51cto_sign.js`：登录建立服务端会话；每日签到及平台对应的签到奖励；真实运行时通过青龙通知渠道发送脱敏摘要。
+- `scripts/52pojie.js`：正式执行申请论坛每日签到任务，可能增加签到奖励。；通知启用且通道可用时发送脱敏总结，配置 Bark 时发送可选推送。。
 - `scripts/999.py`：正式执行提交答题选项，可能按活动规则产生积分奖励；正式执行在通知开启且模块可用时外发脱敏任务摘要。
 - `scripts/acfun.py`：默认执行每日签到，更新签到状态；选择 like 时新增点赞；选择 like-cycle 时新增点赞后取消；选择 danmu 时向所选视频公开发布一条弹幕；选择 banana 时向所选视频投出一根香蕉，消耗余额；选择 share 时上报分享任务完成状态；开启通知时尝试发送脱敏任务总结，预演阻止网络传输。
 - `scripts/agentrouter.py`：重新登录 AgentRouter，创建登录会话并可能发放当日签到额度。；仅显式启用 AGENTROUTER_ALLOW_AUTHORIZE 后可提交 GitHub 首次应用授权。；正式运行按 QINGLONG_NOTIFY 设置发送青龙通知。。
@@ -11798,7 +12111,7 @@
 - `scripts/sudojia_jiangshan.js`：签到及阅读可能增加积分、经验和任务进度；显式启用 share 后上报分享任务并改变进度；显式启用 comment 后发表公开评论；显式启用 like 后点赞文章；显式启用 local 后上报本地服务任务并改变进度。
 - `scripts/sudojia_jindian.js`：对尚未签到的账号执行每日签到，可能增加积分。
 - `scripts/sudojia_jlc_yj.js`：开源平台每日签到增加积分；下单助手每日签到增加金豆；显式授权后领取待选奖励并最多补签一次。
-- `scripts/sudojia_juejin.js`：尚未签到时提交每日签到，领取矿石奖励；正式运行且启用通知时发送青龙任务摘要。
+- `scripts/sudojia_juejin.js`：尚未签到时提交每日签到，领取矿石奖励；显式启用后在免费次数大于零时提交一次抽奖，使用一次免费机会；显式启用后提交沾喜气，改变幸运值；显式启用后收集首个未收集 Bug，改变收集及奖励状态；正式运行且通知启用并可用时发送青龙脱敏摘要。
 - `scripts/sudojia_kozbs.js`：未签到时提交每日签到，可能增加账号积分和签到记录。；通知开启且模块可用时向已配置的通知渠道发送脱敏任务汇总。。
 - `scripts/sudojia_ktgzs.js`：正式运行调用每日签到接口，产生签到记录及服务端奖励积分。
 - `scripts/sudojia_kukahome.js`：每日签到可能增加账号积分并更新连续签到记录；正式模式通过青龙发送脱敏任务结果通知（可关闭）。
@@ -11834,6 +12147,7 @@
 - `scripts/sudojia_zxice.js`：未签到时提交每日签到并领取奶滴奖励；正式模式按通知配置发送任务结果通知。
 - `scripts/supertopicsign.py`：对关注的超话执行签到，改变签到状态。
 - `scripts/synspoint.py`：会员签到及接口对应积分变化；提交浏览会员商城任务并可能获取积分；显式开启后创建商品上播预约，再取消本次成功创建的预约；正式运行时按全局开关发送脱敏总结通知。
+- `scripts/task_ef2d3863.js`：正式运行刷新账号访问会话，服务端可能轮换刷新令牌。；正式运行提交阿里云盘每日签到。；正式运行领取正常且尚未领取的签到奖励。；通知启用且模块可用时发送任务总结。。
 - `scripts/tencent_video_checkin.py`：实际执行时提交每日签到，可能增加 V力值；实际执行时领取每日观看奖励，可能增加 V力值；通知开启且实际执行时通过可用渠道发送脱敏任务总结。
 - `scripts/tieba_checkin.py`：正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态及可能产生签到奖励。；仅显式开启成长任务且 Cookie 同时含 BDUSS 和 CUID 时提交 APP 成长每日签到，改变当日成长签到状态及可能产生的成长奖励。；正式执行且通知开启、青龙组件可用时发送脱敏任务汇总通知。。
 - `scripts/tjd_daily.py`：社区签到增加金币和经验；浏览帖子增加阅读及任务进度；绑定游戏签到领取奖励；明确启用后给帖子点赞；明确启用后上报帖子分享回调；可选密码重登创建登录会话，可能使旧会话失效。
@@ -11864,6 +12178,7 @@
 - `scripts/139_yunduo.py`：上游 `deeplee/personal-scripts` / `139_yunduo.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
 - `scripts/2cycdx.py`：上游 `Tgkkez/2cycdx_Autosignin` / `autosignin.py` / `9afc3b1513b1f0c683e0eda992c1c33d627d9996`。
 - `scripts/51cto_sign.js`：上游 `huwangkeji/51cto_sign_authed` / `51cto_sign.js` / `c8231e0c5a52fdcd5c6020a3522c7b2c65a1aa84`。
+- `scripts/52pojie.js`：上游 `NobyDa/Script` / `52pojie-DailyBonus/52pojie.js` / `0b8d083d444f4476700cb9d5d059c07b42da85eb`。
 - `scripts/999.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/huaruntong/999/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
 - `scripts/acfun.py`：上游 `Sitoi/dailycheckin` / `dailycheckin/acfun/main.py` / `135cc236e59ac4f14bcddc44acb3cbb3ed6010b5`。
 - `scripts/agentrouter.py`：上游 `Cat-zaizai/ZaiZaiCat-Checkin` / `script/agentrouter/main.py` / `d6a334e43d0a0c8f41b039cd410be33593efc35b`。
@@ -12023,6 +12338,7 @@
 - `scripts/sudojia_zxice.js`：上游 `sudojia/AutoTaskScript` / `src/wx_mini/sudojia_zxice.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/supertopicsign.py`：上游 `Hellager/weibo_supertopic_sign` / `supertopicsign.py` / `66e46ec082cc87100e7d99e8ed8e6c478c5e3833`。
 - `scripts/synspoint.py`：上游 `Rookie-wb-WH/ql_scripts` / `synspoint.py` / `08e5c06461c4a0112ea3735f48fe671734bb7707`。
+- `scripts/task_ef2d3863.js`：上游 `yunzimo/APChinkin` / `autoSignin.js` / `017f5685f1b59a8695bbb3a0a35a80cf5f7f5e79`。
 - `scripts/tencent_video_checkin.py`：上游 `deeplee/personal-scripts` / `tencent_video_checkin.py` / `c8c7c0f4fd1802df86c32a86c26b5c26cfef5023`。
 - `scripts/tieba_checkin.py`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_tieba.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。
 - `scripts/tjd_daily.py`：上游 `SkyBlue997/tjd-daily` / `tjd_daily.py` / `1df775d4c5eea379111edecf53a62b447b756770`。
