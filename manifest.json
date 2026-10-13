@@ -5390,6 +5390,124 @@
       }
     },
     {
+      "catalogId": "93e0b2068d55d68f",
+      "applicationKey": "oreoslab/checkinpanel::ccava",
+      "checkProfile": {
+        "requiredEnv": [
+          "CCAVA_COOKIE"
+        ],
+        "optionalEnv": [
+          "CCAVA_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CCAVA_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CCAVA_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今天已签到"
+        ],
+        "features": [
+          "每日签到，保留每天 18:55 的上游计划",
+          "显示签到响应中有效的月光币余额",
+          "识别今天已签到和失效凭据，未知响应不视为成功",
+          "官方返回昵称、用户名、显示名称或公开 UID 时显示可核对身份并抑制凭据及手机号",
+          "支持逐行多账号，独立处理并汇总失败",
+          "完全断网预演、带时间戳的分阶段日志、账号统计和单行结构化任务总结",
+          "通过青龙 notify.py 发送脱敏结果通知，支持全局关闭；断网模式仅预演通知"
+        ],
+        "sideEffects": [
+          "实际模式调用 CCAVA 每日签到接口，可能增加账号月光币",
+          "实际模式通知开启且工具可用时发送脱敏任务结果通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "CCAVA每日签到",
+      "path": "scripts/ck_ccava.py",
+      "sha256": "de4c8a9cb4f76800d04f9aca4d80b49599231295f1a1f0dff1e922c5eb4bd360",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_ccava.py"
+      },
+      "cron": "55 18 * * *",
+      "command": "python3 scripts/ck_ccava.py",
+      "environment": [
+        {
+          "name": "CCAVA_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://pc.ccava.net 登录后，打开浏览器开发者工具的网络面板，从该站点已登录请求的请求头复制完整 Cookie 值，不含 Cookie: 前缀。上游私有 get_data 配置中 CCAVA 列表的每个 cookie 值可原样迁移为一行。不要公开或上传此值。",
+          "format": "每个非空行一个账号的完整 Cookie；保留 Cookie 内部分号和等号，不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "CCAVA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置；用于完全断网预演参数、签到流程、余额查询和通知。",
+          "format": "1、true、yes 或 on 开启；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知默认开启；需要关闭时自行设置为 0。",
+          "format": "0、false、no 或 off 关闭；默认 1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙现有 notify.py 所在目录；优先使用可导入的 notify.send，再检查此目录及青龙标准脚本目录。无需安装私有工作流工具。",
+          "format": "本机目录路径；通知失败不会改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "CCAVA_COOKIE 的每个非空行表示一个账号，逐行独立执行；任意账号失败均整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到，保留每天 18:55 的上游计划",
+        "显示签到响应中有效的月光币余额",
+        "识别今天已签到和失效凭据，未知响应不视为成功",
+        "官方返回昵称、用户名、显示名称或公开 UID 时显示可核对身份并抑制凭据及手机号",
+        "支持逐行多账号，独立处理并汇总失败",
+        "完全断网预演、带时间戳的分阶段日志、账号统计和单行结构化任务总结",
+        "通过青龙 notify.py 发送脱敏结果通知，支持全局关闭；断网模式仅预演通知"
+      ],
+      "sideEffects": [
+        "实际模式调用 CCAVA 每日签到接口，可能增加账号月光币",
+        "实际模式通知开启且工具可用时发送脱敏任务结果通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/93e0b2068d55d68f",
+        "candidateSha256": "de4c8a9cb4f76800d04f9aca4d80b49599231295f1a1f0dff1e922c5eb4bd360"
+      }
+    },
+    {
       "catalogId": "b896028c3fdcd52d",
       "applicationKey": "codearts",
       "checkProfile": {
