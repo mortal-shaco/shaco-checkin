@@ -10,17 +10,27 @@ cron: 0 15 9 * * *
 DAILYNEWSCN_DRY_RUN=1：完全断网预演，包括模拟通知，不加载通知模块。
 QINGLONG_NOTIFY 默认 1，可用 0、false、no、off 禁用。
 QINGLONG_NOTIFY_DIR 可选：青龙 sendNotify.js 所在目录。
-DAILYNEWSCN_TASK 默认 dailynewscn；填写 bdhot 仅获取百度热搜榜。
+DAILYNEWSCN_TASK 默认 dailynewscn；填写 bdhot 仅获取百度热搜榜；填写 chouq 仅随机抽签。
 日报保持 cron: 0 15 9 * * *；百度榜另建青龙任务指向同一文件，
 设置 DAILYNEWSCN_TASK=bdhot，定时 0 0 9 * * *，无需复制脚本。
 BDHOT_LIST 为百度榜执行标记，填写 1 即可；无需获取账号或凭据。
 BDHOT_DRY_RUN=1 兼容百度榜断网预演；DAILYNEWSCN_DRY_RUN=1 对所有模式生效。
-源功能盘点：百度前五热搜 09:00、日报 09:15；均公开读取并通知。
-参考：抽签 CHOUQ_LIST 09:10、世界新闻 DAY60S_LIST 09:20、
-抖音榜 DYHOT_LIST 09:25；均免账号，按不同内容和调度保留独立维护边界。
-已维护覆盖仅日报，未覆盖百度榜；本文件保留所有既有日报功能。
+抽签另建青龙任务指向同一文件，设置 DAILYNEWSCN_TASK=chouq，定时 0 10 9 * * *。
+CHOUQ_LIST 为抽签执行标记，填写 1 即可，兼容非空旧值；不发送这些值，无需凭据。
+CHOUQ_DRY_RUN=1 兼容抽签断网预演；不自动添加其他任务或更改既有调度。
+源功能盘点：百度前五热搜 09:00、随机抽签 09:10、日报 09:15；均公开读取并通知。
+抽签保留签文、签等级与颜色、卦象、解签全角空格换行、典故首句及省略号。
+相关世界新闻 DAY60S_LIST 09:20、抖音榜 DYHOT_LIST 09:25：公开文本读取并通知，
+仅作为同应用参考；当前主来源没有其新增能力，保持独立调度边界。
+已维护覆盖日报和百度榜，尚未覆盖抽签；本次仅补充抽签，保留全部既有维护功能。
+参数获取：所有 LIST 均为本地执行标记，在青龙环境变量手工填写 1，不需要注册或登录。
+公开任务只读取一次，无账号循环；多个非空行仅兼容旧标记，不代表多账号。
+原抽签来源只有 HTTP 地址证据，保持原 GET URL，不发送凭据，不假设 HTTPS 已可用。
+完整 data 字符串字段与非空签等级为抽签业务校验；没有已证实的固定业务码，不臆造接口。
+参考来源：hot/chouq.js、hot/dailynewscn.js、hot/bdhot.js、hot/day60s.js、hot/dyhot.js。
+各源原作者标识均为 ql_sign_script : https://github.com/unitaryhighs/ql_sign_script，MIT。
 不复用上游私有 airscriptShim、工作表写入和自定义推送凭据。
-仅访问上游公开日报或百度热搜接口，不写表格、不发布帖子、不修改账号。
+仅访问所选任务的上游公开日报、百度热搜或抽签接口，不写表格、不发布帖子、不修改账号。
 
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,16 +51,18 @@ SOFTWARE.
 */
 'use strict';
 const https = require('node:https');
+const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const requestedTask = process.env.DAILYNEWSCN_TASK === undefined ? 'dailynewscn' : process.env.DAILYNEWSCN_TASK.trim();
-const task = ['dailynewscn', 'bdhot'].includes(requestedTask) ? requestedTask : 'invalid';
+const task = ['dailynewscn', 'bdhot', 'chouq'].includes(requestedTask) ? requestedTask : 'invalid';
 const isBaidu = task === 'bdhot';
-const TITLE = isBaidu ? '百度热搜榜' : '中国日报';
-const marker = isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
-const URL = isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
-const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1');
+const isDraw = task === 'chouq';
+const TITLE = isDraw ? '随机抽签' : isBaidu ? '百度热搜榜' : '中国日报';
+const marker = isDraw ? 'CHOUQ_LIST' : isBaidu ? 'BDHOT_LIST' : 'DAILYNEWSCN_LIST';
+const URL = isDraw ? 'http://shanhe.kim/api/za/chouq.php' : isBaidu ? 'https://jkapi.com/api/bd_hot?limit=5' : 'https://api.suyanw.cn/api/China_Daily_Highlights_of_the_day.php';
+const dryRun = process.env.DAILYNEWSCN_DRY_RUN === '1' || (isBaidu && process.env.BDHOT_DRY_RUN === '1') || (isDraw && process.env.CHOUQ_DRY_RUN === '1');
 const started = Date.now();
 const stamp = () => new Date().toLocaleTimeString('zh-CN', { hour12: false });
 const log = text => console.log(`[${stamp()}] ${text}`);
@@ -66,14 +78,15 @@ function getReport() {
       clearTimeout(timer);
       error ? reject(error) : resolve(value);
     };
-    const request = https.get(URL, { headers: { Accept: 'text/plain', 'User-Agent': 'Qinglong-DailyNews/1.0' } }, response => {
+    const transport = isDraw ? http : https;
+    const request = transport.get(URL, { headers: { Accept: isDraw ? 'application/json' : 'text/plain', 'User-Agent': 'Qinglong-DailyNews/1.0' } }, response => {
       if (response.statusCode !== 200) {
         finish(new Error(TITLE + '接口 HTTP 状态异常'));
         response.destroy();
         return;
       }
       const type = String(response.headers['content-type'] || '');
-      if (/html|json|image|octet-stream/i.test(type)) {
+      if ((isDraw ? /html|image|octet-stream/i : /html|json|image|octet-stream/i).test(type)) {
         finish(new Error(TITLE + '响应格式与上游文本契约不符'));
         response.destroy();
         return;
@@ -113,6 +126,33 @@ function parseReport(text) {
     .replace(/\b(?:cookie|token|authorization|session|signature|device_?id)\s*[:=]\s*\S+/gi, '[敏感字段已隐藏]'));
 }
 
+function redactDraw(text) {
+  return text.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/g, '')
+    .replace(/\b1[3-9]\d{9}\b/g, '[手机号已隐藏]')
+    .replace(/\b(?:cookie|token|authorization|session|signature|device_?id)\s*[:=]\s*\S+/gi, '[敏感字段已隐藏]');
+}
+
+function parseDraw(text) {
+  let result;
+  try { result = JSON.parse(text.replace(/^\uFEFF/, '')); }
+  catch { throw new Error('抽签响应不是有效 JSON'); }
+  const data = result && result.data;
+  if (!data || typeof data !== 'object' || Array.isArray(data) ||
+      result.success === false || (result.error !== undefined && result.error !== null && result.error !== false && result.error !== '') ||
+      !['draw', 'annotate', 'explain', 'source'].every(key => typeof data[key] === 'string' && data[key].trim())) {
+    throw new Error('抽签业务失败或签文必需字段缺失');
+  }
+  const match = data.draw.trim().match(/^(.+?)\s*[（(]([^（）()]+)[）)]$/u);
+  if (!match || !match[1].trim() || !match[2].trim()) throw new Error('抽签签文或签等级无法验证');
+  const emoji = { '上签': '🟢', '中签': '🟡', '下签': '🔴' };
+  return [
+    `${emoji[match[2]] || '⚪'} ${match[1].trim()} (${match[2]})`,
+    `📜 卦象：${data.annotate}`,
+    `📖 解签：${data.explain.replace(/　/g, '\n          ')}`,
+    `🌄 典故：${data.source.split('。')[0]}...`
+  ].map(redactDraw);
+}
+
 async function notify(body) {
   if (disabled(process.env.QINGLONG_NOTIFY)) return '已禁用';
   if (dryRun) return '断网预演已模拟通知';
@@ -150,9 +190,9 @@ async function main() {
   const stageStart = Date.now();
   log('阶段 1/3：检查执行参数');
   const entries = (process.env[marker] || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-  if (!['dailynewscn', 'bdhot'].includes(task) || !entries.length) {
+  if (!['dailynewscn', 'bdhot', 'chouq'].includes(task) || !entries.length) {
     failure = 1;
-    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn 或 bdhot；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
+    log(`❌ 配置错误：DAILYNEWSCN_TASK 仅支持 dailynewscn、bdhot 或 chouq；所选任务必须配置 ${marker}=1，无需凭据；阶段耗时 ${Date.now() - stageStart} 毫秒`);
     log('阶段 2/3：⏭️ 配置错误，跳过获取；阶段耗时 0 毫秒');
   } else {
     log(`✅ 执行标记检查通过；阶段耗时 ${Date.now() - stageStart} 毫秒`);
@@ -160,15 +200,16 @@ async function main() {
     log(`阶段 2/3：获取并验证${TITLE}`);
     try {
       if (dryRun) {
-        report = parseReport(isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
+        report = isDraw ? parseDraw(JSON.stringify({ data: { draw: '本地测试签 (上签)', annotate: '本地卦象，仅验证格式', explain: '本地解签　仅用于断网预演', source: '本地典故。非真实抽签结果。' } })) : parseReport(isBaidu ? '百度热搜榜断网预演\n1. 本地测试热搜一\n2. 本地测试热搜二\n3. 本地测试热搜三\n4. 本地测试热搜四\n5. 本地测试热搜五' : '中国日报断网预演\n这是一条本地测试新闻，仅用于验证文本处理流程，不代表今日真实新闻。');
         skipped = 1;
         status = 'dry-run';
         log(`✅ DRY_RUN_OK：本地${TITLE}解析通过，HTTP 请求已跳过`);
       } else {
-        report = parseReport(await getReport());
+        const responseText = await getReport();
+        report = isDraw ? parseDraw(responseText) : parseReport(responseText);
         success = 1;
         status = 'success';
-        log(`✅ ${isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及文本检查通过，共 ${report.length} 行`);
+        log(`✅ ${isDraw ? 'CHOUQ_SUCCESS' : isBaidu ? 'BDHOT_SUCCESS' : 'DAILYNEWSCN_SUCCESS'}：${TITLE}获取及${isDraw ? '签文结构' : '文本'}检查通过，共 ${report.length} 行`);
         console.log(`【${TITLE}】\n` + report.join('\n'));
       }
     } catch (error) {
