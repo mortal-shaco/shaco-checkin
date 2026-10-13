@@ -6657,6 +6657,7 @@
         "optionalEnv": [
           "FORUM_TASKS",
           "FORUM_ALLOW_DOWNLOAD",
+          "FORUM_ALLOW_WORK",
           "FORUM_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
@@ -6667,11 +6668,16 @@
         "liveEnv": {
           "FORUM_TASKS": "visit,credits",
           "FORUM_ALLOW_DOWNLOAD": "0",
+          "FORUM_ALLOW_WORK": "0",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
+          "服务端明确确认打工领取成功",
+          "服务端明确确认签到成功",
+          "今日已经签到",
+          "积分已查询",
+          "首页已返回并确认登录",
+          "今日打工奖励已经领取或任务已完成"
         ],
         "features": [
           "读取指定版块的主题列表，并按上游顺序读取前三个帖子的附件；下载显式启用，不保存文件，间隔两秒。",
@@ -6679,12 +6685,15 @@
           "提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。",
           "独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。",
           "官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。",
-          "多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。"
+          "多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。",
+          "显式 work 动作访问打工插件，最多点击八次，遇间隔限制停止点击，再领取奖励；只接受 messagetext 中明确成功或今日已完成提示。",
+          "保留默认 visit,credits、账号 JSON 参数及每日 08:20 计划；与现有动作在同一规范脚本运行。"
         ],
         "sideEffects": [
           "启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。",
           "首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。",
-          "显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。"
+          "显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。",
+          "显式开启 work 后提交广告点击和领取奖励，可能改变积分、任务状态及广告点击统计。"
         ]
       },
       "postReview": {
@@ -6693,7 +6702,7 @@
       },
       "displayName": "Discuz 论坛日常维护",
       "path": "scripts/forum_download.py",
-      "sha256": "0e9f16e998792dc859f4d18e97c0af3e52a72ef2f84a4ea80d2e8eb63745a149",
+      "sha256": "f7c36f3c4bb0ef72d1c9bdaec2387d373c870a5be4607ac71ed9f274c0339751",
       "stage": "released",
       "license": "GPL-3.0",
       "licenseGate": "allowed-copyleft",
@@ -6732,6 +6741,16 @@
             "commit": "a8d2c229bac693daebe1535bca4cfd49733b632d",
             "originalPath": "src/general/forum_visit.py",
             "license": "GPL-3.0"
+          },
+          {
+            "repository": "nuthx/auto-sign",
+            "url": "https://github.com/nuthx/auto-sign.git",
+            "branch": "main",
+            "commit": "a8d2c229bac693daebe1535bca4cfd49733b632d",
+            "originalPath": "src/general/forum_work.py",
+            "catalogId": "1c8f961491972816",
+            "sha256": "54aac46010ea68e66e516442524cbf498df090cb027f8bdcf9ddd58d304e1aa9",
+            "license": "GPL-3.0"
           }
         ]
       },
@@ -6742,49 +6761,56 @@
           "name": "FORUM_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录本人论坛，在浏览器开发者工具网络面板选择同站请求，复制完整 Cookie；url 使用 HTTPS 论坛根地址，含安装子目录；fid 从版块地址的 fid 参数取得。上游 name、url、fid、cookie 字段直接沿用，原配置需转成每行 JSON。",
-          "format": "每个非空行一个 JSON 对象；必填 url、cookie；可选 name；启用 download 时必填数字 fid。Cookie 作为 JSON 字符串完整保存，双引号和反斜杠按 JSON 转义，不拆分分号、& 或 @。"
+          "howToGet": "登录自己的论坛，在浏览器开发者工具网络面板复制同站请求的完整 Cookie；url 填 HTTPS 根地址，可含安装子目录；下载所需 fid 从版块地址取得。",
+          "format": "每个非空行一个 JSON 对象，必填 url、cookie，可选 name、fid；不按分号、& 或 @ 拆分 Cookie。"
         },
         {
           "name": "FORUM_TASKS",
           "required": false,
           "sensitive": false,
-          "howToGet": "根据站点插件选择动作。sign 使用 dsu_paulsign 插件，sign_plus 使用 qiandao.php；同一账号只能选一种签到。默认仅访问和查询积分。",
-          "format": "逗号分隔的动作：visit,credits,download,sign,sign_plus；默认 visit,credits。所有账号使用相同动作。"
+          "howToGet": "按需选择动作，两个签到入口择一；完整打工流程可选 visit,work,credits。",
+          "format": "逗号分隔 visit、credits、download、sign、sign_plus、work；默认 visit,credits。"
         },
         {
           "name": "FORUM_ALLOW_DOWNLOAD",
           "required": false,
           "sensitive": false,
-          "howToGet": "确认附件下载可能扣积分、计下载次数且允许读取附件后显式开启。",
-          "format": "1 启用下载；默认 0。仅与 FORUM_TASKS 的 download 联用。"
+          "howToGet": "确认下载可能消耗积分后显式开启。",
+          "format": "1 开启；默认 0。"
+        },
+        {
+          "name": "FORUM_ALLOW_WORK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认站点安装 np_cliworkdz 并允许广告点击及领取奖励后显式开启。",
+          "format": "1 开启；默认 0；work 动作必须开启。"
         },
         {
           "name": "FORUM_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "验证参数和执行流程时启用；不发送任何 HTTP 请求，包括青龙通知。",
-          "format": "1 为断网预演；默认 0。预演成功不表示真实业务成功。"
+          "howToGet": "开启无网络参数和流程预演，不代表真实业务成功。",
+          "format": "1 开启；默认 0；不访问论坛或发送网络通知。"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙全局通知开关；真实运行会调用青龙 notify.py 的 send，失败时不改变业务退出码。",
-          "format": "默认 1；0、false、no、off 关闭。预演只打印脱敏通知总结。"
+          "howToGet": "使用青龙已有 notify.py 发送脱敏总结；预演仅打印通知内容。",
+          "format": "默认 1；0、false、no、off 关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选填已有青龙 notify.py 所在目录；否则尝试导入 notify 或使用青龙标准脚本目录。",
-          "format": "已有通知模块目录路径；不下载或安装通知模块。"
+          "howToGet": "可指定青龙 notify.py 所在目录；默认尝试导入 notify 及 /ql/data/scripts、/ql/scripts。",
+          "format": "可选本地目录；通知失败保留业务退出码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号 JSON 对象，同账号的论坛地址、版块和 Cookie 放在同一个对象内。逐账号独立处理，任一账号失败整体非零退出；不使用 & 或 @ 分隔账号。"
+        "rule": "每个非空行一个账号 JSON，论坛地址和完整 Cookie 放在同一行；独立执行，任一账号失败则整体非零退出。"
       },
       "dependencies": [],
       "features": [
@@ -6793,12 +6819,15 @@
         "提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。",
         "独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。",
         "官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。",
-        "多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。"
+        "多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。",
+        "显式 work 动作访问打工插件，最多点击八次，遇间隔限制停止点击，再领取奖励；只接受 messagetext 中明确成功或今日已完成提示。",
+        "保留默认 visit,credits、账号 JSON 参数及每日 08:20 计划；与现有动作在同一规范脚本运行。"
       ],
       "sideEffects": [
         "启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。",
         "首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。",
-        "显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。"
+        "显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。",
+        "显式开启 work 后提交广告点击和领取奖励，可能改变积分、任务状态及广告点击统计。"
       ],
       "review": {
         "staticPassed": true,
@@ -6811,7 +6840,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/e60b615a6554e2b6",
-        "candidateSha256": "0e9f16e998792dc859f4d18e97c0af3e52a72ef2f84a4ea80d2e8eb63745a149"
+        "candidateSha256": "f7c36f3c4bb0ef72d1c9bdaec2387d373c870a5be4607ac71ed9f274c0339751"
       }
     },
     {

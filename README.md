@@ -246,7 +246,7 @@
 - `scripts/epicfreegames.py`：查询 Epic 本周及即将免费游戏，仅筛选有效基础游戏和零价促销。；展示游戏标题、原价、促销起止北京时间及商店链接，兼容语言地区和国家设置。；合成含封面、标题、原价及免费时间的图片并发送到 Telegram；封面失败保留资料卡片，图片生成或发送失败降级完整文字报告。；保留每周六 08:00 调度及 TG_BOT_TOKEN/TG_USER_ID 单账号兼容输入，支持每行一个 Telegram 通知账号。；通过本地样例断网预演，记录带时间戳的分阶段日志、账号统计及唯一 TASK_SUMMARY JSON；业务失败返回非零退出码。；成功、部分失败、失败、配置错误和预演均生成脱敏青龙通知汇总；实际通知失败保留业务退出码，预演仅模拟。。
 - `scripts/erke.py`：查询积分明细第一页五条，展示累计积分、冻结积分、可用积分和积分记录数；会员签到及明确已签到状态识别；每行一个账号，保留上游账号字段兼容，逐账号与逐阶段统计；展示接口返回的非敏感官方账号身份；完全断网预演、阶段耗时日志及单行 TASK_SUMMARY 结构化汇总；青龙脱敏通知，通知失败不覆盖业务退出码。
 - `scripts/fnnasclub.py`：显示论坛提供的公开昵称；获取签到参数并执行每日签到；识别今日已打卡并避免重复签到；读取并脱敏显示我的打卡动态；每行一个账号，独立执行与失败汇总；完全断网预演、时间轴日志和单行结构化汇总；正式运行后发送青龙脱敏通知，通知失败保留业务退出码。
-- `scripts/forum_download.py`：读取指定版块的主题列表，并按上游顺序读取前三个帖子的附件；下载显式启用，不保存文件，间隔两秒。；访问论坛首页并验证登录状态，不把首页访问成功推断为奖励到账。；提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。；独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。；官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。；多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。。
+- `scripts/forum_download.py`：读取指定版块的主题列表，并按上游顺序读取前三个帖子的附件；下载显式启用，不保存文件，间隔两秒。；访问论坛首页并验证登录状态，不把首页访问成功推断为奖励到账。；提供 dsu_paulsign 和 qiandao.php 两种显式签到开关，保留原端点、方法、签到参数和已签到判断。；独立解析 Discuz 积分页面并显示可验证的积分项目，替代私有 get_coin 导入；页面不兼容时明确失败。；官方首页返回用户名时显示该非敏感身份，账号日志不输出 Cookie、表单令牌、地址参数或原始响应。；多账号独立运行、请求超时、同站重定向限制、明确业务成功检查、断网预演、脱敏通知和单行结构化任务汇总。；显式 work 动作访问打工插件，最多点击八次，遇间隔限制停止点击，再领取奖励；只接受 messagetext 中明确成功或今日已完成提示。；保留默认 visit,credits、账号 JSON 参数及每日 08:20 计划；与现有动作在同一规范脚本运行。。
 - `scripts/fwxs_checkin.js`：登录有效性检查并展示官方公开 UID；废文网每日签到；以个人中心总签到天数增长确认成功；查询总签到天数与连续签到天数；明确的北京时间当天签到记录支持已签到判定；每行一个账号独立执行，兼容原 fwxs 变量与首个 # 后的昵称备注解析；完全断网预演及参数检查；青龙通知、分阶段脱敏日志、逐账号统计与单行结构化任务汇总。
 - `scripts/fxh.js`：每日查询当前积分；每日执行芬享汇签到，显示可解析的奖励积分与已签到状态；官方返回非敏感昵称、用户名、显示名称或公开 UID 时直接展示；逐行多账号独立执行和失败退出；完全断网预演、时间轴日志、账号及任务统计、单行 TASK_SUMMARY 汇总；实际执行通过青龙通知模块发送脱敏总结；预演只模拟通知，不联网。
 - `scripts/get_yys_cgvideo.py`：官网 CG 视频目录解析、按标题去重；显式开启后的媒体下载和校验清单；新增下载数量限制及视频下载成功后两秒间隔；可选官网原画首分组六链接条目的第三链接下载；已有文件经大小及摘要验证后跳过；安全文件名和链接摘要防碰撞、拒绝覆盖文件；断网预演、超时、媒体签名和传输完整性校验；任务独立处理，任一资源失败均非零退出；时间轴日志、结构化统计和脱敏青龙通知。
@@ -427,7 +427,7 @@
 <tr><td rowspan="1"><code>scripts/epicfreegames.py</code></td><td><code>EPIC_TG_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个机器人令牌|会话编号；只按首个 | 分割，支持数字会话编号或公开频道用户名。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/erke.py</code></td><td><code>ERKE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为一个 JSON 对象，五项字段均为非空字符串；可选 account_name 和 user_agent，兼容上游字段。account_name 保留输入兼容，日志优先使用官方身份，没有官方身份时用账号序号。JSON 内部文本与标点保留，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_COOKIE</code></td><td>是</td><td>格式：每个非空行为一个账号的完整 Cookie 值，保留分号及等号，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/forum_download.py</code></td><td><code>FORUM_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象；必填 url、cookie；可选 name；启用 download 时必填数字 fid。Cookie 作为 JSON 字符串完整保存，双引号和反斜杠按 JSON 转义，不拆分分号、&amp; 或 @。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/forum_download.py</code></td><td><code>FORUM_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必填 url、cookie，可选 name、fid；不按分号、&amp; 或 @ 拆分 Cookie。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fwxs_checkin.js</code></td><td><code>fwxs</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；兼容 Cookie#昵称备注，仅按首个 # 分割，后续备注完整保留但为防泄漏不输出。禁止用 @ 或 &amp; 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/fxh.js</code></td><td><code>fxhOpenId</code></td><td>是</td><td>格式：每个非空行一个 OpenId，允许字母、数字、下划线和短横线；保留上游变量名，不再支持 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/get_yys_cgvideo.py</code></td><td><code>YYS_OUTPUT_DIR</code></td><td>否</td><td>格式：一个本地目录路径；预演也必须提供占位目录；多账号格式以该脚本文档为准</td></tr>
@@ -843,11 +843,12 @@
 <tr><td rowspan="3"><code>scripts/fnnasclub.py</code></td><td><code>FNNASCLUB_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启断网预演，默认 0。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：现有通知模块所在目录路径；业务运行不依赖通知模块。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="5"><code>scripts/forum_download.py</code></td><td><code>FORUM_TASKS</code></td><td>否</td><td>格式：逗号分隔的动作：visit,credits,download,sign,sign_plus；默认 visit,credits。所有账号使用相同动作。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>FORUM_ALLOW_DOWNLOAD</code></td><td>否</td><td>格式：1 启用下载；默认 0。仅与 FORUM_TASKS 的 download 联用。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>FORUM_DRY_RUN</code></td><td>否</td><td>格式：1 为断网预演；默认 0。预演成功不表示真实业务成功。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。预演只打印脱敏通知总结。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：已有通知模块目录路径；不下载或安装通知模块。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="6"><code>scripts/forum_download.py</code></td><td><code>FORUM_TASKS</code></td><td>否</td><td>格式：逗号分隔 visit、credits、download、sign、sign_plus、work；默认 visit,credits。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>FORUM_ALLOW_DOWNLOAD</code></td><td>否</td><td>格式：1 开启；默认 0。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>FORUM_ALLOW_WORK</code></td><td>否</td><td>格式：1 开启；默认 0；work 动作必须开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>FORUM_DRY_RUN</code></td><td>否</td><td>格式：1 开启；默认 0；不访问论坛或发送网络通知。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选本地目录；通知失败保留业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="3"><code>scripts/fwxs_checkin.js</code></td><td><code>FWXS_DRY_RUN</code></td><td>否</td><td>格式：1 表示完全断网预演，包括模拟通知；不会验证真实账号或执行签到。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭通知，其他值启用；断网预演仅模拟通知。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本机目录路径；通知模块不可用或失败时不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
@@ -1787,7 +1788,7 @@
 - `scripts/epicfreegames.py`：每个非空行配置一个 Telegram 通知账号，格式为机器人令牌|会话编号；仅按首个 | 分割。逐账号独立发送，任一账号失败则整体非零退出。Epic 公开商品查询不需要商店登录凭据。。
 - `scripts/erke.py`：每个非空行一个账号 JSON，同账号五项凭据组合在同一对象；逐账号、逐阶段独立处理，任一账号或配置失败时整体非零退出。。
 - `scripts/fnnasclub.py`：每个非空行填写一个账号的完整 Cookie，各账号独立执行；任何账号失败均整体非零退出。。
-- `scripts/forum_download.py`：每个非空行一个账号 JSON 对象，同账号的论坛地址、版块和 Cookie 放在同一个对象内。逐账号独立处理，任一账号失败整体非零退出；不使用 & 或 @ 分隔账号。。
+- `scripts/forum_download.py`：每个非空行一个账号 JSON，论坛地址和完整 Cookie 放在同一行；独立执行，任一账号失败则整体非零退出。。
 - `scripts/fwxs_checkin.js`：fwxs 每个非空行一个账号；同一账号仅需完整 Cookie。逐账号独立执行，任一账号失败时整体非零退出。昵称备注兼容解析，日志采用账号序号与官方公开 UID，防止备注泄露凭据。。
 - `scripts/fxh.js`：fxhOpenId 每个非空行一个账号，逐个独立执行；任一账号失败整体非零退出，不使用 @ 或 & 分隔。。
 - `scripts/hifiti_checkin.py`：HiFiTi_COOKIE 和 HIFIHI_COOKIE 各自每个非空行一个账号，账号独立会话并顺序处理。两者至少一项非空；单个账号失败不阻止其他账号，任一失败整体非零退出。。
@@ -2220,8 +2221,8 @@
 #### `FORUM_ACCOUNTS`
 
 - 所属脚本：`scripts/forum_download.py`
-- 获取或设置：登录本人论坛，在浏览器开发者工具网络面板选择同站请求，复制完整 Cookie；url 使用 HTTPS 论坛根地址，含安装子目录；fid 从版块地址的 fid 参数取得。上游 name、url、fid、cookie 字段直接沿用，原配置需转成每行 JSON。
-- 填写格式：`每个非空行一个 JSON 对象；必填 url、cookie；可选 name；启用 download 时必填数字 fid。Cookie 作为 JSON 字符串完整保存，双引号和反斜杠按 JSON 转义，不拆分分号、& 或 @。`
+- 获取或设置：登录自己的论坛，在浏览器开发者工具网络面板复制同站请求的完整 Cookie；url 填 HTTPS 根地址，可含安装子目录；下载所需 fid 从版块地址取得。
+- 填写格式：`每个非空行一个 JSON 对象，必填 url、cookie，可选 name、fid；不按分号、& 或 @ 拆分 Cookie。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `fwxs`
@@ -4825,32 +4826,38 @@
 #### `FORUM_TASKS`
 
 - 所属脚本：`scripts/forum_download.py`
-- 获取或设置：根据站点插件选择动作。sign 使用 dsu_paulsign 插件，sign_plus 使用 qiandao.php；同一账号只能选一种签到。默认仅访问和查询积分。
-- 填写格式：`逗号分隔的动作：visit,credits,download,sign,sign_plus；默认 visit,credits。所有账号使用相同动作。`
+- 获取或设置：按需选择动作，两个签到入口择一；完整打工流程可选 visit,work,credits。
+- 填写格式：`逗号分隔 visit、credits、download、sign、sign_plus、work；默认 visit,credits。`
 
 #### `FORUM_ALLOW_DOWNLOAD`
 
 - 所属脚本：`scripts/forum_download.py`
-- 获取或设置：确认附件下载可能扣积分、计下载次数且允许读取附件后显式开启。
-- 填写格式：`1 启用下载；默认 0。仅与 FORUM_TASKS 的 download 联用。`
+- 获取或设置：确认下载可能消耗积分后显式开启。
+- 填写格式：`1 开启；默认 0。`
+
+#### `FORUM_ALLOW_WORK`
+
+- 所属脚本：`scripts/forum_download.py`
+- 获取或设置：确认站点安装 np_cliworkdz 并允许广告点击及领取奖励后显式开启。
+- 填写格式：`1 开启；默认 0；work 动作必须开启。`
 
 #### `FORUM_DRY_RUN`
 
 - 所属脚本：`scripts/forum_download.py`
-- 获取或设置：验证参数和执行流程时启用；不发送任何 HTTP 请求，包括青龙通知。
-- 填写格式：`1 为断网预演；默认 0。预演成功不表示真实业务成功。`
+- 获取或设置：开启无网络参数和流程预演，不代表真实业务成功。
+- 填写格式：`1 开启；默认 0；不访问论坛或发送网络通知。`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/forum_download.py`
-- 获取或设置：使用青龙全局通知开关；真实运行会调用青龙 notify.py 的 send，失败时不改变业务退出码。
-- 填写格式：`默认 1；0、false、no、off 关闭。预演只打印脱敏通知总结。`
+- 获取或设置：使用青龙已有 notify.py 发送脱敏总结；预演仅打印通知内容。
+- 填写格式：`默认 1；0、false、no、off 关闭。`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/forum_download.py`
-- 获取或设置：可选填已有青龙 notify.py 所在目录；否则尝试导入 notify 或使用青龙标准脚本目录。
-- 填写格式：`已有通知模块目录路径；不下载或安装通知模块。`
+- 获取或设置：可指定青龙 notify.py 所在目录；默认尝试导入 notify 及 /ql/data/scripts、/ql/scripts。
+- 填写格式：`可选本地目录；通知失败保留业务退出码。`
 
 #### `FWXS_DRY_RUN`
 
@@ -10534,7 +10541,7 @@
 - `scripts/epicfreegames.py`：SHA-256 `c8d5c51c3bc4dfbfb194ddb29720a35d605c3285eca606ec4af7ffdff72d0d4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
 - `scripts/erke.py`：SHA-256 `887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
 - `scripts/fnnasclub.py`：SHA-256 `80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
-- `scripts/forum_download.py`：SHA-256 `0e9f16e998792dc859f4d18e97c0af3e52a72ef2f84a4ea80d2e8eb63745a149`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
+- `scripts/forum_download.py`：SHA-256 `f7c36f3c4bb0ef72d1c9bdaec2387d373c870a5be4607ac71ed9f274c0339751`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
 - `scripts/fwxs_checkin.js`：SHA-256 `e9f6410e225fbef75b20d661e4122ea2bece6b41b7908f17f4f42244f151780c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
 - `scripts/fxh.js`：SHA-256 `228504f8a8e327c856a9187a242e930442b57356490653b6e6c7e692509f4081`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
 - `scripts/get_yys_cgvideo.py`：SHA-256 `5acaf38a721b681a7ea5a7ac0240d4116214d54ea3dde624435202a040af09cd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8edbbefea99ad1fb`。
@@ -10707,7 +10714,7 @@
 - `scripts/epicfreegames.py`：向配置的 Telegram 会话发送免费游戏图片或文字提醒。；真实运行时按 QINGLONG_NOTIFY 设置通过青龙 notify.py 发送脱敏任务汇总。。
 - `scripts/erke.py`：正式运行提交会员签到，可能增加积分和签到记录。
 - `scripts/fnnasclub.py`：执行论坛签到，更新签到记录及论坛对应奖励；正式运行向已配置的青龙通知渠道发送脱敏总结。
-- `scripts/forum_download.py`：启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。；首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。；显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。。
+- `scripts/forum_download.py`：启用 sign 或 sign_plus 时提交每日签到并可能获得签到奖励。；首页访问及页面读取可能增加论坛访问统计或触发站点每日访问奖励。；显式启用 download 后附件请求可能消耗论坛积分、增加下载次数或触发下载奖励。；显式开启 work 后提交广告点击和领取奖励，可能改变积分、任务状态及广告点击统计。。
 - `scripts/fwxs_checkin.js`：通过 GET /qiandao 完成废文网签到，增加签到天数及服务端签到奖励（以站点规则为准）；正式执行结束后通过青龙通知渠道发送脱敏任务统计（可关闭）。
 - `scripts/fxh.js`：实际执行每日签到，改变签到状态并由服务端发放积分；启用通知时调用青龙通知模块发送任务总结。
 - `scripts/get_yys_cgvideo.py`：显式下载且非预演时创建保存目录、媒体文件和校验清单；实际运行且通知开启时调用青龙通知发送摘要。

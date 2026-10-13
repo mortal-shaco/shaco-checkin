@@ -2,7 +2,7 @@
 # name: Discuz 论坛日常维护
 # cron: 20 8 * * *
 # 来源：nuthx/auto-sign，src/general/forum_download.py、forum_sign.py、
-# forum_sign_plus.py、forum_visit.py，GPL-3.0；维护版本沿用 GPL-3.0。
+# forum_sign_plus.py、forum_visit.py、forum_work.py，GPL-3.0；维护版本沿用 GPL-3.0。
 """独立运行，Python 3 标准库，无下载或安装引导。
 
 FORUM_ACCOUNTS：每行一个 JSON 对象，字段 name、url、fid、cookie；
@@ -10,6 +10,9 @@ cookie 为完整 Cookie 字符串，不拆分其中的分号、& 或 @。
 登录自己的论坛，在浏览器开发者工具网络面板复制同站请求 Cookie；
 url 填 HTTPS 论坛根地址（可含安装子目录），fid 从版块地址取得。
 FORUM_TASKS：visit,credits（默认）；可添加 download、sign 或 sign_plus。
+可添加 work：访问 np_cliworkdz 插件、最多点击八次并领取打工奖励。
+work 需要 FORUM_ALLOW_WORK=1；仅适用于已安装该插件的论坛，可能改变积分和广告统计。
+work 的 Referer 和表单沿用上游；间隔限制出现后停止点击，再核对领取结果。
 两个签到入口择一。download 必须另设 FORUM_ALLOW_DOWNLOAD=1，可能扣积分。
 附件仅读取并丢弃，不保存文件；最多读取前三个帖子，每次间隔 2 秒。
 上游未声明 cron；本版本建议每日 08:20，可在青龙调整。
@@ -123,12 +126,12 @@ class Client:
             raise Failure('链接不在配置的 HTTPS 站点，已阻止携带凭据访问')
         return url
 
-    def request(self, link='', data=None, attachment=False):
+    def request(self, link='', data=None, attachment=False, referer=None):
         url = self.safe_url(link)
         payload = urlencode(data).encode() if data is not None else None
         for _ in range(6):
             req = Request(url, data=payload, headers={
-                'User-Agent': UA, 'Cookie': self.cookie, 'Referer': self.base,
+                'User-Agent': UA, 'Cookie': self.cookie, 'Referer': self.safe_url(referer) if referer else self.base,
                 'Content-Type': 'application/x-www-form-urlencoded',
             })
             try:
@@ -204,6 +207,42 @@ class Client:
             raise Failure('积分页面缺少可识别的 creditl 积分项目，未猜测余额')
         log('论坛积分：' + '；'.join(values))
         return 'success', '积分已查询'
+
+    def work(self):
+        endpoint = 'plugin.php?id=np_cliworkdz:work'
+        # 原始端点、GET/POST、act 字段和 Referer 均来自 forum_work.py。
+        referer = 'plugin.php?id=dsu_paulsign:sign'
+        self.authenticated(self.request(), True)
+        page = self.request(endpoint, referer=referer)
+        if any(x in Page(page).root.text() for x in ('请先登录', '登录后', '插件不存在', '插件未安装')):
+            raise Failure('打工插件不可用或会话未被接受，未执行点击')
+        log('打工步骤 1/3：✅ 插件页面已访问；尚未确认奖励')
+        clicks = 0
+        for index in range(1, 9):
+            response = self.request(endpoint, {'act': 'clickad'}, referer=referer)
+            text = Page(response).root.text()
+            if any(x in text for x in ('请先登录', '登录后', '无权', '权限不足', '打工失败')):
+                raise Failure('打工点击被拒绝，已停止，未重复提交')
+            if '必须与上一次间隔' in text:
+                log(f'打工步骤 2/3：⏭️ 第 {index} 次遇到间隔限制，停止点击并检查领取状态')
+                break
+            clicks += 1
+            log(f'打工步骤 2/3：第 {index}/8 次请求已返回；不推断点击或奖励成功')
+        result = self.request(endpoint, {'act': 'getcre'}, referer=referer)
+        messages = [n.text().strip() for n in Page(result).nodes() if n.attrs.get('id') == 'messagetext']
+        if len(messages) != 1:
+            raise Failure('打工领取响应缺少唯一 messagetext，无法验证奖励')
+        message = messages[0]
+        # 不输出原始提示：插件版本及错误文案可能包含凭据或地址。
+        if any(x in message for x in ('失败', '错误', '请先登录', '登录后', '不足', '未完成', '还没有', '尚未', '必须与上一次间隔')):
+            raise Failure('打工领取未成功或条件尚未满足；请核对插件状态')
+        if any(x in message for x in ('今日已领取', '今天已领取', '今日已经领取', '今天已经领取', '今日已完成打工', '今天已经完成打工')):
+            log('打工步骤 3/3：☑️ 服务端明确确认今日已领取或已完成')
+            return 'alreadyComplete', '今日打工奖励已经领取或任务已完成'
+        if not any(x in message for x in ('打工成功', '领取成功', '成功领取', '成功获得')):
+            raise Failure('打工领取响应未提供明确成功标志，请核对插件版本；不会自动重试领取')
+        log(f'打工步骤 3/3：✅ 服务端明确确认领取成功；点击请求 {clicks} 次')
+        return 'success', '服务端明确确认打工领取成功；积分由独立 credits 阶段查询'
 
     def sign(self, plus=False):
         endpoint = 'qiandao.php' if plus else 'plugin.php?id=dsu_paulsign:sign'
@@ -326,12 +365,14 @@ def main():
     config_error = None
     if not lines:
         config_error = '缺少必填 FORUM_ACCOUNTS'
-    elif not tasks or set(tasks) - {'visit', 'credits', 'sign', 'sign_plus', 'download'}:
+    elif not tasks or set(tasks) - {'visit', 'credits', 'sign', 'sign_plus', 'download', 'work'}:
         config_error = 'FORUM_TASKS 包含未知动作或为空'
     elif 'sign' in tasks and 'sign_plus' in tasks:
         config_error = '同一账号的两种签到入口只能选择一种'
     elif 'download' in tasks and not enabled('FORUM_ALLOW_DOWNLOAD'):
         config_error = '附件下载可能扣积分，需显式设置 FORUM_ALLOW_DOWNLOAD=1'
+    elif 'work' in tasks and not enabled('FORUM_ALLOW_WORK'):
+        config_error = '打工会提交广告点击及领取奖励，需显式设置 FORUM_ALLOW_WORK=1'
     totals = dict(success=0, alreadyComplete=0, skipped=0, failure=0)
     if config_error:
         log('❌ 配置错误：' + config_error)
