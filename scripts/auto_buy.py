@@ -4,6 +4,27 @@
 # cron: 0 0 10 * * *
 """
 定时抢购脚本：用于在指定时间自动抢购商品。
+新增同产品积分任务来自 script/shyp/main.py 与 api.py。
+原声明：上海云媒体积分任务自动化脚本；上海云媒体 API Interface；
+Author: Assistant；Date: 2025-11-06。
+SHYP_TASK=buy（默认）保留商城行为；SHYP_TASK=points 单独运行积分任务。
+不要将两个任务自动串联：凭据、时限不同。商城 cron 保持 0 0 10 * * *；
+积分上游 cron 保持 1 1 1 1 1，可在青龙另建同脚本任务设置 SHYP_TASK=points。
+积分参数获取：登录自己的上海杨浦 App，抓取 app.ypmedia.cn 的
+/media-basic-port/api/app/personal/score/info 请求头 token、deviceid、siteid。
+SHYP_POINTS_ACCOUNTS 每个非空行是 JSON 对象，必填 token、device_id；
+可选 site_id（默认 310110）、user_agent（默认 okhttp/4.10.0）。
+JSON 保留凭据内所有分隔符；不读取私有 config/token.json。
+SHYP_POINTS_DRY_RUN=1 完全断网，仅校验配置与流程，不模拟业务成功。
+SHYP_POINTS_ENABLE=1 才执行积分动作，否则仅查询积分、签到和任务状态。
+SHYP_POINTS_ACTIONS 默认 read,video,favor,comment,share，可按逗号选动作。
+SHYP_POINTS_UNFAVOR=1 才在收藏后取消收藏，默认保留收藏避免破坏已有状态。
+评论优先从 https://v1.hitokoto.cn/?encode=json 获取带作者/来源的文字；
+所有失败回退本地短句，可用 SHYP_POINTS_LOCAL_TEXT 指定（最长 280 字）。
+SHYP_POINTS_TIMEOUT 默认 30 秒；保留原动作等待区间；未知结果不重试。
+积分任务没有签到写入接口证据，因此只查询签到，不伪造签到功能。
+积分每步要求 code 为数字 0 且无冲突错误，刷新任务进度核对最终完成。
+
 上游：Cat-zaizai/ZaiZaiCat-Checkin，script/shyp/auto_buy.py
 版本：d6a334e43d0a0c8f41b039cd410be33593efc35b；许可：MIT。
 原文件没有单独的版权声明。保留上游归属，修改版同样使用 MIT 许可。
@@ -43,6 +64,7 @@ SOFTWARE.
 """
 import json
 import math
+import random
 import os
 import re
 import subprocess
@@ -141,7 +163,7 @@ def buy(token, cookie, params, timeout):
         return False, False, '网络、HTTP 或解析错误，结果不确定，停止重试'
 
 
-def notify(body, dry):
+def notify(body, dry, title=TITLE):
     if os.environ.get('QINGLONG_NOTIFY', '1').lower() in DISABLED:
         log('通知状态：全局开关已关闭')
         return 'disabled'
@@ -167,7 +189,7 @@ except ImportError:
 notify.send(sys.argv[1], sys.argv[2])
 '''
     try:
-        result = subprocess.run([sys.executable, '-c', code, TITLE, body], capture_output=True, timeout=30, check=False)
+        result = subprocess.run([sys.executable, '-c', code, title, body], capture_output=True, timeout=30, check=False)
         ok = result.returncode == 0
     except Exception:
         ok = False
@@ -175,7 +197,7 @@ notify.send(sys.argv[1], sys.argv[2])
     return 'sent' if ok else 'unavailable'
 
 
-def main():
+def buy_main():
     start = time.monotonic()
     dry = os.environ.get('SHYP_BUY_DRY_RUN', '0').lower() in {'1', 'true', 'yes', 'on'}
     lines = [line.strip() for line in os.environ.get('SHYP_BUY_ACCOUNTS', '').splitlines() if line.strip()]
@@ -264,6 +286,350 @@ def main():
           'accounts': len(lines), 'success': successes, 'failed': failures, 'results': results,
           'notification': notification, 'finishTime': finish, 'exitCode': exit_code}, ensure_ascii=False, separators=(',', ':')))
     return exit_code
+
+
+POINTS_TITLE = '上海杨浦积分任务'
+POINTS_BASE = 'https://app.ypmedia.cn/media-basic-port/api/app/'
+ACTIONS = {'read': ('002', '阅读', (2, 4)),
+           'video': ('003', '视频', (10, 15)),
+           'favor': ('005', '收藏', (15, 20)),
+           'comment': ('006', '评论', (30, 35)),
+           'share': ('007', '分享', (5, 10))}
+LOCAL_TEXT = ['👍', '写得好', '支持', '不错', '很好', '赞', '有意义', '学习了', '感谢分享', '受益匪浅']
+
+
+class TaskError(Exception):
+    """只包含静态脱敏错误说明。"""
+
+
+def normalized(value):
+    return ' '.join(value.split()) if isinstance(value, str) else ''
+
+
+def comment_text(local):
+    # 独立请求，绝不复用账号请求头，不跟随重定向。
+    try:
+        req = Request('https://v1.hitokoto.cn/?encode=json',
+                      headers={'Accept': 'application/json'}, method='GET')
+        with build_opener(NoRedirect()).open(req, timeout=8) as response:
+            if response.status != 200:
+                raise TaskError('文字服务状态异常')
+            raw = response.read(16385)
+        if len(raw) > 16384:
+            raise TaskError('文字服务响应过大')
+        obj = json.loads(raw)
+        if not isinstance(obj, dict):
+            raise TaskError('文字服务结构异常')
+        text = normalized(obj.get('hitokoto'))
+        author = normalized(obj.get('from_who'))
+        source = normalized(obj.get('from'))
+        if not text:
+            raise TaskError('文字为空')
+        if author and source:
+            text += f' —— {author}《{source}》'
+        elif source:
+            text += f' ——《{source}》'
+        elif author:
+            text += f' —— {author}'
+        if len(text) > 280:
+            raise TaskError('文字过长')
+        log('评论文字：一言获取成功，保留作者及来源署名')
+        return text
+    except Exception:
+        log('⚠️ 评论文字：文字服务不可用或格式不合规，采用本地回退')
+        return local or random.choice(LOCAL_TEXT)
+
+
+class PointsAPI:
+    def __init__(self, account, timeout):
+        self.site = account.get('site_id', '310110')
+        self.timeout = timeout
+        self.secrets = (account['token'], account['device_id'])
+        self.headers = {'User-Agent': account.get('user_agent', 'okhttp/4.10.0'),
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Accept-Encoding': 'identity',
+                        'log-header': 'I am the log request header.',
+                        'deviceid': account['device_id'], 'siteid': self.site,
+                        'token': account['token']}
+
+    def common(self, **extra):
+        return dict(orderBy='release_desc', requestType='1', siteId=self.site, **extra)
+
+    def call(self, endpoint, data):
+        started = time.monotonic()
+        try:
+            req = Request(POINTS_BASE + endpoint,
+                          data=json.dumps(data, ensure_ascii=False).encode(),
+                          headers=self.headers, method='POST')
+            with build_opener(NoRedirect()).open(req, timeout=self.timeout) as response:
+                if response.status != 200:
+                    raise TaskError('HTTP 状态异常，结果不确定，不自动重试')
+                raw = response.read(1024 * 1024 + 1)
+            if not raw or len(raw) > 1024 * 1024:
+                raise TaskError('响应为空或过大，结果不确定')
+            result = json.loads(raw)
+            if not isinstance(result, dict):
+                raise TaskError('响应结构未知')
+            identities(result, self.secrets)
+            if (type(result.get('code')) is not int or result['code'] != 0
+                    or result.get('success') is False or result.get('error') or result.get('errors')):
+                raise TaskError('接口未明确确认业务成功，不自动重试')
+            log(f'✅ 请求 {endpoint}：业务 code=0；耗时 {time.monotonic() - started:.3f} 秒')
+            return result
+        except TaskError:
+            raise
+        except Exception:
+            raise TaskError('网络、HTTP 或解析失败，结果不确定，不自动重试') from None
+
+    def score(self):
+        result = self.call('personal/score/info',
+                           {'orderBy': 'release_desc', 'requestType': '2', 'siteId': self.site})
+        data = result.get('data')
+        if not isinstance(data, dict) or not isinstance(data.get('jobs'), list):
+            raise TaskError('积分及任务响应结构变化')
+        if any(not isinstance(job, dict) for job in data['jobs']):
+            raise TaskError('任务列表结构变化')
+        return data
+
+    def records(self, video=False, size=10, page=1):
+        channel = 'd7036c2839e047b48fe64bc36987650c' if video else 'a978f44b3e284e5e86777f9d4e3be7bb'
+        result = self.call('news/content/list', self.common(channel={'id': channel}, pageNo=page, pageSize=size))
+        data = result.get('data')
+        records = data.get('records') if isinstance(data, dict) else None
+        if not isinstance(records, list) or any(not isinstance(x, dict) or not x.get('id') for x in records):
+            raise TaskError('内容列表结构无效')
+        return records
+
+
+def progress(job):
+    try:
+        values = [int(job['progress']), int(job['totalProgress'])]
+        if any(str(v) != str(job[k]) for v, k in zip(values, ('progress', 'totalProgress'))):
+            raise ValueError()
+        if not 0 <= values[0] <= values[1] <= 1000:
+            raise ValueError()
+        return values
+    except Exception:
+        raise TaskError('任务进度缺失或格式无效，禁止猜测执行次数') from None
+
+
+def show_score(data, secrets):
+    # 不输出原始任务标题/摘要，避免服务端错误内容携带凭据。
+    for key, label in [('totalScore', '总积分'), ('todayPoint', '今日积分'),
+                       ('todayIncreasePoint', '今日新增积分')]:
+        value = data.get(key)
+        if type(value) in (int, float) and math.isfinite(value):
+            log(f'{label}：{value}')
+    title = data.get('signTitle')
+    if isinstance(title, str) and not any(x and x in title for x in secrets) and not re.search(r'1[3-9]\d{9}', title):
+        log('签到状态：' + json.dumps(title, ensure_ascii=False))
+    jobs = data['jobs']
+    log(f'任务统计：总数 {len(jobs)}，已完成 {sum(str(j.get("status")) == "1" for j in jobs)}')
+    for action, (task_id, label, _) in ACTIONS.items():
+        for job in jobs:
+            if str(job.get('id')) == task_id:
+                current, total = progress(job)
+                log(f'{label}任务：进度 {current}/{total}，{"已完成" if str(job.get("status")) == "1" else "待完成"}')
+
+
+def run_action(api, action, job, local, unfavor):
+    _, label, delay = ACTIONS[action]
+    current, total = progress(job)
+    remaining = total - current
+    if remaining <= 0:
+        raise TaskError('任务未完成但进度已满，状态冲突')
+    if action == 'comment':
+        records = []
+        for page in (1, 2):
+            records.extend(api.records(page=page))
+            if page == 1:
+                time.sleep(random.uniform(1, 2))
+        # 去重，避免重复评论相同内容。
+        records = list({str(x['id']): x for x in records}.values())
+        records = random.sample(records, min(remaining, len(records)))
+    else:
+        records = api.records(video=action == 'video', size=remaining)[:remaining]
+    if len(records) < remaining:
+        raise TaskError('可用内容数量不足，停止该动作，不虚报完成')
+    for index, record in enumerate(records, 1):
+        content_id = record['id']
+        started = time.monotonic()
+        log(f'{label} / 步骤 {index}/{remaining}：开始')
+        if action in ('read', 'share'):
+            api.call('common/count/usage/inc', api.common(countType='contentRead', id=content_id))
+            api.call(f'points/{action}/add', api.common())
+        elif action == 'video':
+            api.call('multimedia/drama/get', api.common(id=content_id))
+            api.call('points/video/add', api.common())
+        elif action == 'favor':
+            api.call('news/content/favor', {'id': content_id})
+            if unfavor:
+                time.sleep(random.uniform(1, 2))
+                api.call('news/content/disfavor', {'id': content_id})
+        elif action == 'comment':
+            api.call('common/comment/add', {'displayResources': [], 'content': comment_text(local),
+                                          'targetType': 'content', 'targetId': content_id})
+        log(f'✅ {label} / 步骤 {index}/{remaining}：接口确认完成，耗时 {time.monotonic() - started:.3f} 秒')
+        if index < remaining:
+            time.sleep(random.uniform(*delay))
+
+
+def points_main():
+    start = time.monotonic()
+    dry = os.environ.get('SHYP_POINTS_DRY_RUN', '0').lower() in {'1', 'true', 'yes', 'on'}
+    lines = [x.strip() for x in os.environ.get('SHYP_POINTS_ACCOUNTS', '').splitlines() if x.strip()]
+    enabled = os.environ.get('SHYP_POINTS_ENABLE', '0') == '1'
+    results = []
+    config_error = False
+    interrupted = False
+    log('=' * 50)
+    log(f'{POINTS_TITLE} | 开始时间 {datetime.now():%Y-%m-%d %H:%M:%S}')
+    log(f'模式：{"断网预演" if dry else "真实执行"}；账号数量：{len(lines)}；积分动作：{"已启用" if enabled else "仅查询"}')
+    try:
+        stage = time.monotonic()
+        log('阶段 1：检查全局参数')
+        if not lines:
+            raise TaskError('必须配置 SHYP_POINTS_ACCOUNTS，每行一个账号 JSON 对象')
+        timeout = number('SHYP_POINTS_TIMEOUT', '30', 1, 60)
+        actions = list(dict.fromkeys(x.strip() for x in os.environ.get('SHYP_POINTS_ACTIONS', 'read,video,favor,comment,share').split(',')))
+        if not actions or any(x not in ACTIONS for x in actions):
+            raise TaskError('SHYP_POINTS_ACTIONS 仅支持 read,video,favor,comment,share')
+        local = normalized(os.environ.get('SHYP_POINTS_LOCAL_TEXT', ''))
+        if len(local) > 280:
+            raise TaskError('本地评论文字不能超过 280 字')
+        unfavor = os.environ.get('SHYP_POINTS_UNFAVOR', '0') == '1'
+        log(f'阶段 1：通过，耗时 {time.monotonic() - stage:.3f} 秒')
+        for index, line in enumerate(lines, 1):
+            account_start = time.monotonic()
+            stats = {'account': index, 'total': 1 + len(actions), 'success': 0,
+                     'alreadyComplete': 0, 'skipped': 0, 'failed': 0, 'ok': False}
+            results.append(stats)
+            try:
+                log(f'账号 {index} / 阶段 2：检查配套凭据')
+                try:
+                    account = json.loads(line)
+                    if not isinstance(account, dict):
+                        raise ValueError()
+                    for field in ('token', 'device_id', 'site_id', 'user_agent'):
+                        if field in ('token', 'device_id') or field in account:
+                            value = account.get(field)
+                            if not isinstance(value, str) or not value.strip() or any(ord(c) < 32 or ord(c) > 255 for c in value):
+                                raise ValueError()
+                except Exception:
+                    raise TaskError('账号 JSON 或 token/device_id 配套凭据格式错误') from None
+                if dry:
+                    log('DRY_RUN_OK：积分凭据及查询、阅读、视频、收藏、评论、分享流程预演通过；未发 HTTP、未修改状态')
+                    log('账号 / 阶段 3：预演跳过积分查询；阶段 4：预演跳过所选动作及文字服务；阶段 5：预演跳过最终核验')
+                    stats['skipped'] = stats['total']
+                else:
+                    api = PointsAPI(account, timeout)
+                    stage = time.monotonic()
+                    log(f'账号 {index} / 阶段 3：查询积分、签到状态及任务')
+                    before = api.score()
+                    show_score(before, api.secrets)
+                    stats['success'] += 1
+                    log(f'阶段 3：查询完成，耗时 {time.monotonic() - stage:.3f} 秒')
+                    pending = []
+                    for action_index, action in enumerate(actions, 1):
+                        stage = time.monotonic()
+                        task_id, label, _ = ACTIONS[action]
+                        log(f'账号 {index} / 阶段 4.{action_index}：{label}')
+                        matches = [j for j in before['jobs'] if str(j.get('id')) == task_id]
+                        if not enabled:
+                            stats['skipped'] += 1
+                            log('⏭️ 未显式启用积分动作，跳过')
+                        elif len(matches) != 1:
+                            stats['failed'] += 1
+                            log('❌ 任务缺失或重复，不推测接口')
+                        elif str(matches[0].get('status')) == '1':
+                            stats['alreadyComplete'] += 1
+                            log('☑️ 服务端确认任务已完成')
+                        else:
+                            try:
+                                run_action(api, action, matches[0], local, unfavor)
+                                pending.append(action)
+                            except TaskError as error:
+                                stats['failed'] += 1
+                                log('❌ ' + str(error))
+                        log(f'阶段 4.{action_index}：结束，耗时 {time.monotonic() - stage:.3f} 秒')
+                        if enabled and action_index < len(actions):
+                            time.sleep(random.uniform(5, 10))
+                    stage = time.monotonic()
+                    log(f'账号 {index} / 阶段 5：刷新并核验任务完成情况')
+                    if enabled:
+                        time.sleep(random.uniform(5, 10))
+                        after = api.score()
+                        show_score(after, api.secrets)
+                        for action in pending:
+                            task_id, label, _ = ACTIONS[action]
+                            matches = [j for j in after['jobs'] if str(j.get('id')) == task_id]
+                            if len(matches) == 1 and str(matches[0].get('status')) == '1':
+                                stats['success'] += 1
+                                log(f'✅ {label}：刷新后业务确认完成')
+                            else:
+                                stats['failed'] += 1
+                                log(f'❌ {label}：刷新后未确认完成')
+                    else:
+                        log('☑️ 只读查询成功，无积分动作需要核验')
+                    log(f'阶段 5：结束，耗时 {time.monotonic() - stage:.3f} 秒')
+                stats['ok'] = stats['failed'] == 0
+            except TaskError as error:
+                log('❌ ' + str(error))
+            except Exception:
+                log('❌ 账号处理或响应结构异常，未确认任务按失败计入')
+            finally:
+                counted = stats['success'] + stats['alreadyComplete'] + stats['skipped'] + stats['failed']
+                stats['failed'] += max(0, stats['total'] - counted)
+                stats['ok'] = stats['failed'] == 0
+                stats['seconds'] = round(time.monotonic() - account_start, 3)
+                log(f'账号 {index} 统计：总任务 {stats["total"]}，成功 {stats["success"]}，已完成 {stats["alreadyComplete"]}，跳过 {stats["skipped"]}，失败 {stats["failed"]}，耗时 {stats["seconds"]} 秒')
+            if not dry and index < len(lines):
+                time.sleep(random.uniform(5, 10))
+    except KeyboardInterrupt:
+        interrupted = True
+        log('❌ 用户中断，未确认成功的任务按失败计入')
+    except Exception as error:
+        config_error = True
+        log('❌ 配置错误：' + (str(error) if isinstance(error, TaskError) else '参数数值或格式无效'))
+    successes = sum(r['ok'] for r in results)
+    failures = len(lines) - successes
+    exit_code = int(config_error or interrupted or failures > 0)
+    status = 'configuration-error' if config_error else 'partial-failure' if successes and failures else 'failure' if exit_code else 'dry-run' if dry else 'success'
+    log('-' * 50)
+    body = f'{POINTS_TITLE}；状态：{status}；账号总数：{len(lines)}；成功数：{successes}；失败数：{failures}；模式：{"预演，不代表业务成功" if dry else "真实执行"}'
+    log(body)
+    log('子任务统计：' + '，'.join(f'{label} {sum(r[key] for r in results)}' for key, label in [('total', '总数'), ('success', '成功'), ('alreadyComplete', '已完成'), ('skipped', '跳过'), ('failed', '失败')]))
+    notification = notify(body, dry, POINTS_TITLE)
+    finish = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log(f'完成时间：{finish}；总耗时：{time.monotonic() - start:.3f} 秒；最终状态：{status}')
+    print('TASK_SUMMARY=' + json.dumps({'task': 'points', 'status': status, 'mode': 'dry-run' if dry else 'live',
+          'accounts': len(lines), 'success': successes, 'failed': failures, 'results': results,
+          'notification': notification, 'finishTime': finish, 'exitCode': exit_code}, ensure_ascii=False, separators=(',', ':')))
+    return exit_code
+
+
+def main():
+    task = os.environ.get('SHYP_TASK', 'buy')
+    if task == 'buy':
+        return buy_main()
+    if task == 'points':
+        return points_main()
+    # 错误模式也必须汇总及通知，但不得执行其他任务。
+    dry = any(os.environ.get(key, '0').lower() in {'1', 'true', 'yes', 'on'}
+              for key in ('SHYP_BUY_DRY_RUN', 'SHYP_POINTS_DRY_RUN'))
+    log('=' * 50)
+    log(f'{TITLE} | 开始时间 {datetime.now():%Y-%m-%d %H:%M:%S}')
+    log(f'模式：{"断网预演" if dry else "真实执行"}；账号数量：0')
+    log('阶段 1：❌ SHYP_TASK 必须是 buy 或 points；耗时 0 秒')
+    body = '配置错误；账号总数：0；成功数：0；失败数：0'
+    log('-' * 50)
+    log(body)
+    log('子任务统计：总数 0，成功 0，已完成 0，跳过 0，失败 0')
+    notification = notify(body, dry)
+    log(f'完成时间：{datetime.now():%Y-%m-%d %H:%M:%S}；最终状态：configuration-error')
+    print('TASK_SUMMARY=' + json.dumps({'status': 'configuration-error', 'accounts': 0,
+          'success': 0, 'failed': 0, 'notification': notification, 'exitCode': 1}, separators=(',', ':')))
+    return 1
 
 
 if __name__ == '__main__':

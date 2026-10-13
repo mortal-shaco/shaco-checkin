@@ -207,7 +207,7 @@
 - `scripts/api_hax.py`：查询并按地区汇总 Hax 开通数量。；按虚拟化类型分组展示 Hax 可开通区域及开通页面链接。；展示 Woiden 可开通区域及开通页面链接。；保留 HAX 启用开关和每六小时第 21 分钟定时。；完全断网预演、独立查询失败隔离、页面校验及结构化汇总。；通过青龙通知模块发送公开结果和统计，通知失败保留业务退出码。。
 - `scripts/arknightsbanner.py`：每天 10 点监控明日方舟官方寻访公告，无需游戏账号；无第三方业务依赖。；扫描 LATEST 至末页或最多 50 页；ACTIVITY 前 5 页兜底，整页已知时停止，按公告标识去重并按发布时间排序。；逐条抓取公告正文，不依赖标题或摘要预筛；移除脚本与健康提示页脚后识别卡池出率关键词。；提取寻访名称、类型、活动时间、六星与五星 UP 干员、出率、保底规则、寻访数据契约兑换所及公告链接。；首次记录全部扫描公告，仅推送最新一期卡池；后续增量处理新公告，未知详情或通知失败保留重试，损坏状态文件不会静默重置。；通过青龙通知发送分段文字；有封面时附封面链接，并可通过自己实现的 Telegram HTTP 接口发送图片至多个换行配置目标。；兼容原状态字段与原定时安排，原子写入状态；请求有超时、体积限制、HTTPS 约束和业务结构检查。；完全断网预演验证正文、结构化解析、封面与报告，不读写状态、不请求公告、不加载通知或发送图片。；输出中文时间轴、阶段耗时、监控源统计、最终状态及唯一 TASK_SUMMARY JSON；每次运行尝试脱敏总结通知，通知故障保持业务退出码。。
 - `scripts/atxyq.py`：查询并直接展示官方昵称，查询学校启用状态与积分任务列表。；每日签到，核验连续天数与获得积分。；领取普通任务奖励，保持上游排除新用户奖励、集赞有奖、发布任务和邀请有奖。；查询当前可用积分。；显式开启最多两篇校园文章的点赞与取消点赞。；显式发布动态，优先一言正文及作者来源署名，所有声明失败情形回退本地文本；可登记本人已有图片。；显式查询并清理本人最近十篇列表内帖子，删除后重新查询核验。；使用本地明确指定的目标执行助力点赞或邀请绑定，不读取远程默认助力配置。；逐行多账号、失败隔离、完全断网预演、脱敏通知、编号阶段日志与唯一 TASK_SUMMARY 汇总。。
-- `scripts/auto_buy.py`：指定商品、数量、活动编号和促销类型抢购；按完整日期或时分秒定时执行，也支持立即执行；明确业务拒绝后按配置次数和间隔重试，未知结果停止重试；按行配置多账号，独立处理及失败非零退出；断网预演、脱敏时间轴日志、账号和任务统计及结构化汇总；真实执行发送青龙通知汇总，预演生成通知摘要；展示接口明确返回的非敏感昵称、用户名、显示名或公开用户编号。
+- `scripts/auto_buy.py`：按任务开关独立运行商城定时抢购或积分任务，保留商城默认入口、参数和计划；指定商品、数量、活动编号和促销类型抢购，支持完整日期、时分秒或立即执行；商城明确业务拒绝后按配置次数和间隔重试，未知结果停止重试并提示核对订单；查询积分、今日积分、签到状态、任务列表和已完成或未完成任务进度；不自动签到；显式开启后按服务端剩余进度执行阅读、视频、收藏、评论和分享积分任务；评论获取两页文章并随机选择不重复内容，一言优先，保留作者及来源署名，全部规定失败回退本地短句；默认保留收藏，可显式开启收藏后取消收藏；动作保留原始等待区间；积分动作逐步核对业务码并刷新任务状态确认完成；缺失任务、未知响应或未确认完成均失败闭合；按行多账号、独立处理、任一失败非零退出，配套凭据集中配置；无网络预演、脱敏时间轴日志、账号与任务统计及唯一结构化汇总；真实运行通过青龙通知汇总；所有结果含配置错误均通知，预演生成摘要，支持全局开关；展示官方明确返回的非敏感昵称、用户名、显示名或公开用户编号。
 - `scripts/autoclaw_cn_daily.py`：国内版每日签到及积分奖励结果显示，明确业务码及成功标记校验；登录态过期后自动续期并重试签到，签名校验失败时使用 agent-refresh 备用接口；无明确领取结果时只读查询任务清单用于诊断，不将诊断冒充领取成功；支持 --refresh-only 仅续期、--only N 选择账号和 --no-notify 关闭通知；显式启用的私有凭据缓存读取和安全原子保存；默认不落盘登录态；换行多账号独立执行，任一失败整体非零退出；断网预演、分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY 汇总；官方返回昵称、用户名、显示名称或公开 UID 时显示该非秘密身份；青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送；显式 --region intl 或 AUTOCLAW_REGION=intl 使用国际版官方接口及独立凭据；保留国内版默认行为；显式 --region both 按同一每日时机独立执行两地区账号，缓存按地区配置；某地区缺配置仍处理另一地区账号并整体失败。
 - `scripts/autosignin.js`：刷新并验证登录令牌，显示官方返回的非凭据账号身份。；每天 9 点执行签到并显示当月累计签到天数。；领取当天已完成的每日签到奖励和每日任务奖励，展示领取结果；未完成及已结束奖励明确跳过。；保留维护候选的业务状态及结构核验；未知奖励结构、状态和类型按失败处理。；逐行多账号及旧变量兼容，账号独立执行，任一失败整体非零退出。；完全断网预演、请求超时、响应大小限制、脱敏时间轴日志、每账号及任务统计和唯一 TASK_SUMMARY 汇总。；所有运行结果生成脱敏通知总结；正式运行使用青龙 sendNotify.js 投递，预演仅生成不联网投递。。
 - `scripts/autosignin.py`：访问 E-Hentai 新闻页完成签到，并核验事件区明确奖励或今日已完成提示；识别随机遭遇，提示手动处理或等待结束；未确认签到时非零退出；保留默认 TLS 三次请求及 TLS 1.2 三次回退，设置超时、响应大小限制与证书校验；兼容 E_COOKIE、E_PROXY、E_USER_AGENT，多账号按非空行独立运行；解析服务端 Cookie 到期时间并提醒更新，不输出或写回 Cookie 值；显示官方返回的公开账号身份；其他响应内容保持脱敏；完全断网预演、时间轴阶段日志、账号统计、任务统计和单行 TASK_SUMMARY 汇总；正式运行通过青龙通知模块发送脱敏汇总，通知不可用不改变业务退出码；预演生成摘要并禁止外部投递。
@@ -377,9 +377,10 @@
 <tr><td rowspan="1"><code>scripts/api_hax.py</code></td><td><code>HAX</code></td><td>否</td><td>格式：单个非敏感开关；1 启用；0、false、no、off 或空值不启用。未启用报告配置错误并非零退出。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/arknightsbanner.py</code></td><td><code>ARKNIGHTS_STATE_FILE</code></td><td>否</td><td>格式：一个本地 JSON 文件路径；首次正式运行自动创建文件和父目录，已有文件需包含数组 known_cids 与 notified_cids。断网预演不读写文件。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/atxyq.py</code></td><td><code>atxyqs</code></td><td>是</td><td>格式：每个非空行一个账号：Authorization#Uid；仅在第一个 # 拆分，后续文本原样保留；Uid 为数字。旧版 @ 账号分隔必须改为换行。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="3"><code>scripts/auto_buy.py</code></td><td><code>SHYP_BUY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行为 Authorization|Cookie，仅按第一个竖线分割；没有 Cookie 时只填写 Authorization；多个账号用换行分隔。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SHYP_BUY_SKU_ID</code></td><td>否</td><td>格式：数字商品编号；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SHYP_BUY_ACTIVITY_ID</code></td><td>否</td><td>格式：数字活动编号；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="4"><code>scripts/auto_buy.py</code></td><td><code>SHYP_BUY_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行 Authorization|Cookie；Cookie 可省略，仅在第一个 | 处分割；换行区分账号；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_BUY_SKU_ID</code></td><td>否</td><td>格式：数字字符串；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_BUY_ACTIVITY_ID</code></td><td>否</td><td>格式：数字字符串；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_POINTS_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必填字符串 token、device_id；可选 site_id（默认 310110）、user_agent（默认 okhttp/4.10.0）；换行区分账号，JSON 保留字段内分隔符；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/autoclaw_cn_daily.py</code></td><td><code>AUTOCLAW_CN_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号。推荐 JSON 对象，access 必填，refresh、device_id 可选。兼容 token、token|refresh_token、token|refresh_token|device_id、备注|token|refresh_token|device_id 和旧备注|JWT 格式。逐次只按首个 | 切分，最后字段保留剩余文本；可带 Bearer 前缀。禁止用 &amp;、@ 分隔账号；特殊字符或歧义格式使用 JSON。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/autosignin.js</code></td><td><code>ALIYUN_REFRESH_TOKEN</code></td><td>是</td><td>格式：每个非空行一个刷新令牌；空行忽略，不使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/autosignin.py</code></td><td><code>E_COOKIE</code></td><td>是</td><td>格式：每个非空行一个账号的完整 Cookie；字段用分号分隔，每个字段只按第一个等号拆分，后续等号保留。不要使用 &amp; 或 @ 分隔账号。；多账号格式以该脚本文档为准</td></tr>
@@ -611,16 +612,23 @@
 <tr><td><code>ATXYQ_ASSIST</code></td><td>否</td><td>格式：可选 JSON 对象，含 topicId、text、userId、schoolId；三个编号为数字，text 为目标帖原正文；开启助力或邀请时必填。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 禁用；其他值启用。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，通知不可用或失败不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="10"><code>scripts/auto_buy.py</code></td><td><code>SHYP_BUY_ENABLE</code></td><td>否</td><td>格式：默认 0，只有 1 允许真实下单；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SHYP_BUY_NUM</code></td><td>否</td><td>格式：整数 1 至 100，默认 1；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SHYP_BUY_PROMOTION_TYPE</code></td><td>否</td><td>格式：大写字母或下划线，默认 EXCHANGE；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SHYP_BUY_TARGET_TIME</code></td><td>否</td><td>格式：默认 10:00:00；支持 YYYY-MM-DD HH:MM:SS、HH:MM:SS 或 immediate；仅时间已过则等次日，完整日期过期报错；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SHYP_BUY_RETRY_TIMES</code></td><td>否</td><td>格式：整数 1 至 100，默认总尝试 10 次；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="17"><code>scripts/auto_buy.py</code></td><td><code>SHYP_TASK</code></td><td>否</td><td>格式：buy（默认）或 points；商城计划 0 0 10 * * *，积分原计划 1 1 1 1 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_BUY_NUM</code></td><td>否</td><td>格式：1 至 100 的整数，默认 1；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_BUY_PROMOTION_TYPE</code></td><td>否</td><td>格式：大写字母和下划线，最长 40 字符，默认 EXCHANGE；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_BUY_ENABLE</code></td><td>否</td><td>格式：仅 1 允许真实抢购，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_BUY_TARGET_TIME</code></td><td>否</td><td>格式：默认 10:00:00；支持 YYYY-MM-DD HH:MM:SS 或 immediate；仅时间已过等待次日，完整日期过期拒绝；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_BUY_RETRY_TIMES</code></td><td>否</td><td>格式：1 至 100 的整数，默认 10；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SHYP_BUY_RETRY_INTERVAL</code></td><td>否</td><td>格式：0.1 至 60 秒，默认 0.3；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SHYP_BUY_TIMEOUT</code></td><td>否</td><td>格式：1 至 60 秒，默认 10；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SHYP_BUY_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认 0；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：本地目录路径，非业务依赖；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_POINTS_ENABLE</code></td><td>否</td><td>格式：仅 1 开启，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_POINTS_ACTIONS</code></td><td>否</td><td>格式：逗号分隔 read、video、favor、comment、share，默认全部五项；无需用逗号分隔账号；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_POINTS_UNFAVOR</code></td><td>否</td><td>格式：仅 1 开启，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_POINTS_TIMEOUT</code></td><td>否</td><td>格式：1 至 60 秒，默认 30；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_POINTS_LOCAL_TEXT</code></td><td>否</td><td>格式：去除首尾空白并合并连续空白，最长 280 字；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SHYP_POINTS_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 开启，默认 0；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭；预演只生成摘要，不调用联网通知模块；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录；优先 import notify.send，再检查此目录、/ql/data/scripts、/ql/scripts；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="15"><code>scripts/autoclaw_cn_daily.py</code></td><td><code>AUTOCLAW_INTL_TOKENS</code></td><td>是</td><td>格式：每个非空行一个账号；字段和国内变量相同，推荐 JSON 对象。无续期登录态时只填 access，不伪造 refresh。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>AUTOCLAW_REGION</code></td><td>否</td><td>格式：cn 默认国内版；intl 国际版；both 两地区执行，先国内后国际，所选每个地区均须配置账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>AUTOCLAW_CN_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用全任务断网预演，不请求接口、不读写缓存、不实际推送。；多账号格式以该脚本文档为准</td></tr>
@@ -1541,7 +1549,7 @@
 - `scripts/aliyunpan_checkin.py`：每个非空行一个账号；ALIYUN_REFRESH_TOKEN 为规范变量，未设置时兼容 refreshToken；账号独立执行，任一账号失败则整体非零退出。。
 - `scripts/aolaxing.py`：每个非空行对应一个账号，整行保留；逐账号独立处理，任何账号失败则整体非零退出。兼容变量 AOLAXING 使用原 JSON 数组。。
 - `scripts/atxyq.py`：atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 # 拆分；后续字段不再次拆分。各账号独立执行，任一账号失败整体非零退出；不再使用 @ 分隔账号。。
-- `scripts/auto_buy.py`：每个非空行一个商城账号，格式为 Authorization|Cookie，仅按第一个竖线分割，后续 Cookie 文本保留；独立处理，任一失败整体非零退出；共用商品和活动配置，目标时刻到达后顺序下单。。
+- `scripts/auto_buy.py`：每个非空行一个账号，独立执行；商城配套凭据仅按首个 | 分割，积分配套凭据使用单行 JSON；任一账号失败整体非零退出。两种模式凭据不混用。。
 - `scripts/autoclaw_cn_daily.py`：每个非空行一个账号，同账号配套凭据合并在对应地区的一个变量内，推荐 JSON。账号独立执行，任一账号失败或所选地区缺少配置时整体非零退出。--only N 选择所选地区列表中的第 N 个账号；both 时先国内后国际。。
 - `scripts/autosignin.js`：每个非空行一个账号的刷新令牌，规范变量优先于旧变量。账号独立执行；账号或奖励失败继续处理其他账号及奖励，但整体非零退出。。
 - `scripts/autosignin.py`：E_COOKIE 每个非空行一个账号；同一行保留该账号所有 Cookie 字段。账号独立处理，任一账号失败时整体非零退出。。
@@ -1762,21 +1770,28 @@
 #### `SHYP_BUY_ACCOUNTS`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：登录上海杨浦 App 商城，抓取自己账号 carts/buy 请求的 Authorization 和可选 Cookie 请求头；积分接口的 token/deviceid 不能代替商城授权。
-- 填写格式：`每个非空行为 Authorization|Cookie，仅按第一个竖线分割；没有 Cookie 时只填写 Authorization；多个账号用换行分隔。`
+- 获取或设置：仅 buy 模式必填。登录自己的上海杨浦 App，在商城兑换页抓取 mall-api.shmedia.tech/trade-service/trade/carts/buy 请求头 Authorization 和可选 Cookie；不填写请求头名称，不使用积分 token。
+- 填写格式：`每个非空行 Authorization|Cookie；Cookie 可省略，仅在第一个 | 处分割；换行区分账号`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SHYP_BUY_SKU_ID`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：从自己要兑换的商品请求查询参数 sku_id 获取。
-- 填写格式：`数字商品编号`
+- 获取或设置：仅 buy 模式必填。从自己选择的商品抢购请求查询参数 sku_id 获取，禁止沿用他人的商品编号。
+- 填写格式：`数字字符串`
 
 #### `SHYP_BUY_ACTIVITY_ID`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：从自己要兑换的商品请求查询参数 activity_id 获取。
-- 填写格式：`数字活动编号`
+- 获取或设置：仅 buy 模式必填。从同一商品请求查询参数 activity_id 获取。
+- 填写格式：`数字字符串`
+
+#### `SHYP_POINTS_ACCOUNTS`
+
+- 所属脚本：`scripts/auto_buy.py`
+- 获取或设置：仅 points 模式必填。登录自己的上海杨浦 App，抓取 app.ypmedia.cn/media-basic-port/api/app/personal/score/info 请求头 token、deviceid、siteid；将同一账号 token 与 deviceid 分别填入 token、device_id。可选 site_id 和 user_agent 取自该请求；不读取私有配置文件。
+- 填写格式：`每个非空行一个 JSON 对象，必填字符串 token、device_id；可选 site_id（默认 310110）、user_agent（默认 okhttp/4.10.0）；换行区分账号，JSON 保留字段内分隔符`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `AUTOCLAW_CN_TOKENS`
 
@@ -3265,65 +3280,107 @@
 - 获取或设置：可选指定已有青龙 notify.py 或 sendNotify.js 所在目录；默认查找脚本目录、可导入通知模块和青龙常见目录。
 - 填写格式：`本地目录路径，通知不可用或失败不改变业务退出码。`
 
-#### `SHYP_BUY_ENABLE`
+#### `SHYP_TASK`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：确认商品、数量及消费风险后设为 1，默认禁止真实下单。
-- 填写格式：`默认 0，只有 1 允许真实下单`
+- 获取或设置：在青龙任务环境中选择商城抢购或积分任务；两类任务时间、凭据不同，请分别调度同一脚本。
+- 填写格式：`buy（默认）或 points；商城计划 0 0 10 * * *，积分原计划 1 1 1 1 1`
 
 #### `SHYP_BUY_NUM`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：按兑换需要设置。
-- 填写格式：`整数 1 至 100，默认 1`
+- 获取或设置：从自己的商品请求 num 获取，按需选择数量。
+- 填写格式：`1 至 100 的整数，默认 1`
 
 #### `SHYP_BUY_PROMOTION_TYPE`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：从商品兑换请求的 promotion_type 获取。
-- 填写格式：`大写字母或下划线，默认 EXCHANGE`
+- 获取或设置：从自己的商品请求 promotion_type 获取。
+- 填写格式：`大写字母和下划线，最长 40 字符，默认 EXCHANGE`
+
+#### `SHYP_BUY_ENABLE`
+
+- 所属脚本：`scripts/auto_buy.py`
+- 获取或设置：确认商品、数量及费用后显式开启；默认不消费。
+- 填写格式：`仅 1 允许真实抢购，默认 0`
 
 #### `SHYP_BUY_TARGET_TIME`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：按活动开放时刻设置；使用运行环境本地时间，建议青龙使用 Asia/Shanghai。
-- 填写格式：`默认 10:00:00；支持 YYYY-MM-DD HH:MM:SS、HH:MM:SS 或 immediate；仅时间已过则等次日，完整日期过期报错`
+- 获取或设置：按商品开放时间设置，运行环境使用本地时区，建议 Asia/Shanghai。
+- 填写格式：`默认 10:00:00；支持 YYYY-MM-DD HH:MM:SS 或 immediate；仅时间已过等待次日，完整日期过期拒绝`
 
 #### `SHYP_BUY_RETRY_TIMES`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：按活动需要设置，仅明确业务拒绝允许重试；未知结果须核对商城订单。
-- 填写格式：`整数 1 至 100，默认总尝试 10 次`
+- 获取或设置：按需设置，仅明确 success=false 时重试，未知结果不重试。
+- 填写格式：`1 至 100 的整数，默认 10`
 
 #### `SHYP_BUY_RETRY_INTERVAL`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：按活动需要设置重试等待秒数。
+- 获取或设置：按需设置明确拒绝后的重试间隔。
 - 填写格式：`0.1 至 60 秒，默认 0.3`
 
 #### `SHYP_BUY_TIMEOUT`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：按网络情况设置，超时后不自动重试。
+- 获取或设置：按需设置商城 HTTP 超时。
 - 填写格式：`1 至 60 秒，默认 10`
 
 #### `SHYP_BUY_DRY_RUN`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：检查配置时设为 1，完全断网、不等待、不下单、不调用通知模块。
+- 获取或设置：进行无网络抢购预演时设置。
+- 填写格式：`1、true、yes、on 开启，默认 0`
+
+#### `SHYP_POINTS_ENABLE`
+
+- 所属脚本：`scripts/auto_buy.py`
+- 获取或设置：确认需要提交积分动作后显式开启；默认仅查询积分、签到状态和任务列表。
+- 填写格式：`仅 1 开启，默认 0`
+
+#### `SHYP_POINTS_ACTIONS`
+
+- 所属脚本：`scripts/auto_buy.py`
+- 获取或设置：按需选择积分动作，执行顺序按配置保留；不包含商城抢购。
+- 填写格式：`逗号分隔 read、video、favor、comment、share，默认全部五项；无需用逗号分隔账号`
+
+#### `SHYP_POINTS_UNFAVOR`
+
+- 所属脚本：`scripts/auto_buy.py`
+- 获取或设置：需恢复取消收藏行为时显式开启；可能移除原有收藏，默认保留收藏。
+- 填写格式：`仅 1 开启，默认 0`
+
+#### `SHYP_POINTS_TIMEOUT`
+
+- 所属脚本：`scripts/auto_buy.py`
+- 获取或设置：按需设置积分服务 HTTP 超时。
+- 填写格式：`1 至 60 秒，默认 30`
+
+#### `SHYP_POINTS_LOCAL_TEXT`
+
+- 所属脚本：`scripts/auto_buy.py`
+- 获取或设置：可选自定义评论本地回退短句，不要填写凭据；一言不可用时采用，否则使用内置原始短句。
+- 填写格式：`去除首尾空白并合并连续空白，最长 280 字`
+
+#### `SHYP_POINTS_DRY_RUN`
+
+- 所属脚本：`scripts/auto_buy.py`
+- 获取或设置：进行无网络积分任务预演时设置。
 - 填写格式：`1、true、yes、on 开启，默认 0`
 
 #### `QINGLONG_NOTIFY`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：青龙通知开关；预演只生成脱敏通知摘要；真实通知失败不覆盖业务退出码。
-- 填写格式：`默认 1；0、false、no、off 关闭`
+- 获取或设置：使用青龙全局通知开关。
+- 填写格式：`默认 1；0、false、no、off 关闭；预演只生成摘要，不调用联网通知模块`
 
 #### `QINGLONG_NOTIFY_DIR`
 
 - 所属脚本：`scripts/auto_buy.py`
-- 获取或设置：可选，填写青龙 notify.py 所在目录，也支持常规青龙目录及直接导入 notify。
-- 填写格式：`本地目录路径，非业务依赖`
+- 获取或设置：如青龙 notify.py 不在默认位置，可配置通知模块所在目录；通知不可用保留业务退出码。
+- 填写格式：`可选目录；优先 import notify.send，再检查此目录、/ql/data/scripts、/ql/scripts`
 
 #### `AUTOCLAW_INTL_TOKENS`
 
@@ -8946,7 +9003,7 @@
 - `scripts/api_hax.py`：SHA-256 `b82b5df5898bca09afb910abd7db43507e0fa2b93866ffd7fec97e722e3b8d49`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbf36f8697d4cc45`。
 - `scripts/arknightsbanner.py`：SHA-256 `e8f9017bbd7ddf89573d8a0e04bc5bdef09d8f3aa0da333b42a57e5df74e9161`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/918364c17c412528`。
 - `scripts/atxyq.py`：SHA-256 `6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
-- `scripts/auto_buy.py`：SHA-256 `0113fe2351817b3134acb742c3e73c091ba32696965db2d00b38760724cba839`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0196c3c6c89dc959`。
+- `scripts/auto_buy.py`：SHA-256 `551b1099baab98acf5d68dc9ff68add1914aad1763a9fec69ee6ffe93852b859`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0196c3c6c89dc959`。
 - `scripts/autoclaw_cn_daily.py`：SHA-256 `f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3813c988ddc0c592`。
 - `scripts/autosignin.js`：SHA-256 `c9f9cb1e7cf025514b245d555ac63849d2617eb3d29b473f92cf61f6b2a4a72b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ee45e24a6845dbc0`。
 - `scripts/autosignin.py`：SHA-256 `cd2b330788aa14bc2e020a5451329f291e5d1dd97f66ad0a6ed2c921b6dee3d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7919605278826396`。
@@ -9111,7 +9168,7 @@
 - `scripts/api_hax.py`：正式模式且启用通知时，通过青龙通知渠道发送查询结果和统计。。
 - `scripts/arknightsbanner.py`：正式运行在用户明确指定的位置创建或原子更新公告去重状态文件。；启用通知时向青龙配置的通知渠道发送卡池公告与运行总结；配置图片接收目标且公告有封面时向 Telegram 发送图片。。
 - `scripts/atxyq.py`：默认每日签到，记录签到并可能增加积分。；默认领取普通任务奖励，可能增加积分。；开启 ATXYQ_LIKE 后对最多两篇文章点赞并取消点赞。；开启 ATXYQ_POST 后发布公开校园动态；配套图片参数存在时登记本人已有图片。；atxyqDel 非零时删除本人最近十篇列表内帖子。；开启 ATXYQ_HELP_LIKE 后为明确指定的帖子点赞。；开启 ATXYQ_INVITE 后创建所选邀请关系。；正式运行且通知开启时向已配置青龙通知渠道发送脱敏总结。。
-- `scripts/auto_buy.py`：显式开启后提交商城抢购请求，可能兑换商品、扣除积分或产生付费订单；明确业务拒绝时可能重复提交抢购请求；真实运行发送青龙任务汇总通知。
+- `scripts/auto_buy.py`：显式开启商城后提交抢购请求，可能兑换商品、扣除积分或产生付费订单；明确拒绝时可能重复提交；显式开启积分后增加阅读计数并提交阅读、视频或分享积分请求，可能增加积分及改变任务进度；显式开启收藏动作后添加收藏，另行开启取消收藏开关后可能移除已有收藏；显式开启评论动作后公开发布带来源署名或本地回退的评论文字；真实运行发送青龙任务汇总通知。
 - `scripts/autoclaw_cn_daily.py`：真实运行提交所选地区 daily_signin 签到任务，可能获得积分；登录态过期或 --refresh-only 时续期登录态，可能使旧登录态失效；仅显式配置对应地区 STORE_FILE 时写入受保护的本地凭据缓存；通知开启时通过已配置渠道发送脱敏摘要；预演仅模拟通知。
 - `scripts/autosignin.js`：正式运行刷新阿里云盘会话令牌，新凭据仅在内存使用。；正式运行执行每日签到。；正式运行领取当天已完成的签到及任务奖励。；正式运行在通知开启且模块可用时发送脱敏总结。。
 - `scripts/autosignin.py`：正式访问新闻页可能领取每日签到奖励及触发服务端随机遭遇事件；正式运行在通知启用且模块可用时发送脱敏通知。

@@ -1658,24 +1658,34 @@
         "requiredEnv": [
           "SHYP_BUY_ACCOUNTS",
           "SHYP_BUY_SKU_ID",
-          "SHYP_BUY_ACTIVITY_ID"
+          "SHYP_BUY_ACTIVITY_ID",
+          "SHYP_POINTS_ACCOUNTS"
         ],
         "optionalEnv": [
-          "SHYP_BUY_ENABLE",
+          "SHYP_TASK",
           "SHYP_BUY_NUM",
           "SHYP_BUY_PROMOTION_TYPE",
+          "SHYP_BUY_ENABLE",
           "SHYP_BUY_TARGET_TIME",
           "SHYP_BUY_RETRY_TIMES",
           "SHYP_BUY_RETRY_INTERVAL",
           "SHYP_BUY_TIMEOUT",
           "SHYP_BUY_DRY_RUN",
+          "SHYP_POINTS_ENABLE",
+          "SHYP_POINTS_ACTIONS",
+          "SHYP_POINTS_UNFAVOR",
+          "SHYP_POINTS_TIMEOUT",
+          "SHYP_POINTS_LOCAL_TEXT",
+          "SHYP_POINTS_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
-          "SHYP_BUY_DRY_RUN": "1"
+          "SHYP_TASK": "points",
+          "SHYP_POINTS_DRY_RUN": "1"
         },
         "liveEnv": {
+          "SHYP_TASK": "buy",
           "SHYP_BUY_ENABLE": "0",
           "SHYP_BUY_NUM": "1",
           "SHYP_BUY_PROMOTION_TYPE": "EXCHANGE",
@@ -1683,25 +1693,36 @@
           "SHYP_BUY_RETRY_TIMES": "10",
           "SHYP_BUY_RETRY_INTERVAL": "0.3",
           "SHYP_BUY_TIMEOUT": "10",
+          "SHYP_POINTS_ENABLE": "0",
+          "SHYP_POINTS_UNFAVOR": "0",
+          "SHYP_POINTS_ACTIONS": "read,video,favor,comment,share",
+          "SHYP_POINTS_TIMEOUT": "30",
           "QINGLONG_NOTIFY": "1"
         },
         "successPatterns": [
           "抢购成功：接口明确确认 success=true",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
+          "刷新后业务确认完成",
+          "只读查询成功，无积分动作需要核验"
         ],
         "features": [
-          "指定商品、数量、活动编号和促销类型抢购",
-          "按完整日期或时分秒定时执行，也支持立即执行",
-          "明确业务拒绝后按配置次数和间隔重试，未知结果停止重试",
-          "按行配置多账号，独立处理及失败非零退出",
-          "断网预演、脱敏时间轴日志、账号和任务统计及结构化汇总",
-          "真实执行发送青龙通知汇总，预演生成通知摘要",
-          "展示接口明确返回的非敏感昵称、用户名、显示名或公开用户编号"
+          "按任务开关独立运行商城定时抢购或积分任务，保留商城默认入口、参数和计划",
+          "指定商品、数量、活动编号和促销类型抢购，支持完整日期、时分秒或立即执行",
+          "商城明确业务拒绝后按配置次数和间隔重试，未知结果停止重试并提示核对订单",
+          "查询积分、今日积分、签到状态、任务列表和已完成或未完成任务进度；不自动签到",
+          "显式开启后按服务端剩余进度执行阅读、视频、收藏、评论和分享积分任务",
+          "评论获取两页文章并随机选择不重复内容，一言优先，保留作者及来源署名，全部规定失败回退本地短句",
+          "默认保留收藏，可显式开启收藏后取消收藏；动作保留原始等待区间",
+          "积分动作逐步核对业务码并刷新任务状态确认完成；缺失任务、未知响应或未确认完成均失败闭合",
+          "按行多账号、独立处理、任一失败非零退出，配套凭据集中配置",
+          "无网络预演、脱敏时间轴日志、账号与任务统计及唯一结构化汇总",
+          "真实运行通过青龙通知汇总；所有结果含配置错误均通知，预演生成摘要，支持全局开关",
+          "展示官方明确返回的非敏感昵称、用户名、显示名或公开用户编号"
         ],
         "sideEffects": [
-          "显式开启后提交商城抢购请求，可能兑换商品、扣除积分或产生付费订单",
-          "明确业务拒绝时可能重复提交抢购请求",
+          "显式开启商城后提交抢购请求，可能兑换商品、扣除积分或产生付费订单；明确拒绝时可能重复提交",
+          "显式开启积分后增加阅读计数并提交阅读、视频或分享积分请求，可能增加积分及改变任务进度",
+          "显式开启收藏动作后添加收藏，另行开启取消收藏开关后可能移除已有收藏",
+          "显式开启评论动作后公开发布带来源署名或本地回退的评论文字",
           "真实运行发送青龙任务汇总通知"
         ]
       },
@@ -1711,7 +1732,7 @@
       },
       "displayName": "上海杨浦商城定时抢购",
       "path": "scripts/auto_buy.py",
-      "sha256": "0113fe2351817b3134acb742c3e73c091ba32696965db2d00b38760724cba839",
+      "sha256": "551b1099baab98acf5d68dc9ff68add1914aad1763a9fec69ee6ffe93852b859",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -1719,121 +1740,196 @@
         "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
         "branch": "main",
         "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
-        "originalPath": "script/shyp/auto_buy.py"
+        "originalPath": "script/shyp/auto_buy.py",
+        "related": [
+          {
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/shyp/main.py",
+            "catalogId": "ae12ceb2e069db72",
+            "sha256": "56c7bc6f59f044fd05bc5849f8563281eecebfa616b9a0150ab6b5f218227471",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "0 0 10 * * *",
       "command": "python3 scripts/auto_buy.py",
       "environment": [
         {
+          "name": "SHYP_TASK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙任务环境中选择商城抢购或积分任务；两类任务时间、凭据不同，请分别调度同一脚本。",
+          "format": "buy（默认）或 points；商城计划 0 0 10 * * *，积分原计划 1 1 1 1 1"
+        },
+        {
           "name": "SHYP_BUY_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录上海杨浦 App 商城，抓取自己账号 carts/buy 请求的 Authorization 和可选 Cookie 请求头；积分接口的 token/deviceid 不能代替商城授权。",
-          "format": "每个非空行为 Authorization|Cookie，仅按第一个竖线分割；没有 Cookie 时只填写 Authorization；多个账号用换行分隔。"
+          "howToGet": "仅 buy 模式必填。登录自己的上海杨浦 App，在商城兑换页抓取 mall-api.shmedia.tech/trade-service/trade/carts/buy 请求头 Authorization 和可选 Cookie；不填写请求头名称，不使用积分 token。",
+          "format": "每个非空行 Authorization|Cookie；Cookie 可省略，仅在第一个 | 处分割；换行区分账号"
         },
         {
           "name": "SHYP_BUY_SKU_ID",
           "required": true,
           "sensitive": false,
-          "howToGet": "从自己要兑换的商品请求查询参数 sku_id 获取。",
-          "format": "数字商品编号"
+          "howToGet": "仅 buy 模式必填。从自己选择的商品抢购请求查询参数 sku_id 获取，禁止沿用他人的商品编号。",
+          "format": "数字字符串"
         },
         {
           "name": "SHYP_BUY_ACTIVITY_ID",
           "required": true,
           "sensitive": false,
-          "howToGet": "从自己要兑换的商品请求查询参数 activity_id 获取。",
-          "format": "数字活动编号"
-        },
-        {
-          "name": "SHYP_BUY_ENABLE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "确认商品、数量及消费风险后设为 1，默认禁止真实下单。",
-          "format": "默认 0，只有 1 允许真实下单"
+          "howToGet": "仅 buy 模式必填。从同一商品请求查询参数 activity_id 获取。",
+          "format": "数字字符串"
         },
         {
           "name": "SHYP_BUY_NUM",
           "required": false,
           "sensitive": false,
-          "howToGet": "按兑换需要设置。",
-          "format": "整数 1 至 100，默认 1"
+          "howToGet": "从自己的商品请求 num 获取，按需选择数量。",
+          "format": "1 至 100 的整数，默认 1"
         },
         {
           "name": "SHYP_BUY_PROMOTION_TYPE",
           "required": false,
           "sensitive": false,
-          "howToGet": "从商品兑换请求的 promotion_type 获取。",
-          "format": "大写字母或下划线，默认 EXCHANGE"
+          "howToGet": "从自己的商品请求 promotion_type 获取。",
+          "format": "大写字母和下划线，最长 40 字符，默认 EXCHANGE"
+        },
+        {
+          "name": "SHYP_BUY_ENABLE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认商品、数量及费用后显式开启；默认不消费。",
+          "format": "仅 1 允许真实抢购，默认 0"
         },
         {
           "name": "SHYP_BUY_TARGET_TIME",
           "required": false,
           "sensitive": false,
-          "howToGet": "按活动开放时刻设置；使用运行环境本地时间，建议青龙使用 Asia/Shanghai。",
-          "format": "默认 10:00:00；支持 YYYY-MM-DD HH:MM:SS、HH:MM:SS 或 immediate；仅时间已过则等次日，完整日期过期报错"
+          "howToGet": "按商品开放时间设置，运行环境使用本地时区，建议 Asia/Shanghai。",
+          "format": "默认 10:00:00；支持 YYYY-MM-DD HH:MM:SS 或 immediate；仅时间已过等待次日，完整日期过期拒绝"
         },
         {
           "name": "SHYP_BUY_RETRY_TIMES",
           "required": false,
           "sensitive": false,
-          "howToGet": "按活动需要设置，仅明确业务拒绝允许重试；未知结果须核对商城订单。",
-          "format": "整数 1 至 100，默认总尝试 10 次"
+          "howToGet": "按需设置，仅明确 success=false 时重试，未知结果不重试。",
+          "format": "1 至 100 的整数，默认 10"
         },
         {
           "name": "SHYP_BUY_RETRY_INTERVAL",
           "required": false,
           "sensitive": false,
-          "howToGet": "按活动需要设置重试等待秒数。",
+          "howToGet": "按需设置明确拒绝后的重试间隔。",
           "format": "0.1 至 60 秒，默认 0.3"
         },
         {
           "name": "SHYP_BUY_TIMEOUT",
           "required": false,
           "sensitive": false,
-          "howToGet": "按网络情况设置，超时后不自动重试。",
+          "howToGet": "按需设置商城 HTTP 超时。",
           "format": "1 至 60 秒，默认 10"
         },
         {
           "name": "SHYP_BUY_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "检查配置时设为 1，完全断网、不等待、不下单、不调用通知模块。",
+          "howToGet": "进行无网络抢购预演时设置。",
+          "format": "1、true、yes、on 开启，默认 0"
+        },
+        {
+          "name": "SHYP_POINTS_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "仅 points 模式必填。登录自己的上海杨浦 App，抓取 app.ypmedia.cn/media-basic-port/api/app/personal/score/info 请求头 token、deviceid、siteid；将同一账号 token 与 deviceid 分别填入 token、device_id。可选 site_id 和 user_agent 取自该请求；不读取私有配置文件。",
+          "format": "每个非空行一个 JSON 对象，必填字符串 token、device_id；可选 site_id（默认 310110）、user_agent（默认 okhttp/4.10.0）；换行区分账号，JSON 保留字段内分隔符"
+        },
+        {
+          "name": "SHYP_POINTS_ENABLE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确认需要提交积分动作后显式开启；默认仅查询积分、签到状态和任务列表。",
+          "format": "仅 1 开启，默认 0"
+        },
+        {
+          "name": "SHYP_POINTS_ACTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需选择积分动作，执行顺序按配置保留；不包含商城抢购。",
+          "format": "逗号分隔 read、video、favor、comment、share，默认全部五项；无需用逗号分隔账号"
+        },
+        {
+          "name": "SHYP_POINTS_UNFAVOR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需恢复取消收藏行为时显式开启；可能移除原有收藏，默认保留收藏。",
+          "format": "仅 1 开启，默认 0"
+        },
+        {
+          "name": "SHYP_POINTS_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置积分服务 HTTP 超时。",
+          "format": "1 至 60 秒，默认 30"
+        },
+        {
+          "name": "SHYP_POINTS_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选自定义评论本地回退短句，不要填写凭据；一言不可用时采用，否则使用内置原始短句。",
+          "format": "去除首尾空白并合并连续空白，最长 280 字"
+        },
+        {
+          "name": "SHYP_POINTS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "进行无网络积分任务预演时设置。",
           "format": "1、true、yes、on 开启，默认 0"
         },
         {
           "name": "QINGLONG_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙通知开关；预演只生成脱敏通知摘要；真实通知失败不覆盖业务退出码。",
-          "format": "默认 1；0、false、no、off 关闭"
+          "howToGet": "使用青龙全局通知开关。",
+          "format": "默认 1；0、false、no、off 关闭；预演只生成摘要，不调用联网通知模块"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，填写青龙 notify.py 所在目录，也支持常规青龙目录及直接导入 notify。",
-          "format": "本地目录路径，非业务依赖"
+          "howToGet": "如青龙 notify.py 不在默认位置，可配置通知模块所在目录；通知不可用保留业务退出码。",
+          "format": "可选目录；优先 import notify.send，再检查此目录、/ql/data/scripts、/ql/scripts"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个商城账号，格式为 Authorization|Cookie，仅按第一个竖线分割，后续 Cookie 文本保留；独立处理，任一失败整体非零退出；共用商品和活动配置，目标时刻到达后顺序下单。"
+        "rule": "每个非空行一个账号，独立执行；商城配套凭据仅按首个 | 分割，积分配套凭据使用单行 JSON；任一账号失败整体非零退出。两种模式凭据不混用。"
       },
       "dependencies": [],
       "features": [
-        "指定商品、数量、活动编号和促销类型抢购",
-        "按完整日期或时分秒定时执行，也支持立即执行",
-        "明确业务拒绝后按配置次数和间隔重试，未知结果停止重试",
-        "按行配置多账号，独立处理及失败非零退出",
-        "断网预演、脱敏时间轴日志、账号和任务统计及结构化汇总",
-        "真实执行发送青龙通知汇总，预演生成通知摘要",
-        "展示接口明确返回的非敏感昵称、用户名、显示名或公开用户编号"
+        "按任务开关独立运行商城定时抢购或积分任务，保留商城默认入口、参数和计划",
+        "指定商品、数量、活动编号和促销类型抢购，支持完整日期、时分秒或立即执行",
+        "商城明确业务拒绝后按配置次数和间隔重试，未知结果停止重试并提示核对订单",
+        "查询积分、今日积分、签到状态、任务列表和已完成或未完成任务进度；不自动签到",
+        "显式开启后按服务端剩余进度执行阅读、视频、收藏、评论和分享积分任务",
+        "评论获取两页文章并随机选择不重复内容，一言优先，保留作者及来源署名，全部规定失败回退本地短句",
+        "默认保留收藏，可显式开启收藏后取消收藏；动作保留原始等待区间",
+        "积分动作逐步核对业务码并刷新任务状态确认完成；缺失任务、未知响应或未确认完成均失败闭合",
+        "按行多账号、独立处理、任一失败非零退出，配套凭据集中配置",
+        "无网络预演、脱敏时间轴日志、账号与任务统计及唯一结构化汇总",
+        "真实运行通过青龙通知汇总；所有结果含配置错误均通知，预演生成摘要，支持全局开关",
+        "展示官方明确返回的非敏感昵称、用户名、显示名或公开用户编号"
       ],
       "sideEffects": [
-        "显式开启后提交商城抢购请求，可能兑换商品、扣除积分或产生付费订单",
-        "明确业务拒绝时可能重复提交抢购请求",
+        "显式开启商城后提交抢购请求，可能兑换商品、扣除积分或产生付费订单；明确拒绝时可能重复提交",
+        "显式开启积分后增加阅读计数并提交阅读、视频或分享积分请求，可能增加积分及改变任务进度",
+        "显式开启收藏动作后添加收藏，另行开启取消收藏开关后可能移除已有收藏",
+        "显式开启评论动作后公开发布带来源署名或本地回退的评论文字",
         "真实运行发送青龙任务汇总通知"
       ],
       "review": {
@@ -1847,7 +1943,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/0196c3c6c89dc959",
-        "candidateSha256": "0113fe2351817b3134acb742c3e73c091ba32696965db2d00b38760724cba839"
+        "candidateSha256": "551b1099baab98acf5d68dc9ff68add1914aad1763a9fec69ee6ffe93852b859"
       }
     },
     {
