@@ -716,6 +716,122 @@
       }
     },
     {
+      "catalogId": "ed0673d8c02fc410",
+      "applicationKey": "sitoi/dailycheckin::baidu",
+      "checkProfile": {
+        "requiredEnv": [
+          "BAIDU"
+        ],
+        "optionalEnv": [
+          "BAIDU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BAIDU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BAIDU_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "百度确认提交成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "下载并校验本站 UTF-8 URL 清单",
+          "调用百度站点提交接口并核验 success 与 remain，输出成功条数和剩余配额",
+          "支持显式设置重复提交次数，默认仅提交一次",
+          "按行配置多个站点，逐账号隔离错误并汇总业务退出码",
+          "完全离线预演、分阶段时间轴日志和唯一 TASK_SUMMARY 结构化结果",
+          "通过青龙通知发送脱敏结果，支持全局关闭，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "实际运行向百度提交本站 URL 并消耗提交配额；显式 times 大于 1 时重复提交同一清单",
+          "实际运行在通知开启且通知模块可用时发送脱敏任务通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "百度站点提交",
+      "path": "scripts/baidu.py",
+      "sha256": "f3bfc64c4f219e4c451796542f4d2af0605812c82ab871f29039441d108afd1a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Sitoi/dailycheckin",
+        "branch": "main",
+        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+        "originalPath": "dailycheckin/baidu/main.py"
+      },
+      "cron": "0 9 * * *",
+      "command": "python3 scripts/baidu.py",
+      "environment": [
+        {
+          "name": "BAIDU",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录百度搜索资源平台，验证自己拥有的站点，在普通收录的 API 提交页面复制含 site 和 token 的提交地址；使用 HTTPS 的 data.zz.baidu.com/urls 地址。自行托管公开的 UTF-8 URL 文本清单，仅包含该站点 URL。不得公开或记录提交令牌。",
+          "format": "每个非空行是一个 JSON 对象，必填 data_url（HTTPS 文本清单地址）、submit_url（含唯一 site 和 token 的百度 HTTPS 接口地址），可选 times（1 至 100 的整数，默认 1）。不使用 & 或 @ 分隔账号；接口地址内部的 & 保持原样。"
+        },
+        {
+          "name": "BAIDU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置为 1 即可完全离线预演。",
+          "format": "1、true、yes、on 开启，其他值关闭，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有 notify.py 通知配置；本变量可关闭通知。离线预演生成通知摘要但不发送，保证不联网。",
+          "format": "默认 1；0、false、no、off 关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当通知文件位于自定义目录时填写该目录；自动兼容可导入的 notify.send 和青龙标准脚本目录。",
+          "format": "含 notify.py 的目录绝对路径；可留空。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "BAIDU 每个非空行对应一个站点账号 JSON 对象，同一站点的清单地址、含令牌提交地址和次数合并在此对象中。各账号独立处理，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "下载并校验本站 UTF-8 URL 清单",
+        "调用百度站点提交接口并核验 success 与 remain，输出成功条数和剩余配额",
+        "支持显式设置重复提交次数，默认仅提交一次",
+        "按行配置多个站点，逐账号隔离错误并汇总业务退出码",
+        "完全离线预演、分阶段时间轴日志和唯一 TASK_SUMMARY 结构化结果",
+        "通过青龙通知发送脱敏结果，支持全局关闭，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "实际运行向百度提交本站 URL 并消耗提交配额；显式 times 大于 1 时重复提交同一清单",
+        "实际运行在通知开启且通知模块可用时发送脱敏任务通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ed0673d8c02fc410",
+        "candidateSha256": "f3bfc64c4f219e4c451796542f4d2af0605812c82ab871f29039441d108afd1a"
+      }
+    },
+    {
       "catalogId": "d9230b69d9462c7c",
       "displayName": "百度网盘签到",
       "path": "scripts/baiduwangpan_checkin.py",
