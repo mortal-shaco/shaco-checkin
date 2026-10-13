@@ -13910,6 +13910,179 @@
       }
     },
     {
+      "catalogId": "dfbc26c082218297",
+      "applicationKey": "cat-zaizai/zaizaicat-checkin::trae",
+      "checkProfile": {
+        "requiredEnv": [
+          "TRAE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "TRAE_SESSION",
+          "TRAE_DEVICE_ID",
+          "TRAE_ACTION",
+          "TRAE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TRAE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TRAE_ACTION": "checkin"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exit_code\":0"
+        ],
+        "features": [
+          "网页会话换取令牌并查询每日签到状态",
+          "长效 Cookie 自动续期，会话失败时使用已有会话或桌面令牌",
+          "网页令牌失效时重新换取一次，认证仍失败时回退同账号桌面令牌",
+          "桌面令牌到期预检与账号注册设备校验",
+          "每日按需领取签到积分，显示本次奖励，已签到不重复领取",
+          "领取未确认成功后复查账号签到状态",
+          "只查询任务开关，明确报告未开放活动",
+          "完整显示官方公开 UserID，按已验证成功的身份识别重复账号",
+          "每行一个账号，隔离失败并汇总非零退出",
+          "完全断网预演、时间轴日志与单行结构化汇总",
+          "青龙脱敏通知与全局关闭开关，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "正式签到模式领取当日签到积分",
+          "配置 sessionid 时刷新网页登录会话",
+          "开启通知时调用青龙发送任务汇总；预演禁止通知网络发送"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Trae CN 每日签到",
+      "path": "scripts/web_checkin.py",
+      "sha256": "510f24fc55c7aaba9199b6b7325b0cdf40aae7f1dc7a8b40c87d2c77ad0bf0b8",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+        "branch": "main",
+        "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+        "originalPath": "script/trae/web_checkin.py",
+        "related": [
+          {
+            "catalogId": "91b9b67570de84f8",
+            "sha256": "7c4ccf1db56bef05abf463110ebf872e2512c8d5023f01a1584d192756c2984b",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/trae/api.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "04f8e1170e3068fe",
+            "sha256": "ce52a041428f0f477f3358f043f782c40916971f4875c23ccb0b5487c468b4a4",
+            "repository": "Cat-zaizai/ZaiZaiCat-Checkin",
+            "url": "https://github.com/Cat-zaizai/ZaiZaiCat-Checkin.git",
+            "branch": "main",
+            "commit": "d6a334e43d0a0c8f41b039cd410be33593efc35b",
+            "originalPath": "script/trae/main.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "30 8 * * *",
+      "command": "python3 scripts/web_checkin.py",
+      "environment": [
+        {
+          "name": "TRAE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://www.trae.cn，在开发者工具的应用→Cookie 复制 X-Cloudide-Session 的值作为 session，或复制 sessionid 的值作为 sessionid。device_id 从本人同账号官方签到请求的 x-device-id 获取，必须为账号自己的注册设备。可选 access_token 从本人官方请求 Authorization 中 Cloud-IDE-JWT 后获取。无需安装或读取客户端私有文件。可由兼容单账号 TRAE_SESSION 和 TRAE_DEVICE_ID 替代。",
+          "format": "每个非空行一个 JSON 对象；device_id 为必填的 16 位数字字符串；session、sessionid、access_token 至少填写一个，可同时配置供续期和回退。expires_at 可选，为桌面令牌到期秒级时间戳。不得解码 Cookie 的百分号或复制整段 Cookie，不得共用设备。"
+        },
+        {
+          "name": "TRAE_SESSION",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容原脚本：复制网页 X-Cloudide-Session 的 Cookie 值；仅未设置 TRAE_ACCOUNTS 时使用，也支持 --session。",
+          "format": "单账号会话值；多个账号请改用 TRAE_ACCOUNTS 每行合并凭据与设备。"
+        },
+        {
+          "name": "TRAE_DEVICE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号模式必须配置，从同账号官方签到请求的 x-device-id 获取；也支持 --device-id。",
+          "format": "16 位数字字符串，仅属于该账号，不生成随机设备。"
+        },
+        {
+          "name": "TRAE_ACTION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要设置；默认 checkin。",
+          "format": "checkin 为查询并按需领取，status 为只查询。"
+        },
+        {
+          "name": "TRAE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证脚本时设置为 1；也支持 --dry-run。",
+          "format": "1、true、yes、on 开启完全断网预演，其他值为正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙环境变量中设置，默认 1；关闭时设置 0。",
+          "format": "0、false、no、off 关闭；其余开启。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；未配置则检查脚本同目录及 /ql/data/scripts、/ql/scripts。",
+          "format": "本地通知模块目录；仅用于可选通知，业务不依赖该文件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "TRAE_ACCOUNTS 每个非空行一个 JSON 对象，合并同账号凭据及设备；账号独立处理，任何账号失败整体非零退出。不得使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "网页会话换取令牌并查询每日签到状态",
+        "长效 Cookie 自动续期，会话失败时使用已有会话或桌面令牌",
+        "网页令牌失效时重新换取一次，认证仍失败时回退同账号桌面令牌",
+        "桌面令牌到期预检与账号注册设备校验",
+        "每日按需领取签到积分，显示本次奖励，已签到不重复领取",
+        "领取未确认成功后复查账号签到状态",
+        "只查询任务开关，明确报告未开放活动",
+        "完整显示官方公开 UserID，按已验证成功的身份识别重复账号",
+        "每行一个账号，隔离失败并汇总非零退出",
+        "完全断网预演、时间轴日志与单行结构化汇总",
+        "青龙脱敏通知与全局关闭开关，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "正式签到模式领取当日签到积分",
+        "配置 sessionid 时刷新网页登录会话",
+        "开启通知时调用青龙发送任务汇总；预演禁止通知网络发送"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/dfbc26c082218297",
+        "candidateSha256": "510f24fc55c7aaba9199b6b7325b0cdf40aae7f1dc7a8b40c87d2c77ad0bf0b8"
+      }
+    },
+    {
       "catalogId": "aa7303325b9bca16",
       "applicationKey": "wps",
       "checkProfile": {
