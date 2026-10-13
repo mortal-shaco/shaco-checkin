@@ -315,7 +315,7 @@
 - `scripts/sgs.py`：获取官方账号姓名与积分，展示非秘密身份；每日签到并检查业务成功；显式开启后随机检索未读文章并阅读最多五篇，限制分页次数；显式开启后执行五次工社服务访问计数；显式开启后执行五次热门活动浏览计数；换行多账号、失败非零退出；完全断网预演、青龙脱敏通知与单行结构化汇总。
 - `scripts/shuyi.py`：获取书亦烧仙草滑块验证码；使用 OpenCV 模板匹配识别滑块位置；使用 AES 加密并校验滑块，校验成功后签到；展示签到天数和所得积分；显示官方返回的非敏感昵称、用户名或公开账号标识；保留 sysxc_auth 参数名，支持每行一个账号独立执行；完全断网预演，不导入通知模块或发送任何推送；青龙通知和可选 PushPlus 脱敏推送；带时间戳的分阶段日志、账号统计和单行 TASK_SUMMARY 汇总。
 - `scripts/sign_in.py`：多账号看雪论坛签到，支持同账号 Cookie、CSRF token 和可选 User-Agent；兼容显式指定的旧配置文件及嵌套账号结构；使用独立标准库 HTTP 请求，固定原签到端点，限制超时及响应大小并核验业务码 0；显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，并展示纯数字奖励积分；完全离线参数预演、按阶段脱敏日志及单行结构化任务汇总；青龙通知及全局通知开关，通知不可用不改变业务退出码。
-- `scripts/skland_daily.py`：通行证 Token、森空岛 cred/token 和手机号密码登录，保留官方授权换取及请求签名；自动获取临时设备标识或使用用户指定标识；获取版区及今日检票状态、版区筛选、每日检票及避免重复检票；配置数量的帖子浏览、显式开启的点赞和分享任务，保留帖子分页；保留 --dry-run、--actions、--zones、--version 命令行参数及旧序号账号输入；多账号独立执行、HTTP 超时、禁止重定向、业务码核验和失败闭合退出；完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知；显式 attendance 动作获取明日方舟所有绑定角色，逐角色签名签到并展示奖励名称与数量；游戏角色官方昵称与公开 UID 原样展示，单角色失败继续其他角色，任一失败整体非零退出；保留维护候选每日 08:00 调度；原始游戏签到为每日 08:30，可单独配置 attendance 并设置 30 8 * * *。
+- `scripts/skland_daily.py`：通行证 Token、森空岛 cred/token 和手机号密码登录，保留官方授权换取及请求签名；自动获取临时设备标识或使用用户指定标识；获取版区及今日检票状态、版区筛选、每日检票及避免重复检票；配置数量的帖子浏览、显式开启的点赞和分享任务，保留帖子分页；保留 --dry-run、--actions、--zones、--version 命令行参数及旧序号账号输入；多账号独立执行、HTTP 超时、禁止重定向、业务码核验和失败闭合退出；完全断网配置预演、时间轴阶段日志、账号及任务统计、单行 TASK_SUMMARY JSON、脱敏通知；显式 attendance 动作获取明日方舟所有绑定角色，逐角色签名签到并展示奖励名称与数量；游戏角色官方昵称与公开 UID 原样展示，单角色失败继续其他角色，任一失败整体非零退出；保留维护候选每日 08:00 调度；原始游戏签到为每日 08:30，可单独配置 attendance 并设置 30 8 * * *；显式 endfield 动作获取终末地全部绑定角色，逐角色空请求体签名签到，按资源映射展示奖励名称与数量；终末地官方角色昵称和返回的公开 UID 原样展示；单角色或绑定记录失败继续其余角色，任何失败导致账号及进程失败；独立标准库 HTTP 实现，无需 SecuritySm、utils、notifier 或私有工作流仓库；青龙通知组件为可选运行环境集成。
 - `scripts/skland_demo.py`：鹰角通行证登录，兼容旧版 TOKEN 和官网单行 JSON 响应输入；手机号密码或已有短信验证码登录；显式动作发送登录验证码；内置数美设备标识计算，也可使用同账号显式提供的设备标识；读取绑定角色，显示官方昵称或公开角色编号；明日方舟所有绑定角色签到并显示奖励；终末地所有绑定角色签到并显示奖励；可选游戏任务开关和签名令牌刷新；多账号独立处理、超时和严格业务成功码校验；完全断网预演、分阶段日志、账号及任务统计、单行结构化汇总；通过青龙通知模块发送脱敏总结，通知失败保留业务退出码。
 - `scripts/skyland.py`：保留数美设备指纹协议及进程内设备凭据缓存；服务器时间校准，失败时使用本地时间；鹰角 Token 授权并登录森空岛；查询账号绑定的明日方舟与终末地角色并显示官方昵称或公开角色标识；遍历全部明日方舟绑定角色每日签到并显示奖励；遍历全部终末地角色每日签到并显示奖励；每行一个账号，独立处理账号与角色，汇总失败并非零退出；完全断网预演、分阶段耗时日志与唯一 TASK_SUMMARY 结构化汇总；通过青龙通知模块发送脱敏统计，支持全局关闭及通知失败保持业务退出码。
 - `scripts/smzdm_checkin.js`：校验账号的 sk 与 sess 配套凭据；执行什么值得买每日签到并识别今日已签到状态；查询签到奖励与连续签到状态；满足条件时领取连续签到额外奖励；查询并显示接口可取得的账号身份、等级、金币和碎银概览；统计当月经验变动；支持逐行多账号独立处理与失败汇总；提供完全断网的离线预演；输出时间轴日志、兼容结果记录和单行 TASK_SUMMARY JSON；按青龙通知策略发送脱敏汇总；展示签到天数、补签卡、普通奖励和礼包明细；查询值会员总经验、等级经验及有效期；通过显式任务开关查询两处会员转盘活动并各执行一次抽奖；可显式启用原上游未默认运行的生活频道转盘入口；仅抽奖模式兼容逐行 SMZDM_COOKIE，无需签到 sk；保留原抽奖独立调度说明及请求间等待；可显式选择上游 Robot Token 签到流程，严格验证获取、签到及普通奖励响应；兼容旧 Cookie 与配套 sk 环境变量，不使用共享默认 sk；按青龙、PushPlus、Server酱顺序发送脱敏汇总并验证回退推送结果；通过显式开关执行好价点值与好文点赞，每类最多七条且逐项验证业务结果；互动前后查询账号身份、签到状态、积分、金币、碎银及未读消息，并展示资产变化；查询互动前后总经验并展示最近二十条经验记录，提示记录可能延迟；显式网页 Cookie 签到无需 sk，已签到跳过写入，写入后重新核对账号身份、签到状态和天数；网页模式展示官方账号身份、积分、经验、金币、碎银、威望、等级及签到天数；通过独立显式模式保留原固定活动单次 POST 抽奖，不与既有动态会员转盘混跑；兼容逐行 SMZDM_COOKIE_LIST 并保留原固定活动每日 15:00:45 调度说明；固定活动严格核验 HTTP、业务码和结果字段，失败不重试写入。
@@ -512,7 +512,7 @@
 <tr><td rowspan="1"><code>scripts/sgs.py</code></td><td><code>sgs</code></td><td>是</td><td>格式：每个非空行一个完整 Token；保留小写变量名 sgs，原版 # 多账号分隔改为换行，单账号参数兼容。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/shuyi.py</code></td><td><code>sysxc_auth</code></td><td>是</td><td>格式：每个非空行一个账号的 auth 原值；保留变量名，不再以 # 分隔账号，凭据内部的 # 原样保留。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/sign_in.py</code></td><td><code>KANXUE_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个 JSON 对象，必填 cookie、csrf_token 字符串，可选 user_agent、account_name；JSON 内保留完整凭据，不用任何分隔符拆分账号。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="1"><code>scripts/skland_daily.py</code></td><td><code>SKLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号：通行证 token、cred:token、单行 JSON {&quot;cred&quot;:&quot;本人凭据&quot;,&quot;token&quot;:&quot;本人签名凭据&quot;}、官方响应 JSON 的 data.content，或单行 JSON 的 phone/password；cred:token 只在第一个冒号拆分。不要用分号、逗号、&amp;、@分隔账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="1"><code>scripts/skland_daily.py</code></td><td><code>SKLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个账号：通行证 Token、cred:token、含 cred/token 的单行 JSON、含 data.content 的官方响应 JSON，或含 phone/password 的单行 JSON；冒号仅在第一处分割，不使用 &amp;、@、分号或逗号分隔账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/skland_demo.py</code></td><td><code>SKLAND_ACCOUNTS</code></td><td>是</td><td>格式：每个非空行一个账号：通行证原文、含 data.content 的单行 JSON，或单行 JSON 对象，字段 token；也可字段 phone 与 password，或 phone 与 code；可在同一 JSON 添加 did（由本人官方登录请求的 dId 头获取）。send-code 动作仅需 phone。账号不能使用逗号、&amp; 或 @ 分隔。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/skyland.py</code></td><td><code>SKYLAND_TOKEN</code></td><td>是</td><td>格式：每个非空行一个完整账号 Token；禁止用逗号、&amp; 或 @ 分隔多个账号。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="1"><code>scripts/smzdm_checkin.js</code></td><td><code>SMZDM_ACCOUNT</code></td><td>是</td><td>格式：每个非空行一个账号，格式 sk|完整 Cookie；仅在第一个 | 分割。网页或仅抽奖模式使用 |完整 Cookie。；多账号格式以该脚本文档为准</td></tr>
@@ -1373,22 +1373,22 @@
 <tr><td><code>KANXUE_DRY_RUN</code></td><td>否</td><td>格式：1 开启，0、false、no、off 或空值关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0、false、no、off 关闭。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：包含 notify.py 的本地目录路径。；多账号格式以该脚本文档为准</td></tr>
-<tr><td rowspan="16"><code>scripts/skland_daily.py</code></td><td><code>SKLAND_DRY_RUN</code></td><td>否</td><td>格式：1/true/yes/on 启用完全断网预演；默认关闭。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_DID</code></td><td>是</td><td>格式：单个设备标识，不写入磁盘。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_ACTIONS</code></td><td>否</td><td>格式：逗号分隔 checkin,view,like,share,attendance；默认 checkin,view；点赞、分享和游戏签到需显式添加。attendance 单独执行明日方舟签到。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_ZONE_IDS</code></td><td>否</td><td>格式：逗号分隔社区版区编号；留空处理全部；不影响 attendance 的游戏角色。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_NOTIFY_URL</code></td><td>否</td><td>格式：HTTPS 地址，不带用户信息；接收脱敏 JSON 摘要。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：默认 1；0/false/no/off 关闭所有通知；预演只生成本地通知摘要。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：可选目录路径；脚本也尝试 import notify 和青龙标准路径；不可用时不改变业务退出码。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_VIEW_COUNT</code></td><td>否</td><td>格式：非负整数，默认 5。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_LIKE_COUNT</code></td><td>否</td><td>格式：非负整数，默认 10。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_SHARE_COUNT</code></td><td>否</td><td>格式：非负整数，默认 1。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_PHONE</code></td><td>是</td><td>格式：带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_PASSWORD</code></td><td>是</td><td>格式：带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_TOKEN_N</code></td><td>是</td><td>格式：带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_PHONE_N</code></td><td>是</td><td>格式：带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKLAND_PASSWORD_N</code></td><td>是</td><td>格式：带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。；多账号格式以该脚本文档为准</td></tr>
-<tr><td><code>SKYLAND_TYPE</code></td><td>否</td><td>格式：无业务效果。；多账号格式以该脚本文档为准</td></tr>
+<tr><td rowspan="16"><code>scripts/skland_daily.py</code></td><td><code>SKLAND_PHONE</code></td><td>是</td><td>格式：与 SKLAND_PASSWORD 成对设置，一个账号；不能用作多账号分隔输入。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_PASSWORD</code></td><td>是</td><td>格式：与 SKLAND_PHONE 成对设置。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_TOKEN_N</code></td><td>是</td><td>格式：每个序号变量仍按非空行解析账号。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_PHONE_N</code></td><td>是</td><td>格式：与同序号 SKLAND_PASSWORD_N 成对设置。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_PASSWORD_N</code></td><td>是</td><td>格式：与同序号 SKLAND_PHONE_N 成对设置。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_DID</code></td><td>是</td><td>格式：单个设备标识，不输出到日志。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_ACTIONS</code></td><td>否</td><td>格式：逗号分隔 checkin、view、like、share、attendance、endfield；attendance 仅明日方舟，endfield 仅终末地；原源游戏签到可设置 attendance,endfield。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_ZONE_IDS</code></td><td>否</td><td>格式：逗号分隔版区编号；只筛选社区动作，不筛选游戏签到角色。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_VIEW_COUNT</code></td><td>否</td><td>格式：非负整数。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_LIKE_COUNT</code></td><td>否</td><td>格式：非负整数。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_SHARE_COUNT</code></td><td>否</td><td>格式：非负整数；接口只计数，不发布文本。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKYLAND_TYPE</code></td><td>否</td><td>格式：不参与任务选择。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_NOTIFY_URL</code></td><td>是</td><td>格式：HTTPS 地址，禁止重定向和 URL 用户名密码；不得填写账号凭据。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>SKLAND_DRY_RUN</code></td><td>否</td><td>格式：1、true、yes、on 启用完全断网预演，默认关闭。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY</code></td><td>否</td><td>格式：0、false、no、off 关闭；其他值开启。；多账号格式以该脚本文档为准</td></tr>
+<tr><td><code>QINGLONG_NOTIFY_DIR</code></td><td>否</td><td>格式：目录路径；通知模块不可用、超时或失败时保留业务退出码。；多账号格式以该脚本文档为准</td></tr>
 <tr><td rowspan="8"><code>scripts/skland_demo.py</code></td><td><code>TOKEN</code></td><td>是</td><td>格式：每个非空行一个通行证或单行 JSON；旧版逗号分隔需改为换行。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SKLAND_ACTION</code></td><td>否</td><td>格式：sign：登录并签到；send-code：显式发送短信，不签到。；多账号格式以该脚本文档为准</td></tr>
 <tr><td><code>SKYLAND_TYPE</code></td><td>否</td><td>格式：sign 或 send-code；add_account 已移除，不再保存凭据文件。；多账号格式以该脚本文档为准</td></tr>
@@ -1978,7 +1978,7 @@
 - `scripts/sgs.py`：每个非空行一个账号 Token，独立处理；任一账号或子任务失败，整体非零退出。。
 - `scripts/shuyi.py`：sysxc_auth 每个非空行一个账号，逐个独立处理；任一账号失败则整体非零退出。账号间不能使用 #、& 或 @ 分隔。。
 - `scripts/sign_in.py`：每个非空行一个账号 JSON 对象，同一对象组合 Cookie 与 CSRF token；逐个独立执行，任一失败时整体非零退出。旧配置使用账号数组。。
-- `scripts/skland_daily.py`：每个非空行一个账号；同账号的 cred/token 或手机号/密码合并在一行；独立处理账号，任一失败整体非零退出。旧序号变量继续兼容。。
+- `scripts/skland_daily.py`：每个非空行一个账号，配套凭据写在同一行 JSON 或 cred:token 中，冒号只拆分一次；保留旧序号和成对账密变量兼容。各账号独立处理，任何账号失败则进程非零退出。。
 - `scripts/skland_demo.py`：每个非空行一个账号；同一账号的通行证、手机号、密码、验证码和可选设备标识以单行 JSON 配套保存；各账号独立处理，任一账号失败则整体非零退出。。
 - `scripts/skyland.py`：SKYLAND_TOKEN 每个非空行一个账号，忽略空行；账号与角色独立执行，任一失败整体非零退出。。
 - `scripts/smzdm_checkin.js`：每个非空行一个账号；配套 sk 与完整 Cookie 合并为 SMZDM_ACCOUNT，仅在首个 | 分割。旧 Cookie 变量逐行兼容，不用 & 或 @ 分隔账号；独立处理所有账号，任一账号失败整体非零退出。。
@@ -2803,8 +2803,8 @@
 #### `SKLAND_TOKEN`
 
 - 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：登录本人官方鹰角通行证网页，从开发者工具的登录响应取得 token；或从本人森空岛授权响应取得 cred 和 token。账密来自本人的通行证。
-- 填写格式：`每个非空行一个账号：通行证 token、cred:token、单行 JSON {"cred":"本人凭据","token":"本人签名凭据"}、官方响应 JSON 的 data.content，或单行 JSON 的 phone/password；cred:token 只在第一个冒号拆分。不要用分号、逗号、&、@分隔账号。`
+- 获取或设置：登录本人官方鹰角通行证，在浏览器开发者工具中查看登录响应的 token，或使用官方通行证 web-api 响应的 data.content；也可从本人森空岛客户端授权响应获得成对的 cred、token。账密登录请填写本人手机号与密码的单行 JSON。不要共享凭据。
+- 填写格式：`每个非空行一个账号：通行证 Token、cred:token、含 cred/token 的单行 JSON、含 data.content 的官方响应 JSON，或含 phone/password 的单行 JSON；冒号仅在第一处分割，不使用 &、@、分号或逗号分隔账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SKLAND_ACCOUNTS`
@@ -8193,107 +8193,108 @@
 - 获取或设置：若 notify.py 无法直接导入且不在青龙标准脚本目录，可指定自己信任的通知模块目录。无需安装其他仓库；通知不可用不影响业务退出码。
 - 填写格式：`包含 notify.py 的本地目录路径。`
 
-#### `SKLAND_DRY_RUN`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：预演时自行设为 1。
-- 填写格式：`1/true/yes/on 启用完全断网预演；默认关闭。`
-
-#### `SKLAND_DID`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：从本人森空岛客户端请求头取得 dId；留空自动向原设备服务注册临时标识。
-- 填写格式：`单个设备标识，不写入磁盘。`
-- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
-
-#### `SKLAND_ACTIONS`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：按需配置动作。
-- 填写格式：`逗号分隔 checkin,view,like,share,attendance；默认 checkin,view；点赞、分享和游戏签到需显式添加。attendance 单独执行明日方舟签到。`
-
-#### `SKLAND_ZONE_IDS`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：从官方版区列表响应取得 gameId。
-- 填写格式：`逗号分隔社区版区编号；留空处理全部；不影响 attendance 的游戏角色。`
-
-#### `SKLAND_NOTIFY_URL`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：可选配置本人控制的 HTTPS 通知地址。
-- 填写格式：`HTTPS 地址，不带用户信息；接收脱敏 JSON 摘要。`
-
-#### `QINGLONG_NOTIFY`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：按需配置青龙全局通知开关。
-- 填写格式：`默认 1；0/false/no/off 关闭所有通知；预演只生成本地通知摘要。`
-
-#### `QINGLONG_NOTIFY_DIR`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：青龙运行环境中 notify.py 所在目录。
-- 填写格式：`可选目录路径；脚本也尝试 import notify 和青龙标准路径；不可用时不改变业务退出码。`
-
-#### `SKLAND_VIEW_COUNT`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：按需设置每个版区执行数量。
-- 填写格式：`非负整数，默认 5。`
-
-#### `SKLAND_LIKE_COUNT`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：按需设置每个版区执行数量。
-- 填写格式：`非负整数，默认 10。`
-
-#### `SKLAND_SHARE_COUNT`
-
-- 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：按需设置每个版区执行数量。
-- 填写格式：`非负整数，默认 1。`
-
 #### `SKLAND_PHONE`
 
 - 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。
-- 填写格式：`带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。`
+- 获取或设置：兼容旧输入，填写本人鹰角通行证手机号，建议迁移至 SKLAND_TOKEN 单行 JSON。
+- 填写格式：`与 SKLAND_PASSWORD 成对设置，一个账号；不能用作多账号分隔输入。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SKLAND_PASSWORD`
 
 - 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。
-- 填写格式：`带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。`
+- 获取或设置：兼容旧输入，填写本人鹰角通行证密码，建议迁移至 SKLAND_TOKEN 单行 JSON。
+- 填写格式：`与 SKLAND_PHONE 成对设置。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SKLAND_TOKEN_N`
 
 - 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。
-- 填写格式：`带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。`
+- 获取或设置：兼容旧序号输入，获取方式同 SKLAND_TOKEN；N 替换为数字。
+- 填写格式：`每个序号变量仍按非空行解析账号。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SKLAND_PHONE_N`
 
 - 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。
-- 填写格式：`带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。`
+- 获取或设置：兼容旧序号输入，填写本人鹰角通行证手机号；N 替换为数字。
+- 填写格式：`与同序号 SKLAND_PASSWORD_N 成对设置。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
 
 #### `SKLAND_PASSWORD_N`
 
 - 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：兼容旧账号配置；建议迁移到规范 SKLAND_TOKEN 每行一个账号。手机号与密码来自本人通行证，token 从本人官方登录响应取得。
-- 填写格式：`带 _N 的名称将 N 替换为数字账号序号；手机号和密码须成对且属于同一账号；token 仍按非空行解析。`
+- 获取或设置：兼容旧序号输入，填写本人鹰角通行证密码；N 替换为数字。
+- 填写格式：`与同序号 SKLAND_PHONE_N 成对设置。`
 - 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SKLAND_DID`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：从本人森空岛官方客户端请求头获取 dId；不填写时沿用维护版本的临时设备标识注册功能，值仅保存在内存。
+- 填写格式：`单个设备标识，不输出到日志。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SKLAND_ACTIONS`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：按需要选择任务，默认 checkin,view；like、share、attendance、endfield 须显式添加。
+- 填写格式：`逗号分隔 checkin、view、like、share、attendance、endfield；attendance 仅明日方舟，endfield 仅终末地；原源游戏签到可设置 attendance,endfield。`
+
+#### `SKLAND_ZONE_IDS`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：从官方版区列表接口读取 gameId，不设置时处理全部社区版区。
+- 填写格式：`逗号分隔版区编号；只筛选社区动作，不筛选游戏签到角色。`
+
+#### `SKLAND_VIEW_COUNT`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：按需要配置每个版区的浏览数量，默认 5。
+- 填写格式：`非负整数。`
+
+#### `SKLAND_LIKE_COUNT`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：按需要配置每个版区的点赞数量，默认 10，只有显式选择 like 才生效。
+- 填写格式：`非负整数。`
+
+#### `SKLAND_SHARE_COUNT`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：按需要配置每个版区的分享任务计数，默认 1，只有显式选择 share 才生效。
+- 填写格式：`非负整数；接口只计数，不发布文本。`
 
 #### `SKYLAND_TYPE`
 
 - 所属脚本：`scripts/skland_daily.py`
-- 获取或设置：原始源码保留的未使用变量，无需设置。
-- 填写格式：`无业务效果。`
+- 获取或设置：历史兼容变量，无业务效果，无需设置。
+- 填写格式：`不参与任务选择。`
+
+#### `SKLAND_NOTIFY_URL`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：可选本人维护的 HTTPS 通知服务地址，正式运行发送脱敏摘要；与青龙通知模块兼容。
+- 填写格式：`HTTPS 地址，禁止重定向和 URL 用户名密码；不得填写账号凭据。`
+- 安全性：敏感会话凭据，不得写入脚本、提交、截图或公开日志。
+
+#### `SKLAND_DRY_RUN`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：预演时设置为 1，也支持 --dry-run 参数。
+- 填写格式：`1、true、yes、on 启用完全断网预演，默认关闭。`
+
+#### `QINGLONG_NOTIFY`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：青龙通知总开关，默认 1；预演只生成本地脱敏摘要，不调用网络通知。
+- 填写格式：`0、false、no、off 关闭；其他值开启。`
+
+#### `QINGLONG_NOTIFY_DIR`
+
+- 所属脚本：`scripts/skland_daily.py`
+- 获取或设置：填写青龙 notify.py 所在目录；可省略以自动查找 notify 模块及青龙标准目录。
+- 填写格式：`目录路径；通知模块不可用、超时或失败时保留业务退出码。`
 
 #### `TOKEN`
 
@@ -11463,7 +11464,7 @@
 - `scripts/sgs.py`：SHA-256 `af3d44c77a409fccb89cdf36a8282bb311c17463a559c544c114d78b253efce7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/45e40e4a3ee37968`。
 - `scripts/shuyi.py`：SHA-256 `947ec405caf0bacdc1f2b823552425d882c3510d733c99c8a1801bf7a739870c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/551a306ac75780f1`。
 - `scripts/sign_in.py`：SHA-256 `d2d3f6610f0aaf4c6866b93fc47751f18a8004bf53c9eae43b560cde380d6cef`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01041a1995eb1f55`。
-- `scripts/skland_daily.py`：SHA-256 `459e6ca86870e8334645523e047d28fe077fbb40d8bb034f63826b61853a5b56`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
+- `scripts/skland_daily.py`：SHA-256 `23bae97efad62a8e36e4ed2b0d82fe9a2d97450fdba6f089cd23c2d9561580b3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
 - `scripts/skland_demo.py`：SHA-256 `6630751a2fdb3b62947ba9dd9b33187db05cbf4dcdd859fe9f60da9e9dda5c2b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d82ea23b9575791b`。
 - `scripts/skyland.py`：SHA-256 `4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
 - `scripts/smzdm_checkin.js`：SHA-256 `b01d902608844777102486bab86a7fa18f18c4dfb3166375b7bfacad07e0808b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
@@ -11647,7 +11648,7 @@
 - `scripts/sgs.py`：每日签到；显式开启时写入文章阅读记录；显式开启时写入工社服务访问计数；显式开启时写入热门活动浏览计数；开启通知时向青龙配置的渠道发送脱敏汇总。
 - `scripts/shuyi.py`：在书亦烧仙草账号执行签到并领取服务端发放的积分；实际执行时向青龙通知渠道发送脱敏任务总结；配置 PUSH_PLUS_TOKEN 时向 PushPlus 发送脱敏总结。
 - `scripts/sign_in.py`：正式执行时向看雪论坛提交签到，可能增加账号积分；正式执行且通知开启时通过青龙发送脱敏任务总结。
-- `scripts/skland_daily.py`：未配置 SKLAND_DID 时向上游设备服务注册临时设备标识；账密或通行证登录时换取授权和账号会话凭据；版区每日检票改变签到状态；浏览帖子可能增加任务浏览进度；显式启用 like 时点赞帖子；显式启用 share 时增加分享任务计数，不发布文案；正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要；显式开启 attendance 时为明日方舟绑定角色签到并领取游戏奖励。
+- `scripts/skland_daily.py`：未配置 SKLAND_DID 时向上游设备服务注册临时设备标识；账密或通行证登录时换取授权和账号会话凭据；版区每日检票改变签到状态；浏览帖子可能增加任务浏览进度；显式启用 like 时点赞帖子；显式启用 share 时增加分享任务计数，不发布文案；正式运行时向已配置的青龙或自有通知渠道发送脱敏摘要；显式开启 attendance 时为明日方舟绑定角色签到并领取游戏奖励；显式开启 endfield 时为终末地绑定角色签到并领取游戏奖励。
 - `scripts/skland_demo.py`：实际模式下明日方舟角色每日签到并领取奖励；实际模式下终末地角色每日签到并领取奖励；仅 send-code 动作向本人手机号发送登录短信验证码；实际模式下向数美服务登记生成设备标识；传入 did 时不执行；登录时签发账号授权凭据，可选刷新签名令牌；启用通知且模块可用时发送脱敏任务通知。
 - `scripts/skyland.py`：向数美服务提交模拟浏览器指纹并生成设备凭据；通过鹰角授权接口生成登录授权并取得森空岛会话凭据；为明日方舟绑定角色每日签到并领取签到奖励；为终末地绑定角色每日签到并领取签到奖励；正式运行时通过青龙通知渠道发送脱敏任务统计。
 - `scripts/smzdm_checkin.js`：在什么值得买账号上执行每日签到并改变当日签到状态；满足条件时领取连续签到额外奖励并改变账号奖励状态；显式选择 lottery 或 all 后提交转盘抽奖，可能消耗抽奖机会或活动资产并获得奖励；显式启用 value 或 both 后对好价提交点值，改变账号投票状态；显式启用 article 或 both 后对好文提交点赞，改变账号点赞状态；显式选择 upstream-lottery 后对原固定活动提交一次抽奖，可能消耗机会或活动资产并获得奖励。

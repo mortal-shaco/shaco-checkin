@@ -2,6 +2,9 @@
 # name: 森空岛每日任务
 # cron: 0 8 * * *
 # SPDX-License-Identifier: MIT
+# 合并来源：AdiEcho/skyland-auto-sign-ql，skyland.py，Author: AdiEcho，Update: 2026/1/29
+# 来源提交：2497b43c9b764e054dadd2dd86e354dacaffc840
+# 终末地接口交叉参考：e02ed814df52c998、0bde30a1db078051（MIT）。
 # 合并来源：bwmgd/skyland-auto-sign，skyland.py，Author: Bwmgd，Update: 2024/10/09
 # 原始归属：https://github.com/xxyz30/skyland-auto-sign
 # 镜像归属：https://gitee.com/FancyCabbage/skyland-auto-sign
@@ -48,6 +51,9 @@
     SKLAND_ACTIONS 默认 checkin,view；点赞和分享改变账号状态，显式添加 like,share。
     attendance 为明日方舟绑定角色签到（领取游戏奖励），与社区 checkin 不同。
     SKLAND_ACTIONS=attendance 可只运行原始签到；attendance,checkin,view 可一起运行。
+    endfield 为终末地绑定角色签到，必须显式开启，不改变 attendance 的明日方舟语义。
+    SKLAND_ACTIONS=attendance,endfield 可运行上游两种游戏签到，调度可设 30 8 * * *。
+    终末地自动读取绑定接口中的 roles，无需另配角色凭据；单角色失败继续其余角色。
     SKLAND_ZONE_IDS 只筛选社区版区，不筛选游戏绑定角色。
     SKYLAND_TYPE 为原脚本未使用的兼容变量，无业务效果。
     SKLAND_VIEW_COUNT / SKLAND_LIKE_COUNT / SKLAND_SHARE_COUNT 默认 5/10/1。
@@ -200,7 +206,8 @@ ACTION_VIEW = "view"
 ACTION_LIKE = "like"
 ACTION_SHARE = "share"
 ACTION_ATTENDANCE = "attendance"
-ALL_ACTIONS = (ACTION_CHECKIN, ACTION_VIEW, ACTION_LIKE, ACTION_SHARE, ACTION_ATTENDANCE)
+ACTION_ENDFIELD = "endfield"
+ALL_ACTIONS = (ACTION_CHECKIN, ACTION_VIEW, ACTION_LIKE, ACTION_SHARE, ACTION_ATTENDANCE, ACTION_ENDFIELD)
 
 #: 服务端提示"今天已经签到过"的文案特征
 ALREADY_SIGNED_HINTS = ("重复签到", "已签到", "已检票")
@@ -682,6 +689,7 @@ class SklandClient:
         query: Optional[Dict[str, Any]] = None,
         json_body: Optional[Dict[str, Any]] = None,
         action: str = "请求接口",
+        extra_headers: Optional[Dict[str, str]] = None,
     ) -> Any:
         """发起带签名的接口请求，返回响应中的 data 字段。"""
         body = compact_json(json_body) if json_body is not None else None
@@ -693,6 +701,12 @@ class SklandClient:
             query=query,
             body=body,
         )
+        if extra_headers:
+            # 仅允许游戏角色路由头；签名、凭据和签名公共头不能被覆盖。
+            allowed = {"content-type", "sk-game-role", "referer", "origin"}
+            if any(key.lower() not in allowed for key in extra_headers):
+                raise SklandError("游戏请求包含不允许覆盖的请求头")
+            headers.update(extra_headers)
         if body is not None:
             headers["content-type"] = "application/json"
 
@@ -821,6 +835,13 @@ class DailyTasks:
                     self._attendance(report)
             except Exception:
                 report.attendance.append({"ok": False, "message": "绑定角色接口或签到结构异常"})
+        if self._wants(ACTION_ENDFIELD):
+            try:
+                with stage("获取绑定角色及终末地签到"):
+                    self._endfield(report)
+            except Exception:
+                stamp("❌ 终末地绑定角色接口或签到结构异常")
+                report.attendance.append({"ok": False, "message": "终末地绑定角色接口或签到结构异常"})
         if not any(self._wants(a) for a in
                    (ACTION_CHECKIN, ACTION_VIEW, ACTION_LIKE, ACTION_SHARE)):
             return report
@@ -897,6 +918,79 @@ class DailyTasks:
                 # 不显示服务端错误文案、请求值或异常详情；继续处理其余角色。
                 stamp("❌ 角色 {} 签到失败，未确认业务成功或奖励结构".format(index))
                 report.attendance.append({"ok": False, "message": "明日方舟签到未通过核验"})
+
+    def _endfield(self, report: AccountReport) -> None:
+        """终末地签到：保留上游空请求体、角色路由头和奖励映射契约。"""
+        data = self.client.get("/api/v1/game/player/binding", action="获取终末地绑定角色")
+        games = data.get("list")
+        if not isinstance(games, list):
+            raise SklandError("绑定角色列表结构无效")
+        attempted = 0
+        for game in games:
+            if not isinstance(game, dict):
+                report.attendance.append({"ok": False, "message": "绑定游戏结构无效"})
+                continue
+            if game.get("appCode") != "endfield":
+                continue
+            bindings = game.get("bindingList")
+            if not isinstance(bindings, list):
+                report.attendance.append({"ok": False, "message": "终末地绑定列表结构无效"})
+                continue
+            for binding in bindings:
+                roles = binding.get("roles") if isinstance(binding, dict) else None
+                if not isinstance(roles, list) or not roles:
+                    stamp("❌ 终末地绑定记录缺少角色列表")
+                    report.attendance.append({"ok": False, "message": "终末地绑定记录缺少角色列表"})
+                    continue
+                for role in roles:
+                    attempted += 1
+                    try:
+                        with stage("终末地角色 {} 签到".format(attempted)):
+                            if not isinstance(role, dict):
+                                raise SklandError("终末地角色结构无效")
+                            role_id, server_id = role.get("roleId"), role.get("serverId")
+                            # 来自官方绑定接口；只允许明确的数字角色路由，避免请求头注入。
+                            if (role_id is None or server_id is None or
+                                    not str(role_id).isdigit() or not str(server_id).isdigit()):
+                                raise SklandError("终末地角色缺少有效角色或服务器编号")
+                            nickname = role.get("nickname")
+                            stamp("官方终末地角色：{}".format(
+                                nickname if nickname is not None else "未返回昵称"))
+                            if role.get("uid") is not None:
+                                stamp("公开 UID：{}".format(role["uid"]))
+                            result = self.client.post(
+                                "/web/v1/game/endfield/attendance",
+                                extra_headers={
+                                    "content-type": "application/json",
+                                    "sk-game-role": "3_{}_{}".format(role_id, server_id),
+                                    "referer": "https://game.skland.com/",
+                                    "origin": "https://game.skland.com/",
+                                },
+                                action="终末地角色签到")
+                            award_ids, resources = result.get("awardIds"), result.get("resourceInfoMap")
+                            if not isinstance(award_ids, list) or not award_ids or not isinstance(resources, dict):
+                                raise SklandError("终末地签到响应缺少有效奖励映射")
+                            rewards = []
+                            for award in award_ids:
+                                if not isinstance(award, dict) or "id" not in award:
+                                    raise SklandError("终末地奖励编号结构无效")
+                                resource = resources.get(str(award["id"]))
+                                if not isinstance(resource, dict):
+                                    raise SklandError("终末地奖励映射缺失")
+                                name, count = resource.get("name"), resource.get("count")
+                                if (not isinstance(name, str) or not name or
+                                        isinstance(count, bool) or
+                                        not isinstance(count, (int, str)) or not str(count).isdigit()):
+                                    raise SklandError("终末地奖励名称或数量无效")
+                                rewards.append("{}×{}".format(name, count))
+                            stamp("✅ 终末地签到成功，奖励：" + "，".join(rewards))
+                            report.attendance.append({"ok": True, "message": "终末地签到成功"})
+                    except Exception:
+                        stamp("❌ 终末地角色 {} 签到未通过核验，继续其余角色".format(attempted))
+                        report.attendance.append({"ok": False, "message": "终末地签到未通过核验"})
+        if not attempted:
+            stamp("❌ 未找到可签到的终末地角色")
+            report.attendance.append({"ok": False, "message": "未绑定可用终末地角色，未执行签到"})
 
     def _run_zone(self, zone: Zone, checked: Dict[int, bool]) -> ZoneReport:
         report = ZoneReport(zone=zone, checked=checked.get(zone.game_id, False))
@@ -1170,7 +1264,7 @@ def parse_account(entry: str) -> Account:
         # 只在第一个字段分隔符拆分，后续签名凭据原样保留。
         if not all(part.strip() for part in entry.split(":", 1)):
             raise SklandError("cred:token 两部分必须非空")
-    elif any(c in entry for c in ";,\t "):
+    elif any(c in entry for c in ";,&@\t "):
         raise SklandError("账号必须每行一个，不接受分号或逗号分隔")
     return Account(entry=entry)
 
