@@ -1,5 +1,5 @@
 # name: 华润通文体未来荟签到
-# cron: 1 1 1 1 1
+# cron: 31 1 1 1 1
 # 来源: Cat-zaizai/ZaiZaiCat-Checkin
 # 原文件: script/huaruntong/wentiweilaihui/main.py 和 api.py
 # 许可: MIT（保留上游署名；输入文件未包含其他版权声明）

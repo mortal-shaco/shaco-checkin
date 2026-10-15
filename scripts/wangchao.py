@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 望潮阅读有礼
-# cron: 2 8 * * *
+# cron: 11 2 * * *
 # author: qingfeng
 # 上游：Rookie-wb-WH/ql_scripts，wangchao.py
 # 上游版本：08e5c06461c4a0112ea3735f48fe671734bb7707；有效许可证：MIT

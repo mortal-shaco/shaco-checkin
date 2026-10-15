@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: Zodgame签到与广告任务
-# cron: 0 8 * * *
+# cron: 35 2 * * *
 """Zodgame 自动签到 + 广告任务（独立 HTTP 维护版）。
 改造自 miaonai/zodgame-ql 的 zodgame-test.py、zodgame.py，原始说明：
  - zodgame.py (青龙签到脚本)

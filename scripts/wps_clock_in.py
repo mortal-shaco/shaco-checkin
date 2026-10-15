@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 # name: WPS打卡活动信息
-# cron: 10 9 * * *
+# cron: 43 1 * * *
 # 原作：cloudcranes/some_scripts，invalid/wps_clock_in.py
 # 原始功能声明：功能：WPS打卡活动；new Env('WPS打卡活动信息');
 # 上游与维护版本许可：MIT

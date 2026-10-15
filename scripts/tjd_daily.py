@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 塔吉多每日任务
-# cron: 30 9 * * *
+# cron: 24 2 * * *
 # 来源：SkyBlue997/tjd-daily，tjd_daily.py、tjd_login.py；MIT 许可。
 # 输入源码没有额外版权声明；保留原作者归属，以下协议实现沿用上游。
 # MIT License: Permission is hereby granted, free of charge, to any person

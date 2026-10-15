@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: Zippo会员中心
-# cron: 9 9 * * *
+# cron: 56 0 * * *
 # SPDX-License-Identifier: MIT
 # MIT License
 # Permission is hereby granted, free of charge, to any person obtaining a copy

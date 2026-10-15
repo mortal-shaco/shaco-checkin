@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 塔斯汀汉堡签到
-# cron: 55 9 * * *
+# cron: 19 1 * * *
 """塔斯汀汉堡签到，Python 3 标准库实现。
 来源：agluo/ql-script-hub/tsthb_checkin.py；原始署名来源 https://raw.githubusercontent.com/linbailo/zyqinglong
 上游许可：MIT。

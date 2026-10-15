@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 天翼云盘签到
-# cron: 1 16 * * *
+# cron: 2 1 * * *
 # SPDX-License-Identifier: MIT
 # 上游：agluo/ql-script-hub，ty_netdisk_checkin.py（MIT）
 # 改编自：https://www.52pojie.cn/thread-1231190-1-1.html

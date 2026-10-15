@@ -1,5 +1,5 @@
 # name: 有道云笔记每日空间奖励
-# cron: 0 8 * * *
+# cron: 47 0 * * *
 """独立维护版；来源 Sitoi/dailycheckin dailycheckin/youdao/main.py。
 上游提交：135cc236e59ac4f14bcddc44acb3cbb3ed6010b5，许可证 MIT。
 YOUDAO_COOKIE：网页 note.youdao.com 登录后，从开发者工具 Network 中复制

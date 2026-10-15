@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 掌瓦每日商店推送
-# cron: 15 8 * * *
+# cron: 10 0 * * *
 # new Env("掌瓦每日商店推送")
 # 来源：CN-Grace/QinglongScripts / ValorantStore.py
 # 上游提交：a40a2b080e0160bd8e0b0b807081115537b87153；许可证：MIT

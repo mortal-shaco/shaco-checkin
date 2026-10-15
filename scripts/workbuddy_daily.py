@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: WorkBuddy 国内版日常维护
-# cron: 0 7,12 * * *
+# cron: 15 7,12 * * *
 # 来源：L0NE-6/WorkBuddy-Daily，workbuddy_daily.py v3.7，MIT
 # 合并参考：Maquer/workbuddy-checkin，workbuddy_checkin.py，MIT
 """独立维护版。凭据：WORKBUDDY_REFRESH_TOKEN，每行 手机号:AT:RT、AT:RT、手机号:RT 或单个 JWT。

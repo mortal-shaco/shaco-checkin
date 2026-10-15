@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 网易云游戏自动签到
-# cron: 0 8 * * *
+# cron: 38 1 * * *
 # SPDX-License-Identifier: Apache-2.0
 # 原作者：GamerNoTitle https://bili33.top
 # 来源：https://github.com/GamerNoTitle/wyycg-autocheckin

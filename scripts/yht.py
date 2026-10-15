@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 益禾堂手机点单
-# cron: 8 6 * * *
+# cron: 27 2 * * *
 # 原作者: 清风；来源: Rookie-wb-WH/ql_scripts/yht.py
 # 原始更新: 2024.09.03 更新种植活动；2024.10.12 添加领取功能、增加活动互助。
 # 上游参数说明: vx小程序 -- 益禾堂手机点单；抓包 webapi.qmai.cn 下的 qm-user-token。

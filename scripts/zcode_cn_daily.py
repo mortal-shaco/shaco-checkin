@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: ZCode 国内版领套餐
-# cron: 0 9 * * *
+# cron: 36 1 * * *
 # 来源：L0NE-6/ZCode-Daily，zcode_cn_daily.py、zcode_intl_daily.py；登录说明参考 zcode_login.py
 # 上游许可：MIT；本维护版本沿用 MIT。
 """

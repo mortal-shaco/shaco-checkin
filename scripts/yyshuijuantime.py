@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 阴阳师绘卷时间获取
-# cron: 0 0 * * *
+# cron: 39 2 * * *
 # new Env("阴阳师绘卷时间获取")
 # 来源: CN-Grace/QinglongScripts / YysHuijuanTime.py
 # 原作者: CN-Grace；上游许可及本维护版本许可: MIT

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: WorkBuddy签到
-# cron: 30 8 * * *
+# cron: 45 1 * * *
 """WorkBuddy(CodeBuddy CN) 独立每日签到，Python 3.8+，仅使用标准库。
 
 来源：Cat-zaizai/ZaiZaiCat-Checkin，script/workbuddy/main.py 和 api.py。
