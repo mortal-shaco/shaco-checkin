@@ -1,5 +1,5 @@
 // name: TILTA影像城
-// cron: 5 10 * * *
+// cron: 24 1 * * *
 /**
  * name: TILTA影像城
  * cron: 5 10 * * *

@@ -1,8 +1,8 @@
 // name: 阿里云盘签到
-// cron: 0 9,22 * * *
+// cron: 7 9,22 * * *
 /*
 name: 阿里云盘签到
-cron: 0 9,22 * * *
+cron: 7 9,22 * * *
 阿里云盘签到
 项目地址：https://github.com/mrabit/aliyundriveDailyCheck
 上游来源：yunzimo/APChinkin，autoSignin.js

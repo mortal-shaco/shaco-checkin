@@ -1,5 +1,5 @@
 // name: OPPO商城每日签到与任务领奖
-// cron: 25 12 * * *
+// cron: 12 0 * * *
 /**
  * name: OPPO商城
  * cron: 25 12 * * *

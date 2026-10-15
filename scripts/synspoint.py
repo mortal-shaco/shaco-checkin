@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 所有女生会员服务中心积分版
-# cron: 8 8,12 * * *
+# cron: 16 8,12 * * *
 # SPDX-License-Identifier: MIT
 # 原作者及来源：Rookie-wb-WH/ql_scripts，synspoint.py
 # 来源提交：08e5c06461c4a0112ea3735f48fe671734bb7707
@@ -9,7 +9,7 @@
 vx小程序 -- 所有女生会员服务中心 积分版
 抓包域名 7.wawo.cc 下的authorization 只需要填写 bearer 后的数据
 export synshd='authorization1#authorization2" 多账号使用 # 隔开
-cron: 8 8,12 * * *
+cron: 16 8,12 * * *
 
 维护说明：Python 3.9+，仅标准库。synshd 保留变量名，改为每个非空行一个
 账号的 bearer 后凭据，也接受完整 Bearer 前缀；不再使用 # 分隔账号。

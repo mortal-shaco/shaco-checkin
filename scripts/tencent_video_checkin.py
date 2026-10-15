@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 腾讯视频签到
-# cron: 45 9 * * *
+# cron: 11 1 * * *
 # new Env('腾讯视频签到')
 # 原始来源: deeplee/personal-scripts / tencent_video_checkin.py
 # 原始提交: c8c7c0f4fd1802df86c32a86c26b5c26cfef5023

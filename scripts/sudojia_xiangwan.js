@@ -1,5 +1,5 @@
 // name: 享玩游戏APP
-// cron: 33 0 * * *
+// cron: 15 2 * * *
 /**
  * name: 享玩游戏APP
  * cron: 33 0 * * *

@@ -1,5 +1,5 @@
 # name: 微博超话签到
-# cron: 0 8 * * *
+# cron: 41 1 * * *
 # Source: Hellager/weibo_supertopic_sign, supertopicsign.py
 # Upstream license: MIT. Original supplied source contains no copyright notice.
 # MIT License

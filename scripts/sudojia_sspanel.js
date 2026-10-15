@@ -1,5 +1,5 @@
 // name: SSPANEL面板签到
-// cron: 35 9 * * *
+// cron: 34 0 * * *
 /**
  * name: SSPANEL面板签到
  * cron: 35 9 * * *

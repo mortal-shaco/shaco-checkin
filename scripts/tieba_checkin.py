@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 百度贴吧签到
-# cron: 23 8 * * *
+# cron: 28 2 * * *
 """百度贴吧每日签到（青龙维护版）。
 
 SPDX-License-Identifier: GPL-3.0-only

@@ -1,5 +1,5 @@
 // name: V2EX每日签到
-// cron: 0 9 * * *
+// cron: 1 1 * * *
 /**
  * name: V2EX每日签到
  * cron: 0 9 * * *
