@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 百度站点提交
-# cron: 0 9 * * *
+# cron: 36 2 * * *
 # 来源: Sitoi/dailycheckin dailycheckin/baidu/main.py
 # 上游提交: 135cc236e59ac4f14bcddc44acb3cbb3ed6010b5，许可证: MIT
 # 原始文件没有额外版权声明。保留上游署名，改写版本同样采用 MIT 许可证。

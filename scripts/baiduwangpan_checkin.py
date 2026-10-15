@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 百度网盘签到
-# cron: 0 9 * * *
+# cron: 19 2 * * *
 # SPDX-License-Identifier: MIT
 # Maintained standalone adaptation of baiduwangpan_checkin.py from
 # agluo/ql-script-hub, commit a8d39b97cb22c3ac657089014df754342b456ff6.

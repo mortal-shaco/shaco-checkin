@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: Hax 与 Woiden 可开通区域监控
-# cron: 21 */6 * * *
+# cron: 44 */6 * * *
 # Upstream: OreosLab/checkinpanel, api_hax.py
 # License: MIT (upstream license retained)
 """公开信息监控，无需账号、Cookie 或 Token。

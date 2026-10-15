@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 明日方舟寻访公告
-# cron: 0 10 * * *
+# cron: 29 1 * * *
 # new Env("明日方舟寻访公告")
 # 明日方舟限时寻访（卡池）公告监控
 # 原始来源：CN-Grace/QinglongScripts / ArknightsBanner.py

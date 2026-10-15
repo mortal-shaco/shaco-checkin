@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 布谷TV每日签到
-# cron: 0 8 * * *
+# cron: 12 1 * * *
 # License: Apache-2.0
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

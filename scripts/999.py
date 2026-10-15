@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 华润通999答题
-# cron: 1 1 1 1 1
+# cron: 49 1 1 1 1
 # 来源：Cat-zaizai/ZaiZaiCat-Checkin，script/huaruntong/999/main.py、api.py
 # 上游许可：MIT；保留原作者归属。
 # MIT License

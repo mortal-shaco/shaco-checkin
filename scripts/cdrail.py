@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 成都地铁签到
-# cron: 0 9 * * *
+# cron: 3 1 * * *
 # 来源: agluo/ql-script-hub/CDRail.py (MIT)
 # 源提交: a8d39b97cb22c3ac657089014df754342b456ff6
 # 保留上游 MIT 授权和署名；上游输入未附带版权年份及完整许可证文本。

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: AkileCloud 签到与保活
-# cron: 0 22 * * *
+# cron: 44 0 * * *
 # SPDX-License-Identifier: MIT
 # Upstream attribution: GGBondHere/QingLongScripts, scripts/akile_checkin.py
 # MIT License

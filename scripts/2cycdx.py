@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 2cycdx自动签到
-# cron: 0 8 * * *
+# cron: 45 0 * * *
 # publish-path: scripts/2cycdx_signin.py
 # 发布契约：contract.json 的 publishPath；candidate.py 仅为隔离交付名称。
 # 维护新增代码许可：MIT（任务 effectiveLicense）；原始作者及许可声明保留如下。

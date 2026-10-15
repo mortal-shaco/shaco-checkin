@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 百度网盘会员成长值
-# cron: 0 8 * * *
+# cron: 4 1 * * *
 # SPDX-License-Identifier: MIT
 # 来源: Sitoi/dailycheckin, dailycheckin/baiduwp/main.py
 # 上游版本: 135cc236e59ac4f14bcddc44acb3cbb3ed6010b5

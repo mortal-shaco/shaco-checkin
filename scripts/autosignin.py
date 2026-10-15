@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: E-Hentai 自动签到
-# cron: 1 */6 * * *
+# cron: 42 */6 * * *
 # 来源: AkiyaKiko/EhentaiAutoSignIn, autosignin.py
 # 上游提交: c00c3d42a61b7f526dd41b8df157444380898e57
 # 许可证: MIT（任务提供的 effectiveLicense；输入未附单独版权声明）

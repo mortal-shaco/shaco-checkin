@@ -1,8 +1,8 @@
 // name: 阿里云盘签到与奖励领取
-// cron: 0 9 * * *
+// cron: 37 2 * * *
 /*
 name: 阿里云盘签到与奖励领取
-cron: 0 9 * * *
+cron: 37 2 * * *
 发布文件名: aliyun_signin.js
 发布路径: scripts/aliyun_signin.js（禁止沿用冲突路径 scripts/autosignin.js）
 来源: wang-st/aliyunSignIn / autoSignin.js

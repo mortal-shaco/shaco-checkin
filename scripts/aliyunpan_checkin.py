@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 阿里云盘签到
-# cron: 3 11 * * *
+# cron: 35 1 * * *
 # dependencies: ecdsa (仅启用设备签名时需要)
 """Aliyun Drive daily check-in.
 

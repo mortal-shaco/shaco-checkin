@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: B站每日任务
-# cron: 0 0 * * *
+# cron: 6 2 * * *
 # new Env("B站每日任务")
 # 来源: CN-Grace/QinglongScripts / Bilibili.py
 # 上游版本: a40a2b080e0160bd8e0b0b807081115537b87153

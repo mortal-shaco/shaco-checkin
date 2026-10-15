@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 139云盘云朵任务
-# cron: 0 9 * * *
+# cron: 11 0 * * *
 # new Env('139云盘云朵任务')
 # 来源: deeplee/personal-scripts / 139_yunduo.py
 # 上游与维护版本许可: MIT

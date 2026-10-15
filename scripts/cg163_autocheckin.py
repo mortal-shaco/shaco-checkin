@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 网易云游戏每日签到
-# cron: 0 8 * * *
+# cron: 34 1 * * *
 # SPDX-License-Identifier: Apache-2.0
 # Upstream: Riku1998/cg163-autocheckin (Apache-2.0)
 # Original attribution retained: GamerNoTitle https://bili33.top

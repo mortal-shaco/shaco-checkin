@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 百事乐元抽奖
-# cron: 0 9 * * *
+# cron: 23 0 * * *
 # 来源: cloudcranes/some_scripts/bsly_draw.py
 # 合并参考: qluser-alan/some_scripts/bsly_draw.py（同提交、同抽奖功能）
 # 规范脚本标识: 28b170786df4dff2；发布路径: scripts/bsly_draw.py

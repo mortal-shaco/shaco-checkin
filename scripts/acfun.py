@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: AcFun每日任务
-# cron: 0 8 * * *
+# cron: 9 0 * * *
 # filename: acfun.py
 # 发布文件名：acfun.py；不得部署为 scripts/main.py。
 # 上游: Sitoi/dailycheckin dailycheckin/acfun/main.py

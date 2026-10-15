@@ -1,9 +1,9 @@
 // name: 阿里云社区
-// cron: 0 7,13 * * *
+// cron: 36 7,13 * * *
 /*
 name: 阿里云社区
 new Env('阿里云社区')
-cron: 0 7,13 * * *
+cron: 36 7,13 * * *
 原作者：Leiyiyan。来源：https://github.com/leiyiyan/resource/blob/main/script/aliyun_web/aliyun_web.js
 青龙适配修改：llle0x，2026-10-04。按现行任务列表更新执行流程。
 依赖：cheerio@1.0.0；Node.js >= 18.17。变量：aliyunWeb_data。

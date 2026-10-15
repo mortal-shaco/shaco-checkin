@@ -1,5 +1,5 @@
 // name: 吾爱破解每日签到
-// cron: 0 9 * * *
+// cron: 8 0 * * *
 // SPDX-License-Identifier: GPL-3.0-only
 // 原作者：NobyDa；HTTP 工具原始归属：https://github.com/Peng-YM/QuanX/tree/master/Tools/OpenAPI
 // 维护版：Node.js 18+，无需第三方依赖。原始说明保留在文件末尾供归属参考。

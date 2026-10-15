@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 艾特校园圈
-# cron: 9 10,23 * * *
+# cron: 21 10,23 * * *
 # author: 清风
 # Upstream: Rookie-wb-WH/ql_scripts, atxyq.py
 # License: MIT (effectiveLicense supplied by source catalog).

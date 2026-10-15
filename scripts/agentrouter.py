@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: AgentRouter签到
-# cron: 20 9 * * *
+# cron: 17 1 * * *
 """AgentRouter 登录签到；Author: Assistant; Date: 2026-09-10.
 维护来源：Cat-zaizai/ZaiZaiCat-Checkin script/agentrouter/main.py、api.py。
 原作者和许可声明保留。有效许可证：MIT。

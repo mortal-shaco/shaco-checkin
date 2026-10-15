@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 机场签到（速鹰666）
-# cron: 0 0 * * *
+# cron: 27 1 * * *
 # new Env("机场签到（速鹰666）")
 # 上游：CN-Grace/QinglongScripts / Airport.py
 # commit: a40a2b080e0160bd8e0b0b807081115537b87153

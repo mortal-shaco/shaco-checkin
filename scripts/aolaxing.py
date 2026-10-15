@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 奥拉星每日任务与积分
-# cron: 0 8 * * *
+# cron: 38 0 * * *
 """独立维护版本；来源 Sitoi/dailycheckin dailycheckin/aolaxing/main.py。
 原来源未声明 cron，本版本建议每天 08:00 运行。
 AOLAXING_COOKIE：登录 www.100bt.com 后，从开发者工具中对应

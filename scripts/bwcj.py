@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 霸王茶姬签到
-# cron: 0 9,18 * * *
+# cron: 31 9,18 * * *
 # author: 清风
 # 上游: Rookie-wb-WH/ql_scripts/bwcj.py
 # 原更新记录: 2024-08-30 更新签到; 2024.09.28 删除无效活动

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: AutoClaw 国内版每日签到
-# cron: 15 8 * * *
+# cron: 30 0 * * *
 # 来源: L0NE-6/AutoClaw-Daily, autoclaw_cn_daily.py、autoclaw_intl_daily.py
 # 协议和参数获取参考: autoclaw_login.py（MIT）
 # 上游许可: MIT；维护版本采用 MIT，保留上游署名。

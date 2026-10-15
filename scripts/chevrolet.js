@@ -1,5 +1,5 @@
 // name: 雪佛兰APP签到
-// cron: 0 8 * * *
+// cron: 55 0 * * *
 /*
  * name: 雪佛兰APP签到
  * cron: 0 8 * * *

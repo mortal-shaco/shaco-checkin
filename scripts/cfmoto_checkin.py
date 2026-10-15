@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # name: 春风动力签到
-# cron: 17 8 * * *
+# cron: 5 0 * * *
 """CFMOTO daily points tasks for Qinglong.
 
-cron: 17 8 * * *
+cron: 5 0 * * *
 new Env('春风动力签到')
 
 Environment:
