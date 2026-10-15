@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: Wallhaven最新壁纸下载
-# cron: 0 8 * * *
+# cron: 0 2 * * *
 # 来源: cloudcranes/some_scripts / Download_wallhaven/main.py
 # 上游提交: f62b50fe0a961ea8a8707682723b080c0a5d1142
 # 许可: MIT（按任务 effectiveLicense）；输入源码未附版权声明。

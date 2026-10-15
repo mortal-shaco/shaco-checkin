@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 森空岛签到
-# cron: 0 8 * * *
+# cron: 6 0 * * *
 # new Env("森空岛签到")
 # 上游：CN-Grace/QinglongScripts / skyland.py（MIT）
 # 原始来源提交：a40a2b080e0160bd8e0b0b807081115537b87153

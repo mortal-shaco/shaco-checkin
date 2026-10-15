@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: LobsterAI 每日签到
-# cron: 0 9 * * *
+# cron: 27 0 * * *
 # 来源：L0NE-6/LobsterAI-AutoCheckin / lobsterai_checkin.py，许可证：MIT。
 # 上游提供的三个输入文件未包含额外版权声明；保留来源归属。
 """LobsterAI 独立每日签到（Python 标准库，无需桌面客户端或仓库）。

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: PSNINE 每日祈祷
-# cron: 0 8 * * *
+# cron: 16 0 * * *
 # SPDX-License-Identifier: GPL-3.0
 # 原始来源：nuthx/auto-sign，src/special/psnine.py
 # https://github.com/nuthx/auto-sign (commit a8d2c229bac693daebe1535bca4cfd49733b632d)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 有道云笔记签到
-# cron: 01 5 * * *
+# cron: 56 1 * * *
 # publish-path: scripts/youdao_cloud_note_checkin.py
 # filename: youdao_cloud_note_checkin.py
 # application-key: lizhixu/ql-script-hub::youdao
@@ -11,7 +11,7 @@
 # Source commit: ac591a320092dcaeaf236b7c2b6acfd28981e589
 # License: MIT (effective upstream license)
 """
-cron: 01 5 * * *
+cron: 56 1 * * *
 new Env('有道云笔记签到')
 青龙脚本：有道云笔记签到
 变量名：YOUDAO_COOKIE

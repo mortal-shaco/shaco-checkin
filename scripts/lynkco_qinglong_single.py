@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 领克App每日签到分享
-# cron: 8 8 * * *
+# cron: 1 2 * * *
 """
 领克App独立维护版；来源 zhaosongbing/LynkCoHelper-QingLong，MIT 许可。
 保留原生网关签名、AppCode→HMAC续期、静态令牌回退、签到、积分及文章分享。

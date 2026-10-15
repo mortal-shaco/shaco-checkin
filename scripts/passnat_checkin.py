@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: PassNAT 签到
-# cron: 18 0 * * *
+# cron: 13 1 * * *
 # SPDX-License-Identifier: MIT
 """PassNAT daily check-in task for Qinglong.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: Loomy 每日积分与新手任务
-# cron: 0 8 * * *
+# cron: 54 0 * * *
 # 来源: L0NE-6/Loomy-Daily, loomy_daily.py
 # 上游提交: 3d0f19b0b6486ff9096507805a5f9d061604058f
 # SPDX-License-Identifier: MIT

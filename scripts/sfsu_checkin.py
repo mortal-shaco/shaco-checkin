@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 顺丰速运签到
-# cron: 9 15 * * *
+# cron: 17 0 * * *
 """顺丰速运签到（独立维护版）。
 
 Upstream: agluo/ql-script-hub/SFSU_checkin.py

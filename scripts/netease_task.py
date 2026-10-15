@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 网易云全能打卡
-# cron: 30 9 * * *
+# cron: 42 1 * * *
 # SPDX-License-Identifier: MIT
 # 来源：Han-cy77/Qinglong_auto，netease_task.py
 # 合并来源：deeplee/personal-scripts，netease_music_checkin.py

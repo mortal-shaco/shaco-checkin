@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 夸克网盘每日签到
-# cron: 13 18 * * *
+# cron: 15 0 * * *
 # SPDX-License-Identifier: GPL-3.0-only
 # Original maintained source license notice: SPDX-License-Identifier: MIT
 # Maintained standalone adaptation of quark_signin.py from agluo/ql-script-hub.

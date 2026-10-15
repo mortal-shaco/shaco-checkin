@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 看雪论坛签到
-# cron: 1 1 1 1 1
+# cron: 11 1 1 1 1
 """看雪论坛签到，Author: ZaiZaiCat，原始日期: 2025-01-20。
 来源: Cat-zaizai/ZaiZaiCat-Checkin，script/kanxue/sign_in.py、api.py。
 

@@ -1,5 +1,5 @@
 // name: PT 多站签到（SafeLine 兼容维护版）
-// cron: 0 8 * * *
+// cron: 46 2 * * *
 // 上游未声明 cron；本维护版建议每天 08:00 运行。
 // 来源：Flyingpen/PT-sign，PT-sign-V5.js，提交 5c6cf9d38020c327f9a30c3977eb7765e4d2c5c2。
 // 许可：MIT。上游原说明保留于下方；维护版参数与安全行为以契约为准。

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 顺丰快递积分任务
-# cron: 1 1 1 1 1
+# cron: 16 1 1 1 1
 """顺丰快递积分任务，独立维护版本。
 
 上游：Cat-zaizai/ZaiZaiCat-Checkin，script/sf/main.py、api.py、code.js。

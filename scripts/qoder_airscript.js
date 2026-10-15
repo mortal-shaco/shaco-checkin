@@ -1,5 +1,5 @@
 // name: Qoder每日签到
-// cron: 17 8 * * *
+// cron: 23 2 * * *
 // Qoder 每日自动签到 · 金山文档 AirScript 版（修复版）
 // 独立 Node.js 维护版本；上游：wallechfox/qoder-checkin
 // 合并来源：L0NE-6/Qoder-Daily/qoder_daily.py，MIT 授权。

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 森空岛每日任务
-# cron: 0 8 * * *
+# cron: 33 1 * * *
 # SPDX-License-Identifier: MIT
 # 合并来源：AdiEcho/skyland-auto-sign-ql，skyland.py，Author: AdiEcho，Update: 2026/1/29
 # 来源提交：2497b43c9b764e054dadd2dd86e354dacaffc840

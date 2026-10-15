@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: NodeSeek 论坛签到
-# cron: 23 14 * * *
+# cron: 41 0 * * *
 """NodeSeek daily attendance and recent reward statistics.
 
 Environment:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 书亦烧仙草签到
-# cron: 0 9 * * *
+# cron: 51 0 * * *
 # 上游：Rookie-wb-WH/ql_scripts，shuyi.py，MIT 许可。
 # 原始声明：脚本仅供学习交流使用, 请在下载后24h内删除。
 # MIT License

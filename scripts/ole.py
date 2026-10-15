@@ -1,5 +1,5 @@
 # name: 华润通Ole签到
-# cron: 1 1 1 1 1
+# cron: 6 1 1 1 1
 # 上游：Cat-zaizai/ZaiZaiCat-Checkin，script/huaruntong/ole/main.py 和 api.py
 # 上游提交：d6a334e43d0a0c8f41b039cd410be33593efc35b；许可证：MIT
 """独立签到任务。OLE_ACCOUNTS 每个非空行为一个 JSON 账号对象。

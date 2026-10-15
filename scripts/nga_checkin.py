@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: NGA 论坛签到
-# cron: 1 17 * * *
+# cron: 49 0 * * *
 # SPDX-License-Identifier: MIT
 # Additional compatible source: yongyeym/AutoSign_QingLong, nga_sign.py
 # commit f13a88e488c2d396e24cce8e9b6e27eefcbccad6 (MIT).

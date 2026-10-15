@@ -1,5 +1,5 @@
 // name: Rousi 签到
-// cron: 0 9 * * *
+// cron: 37 0 * * *
 /*
  * name: Rousi 签到
  * cron: 0 9 * * *

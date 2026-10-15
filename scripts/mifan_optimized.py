@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 米饭APP日常维护
-# cron: 0 9 * * *
+# cron: 59 0 * * *
 # 上游: eggv/MeeFan-DailyCheckIn, mifan_optimized.py
 # 来源提交: dd3668c8b870fe172ac97bcf96055ddcfceb6d49; 许可: MIT
 # 原文件未包含额外版权或许可声明。

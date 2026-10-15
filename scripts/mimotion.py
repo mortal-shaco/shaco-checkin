@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 小米运动账号验证与步数上传
-# cron: 0 20 * * *
+# cron: 46 0 * * *
 # 上游：Sitoi/dailycheckin dailycheckin/mimotion/main.py，MIT。
 # 上游未声明 cron；此处建议每天 20:00，默认只验证登录。
 # MIT License

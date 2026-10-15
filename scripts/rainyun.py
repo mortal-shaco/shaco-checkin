@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 # name: 雨云服务器签到
-# cron: 0 2 * * *
+# cron: 23 1 * * *
 # 上游: cloudcranes/some_scripts rainyun.py
 # 提交: f62b50fe0a961ea8a8707682723b080c0a5d1142
 # 许可证: MIT（根据任务提供的有效许可证；上游文件没有版权声明）

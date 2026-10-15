@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: OfficeAce 果办每日奖励
-# cron: 0 9 * * *
+# cron: 57 0 * * *
 # License: MIT
 # 原始来源: L0NE-6/OfficeAce-Daily, officeace_daily.py
 # 参考: officeace_get_token.py（仅采纳凭据获取说明，不读取桌面配置）

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 申工社每日任务
-# cron: 0 8 * * *
+# cron: 43 0 * * *
 # 上游：Rookie-wb-WH/ql_scripts / sgs.py
 # 上游提交：08e5c06461c4a0112ea3735f48fe671734bb7707；许可：MIT
 # 原始说明：VX公众号 -- 申工社；抓包 fwdt.shengongshe.org 的 token。

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 小浣熊每日积分
-# cron: 0 9 * * *
+# cron: 14 2 * * *
 # SPDX-License-Identifier: MIT
 # 上游: L0NE-6/Raccoon-Daily, raccoon_daily.py
 # 参考: 同仓库 raccoon_login.py（仅凭据获取说明，未合并交互式登录）

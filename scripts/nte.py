@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 塔吉多（异环）自动签到
-# cron: 0 8 * * *
+# cron: 0 1 * * *
 # 来源: Candy-QAQ/NTE-Auto-Sign, nte.py 与 qinglong.py
 # 上游提交: 38d77e1f7dc784f2baeb49c41cd4352deadf2b24
 # SPDX-License-Identifier: MIT

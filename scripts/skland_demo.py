@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 森空岛双游戏签到
-# cron: 0 8 * * *
+# cron: 18 2 * * *
 # SPDX-License-Identifier: GPL-3.0
 # Derived from nuthx/auto-sign, skland/skland-demo.py and skland/SecuritySm.py.
 # Upstream GPL-3.0 attribution retained; original source comments retained below.
