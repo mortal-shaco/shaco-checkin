@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_mgtv.py`
 - 青龙命令：`python3 scripts/ck_mgtv.py`
-- 建议 Cron：`15 8 * * *`
-- 发布哈希：`87ba378186422a2d560ae13c7cb814fbca39b9df9c488955d9db96b83e161ccb`
+- 建议 Cron：`36 0 * * *`
+- 发布哈希：`f1415fce85610626766adc162c4e8794f979fde731a54b047ccf98f13495b6e9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `87ba378186422a2d560ae13c7cb814fbca39b9df9c488955d9db96b83e161ccb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c4712e799078b55`。
+SHA-256 `f1415fce85610626766adc162c4e8794f979fde731a54b047ccf98f13495b6e9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c4712e799078b55`。
 
 ## 副作用与风险
 

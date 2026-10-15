@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_freenom.py`
 - 青龙命令：`python3 scripts/ck_freenom.py`
-- 建议 Cron：`25 7 */10 * *`
-- 发布哈希：`924fc4494dcdf15d6aeb90d7f59dd6438878241af726c137fdad9e5b38099cdb`
+- 建议 Cron：`30 7 */10 * *`
+- 发布哈希：`e3a25606148d1e347707b12fd1276edbe5b5aa1b62fd1cee5c4c949d9661ecd8`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `924fc4494dcdf15d6aeb90d7f59dd6438878241af726c137fdad9e5b38099cdb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/563cae20eed18007`。
+SHA-256 `e3a25606148d1e347707b12fd1276edbe5b5aa1b62fd1cee5c4c949d9661ecd8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/563cae20eed18007`。
 
 ## 副作用与风险
 

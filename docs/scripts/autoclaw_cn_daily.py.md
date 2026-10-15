@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/autoclaw_cn_daily.py`
 - 青龙命令：`python3 scripts/autoclaw_cn_daily.py`
-- 建议 Cron：`15 8 * * *`
-- 发布哈希：`f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426`
+- 建议 Cron：`30 0 * * *`
+- 发布哈希：`2b63f654955947b2c4483e4190a6742798d1fda84015f9acb17ddc9602c39a02`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -151,7 +151,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3813c988ddc0c592`。
+SHA-256 `2b63f654955947b2c4483e4190a6742798d1fda84015f9acb17ddc9602c39a02`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3813c988ddc0c592`。
 
 ## 副作用与风险
 

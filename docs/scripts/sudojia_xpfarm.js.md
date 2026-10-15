@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_xpfarm.js`
 - 青龙命令：`node scripts/sudojia_xpfarm.js`
-- 建议 Cron：`50 11,18 * * *`
-- 发布哈希：`ffa9878cc55005e28061ca97009b8ffa7c48ce01144b325d0354d499c28a897d`
+- 建议 Cron：`36 11,18 * * *`
+- 发布哈希：`86c668abac52ce0dbedbd6211824cc74a07adb54b1aa861b997af41b13ee8493`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ffa9878cc55005e28061ca97009b8ffa7c48ce01144b325d0354d499c28a897d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9705540ac69a7c3e`。
+SHA-256 `86c668abac52ce0dbedbd6211824cc74a07adb54b1aa861b997af41b13ee8493`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9705540ac69a7c3e`。
 
 ## 副作用与风险
 

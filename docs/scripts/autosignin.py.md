@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/autosignin.py`
 - 青龙命令：`python3 scripts/autosignin.py`
-- 建议 Cron：`1 */6 * * *`
-- 发布哈希：`cd2b330788aa14bc2e020a5451329f291e5d1dd97f66ad0a6ed2c921b6dee3d8`
+- 建议 Cron：`42 */6 * * *`
+- 发布哈希：`8f962c3207c0ce54b2ae1371ac9a217547f6fa62fd1fbee426481f0f75ffda62`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,7 +78,7 @@ E_COOKIE 每个非空行一个账号；同一行保留该账号所有 Cookie 字
 
 ## 验证与兼容性
 
-SHA-256 `cd2b330788aa14bc2e020a5451329f291e5d1dd97f66ad0a6ed2c921b6dee3d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7919605278826396`。
+SHA-256 `8f962c3207c0ce54b2ae1371ac9a217547f6fa62fd1fbee426481f0f75ffda62`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7919605278826396`。
 
 ## 副作用与风险
 

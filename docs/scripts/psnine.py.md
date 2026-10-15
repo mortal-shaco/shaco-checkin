@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/psnine.py`
 - 青龙命令：`python3 scripts/psnine.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4`
+- 建议 Cron：`16 0 * * *`
+- 发布哈希：`d5e1d96625c8c0deb826eaf33c52c902893fb98186dbeb695fe39305f806ef3c`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c5eee3d70ff8779f96a50277dac5ceb6076b88c62dea16a15ac2c625078950c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
+SHA-256 `d5e1d96625c8c0deb826eaf33c52c902893fb98186dbeb695fe39305f806ef3c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
 
 ## 副作用与风险
 

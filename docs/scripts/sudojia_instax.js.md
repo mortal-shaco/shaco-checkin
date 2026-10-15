@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_instax.js`
 - 青龙命令：`node scripts/sudojia_instax.js`
-- 建议 Cron：`41 9 * * *`
-- 发布哈希：`815b3148db43b02667a8b792285e4846925af30866e78ff5a1fec5804c29e377`
+- 建议 Cron：`26 2 * * *`
+- 发布哈希：`e4cd83b39c95aa8e1ef69f3b422083c34f4547f83e04c421ce9d96874f8f843b`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -68,7 +68,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `815b3148db43b02667a8b792285e4846925af30866e78ff5a1fec5804c29e377`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e229880f6ad33d6f`。
+SHA-256 `e4cd83b39c95aa8e1ef69f3b422083c34f4547f83e04c421ce9d96874f8f843b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e229880f6ad33d6f`。
 
 ## 副作用与风险
 

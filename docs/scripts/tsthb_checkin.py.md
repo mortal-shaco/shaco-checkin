@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/tsthb_checkin.py`
 - 青龙命令：`python3 scripts/tsthb_checkin.py`
-- 建议 Cron：`55 9 * * *`
-- 发布哈希：`f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`
+- 建议 Cron：`19 1 * * *`
+- 发布哈希：`6c0cc5f81969e34701241ae0391a8d1672dc781f350de74e833eb7458b6ad4c5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,7 +78,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f1f423f22e8134fb3080600f07293746eeb4d05783ec1778f489174dc1166d4c`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
+SHA-256 `6c0cc5f81969e34701241ae0391a8d1672dc781f350de74e833eb7458b6ad4c5`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 
 ## 副作用与风险
 

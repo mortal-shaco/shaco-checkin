@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_starmom.js`
 - 青龙命令：`node scripts/sudojia_starmom.js`
-- 建议 Cron：`39 2 * * *`
-- 发布哈希：`bc2b70cfb62513c69d904e375dce06bbc55b7592b9131cea78a2a1e894bc1b29`
+- 建议 Cron：`42 0 * * *`
+- 发布哈希：`47496e05953f6ec12008ffc7b9a56b79a48fb5b9a4bbe4550345380719133fad`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -62,7 +62,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `bc2b70cfb62513c69d904e375dce06bbc55b7592b9131cea78a2a1e894bc1b29`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4506301c45293563`。
+SHA-256 `47496e05953f6ec12008ffc7b9a56b79a48fb5b9a4bbe4550345380719133fad`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4506301c45293563`。
 
 ## 副作用与风险
 

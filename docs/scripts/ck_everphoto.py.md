@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_everphoto.py`
 - 青龙命令：`python3 scripts/ck_everphoto.py`
-- 建议 Cron：`3 22 * * *`
-- 发布哈希：`1c503ab4c6801ad18b37fa4b979bf3bf3bdb87dadace5ebb8d44c038966e35ae`
+- 建议 Cron：`3 0 * * *`
+- 发布哈希：`039524d9cd6d3e73ac08d00832a64f277fbbea9678e843e88e918171300bf136`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1c503ab4c6801ad18b37fa4b979bf3bf3bdb87dadace5ebb8d44c038966e35ae`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/08575e47b55daffb`。
+SHA-256 `039524d9cd6d3e73ac08d00832a64f277fbbea9678e843e88e918171300bf136`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/08575e47b55daffb`。
 
 ## 副作用与风险
 

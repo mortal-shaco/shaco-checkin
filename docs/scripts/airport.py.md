@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/airport.py`
 - 青龙命令：`python3 scripts/airport.py`
-- 建议 Cron：`0 0 * * *`
-- 发布哈希：`751d2835e39d2431905eacf72fc64a9cddfb4fac8032eaa83bc7af4632e7983d`
+- 建议 Cron：`27 1 * * *`
+- 发布哈希：`295e2efffc554a333c5cc8baf7cd8631b3cb7a96d0a65e1633e5a8d0f960bfad`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@ SUYING_ACCOUNTS 每个非空行一个账号，以第一个 | 分隔同一账号�
 
 ## 验证与兼容性
 
-SHA-256 `751d2835e39d2431905eacf72fc64a9cddfb4fac8032eaa83bc7af4632e7983d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8cd72e9849a3c893`。
+SHA-256 `295e2efffc554a333c5cc8baf7cd8631b3cb7a96d0a65e1633e5a8d0f960bfad`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8cd72e9849a3c893`。
 
 ## 副作用与风险
 

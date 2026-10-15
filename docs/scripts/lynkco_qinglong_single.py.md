@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/lynkco_qinglong_single.py`
 - 青龙命令：`python3 scripts/lynkco_qinglong_single.py`
-- 建议 Cron：`8 8 * * *`
-- 发布哈希：`5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233`
+- 建议 Cron：`1 2 * * *`
+- 发布哈希：`1a1e794187c7a4a3fe295d5e753ee9e8e5ee85e4f9532ed11736b5a8e74e84ee`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -199,7 +199,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5c07b38c3cc8f306cafb7a9efda1215db8b036c5d4d24c2faeb9985c89490233`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
+SHA-256 `1a1e794187c7a4a3fe295d5e753ee9e8e5ee85e4f9532ed11736b5a8e74e84ee`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
 
 ## 副作用与风险
 

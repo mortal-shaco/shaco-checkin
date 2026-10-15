@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/l.py`
 - 青龙命令：`python3 scripts/l.py`
-- 建议 Cron：`5 */5 * * *`
-- 发布哈希：`aba0cf5855af880ab672f6f322417b935718dc8e2e81351ebd65791a1b9809dd`
+- 建议 Cron：`37 */5 * * *`
+- 发布哈希：`9c9e97ed107632272c9298cf39872a9d749e65ce050763bb2824f165db3ddc96`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@ LINUXDO_COOKIES 每个非空行一个账号；逐个独立校验和处理，任�
 
 ## 验证与兼容性
 
-SHA-256 `aba0cf5855af880ab672f6f322417b935718dc8e2e81351ebd65791a1b9809dd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f1ad78537129604d`。
+SHA-256 `9c9e97ed107632272c9298cf39872a9d749e65ce050763bb2824f165db3ddc96`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f1ad78537129604d`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/rousi_checkin.js`
 - 青龙命令：`node scripts/rousi_checkin.js`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`b20207312e40ff721f057cfe38dbdf6570486e9f4ce1b4d7882f60f85dafb138`
+- 建议 Cron：`37 0 * * *`
+- 发布哈希：`6285b7a23281fb2ce99837ed20e2f312acac74e55f4e241240e115a44971cb3a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -666,7 +666,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b20207312e40ff721f057cfe38dbdf6570486e9f4ce1b4d7882f60f85dafb138`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c5c6df4d8a81a7f`。
+SHA-256 `6285b7a23281fb2ce99837ed20e2f312acac74e55f4e241240e115a44971cb3a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c5c6df4d8a81a7f`。
 
 ## 副作用与风险
 

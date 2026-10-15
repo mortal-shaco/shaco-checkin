@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_hgf.js`
 - 青龙命令：`node scripts/sudojia_hgf.js`
-- 建议 Cron：`33 5 * * *`
-- 发布哈希：`7a2fc3f49f3bb53dd24a27db4453415048f8b5db6640c7a3adbc1bf3c2b406b8`
+- 建议 Cron：`44 1 * * *`
+- 发布哈希：`7b683a7bd72a8ad95c0bddf715e975cffb53f807af5b2e094c5350fc3e04bcca`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7a2fc3f49f3bb53dd24a27db4453415048f8b5db6640c7a3adbc1bf3c2b406b8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ad46a268a74b34b0`。
+SHA-256 `7b683a7bd72a8ad95c0bddf715e975cffb53f807af5b2e094c5350fc3e04bcca`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ad46a268a74b34b0`。
 
 ## 副作用与风险
 

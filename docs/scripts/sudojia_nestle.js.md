@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_nestle.js`
 - 青龙命令：`node scripts/sudojia_nestle.js`
-- 建议 Cron：`28 8 * * *`
-- 发布哈希：`98ba9fa7508d12ac34f2f91c89c20a3354659412c206df72cb7378f373e83e5d`
+- 建议 Cron：`30 2 * * *`
+- 发布哈希：`0f46afcd0d20b106717a30bb2b55eef1e4750134e70df9d3d93256398733ddf7`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@ NESTLE_TOKEN 每个非空行一个账号，独立处理；任一账号失败时�
 
 ## 验证与兼容性
 
-SHA-256 `98ba9fa7508d12ac34f2f91c89c20a3354659412c206df72cb7378f373e83e5d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e68269710bb6fed2`。
+SHA-256 `0f46afcd0d20b106717a30bb2b55eef1e4750134e70df9d3d93256398733ddf7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e68269710bb6fed2`。
 
 ## 副作用与风险
 

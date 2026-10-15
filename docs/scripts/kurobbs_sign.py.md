@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/kurobbs_sign.py`
 - 青龙命令：`python3 scripts/kurobbs_sign.py`
-- 建议 Cron：`3 0 * * *`
-- 发布哈希：`420de38577b9132e63b09652938838b0a60f03519d374ea9114bc9a01d80bb05`
+- 建议 Cron：`16 1 * * *`
+- 发布哈希：`fe2d67de49de75eb35b3ef4f5f95937ba01aa28521d60a8e8ffc42d8a7105d81`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -94,7 +94,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `420de38577b9132e63b09652938838b0a60f03519d374ea9114bc9a01d80bb05`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
+SHA-256 `fe2d67de49de75eb35b3ef4f5f95937ba01aa28521d60a8e8ffc42d8a7105d81`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
 
 ## 副作用与风险
 

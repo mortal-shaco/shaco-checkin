@@ -3,8 +3,8 @@
 - 管理状态：`上架`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/cfmoto_checkin.py`
 - 青龙命令：`task scripts/cfmoto_checkin.py`
-- 建议 Cron：`17 8 * * *`
-- 发布哈希：`15ecc5e482af800b18360374359667392176fe88ab77c7950509da115f09f07a`
+- 建议 Cron：`5 0 * * *`
+- 发布哈希：`9ef21fc0ec56e3996f6abf44493f1fd2e8a7aad29e034fee7516d06125564fc9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -96,7 +96,7 @@ CFMOTO_COOKIE 每行一个账号
 
 ## 验证与兼容性
 
-SHA-256 `15ecc5e482af800b18360374359667392176fe88ab77c7950509da115f09f07a`；live 业务成功证据位于 `projects/checkin/validation/0ba7bb41fd4c339c`。
+SHA-256 `9ef21fc0ec56e3996f6abf44493f1fd2e8a7aad29e034fee7516d06125564fc9`；live 业务成功证据位于 `projects/checkin/validation/0ba7bb41fd4c339c`。
 
 ## 副作用与风险
 

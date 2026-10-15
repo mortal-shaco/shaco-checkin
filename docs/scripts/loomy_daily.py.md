@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/loomy_daily.py`
 - 青龙命令：`python3 scripts/loomy_daily.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`
+- 建议 Cron：`54 0 * * *`
+- 发布哈希：`d497133425b424e0478b983180bc008d6a34a1d719332a238f55f8552dd77cba`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -106,7 +106,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `31903376bb554862f5d23f99b67975b4d159ee6de93bb8b280b3fc329d451ce9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
+SHA-256 `d497133425b424e0478b983180bc008d6a34a1d719332a238f55f8552dd77cba`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
 
 ## 副作用与风险
 

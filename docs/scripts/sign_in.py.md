@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sign_in.py`
 - 青龙命令：`python3 scripts/sign_in.py`
-- 建议 Cron：`1 1 1 1 1`
-- 发布哈希：`d2d3f6610f0aaf4c6866b93fc47751f18a8004bf53c9eae43b560cde380d6cef`
+- 建议 Cron：`11 1 1 1 1`
+- 发布哈希：`84b18f35f871d03d08b20de750baadca417cfbaf5e5ac2cde42b147cbaf9c96f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d2d3f6610f0aaf4c6866b93fc47751f18a8004bf53c9eae43b560cde380d6cef`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01041a1995eb1f55`。
+SHA-256 `84b18f35f871d03d08b20de750baadca417cfbaf5e5ac2cde42b147cbaf9c96f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01041a1995eb1f55`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_flyant.js`
 - 青龙命令：`node scripts/sudojia_flyant.js`
-- 建议 Cron：`0 6 * * *`
-- 发布哈希：`8e3e229e4db887c4588444e53211ef4610a82cae51cb463409a4bb06cb831c03`
+- 建议 Cron：`50 0 * * *`
+- 发布哈希：`a33b9e3cde39559bf47f9ad3036acf9d1d00da8e064d024fcd19f29832210deb`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8e3e229e4db887c4588444e53211ef4610a82cae51cb463409a4bb06cb831c03`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4fb882fdbc0ba03a`。
+SHA-256 `a33b9e3cde39559bf47f9ad3036acf9d1d00da8e064d024fcd19f29832210deb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4fb882fdbc0ba03a`。
 
 ## 副作用与风险
 

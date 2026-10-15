@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/comicai_ai_cookie.py`
 - 青龙命令：`python3 scripts/comicai_ai_cookie.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`173db2c22758f322022dedfb23fdd735a85d1cff0d39ad308ed5a8c3d0d45c8c`
+- 建议 Cron：`46 1 * * *`
+- 发布哈希：`7bc9effea735009d6ba475228b6558b43353fe9cf6f56cfb9edbdd24b6a58f0e`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -78,7 +78,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `173db2c22758f322022dedfb23fdd735a85d1cff0d39ad308ed5a8c3d0d45c8c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
+SHA-256 `7bc9effea735009d6ba475228b6558b43353fe9cf6f56cfb9edbdd24b6a58f0e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/leaflow_checkin_pyleaflow_checkin.py`
 - 青龙命令：`python3 scripts/leaflow_checkin_pyleaflow_checkin.py`
-- 建议 Cron：`34 18 * * *`
-- 发布哈希：`1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`
+- 建议 Cron：`14 0 * * *`
+- 发布哈希：`c6bb96a22fdc8410cf82d18ce50187f467f4e0405c6182472fba31bf664c2dcd`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -172,7 +172,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1e758c69465f04e6b2561615b1b0a222871c106bbacbb0f0afab42fbb0fa238c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
+SHA-256 `c6bb96a22fdc8410cf82d18ce50187f467f4e0405c6182472fba31bf664c2dcd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
 
 ## 副作用与风险
 

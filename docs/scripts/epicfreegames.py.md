@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/epicfreegames.py`
 - 青龙命令：`python3 scripts/epicfreegames.py`
-- 建议 Cron：`0 8 * * 6`
-- 发布哈希：`c8d5c51c3bc4dfbfb194ddb29720a35d605c3285eca606ec4af7ffdff72d0d4a`
+- 建议 Cron：`11 8 * * 6`
+- 发布哈希：`0d68673ee7b8157ea510d15b64b1fbe2605b87f73665a70ca6ea840e3d50f7fb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -97,7 +97,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c8d5c51c3bc4dfbfb194ddb29720a35d605c3285eca606ec4af7ffdff72d0d4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
+SHA-256 `0d68673ee7b8157ea510d15b64b1fbe2605b87f73665a70ca6ea840e3d50f7fb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
 
 ## 副作用与风险
 

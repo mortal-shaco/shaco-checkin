@@ -3,8 +3,8 @@
 - 管理状态：`已检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_moto.js`
 - 青龙命令：`node scripts/sudojia_moto.js`
-- 建议 Cron：`33 3 * * *`
-- 发布哈希：`1c73ab0fa75d3ca74dd40f04891ec43fa7d8853eb3866b6dd43cd0939e183363`
+- 建议 Cron：`26 0 * * *`
+- 发布哈希：`679d21005c525ac34f4d993466f0b0b3a4c7d30264249e45a07e321118559beb`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1c73ab0fa75d3ca74dd40f04891ec43fa7d8853eb3866b6dd43cd0939e183363`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2e1e25aaedb9b2c3`。
+SHA-256 `679d21005c525ac34f4d993466f0b0b3a4c7d30264249e45a07e321118559beb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2e1e25aaedb9b2c3`。
 
 ## 副作用与风险
 

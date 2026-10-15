@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/cg163_autocheckin.py`
 - 青龙命令：`python3 scripts/cg163_autocheckin.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`fc594db2c57c2b95da1b8dc4bdb49d887ad50e6d22ff58d3f7af82b1bf76d074`
+- 建议 Cron：`34 1 * * *`
+- 发布哈希：`4f34abf0d80470e2ac15a5068c50c66d44dc5f9a151633f1c8e992324f958816`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fc594db2c57c2b95da1b8dc4bdb49d887ad50e6d22ff58d3f7af82b1bf76d074`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/97b71fc6fc5c5c72`。
+SHA-256 `4f34abf0d80470e2ac15a5068c50c66d44dc5f9a151633f1c8e992324f958816`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/97b71fc6fc5c5c72`。
 
 ## 副作用与风险
 

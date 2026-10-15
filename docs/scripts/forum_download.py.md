@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/forum_download.py`
 - 青龙命令：`python3 scripts/forum_download.py`
-- 建议 Cron：`20 8 * * *`
-- 发布哈希：`f7c36f3c4bb0ef72d1c9bdaec2387d373c870a5be4607ac71ed9f274c0339751`
+- 建议 Cron：`29 2 * * *`
+- 发布哈希：`d023bc68fec8f262e2e23fd5d7eb2d62828beb0943499568d1223a13375d9a50`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f7c36f3c4bb0ef72d1c9bdaec2387d373c870a5be4607ac71ed9f274c0339751`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
+SHA-256 `d023bc68fec8f262e2e23fd5d7eb2d62828beb0943499568d1223a13375d9a50`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
 
 ## 副作用与风险
 

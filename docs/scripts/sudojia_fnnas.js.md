@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_fnnas.js`
 - 青龙命令：`node scripts/sudojia_fnnas.js`
-- 建议 Cron：`10 0 * * *`
-- 发布哈希：`4106209f1efdb73b3c49564c0ea186123ee5c04bc81f209dcd0ac561c6b6d21d`
+- 建议 Cron：`54 1 * * *`
+- 发布哈希：`e1c1188092c7e5c47ab5993eb83e3a5fb77156f0d7fd612645a67f98865d1c21`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4106209f1efdb73b3c49564c0ea186123ee5c04bc81f209dcd0ac561c6b6d21d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bab33a90ea57e852`。
+SHA-256 `e1c1188092c7e5c47ab5993eb83e3a5fb77156f0d7fd612645a67f98865d1c21`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bab33a90ea57e852`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/2cycdx.py`
 - 青龙命令：`python3 scripts/2cycdx.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`50e848475c664acc9e2f665f75dd6c0f4b72d770e94fea08f421185fdbd77d1b`
+- 建议 Cron：`45 0 * * *`
+- 发布哈希：`8e3b540eb7b8c4f3dce889406181a402650b351b1d60491207d6b8f307630b80`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -73,7 +73,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `50e848475c664acc9e2f665f75dd6c0f4b72d770e94fea08f421185fdbd77d1b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4a0d6e0728deb3f6`。
+SHA-256 `8e3b540eb7b8c4f3dce889406181a402650b351b1d60491207d6b8f307630b80`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4a0d6e0728deb3f6`。
 
 ## 副作用与风险
 

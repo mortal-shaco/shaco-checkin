@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/rainyun.py`
 - 青龙命令：`python3 scripts/rainyun.py`
-- 建议 Cron：`0 2 * * *`
-- 发布哈希：`15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a`
+- 建议 Cron：`23 1 * * *`
+- 发布哈希：`81acd2c1d93e30a293db3780b50ac926de1bc3c7bf15084ecd33a9c96263144c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89f2e9b460331a75`。
+SHA-256 `81acd2c1d93e30a293db3780b50ac926de1bc3c7bf15084ecd33a9c96263144c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89f2e9b460331a75`。
 
 ## 副作用与风险
 

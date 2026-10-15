@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/nodeseek.py`
 - 青龙命令：`python3 scripts/nodeseek.py`
-- 建议 Cron：`0 0 * * *`
-- 发布哈希：`9e38011e2840ce76dc24111e8c6d6522aeb75b71d8212be4551def23840e5549`
+- 建议 Cron：`3 2 * * *`
+- 发布哈希：`100eb89e754758960b360bc7a0669d9ba6be3707aa5d27c5df57d795d9cda3b1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@ NS_COOKIE 每个非空行一个账号，逐个独立签到；任意账号失败�
 
 ## 验证与兼容性
 
-SHA-256 `9e38011e2840ce76dc24111e8c6d6522aeb75b71d8212be4551def23840e5549`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c28f0207e2b02a7b`。
+SHA-256 `100eb89e754758960b360bc7a0669d9ba6be3707aa5d27c5df57d795d9cda3b1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c28f0207e2b02a7b`。
 
 ## 副作用与风险
 

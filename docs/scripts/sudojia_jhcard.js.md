@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_jhcard.js`
 - 青龙命令：`node scripts/sudojia_jhcard.js`
-- 建议 Cron：`55 5 * * *`
-- 发布哈希：`ac86d6cc9fda1657bb61169b9feecbb9cadba6a61b95a92bec66912155d2eff6`
+- 建议 Cron：`7 0 * * *`
+- 发布哈希：`090c2c6b35bbc7cee71b916d1fe1ba5f4fa779a3b29a3da523ba56454465554b`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -64,7 +64,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ac86d6cc9fda1657bb61169b9feecbb9cadba6a61b95a92bec66912155d2eff6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0dc8d7553d45c649`。
+SHA-256 `090c2c6b35bbc7cee71b916d1fe1ba5f4fa779a3b29a3da523ba56454465554b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0dc8d7553d45c649`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/bsly_draw.py`
 - 青龙命令：`python3 scripts/bsly_draw.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`ae1d0fe072b35fe9c22ad02ebc04ca2b0571c7cf0e60c3ad68e2c8cca58925a3`
+- 建议 Cron：`23 0 * * *`
+- 发布哈希：`690be1e878eb6c9690e3298edc62ccb0053b5d4eece1348b3283adcde0f44a7a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ae1d0fe072b35fe9c22ad02ebc04ca2b0571c7cf0e60c3ad68e2c8cca58925a3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28b170786df4dff2`。
+SHA-256 `690be1e878eb6c9690e3298edc62ccb0053b5d4eece1348b3283adcde0f44a7a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28b170786df4dff2`。
 
 ## 副作用与风险
 

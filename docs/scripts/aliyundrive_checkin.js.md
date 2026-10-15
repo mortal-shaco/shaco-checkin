@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/aliyundrive_checkin.js`
 - 青龙命令：`node scripts/aliyundrive_checkin.js`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`e247d342c3624bc2e7cc9da6f1808d8dfeffe19f1df4a64d3a410b2b87a4ac0b`
+- 建议 Cron：`55 1 * * *`
+- 发布哈希：`fee8a691a59047cf508700e812eea33b121d73673ecdeaff276de5c0bf0d7e8d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -72,7 +72,7 @@ refreshToken 每个非空行一个账号；账号顺序独立执行，任一账�
 
 ## 验证与兼容性
 
-SHA-256 `e247d342c3624bc2e7cc9da6f1808d8dfeffe19f1df4a64d3a410b2b87a4ac0b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd7e90cbb255e115`。
+SHA-256 `fee8a691a59047cf508700e812eea33b121d73673ecdeaff276de5c0bf0d7e8d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd7e90cbb255e115`。
 
 ## 副作用与风险
 

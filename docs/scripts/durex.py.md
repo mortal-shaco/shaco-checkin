@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/durex.py`
 - 青龙命令：`python3 scripts/durex.py`
-- 建议 Cron：`9 9 * * *`
-- 发布哈希：`dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`
+- 建议 Cron：`52 0 * * *`
+- 发布哈希：`c28ed6d55ebc66f380cc5690cd463de069e9e73594fb0af0923f0ff24a6d58f1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `dcfd65a77d774a5ea04efb135a56f675f531c6fd11d770279ec6120cbd8e025c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
+SHA-256 `c28ed6d55ebc66f380cc5690cd463de069e9e73594fb0af0923f0ff24a6d58f1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 
 ## 副作用与风险
 

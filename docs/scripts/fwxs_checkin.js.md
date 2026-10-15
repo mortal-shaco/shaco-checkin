@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/fwxs_checkin.js`
 - 青龙命令：`node scripts/fwxs_checkin.js`
-- 建议 Cron：`5 8 * * *`
-- 发布哈希：`e9f6410e225fbef75b20d661e4122ea2bece6b41b7908f17f4f42244f151780c`
+- 建议 Cron：`57 1 * * *`
+- 发布哈希：`d9a8a2381b2636367f93f477fca57e7efb6fe2f133231e0121b4a2acec4b5a43`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -62,7 +62,7 @@ fwxs 每个非空行一个账号；同一账号仅需完整 Cookie。逐账号�
 
 ## 验证与兼容性
 
-SHA-256 `e9f6410e225fbef75b20d661e4122ea2bece6b41b7908f17f4f42244f151780c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
+SHA-256 `d9a8a2381b2636367f93f477fca57e7efb6fe2f133231e0121b4a2acec4b5a43`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
 
 ## 副作用与风险
 

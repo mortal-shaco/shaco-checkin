@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/autosignin.js`
 - 青龙命令：`node scripts/autosignin.js`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`c9f9cb1e7cf025514b245d555ac63849d2617eb3d29b473f92cf61f6b2a4a72b`
+- 建议 Cron：`37 2 * * *`
+- 发布哈希：`3b229dc9dcc59e1ebe7bcd6c07f04645a2ee5b83bc5fe5dd7d996f35ca7c6b12`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c9f9cb1e7cf025514b245d555ac63849d2617eb3d29b473f92cf61f6b2a4a72b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ee45e24a6845dbc0`。
+SHA-256 `3b229dc9dcc59e1ebe7bcd6c07f04645a2ee5b83bc5fe5dd7d996f35ca7c6b12`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ee45e24a6845dbc0`。
 
 ## 副作用与风险
 

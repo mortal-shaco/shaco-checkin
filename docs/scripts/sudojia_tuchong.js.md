@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_tuchong.js`
 - 青龙命令：`node scripts/sudojia_tuchong.js`
-- 建议 Cron：`38 5 * * *`
-- 发布哈希：`cdc3e24cb80e5424179994733a38c773a31e05e91eb357a0d54e1fd47d32e270`
+- 建议 Cron：`2 0 * * *`
+- 发布哈希：`4f14415664a1b098c368846f74d298ba0609f158f87cb636898a715a61852d8b`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -65,7 +65,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `cdc3e24cb80e5424179994733a38c773a31e05e91eb357a0d54e1fd47d32e270`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0554aeea00a7519f`。
+SHA-256 `4f14415664a1b098c368846f74d298ba0609f158f87cb636898a715a61852d8b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0554aeea00a7519f`。
 
 ## 副作用与风险
 

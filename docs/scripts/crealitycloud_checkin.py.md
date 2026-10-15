@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/crealitycloud_checkin.py`
 - 青龙命令：`python3 scripts/crealitycloud_checkin.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743`
+- 建议 Cron：`44 2 * * *`
+- 发布哈希：`11d21e3dc147ba188791e03450e1635d2ca2d67608830424b340a9a3e0df3bd2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `65ca612e847d35d7aabc19505ed10d819c478e1bdda4b88321a9dc4c24e11743`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
+SHA-256 `11d21e3dc147ba188791e03450e1635d2ca2d67608830424b340a9a3e0df3bd2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
 
 ## 副作用与风险
 

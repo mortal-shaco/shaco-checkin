@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/fnnasclub.py`
 - 青龙命令：`python3 scripts/fnnasclub.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc`
+- 建议 Cron：`49 1 * * *`
+- 发布哈希：`a8c15f330a8658bd84a88ff20ed04c2692eb28ccc5e80554892ae5225392e325`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `80358575b8206ca830681be924da4c67dc20b6d4aa1e323a9f810fadff669cfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
+SHA-256 `a8c15f330a8658bd84a88ff20ed04c2692eb28ccc5e80554892ae5225392e325`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
 
 ## 副作用与风险
 

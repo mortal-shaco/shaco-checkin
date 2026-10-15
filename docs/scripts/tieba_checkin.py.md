@@ -3,8 +3,8 @@
 - 管理状态：`上架`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/tieba_checkin.py`
 - 青龙命令：`python3 scripts/tieba_checkin.py`
-- 建议 Cron：`23 8 * * *`
-- 发布哈希：`2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e`
+- 建议 Cron：`28 2 * * *`
+- 发布哈希：`ed85866f4ca9097b0dbcfe843b67f9e36827bcba9b43e8ec07b3a30e374f2b32`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -94,7 +94,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2db577380e0d0f1f5cf940b40cceca8bfcd21e2d140e284552f9cc943f4a7d4e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
+SHA-256 `ed85866f4ca9097b0dbcfe843b67f9e36827bcba9b43e8ec07b3a30e374f2b32`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
 
 ## 副作用与风险
 

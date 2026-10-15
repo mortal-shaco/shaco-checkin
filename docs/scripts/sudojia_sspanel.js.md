@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_sspanel.js`
 - 青龙命令：`node scripts/sudojia_sspanel.js`
-- 建议 Cron：`35 9 * * *`
-- 发布哈希：`1055ccec4def07a28137aee50d995f6650d6918197b0d9ff7be7508ed5281ca2`
+- 建议 Cron：`34 0 * * *`
+- 发布哈希：`c0434d33828cb923e79d03393ca502b878c235ca893328e51fb8fa515302ab80`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -62,7 +62,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1055ccec4def07a28137aee50d995f6650d6918197b0d9ff7be7508ed5281ca2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ab685f53b0a5cc0`。
+SHA-256 `c0434d33828cb923e79d03393ca502b878c235ca893328e51fb8fa515302ab80`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ab685f53b0a5cc0`。
 
 ## 副作用与风险
 

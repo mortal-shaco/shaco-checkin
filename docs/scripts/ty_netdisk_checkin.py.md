@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ty_netdisk_checkin.py`
 - 青龙命令：`python3 scripts/ty_netdisk_checkin.py`
-- 建议 Cron：`1 16 * * *`
-- 发布哈希：`096668383bde7522670dd87830f0e8b48ed4ce3e142e723c6fe6ebce238f99f2`
+- 建议 Cron：`2 1 * * *`
+- 发布哈希：`bc349087cc087db3a9ae7254de1d493caef1a679b3b374bc04b9f3dc0003d1c4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -108,7 +108,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `096668383bde7522670dd87830f0e8b48ed4ce3e142e723c6fe6ebce238f99f2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
+SHA-256 `bc349087cc087db3a9ae7254de1d493caef1a679b3b374bc04b9f3dc0003d1c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ole.py`
 - 青龙命令：`python3 scripts/ole.py`
-- 建议 Cron：`1 1 1 1 1`
-- 发布哈希：`5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796`
+- 建议 Cron：`6 1 1 1 1`
+- 发布哈希：`62ae451d8de0b2ee0dd4d4ac2e200b89e345d80b7618c0fb27a7b1d6f518c201`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5dba4860d34bf701f15f92c59b1cfa4f6cea511c7b24355c2ea839334eea3796`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
+SHA-256 `62ae451d8de0b2ee0dd4d4ac2e200b89e345d80b7618c0fb27a7b1d6f518c201`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
 
 ## 副作用与风险
 

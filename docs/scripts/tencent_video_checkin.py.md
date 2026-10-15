@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/tencent_video_checkin.py`
 - 青龙命令：`python3 scripts/tencent_video_checkin.py`
-- 建议 Cron：`45 9 * * *`
-- 发布哈希：`22ae305cd2e4196c0574785ab58f4dc0fb54266676ba599ea71971c4dc973ec6`
+- 建议 Cron：`11 1 * * *`
+- 发布哈希：`2e987ab42af5244ba771e3fb0b97bc7b174579c025d0acad0a695e29d727843a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `22ae305cd2e4196c0574785ab58f4dc0fb54266676ba599ea71971c4dc973ec6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
+SHA-256 `2e987ab42af5244ba771e3fb0b97bc7b174579c025d0acad0a695e29d727843a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
 
 ## 副作用与风险
 

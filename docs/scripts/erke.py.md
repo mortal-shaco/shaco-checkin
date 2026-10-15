@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/erke.py`
 - 青龙命令：`python3 scripts/erke.py`
-- 建议 Cron：`1 1 1 1 1`
-- 发布哈希：`887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59`
+- 建议 Cron：`12 1 1 1 1`
+- 发布哈希：`0bda3124158f35388bacf848b1d9f063bfc1d98a616fd197b441f8f6b0823a89`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -62,7 +62,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `887228083c773feabe55dd6c936eec5ff029daf6c252a28f05732b9d32e83e59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
+SHA-256 `0bda3124158f35388bacf848b1d9f063bfc1d98a616fd197b441f8f6b0823a89`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
 
 ## 副作用与风险
 

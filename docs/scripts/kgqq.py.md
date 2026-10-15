@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/kgqq.py`
 - 青龙命令：`python3 scripts/kgqq.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`fd14c4b064a5168918f0d3eb0ea766762361151ca7c441e4188cd7b98c31d9a9`
+- 建议 Cron：`13 2 * * *`
+- 发布哈希：`c85446e2da21d33bc801401ed148a15cf847619efcffccce5004a608c2299d2e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fd14c4b064a5168918f0d3eb0ea766762361151ca7c441e4188cd7b98c31d9a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d49d052949d2bef1`。
+SHA-256 `c85446e2da21d33bc801401ed148a15cf847619efcffccce5004a608c2299d2e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d49d052949d2bef1`。
 
 ## 副作用与风险
 

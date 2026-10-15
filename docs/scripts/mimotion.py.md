@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/mimotion.py`
 - 青龙命令：`python3 scripts/mimotion.py`
-- 建议 Cron：`0 20 * * *`
-- 发布哈希：`4e8149eb7fd9f48b6a92c4b22190c633a40d7def1754bb196a3c26bcbf30d7cc`
+- 建议 Cron：`46 0 * * *`
+- 发布哈希：`065b1c6cd7be4d60da5332ca5d38de53830d899000d656717b839f243efaac3e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -88,7 +88,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4e8149eb7fd9f48b6a92c4b22190c633a40d7def1754bb196a3c26bcbf30d7cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
+SHA-256 `065b1c6cd7be4d60da5332ca5d38de53830d899000d656717b839f243efaac3e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
 
 ## 副作用与风险
 

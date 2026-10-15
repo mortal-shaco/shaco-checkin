@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/jissbon.py`
 - 青龙命令：`python3 scripts/jissbon.py`
-- 建议 Cron：`9 9 * * *`
-- 发布哈希：`6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf`
+- 建议 Cron：`21 2 * * *`
+- 发布哈希：`cde7014744e76a3299463a9fad5f43cedaaa32c108b9bc3905c97a9007168620`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dff518c351ef674e`。
+SHA-256 `cde7014744e76a3299463a9fad5f43cedaaa32c108b9bc3905c97a9007168620`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dff518c351ef674e`。
 
 ## 副作用与风险
 

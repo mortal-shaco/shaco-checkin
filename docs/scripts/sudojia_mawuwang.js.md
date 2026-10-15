@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_mawuwang.js`
 - 青龙命令：`node scripts/sudojia_mawuwang.js`
-- 建议 Cron：`48 6 * * *`
-- 发布哈希：`133423898018d04a1784a7cf197c143785cdb359002ed09b826684e793f18b80`
+- 建议 Cron：`13 0 * * *`
+- 发布哈希：`8af8b8ae808775bd446bbdaaeb3a5ca3391819adba36e3fc6053a1602d76e66d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -64,7 +64,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `133423898018d04a1784a7cf197c143785cdb359002ed09b826684e793f18b80`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/125dbe5e1b6b8274`。
+SHA-256 `8af8b8ae808775bd446bbdaaeb3a5ca3391819adba36e3fc6053a1602d76e66d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/125dbe5e1b6b8274`。
 
 ## 副作用与风险
 

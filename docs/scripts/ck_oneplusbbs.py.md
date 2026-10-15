@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_oneplusbbs.py`
 - 青龙命令：`python3 scripts/ck_oneplusbbs.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`924c0a8026449096829e6622116ea2deab5b47b7614cd237c7760e810fdcf505`
+- 建议 Cron：`40 2 * * *`
+- 发布哈希：`e1f383d11d33eb7c9ee4fe68f3d91d048ddd15c6e00c3d9c865d26ed4036999b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `924c0a8026449096829e6622116ea2deab5b47b7614cd237c7760e810fdcf505`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f0626c73779225ec`。
+SHA-256 `e1f383d11d33eb7c9ee4fe68f3d91d048ddd15c6e00c3d9c865d26ed4036999b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f0626c73779225ec`。
 
 ## 副作用与风险
 

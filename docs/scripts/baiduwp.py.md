@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/baiduwp.py`
 - 青龙命令：`python3 scripts/baiduwp.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`419008b91e8a348b310d5de9d819e6670ec665dd212922406e85348e52f6b0d6`
+- 建议 Cron：`4 1 * * *`
+- 发布哈希：`a73ef5b90edaa247d86ae8ea34ce32934fdcaee5aca103204560b37685b05c2c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@ BAIDUWP_COOKIE 每个非空行为一个账号，各账号独立执行；任一�
 
 ## 验证与兼容性
 
-SHA-256 `419008b91e8a348b310d5de9d819e6670ec665dd212922406e85348e52f6b0d6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/74d362990ff7d2f9`。
+SHA-256 `a73ef5b90edaa247d86ae8ea34ce32934fdcaee5aca103204560b37685b05c2c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/74d362990ff7d2f9`。
 
 ## 副作用与风险
 

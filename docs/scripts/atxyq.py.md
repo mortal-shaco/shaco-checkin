@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/atxyq.py`
 - 青龙命令：`python3 scripts/atxyq.py`
-- 建议 Cron：`9 10,23 * * *`
-- 发布哈希：`6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`
+- 建议 Cron：`21 10,23 * * *`
+- 发布哈希：`e1ea6d515fbe6c872d30685e385a877f8f07da2bbe1536dc49d0e202a79c17e4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -128,7 +128,7 @@ atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 #
 
 ## 验证与兼容性
 
-SHA-256 `6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
+SHA-256 `e1ea6d515fbe6c872d30685e385a877f8f07da2bbe1536dc49d0e202a79c17e4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
 
 ## 副作用与风险
 

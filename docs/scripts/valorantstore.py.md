@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/valorantstore.py`
 - 青龙命令：`python3 scripts/valorantstore.py`
-- 建议 Cron：`15 8 * * *`
-- 发布哈希：`e7b189720b1086ca20bad310b392de69d4f75c7fa0660ed843120affa4bcc0fb`
+- 建议 Cron：`10 0 * * *`
+- 发布哈希：`749d71dc9828ea152828d89252dfb889c90e3a61d4decc8ef9b5c0af7c953d4d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@ VALORANT_COOKIE 每个非空行一个完整账号 Cookie，ct 与该账号其他
 
 ## 验证与兼容性
 
-SHA-256 `e7b189720b1086ca20bad310b392de69d4f75c7fa0660ed843120affa4bcc0fb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1153449ac9321744`。
+SHA-256 `749d71dc9828ea152828d89252dfb889c90e3a61d4decc8ef9b5c0af7c953d4d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1153449ac9321744`。
 
 ## 副作用与风险
 

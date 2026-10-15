@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_colorful_mall.js`
 - 青龙命令：`node scripts/sudojia_colorful_mall.js`
-- 建议 Cron：`14 12 * * *`
-- 发布哈希：`d8d73f9403e695405a0ed89a282f242158c47aadb97f8576d4049bb94a1146e9`
+- 建议 Cron：`22 0 * * *`
+- 发布哈希：`138fb2417e69288c3c061559d9efdf638bdb5c7917d084c5025a18254eca8187`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -78,7 +78,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d8d73f9403e695405a0ed89a282f242158c47aadb97f8576d4049bb94a1146e9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/246de3f61ba99194`。
+SHA-256 `138fb2417e69288c3c061559d9efdf638bdb5c7917d084c5025a18254eca8187`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/246de3f61ba99194`。
 
 ## 副作用与风险
 

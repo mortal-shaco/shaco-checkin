@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_2nzz.py`
 - 青龙命令：`python3 scripts/ck_2nzz.py`
-- 建议 Cron：`30 8 * * *`
-- 发布哈希：`7f3516766b49802f68470d5adb40d69a59014b79178df5de52a083e60f8af02b`
+- 建议 Cron：`40 1 * * *`
+- 发布哈希：`181ff4e7e9909d0e13209f92d46e65e8eeac539e5c59e4e13f1ff2e1d1f9726b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -62,7 +62,7 @@ NZZ_COOKIE 每个非空行一个账号；空行忽略，独立处理所有账号
 
 ## 验证与兼容性
 
-SHA-256 `7f3516766b49802f68470d5adb40d69a59014b79178df5de52a083e60f8af02b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a50eecf80a170dc5`。
+SHA-256 `181ff4e7e9909d0e13209f92d46e65e8eeac539e5c59e4e13f1ff2e1d1f9726b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a50eecf80a170dc5`。
 
 ## 副作用与风险
 

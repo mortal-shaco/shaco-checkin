@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/agentrouter.py`
 - 青龙命令：`python3 scripts/agentrouter.py`
-- 建议 Cron：`20 9 * * *`
-- 发布哈希：`a22e06bb7c32b2ce57c1dbbea73b86dac505381bde53a818ec84254669f4c888`
+- 建议 Cron：`17 1 * * *`
+- 发布哈希：`84aa09016659ccd4b21759a66c902b6e6767180f58252aec9c7550e820623c85`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -119,7 +119,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a22e06bb7c32b2ce57c1dbbea73b86dac505381bde53a818ec84254669f4c888`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/81684dd327c48211`。
+SHA-256 `84aa09016659ccd4b21759a66c902b6e6767180f58252aec9c7550e820623c85`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/81684dd327c48211`。
 
 ## 副作用与风险
 

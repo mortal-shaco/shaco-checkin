@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/yyshuijuantime.py`
 - 青龙命令：`python3 scripts/yyshuijuantime.py`
-- 建议 Cron：`0 0 * * *`
-- 发布哈希：`ed7e4a6e165c239056135e84d3f2a0825a5fcfded2a1f0961d11b37172069cf6`
+- 建议 Cron：`39 2 * * *`
+- 发布哈希：`381977e2482a91ef02239804ed1e706b8ab04df83bb9e5f358696c499b6a8c7a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -64,7 +64,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ed7e4a6e165c239056135e84d3f2a0825a5fcfded2a1f0961d11b37172069cf6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/efe42c0f180ce822`。
+SHA-256 `381977e2482a91ef02239804ed1e706b8ab04df83bb9e5f358696c499b6a8c7a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/efe42c0f180ce822`。
 
 ## 副作用与风险
 

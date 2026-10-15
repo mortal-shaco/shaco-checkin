@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/api_hax.py`
 - 青龙命令：`python3 scripts/api_hax.py`
-- 建议 Cron：`21 */6 * * *`
-- 发布哈希：`b82b5df5898bca09afb910abd7db43507e0fa2b93866ffd7fec97e722e3b8d49`
+- 建议 Cron：`44 */6 * * *`
+- 发布哈希：`d856bdee23e99c0d6e0f8b4d9327e216a54fd79eff8b7848f2c91b10fdce337a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -62,7 +62,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b82b5df5898bca09afb910abd7db43507e0fa2b93866ffd7fec97e722e3b8d49`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbf36f8697d4cc45`。
+SHA-256 `d856bdee23e99c0d6e0f8b4d9327e216a54fd79eff8b7848f2c91b10fdce337a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbf36f8697d4cc45`。
 
 ## 副作用与风险
 

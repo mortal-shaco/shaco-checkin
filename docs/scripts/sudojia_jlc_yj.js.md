@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_jlc_yj.js`
 - 青龙命令：`node scripts/sudojia_jlc_yj.js`
-- 建议 Cron：`44 5 * * *`
-- 发布哈希：`1f7a49e30dd7a0e4da2a1298bd24b1ca0578cf86e10fec9406d001aa872cb493`
+- 建议 Cron：`31 0 * * *`
+- 发布哈希：`626a082ab1b8e5eb19aa956b1a154db83b9328a038a137a00b412485a42e470d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -120,7 +120,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1f7a49e30dd7a0e4da2a1298bd24b1ca0578cf86e10fec9406d001aa872cb493`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/38602005c4e13646`。
+SHA-256 `626a082ab1b8e5eb19aa956b1a154db83b9328a038a137a00b412485a42e470d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/38602005c4e13646`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/kjwj.py`
 - 青龙命令：`python3 scripts/kjwj.py`
-- 建议 Cron：`30 7 * * *`
-- 发布哈希：`6867c355c23ccfdd7deafbcbeef48865c1001d7e274c9b9e265dced5047eaaab`
+- 建议 Cron：`41 2 * * *`
+- 发布哈希：`29071d674697969a8d93a9a1ec71ad81d61f659af80ef66c2596372df5322dd2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -64,7 +64,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6867c355c23ccfdd7deafbcbeef48865c1001d7e274c9b9e265dced5047eaaab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f4e13633e05b6a28`。
+SHA-256 `29071d674697969a8d93a9a1ec71ad81d61f659af80ef66c2596372df5322dd2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f4e13633e05b6a28`。
 
 ## 副作用与风险
 

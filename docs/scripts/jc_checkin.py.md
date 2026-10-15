@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/jc_checkin.py`
 - 青龙命令：`python3 scripts/jc_checkin.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`a9e3d7940077da25253b9b49f7a39552ffe129ebf250bf5036d3a1dad18cc787`
+- 建议 Cron：`45 2 * * *`
+- 发布哈希：`1fb4e4ee8da9e8ce197ca0077e12ee50b81cee63493292887e2102292fd08d26`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@ JC_ACCOUNTS 每个非空行一个邮箱|密码，仅按首个 | 分割；密码�
 
 ## 验证与兼容性
 
-SHA-256 `a9e3d7940077da25253b9b49f7a39552ffe129ebf250bf5036d3a1dad18cc787`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fd9b2a23e39332a5`。
+SHA-256 `1fb4e4ee8da9e8ce197ca0077e12ee50b81cee63493292887e2102292fd08d26`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fd9b2a23e39332a5`。
 
 ## 副作用与风险
 

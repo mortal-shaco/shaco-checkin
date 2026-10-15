@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/codearts_daily.py`
 - 青龙命令：`python3 scripts/codearts_daily.py`
-- 建议 Cron：`15 8 * * *`
-- 发布哈希：`c6bdd619ce35cd32e1fca575006e8420c6ac3b55d55cc1ffb48ba9122862d856`
+- 建议 Cron：`52 1 * * *`
+- 发布哈希：`d3e0054c92eb5b29dc45941cc17a17c808a5a3285cd816c099ac43c7d2578c17`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -99,7 +99,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c6bdd619ce35cd32e1fca575006e8420c6ac3b55d55cc1ffb48ba9122862d856`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b896028c3fdcd52d`。
+SHA-256 `d3e0054c92eb5b29dc45941cc17a17c808a5a3285cd816c099ac43c7d2578c17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b896028c3fdcd52d`。
 
 ## 副作用与风险
 

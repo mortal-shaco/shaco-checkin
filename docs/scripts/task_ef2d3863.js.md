@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/task_ef2d3863.js`
 - 青龙命令：`node scripts/task_ef2d3863.js`
-- 建议 Cron：`0 9,22 * * *`
-- 发布哈希：`8586de43a2f596862d6cb8d81ed151c476292dca5f800bcc20985219e3d892a4`
+- 建议 Cron：`7 9,22 * * *`
+- 发布哈希：`0517da688ec061d08daf846b6e8bd88e0218a135cb060d7396e638870accc7f5`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -64,7 +64,7 @@ refreshToken 每个非空行对应一个账号，顺序独立执行；一个账�
 
 ## 验证与兼容性
 
-SHA-256 `8586de43a2f596862d6cb8d81ed151c476292dca5f800bcc20985219e3d892a4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef2d3863a5184a74`。
+SHA-256 `0517da688ec061d08daf846b6e8bd88e0218a135cb060d7396e638870accc7f5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef2d3863a5184a74`。
 
 ## 副作用与风险
 

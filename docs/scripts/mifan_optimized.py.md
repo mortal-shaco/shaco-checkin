@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/mifan_optimized.py`
 - 青龙命令：`python3 scripts/mifan_optimized.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`7fbd32635c2c61d2e89c6ef056726314c439ad70655c0295af47364e565f8ffb`
+- 建议 Cron：`59 0 * * *`
+- 发布哈希：`0ca3c9a0dd597d0adeefe61addb18a5f68d4ed9a4094c34c1459ff7aa4ef8b72`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -107,7 +107,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7fbd32635c2c61d2e89c6ef056726314c439ad70655c0295af47364e565f8ffb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/68feda0fb9579305`。
+SHA-256 `0ca3c9a0dd597d0adeefe61addb18a5f68d4ed9a4094c34c1459ff7aa4ef8b72`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/68feda0fb9579305`。
 
 ## 副作用与风险
 

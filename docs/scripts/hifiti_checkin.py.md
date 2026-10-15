@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/hifiti_checkin.py`
 - 青龙命令：`python3 scripts/hifiti_checkin.py`
-- 建议 Cron：`30 6 * * *`
-- 发布哈希：`ae18f25d6d7ad768ae64880761732b510e7bc3e75179bb9d66790f8203e4faf9`
+- 建议 Cron：`14 1 * * *`
+- 发布哈希：`b9bb7ebb39283dcb8723c0ed14cc184baae55d405109dc99f3ce1c505a9e5a5e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@ HiFiTi_COOKIE 和 HIFIHI_COOKIE 各自每个非空行一个账号，账号独立
 
 ## 验证与兼容性
 
-SHA-256 `ae18f25d6d7ad768ae64880761732b510e7bc3e75179bb9d66790f8203e4faf9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
+SHA-256 `b9bb7ebb39283dcb8723c0ed14cc184baae55d405109dc99f3ce1c505a9e5a5e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
 
 ## 副作用与风险
 

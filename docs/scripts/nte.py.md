@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/nte.py`
 - 青龙命令：`python3 scripts/nte.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`44b3e9817214e01d674b189c4b2b38af6bb6fcb0012f2887f471080a78e635b1`
+- 建议 Cron：`0 1 * * *`
+- 发布哈希：`1c2f7f45c0d41394957f7e00ec3e0f19d314df8c74a90f0c8d6a3993f907ccac`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `44b3e9817214e01d674b189c4b2b38af6bb6fcb0012f2887f471080a78e635b1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6919295133257387`。
+SHA-256 `1c2f7f45c0d41394957f7e00ec3e0f19d314df8c74a90f0c8d6a3993f907ccac`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6919295133257387`。
 
 ## 副作用与风险
 

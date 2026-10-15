@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/qoder_airscript.js`
 - 青龙命令：`node scripts/qoder_airscript.js`
-- 建议 Cron：`17 8 * * *`
-- 发布哈希：`e1e74cc7bb351cb9b95995c142025eebec911240c0b7e54d0a9fb62b60e54480`
+- 建议 Cron：`23 2 * * *`
+- 发布哈希：`b83138ba122e32aa9a80fb8bc24803cb4fa53020546af9cad4b0c897da015725`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -95,7 +95,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e1e74cc7bb351cb9b95995c142025eebec911240c0b7e54d0a9fb62b60e54480`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
+SHA-256 `b83138ba122e32aa9a80fb8bc24803cb4fa53020546af9cad4b0c897da015725`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 
 ## 副作用与风险
 

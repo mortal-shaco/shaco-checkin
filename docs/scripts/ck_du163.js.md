@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_du163.js`
 - 青龙命令：`node scripts/ck_du163.js`
-- 建议 Cron：`52 9 * * *`
-- 发布哈希：`75d6aa77f89a9e3f51773b5e963b147b2ae8537d66f1a55ac7efd735f1c808e0`
+- 建议 Cron：`42 2 * * *`
+- 发布哈希：`ea06fca79599f86801540bd65f1d94d730a75017c6c2b995c0cc2eca029decfa`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `75d6aa77f89a9e3f51773b5e963b147b2ae8537d66f1a55ac7efd735f1c808e0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f5d67f6a8e38d7ae`。
+SHA-256 `ea06fca79599f86801540bd65f1d94d730a75017c6c2b995c0cc2eca029decfa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f5d67f6a8e38d7ae`。
 
 ## 副作用与风险
 

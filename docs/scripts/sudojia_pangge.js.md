@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_pangge.js`
 - 青龙命令：`node scripts/sudojia_pangge.js`
-- 建议 Cron：`19 6 * * *`
-- 发布哈希：`4a89dd87925b538c497735bc2a2a45c84b10d5f1658a177922d28738873a63a0`
+- 建议 Cron：`7 1 * * *`
+- 发布哈希：`8683acc16b96acbbaf130e29e939e52746f9942cb562c8ad019dd87c70db33cc`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4a89dd87925b538c497735bc2a2a45c84b10d5f1658a177922d28738873a63a0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75d3da7186c8c51b`。
+SHA-256 `8683acc16b96acbbaf130e29e939e52746f9942cb562c8ad019dd87c70db33cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75d3da7186c8c51b`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/aliyunpan_checkin.py`
 - 青龙命令：`python3 scripts/aliyunpan_checkin.py`
-- 建议 Cron：`3 11 * * *`
-- 发布哈希：`ed1ba9f840e3411c993266ae1b29c1db3cd968bf49f318d682fea69aab37815c`
+- 建议 Cron：`35 1 * * *`
+- 发布哈希：`93042a2390a1a4e61d52b3f6ef753b52982d78993d6415c61d0c8c54bdce9c85`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -150,7 +150,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ed1ba9f840e3411c993266ae1b29c1db3cd968bf49f318d682fea69aab37815c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
+SHA-256 `93042a2390a1a4e61d52b3f6ef753b52982d78993d6415c61d0c8c54bdce9c85`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
 
 ## 副作用与风险
 

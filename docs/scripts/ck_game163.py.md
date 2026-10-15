@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_game163.py`
 - 青龙命令：`python3 scripts/ck_game163.py`
-- 建议 Cron：`20 8 * * *`
-- 发布哈希：`7ed0cd491d05665776eca881d37deab2c42b356bc28ab3b1735f544fc6d56b4d`
+- 建议 Cron：`21 1 * * *`
+- 发布哈希：`e14c951ec8048dcb021fe5e0d8cb6dcb584df2d377cb3cafa4bbba43c7ef8e89`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7ed0cd491d05665776eca881d37deab2c42b356bc28ab3b1735f544fc6d56b4d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/86bf0d1d9f07edf8`。
+SHA-256 `e14c951ec8048dcb021fe5e0d8cb6dcb584df2d377cb3cafa4bbba43c7ef8e89`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/86bf0d1d9f07edf8`。
 
 ## 副作用与风险
 

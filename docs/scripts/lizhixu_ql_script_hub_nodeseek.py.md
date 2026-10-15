@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/lizhixu_ql_script_hub_nodeseek.py`
 - 青龙命令：`python3 scripts/lizhixu_ql_script_hub_nodeseek.py`
-- 建议 Cron：`23 4 * * *`
-- 发布哈希：`d403a1c68ee24f721a320318363bb0a763d815b217fa73801512ecbac8c303ff`
+- 建议 Cron：`10 1 * * *`
+- 发布哈希：`7d3ec18c304294f39f556c09cf83e46734a9de70a2aa6182387057f5d8b91970`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d403a1c68ee24f721a320318363bb0a763d815b217fa73801512ecbac8c303ff`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7990614346ba82e0`。
+SHA-256 `7d3ec18c304294f39f556c09cf83e46734a9de70a2aa6182387057f5d8b91970`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7990614346ba82e0`。
 
 ## 副作用与风险
 

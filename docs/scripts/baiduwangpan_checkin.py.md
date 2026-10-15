@@ -3,8 +3,8 @@
 - 管理状态：`上架`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/baiduwangpan_checkin.py`
 - 青龙命令：`python3 scripts/baiduwangpan_checkin.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`e9c658f4544427bd94ab4da74a724038d1f849c8b9665464ded6e8a1c4dd2c18`
+- 建议 Cron：`19 2 * * *`
+- 发布哈希：`c4520fd973766aa749bc2f38347f188ff0983f07c79368d960b31da3752c8d6a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@ BAIDU_COOKIE 中每个非空行是一个独立账号；依次处理，任一账�
 
 ## 验证与兼容性
 
-SHA-256 `e9c658f4544427bd94ab4da74a724038d1f849c8b9665464ded6e8a1c4dd2c18`；live 业务成功证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
+SHA-256 `c4520fd973766aa749bc2f38347f188ff0983f07c79368d960b31da3752c8d6a`；live 业务成功证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
 
 ## 副作用与风险
 

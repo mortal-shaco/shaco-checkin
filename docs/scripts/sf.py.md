@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sf.py`
 - 青龙命令：`python3 scripts/sf.py`
-- 建议 Cron：`1 1 1 1 1`
-- 发布哈希：`5c594804fd2d2a74fe2ad188aa73f95755d5bd28e562d3feceb78cc0fa87fcaf`
+- 建议 Cron：`16 1 1 1 1`
+- 发布哈希：`85b137b933b0f3cba899e8ae2409196981e30db5f3fcfef445d3e362ef13a947`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5c594804fd2d2a74fe2ad188aa73f95755d5bd28e562d3feceb78cc0fa87fcaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c231dec461782853`。
+SHA-256 `85b137b933b0f3cba899e8ae2409196981e30db5f3fcfef445d3e362ef13a947`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c231dec461782853`。
 
 ## 副作用与风险
 

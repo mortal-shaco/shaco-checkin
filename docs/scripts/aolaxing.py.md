@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/aolaxing.py`
 - 青龙命令：`python3 scripts/aolaxing.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`5e2e40940a4bd132b7f240273fe1e6850ace43aa93856a8ee9871aa263ee7b46`
+- 建议 Cron：`38 0 * * *`
+- 发布哈希：`80278e85d5786acdc4b2dce7b69628e1ce5d5b20cadef35ba16ab255a6c57365`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5e2e40940a4bd132b7f240273fe1e6850ace43aa93856a8ee9871aa263ee7b46`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ca8984737c9322f`。
+SHA-256 `80278e85d5786acdc4b2dce7b69628e1ce5d5b20cadef35ba16ab255a6c57365`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ca8984737c9322f`。
 
 ## 副作用与风险
 

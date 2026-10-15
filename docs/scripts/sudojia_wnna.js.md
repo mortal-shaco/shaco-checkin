@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_wnna.js`
 - 青龙命令：`node scripts/sudojia_wnna.js`
-- 建议 Cron：`39 9 * * *`
-- 发布哈希：`776fd6f05d881afb02e5c070096ab8909a638f944e548065d702ae7e1bb2dd72`
+- 建议 Cron：`29 0 * * *`
+- 发布哈希：`0a5197a147394f5d5d0961b89afeb4598925862c320cb6f2ab16cab8b107a56a`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -62,7 +62,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `776fd6f05d881afb02e5c070096ab8909a638f944e548065d702ae7e1bb2dd72`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/364d0c6592e14300`。
+SHA-256 `0a5197a147394f5d5d0961b89afeb4598925862c320cb6f2ab16cab8b107a56a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/364d0c6592e14300`。
 
 ## 副作用与风险
 

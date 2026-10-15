@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_33agilestudio.js`
 - 青龙命令：`node scripts/sudojia_33agilestudio.js`
-- 建议 Cron：`1 11 * * *`
-- 发布哈希：`7677c43b5720b0556f6d0b2949405b7c91d218dbc5d020ad6be0dd46ce2308d8`
+- 建议 Cron：`24 0 * * *`
+- 发布哈希：`fabe80bb639d6f60d0d99dad8721b7b7eb77080cb23a91bce8e22b86cc11e070`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7677c43b5720b0556f6d0b2949405b7c91d218dbc5d020ad6be0dd46ce2308d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
+SHA-256 `fabe80bb639d6f60d0d99dad8721b7b7eb77080cb23a91bce8e22b86cc11e070`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
 
 ## 副作用与风险
 

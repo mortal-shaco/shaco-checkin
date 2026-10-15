@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_hlzj_game.js`
 - 青龙命令：`node scripts/sudojia_hlzj_game.js`
-- 建议 Cron：`39 8,15,20 * * *`
-- 发布哈希：`cb6afdaa59ce18500e46bb208ba48c468eca19656abb8b12cd79db5a501bbbb8`
+- 建议 Cron：`20 8,15,20 * * *`
+- 发布哈希：`8e90c875097ab970d4e71f9227e0bd1037269de758f5e00a6aee0974c199aa81`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `cb6afdaa59ce18500e46bb208ba48c468eca19656abb8b12cd79db5a501bbbb8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4d08d343f131700e`。
+SHA-256 `8e90c875097ab970d4e71f9227e0bd1037269de758f5e00a6aee0974c199aa81`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4d08d343f131700e`。
 
 ## 副作用与风险
 

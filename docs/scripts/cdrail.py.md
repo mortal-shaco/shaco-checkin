@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/cdrail.py`
 - 青龙命令：`python3 scripts/cdrail.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`5caed175e6b1ff5b1033fbbd59105a71dfb952c8dd79bc9b92f3d354a69e5225`
+- 建议 Cron：`3 1 * * *`
+- 发布哈希：`fb29981a8ff7158c567ee1a29082654515197567036e24904b393bc3462d4aaa`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -83,7 +83,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5caed175e6b1ff5b1033fbbd59105a71dfb952c8dd79bc9b92f3d354a69e5225`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7389d13167df31b6`。
+SHA-256 `fb29981a8ff7158c567ee1a29082654515197567036e24904b393bc3462d4aaa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7389d13167df31b6`。
 
 ## 副作用与风险
 

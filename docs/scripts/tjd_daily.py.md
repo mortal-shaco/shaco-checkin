@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/tjd_daily.py`
 - 青龙命令：`python3 scripts/tjd_daily.py`
-- 建议 Cron：`30 9 * * *`
-- 发布哈希：`95bb1d686b6e91e37c588601be134a99e9715c943ea99b63f6fda75fd0d51943`
+- 建议 Cron：`24 2 * * *`
+- 发布哈希：`6069885442fe7896dd513ec1c99510b74304d7fc6d3e315b3aa618c3b445d6d4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -136,7 +136,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `95bb1d686b6e91e37c588601be134a99e9715c943ea99b63f6fda75fd0d51943`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e096ba77bcda7172`。
+SHA-256 `6069885442fe7896dd513ec1c99510b74304d7fc6d3e315b3aa618c3b445d6d4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e096ba77bcda7172`。
 
 ## 副作用与风险
 

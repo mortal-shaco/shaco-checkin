@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/52pojie.js`
 - 青龙命令：`node scripts/52pojie.js`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`8477d0f2eec2d4cc38799acc921cd04b11d9648be363ee519d8bb51d3d15f664`
+- 建议 Cron：`8 0 * * *`
+- 发布哈希：`b4e797bd28fded29dfb5718f188c6dab0ddf3c569d947d8e32ce182b729b1fd5`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -83,7 +83,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8477d0f2eec2d4cc38799acc921cd04b11d9648be363ee519d8bb51d3d15f664`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0ee602c1c54b9470`。
+SHA-256 `b4e797bd28fded29dfb5718f188c6dab0ddf3c569d947d8e32ce182b729b1fd5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0ee602c1c54b9470`。
 
 ## 副作用与风险
 

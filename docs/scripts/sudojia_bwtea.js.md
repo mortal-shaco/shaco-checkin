@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_bwtea.js`
 - 青龙命令：`node scripts/sudojia_bwtea.js`
-- 建议 Cron：`22 11 * * *`
-- 发布哈希：`6c7a37e9d10e71acbf0f22997db91262260bfb5b30c0da79c90b0b1c0fe7baec`
+- 建议 Cron：`53 0 * * *`
+- 发布哈希：`f9cac1038e49bb571b671d5a60cd2dbac69b669226dcf3d4b58ae4cd38e7a5e5`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -61,7 +61,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6c7a37e9d10e71acbf0f22997db91262260bfb5b30c0da79c90b0b1c0fe7baec`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5d764238c373f4ce`。
+SHA-256 `f9cac1038e49bb571b671d5a60cd2dbac69b669226dcf3d4b58ae4cd38e7a5e5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5d764238c373f4ce`。
 
 ## 副作用与风险
 

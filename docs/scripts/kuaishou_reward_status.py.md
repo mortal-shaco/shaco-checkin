@@ -3,8 +3,8 @@
 - 管理状态：`上架`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/kuaishou_reward_status.py`
 - 青龙命令：`python3 scripts/kuaishou_reward_status.py`
-- 建议 Cron：`38 8,14,20 * * *`
-- 发布哈希：`b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`
+- 建议 Cron：`22 8,14,20 * * *`
+- 发布哈希：`23cafa1a94f92edaaad1f1f5a503574f1c8f2bec24cf35057a42d20365fa520f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -59,7 +59,7 @@ KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务�
 
 ## 验证与兼容性
 
-SHA-256 `b727e90b3326ec58b00281be13ad27879cb75be0af9a9c5c0a93fe3fbd8aa305`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
+SHA-256 `23cafa1a94f92edaaad1f1f5a503574f1c8f2bec24cf35057a42d20365fa520f`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
 
 ## 副作用与风险
 

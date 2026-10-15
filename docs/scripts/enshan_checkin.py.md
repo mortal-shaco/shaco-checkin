@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/enshan_checkin.py`
 - 青龙命令：`python3 scripts/enshan_checkin.py`
-- 建议 Cron：`39 12 * * *`
-- 发布哈希：`bbf4daf1880caeb8d30c22e335df244f0aec8756937d3e810ef62da534899504`
+- 建议 Cron：`59 1 * * *`
+- 发布哈希：`c60406102e692ce961e2d1aac2ce99d722a9f5ac8aa3cf6f6e668315af59756e`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -133,7 +133,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `bbf4daf1880caeb8d30c22e335df244f0aec8756937d3e810ef62da534899504`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
+SHA-256 `c60406102e692ce961e2d1aac2ce99d722a9f5ac8aa3cf6f6e668315af59756e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
 
 ## 副作用与风险
 

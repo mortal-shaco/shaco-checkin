@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sgs.py`
 - 青龙命令：`python3 scripts/sgs.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`af3d44c77a409fccb89cdf36a8282bb311c17463a559c544c114d78b253efce7`
+- 建议 Cron：`43 0 * * *`
+- 发布哈希：`01f9d3855b1adc5d52ad2f43e9183cb59012f5637e646e1c3787827127000aab`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `af3d44c77a409fccb89cdf36a8282bb311c17463a559c544c114d78b253efce7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/45e40e4a3ee37968`。
+SHA-256 `01f9d3855b1adc5d52ad2f43e9183cb59012f5637e646e1c3787827127000aab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/45e40e4a3ee37968`。
 
 ## 副作用与风险
 

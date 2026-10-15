@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/wangchao.py`
 - 青龙命令：`python3 scripts/wangchao.py`
-- 建议 Cron：`2 8 * * *`
-- 发布哈希：`487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067`
+- 建议 Cron：`11 2 * * *`
+- 发布哈希：`872601a69bcbda85ac90c6358e0f52c559a1303495215afc5388889efc40f11d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
+SHA-256 `872601a69bcbda85ac90c6358e0f52c559a1303495215afc5388889efc40f11d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/139_yunduo.py`
 - 青龙命令：`python3 scripts/139_yunduo.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`c37eff8c6b1d510213e6ec929a3f4505e7ecf43f6934c655d924fd0165024942`
+- 建议 Cron：`11 0 * * *`
+- 发布哈希：`67c9666c473832c094f0ebf0c2351a8afaedaddf462f1bf60be2e5909e3582d5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -122,7 +122,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c37eff8c6b1d510213e6ec929a3f4505e7ecf43f6934c655d924fd0165024942`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/117317c83fa5c3cc`。
+SHA-256 `67c9666c473832c094f0ebf0c2351a8afaedaddf462f1bf60be2e5909e3582d5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/117317c83fa5c3cc`。
 
 ## 副作用与风险
 

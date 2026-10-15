@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/lizhixu_ql_script_hub_youdao.py`
 - 青龙命令：`python3 scripts/lizhixu_ql_script_hub_youdao.py`
-- 建议 Cron：`01 5 * * *`
-- 发布哈希：`6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6`
+- 建议 Cron：`56 1 * * *`
+- 发布哈希：`e66282d1bb4e892b2c75e6594a98f65dbf26e664203f10a2436131b453151fa0`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -73,7 +73,7 @@ YOUDAO_COOKIE 每个非空行一个账号；逐个独立处理，任一账号失
 
 ## 验证与兼容性
 
-SHA-256 `6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd893babb907859b`。
+SHA-256 `e66282d1bb4e892b2c75e6594a98f65dbf26e664203f10a2436131b453151fa0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd893babb907859b`。
 
 ## 副作用与风险
 

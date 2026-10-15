@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_kozbs.js`
 - 青龙命令：`node scripts/sudojia_kozbs.js`
-- 建议 Cron：`18 9 * * *`
-- 发布哈希：`a9390adda3bb8938f8d40627ede49a6106dba6267805d7c285f6024e36ef6f58`
+- 建议 Cron：`28 0 * * *`
+- 发布哈希：`8affb36a4338e8da852e531f50fefc56ad93e4fc2c103a92492e4d7ce09aeb0b`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -62,7 +62,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a9390adda3bb8938f8d40627ede49a6106dba6267805d7c285f6024e36ef6f58`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/34763140840b492a`。
+SHA-256 `8affb36a4338e8da852e531f50fefc56ad93e4fc2c103a92492e4d7ce09aeb0b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/34763140840b492a`。
 
 ## 副作用与风险
 

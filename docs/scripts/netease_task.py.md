@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/netease_task.py`
 - 青龙命令：`python3 scripts/netease_task.py`
-- 建议 Cron：`30 9 * * *`
-- 发布哈希：`a94fc863e187c81a29f6c44ab88c30162bc3d1570ebbe602a70ed4824a198fbe`
+- 建议 Cron：`42 1 * * *`
+- 发布哈希：`2541bd8993bc64aff0314c04992156be8e1b3c999f7cf56bc20d53d4641f122e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -115,7 +115,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a94fc863e187c81a29f6c44ab88c30162bc3d1570ebbe602a70ed4824a198fbe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a8a311f3f5aaa2e6`。
+SHA-256 `2541bd8993bc64aff0314c04992156be8e1b3c999f7cf56bc20d53d4641f122e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a8a311f3f5aaa2e6`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/skyland.py`
 - 青龙命令：`python3 scripts/skyland.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1`
+- 建议 Cron：`6 0 * * *`
+- 发布哈希：`0ccfcdb5b0519335011c1d06a89280bab409976a56fc39ad2184e1cfd26ddfbe`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -65,7 +65,7 @@ SKYLAND_TOKEN 每个非空行一个账号，忽略空行；账号与角色独立
 
 ## 验证与兼容性
 
-SHA-256 `4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
+SHA-256 `0ccfcdb5b0519335011c1d06a89280bab409976a56fc39ad2184e1cfd26ddfbe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
 
 ## 副作用与风险
 

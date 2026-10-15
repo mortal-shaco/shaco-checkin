@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_allgirls.js`
 - 青龙命令：`node scripts/sudojia_allgirls.js`
-- 建议 Cron：`19 16 * * *`
-- 发布哈希：`c553619d6534fdf01df62c381df54bfb5557104402a27aa037bf381b075d8934`
+- 建议 Cron：`33 2 * * *`
+- 发布哈希：`08beea4f3a9d20c07315791351cebe1090ef0e972e6e05d616fbe9629778459a`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -62,7 +62,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c553619d6534fdf01df62c381df54bfb5557104402a27aa037bf381b075d8934`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e8776198aafad33e`。
+SHA-256 `08beea4f3a9d20c07315791351cebe1090ef0e972e6e05d616fbe9629778459a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e8776198aafad33e`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_paotea.js`
 - 青龙命令：`node scripts/sudojia_paotea.js`
-- 建议 Cron：`30 9 * * *`
-- 发布哈希：`9a497af082be58ef72bfa201bc722141d50a9f81c1e8722776a2b010e9f5be19`
+- 建议 Cron：`58 1 * * *`
+- 发布哈希：`6120fbbe0a817a0aba60e0df39d7001562b596a4745c0aa3fbec76ce3aaf51e3`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9a497af082be58ef72bfa201bc722141d50a9f81c1e8722776a2b010e9f5be19`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be649dd5fba997a7`。
+SHA-256 `6120fbbe0a817a0aba60e0df39d7001562b596a4745c0aa3fbec76ce3aaf51e3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be649dd5fba997a7`。
 
 ## 副作用与风险
 

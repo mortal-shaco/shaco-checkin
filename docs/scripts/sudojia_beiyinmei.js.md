@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_beiyinmei.js`
 - 青龙命令：`node scripts/sudojia_beiyinmei.js`
-- 建议 Cron：`19 11 * * *`
-- 发布哈希：`7829fb15cfeb7cd36abbc90c383ca2774ac04804b3c03f77e2957b87ed3b0195`
+- 建议 Cron：`25 2 * * *`
+- 发布哈希：`584efede452b4dd4e61001383dbb053be78b85ecfabc022ec9ebeb22250baab1`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -61,7 +61,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7829fb15cfeb7cd36abbc90c383ca2774ac04804b3c03f77e2957b87ed3b0195`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e09c8b13ee16c8db`。
+SHA-256 `584efede452b4dd4e61001383dbb053be78b85ecfabc022ec9ebeb22250baab1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e09c8b13ee16c8db`。
 
 ## 副作用与风险
 

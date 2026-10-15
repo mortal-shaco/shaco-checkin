@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/chevrolet.js`
 - 青龙命令：`node scripts/chevrolet.js`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`fc9137b46f1cb49c1d8f9523c145651d9453fbf8beac391fcc85039a950d7cd2`
+- 建议 Cron：`55 0 * * *`
+- 发布哈希：`d15a418d2fd69ba0dfe86ce52bcad319ce8cef2852577d988b3caa6f24e6be93`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fc9137b46f1cb49c1d8f9523c145651d9453fbf8beac391fcc85039a950d7cd2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e7302e54a0be513`。
+SHA-256 `d15a418d2fd69ba0dfe86ce52bcad319ce8cef2852577d988b3caa6f24e6be93`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e7302e54a0be513`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_xinxi.js`
 - 青龙命令：`node scripts/sudojia_xinxi.js`
-- 建议 Cron：`43 12 * * *`
-- 发布哈希：`fcdb27ec00935e010ddc68dcaae974b36d3d5effd2de4cf408cd1971f28d6a3d`
+- 建议 Cron：`20 1 * * *`
+- 发布哈希：`192867d81fb82ebba46ab834091919c2386392c36d4e9ba490f21b4dee1a9569`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -108,7 +108,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fcdb27ec00935e010ddc68dcaae974b36d3d5effd2de4cf408cd1971f28d6a3d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/83f21cfa63eab18f`。
+SHA-256 `192867d81fb82ebba46ab834091919c2386392c36d4e9ba490f21b4dee1a9569`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/83f21cfa63eab18f`。
 
 ## 副作用与风险
 

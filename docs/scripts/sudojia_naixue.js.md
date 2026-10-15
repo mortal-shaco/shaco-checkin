@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_naixue.js`
 - 青龙命令：`node scripts/sudojia_naixue.js`
-- 建议 Cron：`36 9 * * *`
-- 发布哈希：`754c1557511faa7d5ae360b58a2f7e079ff87e68a92fea15e89e5458bfa43756`
+- 建议 Cron：`32 1 * * *`
+- 发布哈希：`bf86b16e1742a635d847adcdef1a04d9e77e3d7d3f189cfae3cbcfb03db9250b`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -61,7 +61,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `754c1557511faa7d5ae360b58a2f7e079ff87e68a92fea15e89e5458bfa43756`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9485042a5b621baf`。
+SHA-256 `bf86b16e1742a635d847adcdef1a04d9e77e3d7d3f189cfae3cbcfb03db9250b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9485042a5b621baf`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/hsay.py`
 - 青龙命令：`python3 scripts/hsay.py`
-- 建议 Cron：`0 9,18 * * *`
-- 发布哈希：`334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`
+- 建议 Cron：`21 9,18 * * *`
+- 发布哈希：`439e6a26e51b5463c6d28ff3df7fee23cec6699004b23ba0b35dcc5de5a0de61`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `334abc1e83a833188dedc6debb51a5f46c2bf1c7ffff2b2a0c57aeffb60954f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
+SHA-256 `439e6a26e51b5463c6d28ff3df7fee23cec6699004b23ba0b35dcc5de5a0de61`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
 
 ## 副作用与风险
 

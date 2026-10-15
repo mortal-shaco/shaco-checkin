@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_meizu.py`
 - 青龙命令：`python3 scripts/ck_meizu.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`b4aacb9c39582bc2b67c68e5ee5ede9d327a1df08b6b9d14ef23ef1658bb4f88`
+- 建议 Cron：`30 1 * * *`
+- 发布哈希：`3207b0d8d8a37a97e48db91b81fc744a7a28780f4d0d7b36fba6b331d8a45cef`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@ MEIZU_COOKIE 每个非空行一个账号，逐个独立执行；同行完整 Coo
 
 ## 验证与兼容性
 
-SHA-256 `b4aacb9c39582bc2b67c68e5ee5ede9d327a1df08b6b9d14ef23ef1658bb4f88`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/92c9eab51e75cca3`。
+SHA-256 `3207b0d8d8a37a97e48db91b81fc744a7a28780f4d0d7b36fba6b331d8a45cef`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/92c9eab51e75cca3`。
 
 ## 副作用与风险
 

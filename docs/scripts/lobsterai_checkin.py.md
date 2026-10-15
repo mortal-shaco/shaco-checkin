@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/lobsterai_checkin.py`
 - 青龙命令：`python3 scripts/lobsterai_checkin.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`30863a779860e257ebe6c38bb2b222f97448e0748a912b1c8cea38dc33f4dc18`
+- 建议 Cron：`27 0 * * *`
+- 发布哈希：`9f9e673a05a1c5fa0f6e06d568761f84c5b1d04b1bf313c28b9235fa32892a12`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `30863a779860e257ebe6c38bb2b222f97448e0748a912b1c8cea38dc33f4dc18`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3328423575cf7143`。
+SHA-256 `9f9e673a05a1c5fa0f6e06d568761f84c5b1d04b1bf313c28b9235fa32892a12`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3328423575cf7143`。
 
 ## 副作用与风险
 

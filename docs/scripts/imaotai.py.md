@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/imaotai.py`
 - 青龙命令：`python3 scripts/imaotai.py`
-- 建议 Cron：`5 9 * * *`
-- 发布哈希：`9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66`
+- 建议 Cron：`38 2 * * *`
+- 发布哈希：`3328ca25203a536cf5156b25df7b9ca63dba28ca1748fb25957a1056ad54360d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9c2f6927060e1dfa9b08784217483bfe8e4979e81763380ed03ad98f3fa8bd66`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
+SHA-256 `3328ca25203a536cf5156b25df7b9ca63dba28ca1748fb25957a1056ad54360d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
 
 ## 副作用与风险
 

@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/quark_signin.py`
 - 青龙命令：`python3 scripts/quark_signin.py`
-- 建议 Cron：`13 18 * * *`
-- 发布哈希：`500262df894e109fbe27a2dfafe56d9c395e01d816d6644bc6ff10c46b89d530`
+- 建议 Cron：`15 0 * * *`
+- 发布哈希：`6ceaa556fd1a1ebaac0832bed906f60c259d321c7e0908fb89ee86f829a7496b`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -80,7 +80,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `500262df894e109fbe27a2dfafe56d9c395e01d816d6644bc6ff10c46b89d530`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
+SHA-256 `6ceaa556fd1a1ebaac0832bed906f60c259d321c7e0908fb89ee86f829a7496b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
 
 ## 副作用与风险
 

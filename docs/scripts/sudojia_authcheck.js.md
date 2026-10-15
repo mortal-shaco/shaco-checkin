@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_authcheck.js`
 - 青龙命令：`node scripts/sudojia_authcheck.js`
-- 建议 Cron：`10 12,21 * * *`
-- 发布哈希：`cb0ac42844920cb1be7a54b04e2781ad0f330cda89176379e2f8353a87119a0c`
+- 建议 Cron：`32 12,21 * * *`
+- 发布哈希：`7c1aae766db561daee677effa161289ef22190c1289043e90f8792266cddab93`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -322,7 +322,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `cb0ac42844920cb1be7a54b04e2781ad0f330cda89176379e2f8353a87119a0c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/505cfecf6964c372`。
+SHA-256 `7c1aae766db561daee677effa161289ef22190c1289043e90f8792266cddab93`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/505cfecf6964c372`。
 
 ## 副作用与风险
 

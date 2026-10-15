@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_xiaomi_community.js`
 - 青龙命令：`node scripts/sudojia_xiaomi_community.js`
-- 建议 Cron：`48 9 * * *`
-- 发布哈希：`2426f49711019ec8e7fe8dc664362df99aa478c1828bd5d5f48c331dbb2a88dd`
+- 建议 Cron：`25 1 * * *`
+- 发布哈希：`97b751c799d22e3c0e26caed40bba5e4f5140a77eb0f0d7363c72f47aab217df`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2426f49711019ec8e7fe8dc664362df99aa478c1828bd5d5f48c331dbb2a88dd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b06f8c5b53252cf`。
+SHA-256 `97b751c799d22e3c0e26caed40bba5e4f5140a77eb0f0d7363c72f47aab217df`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b06f8c5b53252cf`。
 
 ## 副作用与风险
 

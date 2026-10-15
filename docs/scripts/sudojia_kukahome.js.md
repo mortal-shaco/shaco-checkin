@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_kukahome.js`
 - 青龙命令：`node scripts/sudojia_kukahome.js`
-- 建议 Cron：`5 10 * * *`
-- 发布哈希：`e7081807d92d65a4516d0d1c2c6359451127abbed1f4fffbba0f5e1d645075da`
+- 建议 Cron：`9 2 * * *`
+- 发布哈希：`30f908db58595d06f2bc31eace09e2335e143ec0b040f6b6963c769eb29afca3`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e7081807d92d65a4516d0d1c2c6359451127abbed1f4fffbba0f5e1d645075da`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cea8801e001e143d`。
+SHA-256 `30f908db58595d06f2bc31eace09e2335e143ec0b040f6b6963c769eb29afca3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cea8801e001e143d`。
 
 ## 副作用与风险
 

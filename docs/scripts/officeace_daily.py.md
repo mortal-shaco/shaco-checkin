@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/officeace_daily.py`
 - 青龙命令：`python3 scripts/officeace_daily.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`24733f11f9b386cbd668978df42e4c7a7140f8ef4480651d0aa73abe3d2ebb22`
+- 建议 Cron：`57 0 * * *`
+- 发布哈希：`e2454a4f1648669bb481a7f04afb73550e42beabbebc3f274c70bb9aebbfe69c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -134,7 +134,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `24733f11f9b386cbd668978df42e4c7a7140f8ef4480651d0aa73abe3d2ebb22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/61204ec3f68839fd`。
+SHA-256 `e2454a4f1648669bb481a7f04afb73550e42beabbebc3f274c70bb9aebbfe69c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/61204ec3f68839fd`。
 
 ## 副作用与风险
 

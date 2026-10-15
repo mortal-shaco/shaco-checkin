@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/zodgame_test.py`
 - 青龙命令：`python3 scripts/zodgame_test.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`1e51c1301d3f6930103407ee55631084359d11244ffb4b40e9bc149eb0fb3ef9`
+- 建议 Cron：`35 2 * * *`
+- 发布哈希：`1e857142bc69365af62731bda0edb67f0b56d367ebf134f1e20cdd283e46f8b4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -80,7 +80,7 @@ ZODGAME_COOKIE 每个非空行一个账号，Cookie 内部保留分号和后续�
 
 ## 验证与兼容性
 
-SHA-256 `1e51c1301d3f6930103407ee55631084359d11244ffb4b40e9bc149eb0fb3ef9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4bfbfde0f17e39`。
+SHA-256 `1e857142bc69365af62731bda0edb67f0b56d367ebf134f1e20cdd283e46f8b4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4bfbfde0f17e39`。
 
 ## 副作用与风险
 

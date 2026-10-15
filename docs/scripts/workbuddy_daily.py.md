@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/workbuddy_daily.py`
 - 青龙命令：`python3 scripts/workbuddy_daily.py`
-- 建议 Cron：`0 7,12 * * *`
-- 发布哈希：`af37790e41e116c92ebe1ecb8a001b4fc030d65a9785e161dc1bc926e23be14a`
+- 建议 Cron：`15 7,12 * * *`
+- 发布哈希：`c19edebe6a0dadfe35a56781102c70a0a42ddc1b319bd884c3dee395de043f52`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -156,7 +156,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `af37790e41e116c92ebe1ecb8a001b4fc030d65a9785e161dc1bc926e23be14a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
+SHA-256 `c19edebe6a0dadfe35a56781102c70a0a42ddc1b319bd884c3dee395de043f52`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
 
 ## 副作用与风险
 

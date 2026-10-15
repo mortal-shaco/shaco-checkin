@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/get_yys_imagelinks.py`
 - 青龙命令：`python3 scripts/get_yys_imagelinks.py`
-- 建议 Cron：`0 9 * * 0`
-- 发布哈希：`ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3`
+- 建议 Cron：`28 9 * * 0`
+- 发布哈希：`3641ede9e739214d5e64d583384f31f484c4a49799127935a1eb0ca1ffcc7acc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -101,7 +101,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ee7273bd292415bb0bad2603012b77b85fb0287709a5ca24d7f4e426408e3cf3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21c2272d2f618e0f`。
+SHA-256 `3641ede9e739214d5e64d583384f31f484c4a49799127935a1eb0ca1ffcc7acc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21c2272d2f618e0f`。
 
 ## 副作用与风险
 

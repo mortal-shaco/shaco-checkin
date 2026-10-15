@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/wentiweilaihui.py`
 - 青龙命令：`python3 scripts/wentiweilaihui.py`
-- 建议 Cron：`1 1 1 1 1`
-- 发布哈希：`f91a3a6a1873b350c695cc5466ff224a18d90d01e59e013c5a319dfc55facc24`
+- 建议 Cron：`31 1 1 1 1`
+- 发布哈希：`8b91dfeaf811a69d736a0c006bfa94c02a8801b8198dfa624ecebe775c9fa129`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f91a3a6a1873b350c695cc5466ff224a18d90d01e59e013c5a319dfc55facc24`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afa2f50b7baa69db`。
+SHA-256 `8b91dfeaf811a69d736a0c006bfa94c02a8801b8198dfa624ecebe775c9fa129`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afa2f50b7baa69db`。
 
 ## 副作用与风险
 

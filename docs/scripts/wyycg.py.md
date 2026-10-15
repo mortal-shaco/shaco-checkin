@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/wyycg.py`
 - 青龙命令：`python3 scripts/wyycg.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`1da9e1203d9de2f68ac046c6271f1a425858ea39e54914d0bdb3e143b5df9975`
+- 建议 Cron：`38 1 * * *`
+- 发布哈希：`cd97df585da030ba7f9021167bbf4a4101dcb2b66c087f3fe9924a2b8542892f`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -105,7 +105,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1da9e1203d9de2f68ac046c6271f1a425858ea39e54914d0bdb3e143b5df9975`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a414f4add19cb6a5`。
+SHA-256 `cd97df585da030ba7f9021167bbf4a4101dcb2b66c087f3fe9924a2b8542892f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a414f4add19cb6a5`。
 
 ## 副作用与风险
 

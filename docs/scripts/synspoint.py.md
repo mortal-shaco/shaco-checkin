@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/synspoint.py`
 - 青龙命令：`python3 scripts/synspoint.py`
-- 建议 Cron：`8 8,12 * * *`
-- 发布哈希：`f343af6c80ac9ca40e51f0fb72a81d41acb2af51233623d6fa2f1fca4e636f7f`
+- 建议 Cron：`16 8,12 * * *`
+- 发布哈希：`93b86e619a789b556c1e077eaf01b7acb58e61bad6fde1e88f4348bfaec9f053`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@ synshd 每个非空行一个账号，移除完整 Bearer 前缀后保留整行�
 
 ## 验证与兼容性
 
-SHA-256 `f343af6c80ac9ca40e51f0fb72a81d41acb2af51233623d6fa2f1fca4e636f7f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8060442233509c9a`。
+SHA-256 `93b86e619a789b556c1e077eaf01b7acb58e61bad6fde1e88f4348bfaec9f053`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8060442233509c9a`。
 
 ## 副作用与风险
 

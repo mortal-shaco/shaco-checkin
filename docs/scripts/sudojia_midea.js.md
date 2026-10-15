@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_midea.js`
 - 青龙命令：`node scripts/sudojia_midea.js`
-- 建议 Cron：`33 11 * * *`
-- 发布哈希：`c474e087bd04b25b5b67faa27c649aec711da38b906cf7f8a969210e2c9061b4`
+- 建议 Cron：`48 0 * * *`
+- 发布哈希：`6d333ca04bfc32e0d2274f5aeeb5145714181a5957457914ad190bc7c41d2242`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -62,7 +62,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c474e087bd04b25b5b67faa27c649aec711da38b906cf7f8a969210e2c9061b4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4d2bfc3b3a861962`。
+SHA-256 `6d333ca04bfc32e0d2274f5aeeb5145714181a5957457914ad190bc7c41d2242`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4d2bfc3b3a861962`。
 
 ## 副作用与风险
 

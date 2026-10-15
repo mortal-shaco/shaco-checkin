@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_bananavideo.js`
 - 青龙命令：`node scripts/sudojia_bananavideo.js`
-- 建议 Cron：`10 1 * * *`
-- 发布哈希：`0406e66e2c06dd0ff5f9b74c79cd2bba0f41b104b417a0c40f08830bf023dbb0`
+- 建议 Cron：`19 0 * * *`
+- 发布哈希：`b2062c6e191736d8e871ae52d4efc7e11d1977d111174cfc5e9d61f791ca9e92`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -75,7 +75,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `0406e66e2c06dd0ff5f9b74c79cd2bba0f41b104b417a0c40f08830bf023dbb0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/218007282cf9754f`。
+SHA-256 `b2062c6e191736d8e871ae52d4efc7e11d1977d111174cfc5e9d61f791ca9e92`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/218007282cf9754f`。
 
 ## 副作用与风险
 

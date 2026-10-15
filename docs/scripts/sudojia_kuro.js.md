@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_kuro.js`
 - 青龙命令：`node scripts/sudojia_kuro.js`
-- 建议 Cron：`22 8 * * *`
-- 发布哈希：`be7c42c79d74c6f7586588a793084df541257e17fb784f8be817afd5bd95765d`
+- 建议 Cron：`4 2 * * *`
+- 发布哈希：`823c533df94e0a96e64b021b92f32d48fff5f6f2bcb4005a6a52adcb267741e6`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -65,7 +65,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `be7c42c79d74c6f7586588a793084df541257e17fb784f8be817afd5bd95765d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c4e95d44d1608371`。
+SHA-256 `823c533df94e0a96e64b021b92f32d48fff5f6f2bcb4005a6a52adcb267741e6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c4e95d44d1608371`。
 
 ## 副作用与风险
 

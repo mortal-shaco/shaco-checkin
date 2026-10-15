@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/acfun.py`
 - 青龙命令：`python3 scripts/acfun.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`006ac42bec4fba6c9e41599da022e9b425b4ca5b6617bcd66c0403ab8917ed65`
+- 建议 Cron：`9 0 * * *`
+- 发布哈希：`490a15e6deb49fb75e600e7859a848bf7051b75425e827b8fcbaef9dbe81b6d0`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,7 +78,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `006ac42bec4fba6c9e41599da022e9b425b4ca5b6617bcd66c0403ab8917ed65`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
+SHA-256 `490a15e6deb49fb75e600e7859a848bf7051b75425e827b8fcbaef9dbe81b6d0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
 
 ## 副作用与风险
 

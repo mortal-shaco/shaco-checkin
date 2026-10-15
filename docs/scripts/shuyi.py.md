@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/shuyi.py`
 - 青龙命令：`python3 scripts/shuyi.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`947ec405caf0bacdc1f2b823552425d882c3510d733c99c8a1801bf7a739870c`
+- 建议 Cron：`51 0 * * *`
+- 发布哈希：`f3fc93ef614ba605d61be54e68a996d2225471c71b3e169a435dfb781adbdf29`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -72,7 +72,7 @@ sysxc_auth 每个非空行一个账号，逐个独立处理；任一账号失败
 
 ## 验证与兼容性
 
-SHA-256 `947ec405caf0bacdc1f2b823552425d882c3510d733c99c8a1801bf7a739870c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/551a306ac75780f1`。
+SHA-256 `f3fc93ef614ba605d61be54e68a996d2225471c71b3e169a435dfb781adbdf29`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/551a306ac75780f1`。
 
 ## 副作用与风险
 

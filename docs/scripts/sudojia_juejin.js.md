@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_juejin.js`
 - 青龙命令：`node scripts/sudojia_juejin.js`
-- 建议 Cron：`5 10 * * *`
-- 发布哈希：`6d8be6058694325cf547c831c4d33f9ce732a7d681ff94b96f42d26056f3406f`
+- 建议 Cron：`43 2 * * *`
+- 发布哈希：`d329961780c19c38e674fad87bc53f38f6783af9082e67d703866ec73a7ece50`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -272,7 +272,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6d8be6058694325cf547c831c4d33f9ce732a7d681ff94b96f42d26056f3406f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f86741e6210934e9`。
+SHA-256 `d329961780c19c38e674fad87bc53f38f6783af9082e67d703866ec73a7ece50`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f86741e6210934e9`。
 
 ## 副作用与风险
 

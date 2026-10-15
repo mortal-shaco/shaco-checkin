@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/hlyl.py`
 - 青龙命令：`python3 scripts/hlyl.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`
+- 建议 Cron：`32 0 * * *`
+- 发布哈希：`c6d5a07343c707b9975895a73c9ddcf275cfbe194205285c91236d6b723b7fd4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,7 +78,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ad472c7faec4d4ebd6c081c9abc6e3f6274a701c7a2f7284c0f6e7292878097d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
+SHA-256 `c6d5a07343c707b9975895a73c9ddcf275cfbe194205285c91236d6b723b7fd4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
 
 ## 副作用与风险
 

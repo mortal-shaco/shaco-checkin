@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/hykb_gamesign.js`
 - 青龙命令：`node scripts/hykb_gamesign.js`
-- 建议 Cron：`15 8 * * *`
-- 发布哈希：`11f5887f78f37ed569c9d8c0e75944c30a98d62dca54cb30bddab8644d2e75ae`
+- 建议 Cron：`50 1 * * *`
+- 发布哈希：`0702337f53b61ffe457afd150a3508926ae4a64b8a834001ddf4c90b2bebe374`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@ HYKB_SCOOKIE 每个非空行一个账号，逐账号独立执行；不按 &、@ 
 
 ## 验证与兼容性
 
-SHA-256 `11f5887f78f37ed569c9d8c0e75944c30a98d62dca54cb30bddab8644d2e75ae`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b7f05744373113a8`。
+SHA-256 `0702337f53b61ffe457afd150a3508926ae4a64b8a834001ddf4c90b2bebe374`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b7f05744373113a8`。
 
 ## 副作用与风险
 

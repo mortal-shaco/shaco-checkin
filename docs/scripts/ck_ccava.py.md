@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_ccava.py`
 - 青龙命令：`python3 scripts/ck_ccava.py`
-- 建议 Cron：`55 18 * * *`
-- 发布哈希：`de4c8a9cb4f76800d04f9aca4d80b49599231295f1a1f0dff1e922c5eb4bd360`
+- 建议 Cron：`31 1 * * *`
+- 发布哈希：`f4a6df8705e0b8d1e2503d0d396e35e5f2afb2a858a237d40ddc3102c8e4fc00`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -63,7 +63,7 @@ CCAVA_COOKIE 的每个非空行表示一个账号，逐行独立执行；任意�
 
 ## 验证与兼容性
 
-SHA-256 `de4c8a9cb4f76800d04f9aca4d80b49599231295f1a1f0dff1e922c5eb4bd360`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/93e0b2068d55d68f`。
+SHA-256 `f4a6df8705e0b8d1e2503d0d396e35e5f2afb2a858a237d40ddc3102c8e4fc00`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/93e0b2068d55d68f`。
 
 ## 副作用与风险
 

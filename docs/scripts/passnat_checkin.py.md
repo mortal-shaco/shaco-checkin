@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/passnat_checkin.py`
 - 青龙命令：`python3 scripts/passnat_checkin.py`
-- 建议 Cron：`18 0 * * *`
-- 发布哈希：`378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`
+- 建议 Cron：`13 1 * * *`
+- 发布哈希：`a1d40a64df552dc2dc85c8017b5b0d0584c83877806767b0a93b0fa4166231f5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,7 +78,7 @@ PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账
 
 ## 验证与兼容性
 
-SHA-256 `378ef21771663547b6f58d6d66d4639e79047fee044815af7c84d137b4bf2aaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
+SHA-256 `a1d40a64df552dc2dc85c8017b5b0d0584c83877806767b0a93b0fa4166231f5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
 
 ## 副作用与风险
 

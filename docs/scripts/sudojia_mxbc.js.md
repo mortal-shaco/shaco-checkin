@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_mxbc.js`
 - 青龙命令：`node scripts/sudojia_mxbc.js`
-- 建议 Cron：`28 10 * * *`
-- 发布哈希：`9c2a5be7246f6fbf3ed44f52e358102e649f410f5b4219df8b61075b9e0e7612`
+- 建议 Cron：`22 1 * * *`
+- 发布哈希：`6a47d1cec2205fe5cab699b530306589ff1fdb44d10f993c569ddfc49e47d29f`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -71,7 +71,7 @@ MXBC_TOKEN 每个非空行一个账号，逐个独立验证、签到和查询；
 
 ## 验证与兼容性
 
-SHA-256 `9c2a5be7246f6fbf3ed44f52e358102e649f410f5b4219df8b61075b9e0e7612`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8898c6203ce46def`。
+SHA-256 `6a47d1cec2205fe5cab699b530306589ff1fdb44d10f993c569ddfc49e47d29f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8898c6203ce46def`。
 
 ## 副作用与风险
 

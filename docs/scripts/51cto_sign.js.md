@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/51cto_sign.js`
 - 青龙命令：`node scripts/51cto_sign.js`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`0f62a8d10db8c2b4dd354e467d57274ec1ed97c9734cd4ac1965a96be9e43410`
+- 建议 Cron：`17 2 * * *`
+- 发布哈希：`aa9a3cbefc3d430220969034c3f61c9bf36e002a1bd2c10e3151e78db496009f`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `0f62a8d10db8c2b4dd354e467d57274ec1ed97c9734cd4ac1965a96be9e43410`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d81ca9fcd4ad24e1`。
+SHA-256 `aa9a3cbefc3d430220969034c3f61c9bf36e002a1bd2c10e3151e78db496009f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d81ca9fcd4ad24e1`。
 
 ## 副作用与风险
 

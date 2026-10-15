@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_xhn.js`
 - 青龙命令：`node scripts/sudojia_xhn.js`
-- 建议 Cron：`51 4 * * *`
-- 发布哈希：`b0131f2d77c0d1f5ae6271d2a7604798ee3313db307e23390343d2d5e316abbd`
+- 建议 Cron：`51 1 * * *`
+- 发布哈希：`d97364c4f28d46dd6f5c58007940d6b0616007e0fdd6ff0f2bfee6f930b329ae`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -64,7 +64,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b0131f2d77c0d1f5ae6271d2a7604798ee3313db307e23390343d2d5e316abbd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b86681a8e89e05c0`。
+SHA-256 `d97364c4f28d46dd6f5c58007940d6b0616007e0fdd6ff0f2bfee6f930b329ae`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b86681a8e89e05c0`。
 
 ## 副作用与风险
 

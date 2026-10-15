@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_duokan.py`
 - 青龙命令：`python3 scripts/ck_duokan.py`
-- 建议 Cron：`30 20 * * *`
-- 发布哈希：`761187366b78083a2345c626db63d1ed6104b63f726bfd37fd2bc99f4348861a`
+- 建议 Cron：`5 2 * * *`
+- 发布哈希：`bbe67e041d49f4c75dc3d606a64f088671bda7a5d677f737c9d1a014b6efbeea`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -99,7 +99,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `761187366b78083a2345c626db63d1ed6104b63f726bfd37fd2bc99f4348861a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c722e904dffeaf49`。
+SHA-256 `bbe67e041d49f4c75dc3d606a64f088671bda7a5d677f737c9d1a014b6efbeea`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c722e904dffeaf49`。
 
 ## 副作用与风险
 

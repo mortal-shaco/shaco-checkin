@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_aqc.js`
 - 青龙命令：`node scripts/ck_aqc.js`
-- 建议 Cron：`37 0-23/8 * * *`
-- 发布哈希：`50092e54a944fd3c08f134bbed637e9c0a1d923bc416018811ae437ba5485fc8`
+- 建议 Cron：`9 0-23/8 * * *`
+- 发布哈希：`59921d0e9e81411bee36046a1519842682016e2fa97832798f6b663bc20a1fe4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -103,7 +103,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `50092e54a944fd3c08f134bbed637e9c0a1d923bc416018811ae437ba5485fc8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2f4c8afd9b69b090`。
+SHA-256 `59921d0e9e81411bee36046a1519842682016e2fa97832798f6b663bc20a1fe4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2f4c8afd9b69b090`。
 
 ## 副作用与风险
 

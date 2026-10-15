@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/zcode_cn_daily.py`
 - 青龙命令：`python3 scripts/zcode_cn_daily.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`7085cd0c4eeef4e5c9bc6f38f03e752e4e253b341c6fdb25334537e6ceceb8e5`
+- 建议 Cron：`36 1 * * *`
+- 发布哈希：`f479a1e091bdc70580aafca2bd8921940880c840439ef0a263d659a88bb57390`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -163,7 +163,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7085cd0c4eeef4e5c9bc6f38f03e752e4e253b341c6fdb25334537e6ceceb8e5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a0a7b04503bfb900`。
+SHA-256 `f479a1e091bdc70580aafca2bd8921940880c840439ef0a263d659a88bb57390`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a0a7b04503bfb900`。
 
 ## 副作用与风险
 

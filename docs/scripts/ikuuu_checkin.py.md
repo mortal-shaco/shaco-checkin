@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ikuuu_checkin.py`
 - 青龙命令：`python3 scripts/ikuuu_checkin.py`
-- 建议 Cron：`0 21 * * *`
-- 发布哈希：`44c91448c6d2d8ef71df14ee1a232e58f45bd7b232ff8870983ff6379e378694`
+- 建议 Cron：`15 1 * * *`
+- 发布哈希：`1d7b8177e210f42f0bd15e8afa0707ed9e61f69770f11b7cae6011401d8c5e40`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -117,7 +117,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `44c91448c6d2d8ef71df14ee1a232e58f45bd7b232ff8870983ff6379e378694`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
+SHA-256 `1d7b8177e210f42f0bd15e8afa0707ed9e61f69770f11b7cae6011401d8c5e40`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 
 ## 副作用与风险
 

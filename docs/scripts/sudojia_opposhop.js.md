@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_opposhop.js`
 - 青龙命令：`node scripts/sudojia_opposhop.js`
-- 建议 Cron：`25 12 * * *`
-- 发布哈希：`a26cac12229f3c18c37e5557b0ea130b8025ea86c967b5dd8460c91b89cc663d`
+- 建议 Cron：`12 0 * * *`
+- 发布哈希：`e9d59a758346682c273928baaa7184e0cd9ebc2997029e7772f847a6f0cbc953`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -78,7 +78,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a26cac12229f3c18c37e5557b0ea130b8025ea86c967b5dd8460c91b89cc663d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/11bf36237211e761`。
+SHA-256 `e9d59a758346682c273928baaa7184e0cd9ebc2997029e7772f847a6f0cbc953`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/11bf36237211e761`。
 
 ## 副作用与风险
 

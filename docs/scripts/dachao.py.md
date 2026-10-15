@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/dachao.py`
 - 青龙命令：`python3 scripts/dachao.py`
-- 建议 Cron：`30 10,14,18 * * *`
-- 发布哈希：`5745d76090d1c471883f40df8aead8ad74fd0f1b7fe8db24c7b995bac3dc25a9`
+- 建议 Cron：`22 10,14,18 * * *`
+- 发布哈希：`c32ca074fd97eac903444e3ffb4c4e4e9fe6d0f446c68b686ab276fe9c07a302`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -93,7 +93,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5745d76090d1c471883f40df8aead8ad74fd0f1b7fe8db24c7b995bac3dc25a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7b77205efaf0158a`。
+SHA-256 `c32ca074fd97eac903444e3ffb4c4e4e9fe6d0f446c68b686ab276fe9c07a302`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7b77205efaf0158a`。
 
 ## 副作用与风险
 

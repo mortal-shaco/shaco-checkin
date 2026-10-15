@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ddnsto.py`
 - 青龙命令：`python3 scripts/ddnsto.py`
-- 建议 Cron：`30 9 * * *`
-- 发布哈希：`a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087`
+- 建议 Cron：`32 2 * * *`
+- 发布哈希：`fbf3f1bf89b16c264c8398ac07cae2af0edad6abe180e4362f7ce341cca628c6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,7 +78,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a36378f008a43fa3824429fe8650bb693f256aba081914b5254cc51fcfe58087`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
+SHA-256 `fbf3f1bf89b16c264c8398ac07cae2af0edad6abe180e4362f7ce341cca628c6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
 
 ## 副作用与风险
 

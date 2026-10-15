@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/get_yys_cgvideo.py`
 - 青龙命令：`python3 scripts/get_yys_cgvideo.py`
-- 建议 Cron：`0 9 * * 0`
-- 发布哈希：`5acaf38a721b681a7ea5a7ac0240d4116214d54ea3dde624435202a040af09cd`
+- 建议 Cron：`11 9 * * 0`
+- 发布哈希：`cf5e05d8e7de368fa5af64b55d413f69e575fe4e67cb255a33731879911f48d6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5acaf38a721b681a7ea5a7ac0240d4116214d54ea3dde624435202a040af09cd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8edbbefea99ad1fb`。
+SHA-256 `cf5e05d8e7de368fa5af64b55d413f69e575fe4e67cb255a33731879911f48d6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8edbbefea99ad1fb`。
 
 ## 副作用与风险
 

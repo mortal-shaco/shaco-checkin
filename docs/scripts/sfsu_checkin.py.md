@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sfsu_checkin.py`
 - 青龙命令：`python3 scripts/sfsu_checkin.py`
-- 建议 Cron：`9 15 * * *`
-- 发布哈希：`d48a9999e72bbea15c0de43dc537ab4f37f63c5a6fb38708098482f92761affb`
+- 建议 Cron：`17 0 * * *`
+- 发布哈希：`6a5030b375fab13402945041c10f0496fa36d3250ced56b4e1ae03dd1185a510`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@ sfsyUrl 中每个非空行是一个独立账号的完整 URL；逐账号隔离�
 
 ## 验证与兼容性
 
-SHA-256 `d48a9999e72bbea15c0de43dc537ab4f37f63c5a6fb38708098482f92761affb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/19b2285cc7b8a82e`。
+SHA-256 `6a5030b375fab13402945041c10f0496fa36d3250ced56b4e1ae03dd1185a510`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/19b2285cc7b8a82e`。
 
 ## 副作用与风险
 

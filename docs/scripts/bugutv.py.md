@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/bugutv.py`
 - 青龙命令：`python3 scripts/bugutv.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`655c9b0fad89e4df49112865cea7fe78d7fe8f4f5a4a12649ea5a8a532cb1a97`
+- 建议 Cron：`12 1 * * *`
+- 发布哈希：`9746631e907d1b977bcce3d1c0e5a70dfb38241580d1cf984ac4129cc487aa96`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -85,7 +85,7 @@ BUGUTV_ACCOUNTS每个非空行一个用户名|密码，各账号使用独立Cook
 
 ## 验证与兼容性
 
-SHA-256 `655c9b0fad89e4df49112865cea7fe78d7fe8f4f5a4a12649ea5a8a532cb1a97`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ca80eead6ecc78a`。
+SHA-256 `9746631e907d1b977bcce3d1c0e5a70dfb38241580d1cf984ac4129cc487aa96`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ca80eead6ecc78a`。
 
 ## 副作用与风险
 

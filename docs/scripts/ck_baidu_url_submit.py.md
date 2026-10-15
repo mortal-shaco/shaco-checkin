@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_baidu_url_submit.py`
 - 青龙命令：`python3 scripts/ck_baidu_url_submit.py`
-- 建议 Cron：`32 7 * * *`
-- 发布哈希：`ab3ff2232123e9a8d0a05f1a738b6b3c632ff7797d6fb51ecc32f0565ed12423`
+- 建议 Cron：`8 2 * * *`
+- 发布哈希：`c550d2b3a2b9d92723480fd8d1a860772ae875aa0d86ba08146184f4201881c1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -68,7 +68,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ab3ff2232123e9a8d0a05f1a738b6b3c632ff7797d6fb51ecc32f0565ed12423`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cbcac1d0442bb8ef`。
+SHA-256 `c550d2b3a2b9d92723480fd8d1a860772ae875aa0d86ba08146184f4201881c1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cbcac1d0442bb8ef`。
 
 ## 副作用与风险
 

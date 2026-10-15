@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/jyj.py`
 - 青龙命令：`python3 scripts/jyj.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042`
+- 建议 Cron：`12 2 * * *`
+- 发布哈希：`ba48c02838d83ad253fcd77d5285158d9ce54c1a5a0f765569e5b16eab69d2ec`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -115,7 +115,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d484be6cd2a617db`。
+SHA-256 `ba48c02838d83ad253fcd77d5285158d9ce54c1a5a0f765569e5b16eab69d2ec`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d484be6cd2a617db`。
 
 ## 副作用与风险
 

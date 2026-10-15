@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/skland_daily.py`
 - 青龙命令：`python3 scripts/skland_daily.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`23bae97efad62a8e36e4ed2b0d82fe9a2d97450fdba6f089cd23c2d9561580b3`
+- 建议 Cron：`33 1 * * *`
+- 发布哈希：`3b8ad3f091f30610bbab558ac233cd02e17900d4a42a894a6df72e9c6aa18bfc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -160,7 +160,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `23bae97efad62a8e36e4ed2b0d82fe9a2d97450fdba6f089cd23c2d9561580b3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
+SHA-256 `3b8ad3f091f30610bbab558ac233cd02e17900d4a42a894a6df72e9c6aa18bfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
 
 ## 副作用与风险
 

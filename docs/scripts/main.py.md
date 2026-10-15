@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/main.py`
 - 青龙命令：`python3 scripts/main.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`
+- 建议 Cron：`0 2 * * *`
+- 发布哈希：`432e9af99163000fe6c8a371cdbf3967711a558d4e0146e1c56678136c758cc6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ea3bb416264f093933b3bf07dbc40a5dc02eeb4e8fc02d1626f2db0e4ac1ae17`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
+SHA-256 `432e9af99163000fe6c8a371cdbf3967711a558d4e0146e1c56678136c758cc6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 
 ## 副作用与风险
 

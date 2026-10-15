@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_tilta.js`
 - 青龙命令：`node scripts/sudojia_tilta.js`
-- 建议 Cron：`5 10 * * *`
-- 发布哈希：`ca9c192577ffee68ddc1083e55704065dac8f6f756f2d3af1f4fc99e03565d22`
+- 建议 Cron：`24 1 * * *`
+- 发布哈希：`ff9434b8a06cb99ec4afbd3624d224f1ad4114f005aec19e306d75d1988139d1`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -72,7 +72,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ca9c192577ffee68ddc1083e55704065dac8f6f756f2d3af1f4fc99e03565d22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8a2853d90ebdcb0c`。
+SHA-256 `ff9434b8a06cb99ec4afbd3624d224f1ad4114f005aec19e306d75d1988139d1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8a2853d90ebdcb0c`。
 
 ## 副作用与风险
 

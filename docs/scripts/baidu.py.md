@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/baidu.py`
 - 青龙命令：`python3 scripts/baidu.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`f3bfc64c4f219e4c451796542f4d2af0605812c82ab871f29039441d108afd1a`
+- 建议 Cron：`36 2 * * *`
+- 发布哈希：`3fdc5320f522f68a07d9218d9a771c0ad371703ebb3dcfdef57fff78e09a75eb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -62,7 +62,7 @@ BAIDU 每个非空行对应一个站点账号 JSON 对象，同一站点的清�
 
 ## 验证与兼容性
 
-SHA-256 `f3bfc64c4f219e4c451796542f4d2af0605812c82ab871f29039441d108afd1a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed0673d8c02fc410`。
+SHA-256 `3fdc5320f522f68a07d9218d9a771c0ad371703ebb3dcfdef57fff78e09a75eb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed0673d8c02fc410`。
 
 ## 副作用与风险
 

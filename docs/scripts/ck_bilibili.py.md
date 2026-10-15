@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_bilibili.py`
 - 青龙命令：`python3 scripts/ck_bilibili.py`
-- 建议 Cron：`30 8 * * *`
-- 发布哈希：`7d12bb124f137766e58e75551367d57af0e15dbfc07efc8da129bc6b71df820b`
+- 建议 Cron：`39 0 * * *`
+- 发布哈希：`d6fda4795e1b77abaf6e82d3066b7565627450265a9653fca9132a47775a97e5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -160,7 +160,7 @@ BILIBILI_COOKIES 每个非空行一个账号的完整 Cookie；同账号 SESSDAT
 
 ## 验证与兼容性
 
-SHA-256 `7d12bb124f137766e58e75551367d57af0e15dbfc07efc8da129bc6b71df820b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3f0acba187ca5285`。
+SHA-256 `d6fda4795e1b77abaf6e82d3066b7565627450265a9653fca9132a47775a97e5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3f0acba187ca5285`。
 
 ## 副作用与风险
 

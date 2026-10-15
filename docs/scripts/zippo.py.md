@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/zippo.py`
 - 青龙命令：`python3 scripts/zippo.py`
-- 建议 Cron：`9 9 * * *`
-- 发布哈希：`db87391467bd1a78afea9e1725cf8a5a06a4f78373821128a20dcb98ed03b338`
+- 建议 Cron：`56 0 * * *`
+- 发布哈希：`763e8bd77fce558ff3e28b3d0e81af86a9b108041da842c5c1f75d55647cde00`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -92,7 +92,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `db87391467bd1a78afea9e1725cf8a5a06a4f78373821128a20dcb98ed03b338`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/60f9d3538e9f8470`。
+SHA-256 `763e8bd77fce558ff3e28b3d0e81af86a9b108041da842c5c1f75d55647cde00`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/60f9d3538e9f8470`。
 
 ## 副作用与风险
 

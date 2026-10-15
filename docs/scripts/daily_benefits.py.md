@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/daily_benefits.py`
 - 青龙命令：`python3 scripts/daily_benefits.py`
-- 建议 Cron：`1 1 1 1 1`
-- 发布哈希：`9a155b77acadb949a6fedf73bdd5e63ec7684a45fabd5143b66ac1873f27676b`
+- 建议 Cron：`47 1 1 1 1`
+- 发布哈希：`599c9ee95cb78f10f796413c5106ac695d6467a7d74a82b98ac1a3d39514369a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -88,7 +88,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9a155b77acadb949a6fedf73bdd5e63ec7684a45fabd5143b66ac1873f27676b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/35a9f7fe38bde305`。
+SHA-256 `599c9ee95cb78f10f796413c5106ac695d6467a7d74a82b98ac1a3d39514369a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/35a9f7fe38bde305`。
 
 ## 副作用与风险
 

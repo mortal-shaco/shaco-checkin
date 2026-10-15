@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_tebu.js`
 - 青龙命令：`node scripts/sudojia_tebu.js`
-- 建议 Cron：`26 10 * * *`
-- 发布哈希：`25c0e6a616e7945d13727f2326b14a059c89cece3405730c8999a16480024428`
+- 建议 Cron：`37 1 * * *`
+- 发布哈希：`71cc476a82192883c93c069b2980486fc1c9c1f8d6fe93bef4de950b1d6e50ca`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `25c0e6a616e7945d13727f2326b14a059c89cece3405730c8999a16480024428`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a2b79c7df4dc31e7`。
+SHA-256 `71cc476a82192883c93c069b2980486fc1c9c1f8d6fe93bef4de950b1d6e50ca`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a2b79c7df4dc31e7`。
 
 ## 副作用与风险
 

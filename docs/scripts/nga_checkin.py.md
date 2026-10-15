@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/nga_checkin.py`
 - 青龙命令：`python3 scripts/nga_checkin.py`
-- 建议 Cron：`1 17 * * *`
-- 发布哈希：`147ff1cce75da800dc48ed5dade6222282afff8f7bd6f1bbbdebda74ede5242e`
+- 建议 Cron：`49 0 * * *`
+- 发布哈希：`724783e875e86725a0e04c92799cfab5528f81bc26137f31c4b79b230486160f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -151,7 +151,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `147ff1cce75da800dc48ed5dade6222282afff8f7bd6f1bbbdebda74ede5242e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
+SHA-256 `724783e875e86725a0e04c92799cfab5528f81bc26137f31c4b79b230486160f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 
 ## 副作用与风险
 

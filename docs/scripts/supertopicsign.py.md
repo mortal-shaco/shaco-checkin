@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/supertopicsign.py`
 - 青龙命令：`python3 scripts/supertopicsign.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`7ec766c350e8734acddc724e720a0073d8838430e1885a9e699e13d907fbacb4`
+- 建议 Cron：`41 1 * * *`
+- 发布哈希：`bfd409817ecf5cfeea14c7fdd06c92d48888a00499e2e1488c0e3acd019f8554`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7ec766c350e8734acddc724e720a0073d8838430e1885a9e699e13d907fbacb4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5e811acce266569`。
+SHA-256 `bfd409817ecf5cfeea14c7fdd06c92d48888a00499e2e1488c0e3acd019f8554`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5e811acce266569`。
 
 ## 副作用与风险
 

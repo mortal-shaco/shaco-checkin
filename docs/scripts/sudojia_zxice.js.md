@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/sudojia_zxice.js`
 - 青龙命令：`node scripts/sudojia_zxice.js`
-- 建议 Cron：`22 15 * * *`
-- 发布哈希：`eb50f784e85263452ae010edf81d6b0e1d6c864532f2c6f1a170aa168ddc8c5d`
+- 建议 Cron：`34 2 * * *`
+- 发布哈希：`d0205fe1ea64b94caad278719298368e0eb27e733b4b42baa742d3c859dc9c36`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,7 +63,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `eb50f784e85263452ae010edf81d6b0e1d6c864532f2c6f1a170aa168ddc8c5d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4b0810d476bc5e`。
+SHA-256 `d0205fe1ea64b94caad278719298368e0eb27e733b4b42baa742d3c859dc9c36`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4b0810d476bc5e`。
 
 ## 副作用与风险
 

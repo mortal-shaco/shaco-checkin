@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/raccoon_daily.py`
 - 青龙命令：`python3 scripts/raccoon_daily.py`
-- 建议 Cron：`0 9 * * *`
-- 发布哈希：`3ebdbfeaf41c75c467fdeb6f2e11889b5a985cacfc3b7203679348087ed36b63`
+- 建议 Cron：`14 2 * * *`
+- 发布哈希：`de242b0d85cec612baf16cd8df6a2e07a4155de3c0b95c15199f1e651c7eb7cc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -127,7 +127,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3ebdbfeaf41c75c467fdeb6f2e11889b5a985cacfc3b7203679348087ed36b63`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
+SHA-256 `de242b0d85cec612baf16cd8df6a2e07a4155de3c0b95c15199f1e651c7eb7cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
 
 ## 副作用与风险
 

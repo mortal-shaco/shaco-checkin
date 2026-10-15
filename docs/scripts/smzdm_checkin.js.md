@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/smzdm_checkin.js`
 - 青龙命令：`node scripts/smzdm_checkin.js`
-- 建议 Cron：`31 8 * * *`
-- 发布哈希：`b01d902608844777102486bab86a7fa18f18c4dfb3166375b7bfacad07e0808b`
+- 建议 Cron：`58 0 * * *`
+- 发布哈希：`9bc9b351c3d5bb40e8e9af0d76c661d6a7e1b77252e8e1c4ab30a40237deb93e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -160,7 +160,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b01d902608844777102486bab86a7fa18f18c4dfb3166375b7bfacad07e0808b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
+SHA-256 `9bc9b351c3d5bb40e8e9af0d76c661d6a7e1b77252e8e1c4ab30a40237deb93e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
 
 ## 副作用与风险
 

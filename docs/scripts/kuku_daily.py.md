@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/kuku_daily.py`
 - 青龙命令：`python3 scripts/kuku_daily.py`
-- 建议 Cron：`0 8 * * *`
-- 发布哈希：`d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9`
+- 建议 Cron：`21 0 * * *`
+- 发布哈希：`73cff9b29d67c83d6fa39f8a562f018c1c7bf8c010892ecc07e4e3c780a9fa23`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -102,7 +102,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
+SHA-256 `73cff9b29d67c83d6fa39f8a562f018c1c7bf8c010892ecc07e4e3c780a9fa23`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
 
 ## 副作用与风险
 
