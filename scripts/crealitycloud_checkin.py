@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 创想云国内站签到
-# cron: 0 9 * * *
+# cron: 44 2 * * *
 # SPDX-License-Identifier: MIT
 # 上游作者及来源：xz0609/crealitycloud-checkin-ql
 # https://github.com/xz0609/crealitycloud-checkin-ql (ba2872b75372f62157b1f0cdcdf57ed59f9bd1fb)
 """
-cron: 0 9 * * *
+cron: 44 2 * * *
 new Env('创想云国内站签到')
 
 创想云国内站 · 自动签到脚本 · 青龙面板版

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 时光相册每日签到
-# cron: 3 22 * * *
+# cron: 3 0 * * *
 # License: MIT (upstream effective license)
 # Original author: @CAB233
 # Original URL: https://github.com/CAB233/everphoto_checkin

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: FreeNom 域名续期维护
-# cron: 25 7 */10 * *
+# cron: 30 7 */10 * *
 # Upstream: OreosLab/checkinpanel, ck_freenom.py (MIT)
 # MIT License: Original copyright/license notices remain applicable.
 # Permission is hereby granted, free of charge, to any person obtaining a copy

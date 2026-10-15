@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: ComicAI 每日签到
-# cron: 0 9 * * *
+# cron: 46 1 * * *
 # SPDX-License-Identifier: GPL-3.0
 # 原始来源：CSDN2024/QianDaoMZH，comicai-ai-cookie.py
 # 保留上游 GPL-3.0 许可；源码未提供其他版权声明。

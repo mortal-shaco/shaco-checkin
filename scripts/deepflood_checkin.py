@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: DeepFlood 签到
-# cron: 33 14 * * *
+# cron: 0 0 * * *
 # SPDX-License-Identifier: MIT
 # Maintained from agluo/ql-script-hub deepflood_checkin.py, commit
 # a8d39b97cb22c3ac657089014df754342b456ff6 (MIT licensed).

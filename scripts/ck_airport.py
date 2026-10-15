@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 机场签到
-# cron: 20 10 * * *
+# cron: 16 2 * * *
 # SPDX-License-Identifier: MIT
 # Original author: @Icrons; upstream: OreosLab/checkinpanel, ck_airport.py
 # MIT License

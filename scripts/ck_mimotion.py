@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 小米运动
-# cron: 0 20 * * *
+# cron: 1 0 * * *
 # 来源：yuxian158/check，dailycheckin_scripts/ck_mimotion.py
 # 上游许可证：MIT；原文件未附额外版权声明。
 # MIT License

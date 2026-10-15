@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: WPS天天领福利（可选任务中心）
-# cron: 1 1 1 1 1
+# cron: 47 1 1 1 1
 """
 WPS 天天领福利；可选合并任务中心（同账号、同排期）。
 上游：Cat-zaizai/ZaiZaiCat-Checkin，script/wps/daily_benefits.py、api.py、main.py、task_center.py

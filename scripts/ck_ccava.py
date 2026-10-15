@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: CCAVA每日签到
-# cron: 55 18 * * *
+# cron: 31 1 * * *
 # new Env('CCAVA每日签到');
 # 来源：OreosLab/checkinpanel，ck_ccava.py
 # 原始提交：911402e4b2e559ffd62c4949a971ddd6834edd7d；许可：MIT

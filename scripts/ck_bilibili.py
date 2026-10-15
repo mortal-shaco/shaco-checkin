@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: Bilibili 每日任务
-# cron: 30 8 * * *
+# cron: 39 0 * * *
 # 上游：OreosLab/checkinpanel ck_bilibili.py
 # 来源提交：911402e4b2e559ffd62c4949a971ddd6834edd7d
 # SPDX-License-Identifier: MIT

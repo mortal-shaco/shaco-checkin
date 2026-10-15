@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 大潮App签到阅读
-# cron: 30 10,14,18 * * *
+# cron: 22 10,14,18 * * *
 # 来源: Cat-zaizai/ZaiZaiCat-Checkin, script/dachao/{main,api,captcha,http_debug}.py
 # 上游提交: d6a334e43d0a0c8f41b039cd410be33593efc35b
 # 许可: MIT。原文件未携带单独版权声明；保留上游署名及以下许可。

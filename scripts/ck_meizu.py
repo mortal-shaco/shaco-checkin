@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 魅族社区签到
-# cron: 0 9 * * *
+# cron: 30 1 * * *
 # 原始来源: yuxian158/check, dailycheckin_scripts/ck_meizu.py
 # 原始提交: 723c834f121ff4eef2dec7afe521071a7efff1a9
 # SPDX-License-Identifier: MIT

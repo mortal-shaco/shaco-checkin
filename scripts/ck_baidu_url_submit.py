@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 百度搜索资源平台
-# cron: 32 7 * * *
+# cron: 8 2 * * *
 # 上游：OreosLab/checkinpanel，ck_baidu_url_submit.py
 # 原始任务元数据：new Env('百度搜索资源平台');
 # License: MIT

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 咔叽网单签到
-# cron: 30 8 * * *
+# cron: 40 1 * * *
 # Upstream: yuxian158/check, dailycheckin_scripts/ck_2nzz.py
 # Commit: 723c834f121ff4eef2dec7afe521071a7efff1a9; License: MIT
 # 原文件没有额外版权声明；保留上游署名及 MIT 许可。

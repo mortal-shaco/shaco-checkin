@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 杜蕾斯会员中心
-# cron: 9 9 * * *
+# cron: 52 0 * * *
 # SPDX-License-Identifier: MIT
 # 来源：Rookie-wb-WH/ql_scripts，durex.py，提交 08e5c06461c4a0112ea3735f48fe671734bb7707
 # MIT License（任务准入声明的上游许可）

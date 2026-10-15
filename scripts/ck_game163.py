@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # name: 网易云游戏每日签到
-# cron: 20 8 * * *
+# cron: 21 1 * * *
 """
-cron: 20 8 * * *
+cron: 21 1 * * *
 new Env('网易云游戏每日签到');
 
 来源：OreosLab/checkinpanel，ck_game163.py，MIT 许可。

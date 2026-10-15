@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 森空岛自动签到
-# cron: 15 8 * * *
+# cron: 22 2 * * *
 # filename: qingskyland_attendance.py
 # 修复 release-path-collision：发布器必须使用下述路径，不能按上游文件名 skyland.py 推导。
 # publish-path: scripts/qingskyland_attendance.py

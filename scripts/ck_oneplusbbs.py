@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 一加手机社区官方论坛
-# cron: 0 8 * * *
+# cron: 40 2 * * *
 # Source: yuxian158/check dailycheckin_scripts/ck_oneplusBBS.py
 # Upstream commit: 723c834f121ff4eef2dec7afe521071a7efff1a9
 # License: MIT

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: Fa米家每日签到与发米粒查询
-# cron: 30 14 * * *
+# cron: 47 1 * * *
 # 上游：OreosLab/checkinpanel，ck_fmapp.py（MIT）
 # 保留上游任务标识：new Env('Fa米家每日签到与发米粒查询');
 """Fa米家每日签到、昵称与发米粒查询。

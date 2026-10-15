@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: AcFun每日签到与可选互动
-# cron: 31 7 * * *
+# cron: 20 0 * * *
 # 原始来源：OreosLab/checkinpanel，ck_acfun.py，MIT 许可。
 # 原始任务标识：new Env('AcFun每日签到与可选互动');
 """独立的 AcFun 维护脚本（Python 3，仅标准库）。

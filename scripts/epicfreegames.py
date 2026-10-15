@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: Epic免费游戏
-# cron: 0 8 * * 6
+# cron: 11 8 * * 6
 # new Env("Epic免费游戏")
 # 来源: CN-Grace/QinglongScripts, EpicFreeGames.py
 # 上游许可及本维护版本许可: MIT

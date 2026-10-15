@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: CSDN签到与可选抽奖
-# cron: 30 10 * * *
+# cron: 28 1 * * *
 # Upstream: OreosLab/checkinpanel, ck_csdn.py
 # Commit: 911402e4b2e559ffd62c4949a971ddd6834edd7d
 # SPDX-License-Identifier: MIT

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 恩山论坛签到
-# cron: 39 12 * * *
+# cron: 59 1 * * *
 #
 # SPDX-License-Identifier: GPL-3.0-only
 # Combined maintained work: GPL-3.0 (effectiveLicense).

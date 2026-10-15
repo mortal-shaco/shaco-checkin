@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 多看阅读
-# cron: 30 20 * * *
+# cron: 5 2 * * *
 # 来源: OreosLab/checkinpanel, ck_duokan.py
 # 上游提交: 911402e4b2e559ffd62c4949a971ddd6834edd7d
 # 许可证: MIT；原文件没有额外版权声明。

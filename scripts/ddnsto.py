@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: DDNSTO七天免费续费
-# cron: 30 9 * * *
+# cron: 32 2 * * *
 # SPDX-License-Identifier: MIT
 # 上游署名：cloudcranes/some_scripts，原文件 ddnsto.py
 # 来源提交：f62b50fe0a961ea8a8707682723b080c0a5d1142

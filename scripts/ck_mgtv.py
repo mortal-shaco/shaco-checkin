@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 芒果TV每日签到
-# cron: 15 8 * * *
+# cron: 36 0 * * *
 # 来源：yuxian158/check dailycheckin_scripts/ck_mgtv.py
 # 上游版本：723c834f121ff4eef2dec7afe521071a7efff1a9；许可证：MIT
 # 上游文件未包含独立版权声明；保留来源署名。

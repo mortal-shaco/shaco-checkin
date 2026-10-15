@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: CodeArts 每日福利领取
-# cron: 15 8 * * *
+# cron: 52 1 * * *
 # 上游作者及来源：L0NE-6/CodeArts-Daily，codearts_daily.py
 # 许可证：MIT（保留上游署名；所提供源文件无其他版权声明）
 # Permission is hereby granted, free of charge, to any person obtaining a copy

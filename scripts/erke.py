@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 鸿星尔克签到
-# cron: 1 1 1 1 1
+# cron: 12 1 1 1 1
 """鸿星尔克签到；Author: ZaiZaiCat；Date: 2025-11-28。
 来源：Cat-zaizai/ZaiZaiCat-Checkin，script/erke/main.py、api.py。
 维护版：ERKE_ACCOUNTS 每个非空行为一个 JSON 对象，包含 member_id、
