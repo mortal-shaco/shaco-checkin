@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: SSL证书检查
-# cron: 0 0 * * *
+# cron: 10 2 * * *
 # new Env("SSL证书检查")
 # SSL 证书检查脚本
 # - 通过 Cloudflare API 自动获取域名 A 记录列表

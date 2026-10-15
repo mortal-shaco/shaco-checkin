@@ -1,5 +1,5 @@
 // name: 什么值得买签到
-// cron: 31 8 * * *
+// cron: 58 0 * * *
 'use strict';
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2023 Hex
