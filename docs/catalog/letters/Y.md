@@ -1,0 +1,9 @@
+# 字母索引 · Y
+
+共 **3** 个脚本。返回 [`目录首页`](../README.md)。
+
+| 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
+| --- | --- | --- | --- | --- | --- |
+| 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `27 2 * * *` | 待检查 | [yht.py.md](../../scripts/yht.py.md)（`docs/scripts/yht.py.md`） |
+| 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `47 0 * * *` | 待检查 | [youdao.py.md](../../scripts/youdao.py.md)（`docs/scripts/youdao.py.md`） |
+| 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `39 2 * * *` | 待检查 | [yyshuijuantime.py.md](../../scripts/yyshuijuantime.py.md)（`docs/scripts/yyshuijuantime.py.md`） |

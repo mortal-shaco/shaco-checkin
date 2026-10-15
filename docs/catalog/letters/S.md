@@ -1,0 +1,71 @@
+# 字母索引 · S
+
+共 **65** 个脚本。返回 [`目录首页`](../README.md)。
+
+| 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
+| --- | --- | --- | --- | --- | --- |
+| 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |
+| 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |
+| 申工社每日任务 | `scripts/sgs.py` | `python3 scripts/sgs.py` | `43 0 * * *` | 待检查 | [sgs.py.md](../../scripts/sgs.py.md)（`docs/scripts/sgs.py.md`） |
+| 书亦烧仙草签到 | `scripts/shuyi.py` | `python3 scripts/shuyi.py` | `51 0 * * *` | 待检查 | [shuyi.py.md](../../scripts/shuyi.py.md)（`docs/scripts/shuyi.py.md`） |
+| 看雪论坛签到 | `scripts/sign_in.py` | `python3 scripts/sign_in.py` | `11 1 1 1 1` | 待检查 | [sign_in.py.md](../../scripts/sign_in.py.md)（`docs/scripts/sign_in.py.md`） |
+| 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
+| 森空岛双游戏签到 | `scripts/skland_demo.py` | `python3 scripts/skland_demo.py` | `18 2 * * *` | 待检查 | [skland_demo.py.md](../../scripts/skland_demo.py.md)（`docs/scripts/skland_demo.py.md`） |
+| 森空岛签到 | `scripts/skyland.py` | `python3 scripts/skyland.py` | `6 0 * * *` | 待检查 | [skyland.py.md](../../scripts/skyland.py.md)（`docs/scripts/skyland.py.md`） |
+| 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `58 0 * * *` | 待检查 | [smzdm_checkin.js.md](../../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
+| SSL证书检查 | `scripts/ssl_cert_check.py` | `python3 scripts/ssl_cert_check.py` | `10 2 * * *` | 待检查 | [ssl_cert_check.py.md](../../scripts/ssl_cert_check.py.md)（`docs/scripts/ssl_cert_check.py.md`） |
+| 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `24 0 * * *` | 待检查 | [sudojia_33agilestudio.js.md](../../scripts/sudojia_33agilestudio.js.md)（`docs/scripts/sudojia_33agilestudio.js.md`） |
+| 所有女生会员签到 | `scripts/sudojia_allgirls.js` | `node scripts/sudojia_allgirls.js` | `33 2 * * *` | 待检查 | [sudojia_allgirls.js.md](../../scripts/sudojia_allgirls.js.md)（`docs/scripts/sudojia_allgirls.js.md`） |
+| 安慕希每日签到 | `scripts/sudojia_amx.js` | `node scripts/sudojia_amx.js` | `25 0 * * *` | 待检查 | [sudojia_amx.js.md](../../scripts/sudojia_amx.js.md)（`docs/scripts/sudojia_amx.js.md`） |
+| 多合一账号失效检测 | `scripts/sudojia_authcheck.js` | `node scripts/sudojia_authcheck.js` | `32 12,21 * * *` | 待检查 | [sudojia_authcheck.js.md](../../scripts/sudojia_authcheck.js.md)（`docs/scripts/sudojia_authcheck.js.md`） |
+| 香蕉视频每日任务 | `scripts/sudojia_bananavideo.js` | `node scripts/sudojia_bananavideo.js` | `19 0 * * *` | 待检查 | [sudojia_bananavideo.js.md](../../scripts/sudojia_bananavideo.js.md)（`docs/scripts/sudojia_bananavideo.js.md`） |
+| 贝因美每日签到 | `scripts/sudojia_beiyinmei.js` | `node scripts/sudojia_beiyinmei.js` | `25 2 * * *` | 待检查 | [sudojia_beiyinmei.js.md](../../scripts/sudojia_beiyinmei.js.md)（`docs/scripts/sudojia_beiyinmei.js.md`） |
+| 植物星球 | `scripts/sudojia_botanystar.js` | `node scripts/sudojia_botanystar.js` | `33 0 * * *` | 待检查 | [sudojia_botanystar.js.md](../../scripts/sudojia_botanystar.js.md)（`docs/scripts/sudojia_botanystar.js.md`） |
+| 霸王茶姬每日签到与积分提醒 | `scripts/sudojia_bwtea.js` | `node scripts/sudojia_bwtea.js` | `53 0 * * *` | 待检查 | [sudojia_bwtea.js.md](../../scripts/sudojia_bwtea.js.md)（`docs/scripts/sudojia_bwtea.js.md`） |
+| 七彩虹商城 | `scripts/sudojia_colorful_mall.js` | `node scripts/sudojia_colorful_mall.js` | `22 0 * * *` | 待检查 | [sudojia_colorful_mall.js.md](../../scripts/sudojia_colorful_mall.js.md)（`docs/scripts/sudojia_colorful_mall.js.md`） |
+| 飞蚂蚁旧衣回收 | `scripts/sudojia_flyant.js` | `node scripts/sudojia_flyant.js` | `50 0 * * *` | 待检查 | [sudojia_flyant.js.md](../../scripts/sudojia_flyant.js.md)（`docs/scripts/sudojia_flyant.js.md`） |
+| 飞牛私有云签到 | `scripts/sudojia_fnnas.js` | `node scripts/sudojia_fnnas.js` | `54 1 * * *` | 待检查 | [sudojia_fnnas.js.md](../../scripts/sudojia_fnnas.js.md)（`docs/scripts/sudojia_fnnas.js.md`） |
+| 厚工坊签到与任务 | `scripts/sudojia_hgf.js` | `node scripts/sudojia_hgf.js` | `44 1 * * *` | 待检查 | [sudojia_hgf.js.md](../../scripts/sudojia_hgf.js.md)（`docs/scripts/sudojia_hgf.js.md`） |
+| 海澜之家-游戏 | `scripts/sudojia_hlzj_game.js` | `node scripts/sudojia_hlzj_game.js` | `20 8,15,20 * * *` | 待检查 | [sudojia_hlzj_game.js.md](../../scripts/sudojia_hlzj_game.js.md)（`docs/scripts/sudojia_hlzj_game.js.md`） |
+| 媓钻护肤品 | `scripts/sudojia_hzhfp.js` | `node scripts/sudojia_hzhfp.js` | `40 0 * * *` | 待检查 | [sudojia_hzhfp.js.md](../../scripts/sudojia_hzhfp.js.md)（`docs/scripts/sudojia_hzhfp.js.md`） |
+| 玩拍由我俱乐部 | `scripts/sudojia_instax.js` | `node scripts/sudojia_instax.js` | `26 2 * * *` | 待检查 | [sudojia_instax.js.md](../../scripts/sudojia_instax.js.md)（`docs/scripts/sudojia_instax.js.md`） |
+| 江淮卡友 | `scripts/sudojia_jhcard.js` | `node scripts/sudojia_jhcard.js` | `7 0 * * *` | 待检查 | [sudojia_jhcard.js.md](../../scripts/sudojia_jhcard.js.md)（`docs/scripts/sudojia_jhcard.js.md`） |
+| 多娇江山 | `scripts/sudojia_jiangshan.js` | `node scripts/sudojia_jiangshan.js` | `20 2 * * *` | 待检查 | [sudojia_jiangshan.js.md](../../scripts/sudojia_jiangshan.js.md)（`docs/scripts/sudojia_jiangshan.js.md`） |
+| 金典有机生活+ | `scripts/sudojia_jindian.js` | `node scripts/sudojia_jindian.js` | `18 0 * * *` | 待检查 | [sudojia_jindian.js.md](../../scripts/sudojia_jindian.js.md)（`docs/scripts/sudojia_jindian.js.md`） |
+| 嘉立创硬件开源平台 | `scripts/sudojia_jlc_yj.js` | `node scripts/sudojia_jlc_yj.js` | `31 0 * * *` | 待检查 | [sudojia_jlc_yj.js.md](../../scripts/sudojia_jlc_yj.js.md)（`docs/scripts/sudojia_jlc_yj.js.md`） |
+| 稀土掘金每日签到 | `scripts/sudojia_juejin.js` | `node scripts/sudojia_juejin.js` | `43 2 * * *` | 待检查 | [sudojia_juejin.js.md](../../scripts/sudojia_juejin.js.md)（`docs/scripts/sudojia_juejin.js.md`） |
+| 植白说官方商城 | `scripts/sudojia_kozbs.js` | `node scripts/sudojia_kozbs.js` | `28 0 * * *` | 待检查 | [sudojia_kozbs.js.md](../../scripts/sudojia_kozbs.js.md)（`docs/scripts/sudojia_kozbs.js.md`） |
+| 开天工作室 | `scripts/sudojia_ktgzs.js` | `node scripts/sudojia_ktgzs.js` | `35 0 * * *` | 待检查 | [sudojia_ktgzs.js.md](../../scripts/sudojia_ktgzs.js.md)（`docs/scripts/sudojia_ktgzs.js.md`） |
+| 顾家家居签到 | `scripts/sudojia_kukahome.js` | `node scripts/sudojia_kukahome.js` | `9 2 * * *` | 待检查 | [sudojia_kukahome.js.md](../../scripts/sudojia_kukahome.js.md)（`docs/scripts/sudojia_kukahome.js.md`） |
+| 库街区每日签到 | `scripts/sudojia_kuro.js` | `node scripts/sudojia_kuro.js` | `4 2 * * *` | 待检查 | [sudojia_kuro.js.md](../../scripts/sudojia_kuro.js.md)（`docs/scripts/sudojia_kuro.js.md`） |
+| 老板电器服务微商城 | `scripts/sudojia_laoban.js` | `node scripts/sudojia_laoban.js` | `6 1 * * *` | 待检查 | [sudojia_laoban.js.md](../../scripts/sudojia_laoban.js.md)（`docs/scripts/sudojia_laoban.js.md`） |
+| 龙湖天街 | `scripts/sudojia_longfor.js` | `node scripts/sudojia_longfor.js` | `39 1 * * *` | 待检查 | [sudojia_longfor.js.md](../../scripts/sudojia_longfor.js.md)（`docs/scripts/sudojia_longfor.js.md`） |
+| 欣都龙城每日签到 | `scripts/sudojia_mallcoo.js` | `node scripts/sudojia_mallcoo.js` | `9 1 * * *` | 待检查 | [sudojia_mallcoo.js.md](../../scripts/sudojia_mallcoo.js.md)（`docs/scripts/sudojia_mallcoo.js.md`） |
+| 馬伍旺饮料厂 | `scripts/sudojia_mawuwang.js` | `node scripts/sudojia_mawuwang.js` | `13 0 * * *` | 待检查 | [sudojia_mawuwang.js.md](../../scripts/sudojia_mawuwang.js.md)（`docs/scripts/sudojia_mawuwang.js.md`） |
+| 美的会员 | `scripts/sudojia_midea.js` | `node scripts/sudojia_midea.js` | `48 0 * * *` | 待检查 | [sudojia_midea.js.md](../../scripts/sudojia_midea.js.md)（`docs/scripts/sudojia_midea.js.md`） |
+| 摩托范每日签到 | `scripts/sudojia_moto.js` | `node scripts/sudojia_moto.js` | `26 0 * * *` | 已检查 | [sudojia_moto.js.md](../../scripts/sudojia_moto.js.md)（`docs/scripts/sudojia_moto.js.md`） |
+| 蜜雪冰城每日签到 | `scripts/sudojia_mxbc.js` | `node scripts/sudojia_mxbc.js` | `22 1 * * *` | 待检查 | [sudojia_mxbc.js.md](../../scripts/sudojia_mxbc.js.md)（`docs/scripts/sudojia_mxbc.js.md`） |
+| 奈雪点单 | `scripts/sudojia_naixue.js` | `node scripts/sudojia_naixue.js` | `32 1 * * *` | 待检查 | [sudojia_naixue.js.md](../../scripts/sudojia_naixue.js.md)（`docs/scripts/sudojia_naixue.js.md`） |
+| 雀巢会员 | `scripts/sudojia_nestle.js` | `node scripts/sudojia_nestle.js` | `30 2 * * *` | 待检查 | [sudojia_nestle.js.md](../../scripts/sudojia_nestle.js.md)（`docs/scripts/sudojia_nestle.js.md`） |
+| 南方航空 | `scripts/sudojia_nfhk.js` | `node scripts/sudojia_nfhk.js` | `26 1 * * *` | 待检查 | [sudojia_nfhk.js.md](../../scripts/sudojia_nfhk.js.md)（`docs/scripts/sudojia_nfhk.js.md`） |
+| OPPO商城每日签到与任务领奖 | `scripts/sudojia_opposhop.js` | `node scripts/sudojia_opposhop.js` | `12 0 * * *` | 待检查 | [sudojia_opposhop.js.md](../../scripts/sudojia_opposhop.js.md)（`docs/scripts/sudojia_opposhop.js.md`） |
+| 胖哥俩肉蟹煲 | `scripts/sudojia_pangge.js` | `node scripts/sudojia_pangge.js` | `7 1 * * *` | 待检查 | [sudojia_pangge.js.md](../../scripts/sudojia_pangge.js.md)（`docs/scripts/sudojia_pangge.js.md`） |
+| 爷爷不泡茶 | `scripts/sudojia_paotea.js` | `node scripts/sudojia_paotea.js` | `58 1 * * *` | 待检查 | [sudojia_paotea.js.md](../../scripts/sudojia_paotea.js.md)（`docs/scripts/sudojia_paotea.js.md`） |
+| 上海杨浦 | `scripts/sudojia_shmedia.js` | `node scripts/sudojia_shmedia.js` | `53 1 * * *` | 待检查 | [sudojia_shmedia.js.md](../../scripts/sudojia_shmedia.js.md)（`docs/scripts/sudojia_shmedia.js.md`） |
+| 水费易签到 | `scripts/sudojia_shuifei.js` | `node scripts/sudojia_shuifei.js` | `4 0 * * *` | 待检查 | [sudojia_shuifei.js.md](../../scripts/sudojia_shuifei.js.md)（`docs/scripts/sudojia_shuifei.js.md`） |
+| SSPANEL面板签到 | `scripts/sudojia_sspanel.js` | `node scripts/sudojia_sspanel.js` | `34 0 * * *` | 待检查 | [sudojia_sspanel.js.md](../../scripts/sudojia_sspanel.js.md)（`docs/scripts/sudojia_sspanel.js.md`） |
+| 星妈优选 | `scripts/sudojia_starmom.js` | `node scripts/sudojia_starmom.js` | `42 0 * * *` | 待检查 | [sudojia_starmom.js.md](../../scripts/sudojia_starmom.js.md)（`docs/scripts/sudojia_starmom.js.md`） |
+| 特步会员中心 | `scripts/sudojia_tebu.js` | `node scripts/sudojia_tebu.js` | `37 1 * * *` | 待检查 | [sudojia_tebu.js.md](../../scripts/sudojia_tebu.js.md)（`docs/scripts/sudojia_tebu.js.md`） |
+| TILTA影像城 | `scripts/sudojia_tilta.js` | `node scripts/sudojia_tilta.js` | `24 1 * * *` | 待检查 | [sudojia_tilta.js.md](../../scripts/sudojia_tilta.js.md)（`docs/scripts/sudojia_tilta.js.md`） |
+| 图虫每日签到 | `scripts/sudojia_tuchong.js` | `node scripts/sudojia_tuchong.js` | `2 0 * * *` | 待检查 | [sudojia_tuchong.js.md](../../scripts/sudojia_tuchong.js.md)（`docs/scripts/sudojia_tuchong.js.md`） |
+| V2EX每日签到 | `scripts/sudojia_v2ex.js` | `node scripts/sudojia_v2ex.js` | `1 1 * * *` | 待检查 | [sudojia_v2ex.js.md](../../scripts/sudojia_v2ex.js.md)（`docs/scripts/sudojia_v2ex.js.md`） |
+| 薇诺娜专柜商城 | `scripts/sudojia_wnna.js` | `node scripts/sudojia_wnna.js` | `29 0 * * *` | 待检查 | [sudojia_wnna.js.md](../../scripts/sudojia_wnna.js.md)（`docs/scripts/sudojia_wnna.js.md`） |
+| 新湖南每日签到 | `scripts/sudojia_xhn.js` | `node scripts/sudojia_xhn.js` | `51 1 * * *` | 待检查 | [sudojia_xhn.js.md](../../scripts/sudojia_xhn.js.md)（`docs/scripts/sudojia_xhn.js.md`） |
+| 享玩游戏APP | `scripts/sudojia_xiangwan.js` | `node scripts/sudojia_xiangwan.js` | `15 2 * * *` | 待检查 | [sudojia_xiangwan.js.md](../../scripts/sudojia_xiangwan.js.md)（`docs/scripts/sudojia_xiangwan.js.md`） |
+| 小米社区-小程序 | `scripts/sudojia_xiaomi_community.js` | `node scripts/sudojia_xiaomi_community.js` | `25 1 * * *` | 待检查 | [sudojia_xiaomi_community.js.md](../../scripts/sudojia_xiaomi_community.js.md)（`docs/scripts/sudojia_xiaomi_community.js.md`） |
+| 心喜签到 | `scripts/sudojia_xinxi.js` | `node scripts/sudojia_xinxi.js` | `20 1 * * *` | 待检查 | [sudojia_xinxi.js.md](../../scripts/sudojia_xinxi.js.md)（`docs/scripts/sudojia_xinxi.js.md`） |
+| 兴攀农场 | `scripts/sudojia_xpfarm.js` | `node scripts/sudojia_xpfarm.js` | `36 11,18 * * *` | 待检查 | [sudojia_xpfarm.js.md](../../scripts/sudojia_xpfarm.js.md)（`docs/scripts/sudojia_xpfarm.js.md`） |
+| 智能电视签到 | `scripts/sudojia_znds.js` | `node scripts/sudojia_znds.js` | `31 2 * * *` | 待检查 | [sudojia_znds.js.md](../../scripts/sudojia_znds.js.md)（`docs/scripts/sudojia_znds.js.md`） |
+| 甄稀冰淇淋每日签到 | `scripts/sudojia_zxice.js` | `node scripts/sudojia_zxice.js` | `34 2 * * *` | 待检查 | [sudojia_zxice.js.md](../../scripts/sudojia_zxice.js.md)（`docs/scripts/sudojia_zxice.js.md`） |
+| 微博超话签到 | `scripts/supertopicsign.py` | `python3 scripts/supertopicsign.py` | `41 1 * * *` | 待检查 | [supertopicsign.py.md](../../scripts/supertopicsign.py.md)（`docs/scripts/supertopicsign.py.md`） |
+| 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
