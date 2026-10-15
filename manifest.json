@@ -7410,6 +7410,127 @@
       }
     },
     {
+      "catalogId": "04e92730d2cbeb73",
+      "applicationKey": "yuxian158/check::mimotion",
+      "checkProfile": {
+        "requiredEnv": [
+          "MIMOTION_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "MIMOTION_ACTION",
+          "MIMOTION_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MIMOTION_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MIMOTION_ACTION": "login",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "BUSINESS_SUCCESS",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "华米手机号密码登录、校验账号与应用令牌，显示官方返回的非敏感昵称、用户名或公开 UID。",
+          "显式上传本人当天模板并随机修改步数总量，保留 min_step/max_step 参数名及原默认范围。",
+          "每行一个账号，独立执行，失败闭合退出。",
+          "完全断网预演、分阶段脱敏日志、账号及子任务统计、单条 TASK_SUMMARY 记录。",
+          "正式运行尝试青龙通知，配置错误与部分失败同样汇总；预演仅显示通知内容。"
+        ],
+        "sideEffects": [
+          "显式 upload 同步本人提供的当天健康记录并修改当天步数总量；模板中的活动、心率和睡眠等数据也一同上传。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "小米运动",
+      "path": "scripts/ck_mimotion.py",
+      "sha256": "9a640f375412c39df2651b8e557fa26f0b4f7784bc360c6144c29ffaacca4f51",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_mimotion.py"
+      },
+      "cron": "0 20 * * *",
+      "command": "python3 scripts/ck_mimotion.py",
+      "environment": [
+        {
+          "name": "MIMOTION_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 Zepp Life（原小米运动）注册中国大陆华米手机号账号并设置密码，使用 phone/password；不是小米账号密码。显式上传时，从本人获授权的 band_data.json 同步请求获取 last_deviceid 及解码后的 data_json 数组，将数组填入 band_data，不要分享账号数据。",
+          "format": "每个非空行一个 JSON 对象；phone 为中国大陆手机号字符串，password 为密码字符串，完整保留分隔符。可选 min_step/max_step 默认 10000/19999，范围 0 至 100000，最小值不超过最大值。可选 device_id 为登录设备 UUID，省略时本轮生成。上传须提供本人 last_deviceid 和仅含当天一条记录的 band_data 数组，summary 为包含 stp.ttl 的 JSON 字符串；可选 last_sync_data_time 默认 0。"
+        },
+        {
+          "name": "MIMOTION_ACTION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需选择；默认只验证登录和应用令牌，显式 upload 才上传。上传前核对本人模板中的活动、睡眠和心率等记录。",
+          "format": "login 或 upload，默认 login。"
+        },
+        {
+          "name": "MIMOTION_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "测试时设置为 1，完全断网，仅验证参数和请求规划，通知仅预览。",
+          "format": "1、true、yes、on 启用；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "沿用青龙全局通知开关，默认启用。",
+          "format": "0、false、no、off 关闭；默认 1。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；优先导入 notify，再检查此目录及青龙标准脚本目录；不可用时不改变业务退出码。",
+          "format": "目录路径，仅用于可选通知发现，不是业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象；同一账号凭据合并在 MIMOTION_ACCOUNTS，密码由 JSON 解析完整保留，不用 & 或 @ 分账号。逐账号独立处理，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "华米手机号密码登录、校验账号与应用令牌，显示官方返回的非敏感昵称、用户名或公开 UID。",
+        "显式上传本人当天模板并随机修改步数总量，保留 min_step/max_step 参数名及原默认范围。",
+        "每行一个账号，独立执行，失败闭合退出。",
+        "完全断网预演、分阶段脱敏日志、账号及子任务统计、单条 TASK_SUMMARY 记录。",
+        "正式运行尝试青龙通知，配置错误与部分失败同样汇总；预演仅显示通知内容。"
+      ],
+      "sideEffects": [
+        "显式 upload 同步本人提供的当天健康记录并修改当天步数总量；模板中的活动、心率和睡眠等数据也一同上传。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/04e92730d2cbeb73",
+        "candidateSha256": "9a640f375412c39df2651b8e557fa26f0b4f7784bc360c6144c29ffaacca4f51"
+      }
+    },
+    {
       "catalogId": "f0626c73779225ec",
       "applicationKey": "yuxian158/check::oneplusbbs",
       "checkProfile": {
@@ -13414,6 +13535,129 @@
         "mode": "basic",
         "evidence": "projects/checkin/validation/d484be6cd2a617db",
         "candidateSha256": "28d1ce160e4bd75321dc615c98494c1703728f17bfb1bc4b692b5bc6f1278042"
+      }
+    },
+    {
+      "catalogId": "ada2bb484eeceac4",
+      "applicationKey": "unitaryhighs/ql_sign_script::kanxue",
+      "checkProfile": {
+        "requiredEnv": [
+          "KANXUE_COOKIE_LIST"
+        ],
+        "optionalEnv": [
+          "KANXUE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "KANXUE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "签到成功（业务码 0）",
+          "今日已签到（已核验）"
+        ],
+        "features": [
+          "使用完整 Cookie 执行看雪论坛每日签到，保持上游环境变量、请求地址和每日 11:35 计划。",
+          "支持每行一个账号，独立执行并汇总各账号结果。",
+          "核验 HTTP 状态和业务码；明确已签到消息视为已完成，其他业务拒绝失败退出。",
+          "断网预演只检查配置，不验证登录或真实签到结果。",
+          "展示官方返回的非敏感昵称、用户名或公开 UID，并隐藏凭据及原始响应。",
+          "输出带时间戳的阶段日志、统计和单行 TASK_SUMMARY 记录。",
+          "通过青龙 sendNotify.js 发送脱敏结果，支持全局通知开关及通知失败不改变业务退出码。"
+        ],
+        "sideEffects": [
+          "正式执行时提交签到请求，改变账号当日签到状态并可能领取论坛签到奖励。",
+          "通知启用且可用时发送脱敏任务总结；断网预演限制通知组件联网。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "看雪论坛签到",
+      "path": "scripts/kanxue.js",
+      "sha256": "e56f8983e110ca4e6d1af661b968a593a0b896fb9befb4f38f02f7ee95924466",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "sign/kanxue.js"
+      },
+      "cron": "0 35 11 * * *",
+      "command": "node scripts/kanxue.js",
+      "environment": [
+        {
+          "name": "KANXUE_COOKIE_LIST",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 https://bbs.kanxue.com 后，打开开发者工具网络面板，选择发往看雪论坛的已登录请求，复制请求头 Cookie 的完整值；不要复制响应 Set-Cookie 或将凭据发给他人。登录失效后重新获取。",
+          "format": "每个非空行一个账号的完整 Cookie 值，形如 字段名=字段值; 字段名=字段值；保留分号和等号，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "KANXUE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置为 1 开启断网预演，正式执行时删除或设置为 0。",
+          "format": "1/true/yes/on 开启，其余值关闭；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙已有通知配置；需要关闭通知时手动设置本变量。",
+          "format": "默认 1；0/false/no/off 关闭，不区分大小写。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙 sendNotify.js 所在目录；默认依次查找 /ql/data/scripts 和 /ql/scripts。",
+          "format": "目录路径；通知组件为可选青龙集成，不影响签到独立运行。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，保留行内完整 Cookie，不拆分分号、等号、& 或 @；账号顺序独立处理，任一账号失败或配置错误则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用完整 Cookie 执行看雪论坛每日签到，保持上游环境变量、请求地址和每日 11:35 计划。",
+        "支持每行一个账号，独立执行并汇总各账号结果。",
+        "核验 HTTP 状态和业务码；明确已签到消息视为已完成，其他业务拒绝失败退出。",
+        "断网预演只检查配置，不验证登录或真实签到结果。",
+        "展示官方返回的非敏感昵称、用户名或公开 UID，并隐藏凭据及原始响应。",
+        "输出带时间戳的阶段日志、统计和单行 TASK_SUMMARY 记录。",
+        "通过青龙 sendNotify.js 发送脱敏结果，支持全局通知开关及通知失败不改变业务退出码。"
+      ],
+      "sideEffects": [
+        "正式执行时提交签到请求，改变账号当日签到状态并可能领取论坛签到奖励。",
+        "通知启用且可用时发送脱敏任务总结；断网预演限制通知组件联网。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ada2bb484eeceac4",
+        "candidateSha256": "126588eae42748f2eaf5d1f39ea4bff8957a89043ec871249ed1da96856d04a0"
+      },
+      "packaging": {
+        "type": "qinglong-discovery-metadata",
+        "validatedSha256": "126588eae42748f2eaf5d1f39ea4bff8957a89043ec871249ed1da96856d04a0",
+        "releaseSha256": "e56f8983e110ca4e6d1af661b968a593a0b896fb9befb4f38f02f7ee95924466",
+        "statement": "Only Qinglong task display metadata (name/cron comments and new Env title) was normalized during release staging."
       }
     },
     {
@@ -20986,7 +21230,7 @@
         "businessResult": "not-verified"
       },
       "displayName": "SSL证书检查",
-      "path": "scripts/ssl.py",
+      "path": "scripts/ssl_cert_check.py",
       "sha256": "6fc3c3040959c04d815c2ba897050e99994e591f34fbdd4ab6ca2b894ed54766",
       "stage": "released",
       "license": "MIT",
@@ -20998,7 +21242,7 @@
         "originalPath": "SSL.py"
       },
       "cron": "0 0 * * *",
-      "command": "python3 scripts/ssl.py",
+      "command": "python3 scripts/ssl_cert_check.py",
       "environment": [
         {
           "name": "SSL_ACCOUNTS",

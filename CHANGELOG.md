@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2 - 2026-10-15
+
+- 将 `scripts/ssl.py` 迁移为 `scripts/ssl_cert_check.py`。
+- 原因：青龙 `scripts/` 在 `sys.path` 上时，同名文件会遮蔽 Python 标准库 `ssl`，导致同目录其他脚本（如春风动力签到）在 `import urllib.request` 时循环导入失败。
+- 迁移：更新订阅或手动同步后，删除旧的 `scripts/ssl.py`；若有 SSL 证书检查定时任务，将命令改为 `python3 scripts/ssl_cert_check.py`。不能保留 `ssl.py` 兼容别名。
+
 ## 1.0.1 - 2026-09-29
 
 - 下架“什么值得买签到”，停止通过青龙订阅分发该脚本。
