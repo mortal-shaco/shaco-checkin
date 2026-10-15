@@ -1,5 +1,5 @@
 // name: 芬享汇每日签到
-// cron: 0 8 * * *
+// cron: 18 1 * * *
 // @Time    : 2024-05-12 01:10
 // @Author  : Sirius
 // 上游：xingly-cn/QLPanelScript，fxh.js，version = 1.0.0

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 鸣潮·库街区 每日签到
-# cron: 3 0 * * *
+# cron: 16 1 * * *
 """独立维护版本，来源 yongyeym/AutoSign_QingLong/kurobbs_sign.py。
 上游许可：MIT。原始文件没有额外版权声明。
 配置 KUROBBS_ACCOUNTS：每个非空行一个账号，格式 社区UID|Token，只分割第一个 |。

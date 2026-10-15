@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # name: HiFiTi与HiFiHi签到
-# cron: 30 6 * * *
+# cron: 14 1 * * *
 """
 原始说明与署名：
- cron: 30 6 * * *
+ cron: 14 1 * * *
  new Env('HiFiTi与HiFiHi签到')
  来源: https://github.com/anduinnn/HiFiNi-Auto-CheckIn
  支持 HiFiTi 和 HiFiHi 平台的自动签到、消息推送

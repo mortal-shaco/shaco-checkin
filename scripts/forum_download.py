@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: Discuz 论坛日常维护
-# cron: 20 8 * * *
+# cron: 29 2 * * *
 # 来源：nuthx/auto-sign，src/general/forum_download.py、forum_sign.py、
 # forum_sign_plus.py、forum_visit.py、forum_work.py，GPL-3.0；维护版本沿用 GPL-3.0。
 """独立运行，Python 3 标准库，无下载或安装引导。

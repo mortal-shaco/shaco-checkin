@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 咔叽网单每日签到
-# cron: 30 8 * * *
+# cron: 7 2 * * *
 # publish-path: scripts/kaji_2nzz_checkin.py
 # SPDX-License-Identifier: MIT
 # 来源：LittleWuh/qinglongbox，dailycheckin_scripts/ck_2nzz.py

@@ -1,5 +1,5 @@
 # name: 华润通微信版签到
-# cron: 1 1 1 1 1
+# cron: 18 1 1 1 1
 # 来源: Cat-zaizai/ZaiZaiCat-Checkin
 # script/huaruntong/huaruntong_wx/main.py 与 api.py；MIT 许可。
 # 原始文件未包含其他版权声明；保留来源归属。

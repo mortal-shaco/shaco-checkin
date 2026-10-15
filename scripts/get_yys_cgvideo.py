@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 阴阳师官网视频与原画
-# cron: 0 9 * * 0
+# cron: 11 9 * * 0
 # SPDX-License-Identifier: MIT
 # MIT License
 # Permission is hereby granted, free of charge, to any person obtaining a copy

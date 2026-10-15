@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 全民K歌签到与奖励
-# cron: 0 9 * * *
+# cron: 13 2 * * *
 # SPDX-License-Identifier: MIT
 # 来源：Sitoi/dailycheckin dailycheckin/kgqq/main.py
 # 上游提交：135cc236e59ac4f14bcddc44acb3cbb3ed6010b5

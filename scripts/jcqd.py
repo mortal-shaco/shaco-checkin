@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: jcqd 多站签到
-# cron: 0 9 * * *
+# cron: 5 1 * * *
 # 上游：Rookie-wb-WH/ql_scripts，jcqd.py
 # 来源提交：08e5c06461c4a0112ea3735f48fe671734bb7707
 # SPDX-License-Identifier: MIT

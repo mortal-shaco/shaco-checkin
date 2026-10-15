@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 活力伊利
-# cron: 0 8 * * *
+# cron: 32 0 * * *
 # -------------------
 # @Author: cloudcranes
 # @Time: 2024/06/03 16:54

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 科技玩家签到
-# cron: 30 7 * * *
+# cron: 41 2 * * *
 # 来源: cloudcranes/some_scripts，原文件 kjwj.py
 # 原提交: f62b50fe0a961ea8a8707682723b080c0a5d1142
 # 上游许可及本维护版本许可: MIT

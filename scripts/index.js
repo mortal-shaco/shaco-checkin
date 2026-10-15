@@ -1,8 +1,8 @@
 // name: Pixiv 收藏图片下载
-// cron: 0 3 * * *
+// cron: 48 1 * * *
 /*
 name: Pixiv 收藏图片下载
-cron: 0 3 * * *
+cron: 48 1 * * *
 来源：cloudcranes/some_scripts / Download_pixiv/index.js
 上游提交：f62b50fe0a961ea8a8707682723b080c0a5d1142；许可：MIT。
 合并参考：qluser-alan/some_scripts / Download_pixiv/index.js

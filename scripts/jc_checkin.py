@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 机场面板每日签到
-# cron: 0 8 * * *
+# cron: 45 2 * * *
 # 上游：kerncoola/JC_CheckIn，JC_CheckIn.py
 # 原始提交：71362b20abdad2711ddc2e4321ef33b3ebcc64c5；许可证：MIT
 # 原始文件未附版权声明或许可证正文。保留上述来源及许可证归属。

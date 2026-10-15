@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: KukuAI 每日积分
-# cron: 0 8 * * *
+# cron: 21 0 * * *
 # License: MIT
 # 原始项目与作者：L0NE-6/KukuAI-Daily
 # https://github.com/L0NE-6/KukuAI-Daily/blob/6912419c6b29365bb7b3172cc3c18bf7b763812d/kuku_daily.py

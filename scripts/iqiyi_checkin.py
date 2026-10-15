@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 爱奇艺签到
-# cron: 5 10 * * *
+# cron: 8 1 * * *
 # new Env('爱奇艺签到')
 # 上游：deeplee/personal-scripts，iqiyi_checkin.py
 # 来源提交：c8c7c0f4fd1802df86c32a86c26b5c26cfef5023

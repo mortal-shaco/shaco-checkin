@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: NodeSeek 签到与收益统计
-# cron: 23 4 * * *
+# cron: 10 1 * * *
 # publish-path: scripts/lizhixu_nodeseek_attendance_credit_7990614346ba82e0.py
 # 发布使用上述产品专属路径；不得覆盖 scripts/nodeseek_checkin.py。
 # 路径冲突修复：导入器必须将 output/candidate.py 映射至 publish-path，

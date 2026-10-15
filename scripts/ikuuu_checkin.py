@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: ikuuu 签到
-# cron: 0 21 * * *
+# cron: 15 1 * * *
 # SPDX-License-Identifier: MIT
 # Cookie 与流量查询参考：liang97-gz/ikuuu-for-cookies（Apache-2.0）
 # 合并维护版 effectiveLicense：MIT；原始来源及其许可声明保留。

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: HelloGitHub月刊提醒
-# cron: 0 8 1 * *
+# cron: 31 8 1 * *
 # new Env("HelloGitHub月刊提醒")
 # HelloGitHub 月刊更新提醒
 # 每月运行一次，检查并发送最新月刊内容。

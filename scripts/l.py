@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: LINUX DO 登录与浏览统计
-# cron: 5 */5 * * *
+# cron: 37 */5 * * *
 # 来源: lzylipu/l-checkin main.py, commit 2c71083614d6ef87c8b502e1440fec3b08ab59c3
 # 原始通知参考: lzylipu/l-checkin notify.py。原源码未附版权声明。
 # SPDX-License-Identifier: MIT

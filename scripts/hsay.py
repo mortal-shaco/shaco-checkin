@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 沪上阿姨签到
-# cron: 0 9,18 * * *
+# cron: 21 9,18 * * *
 # author: 清风; upstream: Rookie-wb-WH/ql_scripts/hsay.py
 # SPDX-License-Identifier: MIT
 # MIT License (effectiveLicense: MIT)

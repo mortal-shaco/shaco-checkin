@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 杰士邦安心福利社
-# cron: 9 9 * * *
+# cron: 21 2 * * *
 # 来源：Rookie-wb-WH/ql_scripts，jissbon.py
 # 上游许可：MIT（task.json 指定）；原文件没有独立版权声明。
 # 原始说明：vx小程序 -- 杰士邦安心福利社；抓包 vip.ixiliu.cn 下的 Access-Token；

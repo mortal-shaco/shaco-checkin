@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: i茅台申购与耐力
-# cron: 5 9 * * *
+# cron: 38 2 * * *
 # 来源: Sitoi/dailycheckin, dailycheckin/imaotai/main.py
 # 上游许可: MIT；原始输入未包含额外版权声明。
 # MIT License

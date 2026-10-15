@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 劲友家日常任务
-# cron: 0 8 * * *
+# cron: 12 2 * * *
 # SPDX-License-Identifier: MIT
 # MIT License
 # Permission is hereby granted, free of charge, to any person obtaining a copy

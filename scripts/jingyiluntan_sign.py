@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 精易论坛签到
-# cron: 0 8 * * *
+# cron: 2 2 * * *
 # 上游未声明 cron；维护版建议每日北京时间 08:00 执行。
 # 来源：CSDN2024/QianDaoMZH，JingYiLunTan-sign.py
 # 上游提交：b99c67e46d1e74d2fd3a0bff7cac3f83e5ee6903

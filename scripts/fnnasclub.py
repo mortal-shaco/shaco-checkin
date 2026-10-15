@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 飞牛Nas论坛签到
-# cron: 0 8 * * *
+# cron: 49 1 * * *
 """独立维护版本，来源 Sitoi/dailycheckin dailycheckin/fnnasclub/main.py。
 上游提交：135cc236e59ac4f14bcddc44acb3cbb3ed6010b5；许可：MIT。
 FNNASCLUB_COOKIE：登录 https://club.fnnas.com 后，从浏览器开发者工具的

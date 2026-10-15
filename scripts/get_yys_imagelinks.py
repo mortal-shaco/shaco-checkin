@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 阴阳师官网原画与CG素材
-# cron: 0 9 * * 0
+# cron: 28 9 * * 0
 # SPDX-License-Identifier: MIT
 # 来源：cloudcranes/some_scripts，阴阳师/get_yys_imagelinks.py、get_yys_cgvideo.py
 # 上游两个源文件未包含额外版权或许可声明；保留来源归属。

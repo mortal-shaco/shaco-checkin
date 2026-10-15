@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: Leaflow 签到
-# cron: 34 18 * * *
+# cron: 14 0 * * *
 # SPDX-License-Identifier: MIT
 # Maintained standalone version derived from agluo/ql-script-hub,
 # archive/leaflow_checkin.pyleaflow_checkin.py (commit a8d39b9), MIT licensed.
