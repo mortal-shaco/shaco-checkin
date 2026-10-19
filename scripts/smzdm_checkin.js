@@ -1,5 +1,5 @@
 // name: 什么值得买签到
-// cron: 2 1 * * *
+// cron: 5 1 * * *
 'use strict';
 // qinglong-notification-policy: begin
 (() => {
@@ -43,6 +43,7 @@
 // THE SOFTWARE.
 // Additional source: deeplee/personal-scripts, smzdm_checkin.py (MIT).
 // Additional references: agluo/ql-script-hub, SMZDM_checkin.py (MIT).
+// Additional source: lizhixu/ql-script-hub, SMZDM_checkin.py (MIT), catalog 8b3582e3669fa17a.
 // Lottery source: hex-ci/smzdm_script, smzdm_lottery.js (MIT).
 // Additional source: OreosLab/checkinpanel, ck_smzdm.js (MIT).
 // Original attribution: https://raw.githubusercontent.com/Tsukasa007/my_script/master/smzdm_mission.js
@@ -58,6 +59,8 @@
 // SMZDM_ACTION=all 显式同时执行；抽奖可能消耗机会或活动资产，请先核对官方活动规则。
 // SMZDM_LOTTERY_LIFE=1 显式启用原上游未默认执行的生活频道；不自动重试抽奖。
 // SMZDM_DRY_RUN=1 完全离线；QINGLONG_NOTIFY=0 关闭通知。
+// RANDOM_SIGNIN=true 显式启用运行前随机延迟；MAX_RANDOM_DELAY 为最多秒数，默认 3600。
+// 随机延迟默认关闭；不保留上游默认等待一小时及账号间强制等待，避免维护任务意外阻塞。
 // SMZDM_TOKEN_MODE=sess（默认）保留维护接口；robot 显式启用上游 10.4.1 Robot Token 流程。
 // SMZDM_TOKEN_MODE=dual 显式依次执行维护版 App 签到与网页状态核验，兼容 chavyleung 上游的双通道能力。
 // 兼容 SMZDM_COOKIES 或 SMZDM_COOKIE 每行 Cookie，需提供同顺序逐行 SMZDM_SK，或 Cookie 自带 sk。
@@ -102,6 +105,18 @@ function cookieValue(cookie, name) {
 
 function accountLines(value) {
   return String(value || '').split(/\r?\n/).map((v) => v.trim()).filter(Boolean);
+}
+
+function randomDelayPlan(env = process.env, dryRun = false) {
+  const enabled = truthy(env.RANDOM_SIGNIN);
+  if (!enabled) return {enabled: false, maximum: 0, seconds: 0};
+  const raw = String(env.MAX_RANDOM_DELAY ?? '3600').trim();
+  if (!/^\d+$/.test(raw)) throw new Error('MAX_RANDOM_DELAY 必须为 0 到 86400 的整数秒数');
+  const maximum = Number(raw);
+  if (!Number.isSafeInteger(maximum) || maximum < 0 || maximum > 86400) {
+    throw new Error('MAX_RANDOM_DELAY 必须为 0 到 86400 的整数秒数');
+  }
+  return {enabled: true, maximum, seconds: dryRun || maximum === 0 ? 0 : crypto.randomInt(maximum + 1)};
 }
 
 function tokenMode(env = process.env) {
@@ -840,8 +855,8 @@ async function finish(summary, code, started, env) {
 async function run(env = process.env) {
   const started = Date.now();
   const dryRun = truthy(env.SMZDM_DRY_RUN);
-  let accounts, action;
-  try { action = taskAction(env); accounts = parseAccounts(env); } catch (error) {
+  let accounts, action, delayPlan;
+  try { action = taskAction(env); accounts = parseAccounts(env); delayPlan = randomDelayPlan(env, dryRun); } catch (error) {
     console.log(NAME); console.log('═'.repeat(62));
     console.log(`开始时间  ${now()}\n运行模式  配置检查\n账号数量  0`);
     log(`[1/1] 参数校验失败：${error.message}`, '❌');
@@ -850,6 +865,13 @@ async function run(env = process.env) {
   console.log(NAME); console.log('═'.repeat(62));
   console.log(`开始时间  ${now()}\n运行模式  ${dryRun ? '离线预演' : '正式执行'}\n账号数量  ${accounts.length}`);
   console.log('═'.repeat(62));
+  if (delayPlan.enabled) {
+    if (dryRun) log(`随机启动延迟已启用，正式运行最多等待 ${delayPlan.maximum} 秒；离线预演不等待`, '⏭️');
+    else if (delayPlan.seconds > 0) {
+      log(`随机启动延迟已启用，本次等待 ${delayPlan.seconds} 秒（上限 ${delayPlan.maximum} 秒）`, '⏱️');
+      await new Promise((resolve) => setTimeout(resolve, delayPlan.seconds * 1000));
+    } else log('随机启动延迟已启用，本次无需等待', '⏭️');
+  }
   const results = [];
   for (let i = 0; i < accounts.length; i += 1) {
     const label = `账号 ${String(i + 1).padStart(2, '0')}`;
@@ -940,5 +962,5 @@ if (require.main === module) run().catch(async () => {
   await finish({execution: 'failed', mode: 'live', accounts_total: 0, accounts_success: 0, accounts_failed: 1, tasks_total: 1, tasks_success: 0, tasks_already: 0, tasks_skipped: 0, tasks_failed: 1}, 1, started, process.env);
 });
 
-module.exports = {runUpstreamLottery, webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, notificationSelected, sendNotification};
+module.exports = {runUpstreamLottery, webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, randomDelayPlan, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, notificationSelected, sendNotification};
 

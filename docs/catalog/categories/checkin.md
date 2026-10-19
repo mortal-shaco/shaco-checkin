@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **178** 个脚本。返回 [`目录首页`](../README.md)。
+共 **179** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -104,7 +104,7 @@
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
 | 森空岛双游戏签到 | `scripts/skland_demo.py` | `python3 scripts/skland_demo.py` | `18 2 * * *` | 待检查 | [skland_demo.py.md](../../scripts/skland_demo.py.md)（`docs/scripts/skland_demo.py.md`） |
 | 森空岛签到 | `scripts/skyland.py` | `python3 scripts/skyland.py` | `6 0 * * *` | 待检查 | [skyland.py.md](../../scripts/skyland.py.md)（`docs/scripts/skyland.py.md`） |
-| 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `2 1 * * *` | 待检查 | [smzdm_checkin.js.md](../../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
+| 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `5 1 * * *` | 待检查 | [smzdm_checkin.js.md](../../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
 | 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `24 0 * * *` | 待检查 | [sudojia_33agilestudio.js.md](../../scripts/sudojia_33agilestudio.js.md)（`docs/scripts/sudojia_33agilestudio.js.md`） |
 | 所有女生会员签到 | `scripts/sudojia_allgirls.js` | `node scripts/sudojia_allgirls.js` | `33 2 * * *` | 待检查 | [sudojia_allgirls.js.md](../../scripts/sudojia_allgirls.js.md)（`docs/scripts/sudojia_allgirls.js.md`） |
 | 安慕希每日签到 | `scripts/sudojia_amx.js` | `node scripts/sudojia_amx.js` | `25 0 * * *` | 待检查 | [sudojia_amx.js.md](../../scripts/sudojia_amx.js.md)（`docs/scripts/sudojia_amx.js.md`） |
@@ -159,6 +159,7 @@
 | 甄稀冰淇淋每日签到 | `scripts/sudojia_zxice.js` | `node scripts/sudojia_zxice.js` | `34 2 * * *` | 待检查 | [sudojia_zxice.js.md](../../scripts/sudojia_zxice.js.md)（`docs/scripts/sudojia_zxice.js.md`） |
 | 微博超话签到 | `scripts/supertopicsign.py` | `python3 scripts/supertopicsign.py` | `41 1 * * *` | 待检查 | [supertopicsign.py.md](../../scripts/supertopicsign.py.md)（`docs/scripts/supertopicsign.py.md`） |
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
+| 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `39 0 * * *` | 待检查 | [task_3aae8a25.py.md](../../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `39 2 * * *` | 待检查 | [tieba_checkin.py.md](../../scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
