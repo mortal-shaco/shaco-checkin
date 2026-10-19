@@ -1,5 +1,5 @@
 // name: 什么值得买签到
-// cron: 58 0 * * *
+// cron: 2 1 * * *
 'use strict';
 // qinglong-notification-policy: begin
 (() => {
@@ -17,7 +17,11 @@
   process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
 })();
 // qinglong-notification-policy: end
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: GPL-3.0-only
+// Effective combined-work license: GNU General Public License v3.0 only.
+// Primary GPL source: chavyleung/scripts, smzdm/quanx/smzdm.js
+// Catalog ac10a6e47692bf1f, upstream commit 2c30c299e3ef808b787054d256250a4adfb93b34.
+// The MIT notices below are retained for the previously merged components.
 // Copyright (c) 2023 Hex
 // Source: hex-ci/smzdm_script, smzdm_checkin.js (MIT).
 // Upstream attribution: agluo/ql-script-hub (SMZDM_checkin.py).
@@ -55,9 +59,11 @@
 // SMZDM_LOTTERY_LIFE=1 显式启用原上游未默认执行的生活频道；不自动重试抽奖。
 // SMZDM_DRY_RUN=1 完全离线；QINGLONG_NOTIFY=0 关闭通知。
 // SMZDM_TOKEN_MODE=sess（默认）保留维护接口；robot 显式启用上游 10.4.1 Robot Token 流程。
+// SMZDM_TOKEN_MODE=dual 显式依次执行维护版 App 签到与网页状态核验，兼容 chavyleung 上游的双通道能力。
 // 兼容 SMZDM_COOKIES 或 SMZDM_COOKIE 每行 Cookie，需提供同顺序逐行 SMZDM_SK，或 Cookie 自带 sk。
 // 上游每日 30 9 * * * 可作为签到自定义调度；不要重复建立每日签到任务。
 // 通知按青龙 → PushPlus → Server酱回退；PUSHPLUS_TOKEN、SENDKEY 可选且受 QINGLONG_NOTIFY 控制。
+// QINGLONG_NOTIFY_SCRIPTS 可用目录 ID、路径、文件名、通配符或 * 筛选；设置为空表示全部关闭。
 // Additional source: yuxian158/check, dailycheckin_scripts/ck_smzdm.py (MIT).
 // 网页模式 SMZDM_TOKEN_MODE=web：SMZDM_ACCOUNT 每行 |完整 Cookie，无需 sk。
 // 登录本人 www.smzdm.com，在开发者工具 Network 中复制 zhiyou.smzdm.com 请求的完整 Cookie。
@@ -100,7 +106,7 @@ function accountLines(value) {
 
 function tokenMode(env = process.env) {
   const mode = String(env.SMZDM_TOKEN_MODE || 'sess').trim().toLowerCase();
-  if (!['sess', 'robot', 'web'].includes(mode)) throw new Error('SMZDM_TOKEN_MODE 必须为 sess、robot 或 web');
+  if (!['sess', 'robot', 'web', 'dual'].includes(mode)) throw new Error('SMZDM_TOKEN_MODE 必须为 sess、robot、web 或 dual');
   return mode;
 }
 
@@ -754,9 +760,26 @@ function notifier(env = process.env) {
   return null;
 }
 
+function globMatch(value, pattern) {
+  const escaped = String(pattern).replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.');
+  return new RegExp(`^${escaped}$`, 'i').test(value);
+}
+
+function notificationSelected(env = process.env) {
+  if (env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
+  const selectors = String(env.QINGLONG_NOTIFY_SCRIPTS).split(/[,;\s]+/).map((value) => value.trim()).filter(Boolean);
+  if (!selectors.length) return false;
+  const invoked = path.resolve(process.argv[1] || 'candidate.js');
+  const basename = path.basename(invoked);
+  const normalized = invoked.replaceAll('\\', '/');
+  const identities = ['ac10a6e47692bf1f', '621df252c315f2d1', 'scripts/smzdm_checkin.js', 'smzdm_checkin.js', basename, normalized];
+  return selectors.some((selector) => selector === '*' || identities.some((identity) => globMatch(identity, selector)));
+}
+
 async function sendNotification(summary, env = process.env) {
   if (env.QINGLONG_NOTIFY !== undefined && /^(0|false|no|off)$/i.test(env.QINGLONG_NOTIFY.trim())) return '已关闭';
   if (truthy(env.SMZDM_DRY_RUN)) return '离线预演：已生成脱敏通知，未调用联网组件';
+  if (!notificationSelected(env)) return '已按脚本列表关闭';
   const content = `账号总数 ${summary.accounts_total}，成功 ${summary.accounts_success}，失败 ${summary.accounts_failed}。模式 ${summary.mode}，状态 ${summary.execution}\nBENEFIT_SUMMARY=${JSON.stringify(summary)}`;
   const outcomes = [];
   const send = notifier(env);
@@ -841,7 +864,9 @@ async function run(env = process.env) {
       log(`${label}：[2/4] 规划签到请求`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       log(`${label}：[3/4] 规划奖励、概览与经验查询`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       const interactionPlan = interactionMode(env) === 'none' ? 0 : (interactionMode(env) === 'both' ? 20 : 12);
-      const planned = action === 'upstream-lottery' ? interactionPlan + 1 : interactionPlan + (action === 'lottery' ? 0 : (tokenMode(env) === 'web' ? 3 : (tokenMode(env) === 'robot' ? 8 : 7))) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
+      const mode = tokenMode(env);
+      const checkinPlan = mode === 'web' ? 3 : (mode === 'robot' ? 8 : (mode === 'dual' ? 10 : 7));
+      const planned = action === 'upstream-lottery' ? interactionPlan + 1 : interactionPlan + (action === 'lottery' ? 0 : checkinPlan) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
       log(`${label}：互动开关 ${interactionMode(env)}（离线预演不查询列表、不提交互动）`, '└─');
       if (action === 'upstream-lottery') log(`${label}：固定活动仅规划一次 POST，不访问网络、不执行签到或会员转盘`, '⏭️');
       log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤上限（互动按实际列表长度执行）；抽奖仅在显式选择后执行`, '└─');
@@ -854,8 +879,17 @@ async function run(env = process.env) {
         if (action === 'upstream-lottery') result = await runUpstreamLottery(accounts[i], env, report);
         else if (action === 'lottery') result = await runLottery(accounts[i], env, report);
         else {
-          result = tokenMode(env) === 'web' ? await runWeb(accounts[i], report)
-            : await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, report, env);
+          const mode = tokenMode(env);
+          if (mode === 'web') result = await runWeb(accounts[i], report);
+          else {
+            result = await runLive(accounts[i], env.SMZDM_USER_AGENT_APP, report, env);
+            if (mode === 'dual') {
+              const web = await runWeb(accounts[i], report);
+              result.ok = result.ok && web.ok;
+              result.state = result.ok ? 'App 签到与网页状态均已验证' : '部分签到通道失败';
+              for (const key of Object.keys(result.counts)) result.counts[key] += web.counts[key];
+            }
+          }
           if (action === 'all') {
             const lottery = await runLottery(accounts[i], env, report);
             result.ok = result.ok && lottery.ok;
@@ -906,4 +940,5 @@ if (require.main === module) run().catch(async () => {
   await finish({execution: 'failed', mode: 'live', accounts_total: 0, accounts_success: 0, accounts_failed: 1, tasks_total: 1, tasks_success: 0, tasks_already: 0, tasks_skipped: 0, tasks_failed: 1}, 1, started, process.env);
 });
 
-module.exports = {runUpstreamLottery, webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, sendNotification};
+module.exports = {runUpstreamLottery, webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, notificationSelected, sendNotification};
+
