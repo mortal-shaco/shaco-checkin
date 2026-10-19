@@ -36383,6 +36383,145 @@
       }
     },
     {
+      "catalogId": "0958709b5f55078a",
+      "applicationKey": "unitaryhighs/ql_sign_script::wnflb",
+      "checkProfile": {
+        "requiredEnv": [
+          "WNFLB_COOKIE_LIST"
+        ],
+        "optionalEnv": [
+          "WNFLB_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WNFLB_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到接口确认成功",
+          "今日已签到",
+          "最终状态：成功",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "读取签到页中的签到前积分和非敏感账号身份。",
+          "提交万能福利吧每日签到，并明确识别签到成功或今日已完成。",
+          "签到后回查累计签到天数、连续签到天数和当前积分。",
+          "支持每行一个账号的多账号独立执行与汇总统计。",
+          "支持完全断网预演、青龙通知选择和单行机器可读任务汇总。"
+        ],
+        "sideEffects": [
+          "实时模式会提交论坛每日签到，可能增加账号积分、累计签到天数和连续签到天数。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "万能福利吧每日签到",
+      "path": "scripts/wnflb.js",
+      "sha256": "80b8350c4ffd9a03aac1eab69869bd4099a3f7808d7d9e4effc5040785dbdc6c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "sign/wnflb.js"
+      },
+      "cron": "0 45 11 * * *",
+      "command": "node scripts/wnflb.js",
+      "environment": [
+        {
+          "name": "WNFLB_COOKIE_LIST",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录万能福利吧网页后，打开浏览器开发者工具的网络面板并刷新页面，在发往 www.wnflb2023.com 的请求头中复制完整 Cookie。每行填写一个账号，严禁上传或公开分享。",
+          "format": "每行一个完整 Cookie，例如由若干名称=值片段组成；不使用 &、@ 或其他字符分隔账号。"
+        },
+        {
+          "name": "WNFLB_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；设为 1、true、yes 或 on 时启用完全断网预演。",
+          "format": "布尔开关；预演模式不请求业务站点，也不调用通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要按脚本选择通知时填写；可使用目录 ID 0958709b5f55078a、文件名 wnflb.js、candidate.js 或通配符 *。",
+          "format": "多个选择器可用逗号、分号、空白或换行分隔；显式空值表示全部禁用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在 sendNotify.js 不位于青龙标准目录时，填写该通知脚本所在目录。",
+          "format": "包含 sendNotify.js 的本地目录绝对路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "WNFLB_COOKIE_LIST 中每个非空行代表一个账号；账号依次独立执行，任一账号失败时进程以非零状态退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "读取签到页中的签到前积分和非敏感账号身份。",
+        "提交万能福利吧每日签到，并明确识别签到成功或今日已完成。",
+        "签到后回查累计签到天数、连续签到天数和当前积分。",
+        "支持每行一个账号的多账号独立执行与汇总统计。",
+        "支持完全断网预演、青龙通知选择和单行机器可读任务汇总。"
+      ],
+      "sideEffects": [
+        "实时模式会提交论坛每日签到，可能增加账号积分、累计签到天数和连续签到天数。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0958709b5f55078a",
+        "candidateSha256": "b13f2468bb64afd059538c2fd4d7b6aa7d3213dd0fa934ad91747fc156564ed9"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "b13f2468bb64afd059538c2fd4d7b6aa7d3213dd0fa934ad91747fc156564ed9",
+        "releaseSha256": "80b8350c4ffd9a03aac1eab69869bd4099a3f7808d7d9e4effc5040785dbdc6c",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:37:55.528102+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b13f2468bb64afd059538c2fd4d7b6aa7d3213dd0fa934ad91747fc156564ed9",
+          "toCandidateSha256": "80b8350c4ffd9a03aac1eab69869bd4099a3f7808d7d9e4effc5040785dbdc6c",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "af0ae4c86279f8da",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::workbuddy",
       "checkProfile": {
@@ -39152,6 +39291,149 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "db87391467bd1a78afea9e1725cf8a5a06a4f78373821128a20dcb98ed03b338",
           "toCandidateSha256": "ff4597dcb15f66633dae31cdb21ab6f2719c45b92a66b6fd48644a1e163f0876",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "43ad6c3466e9d02c",
+      "applicationKey": "unitaryhighs/ql_sign_script::znzmo",
+      "checkProfile": {
+        "requiredEnv": [
+          "ZNZMO_COOKIE_LIST"
+        ],
+        "optionalEnv": [
+          "ZNZMO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ZNZMO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今天已经签到",
+          "最终状态：SUCCESS",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用知末官方签到接口完成每日签到，并在接口明确返回时展示积分奖励。",
+          "识别接口明确返回的今日已签到状态，并将其作为已完成处理。",
+          "支持以换行分隔多个账号，逐账号独立执行并汇总结果。",
+          "提供完全断网的预演模式，用占位 Cookie 校验配置和执行流程。",
+          "输出带时间戳的分阶段日志、账号统计、任务统计和单行结构化摘要。",
+          "真实运行结束后通过青龙 sendNotify.js 发送不含凭据和原始响应的摘要。"
+        ],
+        "sideEffects": [
+          "真实运行会执行知末账号每日签到，可能增加积分并更新连续签到状态。",
+          "启用青龙通知时会向已配置的通知渠道发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "知末签到",
+      "path": "scripts/znzmo.js",
+      "sha256": "15b87916a7a434bb2d7dd52149f6f65dd35669cfb21dbd4f276b49bbed97bd13",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "sign/znzmo.js"
+      },
+      "cron": "0 55 11 * * *",
+      "command": "node scripts/znzmo.js",
+      "environment": [
+        {
+          "name": "ZNZMO_COOKIE_LIST",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录知末网站后，在浏览器开发者工具的网络请求中找到 api.znzmo.com 请求，复制完整 Cookie 请求头；不要把 Cookie 分享给他人。",
+          "format": "每行一个账号的完整 Cookie，例如由 SESSION、user-uuid、znzmo-id 等站点实际下发字段组成；分号属于 Cookie 内容，不能用于分隔账号。"
+        },
+        {
+          "name": "ZNZMO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；设置为 1、true、yes 或 on 时启用完全断网预演。",
+          "format": "布尔开关，默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选通知脚本筛选列表，可填写目录编号、znzmo.js、candidate.js 或通配符；留空值会关闭全部脚本通知。",
+          "format": "使用逗号、分号、空白或换行分隔；星号表示全部脚本。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如青龙通知脚本不在标准目录，可填写包含 sendNotify.js 的本机目录。",
+          "format": "本机目录绝对路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "ZNZMO_COOKIE_LIST 每个非空行表示一个账号；逐账号独立执行，任何账号失败都会令进程返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用知末官方签到接口完成每日签到，并在接口明确返回时展示积分奖励。",
+        "识别接口明确返回的今日已签到状态，并将其作为已完成处理。",
+        "支持以换行分隔多个账号，逐账号独立执行并汇总结果。",
+        "提供完全断网的预演模式，用占位 Cookie 校验配置和执行流程。",
+        "输出带时间戳的分阶段日志、账号统计、任务统计和单行结构化摘要。",
+        "真实运行结束后通过青龙 sendNotify.js 发送不含凭据和原始响应的摘要。"
+      ],
+      "sideEffects": [
+        "真实运行会执行知末账号每日签到，可能增加积分并更新连续签到状态。",
+        "启用青龙通知时会向已配置的通知渠道发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/43ad6c3466e9d02c",
+        "candidateSha256": "d2b1f68175dec337f4735010e377e973f2dcec919758954dccfd2024a9b25bd6"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "d2b1f68175dec337f4735010e377e973f2dcec919758954dccfd2024a9b25bd6",
+        "releaseSha256": "15b87916a7a434bb2d7dd52149f6f65dd35669cfb21dbd4f276b49bbed97bd13",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:38:56.779344+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "d2b1f68175dec337f4735010e377e973f2dcec919758954dccfd2024a9b25bd6",
+          "toCandidateSha256": "15b87916a7a434bb2d7dd52149f6f65dd35669cfb21dbd4f276b49bbed97bd13",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
