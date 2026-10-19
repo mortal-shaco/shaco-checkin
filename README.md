@@ -2,7 +2,7 @@
 
 通用签到类青龙脚本发布仓库。脚本经来源、许可证和基础检查后自动发布；真实账号人工核验后标记为已检查或上架。公开说明与本地「脚本管理」使用同一套状态：`上架` / `已检查` / `待检查`。
 
-当前公开脚本 **223** 个：上架 **5** · 已检查 **0** · 待检查 **218**。  
+当前公开脚本 **223** 个：上架 **4** · 已检查 **0** · 待检查 **219**。  
 本页保留上架/已检查全表与待检查预览；全部脚本请用 [脚本目录索引](docs/catalog/README.md)（字母 / 分类）浏览，详单在 [`docs/scripts/`](docs/scripts/)。
 待检查脚本尚未验证真实账号业务，基础核验通过不代表业务成功。
 
@@ -10,9 +10,9 @@
 
 | 管理状态 | 数量 | 含义 |
 | --- | --- | --- |
-| 上架 | 5 | 维护者确认保留的当前版本 |
+| 上架 | 4 | 维护者确认保留的当前版本 |
 | 已检查 | 0 | 必填参数齐备且已有当前版本本地运行记录，尚未点击上架 |
-| 待检查 | 218 | 已发布，但尚未完成当前版本的参数配置与本地运行核验 |
+| 待检查 | 219 | 已发布，但尚未完成当前版本的参数配置与本地运行核验 |
 
 ### 上架脚本
 
@@ -22,7 +22,6 @@
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `5 0 * * *` | 上架 | [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)（`docs/scripts/cfmoto_checkin.py.md`） |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `22 8,14,20 * * *` | 上架 | [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)（`docs/scripts/kuaishou_reward_status.py.md`） |
 | 摩托范每日签到 | `scripts/sudojia_moto.js` | `node scripts/sudojia_moto.js` | `26 0 * * *` | 上架 | [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)（`docs/scripts/sudojia_moto.js.md`） |
-| 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `28 2 * * *` | 上架 | [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
 
 ### 已检查脚本
 
@@ -43,7 +42,7 @@ _当前无此类脚本。_
 | 华润通999答题 | `scripts/999.py` | `python3 scripts/999.py` | `49 1 1 1 1` | 待检查 | [999.py.md](docs/scripts/999.py.md)（`docs/scripts/999.py.md`） |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](docs/scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
 
-其余 **210** 个待检查脚本请打开 [脚本目录索引](docs/catalog/README.md)，按字母或分类查看全部。
+其余 **211** 个待检查脚本请打开 [脚本目录索引](docs/catalog/README.md)，按字母或分类查看全部。
 
 ## 青龙面板安装
 
@@ -97,7 +96,6 @@ _当前无此类脚本。_
 - `scripts/cfmoto_checkin.py`（上架）：执行每日签到；发帖和评论优先使用接口随机文本，返回出处时拼接作者与作品信息，接口异常时使用本地文案兜底；按配置发布帖子、评论、点赞并完成分享积分任务。完整说明见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`（上架）：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。完整说明见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`（上架）：查询账号信息并显示官方昵称，刷新当前运行中的会话凭据；提交每日签到，严格根据签到接口数字业务码 0 确认成功；按明确要求暂停签到状态查询及二次核验；查询当前能量。完整说明见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
-- `scripts/tieba_checkin.py`（上架）：保留登录验证和 TBS 获取、读取关注贴吧、识别当日已签到项目、为未签到贴吧逐吧签到，沿用明确成功码和已签到判断。；直接显示官方接口返回的昵称、用户名或公开 UID，方便核对账号。；显式开启后通过 APP 成长接口验证登录、取得独立 TBS，并执行成长任务每日签到，要求业务码明确为 0。。完整说明见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 
 ## 环境变量与参数
 
@@ -113,7 +111,6 @@ _当前无此类脚本。_
 - `scripts/cfmoto_checkin.py`：必选 `CFMOTO_COOKIE`；详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：必选 `KUAISHOU_COOKIE`；详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`：必选 `MOTO_TOKEN`；详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
-- `scripts/tieba_checkin.py`：必选 `TIEBA_COOKIE`；详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 
 ### 可选参数
 
@@ -129,7 +126,6 @@ _当前无此类脚本。_
 - `scripts/cfmoto_checkin.py`（上架）：SHA-256 `d45204f3a633d6ef06813b9a637ed6add21ba382be8788f439062dce1e00cce6`；含 live 业务证据。详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`（上架）：SHA-256 `c689f2a14014bfe2374054469b4564608b5db69b981f10cabbca842321f24f63`；含 live 业务证据。详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`（上架）：SHA-256 `d51fe6ba62db0760730c65268b698ce67296d2dad96fe22e2048c2652359c14c`；基础核验通过，业务待检查。详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
-- `scripts/tieba_checkin.py`（上架）：SHA-256 `7b9a2055ee9da66997f67ad484ee4574b9b29850e5b87b881bca8e592e422816`；基础核验通过，业务待检查。详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。`待检查` 不代表业务失败，只表示维护者尚未完成当前版本人工核验。
 
@@ -139,7 +135,6 @@ _当前无此类脚本。_
 - `scripts/cfmoto_checkin.py`：改变账号的当日签到和积分状态；最多发布三个公开帖子并留下可见内容。完整说明见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：见详单。完整说明见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`：正式运行提交每日签到，可能获得能量奖励；不自动重试提交；正式运行时通过青龙通知模块发送脱敏任务摘要（可关闭）。完整说明见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
-- `scripts/tieba_checkin.py`：正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态及可能产生签到奖励。；仅显式开启成长任务且 Cookie 同时含 BDUSS 和 CUID 时提交 APP 成长每日签到，改变当日成长签到状态及可能产生的成长奖励。。完整说明见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 
 使用测试账号先行验证。停止使用时应禁用任务、删除订阅和敏感环境变量；怀疑凭据泄漏时立即在对应平台撤销会话。
 
@@ -151,4 +146,3 @@ _当前无此类脚本。_
 - `scripts/cfmoto_checkin.py`：作者自有来源 `shaco_autowork/cf_sign.py`。 详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。 详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`：上游 `sudojia/AutoTaskScript` / `src/client/sudojia_moto.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。 详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
-- `scripts/tieba_checkin.py`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_tieba.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。 详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。

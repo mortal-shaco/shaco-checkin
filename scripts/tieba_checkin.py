@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 百度贴吧签到
-# cron: 28 2 * * *
+# cron: 39 2 * * *
 """百度贴吧每日签到（青龙维护版）。
 
 SPDX-License-Identifier: GPL-3.0-only
@@ -23,6 +23,9 @@ TIEBA_VERBOSE=1 显示逐吧详情；TIEBA_DELAY_MS 默认 1200 毫秒，范围 
 无发帖、评论、分享、兑换、关注或资料修改。
 Also incorporates compatible behavior from agluo/ql-script-hub
 tieba_checkin.py (MIT), catalog 38ff8ca6c57173b4.
+Reviewed and merged compatible behavior from trw131/TiebaCheckIn tieba.py
+(MIT), catalog 378c7b1ee9522adb, source SHA256
+4966308e5a670f9ec5d93ef6ee9b3f63b277de51cc24377ece658bbd8ae2fab2.
 """
 
 from __future__ import annotations
@@ -33,7 +36,7 @@ import re as _ql_notify_re
 if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
     _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
     if _ql_notify_selection is None:
-        _ql_notify_enabled = True
+        _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
         _ql_notify_identities = ('e608052390d250da', 'scripts/tieba_checkin.py', 'tieba_checkin.py', 'tieba_checkin')
@@ -45,10 +48,12 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
     _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
 # qinglong-notification-policy: end
 
-import importlib.util
+import fnmatch
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import time
 import urllib.error
@@ -60,6 +65,15 @@ from typing import Any
 
 
 NAME = "百度贴吧签到"
+CATALOG_ID = "e608052390d250da"
+NOTIFY_IDENTITIES = (
+    CATALOG_ID,
+    "378c7b1ee9522adb",
+    "scripts/tieba_checkin.py",
+    "tieba_checkin.py",
+    "output/candidate.py",
+    "candidate.py",
+)
 FORUMS_URL = "https://tieba.baidu.com/mo/q/newmoindex"
 SIGN_URL = "https://tieba.baidu.com/sign/add"
 MAX_RESPONSE_BYTES = 1_000_000
@@ -95,8 +109,24 @@ def enabled(name: str) -> bool:
 
 
 def notification_enabled() -> bool:
-    value = os.environ.get("QINGLONG_NOTIFY")
-    return value is None or not bool(re.fullmatch(r"0|false|no|off", value, re.IGNORECASE))
+    """实现全局开关与按脚本选择，选择器未设置时沿用已发布任务默认值。"""
+    mode = os.environ.get("QINGLONG_NOTIFY", "auto").strip().lower()
+    if mode in {"0", "false", "no", "off"}:
+        return False
+    if mode in {"1", "true", "yes", "on"}:
+        return True
+    if mode not in {"", "auto"}:
+        timeline("⚠️ QINGLONG_NOTIFY 值无效，为避免意外外发通知，本次不发送")
+        return False
+    if "QINGLONG_NOTIFY_SCRIPTS" not in os.environ:
+        return True
+    selection = os.environ.get("QINGLONG_NOTIFY_SCRIPTS", "")
+    selectors = [item.lower() for item in re.split(r"[,;\s]+", selection.strip()) if item]
+    return any(
+        selector == "*" or fnmatch.fnmatch(identity.lower(), selector)
+        for selector in selectors
+        for identity in NOTIFY_IDENTITIES
+    )
 
 
 def notify(summary: str) -> str:
@@ -106,40 +136,75 @@ def notify(summary: str) -> str:
     if enabled("TIEBA_DRY_RUN"):
         timeline("⏭️ 断网预演通知汇总：" + summary)
         return "⏭️ 断网预演：已生成通知汇总，未加载通知组件"
-    sender = None
+    roots = [os.getenv("QINGLONG_NOTIFY_DIR", ""), "/ql/data/scripts", "/ql/scripts"]
+    python_worker = """import importlib.util, sys
+from pathlib import Path
+title, body = sys.argv[1], sys.stdin.read()
+try:
+    from notify import send
+    send(title, body)
+    raise SystemExit(0)
+except Exception:
+    pass
+for root in sys.argv[2:]:
+    path = Path(root) / 'notify.py'
+    if not path.is_file():
+        continue
     try:
-        from notify import send as sender  # type: ignore
+        sys.path.insert(0, str(path.parent))
+        spec = importlib.util.spec_from_file_location('qinglong_notify', path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.send(title, body)
+        raise SystemExit(0)
+    except SystemExit:
+        raise
     except Exception:
-        roots = [
-            os.getenv("QINGLONG_NOTIFY_DIR", ""),
-            "/ql/data/scripts",
-            "/ql/scripts",
-        ]
+        continue
+raise SystemExit(2)
+"""
+    try:
+        completed = subprocess.run(
+            [sys.executable, "-c", python_worker, NAME, *filter(None, roots)],
+            input=summary,
+            text=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=20,
+            check=False,
+        )
+        if completed.returncode == 0:
+            return "✅ 已通过 notify.py 推送"
+    except (OSError, subprocess.SubprocessError):
+        pass
+
+    node = shutil.which("node")
+    if node:
+        program = (
+            "const fs=require('fs');"
+            "Promise.resolve(require(process.argv[1]).sendNotify(process.argv[2],"
+            "fs.readFileSync(0,'utf8'))).then(()=>process.exit(0)).catch(()=>process.exit(1));"
+        )
         for root in filter(None, roots):
-            notify_path = Path(root) / "notify.py"
+            notify_path = Path(root) / "sendNotify.js"
             if not notify_path.is_file():
                 continue
-            spec = importlib.util.spec_from_file_location("qinglong_notify", notify_path)
-            if not spec or not spec.loader:
-                continue
             try:
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
-                candidate = getattr(module, "send", None)
-                if callable(candidate):
-                    sender = candidate
-                    break
-            except Exception:
+                completed = subprocess.run(
+                    [node, "-e", program, str(notify_path.resolve()), NAME],
+                    input=summary,
+                    text=True,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    timeout=20,
+                    check=False,
+                )
+                if completed.returncode == 0:
+                    return "✅ 已通过 sendNotify.js 推送"
+            except (OSError, subprocess.SubprocessError):
                 continue
-    if not callable(sender):
-        print(f"[{NAME}] 未找到青龙 notify.py，已跳过任务总结推送。", file=sys.stderr)
-        return "⚠️ 未找到通知组件"
-    try:
-        sender(NAME, summary)
-        return "✅ 已推送"
-    except Exception as error:
-        print(f"[{NAME}] 通知发送失败：{type(error).__name__}", file=sys.stderr)
-        return "⚠️ 推送失败"
+    print(f"[{NAME}] 未找到可用通知组件或通知发送失败，已保留业务退出码。", file=sys.stderr)
+    return "⚠️ 通知不可用或推送失败"
 
 
 def log_banner(mode: str, total: int) -> None:
