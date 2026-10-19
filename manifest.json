@@ -231,6 +231,192 @@
       }
     },
     {
+      "catalogId": "00e71cec355af1fb",
+      "applicationKey": "2cycd",
+      "checkProfile": {
+        "requiredEnv": [
+          "CYCD_COOKIE"
+        ],
+        "optionalEnv": [
+          "cycd_cookie",
+          "CYCD_DRY_RUN",
+          "CYCD_FALLBACK_TEXT",
+          "CYCD_TIMEOUT",
+          "CYCD_RETRIES",
+          "CYCD_BASE_URL",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CYCD_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CYCD_BASE_URL": "https://www.2cycd.com",
+          "CYCD_TIMEOUT": "10",
+          "CYCD_RETRIES": "3",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已经完成签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "按每日计划为 2cycd 论坛账号执行签到并领取贡献",
+          "支持每行一个 Cookie 的多账号独立处理，并在任一账号失败时整体返回非零退出码",
+          "签到前从一言 HTTPS 接口获取公开文字并按作者、来源格式署名，所有规定故障均回退到本地文字",
+          "保留原有最多三次尝试的默认行为，并允许在安全范围内调整超时和尝试次数",
+          "提供完全断网的预演模式、分阶段脱敏日志、逐账号统计及单行结构化任务汇总",
+          "按青龙全局开关和脚本选择列表发送脱敏通知，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "向 2cycd 论坛签到插件提交每日签到",
+          "提交签到文字，该文字可能显示在论坛的签到记录中"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "2cycd 论坛自动签到",
+      "path": "scripts/2cycd.py",
+      "sha256": "25b8017bb313cc0226008cc36a8141e3beffd0aa6de9d33731441593a5b20a40",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "CelestialRipple/2cycd_Autosignin",
+        "branch": "main",
+        "commit": "3f63607d36719166c8deb012357d7b8945dc62cc",
+        "originalPath": "autosignin.py"
+      },
+      "cron": "0 0 * * *",
+      "command": "python3 scripts/2cycd.py",
+      "environment": [
+        {
+          "name": "CYCD_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.2cycd.com/，打开开发者工具的网络面板并刷新页面，从发往 2cycd.com 的 home.php 或 plugin.php 请求头中复制完整 Cookie 值。每个账号单独占一行。",
+          "format": "每行一个账号的完整 Cookie 请求头值；Cookie 内部可保留分号、& 和 @，不得用它们分隔账号。"
+        },
+        {
+          "name": "cycd_cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容变量，获取方式与 CYCD_COOKIE 相同；新配置应优先使用 CYCD_COOKIE。",
+          "format": "每行一个账号的完整 Cookie 请求头值。"
+        },
+        {
+          "name": "CYCD_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要在完全断网条件下检查配置和流程时设置。",
+          "format": "设为 1、true、yes 或 on 启用预演。"
+        },
+        {
+          "name": "CYCD_FALLBACK_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行填写一言接口失败时使用的本地签到文字；不填写则使用脚本内置文字。",
+          "format": "去除首尾空白后为 1 至 280 个字符。"
+        },
+        {
+          "name": "CYCD_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况设置单次请求超时；不填写时为 10 秒。",
+          "format": "1 至 60 之间的秒数。"
+        },
+        {
+          "name": "CYCD_RETRIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要设置每个账号的最多请求尝试次数；不填写时为 3 次。",
+          "format": "1 至 5 之间的整数。"
+        },
+        {
+          "name": "CYCD_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通常无需设置；仅在 2cycd 官方站点迁移到新的 HTTPS 子域名时填写。",
+          "format": "属于 2cycd.com、不含账号、密码、查询参数或片段的 HTTPS 地址。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 QINGLONG_NOTIFY=auto 时填写要通知的脚本选择器。",
+          "format": "可用逗号、分号、空白或换行分隔；支持 00e71cec355af1fb、candidate.py、output/candidate.py、通配符或 *。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙 notify.py 不在默认位置时，填写其所在目录。",
+          "format": "包含 notify.py 的本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个账号的完整 Cookie 单独占一行；逐账号独立执行，任一账号失败时进程整体返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "按每日计划为 2cycd 论坛账号执行签到并领取贡献",
+        "支持每行一个 Cookie 的多账号独立处理，并在任一账号失败时整体返回非零退出码",
+        "签到前从一言 HTTPS 接口获取公开文字并按作者、来源格式署名，所有规定故障均回退到本地文字",
+        "保留原有最多三次尝试的默认行为，并允许在安全范围内调整超时和尝试次数",
+        "提供完全断网的预演模式、分阶段脱敏日志、逐账号统计及单行结构化任务汇总",
+        "按青龙全局开关和脚本选择列表发送脱敏通知，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "向 2cycd 论坛签到插件提交每日签到",
+        "提交签到文字，该文字可能显示在论坛的签到记录中"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/00e71cec355af1fb",
+        "candidateSha256": "97902e2125ddb87f81121b88d7d791cf01721afcd5aa44ea2db64f777b314872"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "97902e2125ddb87f81121b88d7d791cf01721afcd5aa44ea2db64f777b314872",
+        "releaseSha256": "25b8017bb313cc0226008cc36a8141e3beffd0aa6de9d33731441593a5b20a40",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:43:33.295392+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "97902e2125ddb87f81121b88d7d791cf01721afcd5aa44ea2db64f777b314872",
+          "toCandidateSha256": "25b8017bb313cc0226008cc36a8141e3beffd0aa6de9d33731441593a5b20a40",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "4a0d6e0728deb3f6",
       "applicationKey": "2cycdx",
       "checkProfile": {
@@ -691,6 +877,182 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "8477d0f2eec2d4cc38799acc921cd04b11d9648be363ee519d8bb51d3d15f664",
           "toCandidateSha256": "591bdea8bdcb0bbc14cf41f135994b63d55fe570f40f767614526f95572577e1",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "1e0938cba7889cb3",
+      "applicationKey": "wq26888/wq268-ql-scripts::69yun",
+      "checkProfile": {
+        "requiredEnv": [
+          "AIRPORT_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "AIRPORT{n}_URL",
+          "AIRPORT{n}_USER{m}",
+          "AIRPORT{n}_PASS{m}",
+          "PROXY_URL",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "AIRPORT_CHECKIN_DRY_RUN"
+        ],
+        "dryRunEnv": {
+          "AIRPORT_CHECKIN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\"",
+          "\"verifiedBusinessSuccess\":true"
+        ],
+        "features": [
+          "使用机场账号登录并通过 Cookie 会话执行每日签到",
+          "查询并显示账号的到期时间与剩余流量",
+          "支持多个机场和多个账号逐个独立运行",
+          "兼容原有连续编号环境变量，并支持逐行 JSON 账号配置",
+          "对临时网络故障和服务端错误执行有限重试，可选使用 HTTP 或 HTTPS 代理",
+          "提供完全断网的配置预演、时间轴日志、脱敏统计和单行 JSON 汇总",
+          "按全局开关和脚本筛选规则发送青龙脱敏通知"
+        ],
+        "sideEffects": [
+          "在目标机场建立登录会话",
+          "向目标机场提交每日签到"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "69云签到",
+      "path": "scripts/69yun_checkin.py",
+      "sha256": "6f4f134cd77e6d2df8f3d0ae2a8127bb75504c86e05e0f1584dc64556f9c8498",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "wq26888/wq268-ql-scripts",
+        "branch": "main",
+        "commit": "be9e3926e9ce7d14c911fcbe837b75cb12cc2b7b",
+        "originalPath": "69yun/69yun_checkin.py"
+      },
+      "cron": "20 0 * * *",
+      "command": "python3 scripts/69yun_checkin.py",
+      "environment": [
+        {
+          "name": "AIRPORT_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在机场网站使用浏览器可以正常登录的账号信息；将该机场的 HTTPS 根地址、登录用户名和密码写入同一行 JSON。请仅保存在青龙环境变量中。",
+          "format": "每个非空行一个 JSON 对象，字段为 {\"url\":\"HTTPS 根地址\",\"user\":\"登录用户名\",\"password\":\"登录密码\"}；JSON 解析可完整保留密码中的符号。"
+        },
+        {
+          "name": "AIRPORT{n}_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版兼容参数：填写机场网站的 HTTPS 根地址；新配置 AIRPORT_ACCOUNTS 存在时忽略这些变量。",
+          "format": "n 从 1 连续编号，例如 AIRPORT1_URL。"
+        },
+        {
+          "name": "AIRPORT{n}_USER{m}",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容参数：填写对应机场可以正常登录的账号；新配置 AIRPORT_ACCOUNTS 存在时忽略这些变量。",
+          "format": "n 为从 1 连续编号的机场序号，m 为从 1 连续编号的账号序号；必须与同编号 PASS 同时存在。"
+        },
+        {
+          "name": "AIRPORT{n}_PASS{m}",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容参数：填写对应机场账号的登录密码；新配置 AIRPORT_ACCOUNTS 存在时忽略这些变量。",
+          "format": "n 为从 1 连续编号的机场序号，m 为从 1 连续编号的账号序号；必须与同编号 USER 同时存在。"
+        },
+        {
+          "name": "PROXY_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选；由自有代理服务提供。无需代理时不要设置。",
+          "format": "完整的 http 或 https 代理地址；可包含代理认证信息，因此按敏感变量保存。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选的通知脚本筛选列表；用于只允许指定任务发送通知。",
+          "format": "用逗号、分号、空白或换行分隔 catalogId、文件名或通配模式；* 表示全部，显式空值表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；当 notify.py 不在青龙标准目录时，填写该文件所在目录。",
+          "format": "本机目录路径，目录内应有 notify.py。"
+        },
+        {
+          "name": "AIRPORT_CHECKIN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要验证配置、日志和通知流程但禁止联网时设置。",
+          "format": "1、true、yes 或 on 表示启用断网预演。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "AIRPORT_ACCOUNTS 每个非空行表示一个独立账号，并以单行 JSON 将机场地址、用户名和密码绑定；各账号独立执行，任一账号签到失败都会使进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用机场账号登录并通过 Cookie 会话执行每日签到",
+        "查询并显示账号的到期时间与剩余流量",
+        "支持多个机场和多个账号逐个独立运行",
+        "兼容原有连续编号环境变量，并支持逐行 JSON 账号配置",
+        "对临时网络故障和服务端错误执行有限重试，可选使用 HTTP 或 HTTPS 代理",
+        "提供完全断网的配置预演、时间轴日志、脱敏统计和单行 JSON 汇总",
+        "按全局开关和脚本筛选规则发送青龙脱敏通知"
+      ],
+      "sideEffects": [
+        "在目标机场建立登录会话",
+        "向目标机场提交每日签到"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1e0938cba7889cb3",
+        "candidateSha256": "906666cfadf0089a25e3f7eb09dc6c22cabe09af00f69bad9481f90fab2eae78"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "906666cfadf0089a25e3f7eb09dc6c22cabe09af00f69bad9481f90fab2eae78",
+        "releaseSha256": "6f4f134cd77e6d2df8f3d0ae2a8127bb75504c86e05e0f1584dc64556f9c8498",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:39:32.256103+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "906666cfadf0089a25e3f7eb09dc6c22cabe09af00f69bad9481f90fab2eae78",
+          "toCandidateSha256": "6f4f134cd77e6d2df8f3d0ae2a8127bb75504c86e05e0f1584dc64556f9c8498",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -38183,6 +38545,304 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "67941999e53a82765caebdcf0b984331ca4fee9d5ed1151ff585fa9b3f534d86",
           "toCandidateSha256": "0d1091647c5f29e627578fa0826e48fa7eabbb3e87e61aabe59f77c69f0a4095",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "0437402f1c38ff4a",
+      "applicationKey": "yuxian158/check::bilibili",
+      "checkProfile": {
+        "requiredEnv": [
+          "BILIBILI_COOKIE"
+        ],
+        "optionalEnv": [
+          "BILIBILI_DRY_RUN",
+          "BILIBILI_MANGA_SIGN",
+          "BILIBILI_LIVE_SIGN",
+          "BILIBILI_WATCH",
+          "BILIBILI_SHARE",
+          "BILIBILI_COIN_NUM",
+          "BILIBILI_COIN_TYPE",
+          "BILIBILI_SELECT_LIKE",
+          "BILIBILI_VIP_RECEIVE",
+          "BILIBILI_VIP_MANGA",
+          "BILIBILI_ELEC_NUM",
+          "BILIBILI_ELEC_UID",
+          "BILIBILI_AID",
+          "BILIBILI_CID",
+          "BILIBILI_PROGRESS",
+          "BILIBILI_REGION",
+          "BILIBILI_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BILIBILI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BILIBILI_MANGA_SIGN": "1",
+          "BILIBILI_LIVE_SIGN": "1",
+          "BILIBILI_WATCH": "0",
+          "BILIBILI_SHARE": "0",
+          "BILIBILI_COIN_NUM": "0",
+          "BILIBILI_COIN_TYPE": "1",
+          "BILIBILI_SELECT_LIKE": "0",
+          "BILIBILI_VIP_RECEIVE": "0",
+          "BILIBILI_VIP_MANGA": "0",
+          "BILIBILI_ELEC_NUM": "0",
+          "BILIBILI_ELEC_UID": "0",
+          "BILIBILI_AID": "0",
+          "BILIBILI_CID": "0",
+          "BILIBILI_PROGRESS": "300",
+          "BILIBILI_REGION": "1",
+          "BILIBILI_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\"",
+          "每日经验及已启用动作验证通过"
+        ],
+        "features": [
+          "验证登录状态，并显示官方接口返回的昵称和公开 UID",
+          "执行哔哩哔哩漫画每日签到和直播每日签到",
+          "查询每日经验完成情况、当前经验、硬币余额以及直播金银瓜子余额",
+          "按显式开关上报视频观看进度和登记视频分享计数",
+          "按每日目标为分区视频或关注用户投稿投币，并可选择同时点赞",
+          "按显式开关领取大会员 B 币券、优惠券和漫画大会员福利",
+          "按显式数量和公开 UID 为指定 UP 主充电",
+          "支持每行一个 Cookie 的多账号独立执行、断网预演、脱敏统计和青龙通知"
+        ],
+        "sideEffects": [
+          "默认执行漫画签到和直播签到",
+          "开启观看任务后写入视频观看进度",
+          "开启分享任务后增加视频分享计数，但不发布文字内容",
+          "设置投币数量后消耗硬币，并可在显式开启时同时点赞视频",
+          "开启大会员任务后领取 B 币券、优惠券或漫画福利",
+          "设置充电数量及目标 UID 后消耗 B 币为指定 UP 主充电"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "哔哩哔哩每日任务",
+      "path": "scripts/yuxian158_check_bilibili.py",
+      "sha256": "c958a220e197219d11f854e3bea8c0f63a886c97426f4d271b2f33240e912f2a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_bilibili.py"
+      },
+      "cron": "2 0 * * *",
+      "command": "python3 scripts/yuxian158_check_bilibili.py",
+      "environment": [
+        {
+          "name": "BILIBILI_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录哔哩哔哩网页后，打开浏览器开发者工具的网络面板，从本人发往 api.bilibili.com 的请求中复制完整 Cookie 值，不要包含 Cookie: 请求头名称。",
+          "format": "每行一个账号；每行是以分号分隔的名称=值字段，且必须包含 SESSDATA 和 bili_jct。字段按首个等号切分，值中的后续等号会保留。"
+        },
+        {
+          "name": "BILIBILI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；需要完全断网预演时自行设置。",
+          "format": "布尔值，1、true、yes、on 表示开启；默认 0。"
+        },
+        {
+          "name": "BILIBILI_MANGA_SIGN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；用于控制漫画签到。",
+          "format": "布尔值；默认 1，关闭后不执行漫画签到。"
+        },
+        {
+          "name": "BILIBILI_LIVE_SIGN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；用于控制直播签到。",
+          "format": "布尔值；默认 1，关闭后不执行直播签到。"
+        },
+        {
+          "name": "BILIBILI_WATCH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；确认接受写入观看进度后自行开启。",
+          "format": "布尔值；默认 0。"
+        },
+        {
+          "name": "BILIBILI_SHARE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；确认接受增加视频分享计数后自行开启。",
+          "format": "布尔值；默认 0。此动作不发布文字内容。"
+        },
+        {
+          "name": "BILIBILI_COIN_NUM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；按希望完成的每日投币数量设置。",
+          "format": "0 至 5 的整数；默认 0，表示不投币。"
+        },
+        {
+          "name": "BILIBILI_COIN_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；选择投币候选视频范围。",
+          "format": "0 或 1；默认 1，优先加入关注用户投稿，0 仅使用分区视频。"
+        },
+        {
+          "name": "BILIBILI_SELECT_LIKE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；需要投币时同时点赞才开启。",
+          "format": "布尔值；默认 0，仅在投币动作中生效。"
+        },
+        {
+          "name": "BILIBILI_VIP_RECEIVE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；大会员账号需要领取 B 币券和优惠券时自行开启。",
+          "format": "布尔值；默认 0。"
+        },
+        {
+          "name": "BILIBILI_VIP_MANGA",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；需要领取漫画大会员福利时自行开启。",
+          "format": "布尔值；默认 0。"
+        },
+        {
+          "name": "BILIBILI_ELEC_NUM",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；确认接受消耗 B 币充电后设置电池数量。",
+          "format": "0 至 10000 的整数；默认 0，表示不充电。非零时必须同时设置 BILIBILI_ELEC_UID。"
+        },
+        {
+          "name": "BILIBILI_ELEC_UID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从拟充电 UP 主的公开个人空间地址或公开资料中取得 UID。",
+          "format": "非负整数 UID；默认 0。"
+        },
+        {
+          "name": "BILIBILI_AID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从拟操作视频的公开页面或接口资料中取得 AV 号；不设置时自动选择分区视频。",
+          "format": "非负整数；默认 0。"
+        },
+        {
+          "name": "BILIBILI_CID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从拟操作视频的公开页面数据中取得 CID；不设置时由视频详情接口查询。",
+          "format": "非负整数；默认 0。"
+        },
+        {
+          "name": "BILIBILI_PROGRESS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；按需要设置观看进度秒数。",
+          "format": "1 至 86400 的整数；默认 300，仅在观看上报开启时生效。"
+        },
+        {
+          "name": "BILIBILI_REGION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从哔哩哔哩公开分区资料中选择分区编号。",
+          "format": "1 至 10000 的整数；默认 1。"
+        },
+        {
+          "name": "BILIBILI_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；按网络状况设置单次请求超时。",
+          "format": "1 至 60 的整数秒；默认 15。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知脚本选择器，无需从哔哩哔哩获取。",
+          "format": "以逗号、分号、空白或换行分隔选择器；支持目录路径、文件名、通配符、catalogId 和 *；设置为空表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写青龙 notify.py 所在目录；通常无需设置，脚本会检查青龙标准位置。",
+          "format": "本机目录路径，不要填写脚本文件名。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "BILIBILI_COOKIE 中每个非空行表示一个账号；各账号独立处理，任一账号失败时进程整体返回非零状态。"
+      },
+      "dependencies": [],
+      "features": [
+        "验证登录状态，并显示官方接口返回的昵称和公开 UID",
+        "执行哔哩哔哩漫画每日签到和直播每日签到",
+        "查询每日经验完成情况、当前经验、硬币余额以及直播金银瓜子余额",
+        "按显式开关上报视频观看进度和登记视频分享计数",
+        "按每日目标为分区视频或关注用户投稿投币，并可选择同时点赞",
+        "按显式开关领取大会员 B 币券、优惠券和漫画大会员福利",
+        "按显式数量和公开 UID 为指定 UP 主充电",
+        "支持每行一个 Cookie 的多账号独立执行、断网预演、脱敏统计和青龙通知"
+      ],
+      "sideEffects": [
+        "默认执行漫画签到和直播签到",
+        "开启观看任务后写入视频观看进度",
+        "开启分享任务后增加视频分享计数，但不发布文字内容",
+        "设置投币数量后消耗硬币，并可在显式开启时同时点赞视频",
+        "开启大会员任务后领取 B 币券、优惠券或漫画福利",
+        "设置充电数量及目标 UID 后消耗 B 币为指定 UP 主充电"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0437402f1c38ff4a",
+        "candidateSha256": "57a86f3a704171affc47f60bbb8e60485259cc81f29a78508bc787c3a491d95d"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "57a86f3a704171affc47f60bbb8e60485259cc81f29a78508bc787c3a491d95d",
+        "releaseSha256": "c958a220e197219d11f854e3bea8c0f63a886c97426f4d271b2f33240e912f2a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:39:26.259714+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "57a86f3a704171affc47f60bbb8e60485259cc81f29a78508bc787c3a491d95d",
+          "toCandidateSha256": "c958a220e197219d11f854e3bea8c0f63a886c97426f4d271b2f33240e912f2a",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
