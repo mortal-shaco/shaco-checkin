@@ -35536,8 +35536,8 @@
         ],
         "optionalEnv": [
           "TIE_BA_COOKIE",
-          "TIEBA_DRY_RUN",
           "TIEBA_GROWTH_TASKS",
+          "TIEBA_DRY_RUN",
           "TIEBA_VERBOSE",
           "TIEBA_DELAY_MS",
           "QINGLONG_NOTIFY",
@@ -35555,18 +35555,17 @@
         },
         "successPatterns": [
           "最终状态  全部成功",
-          "\"status\":\"success\"",
-          "TASK_SUMMARY="
+          "\"status\":\"success\""
         ],
         "features": [
-          "验证百度贴吧登录状态并获取签到所需 TBS，接口返回昵称、用户名、显示名称或公开 UID 时直接显示该身份。",
+          "验证百度贴吧登录状态并取得签到所需 TBS；官方接口返回昵称、用户名、显示名称或公开 UID 时直接显示该非敏感身份。",
           "读取账号关注的贴吧列表，识别当日已签到项目，并对未签到贴吧逐项执行签到。",
-          "可选显示逐吧详情并配置签到请求间隔，保留每日 08:23 的规范计划。",
+          "可选显示逐吧详情并配置签到请求间隔，使用每日 08:23 的青龙计划。",
           "显式开启后执行贴吧 APP 成长任务每日签到，并查询成长值、贴贝余额、当前等级及距离下一等级所需成长值；该功能默认关闭。",
           "兼容 TIEBA_COOKIE 与旧变量 TIE_BA_COOKIE，支持每行一个账号独立处理，任一账号失败时整体返回非零状态。",
           "提供完全断网预演，只校验账号必要字段，不加载通知组件、不发送网络请求且不产生账号副作用。",
-          "在成功、部分失败、失败、配置错误或预演后生成脱敏汇总，按全局开关和脚本选择规则使用青龙 notify.py 或 sendNotify.js 通知。",
-          "输出任务横幅、时间、运行模式、账号数、编号阶段、脱敏逐步结果、账号统计、任务统计、最终状态及唯一一行 TASK_SUMMARY JSON。"
+          "在成功、部分失败、失败、配置错误或预演后生成脱敏汇总，并按全局开关与脚本选择规则处理青龙通知。",
+          "输出任务横幅、开始与完成时间、运行模式、账号数、编号阶段、脱敏逐步结果、账号统计、任务统计、最终状态及唯一一行 TASK_SUMMARY JSON。"
         ],
         "sideEffects": [
           "正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态，并可能获得签到奖励。",
@@ -35580,7 +35579,7 @@
       },
       "displayName": "百度贴吧签到",
       "path": "scripts/tieba_checkin.py",
-      "sha256": "fbd4cdfdf9c712cd1bde729c40462a570b3969290869a53a9bc55496e506427a",
+      "sha256": "33af7386fbc75e4a16817200fa5d0f16077440198fbf7713f74ada9bf355191c",
       "stage": "released",
       "license": "GPL-3.0-only",
       "licenseGate": "allowed-copyleft",
@@ -35619,6 +35618,16 @@
             "catalogId": "378c7b1ee9522adb",
             "sha256": "4966308e5a670f9ec5d93ef6ee9b3f63b277de51cc24377ece658bbd8ae2fab2",
             "license": "MIT"
+          },
+          {
+            "repository": "Clannad-233/CheckIn_BaiduTieba",
+            "url": "https://github.com/Clannad-233/CheckIn_BaiduTieba.git",
+            "branch": "main",
+            "commit": "ff1b277971449788c49dd2c37e43567581598fbf",
+            "originalPath": "BaiduTieba.py",
+            "catalogId": "16ec99fa9903b808",
+            "sha256": "6b9a023db6f02252a01928db9750af13b7ea42e113bfb91224bff0b8029ed7b0",
+            "license": "MIT"
           }
         ]
       },
@@ -35629,43 +35638,43 @@
           "name": "TIEBA_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录 tieba.baidu.com 后，从本人浏览器的贴吧请求中复制完整 Cookie；也可只填写其中的 BDUSS 值。成长任务还需从本人贴吧 APP 请求 Cookie 中取得同一账号的 CUID。",
-          "format": "每个非空行一个账号。可填写包含 BDUSS 的完整 Cookie，或单独填写 BDUSS 值；同一账号的 BDUSS、CUID 等字段写在同一行并以分号分隔，不使用 & 或 @ 分隔账号。"
+          "howToGet": "登录本人百度贴吧网页后，在浏览器开发者工具的本人请求中复制完整 Cookie；也可只填写其中的 BDUSS 值。请勿使用他人凭据。启用成长任务时，同一行 Cookie 还必须包含本人贴吧 APP 请求中的 CUID。",
+          "format": "每个非空行一个账号。单行可为纯 BDUSS 值，或形如 BDUSS=值; 其他字段=值 的完整 Cookie；整行只按 Cookie 字段解析，不使用 &、@ 等符号分隔账号。"
         },
         {
           "name": "TIE_BA_COOKIE",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧版兼容变量；获取方式与 TIEBA_COOKIE 相同。仅在未设置 TIEBA_COOKIE 时读取。",
+          "howToGet": "旧版兼容变量，获取方式与 TIEBA_COOKIE 相同；仅在未设置 TIEBA_COOKIE 时读取。",
           "format": "每个非空行一个账号，格式与 TIEBA_COOKIE 相同。"
-        },
-        {
-          "name": "TIEBA_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "无需获取；设置为 1 可进行完全断网预演。",
-          "format": "1、true、yes 或 on 表示开启，其余值表示关闭。"
         },
         {
           "name": "TIEBA_GROWTH_TASKS",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；仅在确认需要执行贴吧 APP 成长签到时显式开启。",
-          "format": "1、true、yes 或 on 表示开启；默认关闭。开启后账号 Cookie 必须同时包含 BDUSS 和 CUID。"
+          "howToGet": "无需获取；仅在确实需要贴吧 APP 成长每日签到及成长信息查询时手动开启。",
+          "format": "1、true、yes 或 on 表示开启；默认关闭。"
+        },
+        {
+          "name": "TIEBA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；用于完全断网的配置预演。",
+          "format": "1、true、yes 或 on 表示开启。"
         },
         {
           "name": "TIEBA_VERBOSE",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；用于控制是否显示贴吧名称等逐项结果。",
+          "howToGet": "无需获取；需要在日志中显示贴吧名称等逐项详情时手动开启。",
           "format": "1、true、yes 或 on 表示开启；默认关闭。"
         },
         {
           "name": "TIEBA_DELAY_MS",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；按账号风险偏好设置逐吧签到请求间隔。",
-          "format": "500 至 10000 的整数，单位为毫秒；默认 1200。"
+          "howToGet": "无需获取；用于设置相邻贴吧签到请求之间的间隔。",
+          "format": "整数毫秒，允许范围 500 至 10000，默认 1200。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -35678,32 +35687,32 @@
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "无需获取；在 QINGLONG_NOTIFY 为 auto 时按脚本选择通知。",
-          "format": "使用逗号、分号、空白或换行分隔 catalogId、脚本相对路径、文件名或通配符；* 表示全部，显式空值表示全部关闭。"
+          "howToGet": "青龙通知脚本选择规则，无需账号侧获取；设置后替换默认选择。",
+          "format": "使用逗号、分号、空白或换行分隔目录标识、脚本路径、文件名或通配符；* 表示全部，显式空值表示全部关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "填写青龙通知组件所在目录；未设置时自动检查青龙常见目录。",
-          "format": "包含 notify.py 或 sendNotify.js 的本地目录绝对路径。"
+          "howToGet": "仅在青龙通知组件不位于标准目录时填写其所在目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的本地目录路径。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行只表示一个账号，按行独立校验和执行；不使用 &、@ 或 Cookie 内部分隔符拆分账号。任一账号失败时进程返回非零退出码。"
+        "rule": "TIEBA_COOKIE 中每个非空行对应一个账号，各账号独立校验和执行；任一账号或已开启的账号子任务失败时，进程整体返回非零退出码。"
       },
       "dependencies": [],
       "features": [
-        "验证百度贴吧登录状态并获取签到所需 TBS，接口返回昵称、用户名、显示名称或公开 UID 时直接显示该身份。",
+        "验证百度贴吧登录状态并取得签到所需 TBS；官方接口返回昵称、用户名、显示名称或公开 UID 时直接显示该非敏感身份。",
         "读取账号关注的贴吧列表，识别当日已签到项目，并对未签到贴吧逐项执行签到。",
-        "可选显示逐吧详情并配置签到请求间隔，保留每日 08:23 的规范计划。",
+        "可选显示逐吧详情并配置签到请求间隔，使用每日 08:23 的青龙计划。",
         "显式开启后执行贴吧 APP 成长任务每日签到，并查询成长值、贴贝余额、当前等级及距离下一等级所需成长值；该功能默认关闭。",
         "兼容 TIEBA_COOKIE 与旧变量 TIE_BA_COOKIE，支持每行一个账号独立处理，任一账号失败时整体返回非零状态。",
         "提供完全断网预演，只校验账号必要字段，不加载通知组件、不发送网络请求且不产生账号副作用。",
-        "在成功、部分失败、失败、配置错误或预演后生成脱敏汇总，按全局开关和脚本选择规则使用青龙 notify.py 或 sendNotify.js 通知。",
-        "输出任务横幅、时间、运行模式、账号数、编号阶段、脱敏逐步结果、账号统计、任务统计、最终状态及唯一一行 TASK_SUMMARY JSON。"
+        "在成功、部分失败、失败、配置错误或预演后生成脱敏汇总，并按全局开关与脚本选择规则处理青龙通知。",
+        "输出任务横幅、开始与完成时间、运行模式、账号数、编号阶段、脱敏逐步结果、账号统计、任务统计、最终状态及唯一一行 TASK_SUMMARY JSON。"
       ],
       "sideEffects": [
         "正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态，并可能获得签到奖励。",
@@ -35721,20 +35730,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/e608052390d250da",
-        "candidateSha256": "97d8df0007799c40d6d95e28b7c5f270d75017e408b4bad21c5766780a0df07c"
+        "candidateSha256": "c4dd2b5fef0ed7af0e5eba9b6eeae26a47003371160bbf48ef3adf93f7ccedd1"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "97d8df0007799c40d6d95e28b7c5f270d75017e408b4bad21c5766780a0df07c",
-        "releaseSha256": "fbd4cdfdf9c712cd1bde729c40462a570b3969290869a53a9bc55496e506427a",
+        "validatedSha256": "c4dd2b5fef0ed7af0e5eba9b6eeae26a47003371160bbf48ef3adf93f7ccedd1",
+        "releaseSha256": "33af7386fbc75e4a16817200fa5d0f16077440198fbf7713f74ada9bf355191c",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T02:01:08.119630+00:00",
+          "approvedAt": "2026-10-19T02:08:17.884571+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "97d8df0007799c40d6d95e28b7c5f270d75017e408b4bad21c5766780a0df07c",
-          "toCandidateSha256": "fbd4cdfdf9c712cd1bde729c40462a570b3969290869a53a9bc55496e506427a",
+          "fromCandidateSha256": "c4dd2b5fef0ed7af0e5eba9b6eeae26a47003371160bbf48ef3adf93f7ccedd1",
+          "toCandidateSha256": "33af7386fbc75e4a16817200fa5d0f16077440198fbf7713f74ada9bf355191c",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

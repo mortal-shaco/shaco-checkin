@@ -14,6 +14,12 @@ Original growth schedule: 19 7 * * *; canonical schedule remains 23 8 * * *.
 Source SHA256: 26fa12b3fb1cacad85e936bd8b7fe02d75c53289540a9ca04f6c058abba1bbc3
 Growth SHA256: c10c41c1e4249ba49da84bf69d0f4d0920ee5d2a4622253ab012caa42dcfd24e
 
+Optimized with Clannad-233/CheckIn_BaiduTieba BaiduTieba.py (MIT),
+commit ff1b277971449788c49dd2c37e43567581598fbf, catalog 16ec99fa9903b808,
+source SHA256 6b9a023db6f02252a01928db9750af13b7ea42e113bfb91224bff0b8029ed7b0.
+The upstream source's forum check-in behavior is retained without its hard-coded
+credential placeholders, plaintext HTTP requests, or default PushPlus mutation.
+
 参数获取：在 tieba.baidu.com 登录后从本人浏览器请求复制 Cookie 或 BDUSS。
 成长任务另需本人贴吧 APP 请求 Cookie 中的 CUID；不能用别的账号字段拼接。
 TIEBA_COOKIE 优先，兼容 TIE_BA_COOKIE，每个非空行一个账号；不按 &、@ 分隔。
@@ -68,6 +74,7 @@ NAME = "百度贴吧签到"
 CATALOG_ID = "e608052390d250da"
 NOTIFY_IDENTITIES = (
     CATALOG_ID,
+    "16ec99fa9903b808",
     "378c7b1ee9522adb",
     "scripts/tieba_checkin.py",
     "tieba_checkin.py",
@@ -277,6 +284,9 @@ def request_json(url: str, headers: dict[str, str], data: bytes | None = None) -
 
 def get_session(headers: dict[str, str]) -> tuple[str, list[dict[str, Any]], str]:
     data = request_json(FORUMS_URL, headers)
+    business_code = data.get("no", data.get("error_code"))
+    if business_code is not None and str(business_code) not in {"0", ""}:
+        raise RuntimeError("登录接口未明确返回业务成功")
     session = data.get("data")
     if not isinstance(session, dict):
         raise RuntimeError("登录接口返回结构异常")
