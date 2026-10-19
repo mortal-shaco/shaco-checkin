@@ -2398,21 +2398,19 @@
         ],
         "optionalEnv": [
           "refreshToken",
+          "ALI_REFRESH_TOKEN",
           "ALIYUN_CLAIM_REWARD",
           "ALIYUN_CLAIM_ALL_REWARDS",
-          "ALIYUN_DRIVE_DRY_RUN",
+          "ENABLE_DEVICE_SESSION",
           "ALIYUN_MAX_DELAY_SECONDS",
           "MAX_RANDOM_DELAY",
           "RANDOM_SIGNIN",
-          "ENABLE_DEVICE_SESSION",
           "ALIYUN_PERSIST_ROTATED_TOKENS",
           "ALIYUN_TOKEN_OUTPUT_FILE",
+          "ALIYUN_DRIVE_DRY_RUN",
           "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "AUTO_UPDATE_TOKEN",
-          "PRIVACY_MODE",
-          "SHOW_TOKEN_IN_NOTIFICATION",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "ALIYUN_DRIVE_DRY_RUN": "1"
@@ -2420,33 +2418,34 @@
         "liveEnv": {
           "ALIYUN_CLAIM_REWARD": "1",
           "ALIYUN_CLAIM_ALL_REWARDS": "0",
-          "ALIYUN_MAX_DELAY_SECONDS": "0",
           "ENABLE_DEVICE_SESSION": "0",
+          "ALIYUN_MAX_DELAY_SECONDS": "0",
           "ALIYUN_PERSIST_ROTATED_TOKENS": "0",
-          "QINGLONG_NOTIFY": "1"
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
           "ALL ACCOUNTS SUCCEEDED:",
-          "TASK_SUMMARY="
+          "ALIYUN_DRIVE_SUMMARY={\"event\":\"success\"",
+          "TASK_SUMMARY={\"status\":\"success\""
         ],
         "features": [
-          "刷新登录凭据并识别令牌轮换，全程不输出凭据",
-          "查询官方公开身份与存储容量；查询失败继续签到与领奖，最终非零退出",
-          "每日签到并输出本月累计签到天数",
-          "输出逐日签到状态、奖励名称及说明、已领奖与待领奖天数",
-          "默认领取当日奖励并识别已领取状态，支持显式关闭领奖",
-          "显式开启后补领本月全部已签到未领奖励，单日失败仍继续其余奖励，最终失败退出",
-          "保留可选设备会话及设备签名；ecdsa 仅在正式启用时导入",
-          "保留随机延迟、新旧参数兼容和多账号独立执行",
-          "显式开启时安全持久化轮换令牌文件",
-          "完全断网预演、青龙脱敏总结通知、分阶段时间轴日志及原机器汇总"
+          "刷新阿里云盘登录凭据并识别 refresh_token 轮换，全程不输出凭据。",
+          "输出官方返回的安全昵称、用户名、显示名称或公开 UID，并过滤手机号、令牌和设备标识。",
+          "查询账号身份与存储容量；只读查询失败时仍继续签到和领奖，但最终以非零状态报告。",
+          "执行每日签到并严格校验 HTTP 状态、业务成功标志、本月累计签到天数和签到明细。",
+          "逐日显示签到、已领奖、待领奖状态以及经过脱敏的奖励名称和说明。",
+          "默认领取当日奖励；可显式关闭，或显式补领本月全部已签到未领奖励，单日领奖失败不阻断后续日期。",
+          "可选注册带 ECDSA 签名的设备会话；默认关闭，只有正式启用时才导入 ecdsa。",
+          "支持规范变量及 refreshToken、ALI_REFRESH_TOKEN 旧变量别名，并按换行独立处理多账号。",
+          "支持正式执行前随机延迟、新旧延迟参数兼容和轮换令牌的显式安全文件持久化。",
+          "支持完全断网预演、青龙脱敏总结通知、分账号分阶段时间轴日志、原机器汇总和唯一 TASK_SUMMARY 记录。"
         ],
         "sideEffects": [
-          "执行账号每日签到",
-          "默认领取当日奖励，显式全量模式下补领其他已签到未领奖励",
-          "ENABLE_DEVICE_SESSION=1 时注册设备会话",
-          "ALIYUN_PERSIST_ROTATED_TOKENS=1 且令牌轮换时写入安全凭据文件",
-          "正式执行且通知启用时发送脱敏任务通知"
+          "执行账号每日签到。",
+          "默认领取当日奖励；显式开启全量模式后补领其他已签到且未领取的奖励。",
+          "ENABLE_DEVICE_SESSION=1 时向服务端注册临时设备会话。",
+          "ALIYUN_PERSIST_ROTATED_TOKENS=1 且发生令牌轮换时，原子写入用户指定的 0600 权限凭据文件。",
+          "正式执行且通知策略允许时，通过青龙 notify.py 发送不含凭据和原始响应的任务总结。"
         ]
       },
       "postReview": {
@@ -2455,10 +2454,10 @@
       },
       "displayName": "阿里云盘签到",
       "path": "scripts/aliyunpan_checkin.py",
-      "sha256": "1c75616cd8712dca7895652bafe9977e2ba7bd2600f29e1ff1d59141008f1cce",
+      "sha256": "97856360e9584cf784b6acf1d915b5e39a01ca7f0bfbaa2ac506920275479ace",
       "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
       "source": {
         "repository": "agluo/ql-script-hub",
         "branch": "master",
@@ -2494,88 +2493,105 @@
             "catalogId": "aa1597fa93ade61b",
             "sha256": "5fa5acc67a466a2204aa55ca3973c282a1603fc69e4d726052b99f427ac0b4ad",
             "license": "MIT"
+          },
+          {
+            "repository": "sudojia/AutoTaskScript",
+            "url": "https://github.com/sudojia/AutoTaskScript.git",
+            "branch": "script",
+            "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
+            "originalPath": "src/web/sudojia_aliyundrive.js",
+            "catalogId": "e9a52b129c643315",
+            "sha256": "75ec43e2a22bf9b15950ca462ac41bcfb78ba18983f400ec906670a29fd035c9",
+            "license": "GPL-3.0"
           }
         ]
       },
-      "cron": "35 1 * * *",
+      "cron": "43 1 * * *",
       "command": "python3 scripts/aliyunpan_checkin.py",
       "environment": [
         {
           "name": "ALIYUN_REFRESH_TOKEN",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录阿里云盘网页版，在浏览器开发者工具的 Application（应用）→ Local Storage（本地存储）中查看 token 项，仅复制 refresh_token 字段；不要复制完整 JSON 或公开凭据。",
-          "format": "每个非空行一个账号的刷新令牌；不用 &、@ 或其他符号分隔账号。"
+          "howToGet": "登录阿里云盘网页版，打开浏览器开发者工具，在 Application 的 Local Storage 中查看当前站点 token 项，只复制 refresh_token 字段；不要复制整段 JSON，也不要公开该值。",
+          "format": "每个非空行填写一个账号的 refresh_token；只用换行分隔账号，不使用 &、@ 或其他分隔符。"
         },
         {
           "name": "refreshToken",
           "required": false,
           "sensitive": true,
-          "howToGet": "原脚本凭据变量的兼容别名，获取方式同 ALIYUN_REFRESH_TOKEN；规范变量未设置时才使用。",
-          "format": "每个非空行一个刷新令牌；旧的 & 分隔格式须改为换行。"
+          "howToGet": "旧版变量兼容入口；获取方式与 ALIYUN_REFRESH_TOKEN 相同。仅在规范变量未设置时读取。",
+          "format": "每个非空行一个 refresh_token，只使用换行分隔。"
+        },
+        {
+          "name": "ALI_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "sudojia 上游脚本的旧变量兼容入口；获取方式与 ALIYUN_REFRESH_TOKEN 相同。仅在前两个变量均未设置时读取。",
+          "format": "每个非空行一个 refresh_token；原脚本的 & 分隔方式不再接受。"
         },
         {
           "name": "ALIYUN_CLAIM_REWARD",
           "required": false,
           "sensitive": false,
-          "howToGet": "按是否领奖自行设置，默认 1。",
-          "format": "1 领取奖励；0 只签到，不领取任何奖励。"
+          "howToGet": "由用户按需设置；默认领取当日奖励，关闭后只签到和查询明细。",
+          "format": "1、true、yes、on 表示开启；0、false、no、off 表示关闭。默认 1。"
         },
         {
           "name": "ALIYUN_CLAIM_ALL_REWARDS",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要补领本月全部已签到未领奖励时显式设为 1，默认 0。",
-          "format": "0 保留当日领奖；1 领取 status 为 normal 且 isReward 为 false 的全部签到奖励；ALIYUN_CLAIM_REWARD=0 优先关闭领奖。"
-        },
-        {
-          "name": "ALIYUN_DRIVE_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "本地预演时设置为 1，默认关闭。",
-          "format": "1 启用完全断网预演、模拟通知，不等待、不写凭据文件、不注册设备。"
-        },
-        {
-          "name": "ALIYUN_MAX_DELAY_SECONDS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要执行前随机等待时自行设置，默认 0，优先于 MAX_RANDOM_DELAY。",
-          "format": "非负整数秒。"
-        },
-        {
-          "name": "MAX_RANDOM_DELAY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧延迟参数兼容项，未设置 ALIYUN_MAX_DELAY_SECONDS 时使用，默认 0。",
-          "format": "非负整数秒。"
-        },
-        {
-          "name": "RANDOM_SIGNIN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧随机延迟控制兼容项，显式关闭时禁用随机等待。",
-          "format": "1 启用配置的延迟；0 关闭；未设置时不覆盖延迟配置。"
+          "howToGet": "由用户按需显式设置；用于补领本月所有已签到但未领取的奖励。",
+          "format": "布尔值，默认 0；仅在 ALIYUN_CLAIM_REWARD 开启时生效。"
         },
         {
           "name": "ENABLE_DEVICE_SESSION",
           "required": false,
           "sensitive": false,
-          "howToGet": "仅在需要设备签名领奖时显式设置为 1，并通过公共 PyPI 安装 ecdsa；默认关闭。",
-          "format": "1 注册设备会话并签名领奖；0 不注册。"
+          "howToGet": "普通签到无需设置；仅在服务端要求设备会话时由用户显式开启。",
+          "format": "布尔值，默认 0；正式开启时需要从公共包仓库安装 ecdsa。"
+        },
+        {
+          "name": "ALIYUN_MAX_DELAY_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "由用户设置正式执行前的最大随机延迟秒数。",
+          "format": "非负整数，默认 0；预演不等待。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版随机延迟变量，仅在 ALIYUN_MAX_DELAY_SECONDS 未设置时读取。",
+          "format": "非负整数秒数。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版随机延迟开关；显式关闭时取消随机延迟。",
+          "format": "布尔值。"
         },
         {
           "name": "ALIYUN_PERSIST_ROTATED_TOKENS",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要保存轮换令牌时显式设为 1 并指定 ALIYUN_TOKEN_OUTPUT_FILE，默认关闭。",
-          "format": "1 开启安全文件持久化；0 关闭；预演始终不写文件。"
+          "howToGet": "仅在需要把服务端轮换后的 refresh_token 安全写入文件时显式开启。",
+          "format": "布尔值，默认 0。"
         },
         {
           "name": "ALIYUN_TOKEN_OUTPUT_FILE",
           "required": false,
           "sensitive": false,
-          "howToGet": "自行选择已存在父目录下的安全绝对路径，仅用于显式开启的持久化。",
-          "format": "绝对文件路径，原子写入权限 0600，每行对应原账号顺序的最新刷新令牌，请安全更新青龙凭据。"
+          "howToGet": "由用户选择已有父目录下的私有绝对路径；只有显式开启令牌持久化时才需要。",
+          "format": "绝对文件路径；脚本以原子替换方式写入并设置为 0600 权限，每行对应一个账号。"
+        },
+        {
+          "name": "ALIYUN_DRIVE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "测试或导入核验时设置为 1，可完全断网预演请求、领奖、通知和凭据持久化。",
+          "format": "布尔值，正式执行默认关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -2585,67 +2601,46 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "如通知组件不在默认位置，指定 notify.py 所在目录；默认尝试导入 notify.send 及 /ql/data/scripts/notify.py、/ql/scripts/notify.py。",
-          "format": "目录路径，仅用于可选通知组件，核心账号任务不依赖私有仓库。"
-        },
-        {
-          "name": "AUTO_UPDATE_TOKEN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧变量兼容说明，不用于自动改写面板，请使用显式安全文件持久化。",
-          "format": "不改变运行行为。"
-        },
-        {
-          "name": "PRIVACY_MODE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧变量兼容说明，不放宽凭据保护。",
-          "format": "不改变运行行为，凭据始终隐藏。"
-        },
-        {
-          "name": "SHOW_TOKEN_IN_NOTIFICATION",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧变量兼容说明，不允许在通知中输出令牌。",
-          "format": "不改变运行行为，凭据始终隐藏。"
-        },
-        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "需要限定通知脚本时设置；可匹配目录 ID 9c6fa7a75879fa8b、规范路径 scripts/aliyunpan_checkin.py 或文件名。",
+          "format": "使用逗号、分号、空白或换行分隔选择器，支持文件名通配符；* 表示全部，空值表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知组件不在标准目录时，可填写包含 notify.py 的目录。",
+          "format": "本机绝对目录路径；不设置时依次尝试 Python 导入、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号；ALIYUN_REFRESH_TOKEN 为规范变量，未设置时兼容 refreshToken；账号独立执行，任一账号失败则整体非零退出。"
+        "rule": "每个非空行仅放一个账号的 refresh_token；各账号独立处理并继续执行，任一账号或其必需子任务失败时进程整体非零退出。"
       },
       "dependencies": [
-        "ecdsa"
+        "ecdsa>=0.18.0"
       ],
       "features": [
-        "刷新登录凭据并识别令牌轮换，全程不输出凭据",
-        "查询官方公开身份与存储容量；查询失败继续签到与领奖，最终非零退出",
-        "每日签到并输出本月累计签到天数",
-        "输出逐日签到状态、奖励名称及说明、已领奖与待领奖天数",
-        "默认领取当日奖励并识别已领取状态，支持显式关闭领奖",
-        "显式开启后补领本月全部已签到未领奖励，单日失败仍继续其余奖励，最终失败退出",
-        "保留可选设备会话及设备签名；ecdsa 仅在正式启用时导入",
-        "保留随机延迟、新旧参数兼容和多账号独立执行",
-        "显式开启时安全持久化轮换令牌文件",
-        "完全断网预演、青龙脱敏总结通知、分阶段时间轴日志及原机器汇总"
+        "刷新阿里云盘登录凭据并识别 refresh_token 轮换，全程不输出凭据。",
+        "输出官方返回的安全昵称、用户名、显示名称或公开 UID，并过滤手机号、令牌和设备标识。",
+        "查询账号身份与存储容量；只读查询失败时仍继续签到和领奖，但最终以非零状态报告。",
+        "执行每日签到并严格校验 HTTP 状态、业务成功标志、本月累计签到天数和签到明细。",
+        "逐日显示签到、已领奖、待领奖状态以及经过脱敏的奖励名称和说明。",
+        "默认领取当日奖励；可显式关闭，或显式补领本月全部已签到未领奖励，单日领奖失败不阻断后续日期。",
+        "可选注册带 ECDSA 签名的设备会话；默认关闭，只有正式启用时才导入 ecdsa。",
+        "支持规范变量及 refreshToken、ALI_REFRESH_TOKEN 旧变量别名，并按换行独立处理多账号。",
+        "支持正式执行前随机延迟、新旧延迟参数兼容和轮换令牌的显式安全文件持久化。",
+        "支持完全断网预演、青龙脱敏总结通知、分账号分阶段时间轴日志、原机器汇总和唯一 TASK_SUMMARY 记录。"
       ],
       "sideEffects": [
-        "执行账号每日签到",
-        "默认领取当日奖励，显式全量模式下补领其他已签到未领奖励",
-        "ENABLE_DEVICE_SESSION=1 时注册设备会话",
-        "ALIYUN_PERSIST_ROTATED_TOKENS=1 且令牌轮换时写入安全凭据文件",
-        "正式执行且通知启用时发送脱敏任务通知"
+        "执行账号每日签到。",
+        "默认领取当日奖励；显式开启全量模式后补领其他已签到且未领取的奖励。",
+        "ENABLE_DEVICE_SESSION=1 时向服务端注册临时设备会话。",
+        "ALIYUN_PERSIST_ROTATED_TOKENS=1 且发生令牌轮换时，原子写入用户指定的 0600 权限凭据文件。",
+        "正式执行且通知策略允许时，通过青龙 notify.py 发送不含凭据和原始响应的任务总结。"
       ],
       "review": {
         "staticPassed": true,
@@ -2658,20 +2653,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/9c6fa7a75879fa8b",
-        "candidateSha256": "ed1ba9f840e3411c993266ae1b29c1db3cd968bf49f318d682fea69aab37815c"
+        "candidateSha256": "b202f49ff124fc9b2b99a0cf5944ae5345f099a57cc341d674991a2f64b2de6c"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "ed1ba9f840e3411c993266ae1b29c1db3cd968bf49f318d682fea69aab37815c",
-        "releaseSha256": "1c75616cd8712dca7895652bafe9977e2ba7bd2600f29e1ff1d59141008f1cce",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "b202f49ff124fc9b2b99a0cf5944ae5345f099a57cc341d674991a2f64b2de6c",
+        "releaseSha256": "97856360e9584cf784b6acf1d915b5e39a01ca7f0bfbaa2ac506920275479ace",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.540350+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "ed1ba9f840e3411c993266ae1b29c1db3cd968bf49f318d682fea69aab37815c",
-          "toCandidateSha256": "1c75616cd8712dca7895652bafe9977e2ba7bd2600f29e1ff1d59141008f1cce",
+          "approvedAt": "2026-10-19T01:52:43.672931+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b202f49ff124fc9b2b99a0cf5944ae5345f099a57cc341d674991a2f64b2de6c",
+          "toCandidateSha256": "97856360e9584cf784b6acf1d915b5e39a01ca7f0bfbaa2ac506920275479ace",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -7293,6 +7288,153 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "9d24a0cb63c86498f5d2817b2a59c3bae7a869f370e574d5030f9880aaad0e2a",
           "toCandidateSha256": "9f19df43d823709f376f5ec87b82f3b22a87f1fe182df1bdf0edf9c1f0996387",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "0acdab575fbc0e9e",
+      "applicationKey": "yuxian158/check::baidu",
+      "checkProfile": {
+        "requiredEnv": [
+          "BAIDU_SUBMIT_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "BAIDU_SUBMIT_TIMES",
+          "BAIDU_HTTP_TIMEOUT",
+          "BAIDU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS"
+        ],
+        "dryRunEnv": {
+          "BAIDU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BAIDU_SUBMIT_TIMES": "1",
+          "BAIDU_HTTP_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态: SUCCESS",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "从每个账号配置的远程纯文本地址读取并校验待提交 URL。",
+          "按百度普通收录接口的单批上限分批提交 URL，并核对 HTTP 状态、JSON 结构、业务错误码、确认数量和剩余额度。",
+          "支持多账号逐行独立处理，以及按账号或全局显式配置重复提交次数。",
+          "提供不执行百度读取和提交请求的断网预演、时间轴日志、逐账号统计、单行结构化总结和脱敏青龙通知。"
+        ],
+        "sideEffects": [
+          "在真实运行模式下，将 URL 提交到对应站点的百度搜索资源平台普通收录接口；显式配置重复次数时会重复提交。",
+          "在通知策略允许且青龙通知组件可用时，发送不含凭据、URL 列表或原始响应的任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "百度站点提交",
+      "path": "scripts/ck_baidu.py",
+      "sha256": "8e6eab6aaec1bb6f8d8bdf407c3462e910c9f4cb162e15705a974a8677fd4c9c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_baidu.py"
+      },
+      "cron": "6 0 * * *",
+      "command": "python3 scripts/ck_baidu.py",
+      "environment": [
+        {
+          "name": "BAIDU_SUBMIT_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在百度搜索资源平台添加并验证站点，进入该站点的普通收录资源提交接口页面取得推送准入密钥；同时准备一个返回 UTF-8、每行一个待提交网址的 HTTP 或 HTTPS 文本地址。每个账号写成一行 JSON，站点、密钥和列表地址必须属于同一账号。",
+          "format": "每个非空行一个 JSON 对象：{\"site\":\"站点完整地址\",\"token\":\"推送准入密钥\",\"data_url\":\"URL 列表地址\"}；可在对象中增加 1 到 100 的整数 times。"
+        },
+        {
+          "name": "BAIDU_SUBMIT_TIMES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；用于统一设置每批 URL 的显式提交次数，账号 JSON 中的 times 会覆盖它。为避免意外重复提交，默认值为 1。",
+          "format": "1 到 100 的整数，默认 1。"
+        },
+        {
+          "name": "BAIDU_HTTP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；按网络状况设置单次 HTTP 请求超时。",
+          "format": "3 到 60 的整数秒数，默认 15。"
+        },
+        {
+          "name": "BAIDU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；在首次配置或变更后设为 1，可只校验配置和执行计划，不发起业务 HTTP 请求。",
+          "format": "启用值为 1、true、yes 或 on；默认不启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；需要只通知部分脚本时填写本脚本目录、文件名、通配符或目录编号。设置为空值会关闭全部脚本通知。",
+          "format": "可用逗号、分号、空白或换行分隔；本脚本可用 0acdab575fbc0e9e、candidate.py、ck_baidu.py 或 * 匹配。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "BAIDU_SUBMIT_ACCOUNTS 每个非空行是一组独立账号 JSON；脚本按行顺序逐个处理，任一账号失败都会使进程返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "从每个账号配置的远程纯文本地址读取并校验待提交 URL。",
+        "按百度普通收录接口的单批上限分批提交 URL，并核对 HTTP 状态、JSON 结构、业务错误码、确认数量和剩余额度。",
+        "支持多账号逐行独立处理，以及按账号或全局显式配置重复提交次数。",
+        "提供不执行百度读取和提交请求的断网预演、时间轴日志、逐账号统计、单行结构化总结和脱敏青龙通知。"
+      ],
+      "sideEffects": [
+        "在真实运行模式下，将 URL 提交到对应站点的百度搜索资源平台普通收录接口；显式配置重复次数时会重复提交。",
+        "在通知策略允许且青龙通知组件可用时，发送不含凭据、URL 列表或原始响应的任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0acdab575fbc0e9e",
+        "candidateSha256": "dddb0fb377b5f85d22f27a4b5ca99a057b84f39de94db56bfd3a95af179f8df9"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "dddb0fb377b5f85d22f27a4b5ca99a057b84f39de94db56bfd3a95af179f8df9",
+        "releaseSha256": "8e6eab6aaec1bb6f8d8bdf407c3462e910c9f4cb162e15705a974a8677fd4c9c",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:49:26.813981+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "dddb0fb377b5f85d22f27a4b5ca99a057b84f39de94db56bfd3a95af179f8df9",
+          "toCandidateSha256": "8e6eab6aaec1bb6f8d8bdf407c3462e910c9f4cb162e15705a974a8677fd4c9c",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -36604,51 +36746,44 @@
           "MAX_RANDOM_DELAY",
           "TY_ACCOUNT_TIMEOUT",
           "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "TY_DRY_RUN": "1"
         },
         "liveEnv": {
           "TY_DRY_RUN": "0",
+          "TY_DRAW_SIGNIN": "0",
+          "TY_DRAW_PHOTOS": "0",
           "RANDOM_SIGNIN": "true",
           "MAX_RANDOM_DELAY": "3600",
           "TY_ACCOUNT_TIMEOUT": "60",
-          "TY_DRAW_SIGNIN": "0",
-          "TY_DRAW_PHOTOS": "0",
-          "QINGLONG_NOTIFY": "1"
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
           "登录业务校验成功",
-          "签到成功",
-          "今日已签到",
-          "最终状态：success"
+          "✅ 签到成功",
+          "☑️ 今日已签到",
+          "\"status\": \"success\""
         ],
         "features": [
-          "使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话",
-          "每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果",
-          "每行配套凭据、多账号独立执行、任一失败整体非零退出",
-          "保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔",
-          "显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应",
-          "青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录",
-          "完全断网预演、凭据格式检查及旧环境变量迁移提示",
-          "兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应",
-          "脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段",
-          "每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试",
-          "Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向",
-          "区分域名解析失败、网络连接失败、TLS 验证失败和超时",
-          "通过独立开关抽取当天签到奖励和已有相册任务奖励；沿用规范脚本及其每日16:01计划，不建立并行产品任务",
-          "奖励抽取明确校验响应字段及业务码，识别50M空间和无剩余机会；未知错误或缺少奖励字段时失败且不自动重试",
-          "奖励阶段独立处理失败并保留失败阶段；前置登录或签到未确认时跳过奖励；每账号总时限覆盖启用的奖励请求",
-          "保留密码后续分隔符和空格、原有汇总字段；预演覆盖启用的奖励阶段并从HTTP入口禁止网络",
-          "通知依次尝试可导入的notify.py、指定或标准青龙目录中的notify.py、sendNotify.js；限制通知耗时并抑制模块输出"
+          "使用天翼云盘官方密码登录流程和 RSA 公钥加密，为每个账号建立独立 Cookie 会话。",
+          "执行每日签到，区分新签到和今日已签到，显示确认的奖励空间并严格核验业务字段。",
+          "通过独立开关抽取当天已有签到奖励机会和相册任务奖励机会，识别 50M 空间及没有剩余机会。",
+          "保留每日 16:01 调度、默认最多一小时随机延迟及正式多账号间 10～30 秒随机间隔。",
+          "逐行多账号独立执行，保留密码中的后续分隔符和空格，任一账号失败整体非零退出。",
+          "官方响应提供昵称、用户名、显示名称或公开 UID 时显示非敏感身份，同时抑制手机号、凭据、会话和原始响应。",
+          "提供完全断网预演、凭据格式检查、分阶段时间轴日志、账号与任务统计及单行 TASK_SUMMARY 记录。",
+          "每账号 HTTP 总时限覆盖域名解析、连接、官方重定向和响应读取；限制响应大小，不自动重试状态变更。",
+          "区分域名解析、连接、TLS 和超时故障，对登录、签到和奖励响应执行明确业务成功检查。",
+          "按全局开关和任务选择器发送脱敏青龙通知，依次支持 notify.py 与 sendNotify.js；通知故障不改变业务退出码。"
         ],
         "sideEffects": [
-          "正式模式每日签到可能增加账号奖励空间",
-          "启用签到奖励开关后，正式模式可能消耗当天已有签到抽奖机会并增加奖励空间",
-          "启用相册奖励开关后，正式模式可能消耗已有相册任务抽奖机会并增加奖励空间",
-          "正式模式按通知配置发送脱敏任务结果"
+          "正式模式每日签到可能增加账号奖励空间。",
+          "显式开启签到奖励后，正式模式可能消耗当天已有签到抽奖机会并增加奖励空间。",
+          "显式开启相册奖励后，正式模式可能消耗已有相册任务抽奖机会并增加奖励空间。",
+          "正式模式启用通知时通过可用的青龙通知组件发送脱敏任务总结。"
         ]
       },
       "postReview": {
@@ -36657,7 +36792,7 @@
       },
       "displayName": "天翼云盘签到",
       "path": "scripts/ty_netdisk_checkin.py",
-      "sha256": "130c3675b7d206bfb866cf0bff34ba803c71769281621d172826d0e662f2c362",
+      "sha256": "d91babb1a86918da573c6078ae632df83e9ae11023606ab9ae06c4f25a8a16b6",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -36676,60 +36811,70 @@
             "catalogId": "9b29ccf7560d7d4d",
             "sha256": "7dca02b70ffa031602128f13e420254eb0c6283cbff50e1cbc2728eedca83e5d",
             "license": "MIT"
+          },
+          {
+            "repository": "yuxian158/check",
+            "url": "https://github.com/yuxian158/check.git",
+            "branch": "master",
+            "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+            "originalPath": "dailycheckin_scripts/ck_cloud189.py",
+            "catalogId": "7c816f8381a88a30",
+            "sha256": "e4151413a56831193b03012dae77b4af9f5786065d12be278f61a0830eddaa57",
+            "license": "MIT"
           }
         ]
       },
-      "cron": "2 1 * * *",
+      "cron": "6 1 * * *",
       "command": "python3 scripts/ty_netdisk_checkin.py",
       "environment": [
         {
           "name": "TY_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "在天翼云盘官方客户端确认登录用户名和账号密码；仅有短信登录时先在官方客户端设置密码。每个账号将用户名和密码合在一行添加到青龙环境变量。需要验证码时先人工完成官方登录，本脚本不绕过验证码。原私有 CLOUD189 配置的 phone/password 须迁移到此变量。",
-          "format": "每个非空行一个账号：用户名|密码；仅切分第一个竖线，密码内的竖线、&、@和空格原样保留；账号之间只能换行"
+          "howToGet": "在天翼云盘官方客户端为本人账号设置或确认可用的账号密码；如登录要求验证码，先在官方客户端人工完成验证。凭据只保存在青龙环境变量中，不要公开。",
+          "format": "每个非空行一个账号，填写 用户名|密码；只在第一个 | 处分割，因此密码中的后续 |、&、@ 和空格均保留。不得使用 & 或 @ 分隔账号。"
         },
         {
           "name": "TY_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要断网验证时在青龙环境变量设置为1；正式执行时设为0或删除。",
-          "format": "1、true、yes、on启用；默认0"
+          "howToGet": "自行设置为 1 进行完全断网预演，只校验配置和任务路由。",
+          "format": "1、true、yes、on 启用；默认 0。"
         },
         {
           "name": "TY_DRAW_SIGNIN",
           "required": false,
           "sensitive": false,
-          "howToGet": "希望签到后抽取当天已有的签到奖励机会时手动启用。",
-          "format": "1、true、yes、on启用；0、false、no、off关闭；默认0"
+          "howToGet": "确认愿意消耗账号当天已有的签到抽奖机会后自行开启；默认关闭。",
+          "format": "1、true、yes、on 开启；0、false、no、off 关闭。"
         },
         {
           "name": "TY_DRAW_PHOTOS",
           "required": false,
           "sensitive": false,
-          "howToGet": "希望抽取已有相册任务奖励机会时手动启用；需自行在官方客户端取得资格，本脚本不启用相册备份或上传照片。",
-          "format": "1、true、yes、on启用；0、false、no、off关闭；默认0"
+          "howToGet": "确认愿意消耗账号已有的相册任务抽奖机会后自行开启；脚本不会开启相册备份或上传照片，默认关闭。",
+          "format": "1、true、yes、on 开启；0、false、no、off 关闭。"
         },
         {
           "name": "RANDOM_SIGNIN",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要设置签到前随机等待；沿用已维护版本默认值，验证时可设为false。",
-          "format": "仅true启用；默认true"
+          "howToGet": "自行设置是否在任务开始前加入随机延迟；正式日常执行默认开启，调试时可关闭。",
+          "format": "true（默认）或 false，也接受 1/0、yes/no、on/off。"
         },
         {
           "name": "MAX_RANDOM_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量填写签到前随机延迟的最大秒数。",
-          "format": "0～86400的整数；默认3600；断网预演不等待"
+          "howToGet": "自行设置任务开始前的最大随机延迟秒数。",
+          "format": "0～86400 的整数，默认 3600。"
         },
         {
           "name": "TY_ACCOUNT_TIMEOUT",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量填写每个账号HTTP流程的总秒数；包括登录、签到及启用的奖励阶段，不包括随机等待。",
-          "format": "10～600的整数；默认60；需要Python 3.9及以上的青龙Linux或其他支持信号计时器的系统"
+          "howToGet": "自行设置每个账号全部业务 HTTP 的总时限，不包含随机等待。",
+          "format": "10～600 的整数秒，默认 60。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -36739,50 +36884,43 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选填写青龙通知模块所在目录；不需要额外仓库或业务依赖。未设置时查找可导入的notify.py及青龙标准脚本目录，再尝试sendNotify.js。",
-          "format": "可选目录路径；通知模块不可用或失败不改变业务退出码"
-        },
-        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "需要只通知部分脚本时自行设置；设置后替换默认任务列表，空值关闭全部任务通知。",
+          "format": "用逗号、分号、空白或换行分隔 catalogId、scripts 相对路径、文件名或文件名通配符；* 表示全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙现有 notify.py 或 sendNotify.js 所在目录；未设置时仍会检查标准青龙目录。",
+          "format": "本地目录路径；脚本不会下载或安装通知组件。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，用户名与密码用第一个竖线配对；不得用&或@分隔账号。各账号独立执行；任意账号配置或业务失败，整体非零退出。"
+        "rule": "TY_ACCOUNTS 每个非空行一个账号，只在首个 | 处分割用户名和密码；各账号独立处理，任一账号配置或业务失败都会使进程非零退出。"
       },
       "dependencies": [],
       "features": [
-        "使用官方密码登录流程和 RSA 加密建立独立账号 Cookie 会话",
-        "每日签到、区分新签到和今日已签到、显示奖励空间并严格校验业务结果",
-        "每行配套凭据、多账号独立执行、任一失败整体非零退出",
-        "保留每日16:01计划、可配置随机延迟及账号间10～30秒随机间隔",
-        "显示官方非敏感昵称或公开身份，抑制手机号、凭据、会话及原始响应",
-        "青龙任务汇总通知、时间轴日志、阶段耗时、账号统计及单行 TASK_SUMMARY 记录",
-        "完全断网预演、凭据格式检查及旧环境变量迁移提示",
-        "兼容密码页字段属性顺序、已抵达密码页的重定向和上游 callbackMsg JSONP 登录响应",
-        "脱敏诊断 HTTP 状态、短数字业务码、固定协议字段类型、HTML 或空正文；账号结果及通知保留失败阶段",
-        "每账号 HTTP 总时限覆盖域名解析和响应读取；请求开始和耗时日志；无自动重试",
-        "Python 3.9+ 标准库自实现 HTTP、Cookie 与 RSA 公钥加密，限制响应大小及官方 HTTPS 重定向",
-        "区分域名解析失败、网络连接失败、TLS 验证失败和超时",
-        "通过独立开关抽取当天签到奖励和已有相册任务奖励；沿用规范脚本及其每日16:01计划，不建立并行产品任务",
-        "奖励抽取明确校验响应字段及业务码，识别50M空间和无剩余机会；未知错误或缺少奖励字段时失败且不自动重试",
-        "奖励阶段独立处理失败并保留失败阶段；前置登录或签到未确认时跳过奖励；每账号总时限覆盖启用的奖励请求",
-        "保留密码后续分隔符和空格、原有汇总字段；预演覆盖启用的奖励阶段并从HTTP入口禁止网络",
-        "通知依次尝试可导入的notify.py、指定或标准青龙目录中的notify.py、sendNotify.js；限制通知耗时并抑制模块输出"
+        "使用天翼云盘官方密码登录流程和 RSA 公钥加密，为每个账号建立独立 Cookie 会话。",
+        "执行每日签到，区分新签到和今日已签到，显示确认的奖励空间并严格核验业务字段。",
+        "通过独立开关抽取当天已有签到奖励机会和相册任务奖励机会，识别 50M 空间及没有剩余机会。",
+        "保留每日 16:01 调度、默认最多一小时随机延迟及正式多账号间 10～30 秒随机间隔。",
+        "逐行多账号独立执行，保留密码中的后续分隔符和空格，任一账号失败整体非零退出。",
+        "官方响应提供昵称、用户名、显示名称或公开 UID 时显示非敏感身份，同时抑制手机号、凭据、会话和原始响应。",
+        "提供完全断网预演、凭据格式检查、分阶段时间轴日志、账号与任务统计及单行 TASK_SUMMARY 记录。",
+        "每账号 HTTP 总时限覆盖域名解析、连接、官方重定向和响应读取；限制响应大小，不自动重试状态变更。",
+        "区分域名解析、连接、TLS 和超时故障，对登录、签到和奖励响应执行明确业务成功检查。",
+        "按全局开关和任务选择器发送脱敏青龙通知，依次支持 notify.py 与 sendNotify.js；通知故障不改变业务退出码。"
       ],
       "sideEffects": [
-        "正式模式每日签到可能增加账号奖励空间",
-        "启用签到奖励开关后，正式模式可能消耗当天已有签到抽奖机会并增加奖励空间",
-        "启用相册奖励开关后，正式模式可能消耗已有相册任务抽奖机会并增加奖励空间",
-        "正式模式按通知配置发送脱敏任务结果"
+        "正式模式每日签到可能增加账号奖励空间。",
+        "显式开启签到奖励后，正式模式可能消耗当天已有签到抽奖机会并增加奖励空间。",
+        "显式开启相册奖励后，正式模式可能消耗已有相册任务抽奖机会并增加奖励空间。",
+        "正式模式启用通知时通过可用的青龙通知组件发送脱敏任务总结。"
       ],
       "review": {
         "staticPassed": true,
@@ -36795,20 +36933,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/70f2505a78eb7276",
-        "candidateSha256": "a4c798be0d3dd666e73ec75d055020ddd477aab12c99e8b083b9e5676909ea02"
+        "candidateSha256": "b275967dce27182338164590a017403f142905b67208465a1ea770fb290acf54"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "a4c798be0d3dd666e73ec75d055020ddd477aab12c99e8b083b9e5676909ea02",
-        "releaseSha256": "130c3675b7d206bfb866cf0bff34ba803c71769281621d172826d0e662f2c362",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "b275967dce27182338164590a017403f142905b67208465a1ea770fb290acf54",
+        "releaseSha256": "d91babb1a86918da573c6078ae632df83e9ae11023606ab9ae06c4f25a8a16b6",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.166955+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "a4c798be0d3dd666e73ec75d055020ddd477aab12c99e8b083b9e5676909ea02",
-          "toCandidateSha256": "130c3675b7d206bfb866cf0bff34ba803c71769281621d172826d0e662f2c362",
+          "approvedAt": "2026-10-19T01:50:46.852258+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b275967dce27182338164590a017403f142905b67208465a1ea770fb290acf54",
+          "toCandidateSha256": "d91babb1a86918da573c6078ae632df83e9ae11023606ab9ae06c4f25a8a16b6",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

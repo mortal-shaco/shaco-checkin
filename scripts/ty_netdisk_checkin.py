@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 天翼云盘签到
-# cron: 2 1 * * *
+# cron: 6 1 * * *
 # SPDX-License-Identifier: MIT
 # 上游：agluo/ql-script-hub，ty_netdisk_checkin.py（MIT）
 # 改编自：https://www.52pojie.cn/thread-1231190-1-1.html
 # 合并：OreosLab/checkinpanel，ck_cloud189.py（MIT）
+# 合并：yuxian158/check，dailycheckin_scripts/ck_cloud189.py（MIT）
 # :source https://github.com/MayoBlueSky/My-Actions/blob/master/function/cloud189/checkin.py
 # 参考：dailycheckin_scripts/ck_cloud189.py（MIT）；保留上游来源声明。
 # 有效许可：MIT；输入文件未包含额外版权声明。
@@ -24,7 +25,9 @@ TY_DRAW_SIGNIN=1：签到后抽取签到奖励；TY_DRAW_PHOTOS=1：抽取相册
 奖励抽取无机会时记录已完成，未知错误或缺少奖励字段时失败，不自动重试。
 原 ck_cloud189.py 使用私有 CLOUD189 列表中的 phone/password，每日09:30；
 迁移为 TY_ACCOUNTS 每行用户名|密码；合并后沿用规范任务每日16:01，无需重复任务。
-QINGLONG_NOTIFY=0 可关闭通知；可用 QINGLONG_NOTIFY_DIR 指定青龙通知目录。
+QINGLONG_NOTIFY=auto（默认）按任务选择规则通知，设为0可关闭，设为1可强制开启。
+QINGLONG_NOTIFY_SCRIPTS 可用逗号、分号、空白或换行填写目录、文件名、通配符或 catalogId；
+设置后替换默认任务列表，空值关闭全部。QINGLONG_NOTIFY_DIR 可指定青龙通知目录。
 """
 # qinglong-notification-policy: begin
 import fnmatch as _ql_notify_fnmatch
@@ -50,6 +53,7 @@ import sys
 import json
 import time
 import random
+import fnmatch
 import urllib.parse
 from datetime import datetime
 from contextlib import contextmanager
@@ -529,8 +533,39 @@ class TianYiYunPan:
         return "success"
 
 
+NOTIFY_IDENTIFIERS = (
+    "7c816f8381a88a30",
+    "70f2505a78eb7276",
+    "scripts/ty_netdisk_checkin.py",
+    "ty_netdisk_checkin.py",
+    "output/candidate.py",
+    "candidate.py",
+)
+
+
+def notification_enabled():
+    """实现全局开关及按脚本选择；选择器内容不会进入日志。"""
+    mode = os.getenv("QINGLONG_NOTIFY", "auto").strip().lower()
+    if mode in ("0", "false", "no", "off"):
+        return False
+    if mode in ("1", "true", "yes", "on"):
+        return True
+    if mode not in ("", "auto"):
+        log("⚠️ QINGLONG_NOTIFY 值无效，为避免意外外发通知，本次不发送")
+        return False
+    selection = os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if selection is None:
+        return True
+    if not selection.strip():
+        return False
+    patterns = [item for item in re.split(r"[,;\s]+", selection) if item]
+    return any(pattern == "*" or any(fnmatch.fnmatch(identifier, pattern)
+                                     for identifier in NOTIFY_IDENTIFIERS)
+               for pattern in patterns)
+
+
 def notify(body, dry):
-    if os.getenv("QINGLONG_NOTIFY", "1").lower() in ("0", "false", "no", "off"):
+    if not notification_enabled():
         return "已关闭"
     if dry:
         log("⏭️ 断网预演通知摘要：" + body)
@@ -596,26 +631,27 @@ def main():
     config_error = False
     config_detail = ""
     totals = dict(success=0, already=0, skipped=0, failed=0)
-    draw_signin = draw_photos = False
+    draw_signin = draw_photos = random_signin = False
     try:
-        def draw_switch(name):
-            value = os.getenv(name, "0").lower()
+        def boolean_switch(name, default="0"):
+            value = os.getenv(name, default).lower()
             if value not in ("1", "true", "yes", "on", "0", "false", "no", "off"):
                 raise ValueError()
             return value in ("1", "true", "yes", "on")
-        draw_signin = draw_switch("TY_DRAW_SIGNIN")
-        draw_photos = draw_switch("TY_DRAW_PHOTOS")
+        draw_signin = boolean_switch("TY_DRAW_SIGNIN")
+        draw_photos = boolean_switch("TY_DRAW_PHOTOS")
+        random_signin = boolean_switch("RANDOM_SIGNIN", "true")
         maximum = int(os.getenv("MAX_RANDOM_DELAY", "3600"))
         account_timeout = int(os.getenv("TY_ACCOUNT_TIMEOUT", "60"))
         if not 10 <= account_timeout <= 600 or not 0 <= maximum <= 86400 or not lines:
             raise ValueError()
     except ValueError:
         config_error = True
-        config_detail = "需要 TY_ACCOUNTS，MAX_RANDOM_DELAY 须为0～86400的整数，TY_ACCOUNT_TIMEOUT 须为10～600的整数，奖励开关须为1/0或true/false/yes/no/on/off"
+        config_detail = "需要 TY_ACCOUNTS，MAX_RANDOM_DELAY 须为0～86400的整数，TY_ACCOUNT_TIMEOUT 须为10～600的整数，各开关须为1/0或true/false/yes/no/on/off"
         if not lines and (os.getenv("TY_USERNAME") or os.getenv("TY_PASSWORD")):
             config_detail += "；检测到旧变量，请将同一账号合为 TY_ACCOUNTS 每行用户名|密码，密码原样保留"
         log("❌ 配置错误：" + config_detail)
-    if not config_error and not dry and os.getenv("RANDOM_SIGNIN", "true").lower() == "true":
+    if not config_error and not dry and random_signin:
         delay = random.randint(0, maximum)
         log(f"阶段0 随机延迟：{delay}秒")
         while delay > 0:

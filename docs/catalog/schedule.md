@@ -23,7 +23,7 @@
 | AkileCloud 签到与保活 | `scripts/akile_checkin.py` | `python3 scripts/akile_checkin.py` | `44 0 * * *` | 待检查 | [akile_checkin.py.md](../scripts/akile_checkin.py.md)（`docs/scripts/akile_checkin.py.md`） |
 | 阿里云社区 | `scripts/aliyun_web.js` | `node scripts/aliyun_web.js` | `36 7,13 * * *` | 待检查 | [aliyun_web.js.md](../scripts/aliyun_web.js.md)（`docs/scripts/aliyun_web.js.md`） |
 | 阿里云盘每日签到 | `scripts/aliyundrive_checkin.js` | `node scripts/aliyundrive_checkin.js` | `55 1 * * *` | 待检查 | [aliyundrive_checkin.js.md](../scripts/aliyundrive_checkin.js.md)（`docs/scripts/aliyundrive_checkin.js.md`） |
-| 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `35 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
+| 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `43 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `38 0 * * *` | 待检查 | [aolaxing.py.md](../scripts/aolaxing.py.md)（`docs/scripts/aolaxing.py.md`） |
 | Hax 与 Woiden 可开通区域监控 | `scripts/api_hax.py` | `python3 scripts/api_hax.py` | `44 */6 * * *` | 待检查 | [api_hax.py.md](../scripts/api_hax.py.md)（`docs/scripts/api_hax.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |
@@ -48,6 +48,7 @@
 | AcFun每日签到与可选互动 | `scripts/ck_acfun.py` | `python3 scripts/ck_acfun.py` | `20 0 * * *` | 待检查 | [ck_acfun.py.md](../scripts/ck_acfun.py.md)（`docs/scripts/ck_acfun.py.md`） |
 | 机场签到 | `scripts/ck_airport.py` | `python3 scripts/ck_airport.py` | `16 2 * * *` | 待检查 | [ck_airport.py.md](../scripts/ck_airport.py.md)（`docs/scripts/ck_airport.py.md`） |
 | 爱企查每日任务 | `scripts/ck_aqc.js` | `node scripts/ck_aqc.js` | `9 0-23/8 * * *` | 待检查 | [ck_aqc.js.md](../scripts/ck_aqc.js.md)（`docs/scripts/ck_aqc.js.md`） |
+| 百度站点提交 | `scripts/ck_baidu.py` | `python3 scripts/ck_baidu.py` | `6 0 * * *` | 待检查 | [ck_baidu.py.md](../scripts/ck_baidu.py.md)（`docs/scripts/ck_baidu.py.md`） |
 | 百度搜索资源平台 | `scripts/ck_baidu_url_submit.py` | `python3 scripts/ck_baidu_url_submit.py` | `8 2 * * *` | 待检查 | [ck_baidu_url_submit.py.md](../scripts/ck_baidu_url_submit.py.md)（`docs/scripts/ck_baidu_url_submit.py.md`） |
 | Bilibili 每日任务 | `scripts/ck_bilibili.py` | `python3 scripts/ck_bilibili.py` | `39 0 * * *` | 待检查 | [ck_bilibili.py.md](../scripts/ck_bilibili.py.md)（`docs/scripts/ck_bilibili.py.md`） |
 | CCAVA每日签到 | `scripts/ck_ccava.py` | `python3 scripts/ck_ccava.py` | `31 1 * * *` | 待检查 | [ck_ccava.py.md](../scripts/ck_ccava.py.md)（`docs/scripts/ck_ccava.py.md`） |
@@ -202,7 +203,7 @@
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
 | Trae 每日签到与积分查询 | `scripts/trae_checkin.py` | `python3 scripts/trae_checkin.py` | `7,23,37 * * * *` | 待检查 | [trae_checkin.py.md](../scripts/trae_checkin.py.md)（`docs/scripts/trae_checkin.py.md`） |
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `19 1 * * *` | 待检查 | [tsthb_checkin.py.md](../scripts/tsthb_checkin.py.md)（`docs/scripts/tsthb_checkin.py.md`） |
-| 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `2 1 * * *` | 待检查 | [ty_netdisk_checkin.py.md](../scripts/ty_netdisk_checkin.py.md)（`docs/scripts/ty_netdisk_checkin.py.md`） |
+| 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `6 1 * * *` | 待检查 | [ty_netdisk_checkin.py.md](../scripts/ty_netdisk_checkin.py.md)（`docs/scripts/ty_netdisk_checkin.py.md`） |
 | 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` | 待检查 | [tyqhdraw.py.md](../scripts/tyqhdraw.py.md)（`docs/scripts/tyqhdraw.py.md`） |
 | 掌瓦每日商店推送 | `scripts/valorantstore.py` | `python3 scripts/valorantstore.py` | `10 0 * * *` | 待检查 | [valorantstore.py.md](../scripts/valorantstore.py.md)（`docs/scripts/valorantstore.py.md`） |
 | Vortexa 免费主机检查与领取 | `scripts/vortexa_free_claim.js` | `node scripts/vortexa_free_claim.js` | `1,11,21,31,41,51 * * * *` | 待检查 | [vortexa_free_claim.js.md](../scripts/vortexa_free_claim.js.md)（`docs/scripts/vortexa_free_claim.js.md`） |

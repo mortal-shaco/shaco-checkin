@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 阿里云盘签到
-# cron: 35 1 * * *
+# cron: 43 1 * * *
 # dependencies: ecdsa (仅启用设备签名时需要)
 """Aliyun Drive daily check-in.
 
@@ -10,7 +10,8 @@ https://github.com/agluo/ql-script-hub (commit
 a8d39b97cb22c3ac657089014df754342b456ff6).
 
 Copyright (c) agluo/ql-script-hub contributors.
-Released under the upstream MIT License.
+The maintained target retains its upstream MIT notice; this combined work is
+distributed under the effective GPL-3.0 license required by the merged source.
 
 Required environment:
   ALIYUN_REFRESH_TOKEN  One non-empty refresh token per line.
@@ -19,6 +20,7 @@ Optional environment:
   ALIYUN_CLAIM_REWARD=1             Claim today's reward; 0 means check-in only.
   ALIYUN_CLAIM_ALL_REWARDS=1         Opt in to all unclaimed signed-day rewards.
   refreshToken                     Legacy alias; one account per non-empty line.
+  ALI_REFRESH_TOKEN                Legacy upstream alias; one account per line.
   ALIYUN_DRIVE_DRY_RUN=1             Simulate all HTTP operations.
   ALIYUN_MAX_DELAY_SECONDS=0          Random delay before live execution.
   ALIYUN_PERSIST_ROTATED_TOKENS=1     Opt in to the file adapter below.
@@ -30,14 +32,17 @@ ALIYUN_REFRESH_TOKEN 每个非空行放一个账号，不使用 & 或 @ 分隔�
 默认签到后领取当日奖励；ALIYUN_CLAIM_REWARD=0 只签到。
 ALIYUN_CLAIM_ALL_REWARDS=1 显式补领本月所有已签到且未领奖的奖励；
 仅在 ALIYUN_CLAIM_REWARD=1 时生效，默认 0 保留当日领奖语义。
-refreshToken 为旧变量别名；ALIYUN_REFRESH_TOKEN 设置时优先，别名也按行分账号。
+refreshToken 与 ALI_REFRESH_TOKEN 为旧变量别名；ALIYUN_REFRESH_TOKEN 设置时
+优先，所有变量都仅按非空行分账号，不接受 &、@ 等账号分隔符。
 每天输出签到明细及已领、待领奖天数；不会自动改写青龙环境变量。
 合并 TangTang0812/aliyun autoSignin.js（MIT），提交
 fb6c6aa9c49c315f2e5c32949eef06689aa2ea7e；保留该来源署名。
-原来源定时为 0 9 * * *，与每日签到兼容；规范脚本保留 3 11 * * *。
+原来源定时为 0 9 * * *，与每日签到兼容；规范脚本保留 35 1 * * *。
 预演模拟 HTTP、通知及领奖，不联网、不等待、不写入凭据文件。
-QINGLONG_NOTIFY 未设置时按上架状态；设为 0/false/no/off 可关闭。QINGLONG_NOTIFY_DIR
-可指定青龙 notify.py 所在目录，通知故障不改变业务退出码。
+QINGLONG_NOTIFY 默认 auto；设为 0/false/no/off 可关闭。设置
+QINGLONG_NOTIFY_SCRIPTS 后，仅当其匹配目录 ID、规范路径或文件名时通知；
+支持逗号、分号、空白、换行和通配符。QINGLONG_NOTIFY_DIR 可指定青龙
+notify.py 所在目录，通知故障不改变业务退出码。
 安全持久化默认关闭，只在显式开启且令牌轮换时原子写入权限 0600 的文件。
 该文件每行对应原账号顺序的当前刷新令牌，应安全更新青龙环境变量，勿公开。
 
@@ -53,6 +58,12 @@ ENABLE_DEVICE_SESSION=1 可显式启用上游设备签名及注册会话，默�
 MAX_RANDOM_DELAY 和 RANDOM_SIGNIN 接受显式旧配置；新延迟变量优先。
 AUTO_UPDATE_TOKEN、PRIVACY_MODE、SHOW_TOKEN_IN_NOTIFICATION 不再用于
 改写面板或放宽凭据保护；请使用原有显式安全文件持久化配置。
+
+本次兼容来源：sudojia/AutoTaskScript src/web/sudojia_aliyundrive.js，
+提交 4a55327baed0321bdf95802a75cc8363cae118b0，GPL-3.0。
+保留原作者 Telegram@sudojia、站点 https://blog.imzjw.cn 与日期
+2024/5/18 的署名；合并其 ALI_REFRESH_TOKEN 参数兼容和身份展示能力。
+组合维护版本按有效许可证 GPL-3.0 发布，同时完整保留下列 MIT 声明。
 
 MIT License
 Copyright (c) agluo/ql-script-hub contributors.
@@ -103,6 +114,7 @@ import json
 import hashlib
 import uuid
 import importlib.util
+import fnmatch
 import os
 import random
 import re
@@ -128,6 +140,14 @@ USER_AGENT = "qinglong-aliyun-drive-checkin/2.0"
 TRUE_VALUES = {"1", "true", "yes", "on"}
 FALSE_VALUES = {"0", "false", "no", "off"}
 NOTIFY_TITLE = "阿里云盘签到"
+CATALOG_ID = "9c6fa7a75879fa8b"
+NOTIFY_IDENTIFIERS = (
+    CATALOG_ID,
+    "e9a52b129c643315",
+    "scripts/aliyunpan_checkin.py",
+    "aliyunpan_checkin.py",
+    "candidate.py",
+)
 
 
 class NoRedirect(HTTPRedirectHandler):
@@ -152,7 +172,26 @@ def enabled(name: str) -> bool:
 
 
 def notification_enabled() -> bool:
-    return os.getenv("QINGLONG_NOTIFY", "1").strip().lower() not in FALSE_VALUES
+    """Apply the global switch and optional standalone script selector."""
+    global_mode = os.getenv("QINGLONG_NOTIFY", "auto").strip().lower()
+    if global_mode in FALSE_VALUES:
+        return False
+    if global_mode not in TRUE_VALUES | {"auto", ""}:
+        print("WARNING: QINGLONG_NOTIFY 值无效，本次不发送通知", file=sys.stderr)
+        return False
+
+    if "QINGLONG_NOTIFY_SCRIPTS" not in os.environ:
+        # This maintained scheduled account task is in the built-in notification list.
+        return True
+    raw_selectors = os.getenv("QINGLONG_NOTIFY_SCRIPTS", "")
+    selectors = [item for item in re.split(r"[,;\s]+", raw_selectors.strip()) if item]
+    if not selectors:
+        return False
+    return any(
+        selector == "*"
+        or any(fnmatch.fnmatch(identifier, selector) for identifier in NOTIFY_IDENTIFIERS)
+        for selector in selectors
+    )
 
 
 def load_notify_sender():
@@ -250,18 +289,23 @@ def parse_nonnegative_int(name: str, default: int = 0) -> int:
     try:
         value = int(raw)
     except ValueError as exc:
-        raise CheckinError(f"{name} must be a non-negative integer") from exc
+        raise CheckinError(f"{name} 必须是非负整数") from exc
     if value < 0:
-        raise CheckinError(f"{name} must be a non-negative integer")
+        raise CheckinError(f"{name} 必须是非负整数")
     return value
 
 
 def parse_tokens() -> list[str]:
-    raw = os.environ.get("ALIYUN_REFRESH_TOKEN", os.getenv("refreshToken", ""))
+    raw = ""
+    for name in ("ALIYUN_REFRESH_TOKEN", "refreshToken", "ALI_REFRESH_TOKEN"):
+        candidate = os.getenv(name, "")
+        if candidate.strip():
+            raw = candidate
+            break
     tokens = [line.strip() for line in raw.splitlines() if line.strip()]
     if not tokens:
         raise CheckinError(
-            "ALIYUN_REFRESH_TOKEN is required; provide one non-empty account per line"
+            "必须设置 ALIYUN_REFRESH_TOKEN，每个非空行填写一个账号"
         )
     return tokens
 
@@ -316,10 +360,31 @@ class AliyunDriveClient:
         self.dry_run = dry_run
         self.sign_result = {}
         self.identity = ""
+        self.identities = []
         self.secrets = [refresh_token]
         self.user_id = ""
         self.device_headers = {}
         self.device_session = enabled("ENABLE_DEVICE_SESSION")
+
+    def public_identities(self, payload):
+        """Return only allowlisted, non-secret and non-phone identity values."""
+        identities = []
+        labels = {
+            "nick_name": "昵称",
+            "display_name": "显示名称",
+            "user_name": "用户名",
+            "user_id": "公开 UID",
+        }
+        for field, label in labels.items():
+            value = payload.get(field)
+            if not isinstance(value, str) or not value.strip():
+                continue
+            if any(secret and secret in value for secret in self.secrets):
+                continue
+            if re.search(r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d{9}(?!\d)", value):
+                continue
+            identities.append((label, value))
+        return identities
 
     def refresh_access_token(self) -> tuple[str, str, bool]:
         if self.dry_run:
@@ -345,12 +410,9 @@ class AliyunDriveClient:
             raise CheckinError("token refresh response contained an invalid refresh token")
         self.secrets.extend([access_token, next_refresh_token])
         self.user_id = payload.get("user_id", "")
-        for field in ("nick_name", "display_name", "user_name", "user_id"):
-            value = payload.get(field)
-            if isinstance(value, str) and value and not any(secret in value for secret in self.secrets):
-                # Explicit public identity fields only; do not read phone/device/session fields.
-                self.identity = value
-                break
+        self.identities = self.public_identities(payload)
+        if self.identities:
+            self.identity = self.identities[0][1]
         return access_token, next_refresh_token, next_refresh_token != self.refresh_token
 
     def account_information(self, access_token):
@@ -364,14 +426,15 @@ class AliyunDriveClient:
             if status != 200 or payload.get("code") or payload.get("success") is False:
                 raise CheckinError(f"{operation}未获接口确认（HTTP {status}）")
             if url == USER_INFO_URL:
-                for field in ("nick_name", "display_name", "user_name", "user_id"):
-                    value = payload.get(field)
-                    if isinstance(value, str) and value and not any(s in value for s in self.secrets):
-                        self.identity = value
-                        details.append("官方账号身份：" + json.dumps(value, ensure_ascii=False))
-                        break
-                else:
+                identities = self.public_identities(payload)
+                if not identities:
                     raise CheckinError("账号接口未返回可验证的公开身份")
+                self.identities = identities
+                self.identity = identities[0][1]
+                details.append("官方身份 " + "；".join(
+                    f"{label} {json.dumps(value, ensure_ascii=False)}"
+                    for label, value in identities
+                ))
             else:
                 space = payload.get("personal_space_info")
                 if not isinstance(space, dict):
@@ -561,8 +624,8 @@ class AliyunDriveClient:
                 elif number == 1:
                     access_token, next_token, rotated = self.refresh_access_token()
                     detail = "登录凭据有效" + ("，刷新令牌已轮换（内容隐藏）" if rotated else "")
-                    if self.identity:
-                        timeline("官方账号身份：" + json.dumps(self.identity, ensure_ascii=False), "└─")
+                    for label, value in self.identities:
+                        timeline(f"官方账号{label}：" + json.dumps(value, ensure_ascii=False), "└─")
                 elif number == 2:
                     detail = self.account_information(access_token)
                 elif number == 3:
