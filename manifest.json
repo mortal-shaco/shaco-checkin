@@ -6498,6 +6498,132 @@
       }
     },
     {
+      "catalogId": "5901669d3162577e",
+      "applicationKey": "unitaryhighs/ql_sign_script::ciba",
+      "checkProfile": {
+        "requiredEnv": [
+          "CIBA_LIST"
+        ],
+        "optionalEnv": [
+          "CIBA_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS"
+        ],
+        "dryRunEnv": {
+          "CIBA_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "HTTP 200 且业务字段完整",
+          "词霸每日一句获取成功",
+          "最终状态: ✅ 成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "从词霸公开 HTTPS 接口获取每日一句。",
+          "按显示配置分别输出英文原文、中文释义或两者。",
+          "支持多行独立显示配置，并在任一配置失败时返回非零退出码。",
+          "提供完全断网的预演模式、时间轴日志、脱敏通知和单行结构化任务汇总。"
+        ],
+        "sideEffects": []
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "词霸每日一句",
+      "path": "scripts/ciba.js",
+      "sha256": "c105bda0ef235d1916e27fe20ca35e2ee4a61dc948ec3140f30a802c0ce876f5",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "sign/ciba.js"
+      },
+      "cron": "0 25 11 * * *",
+      "command": "node scripts/ciba.js",
+      "environment": [
+        {
+          "name": "CIBA_LIST",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动新建 CIBA_LIST；此变量只是显示配置，不是账号凭据，也不需要从网页抓取 Cookie 或 Token。",
+          "format": "每个非空行是一项显示配置，推荐写成“配置名称|中文开关|英文开关”；开关支持是/否、1/0、true/false、on/off。单个非空值默认同时显示中文和英文，旧配置可继续使用 @ 分隔字段。"
+        },
+        {
+          "name": "CIBA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网预演时手动设置为 1；正式运行时删除或设为 0。",
+          "format": "启用值为 1、true、yes、on、是或启用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要只通知部分脚本时手动设置，留空会关闭全部脚本通知。",
+          "format": "使用逗号、分号、空白或换行分隔选择器；可填写 5901669d3162577e、output/candidate.js、candidate.js、通配符或 *。"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": "不适用",
+        "rule": "词霸每日一句使用公开接口，不存在账号或账号凭据；CIBA_LIST 的多个非空行仅代表彼此独立的显示配置，不代表多个账号。",
+        "unsupportedReason": "该服务契约无需登录，因此没有可处理的账号维度。"
+      },
+      "dependencies": [],
+      "features": [
+        "从词霸公开 HTTPS 接口获取每日一句。",
+        "按显示配置分别输出英文原文、中文释义或两者。",
+        "支持多行独立显示配置，并在任一配置失败时返回非零退出码。",
+        "提供完全断网的预演模式、时间轴日志、脱敏通知和单行结构化任务汇总。"
+      ],
+      "sideEffects": [],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/5901669d3162577e",
+        "candidateSha256": "ce666f54ca1a6c8c3448f553a89c7cf704185c562798db204413f77ff249c7c6"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "ce666f54ca1a6c8c3448f553a89c7cf704185c562798db204413f77ff249c7c6",
+        "releaseSha256": "c105bda0ef235d1916e27fe20ca35e2ee4a61dc948ec3140f30a802c0ce876f5",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:48:56.416104+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "ce666f54ca1a6c8c3448f553a89c7cf704185c562798db204413f77ff249c7c6",
+          "toCandidateSha256": "c105bda0ef235d1916e27fe20ca35e2ee4a61dc948ec3140f30a802c0ce876f5",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "a50eecf80a170dc5",
       "applicationKey": "yuxian158/check::dailycheckin-scripts",
       "checkProfile": {
@@ -9022,6 +9148,159 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "9103dbb61f4b6cea8178175c4c3e698cfc55566037ebc70e45a6229cd1f7dea4",
           "toCandidateSha256": "02133ead51a62a2e73de8ba261a9b842b6283957eaec43693187f58abc8f4959",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "e11f1f2a1bfb0af5",
+      "applicationKey": "yuxian158/check::kgqq",
+      "checkProfile": {
+        "requiredEnv": [
+          "KGQQ_COOKIE"
+        ],
+        "optionalEnv": [
+          "KGQQ",
+          "KGQQ_TIMEOUT",
+          "KGQQ_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS"
+        ],
+        "dryRunEnv": {
+          "KGQQ_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "KGQQ_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态: SUCCESS",
+          "官方账号昵称：",
+          "TASK_SUMMARY={"
+        ],
+        "features": [
+          "读取官方账号昵称与鲜花余额，并统计本次任务前后的鲜花变化。",
+          "执行全民K歌日常签到奖励与多个抽奖入口的奖励领取。",
+          "扫描并领取音乐卡片鲜花奖励，遇到已领取完成状态时安全结束。",
+          "识别 VIP 状态，并为 VIP 账号领取每日福利道具。",
+          "支持每行一个 Cookie 的多账号独立执行，任一账号失败时整体返回非零状态。",
+          "提供完全断网的预演模式、时间轴日志、单行结构化汇总和青龙通知。"
+        ],
+        "sideEffects": [
+          "触发全民K歌日常签到与抽奖奖励领取。",
+          "领取音乐卡片鲜花奖励并改变账号鲜花余额。",
+          "符合条件时领取 VIP 每日福利道具。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "全民K歌每日任务",
+      "path": "scripts/ck_kgqq.py",
+      "sha256": "0892058a22018bd9ff8232c3e440cef75753adb892a4c2a7fc1aea543cbe1e99",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_kgqq.py"
+      },
+      "cron": "35 2 * * *",
+      "command": "python3 scripts/ck_kgqq.py",
+      "environment": [
+        {
+          "name": "KGQQ_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录全民K歌网页版，打开浏览器开发者工具，在发往 node.kg.qq.com 的网络请求中复制 Cookie 请求头完整值，并仅保存到青龙环境变量。",
+          "format": "每行一个账号的完整 Cookie；每行必须包含非空 uid 字段。Cookie 内部继续使用分号分隔字段，不得用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "KGQQ",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容变量，获取方式与 KGQQ_COOKIE 相同；仅在未设置 KGQQ_COOKIE 时读取。",
+          "format": "每行一个账号的完整 Cookie；推荐迁移到 KGQQ_COOKIE。"
+        },
+        {
+          "name": "KGQQ_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况设置单次请求等待秒数；不设置时使用 15 秒。",
+          "format": "1 到 60 之间的数字。"
+        },
+        {
+          "name": "KGQQ_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要仅验证配置和执行流程、且禁止所有网络访问时启用。",
+          "format": "设为 1、true、yes 或 on 时启用断网预演；其他值为正式模式。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要按脚本筛选通知时填写目录编号、脚本名、相对路径或通配符。",
+          "format": "使用逗号、分号、空白或换行分隔；* 表示全部脚本，显式空值表示全部关闭。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "KGQQ_COOKIE 中每个非空行表示一个账号，按行独立处理；任一账号失败时进程最终以非零状态退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "读取官方账号昵称与鲜花余额，并统计本次任务前后的鲜花变化。",
+        "执行全民K歌日常签到奖励与多个抽奖入口的奖励领取。",
+        "扫描并领取音乐卡片鲜花奖励，遇到已领取完成状态时安全结束。",
+        "识别 VIP 状态，并为 VIP 账号领取每日福利道具。",
+        "支持每行一个 Cookie 的多账号独立执行，任一账号失败时整体返回非零状态。",
+        "提供完全断网的预演模式、时间轴日志、单行结构化汇总和青龙通知。"
+      ],
+      "sideEffects": [
+        "触发全民K歌日常签到与抽奖奖励领取。",
+        "领取音乐卡片鲜花奖励并改变账号鲜花余额。",
+        "符合条件时领取 VIP 每日福利道具。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e11f1f2a1bfb0af5",
+        "candidateSha256": "0a17b97ea0ee9c3d895a957e088bcf9e41045d7c2e2b45361dcaba6407d010f5"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "0a17b97ea0ee9c3d895a957e088bcf9e41045d7c2e2b45361dcaba6407d010f5",
+        "releaseSha256": "0892058a22018bd9ff8232c3e440cef75753adb892a4c2a7fc1aea543cbe1e99",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:48:49.940592+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "0a17b97ea0ee9c3d895a957e088bcf9e41045d7c2e2b45361dcaba6407d010f5",
+          "toCandidateSha256": "0892058a22018bd9ff8232c3e440cef75753adb892a4c2a7fc1aea543cbe1e99",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -21659,6 +21938,261 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "00c5772a3b7bacd61255515237ab1bd9f1d9d075d9bbf32d8ce4ec8c123552d2",
           "toCandidateSha256": "b53337aa70ba07a3d97a8a0483bc7c2d9faf5c920ec463c332300545d17807c3",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "75d5dd21e205ec36",
+      "applicationKey": "aka-cigma/qinglong-backup::backup",
+      "checkProfile": {
+        "requiredEnv": [
+          "ALIYUNDRIVE_REFRESH_TOKEN"
+        ],
+        "optionalEnv": [
+          "ALI_REFRESH_TOKEN",
+          "ALIYUN_TOKEN",
+          "QLBK_DRY_RUN",
+          "QLBK_ACTIONS",
+          "EXEC_SIGN_IN",
+          "QLBK_SOURCE_PATH",
+          "QLBK_BACKUPS_PATH",
+          "QLBK_ALLOW_EXTERNAL_BACKUP_PATH",
+          "QLBK_UPLOAD_PATH",
+          "QLBK_EXCLUDE_NAMES",
+          "QLBK_MAX_FLIES",
+          "QLBK_CLOUD_MAX_FLIES",
+          "QLBK_HTTP_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "QLBK_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QLBK_ACTIONS": "backup,sign_in",
+          "QLBK_BACKUPS_PATH": "backups",
+          "QLBK_UPLOAD_PATH": "backups",
+          "QLBK_MAX_FLIES": "5",
+          "QLBK_CLOUD_MAX_FLIES": "100",
+          "QLBK_HTTP_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态: SUCCESS",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "按青龙计划任务每日 02:00 自动运行，并保留上游的任务名称与计划。",
+          "将青龙数据目录中的顶层业务目录打包为带时间戳的 tar.gz 备份，并支持配置排除目录。",
+          "使用脚本内置 HTTP 客户端刷新阿里云盘授权、逐级创建云盘目录并分片上传备份。",
+          "分别限制本地与每个云盘账号的备份保留数量，且仅清理 qinglong_时间戳.tar.gz 规范文件。",
+          "默认执行阿里云盘签到并校验 signInCount，也可通过任务动作开关只运行备份或签到。",
+          "支持每行一个 refresh_token 的多账号独立处理，并在官方响应提供时显示昵称、用户名或公开 UID。",
+          "提供完全断网且不修改文件的 QLBK_DRY_RUN 预演模式。",
+          "输出分阶段时间轴、逐账号统计、最终统计和唯一一行 TASK_SUMMARY JSON，并按青龙通知策略发送脱敏总结。"
+        ],
+        "sideEffects": [
+          "在本地备份目录创建青龙数据压缩包。",
+          "在阿里云盘创建目标目录并上传备份文件。",
+          "将超过保留数量的本地规范旧备份删除。",
+          "将超过保留数量的云端规范旧备份移入阿里云盘回收站。",
+          "在启用 sign_in 动作时执行阿里云盘签到，但不领取签到奖励。",
+          "在通知开关允许且非断网预演时发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "青龙备份与阿里云盘签到",
+      "path": "scripts/qinglong_backup.py",
+      "sha256": "66954ce7bf90e8a9c5c403db59fdad877ebc9e3f3c772e58534107de44bc3e4a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "AKA-Cigma/qinglong-backup",
+        "branch": "main",
+        "commit": "2658151108d8357c42f4ae3f6cf2372e70fb263a",
+        "originalPath": "qinglong-backup.py"
+      },
+      "cron": "11 1 * * *",
+      "command": "python3 scripts/qinglong_backup.py",
+      "environment": [
+        {
+          "name": "ALIYUNDRIVE_REFRESH_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人阿里云盘官方网页或客户端，在本人授权会话的令牌刷新响应中取得 refresh_token；仅保存到青龙环境变量，禁止分享。旧变量 ALI_REFRESH_TOKEN、ALIYUN_TOKEN 仅作为可选兼容输入。",
+          "format": "每个账号一个非空行，每行仅填写该账号的 refresh_token；不得使用 &、@ 或其他符号拼接账号。"
+        },
+        {
+          "name": "ALI_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容凭据变量；建议迁移到必需的规范变量 ALIYUNDRIVE_REFRESH_TOKEN。",
+          "format": "与 ALIYUNDRIVE_REFRESH_TOKEN 相同，每个账号一个非空行。"
+        },
+        {
+          "name": "ALIYUN_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容凭据变量；建议迁移到必需的规范变量 ALIYUNDRIVE_REFRESH_TOKEN。",
+          "format": "与 ALIYUNDRIVE_REFRESH_TOKEN 相同，每个账号一个非空行。"
+        },
+        {
+          "name": "QLBK_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "导入或修改配置后先启用，用于执行完全断网且不产生副作用的预演。",
+          "format": "1/0、true/false、yes/no 或 on/off。"
+        },
+        {
+          "name": "QLBK_ACTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需填写要执行的动作；不填写时默认同时备份和签到，兼容旧变量 EXEC_SIGN_IN。",
+          "format": "逗号、分号或空白分隔的 backup、sign_in，例如 backup,sign_in。"
+        },
+        {
+          "name": "EXEC_SIGN_IN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版兼容开关；仅在未设置 QLBK_ACTIONS 时生效。",
+          "format": "True 或 False，也接受 1/0、yes/no、on/off。"
+        },
+        {
+          "name": "QLBK_SOURCE_PATH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写需要备份的青龙数据目录；通常无需设置，脚本优先使用 /ql/data，否则使用 /ql。",
+          "format": "本机绝对目录路径。"
+        },
+        {
+          "name": "QLBK_BACKUPS_PATH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写本地备份目录；默认 backups，并相对于备份源目录解析。",
+          "format": "安全的相对目录；外部绝对目录还需显式启用 QLBK_ALLOW_EXTERNAL_BACKUP_PATH。"
+        },
+        {
+          "name": "QLBK_ALLOW_EXTERNAL_BACKUP_PATH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在明确需要把备份写到源目录外部时启用。",
+          "format": "1/0、true/false、yes/no 或 on/off。"
+        },
+        {
+          "name": "QLBK_UPLOAD_PATH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写阿里云盘中的目标目录；不存在时脚本会逐级创建，默认 backups。",
+          "format": "不含 . 或 .. 的云盘相对目录，例如 backups/qinglong。"
+        },
+        {
+          "name": "QLBK_EXCLUDE_NAMES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写备份源下不应打包的顶层目录名；不填写时沿用上游默认排除项。",
+          "format": "逗号、分号、空白分隔，或 JSON 字符串数组。"
+        },
+        {
+          "name": "QLBK_MAX_FLIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写要保留的本地规范备份数量；变量名沿用上游拼写，默认 5。",
+          "format": "1 到 10000 的整数。"
+        },
+        {
+          "name": "QLBK_CLOUD_MAX_FLIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写每个账号云盘中要保留的规范备份数量；默认 100，且不得小于本地保留数。",
+          "format": "1 到 10000 的整数。"
+        },
+        {
+          "name": "QLBK_HTTP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "网络较慢时可调整单次接口或分片请求超时，默认 20 秒。",
+          "format": "3 到 120 的整数秒数。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要限定通知脚本时填写；设置后替换默认选择，空值关闭全部通知。",
+          "format": "用逗号、分号、空白或换行分隔 catalogId、脚本路径、文件名或通配模式。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知脚本不在标准位置时，填写同时包含 notify.py 或 sendNotify.js 的目录。",
+          "format": "本机绝对目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "ALIYUNDRIVE_REFRESH_TOKEN 每个非空行代表一个账号；账号独立认证、签到、上传和清理，任一账号失败时进程整体返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "按青龙计划任务每日 02:00 自动运行，并保留上游的任务名称与计划。",
+        "将青龙数据目录中的顶层业务目录打包为带时间戳的 tar.gz 备份，并支持配置排除目录。",
+        "使用脚本内置 HTTP 客户端刷新阿里云盘授权、逐级创建云盘目录并分片上传备份。",
+        "分别限制本地与每个云盘账号的备份保留数量，且仅清理 qinglong_时间戳.tar.gz 规范文件。",
+        "默认执行阿里云盘签到并校验 signInCount，也可通过任务动作开关只运行备份或签到。",
+        "支持每行一个 refresh_token 的多账号独立处理，并在官方响应提供时显示昵称、用户名或公开 UID。",
+        "提供完全断网且不修改文件的 QLBK_DRY_RUN 预演模式。",
+        "输出分阶段时间轴、逐账号统计、最终统计和唯一一行 TASK_SUMMARY JSON，并按青龙通知策略发送脱敏总结。"
+      ],
+      "sideEffects": [
+        "在本地备份目录创建青龙数据压缩包。",
+        "在阿里云盘创建目标目录并上传备份文件。",
+        "将超过保留数量的本地规范旧备份删除。",
+        "将超过保留数量的云端规范旧备份移入阿里云盘回收站。",
+        "在启用 sign_in 动作时执行阿里云盘签到，但不领取签到奖励。",
+        "在通知开关允许且非断网预演时发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/75d5dd21e205ec36",
+        "candidateSha256": "0eb91d468fe5dc24f7ac1d4c59de826c07675e8c7531c834fe2611da330477f8"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "0eb91d468fe5dc24f7ac1d4c59de826c07675e8c7531c834fe2611da330477f8",
+        "releaseSha256": "66954ce7bf90e8a9c5c403db59fdad877ebc9e3f3c772e58534107de44bc3e4a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:48:44.770817+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "0eb91d468fe5dc24f7ac1d4c59de826c07675e8c7531c834fe2611da330477f8",
+          "toCandidateSha256": "66954ce7bf90e8a9c5c403db59fdad877ebc9e3f3c772e58534107de44bc3e4a",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
