@@ -6342,6 +6342,216 @@
       }
     },
     {
+      "catalogId": "75a199c398e3576c",
+      "applicationKey": "chatglm",
+      "checkProfile": {
+        "requiredEnv": [
+          "CHATGLM_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "CHATGLM_TOKEN",
+          "CHATGLM_REFRESH_TOKEN",
+          "CHATGLM_DEVICE_ID",
+          "CHATGLM_STATE_FILE",
+          "CHATGLM_BASE_URL",
+          "CHATGLM_PROXY",
+          "CHATGLM_TIMEOUT",
+          "CHATGLM_NO_NOTIFY",
+          "CHATGLM_DRY_RUN"
+        ],
+        "dryRunEnv": {
+          "CHATGLM_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "最终状态：SUCCESS"
+        ],
+        "features": [
+          "每日登录积分自动领取，并识别已领取状态避免重复处理",
+          "会员积分活动与季节活动自动领取，活动未开启时跳过",
+          "每日任务中心自动登记并结算任务奖励",
+          "新手任务中心自动结算，完成后记录状态避免重复处理",
+          "积分余额与每日/新手任务进度回读展示",
+          "refresh_token 自动续期并持久化新令牌到本地状态文件",
+          "多账号独立处理，任一账号失败时整体非零退出",
+          "完全断网预演、脱敏时间轴日志、机器可读汇总和青龙通知"
+        ],
+        "sideEffects": [
+          "实时模式会向智谱清言提交每日签到与任务结算，可能增加账号积分或消耗任务奖励",
+          "登录态自动续期会调用令牌刷新接口并更新本地状态文件",
+          "启用通知且发现青龙通知组件时，会发送脱敏任务结果通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "智谱清言每日签到",
+      "path": "scripts/chatglm_daily.py",
+      "sha256": "6de343030ea7ff7469e347f2f926d76a57df611d071639f289f5ef8cae7f6d1a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/ChatGLM-Daily",
+        "branch": "main",
+        "commit": "670171ee505aed57318485aa99e1c58c9695169f",
+        "originalPath": "chatglm_daily.py",
+        "related": [
+          {
+            "catalogId": "84c09b1539b5017b",
+            "sha256": "23b9bb1bb66b76578b3d839b4c0e3c8d658809d30290c94c172082c950196b7b",
+            "repository": "L0NE-6/ChatGLM-Daily",
+            "url": "https://github.com/L0NE-6/ChatGLM-Daily.git",
+            "branch": "main",
+            "commit": "670171ee505aed57318485aa99e1c58c9695169f",
+            "originalPath": "chatglm_login.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "13 1 * * *",
+      "command": "python3 scripts/chatglm_daily.py",
+      "environment": [
+        {
+          "name": "CHATGLM_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录智谱清言后从网页请求头或客户端登录态中提取；可使用来源仓库附带的 chatglm_login.py 工具读取 Windows 客户端登录态并生成环境变量值。",
+          "format": "每行一个账号，格式：备注|access_token|refresh_token|device_id；refresh_token 与 device_id 可省略，行内字段用竖线分隔，账号之间用换行分隔"
+        },
+        {
+          "name": "CHATGLM_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "单账号兼容变量：直接填写 access_token；配置了 CHATGLM_ACCOUNTS 时忽略本变量。",
+          "format": "纯文本 access_token，可带 Bearer 前缀"
+        },
+        {
+          "name": "CHATGLM_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "单账号兼容变量：填写 refresh_token，用于登录态自动续期。",
+          "format": "纯文本 refresh_token，可带 Bearer 前缀"
+        },
+        {
+          "name": "CHATGLM_DEVICE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "单账号兼容变量：填写设备标识；留空时脚本自动生成并保存到状态文件。",
+          "format": "任意设备标识字符串"
+        },
+        {
+          "name": "CHATGLM_STATE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：指定续期令牌与新手任务进度的本地状态文件路径；留空使用脚本目录下的 chatglm_state.json。",
+          "format": "可写文件的绝对路径"
+        },
+        {
+          "name": "CHATGLM_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：覆盖接口基址；默认使用官方 https://chatglm.cn，一般无需修改。",
+          "format": "以 http(s) 开头的完整网址，不带末尾斜杠"
+        },
+        {
+          "name": "CHATGLM_PROXY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：为全部接口请求设置 http(s) 代理；标准库实现不支持 socks 代理。",
+          "format": "http://host:port 或 https://host:port"
+        },
+        {
+          "name": "CHATGLM_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次接口请求超时秒数，默认 30 秒。",
+          "format": "1 到 60 之间的数字"
+        },
+        {
+          "name": "CHATGLM_NO_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：设为 1 时关闭本脚本通知（兼容上游变量）；青龙通知另有 QINGLONG_NOTIFY 总开关。",
+          "format": "1 表示关闭，其他值视为开启"
+        },
+        {
+          "name": "CHATGLM_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：设为 1 进入完全断网预演，校验配置与请求构造但不发起任何网络请求，用于验证脚本与参数。",
+          "format": "1 表示开启预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个账号，行内用竖线分隔字段：备注|access_token|refresh_token|device_id；任一账号失败时整体以非零退出码结束"
+      },
+      "dependencies": [],
+      "features": [
+        "每日登录积分自动领取，并识别已领取状态避免重复处理",
+        "会员积分活动与季节活动自动领取，活动未开启时跳过",
+        "每日任务中心自动登记并结算任务奖励",
+        "新手任务中心自动结算，完成后记录状态避免重复处理",
+        "积分余额与每日/新手任务进度回读展示",
+        "refresh_token 自动续期并持久化新令牌到本地状态文件",
+        "多账号独立处理，任一账号失败时整体非零退出",
+        "完全断网预演、脱敏时间轴日志、机器可读汇总和青龙通知"
+      ],
+      "sideEffects": [
+        "实时模式会向智谱清言提交每日签到与任务结算，可能增加账号积分或消耗任务奖励",
+        "登录态自动续期会调用令牌刷新接口并更新本地状态文件",
+        "启用通知且发现青龙通知组件时，会发送脱敏任务结果通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/75a199c398e3576c",
+        "candidateSha256": "694561723076ed4f1f3b3d2e0dcbe52cd198aeefef0290ad22a5528fefc2214a"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "694561723076ed4f1f3b3d2e0dcbe52cd198aeefef0290ad22a5528fefc2214a",
+        "releaseSha256": "6de343030ea7ff7469e347f2f926d76a57df611d071639f289f5ef8cae7f6d1a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T05:47:17.977532+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "694561723076ed4f1f3b3d2e0dcbe52cd198aeefef0290ad22a5528fefc2214a",
+          "toCandidateSha256": "6de343030ea7ff7469e347f2f926d76a57df611d071639f289f5ef8cae7f6d1a",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "5e7302e54a0be513",
       "applicationKey": "naroiscool/naro-scripts::chevrolet",
       "checkProfile": {
