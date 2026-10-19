@@ -1,6 +1,6 @@
 # 字母索引 · Y
 
-共 **8** 个脚本。返回 [`目录首页`](../README.md)。
+共 **9** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -11,4 +11,5 @@
 | CSDN每日签到与可选抽奖 | `scripts/yuxian158_check_csdn.py` | `python3 scripts/yuxian158_check_csdn.py` | `36 1 * * *` | 待检查 | [yuxian158_check_csdn.py.md](../../scripts/yuxian158_check_csdn.py.md)（`docs/scripts/yuxian158_check_csdn.py.md`） |
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `23 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
 | 时光相册每日签到 | `scripts/yuxian158_check_everphoto.py` | `python3 scripts/yuxian158_check_everphoto.py` | `28 1 * * *` | 待检查 | [yuxian158_check_everphoto.py.md](../../scripts/yuxian158_check_everphoto.py.md)（`docs/scripts/yuxian158_check_everphoto.py.md`） |
+| Fa米家每日签到 | `scripts/yuxian158_check_fmapp.py` | `python3 scripts/yuxian158_check_fmapp.py` | `52 0 * * *` | 待检查 | [yuxian158_check_fmapp.py.md](../../scripts/yuxian158_check_fmapp.py.md)（`docs/scripts/yuxian158_check_fmapp.py.md`） |
 | 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `39 2 * * *` | 待检查 | [yyshuijuantime.py.md](../../scripts/yyshuijuantime.py.md)（`docs/scripts/yyshuijuantime.py.md`） |
