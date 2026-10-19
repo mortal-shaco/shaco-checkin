@@ -1,6 +1,6 @@
 # 分类索引 · 云盘
 
-共 **12** 个脚本。返回 [`目录首页`](../README.md)。
+共 **13** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -16,3 +16,4 @@
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `15 0 * * *` | 待检查 | [quark_signin.py.md](../../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
 | 阿里云盘签到 | `scripts/task_ef2d3863.js` | `node scripts/task_ef2d3863.js` | `7 9,22 * * *` | 待检查 | [task_ef2d3863.js.md](../../scripts/task_ef2d3863.js.md)（`docs/scripts/task_ef2d3863.js.md`） |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `2 1 * * *` | 待检查 | [ty_netdisk_checkin.py.md](../../scripts/ty_netdisk_checkin.py.md)（`docs/scripts/ty_netdisk_checkin.py.md`） |
+| 时光相册每日签到 | `scripts/yuxian158_check_everphoto.py` | `python3 scripts/yuxian158_check_everphoto.py` | `28 1 * * *` | 待检查 | [yuxian158_check_everphoto.py.md](../../scripts/yuxian158_check_everphoto.py.md)（`docs/scripts/yuxian158_check_everphoto.py.md`） |
