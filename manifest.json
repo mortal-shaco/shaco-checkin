@@ -15708,6 +15708,137 @@
       }
     },
     {
+      "catalogId": "ec84855cfbf1a288",
+      "applicationKey": "unitaryhighs/ql_sign_script::kfzy",
+      "checkProfile": {
+        "requiredEnv": [
+          "KFZY_COOKIE_LIST"
+        ],
+        "optionalEnv": [
+          "KFZY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS"
+        ],
+        "dryRunEnv": {
+          "KFZY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已完成",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用夸父资源社账号 Cookie 执行每日签到",
+          "支持每行一个账号并逐账号输出脱敏结果与统计",
+          "识别明确的签到成功和今日已签到结果",
+          "支持完全断网的参数校验预演",
+          "按青龙通知策略发送不含凭据和原始响应的任务总结"
+        ],
+        "sideEffects": [
+          "实时模式会向夸父资源社提交签到，并可能改变账号的签到状态或奖励余额"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "夸父资源社签到",
+      "path": "scripts/kfzy.js",
+      "sha256": "44947076109368440e3a91e55ac7836a4cdf21a110dd800d063ede92fba41891",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "sign/kfzy.js"
+      },
+      "cron": "0 40 11 * * *",
+      "command": "node scripts/kfzy.js",
+      "environment": [
+        {
+          "name": "KFZY_COOKIE_LIST",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录夸父资源社网页后，在浏览器开发者工具的网络请求中查看发送给 www.kfzy.net 的 Cookie；仅复制包含 bbs_sid 与 bbs_token 的 Cookie。请妥善保管，不要发送给他人。",
+          "format": "每行一个账号，单行必须同时包含 bbs_sid=...; bbs_token=...；分号后的其他 Cookie 字段会原样保留。"
+        },
+        {
+          "name": "KFZY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网预演时设置为 1；预演只校验账号格式，不访问任何接口，也不会签到。",
+          "format": "启用值可使用 1、true、yes 或 on。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如只希望部分脚本发送通知，可填写本脚本的目录编号、路径、文件名或通配符；留空会关闭全部脚本通知。",
+          "format": "多个选择器用逗号、分号、空格或换行分隔；本脚本可用 ec84855cfbf1a288、sign/kfzy.js、kfzy.js 或 *。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "KFZY_COOKIE_LIST 中每个非空行代表一个账号；脚本逐个独立校验和签到，任一账号失败都会使进程以非零状态退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用夸父资源社账号 Cookie 执行每日签到",
+        "支持每行一个账号并逐账号输出脱敏结果与统计",
+        "识别明确的签到成功和今日已签到结果",
+        "支持完全断网的参数校验预演",
+        "按青龙通知策略发送不含凭据和原始响应的任务总结"
+      ],
+      "sideEffects": [
+        "实时模式会向夸父资源社提交签到，并可能改变账号的签到状态或奖励余额"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ec84855cfbf1a288",
+        "candidateSha256": "55aca502d7b71bfcab44115ce026f2c6c7e8e3ff6942512afe7dc34085a16bdf"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "55aca502d7b71bfcab44115ce026f2c6c7e8e3ff6942512afe7dc34085a16bdf",
+        "releaseSha256": "44947076109368440e3a91e55ac7836a4cdf21a110dd800d063ede92fba41891",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:34:42.392991+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "55aca502d7b71bfcab44115ce026f2c6c7e8e3ff6942512afe7dc34085a16bdf",
+          "toCandidateSha256": "44947076109368440e3a91e55ac7836a4cdf21a110dd800d063ede92fba41891",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "d49d052949d2bef1",
       "applicationKey": "sitoi/dailycheckin::kgqq",
       "checkProfile": {
