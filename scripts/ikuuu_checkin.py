@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: ikuuu 签到
-# cron: 15 1 * * *
+# cron: 20 1 * * *
 # SPDX-License-Identifier: MIT
 # Cookie 与流量查询参考：liang97-gz/ikuuu-for-cookies（Apache-2.0）
 # 合并维护版 effectiveLicense：MIT；原始来源及其许可声明保留。
@@ -20,7 +20,7 @@ The upstream attribution and MIT license are preserved.
 仅在未设置 IKUUU_ACCOUNT 时使用。不再用 & 分隔账号。
 IKUUU_MAX_RANDOM_DELAY 可设 0..3600 秒，默认 0。
 IKUUU_DRY_RUN=1 完全断网预演，不发送通知、不等待。
-QINGLONG_NOTIFY 未设置时按上架状态，设 0/false/no/off 关闭通知。
+QINGLONG_NOTIFY 默认 auto，设 0/false/no/off 关闭通知。
 IKUUU_PROFILE=1 开启资料读取，默认 0 保留原维护版本的签到流程。
 开启后资料读取失败仍继续签到，但该账号整体失败；不输出页面或服务端原始消息。
 新增 Cookie 登录：IKUUU_ACCOUNT 每行也可填写 cookie:完整 Cookie，
@@ -31,7 +31,10 @@ Cookie 模式默认 ikuuu.win；邮箱密码模式默认 ikuuu.nl。IKUUU_HOST �
 官方当前域名，仅填主机名，不含协议、路径；不要填不受信任的站点。
 IKUUU_FLOW=1 开启剩余流量查询；默认仅 Cookie 模式开启，不改变原有邮箱流程。
 流量读取失败仍继续签到，账号整体失败。可选 PUSHPLUS_TOKEN 来自 PushPlus
-官网账号，受 QINGLONG_NOTIFY 总开关控制；青龙通知无需额外配置此项。
+官网账号；兼容原脚本的 TOKEN 仅在同时明确设置 SCKEY=1 时读取，避免误用其他
+任务的通用 TOKEN。可选 SERVERCHAN_SENDKEY 来自 Server酱，兼容原脚本非空且
+不为 1 的 SCKEY。两者都受 QINGLONG_NOTIFY 总开关与
+QINGLONG_NOTIFY_SCRIPTS 选择规则控制；青龙通知无需额外配置。
 基础预演成功并不表示真实账号业务成功。
 """
 
@@ -56,6 +59,7 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
 # qinglong-notification-policy: end
 
 import base64
+from fnmatch import fnmatchcase
 import importlib.util
 from html.parser import HTMLParser
 import json
@@ -80,7 +84,15 @@ TIMEOUT_SECONDS = 15
 TITLE = "ikuuu签到"
 DRY_RUN_ENV = "IKUUU_DRY_RUN"
 DISABLED = {"0", "false", "no", "off"}
-ALREADY_WORDS = ("已经签到", "已签到", "already checked", "already check")
+ALREADY_WORDS = (
+    "已经签到",
+    "已签到",
+    "签到过",
+    "重复签到",
+    "already checked",
+    "already check",
+    "already signed",
+)
 HEADERS = {
     "Origin": BASE_URL,
     "Referer": f"{BASE_URL}/user",
@@ -470,21 +482,59 @@ def load_notify_sender():
     return None
 
 
-def pushplus_summary(body: str) -> str:
+class NoRedirect(HTTPRedirectHandler):
+    """Reject redirects so notification credentials stay on their configured origin."""
+
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+def notification_selected() -> bool:
+    """Implement the policy's replace-listed-defaults selector."""
+    raw = os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if raw is None:
+        # This maintained scheduled task is in the policy's default listed set.
+        return True
+    selectors = [item for item in re.split(r"[,;\s]+", raw.strip()) if item]
+    if not selectors:
+        return False
+    identities = {
+        "444530f6f4a25554",
+        "7ea70c9e9d579efb",
+        "candidate.py",
+        "ikuuu_checkin.py",
+        "scripts/ikuuu_checkin.py",
+        Path(__file__).name,
+    }
+    return any(
+        selector == "*" or any(fnmatchcase(identity, selector) for identity in identities)
+        for selector in selectors
+    )
+
+
+def pushplus_token() -> str:
     token = os.getenv("PUSHPLUS_TOKEN", "").strip()
+    if token:
+        return token
+    # TOKEN is too generic to read implicitly. SCKEY=1 was the upstream's
+    # explicit switch to its PushPlus branch, so require that legacy marker.
+    if os.getenv("SCKEY", "").strip() == "1":
+        return os.getenv("TOKEN", "").strip()
+    return ""
+
+
+def pushplus_summary(body: str) -> str:
+    token = pushplus_token()
     if not token:
         return ""
     try:
         data = json.dumps({"token": token, "title": TITLE, "content": body, "template": "txt"}).encode("utf-8")
         request = Request("https://www.pushplus.plus/send", data=data,
                           headers={"Content-Type": "application/json"}, method="POST")
-        # No redirects: never forward the notification token to a new origin.
-        class NoRedirect(HTTPRedirectHandler):
-            def redirect_request(self, *args, **kwargs):
-                return None
         with build_opener(NoRedirect()).open(request, timeout=10) as response:
             raw = response.read(16385)
-            if response.status != 200 or len(raw) > 16384 or json.loads(raw).get("code") != 200:
+            value = json.loads(raw)
+            if response.status != 200 or len(raw) > 16384 or not isinstance(value, dict) or value.get("code") != 200:
                 raise TaskError("PushPlus 未确认通知成功")
         log("PushPlus 通知投递完成")
         return ";pushplus-sent"
@@ -493,26 +543,59 @@ def pushplus_summary(body: str) -> str:
         return ";pushplus-failed"
 
 
+def serverchan_summary(body: str) -> str:
+    sendkey = os.getenv("SERVERCHAN_SENDKEY", "").strip()
+    legacy = os.getenv("SCKEY", "").strip()
+    if not sendkey and legacy and legacy != "1":
+        sendkey = legacy
+    if not sendkey:
+        return ""
+    if not re.fullmatch(r"[A-Za-z0-9._-]{6,128}", sendkey):
+        log("⚠️ Server酱 SendKey 格式无效，已跳过；业务退出状态保持不变")
+        return ";serverchan-invalid"
+    try:
+        data = urlencode({"title": TITLE, "desp": body}).encode("utf-8")
+        request = Request(
+            f"https://sctapi.ftqq.com/{sendkey}.send",
+            data=data,
+            headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            method="POST",
+        )
+        with build_opener(NoRedirect()).open(request, timeout=10) as response:
+            raw = response.read(16385)
+            value = json.loads(raw)
+            if response.status != 200 or len(raw) > 16384 or not isinstance(value, dict) or value.get("code") not in (0, "0"):
+                raise TaskError("Server酱未确认通知成功")
+        log("Server酱通知投递完成")
+        return ";serverchan-sent"
+    except Exception:
+        log("⚠️ Server酱通知投递失败，业务退出状态保持不变")
+        return ";serverchan-failed"
+
+
 def notify_summary(body: str, dry_run: bool) -> str:
-    if not enabled("QINGLONG_NOTIFY", "1"):
+    if not enabled("QINGLONG_NOTIFY", "auto"):
         print("通知已由 QINGLONG_NOTIFY 关闭")
         return "disabled"
+    if not notification_selected():
+        print("通知已由 QINGLONG_NOTIFY_SCRIPTS 排除")
+        return "not-selected"
     # A dry-run is strictly no-network; importing notify.py could itself perform I/O.
     if dry_run:
         print("DRY-RUN 通知摘要（未投递以保证完全断网）：" + body)
         return "dry-run"
-    push_state = pushplus_summary(body)
+    provider_state = pushplus_summary(body) + serverchan_summary(body)
     sender = load_notify_sender()
     if sender is None:
         print("警告：未找到青龙通知模块，业务退出状态保持不变", file=sys.stderr)
-        return "unavailable" + push_state
+        return "unavailable" + provider_state
     try:
         sender(TITLE, body)
         print("通知投递完成")
-        return "sent" + push_state
+        return "sent" + provider_state
     except Exception:
         print("警告：通知投递失败，业务退出状态保持不变", file=sys.stderr)
-        return "failed" + push_state
+        return "failed" + provider_state
 
 
 def delay_seconds() -> int:

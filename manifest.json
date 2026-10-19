@@ -14974,9 +14974,12 @@
           "IKUUU_MAX_RANDOM_DELAY",
           "IKUUU_DRY_RUN",
           "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR",
           "PUSHPLUS_TOKEN",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "SERVERCHAN_SENDKEY",
+          "SCKEY",
+          "TOKEN"
         ],
         "dryRunEnv": {
           "IKUUU_DRY_RUN": "1"
@@ -14984,31 +14987,28 @@
         "liveEnv": {
           "IKUUU_PROFILE": "0",
           "IKUUU_MAX_RANDOM_DELAY": "0",
-          "QINGLONG_NOTIFY": "1"
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
-          "\"event\":\"success\"",
-          "\"failed\":0",
-          "\"exitCode\":0"
+          "最终状态：success；退出码：0",
+          "TASK_SUMMARY={\"event\":\"success\""
         ],
         "features": [
-          "保留邮箱密码登录与官方 ret=1 核验，兼容 IKUUU_ACCOUNT 和旧 ikuuu 参数",
-          "新增 Cookie 会话签到，支持 IKUUU_COOKIES、备注前缀及同一规范账号变量中的 Cookie 输入",
-          "每日签到要求官方 ret=1 或明确的今日已签到证明，成功说明中提取流量奖励",
-          "保留可选个人资料读取与非空响应核验；资料失败继续签到但账号整体失败",
-          "新增剩余流量查询，解析官方 /user 页面及 originBody 编码页面中明确的剩余流量字段",
-          "保留安全官方昵称、用户名、显示名称或公开 UID 的原值展示；凭据、手机号和会话值不输出",
-          "支持官方主机名配置，未设置时保留邮箱模式原域名及 Cookie 模式上游域名",
-          "换行多账号独立处理、凭据字段仅首次分割、失败非零退出",
-          "保留每天 21:00 调度、可选随机错峰和云函数 handler 入口",
-          "保留分阶段时间轴日志、耗时、账号与任务统计、IKUUU_SUMMARY 及唯一 TASK_SUMMARY",
-          "使用青龙 notify.py 发送脱敏摘要，保留上游可选 PushPlus 通知，通知故障不改变业务退出码",
-          "完全断网预演参数、各模式请求计划及通知摘要，不导入通知模块、不等待、不修改账号状态"
+          "支持邮箱密码登录，并仅在官方登录响应 ret=1 时继续执行。",
+          "支持 Cookie 会话签到，兼容规范账号变量、旧版 ikuuu 与 IKUUU_COOKIES。",
+          "每日签到仅在官方 ret=1 或消息明确证明今日已经签到时判定成功，并提取流量奖励。",
+          "可选读取个人资料并核验非空响应；官方返回安全昵称、用户名、显示名称或公开 UID 时按原值展示。",
+          "可选查询剩余流量，支持普通页面和 originBody 编码页面中的中英文剩余流量字段。",
+          "支持换行多账号独立执行、密码和 Cookie 后续分隔字符保留、任一账号失败时整体非零退出。",
+          "支持官方主机名配置、最多一小时随机错峰以及云函数 handler 兼容入口。",
+          "支持完全断网预演，不等待、不加载通知模块、不发起账号或通知请求。",
+          "按账号输出编号阶段、脱敏结果、耗时和统计，并保留 IKUUU_SUMMARY 与唯一 TASK_SUMMARY 记录。",
+          "通过青龙 notify.py 发送脱敏任务总结，并兼容显式配置的 PushPlus 与 Server酱通知；通知失败不改变业务退出码。"
         ],
         "sideEffects": [
-          "实际运行时邮箱密码登录并建立账号会话",
-          "实际运行时提交每日签到，可能增加账号流量",
-          "实际运行时通过青龙已有渠道及可选 PushPlus 发送脱敏任务摘要"
+          "实际运行时使用邮箱密码登录并建立账号会话。",
+          "实际运行时提交每日签到，可能增加账号流量。",
+          "实际运行时通过青龙已配置通知渠道以及显式配置的 PushPlus 或 Server酱发送脱敏总结。"
         ]
       },
       "postReview": {
@@ -15017,7 +15017,7 @@
       },
       "displayName": "ikuuu 签到",
       "path": "scripts/ikuuu_checkin.py",
-      "sha256": "04cf0579328d95ab6644bc7c8580bc358d811e3e2f4eae450203f8d057bb239f",
+      "sha256": "784330c91cbfde15774c9cb09ab477f69bd2b2a5a2a4190b0f4708ef1e5fcdb8",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -15046,67 +15046,77 @@
             "catalogId": "7b3a8424fe25cb91",
             "sha256": "a3fa888ec9cdc793e22a348491bb1e7b65e9120232b29cead6ba56b265814034",
             "license": "Apache-2.0"
+          },
+          {
+            "repository": "bighammer-link/jichang_dailycheckin",
+            "url": "https://github.com/bighammer-link/jichang_dailycheckin.git",
+            "branch": "main",
+            "commit": "d0f4ad5f437c251bf6cf31e8141b49bf57964a61",
+            "originalPath": "main.py",
+            "catalogId": "444530f6f4a25554",
+            "sha256": "d1e173c155994d04ad316feec2a870fcd6ebe6e0b5b46f436652f5a7a7c1c935",
+            "license": "MIT"
           }
         ]
       },
-      "cron": "15 1 * * *",
+      "cron": "20 1 * * *",
       "command": "python3 scripts/ikuuu_checkin.py",
       "environment": [
         {
           "name": "IKUUU_ACCOUNT",
           "required": true,
           "sensitive": true,
-          "howToGet": "在 iKuuu 官方网站注册或找回邮箱密码；Cookie 模式需先在浏览器登录，在开发者工具 Network 的 /user 请求中复制 Cookie 请求头，包含 uid、email、key。仅在青龙私密环境变量中保存。",
-          "format": "每行一个账号：邮箱|密码，或 cookie:完整 Cookie；仅在第一个 | 处分割邮箱密码，密码中的后续 | 保留。Cookie 使用分号分隔名称=值，值中的后续 = 保留；禁止用 & 或 @ 分隔账号。"
+          "howToGet": "邮箱密码模式使用在 ikuuu 官网注册或找回的邮箱和密码；Cookie 模式在浏览器登录官网后，从开发者工具 Network 的 /user 请求复制 Cookie 请求头。不要把凭据发送到聊天或日志。",
+          "format": "每行一个账号；邮箱密码写成 邮箱|密码，只在第一个竖线处分割；Cookie 写成 cookie:完整Cookie，且 Cookie 至少包含 uid、email、key。"
         },
         {
           "name": "ikuuu",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧规范脚本的兼容邮箱密码输入，凭据获取方式同 IKUUU_ACCOUNT；仅未设置 IKUUU_ACCOUNT 时读取。",
-          "format": "每行邮箱#密码，仅在第一个 # 处分割，保留后续密码字符。"
+          "howToGet": "旧版邮箱密码变量，仅在未设置 IKUUU_ACCOUNT 时兼容读取。",
+          "format": "每行一个 邮箱#密码，只在第一个井号处分割。"
         },
         {
           "name": "IKUUU_COOKIES",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容上游 Cookie 输入；在浏览器官网登录后复制 /user 请求的 Cookie 头，与 IKUUU_ACCOUNT 同时设置时追加处理，不自动去重。",
-          "format": "每行完整 Cookie 或 备注||完整 Cookie，只在第一个 || 处分割；备注不输出，# 开头行跳过；每个 Cookie 必须包含 uid、email、key，不用 & 分隔字段或账号。"
+          "howToGet": "浏览器登录 ikuuu 官网后，从开发者工具 Network 的 /user 请求复制 Cookie 请求头。",
+          "format": "每行一个完整 Cookie；可写成 备注||完整Cookie，只在第一个双竖线处分割。"
         },
         {
           "name": "IKUUU_HOST",
           "required": false,
           "sensitive": false,
-          "howToGet": "在浏览器核对 iKuuu 官方当前域名后填写。仅使用自己信任的官方域名，所有账号凭据都会发送到该站点。",
-          "format": "仅 HTTPS 主机名，不含协议、端口或路径；未设置时邮箱模式用 ikuuu.nl，Cookie 模式用 ikuuu.win。"
+          "howToGet": "仅在官方更换域名时填写当前官方 HTTPS 主机名。",
+          "format": "只填写主机名，不含协议、端口、路径或查询参数。"
         },
         {
           "name": "IKUUU_PROFILE",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需在青龙环境变量中开启资料读取。",
-          "format": "默认 0；设 1 开启，资料失败仍尝试签到，但该账号整体失败。"
+          "howToGet": "需要额外核验个人资料页面时设为 1。",
+          "format": "1 表示开启；0、false、no、off 表示关闭，默认关闭。"
         },
         {
           "name": "IKUUU_FLOW",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需在青龙环境变量中控制剩余流量查询；查询在签到之后执行。",
-          "format": "未设置时仅 Cookie 模式开启；设 1 全部开启，设 0/false/no/off 全部关闭。查询失败仍保留签到结果，但账号整体失败。"
+          "howToGet": "需要在签到后查询剩余流量时设为 1。",
+          "format": "1 表示开启；0、false、no、off 表示关闭；Cookie 模式默认开启，邮箱密码模式默认关闭。"
         },
         {
           "name": "IKUUU_MAX_RANDOM_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需配置签到前随机错峰等待。",
-          "format": "0 至 3600 整数秒，默认 0；断网预演不等待。"
+          "howToGet": "按需设置签到前的随机错峰上限。",
+          "format": "0 到 3600 的整数秒，默认 0。"
         },
         {
           "name": "IKUUU_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "离线验证时设置为 1。",
-          "format": "默认 0；设 1 仅验证参数与请求计划，不请求、不等待、不导入或投递通知。"
+          "howToGet": "测试参数与执行计划时设为 1。",
+          "format": "1 表示完全断网预演；0、false、no、off 表示实际运行。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -15116,51 +15126,70 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要覆盖默认通知脚本列表时设置。",
+          "format": "使用逗号、分号、空白或换行分隔脚本选择器；支持目录相对路径、文件名、通配符、目录编号或 *；空值关闭全部。"
+        },
+        {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "当青龙未自动提供 notify 模块时，填写包含现有 notify.py 的通知目录；业务请求本身不依赖该目录。",
-          "format": "可选本地目录；否则尝试 import notify.send、/ql/data/scripts/notify.py、/ql/scripts/notify.py。"
+          "howToGet": "仅在青龙 notify.py 不位于标准目录时填写其所在目录。",
+          "format": "包含 notify.py 的本机目录路径。"
         },
         {
           "name": "PUSHPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选，在 PushPlus 官网个人账号获取推送 Token；无需配置即可使用青龙现有通知。",
-          "format": "单个通知 Token；仅向 HTTPS PushPlus 通知接口发送，不进入日志；受 QINGLONG_NOTIFY 控制，预演不投递。"
+          "howToGet": "在 PushPlus 官网账号中获取；仅在需要额外 PushPlus 通知时填写。",
+          "format": "PushPlus 用户令牌。"
         },
         {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "name": "SERVERCHAN_SENDKEY",
           "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "sensitive": true,
+          "howToGet": "在 Server酱官网获取 SendKey；仅在需要额外 Server酱通知时填写。",
+          "format": "6 到 128 位字母、数字、点、下划线或连字符。"
+        },
+        {
+          "name": "SCKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版通知兼容变量；优先改用 SERVERCHAN_SENDKEY。值为 1 时仅作为旧版 PushPlus 分支的显式标记。",
+          "format": "Server酱 SendKey，或旧配置中的固定值 1。"
+        },
+        {
+          "name": "TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版 PushPlus 兼容变量；仅在明确设置 SCKEY=1 且未设置 PUSHPLUS_TOKEN 时读取，优先改用 PUSHPLUS_TOKEN。",
+          "format": "PushPlus 用户令牌。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，IKUUU_ACCOUNT 兼容邮箱密码及 cookie: 前缀；IKUUU_COOKIES 作为可选追加输入。账号独立执行，任一账号失败则进程非零退出；全局配置错误退出 2。不得以 & 或 @ 分隔账号。"
+        "rule": "每行一个账号并独立执行；同一账号的配套凭据放在同一行，只在第一个字段分隔符处分割，因此密码或 Cookie 后续内容会完整保留；任一账号失败时进程整体返回非零退出码。"
       },
       "dependencies": [],
       "features": [
-        "保留邮箱密码登录与官方 ret=1 核验，兼容 IKUUU_ACCOUNT 和旧 ikuuu 参数",
-        "新增 Cookie 会话签到，支持 IKUUU_COOKIES、备注前缀及同一规范账号变量中的 Cookie 输入",
-        "每日签到要求官方 ret=1 或明确的今日已签到证明，成功说明中提取流量奖励",
-        "保留可选个人资料读取与非空响应核验；资料失败继续签到但账号整体失败",
-        "新增剩余流量查询，解析官方 /user 页面及 originBody 编码页面中明确的剩余流量字段",
-        "保留安全官方昵称、用户名、显示名称或公开 UID 的原值展示；凭据、手机号和会话值不输出",
-        "支持官方主机名配置，未设置时保留邮箱模式原域名及 Cookie 模式上游域名",
-        "换行多账号独立处理、凭据字段仅首次分割、失败非零退出",
-        "保留每天 21:00 调度、可选随机错峰和云函数 handler 入口",
-        "保留分阶段时间轴日志、耗时、账号与任务统计、IKUUU_SUMMARY 及唯一 TASK_SUMMARY",
-        "使用青龙 notify.py 发送脱敏摘要，保留上游可选 PushPlus 通知，通知故障不改变业务退出码",
-        "完全断网预演参数、各模式请求计划及通知摘要，不导入通知模块、不等待、不修改账号状态"
+        "支持邮箱密码登录，并仅在官方登录响应 ret=1 时继续执行。",
+        "支持 Cookie 会话签到，兼容规范账号变量、旧版 ikuuu 与 IKUUU_COOKIES。",
+        "每日签到仅在官方 ret=1 或消息明确证明今日已经签到时判定成功，并提取流量奖励。",
+        "可选读取个人资料并核验非空响应；官方返回安全昵称、用户名、显示名称或公开 UID 时按原值展示。",
+        "可选查询剩余流量，支持普通页面和 originBody 编码页面中的中英文剩余流量字段。",
+        "支持换行多账号独立执行、密码和 Cookie 后续分隔字符保留、任一账号失败时整体非零退出。",
+        "支持官方主机名配置、最多一小时随机错峰以及云函数 handler 兼容入口。",
+        "支持完全断网预演，不等待、不加载通知模块、不发起账号或通知请求。",
+        "按账号输出编号阶段、脱敏结果、耗时和统计，并保留 IKUUU_SUMMARY 与唯一 TASK_SUMMARY 记录。",
+        "通过青龙 notify.py 发送脱敏任务总结，并兼容显式配置的 PushPlus 与 Server酱通知；通知失败不改变业务退出码。"
       ],
       "sideEffects": [
-        "实际运行时邮箱密码登录并建立账号会话",
-        "实际运行时提交每日签到，可能增加账号流量",
-        "实际运行时通过青龙已有渠道及可选 PushPlus 发送脱敏任务摘要"
+        "实际运行时使用邮箱密码登录并建立账号会话。",
+        "实际运行时提交每日签到，可能增加账号流量。",
+        "实际运行时通过青龙已配置通知渠道以及显式配置的 PushPlus 或 Server酱发送脱敏总结。"
       ],
       "review": {
         "staticPassed": true,
@@ -15173,20 +15202,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/7ea70c9e9d579efb",
-        "candidateSha256": "6272c76da42ad3fc706213649f392e2dc19748f3325cd2fe221c4bede6a1cfef"
+        "candidateSha256": "30181397d7abca42685436c047d61e606740b1eee8221fb8abd86f4c77cd4661"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "6272c76da42ad3fc706213649f392e2dc19748f3325cd2fe221c4bede6a1cfef",
-        "releaseSha256": "04cf0579328d95ab6644bc7c8580bc358d811e3e2f4eae450203f8d057bb239f",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "30181397d7abca42685436c047d61e606740b1eee8221fb8abd86f4c77cd4661",
+        "releaseSha256": "784330c91cbfde15774c9cb09ab477f69bd2b2a5a2a4190b0f4708ef1e5fcdb8",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.555720+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "6272c76da42ad3fc706213649f392e2dc19748f3325cd2fe221c4bede6a1cfef",
-          "toCandidateSha256": "04cf0579328d95ab6644bc7c8580bc358d811e3e2f4eae450203f8d057bb239f",
+          "approvedAt": "2026-10-19T01:53:11.691521+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "30181397d7abca42685436c047d61e606740b1eee8221fb8abd86f4c77cd4661",
+          "toCandidateSha256": "784330c91cbfde15774c9cb09ab477f69bd2b2a5a2a4190b0f4708ef1e5fcdb8",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -22967,35 +22996,34 @@
         "optionalEnv": [
           "RAINYUN_DRY_RUN",
           "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
           "QINGLONG_NOTIFY_SCRIPTS"
         ],
         "dryRunEnv": {
           "RAINYUN_DRY_RUN": "1"
         },
         "liveEnv": {
-          "RAINYUN_DRY_RUN": "0",
-          "QINGLONG_NOTIFY": "1"
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
           "成功签到并领取积分",
           "积分查询成功",
-          "\"status\":\"success\""
+          "最终状态：success",
+          "TASK_SUMMARY="
         ],
         "features": [
-          "使用雨云用户名和密码登录，保持登录 Cookie 与 CSRF 令牌。",
-          "执行每日签到并领取积分，仅以 HTTP 状态和结构化业务码确认成功。",
-          "查询并展示账号积分，展示接口返回的非敏感昵称、用户名或公开 UID。",
-          "业务步骤完成或失败后，在已成功登录的情况下执行退出登录并核验结果。",
-          "支持每行一个账号的独立会话和失败隔离。",
-          "提供完全断网预演、分阶段脱敏日志、账号与任务统计及单行 TASK_SUMMARY 汇总。",
-          "通过青龙 notify.py 发送脱敏统计通知，支持全局开关；配置错误和部分失败同样汇总，预演跳过实际发送。"
+          "使用雨云用户名和密码登录，并在独立账号会话中维护 Cookie 与 CSRF 令牌。",
+          "执行每日签到并领取积分，仅以 HTTP 状态、响应结构和业务码共同确认成功。",
+          "查询并展示账号积分；接口返回非敏感昵称、用户名、显示名称或公开 UID 时原样展示。",
+          "业务步骤完成或失败后，在已登录的情况下执行退出登录并核验结果。",
+          "支持每行一个账号、账号失败隔离以及任一账号失败时整体返回非零状态。",
+          "提供完全断网预演、分阶段脱敏日志、逐账号统计和单行 TASK_SUMMARY JSON 汇总。",
+          "按全局开关和脚本选择器调用青龙 Python 或 JavaScript 通知，并在通知失败时保留业务退出码。"
         ],
         "sideEffects": [
-          "登录创建账号会话。",
-          "每日签到改变当日签到状态并领取积分。",
-          "退出登录结束当前账号会话。",
-          "正式运行时向已配置的青龙通知渠道发送任务汇总。"
+          "正式运行时登录并创建雨云账号会话。",
+          "正式运行时执行每日签到，改变当日签到状态并领取积分。",
+          "正式运行时退出登录并结束当前账号会话。",
+          "正式运行且启用通知时，向已配置的青龙通知渠道发送脱敏任务摘要。"
         ]
       },
       "postReview": {
@@ -23004,7 +23032,7 @@
       },
       "displayName": "雨云服务器签到",
       "path": "scripts/rainyun.py",
-      "sha256": "bd13686e0857de751abe8cd90590c637b284bbcbd235998bc2ef42a1355c23ca",
+      "sha256": "6878bec2b8043aacc4b22811effc5e2538eff5bc47abe123711b8600e13f81de",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -23012,24 +23040,36 @@
         "repository": "cloudcranes/some_scripts",
         "branch": "main",
         "commit": "f62b50fe0a961ea8a8707682723b080c0a5d1142",
-        "originalPath": "rainyun.py"
+        "originalPath": "rainyun.py",
+        "related": [
+          {
+            "repository": "FalseHappiness/RainyunCheckIn",
+            "url": "https://github.com/FalseHappiness/RainyunCheckIn.git",
+            "branch": "main",
+            "commit": "89a56473f66477f01e87ec4879f88cbd8a1bf435",
+            "originalPath": "app.py",
+            "catalogId": "b105b42d15c9ad71",
+            "sha256": "ad5ddf5ffff386d30dc823ec24ec5030a0d314b0b764ce8846f5e9cf0f886c59",
+            "license": "MIT"
+          }
+        ]
       },
-      "cron": "23 1 * * *",
+      "cron": "28 1 * * *",
       "command": "python3 scripts/rainyun.py",
       "environment": [
         {
           "name": "rainyun_ck",
           "required": true,
           "sensitive": true,
-          "howToGet": "使用雨云官网注册的账号用户名和登录密码；不需要抓取 Cookie，也不使用开放接口密钥。若账号需要验证码且接口拒绝空验证码，本脚本会报告失败，请先在官网核对账号登录要求。",
-          "format": "每个非空行一个账号：用户名#密码。仅在第一个 # 处分隔，密码后续的 # 和空格完整保留；用户名按上游规则转换为小写。不使用 & 或 @ 分隔账号。"
+          "howToGet": "使用雨云官网账号的用户名和密码；每个账号单独一行，不要填写 Cookie、Token 或示例凭据。",
+          "format": "每行一个 用户名#密码，仅在第一个 # 处分隔，密码中后续的 # 会保留。"
         },
         {
           "name": "RAINYUN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量中自行设置，预演时设置为 1。",
-          "format": "默认 0；设置 1 开启完全断网预演，仅验证参数与执行计划，跳过业务请求和通知实际发送。"
+          "howToGet": "无需获取；设置为 1 可进行完全断网预演。",
+          "format": "布尔值，1、true、yes、on 表示启用。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -23039,40 +23079,33 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "如通知模块不在默认路径，将本机青龙 notify.py 所在目录填入此变量；未配置则尝试导入 notify 并搜索 /ql/data/scripts 和 /ql/scripts。",
-          "format": "本机目录路径，可选。业务脚本不依赖通知模块存在，通知失败保留业务退出码。"
-        },
-        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "青龙通知脚本选择器；可填写目录编号、scripts/rainyun.py、rainyun.py 或通配符。",
+          "format": "使用逗号、分号、空白或换行分隔；显式空值表示全部关闭。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，格式为用户名#密码，仅在第一个 # 处分隔。账号独立使用会话，单账号失败不阻止后续账号；任一账号失败或配置无效时整体非零退出。"
+        "rule": "rainyun_ck 每个非空行代表一个账号；同一行仅在第一个 # 处分隔用户名和密码，各账号使用独立会话并独立统计，任一账号失败时进程返回非零状态。"
       },
       "dependencies": [],
       "features": [
-        "使用雨云用户名和密码登录，保持登录 Cookie 与 CSRF 令牌。",
-        "执行每日签到并领取积分，仅以 HTTP 状态和结构化业务码确认成功。",
-        "查询并展示账号积分，展示接口返回的非敏感昵称、用户名或公开 UID。",
-        "业务步骤完成或失败后，在已成功登录的情况下执行退出登录并核验结果。",
-        "支持每行一个账号的独立会话和失败隔离。",
-        "提供完全断网预演、分阶段脱敏日志、账号与任务统计及单行 TASK_SUMMARY 汇总。",
-        "通过青龙 notify.py 发送脱敏统计通知，支持全局开关；配置错误和部分失败同样汇总，预演跳过实际发送。"
+        "使用雨云用户名和密码登录，并在独立账号会话中维护 Cookie 与 CSRF 令牌。",
+        "执行每日签到并领取积分，仅以 HTTP 状态、响应结构和业务码共同确认成功。",
+        "查询并展示账号积分；接口返回非敏感昵称、用户名、显示名称或公开 UID 时原样展示。",
+        "业务步骤完成或失败后，在已登录的情况下执行退出登录并核验结果。",
+        "支持每行一个账号、账号失败隔离以及任一账号失败时整体返回非零状态。",
+        "提供完全断网预演、分阶段脱敏日志、逐账号统计和单行 TASK_SUMMARY JSON 汇总。",
+        "按全局开关和脚本选择器调用青龙 Python 或 JavaScript 通知，并在通知失败时保留业务退出码。"
       ],
       "sideEffects": [
-        "登录创建账号会话。",
-        "每日签到改变当日签到状态并领取积分。",
-        "退出登录结束当前账号会话。",
-        "正式运行时向已配置的青龙通知渠道发送任务汇总。"
+        "正式运行时登录并创建雨云账号会话。",
+        "正式运行时执行每日签到，改变当日签到状态并领取积分。",
+        "正式运行时退出登录并结束当前账号会话。",
+        "正式运行且启用通知时，向已配置的青龙通知渠道发送脱敏任务摘要。"
       ],
       "review": {
         "staticPassed": true,
@@ -23085,20 +23118,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/89f2e9b460331a75",
-        "candidateSha256": "15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a"
+        "candidateSha256": "163a972e40e0c91c22cdd50acb075520f1605ce62f908bbd77eb9d2c8427b8e8"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a",
-        "releaseSha256": "bd13686e0857de751abe8cd90590c637b284bbcbd235998bc2ef42a1355c23ca",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "163a972e40e0c91c22cdd50acb075520f1605ce62f908bbd77eb9d2c8427b8e8",
+        "releaseSha256": "6878bec2b8043aacc4b22811effc5e2538eff5bc47abe123711b8600e13f81de",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.160770+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "15f8b296b4bca186c9376744151cbb06dafa0d3b1a0c79f0ddff119163dc2b4a",
-          "toCandidateSha256": "bd13686e0857de751abe8cd90590c637b284bbcbd235998bc2ef42a1355c23ca",
+          "approvedAt": "2026-10-19T01:54:46.097794+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "163a972e40e0c91c22cdd50acb075520f1605ce62f908bbd77eb9d2c8427b8e8",
+          "toCandidateSha256": "6878bec2b8043aacc4b22811effc5e2538eff5bc47abe123711b8600e13f81de",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

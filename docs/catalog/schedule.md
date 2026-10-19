@@ -91,7 +91,7 @@
 | 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `21 9,18 * * *` | 待检查 | [hsay.py.md](../scripts/hsay.py.md)（`docs/scripts/hsay.py.md`） |
 | 华润通微信版签到 | `scripts/huaruntong_wx.py` | `python3 scripts/huaruntong_wx.py` | `18 1 1 1 1` | 待检查 | [huaruntong_wx.py.md](../scripts/huaruntong_wx.py.md)（`docs/scripts/huaruntong_wx.py.md`） |
 | 好游快爆游戏签到 | `scripts/hykb_gamesign.js` | `node scripts/hykb_gamesign.js` | `50 1 * * *` | 待检查 | [hykb_gamesign.js.md](../scripts/hykb_gamesign.js.md)（`docs/scripts/hykb_gamesign.js.md`） |
-| ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `15 1 * * *` | 待检查 | [ikuuu_checkin.py.md](../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
+| ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `20 1 * * *` | 待检查 | [ikuuu_checkin.py.md](../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
 | i茅台申购与耐力 | `scripts/imaotai.py` | `python3 scripts/imaotai.py` | `38 2 * * *` | 待检查 | [imaotai.py.md](../scripts/imaotai.py.md)（`docs/scripts/imaotai.py.md`） |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `48 1 * * *` | 待检查 | [index.js.md](../scripts/index.js.md)（`docs/scripts/index.js.md`） |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `8 1 * * *` | 待检查 | [iqiyi_checkin.py.md](../scripts/iqiyi_checkin.py.md)（`docs/scripts/iqiyi_checkin.py.md`） |
@@ -131,7 +131,7 @@
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `23 2 * * *` | 待检查 | [qoder_airscript.js.md](../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `15 0 * * *` | 待检查 | [quark_signin.py.md](../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `14 2 * * *` | 待检查 | [raccoon_daily.py.md](../scripts/raccoon_daily.py.md)（`docs/scripts/raccoon_daily.py.md`） |
-| 雨云服务器签到 | `scripts/rainyun.py` | `python3 scripts/rainyun.py` | `23 1 * * *` | 待检查 | [rainyun.py.md](../scripts/rainyun.py.md)（`docs/scripts/rainyun.py.md`） |
+| 雨云服务器签到 | `scripts/rainyun.py` | `python3 scripts/rainyun.py` | `28 1 * * *` | 待检查 | [rainyun.py.md](../scripts/rainyun.py.md)（`docs/scripts/rainyun.py.md`） |
 | Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `37 0 * * *` | 待检查 | [rousi_checkin.js.md](../scripts/rousi_checkin.js.md)（`docs/scripts/rousi_checkin.js.md`） |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |
