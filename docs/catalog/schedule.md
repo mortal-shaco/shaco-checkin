@@ -34,6 +34,7 @@
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `42 */6 * * *` | 待检查 | [autosignin.py.md](../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `36 2 * * *` | 待检查 | [baidu.py.md](../scripts/baidu.py.md)（`docs/scripts/baidu.py.md`） |
 | 百度网盘会员成长值 | `scripts/baiduwp.py` | `python3 scripts/baiduwp.py` | `4 1 * * *` | 待检查 | [baiduwp.py.md](../scripts/baiduwp.py.md)（`docs/scripts/baiduwp.py.md`） |
+| Bailanjo 自动签到 | `scripts/bailanjo_checkin.py` | `python3 scripts/bailanjo_checkin.py` | `31 2 * * *` | 待检查 | [bailanjo_checkin.py.md](../scripts/bailanjo_checkin.py.md)（`docs/scripts/bailanjo_checkin.py.md`） |
 | B站每日任务 | `scripts/bilibili.py` | `python3 scripts/bilibili.py` | `6 2 * * *` | 待检查 | [bilibili.py.md](../scripts/bilibili.py.md)（`docs/scripts/bilibili.py.md`） |
 | 百事乐元抽奖 | `scripts/bsly_draw.py` | `python3 scripts/bsly_draw.py` | `23 0 * * *` | 待检查 | [bsly_draw.py.md](../scripts/bsly_draw.py.md)（`docs/scripts/bsly_draw.py.md`） |
 | 布谷TV每日签到 | `scripts/bugutv.py` | `python3 scripts/bugutv.py` | `12 1 * * *` | 待检查 | [bugutv.py.md](../scripts/bugutv.py.md)（`docs/scripts/bugutv.py.md`） |
@@ -186,6 +187,7 @@
 | 享玩游戏APP | `scripts/sudojia_xiangwan.js` | `node scripts/sudojia_xiangwan.js` | `15 2 * * *` | 待检查 | [sudojia_xiangwan.js.md](../scripts/sudojia_xiangwan.js.md)（`docs/scripts/sudojia_xiangwan.js.md`） |
 | 小米社区-小程序 | `scripts/sudojia_xiaomi_community.js` | `node scripts/sudojia_xiaomi_community.js` | `25 1 * * *` | 待检查 | [sudojia_xiaomi_community.js.md](../scripts/sudojia_xiaomi_community.js.md)（`docs/scripts/sudojia_xiaomi_community.js.md`） |
 | 心喜签到 | `scripts/sudojia_xinxi.js` | `node scripts/sudojia_xinxi.js` | `20 1 * * *` | 待检查 | [sudojia_xinxi.js.md](../scripts/sudojia_xinxi.js.md)（`docs/scripts/sudojia_xinxi.js.md`） |
+| 小牛电动社区任务（安全维护版） | `scripts/sudojia_xniu.js` | `node scripts/sudojia_xniu.js` | `40 1 * * *` | 待检查 | [sudojia_xniu.js.md](../scripts/sudojia_xniu.js.md)（`docs/scripts/sudojia_xniu.js.md`） |
 | 兴攀农场 | `scripts/sudojia_xpfarm.js` | `node scripts/sudojia_xpfarm.js` | `36 11,18 * * *` | 待检查 | [sudojia_xpfarm.js.md](../scripts/sudojia_xpfarm.js.md)（`docs/scripts/sudojia_xpfarm.js.md`） |
 | 智能电视签到 | `scripts/sudojia_znds.js` | `node scripts/sudojia_znds.js` | `31 2 * * *` | 待检查 | [sudojia_znds.js.md](../scripts/sudojia_znds.js.md)（`docs/scripts/sudojia_znds.js.md`） |
 | 甄稀冰淇淋每日签到 | `scripts/sudojia_zxice.js` | `node scripts/sudojia_zxice.js` | `34 2 * * *` | 待检查 | [sudojia_zxice.js.md](../scripts/sudojia_zxice.js.md)（`docs/scripts/sudojia_zxice.js.md`） |

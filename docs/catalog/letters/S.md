@@ -1,6 +1,6 @@
 # 字母索引 · S
 
-共 **65** 个脚本。返回 [`目录首页`](../README.md)。
+共 **66** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -64,6 +64,7 @@
 | 享玩游戏APP | `scripts/sudojia_xiangwan.js` | `node scripts/sudojia_xiangwan.js` | `15 2 * * *` | 待检查 | [sudojia_xiangwan.js.md](../../scripts/sudojia_xiangwan.js.md)（`docs/scripts/sudojia_xiangwan.js.md`） |
 | 小米社区-小程序 | `scripts/sudojia_xiaomi_community.js` | `node scripts/sudojia_xiaomi_community.js` | `25 1 * * *` | 待检查 | [sudojia_xiaomi_community.js.md](../../scripts/sudojia_xiaomi_community.js.md)（`docs/scripts/sudojia_xiaomi_community.js.md`） |
 | 心喜签到 | `scripts/sudojia_xinxi.js` | `node scripts/sudojia_xinxi.js` | `20 1 * * *` | 待检查 | [sudojia_xinxi.js.md](../../scripts/sudojia_xinxi.js.md)（`docs/scripts/sudojia_xinxi.js.md`） |
+| 小牛电动社区任务（安全维护版） | `scripts/sudojia_xniu.js` | `node scripts/sudojia_xniu.js` | `40 1 * * *` | 待检查 | [sudojia_xniu.js.md](../../scripts/sudojia_xniu.js.md)（`docs/scripts/sudojia_xniu.js.md`） |
 | 兴攀农场 | `scripts/sudojia_xpfarm.js` | `node scripts/sudojia_xpfarm.js` | `36 11,18 * * *` | 待检查 | [sudojia_xpfarm.js.md](../../scripts/sudojia_xpfarm.js.md)（`docs/scripts/sudojia_xpfarm.js.md`） |
 | 智能电视签到 | `scripts/sudojia_znds.js` | `node scripts/sudojia_znds.js` | `31 2 * * *` | 待检查 | [sudojia_znds.js.md](../../scripts/sudojia_znds.js.md)（`docs/scripts/sudojia_znds.js.md`） |
 | 甄稀冰淇淋每日签到 | `scripts/sudojia_zxice.js` | `node scripts/sudojia_zxice.js` | `34 2 * * *` | 待检查 | [sudojia_zxice.js.md](../../scripts/sudojia_zxice.js.md)（`docs/scripts/sudojia_zxice.js.md`） |

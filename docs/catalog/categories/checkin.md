@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **174** 个脚本。返回 [`目录首页`](../README.md)。
+共 **175** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -19,6 +19,7 @@
 | 上海杨浦商城定时抢购 | `scripts/auto_buy.py` | `python3 scripts/auto_buy.py` | `0 0 10 * * *` | 待检查 | [auto_buy.py.md](../../scripts/auto_buy.py.md)（`docs/scripts/auto_buy.py.md`） |
 | AutoClaw 国内版每日签到 | `scripts/autoclaw_cn_daily.py` | `python3 scripts/autoclaw_cn_daily.py` | `30 0 * * *` | 待检查 | [autoclaw_cn_daily.py.md](../../scripts/autoclaw_cn_daily.py.md)（`docs/scripts/autoclaw_cn_daily.py.md`） |
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `42 */6 * * *` | 待检查 | [autosignin.py.md](../../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |
+| Bailanjo 自动签到 | `scripts/bailanjo_checkin.py` | `python3 scripts/bailanjo_checkin.py` | `31 2 * * *` | 待检查 | [bailanjo_checkin.py.md](../../scripts/bailanjo_checkin.py.md)（`docs/scripts/bailanjo_checkin.py.md`） |
 | B站每日任务 | `scripts/bilibili.py` | `python3 scripts/bilibili.py` | `6 2 * * *` | 待检查 | [bilibili.py.md](../../scripts/bilibili.py.md)（`docs/scripts/bilibili.py.md`） |
 | 布谷TV每日签到 | `scripts/bugutv.py` | `python3 scripts/bugutv.py` | `12 1 * * *` | 待检查 | [bugutv.py.md](../../scripts/bugutv.py.md)（`docs/scripts/bugutv.py.md`） |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `31 9,18 * * *` | 待检查 | [bwcj.py.md](../../scripts/bwcj.py.md)（`docs/scripts/bwcj.py.md`） |

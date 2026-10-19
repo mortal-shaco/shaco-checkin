@@ -4727,6 +4727,253 @@
       }
     },
     {
+      "catalogId": "e052c233e8ebcd95",
+      "applicationKey": "linvireo/bailanjo-auto-check-in::bailanjo",
+      "checkProfile": {
+        "requiredEnv": [
+          "BAILANJO_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "BAILANJO_ACCOUNT",
+          "BAILANJO_PASSWORD",
+          "BAILANJO_TIMEOUT",
+          "BAILANJO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHAT_ID",
+          "SERVERCHAN_SENDKEY",
+          "PUSHPLUS_TOKEN",
+          "BARK_URL",
+          "DISCORD_WEBHOOK_URL",
+          "FEISHU_WEBHOOK_URL",
+          "DINGTALK_WEBHOOK_URL",
+          "WECHAT_WORK_WEBHOOK_URL"
+        ],
+        "dryRunEnv": {
+          "BAILANJO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BAILANJO_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已经签到",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY={\"task\":\"bailanjo_checkin\",\"status\":\"SUCCESS\""
+        ],
+        "features": [
+          "通过 Bailanjo 用户页查询账号状态并保持站点会话。",
+          "执行每日签到，并严格区分签到成功、今日已签到与无法验证的响应。",
+          "展示官方返回的公开 UID、余额、累计钻石和本次余额增量。",
+          "支持每行一个账号的多账号独立处理，并在任一账号失败时返回非零退出码。",
+          "支持完全断网的多账号预演，不调用业务站点或任何通知服务。",
+          "保留 Telegram、Server酱、PushPlus、Bark、Discord、飞书、钉钉和企业微信推送，并支持青龙统一通知。",
+          "输出带时间戳的分阶段日志、逐账号统计和单行 TASK_SUMMARY JSON 汇总。"
+        ],
+        "sideEffects": [
+          "在 Bailanjo 账号上执行每日签到并可能增加账号余额。",
+          "正式运行时可向已配置的推送渠道和青龙通知组件发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Bailanjo 自动签到",
+      "path": "scripts/bailanjo_checkin.py",
+      "sha256": "e218734d85c1f2eff92fdc16fa00073124135bbbc43c0a9362ac5b411702e00c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "LinVireo/bailanjo-auto-check-in",
+        "branch": "main",
+        "commit": "70053c89bd7da7152ee7a00838e35e77f4fab5bb",
+        "originalPath": "bailanjo_checkin.py",
+        "related": [
+          {
+            "catalogId": "42bf3286d7024371",
+            "sha256": "9fe591211c70c285068b3f06cb96ec7e264cb314c439b8cfaa280b8c43895f67",
+            "repository": "LinVireo/bailanjo-auto-check-in",
+            "url": "https://github.com/LinVireo/bailanjo-auto-check-in.git",
+            "branch": "main",
+            "commit": "70053c89bd7da7152ee7a00838e35e77f4fab5bb",
+            "originalPath": "ql_bailanjo.sh",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "31 2 * * *",
+      "command": "python3 scripts/bailanjo_checkin.py",
+      "environment": [
+        {
+          "name": "BAILANJO_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 Bailanjo 用户页使用的账号和密码；每个账号单独占一行填写。",
+          "format": "每个非空行均为 账号|密码，只在第一个竖线处分割；不要用 & 或 @ 分隔多个账号。"
+        },
+        {
+          "name": "BAILANJO_ACCOUNT",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容变量；仅在未设置 BAILANJO_ACCOUNTS 时与 BAILANJO_PASSWORD 配套使用。",
+          "format": "单个 Bailanjo 账号。"
+        },
+        {
+          "name": "BAILANJO_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容变量；填写对应账号的登录密码。",
+          "format": "单个 Bailanjo 密码。"
+        },
+        {
+          "name": "BAILANJO_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况设置单次 HTTPS 请求超时；留空使用 15 秒。",
+          "format": "3 至 60 之间的秒数。"
+        },
+        {
+          "name": "BAILANJO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要验证配置和执行路径但禁止联网时启用；预演也会跳过所有推送。",
+          "format": "设为 1、true、yes 或 on 时启用完全断网预演。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用于只给指定脚本发送青龙通知；可选择目录标识、脚本名或通配符。",
+          "format": "使用逗号、分号、空白或换行分隔选择器；* 表示全部；显式空值表示全部关闭。"
+        },
+        {
+          "name": "TELEGRAM_BOT_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 Telegram BotFather 创建机器人后取得；需要与 TELEGRAM_CHAT_ID 同时配置。",
+          "format": "Telegram 机器人令牌。"
+        },
+        {
+          "name": "TELEGRAM_CHAT_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "向机器人发送消息后，从 Telegram 更新信息中取得接收会话标识。",
+          "format": "Telegram 会话标识。"
+        },
+        {
+          "name": "SERVERCHAN_SENDKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 Server酱 后在发送消息页面取得 SendKey。",
+          "format": "Server酱 SendKey。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录 PushPlus 后在一对一推送页面取得令牌。",
+          "format": "PushPlus 令牌。"
+        },
+        {
+          "name": "BARK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 Bark 客户端复制包含设备密钥的 HTTPS 推送地址。",
+          "format": "以 https:// 开头且末尾包含 Bark 设备密钥的基础地址。"
+        },
+        {
+          "name": "DISCORD_WEBHOOK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在 Discord 频道的集成设置中创建 Webhook 后复制地址。",
+          "format": "Discord HTTPS Webhook 地址。"
+        },
+        {
+          "name": "FEISHU_WEBHOOK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在飞书群中添加自定义机器人后复制 Webhook 地址。",
+          "format": "飞书 HTTPS Webhook 地址。"
+        },
+        {
+          "name": "DINGTALK_WEBHOOK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在钉钉群中添加自定义机器人后复制 Webhook 地址。",
+          "format": "钉钉 HTTPS Webhook 地址。"
+        },
+        {
+          "name": "WECHAT_WORK_WEBHOOK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在企业微信群中添加群机器人后复制 Webhook 地址。",
+          "format": "企业微信 HTTPS Webhook 地址。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "BAILANJO_ACCOUNTS 中每个非空行代表一个账号，格式为账号|密码；脚本逐个独立处理，任何账号失败都会使进程非零退出。",
+        "unsupportedReason": ""
+      },
+      "dependencies": [],
+      "features": [
+        "通过 Bailanjo 用户页查询账号状态并保持站点会话。",
+        "执行每日签到，并严格区分签到成功、今日已签到与无法验证的响应。",
+        "展示官方返回的公开 UID、余额、累计钻石和本次余额增量。",
+        "支持每行一个账号的多账号独立处理，并在任一账号失败时返回非零退出码。",
+        "支持完全断网的多账号预演，不调用业务站点或任何通知服务。",
+        "保留 Telegram、Server酱、PushPlus、Bark、Discord、飞书、钉钉和企业微信推送，并支持青龙统一通知。",
+        "输出带时间戳的分阶段日志、逐账号统计和单行 TASK_SUMMARY JSON 汇总。"
+      ],
+      "sideEffects": [
+        "在 Bailanjo 账号上执行每日签到并可能增加账号余额。",
+        "正式运行时可向已配置的推送渠道和青龙通知组件发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e052c233e8ebcd95",
+        "candidateSha256": "26c5748d8f33bd466106fa2a0b42982d472fc32f478471677173ab2a57863055"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "26c5748d8f33bd466106fa2a0b42982d472fc32f478471677173ab2a57863055",
+        "releaseSha256": "e218734d85c1f2eff92fdc16fa00073124135bbbc43c0a9362ac5b411702e00c",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:45:46.087084+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "26c5748d8f33bd466106fa2a0b42982d472fc32f478471677173ab2a57863055",
+          "toCandidateSha256": "e218734d85c1f2eff92fdc16fa00073124135bbbc43c0a9362ac5b411702e00c",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "ca4e1c75a27952c1",
       "applicationKey": "cn-grace/qinglongscripts::bilibili",
       "checkProfile": {
@@ -33087,6 +33334,189 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "8eece5d6182cea2cbd2ddb589d34eeddbc61200d9d7c912702bb45833f4b5ecc",
           "toCandidateSha256": "e98e85e0130c0933308020eaccf9a7c3eea263c71de683679cb46de87e0c9f58",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "9ba3d61418ae2582",
+      "applicationKey": "sudojia/autotaskscript::client",
+      "checkProfile": {
+        "requiredEnv": [
+          "XNIU_TOKEN"
+        ],
+        "optionalEnv": [
+          "XNIU_ENABLE_COMMENT",
+          "XNIU_ENABLE_SHARE",
+          "XNIU_ENABLE_FOLLOW",
+          "XNIU_ENABLE_UNFOLLOW",
+          "XNIU_FALLBACK_TEXT",
+          "XNIU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS"
+        ],
+        "dryRunEnv": {
+          "XNIU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "XNIU_ENABLE_COMMENT": "0",
+          "XNIU_ENABLE_SHARE": "0",
+          "XNIU_ENABLE_FOLLOW": "0",
+          "XNIU_ENABLE_UNFOLLOW": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：成功",
+          "TASK_SUMMARY={\"status\":\"成功\""
+        ],
+        "features": [
+          "使用可撤销访问令牌核对账号公开昵称或用户名，不再保存手机号和明文密码",
+          "默认查询当前积分并读取社区指引",
+          "可分别显式开启自动回答和文章分享，默认均关闭",
+          "自动回答优先使用一言 HTTPS 随机文案并按作者和来源归属格式发布，所有规定故障均回退到本地文案",
+          "关注与取关必须分别明确授权，操作前读取原状态，操作后恢复并再次核验",
+          "支持每行一个账号独立执行，并在任一账号失败时返回非零退出码",
+          "支持完全无网络的预演、时间轴日志、脱敏汇总和青龙通知"
+        ],
+        "sideEffects": [
+          "开启 XNIU_ENABLE_COMMENT 后会向随机社区问题发布回答",
+          "开启 XNIU_ENABLE_SHARE 后会登记两次社区文章分享",
+          "同时开启关注与取关开关后会临时改变一个用户的关注状态，并要求恢复到原状态后才判定成功"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "小牛电动社区任务（安全维护版）",
+      "path": "scripts/sudojia_xniu.js",
+      "sha256": "5513d54f629ea9cf8f239c3e575031816074d482dc193bc604df3202c91a3640",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "sudojia/AutoTaskScript",
+        "branch": "script",
+        "commit": "4a55327baed0321bdf95802a75cc8363cae118b0",
+        "originalPath": "src/client/sudojia_xniu.js"
+      },
+      "cron": "40 1 * * *",
+      "command": "node scripts/sudojia_xniu.js",
+      "environment": [
+        {
+          "name": "XNIU_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录小牛电动 APP，在本人设备抓取 app-api.niu.com 请求头中的 token，并从本人资料接口确认公开 user_id；不要填写手机号或密码。令牌失效后重新登录获取。",
+          "format": "每行一个账号，格式为“访问令牌#公开用户ID”；只在第一个 # 处分隔，多账号只能换行"
+        },
+        {
+          "name": "XNIU_ENABLE_COMMENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；确认愿意自动发布回答后手动设为 1，默认关闭。",
+          "format": "1 表示开启，其他值表示关闭"
+        },
+        {
+          "name": "XNIU_ENABLE_SHARE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；确认愿意登记分享行为后手动设为 1，默认关闭。",
+          "format": "1 表示开启，其他值表示关闭"
+        },
+        {
+          "name": "XNIU_ENABLE_FOLLOW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；仅在接受临时改变关注状态时手动设为 1，并且必须同时开启 XNIU_ENABLE_UNFOLLOW。",
+          "format": "1 表示明确允许关注动作，其他值表示关闭"
+        },
+        {
+          "name": "XNIU_ENABLE_UNFOLLOW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；仅在接受恢复原关注状态所需的取关动作时手动设为 1，并且必须同时开启 XNIU_ENABLE_FOLLOW。",
+          "format": "1 表示明确允许取关动作，其他值表示关闭"
+        },
+        {
+          "name": "XNIU_FALLBACK_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；可填写随机文案服务失败时使用的本地公开回答，留空则使用脚本内置文案。",
+          "format": "不超过 280 个字符的公开文本"
+        },
+        {
+          "name": "XNIU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；测试配置时设为 1，预演不会发起任何网络请求。",
+          "format": "1 表示开启无网络预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知脚本选择器；可填写目录编号、脚本路径、文件名或通配符。",
+          "format": "多个选择器使用逗号、分号、空白或换行分隔；空值关闭全部脚本通知"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "XNIU_TOKEN 每个非空行代表一个账号；访问令牌与同账号公开用户ID使用第一个 # 连接，后续文本保持不变。账号独立执行，任一账号失败时进程返回非零退出码。"
+      },
+      "dependencies": [
+        "node>=18"
+      ],
+      "features": [
+        "使用可撤销访问令牌核对账号公开昵称或用户名，不再保存手机号和明文密码",
+        "默认查询当前积分并读取社区指引",
+        "可分别显式开启自动回答和文章分享，默认均关闭",
+        "自动回答优先使用一言 HTTPS 随机文案并按作者和来源归属格式发布，所有规定故障均回退到本地文案",
+        "关注与取关必须分别明确授权，操作前读取原状态，操作后恢复并再次核验",
+        "支持每行一个账号独立执行，并在任一账号失败时返回非零退出码",
+        "支持完全无网络的预演、时间轴日志、脱敏汇总和青龙通知"
+      ],
+      "sideEffects": [
+        "开启 XNIU_ENABLE_COMMENT 后会向随机社区问题发布回答",
+        "开启 XNIU_ENABLE_SHARE 后会登记两次社区文章分享",
+        "同时开启关注与取关开关后会临时改变一个用户的关注状态，并要求恢复到原状态后才判定成功"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/9ba3d61418ae2582",
+        "candidateSha256": "32e7025254c488227f93a55a1d87b8b01ea4aeb7620f825cbec8b95c1be1160e"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "32e7025254c488227f93a55a1d87b8b01ea4aeb7620f825cbec8b95c1be1160e",
+        "releaseSha256": "5513d54f629ea9cf8f239c3e575031816074d482dc193bc604df3202c91a3640",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:44:05.954873+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "32e7025254c488227f93a55a1d87b8b01ea4aeb7620f825cbec8b95c1be1160e",
+          "toCandidateSha256": "5513d54f629ea9cf8f239c3e575031816074d482dc193bc604df3202c91a3640",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
