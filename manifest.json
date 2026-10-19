@@ -37193,6 +37193,156 @@
       }
     },
     {
+      "catalogId": "44110e6cc005cbcd",
+      "applicationKey": "unitaryhighs/ql_sign_script::xmly",
+      "checkProfile": {
+        "requiredEnv": [
+          "XMLY_LIST"
+        ],
+        "optionalEnv": [
+          "XMLY_DRY_RUN",
+          "XMLY_TIMEOUT_SECONDS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "XMLY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "XMLY_TIMEOUT_SECONDS": "12",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "已签到",
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用喜马拉雅账号 Cookie 执行每日签到",
+          "支持换行分隔的多账号独立执行与汇总",
+          "支持可选的同账号 X-Xuid-Fp 请求参数",
+          "提供完全断网的预演模式",
+          "按青龙通知策略发送脱敏结果摘要",
+          "输出带时间戳的阶段日志、账号统计和单行 TASK_SUMMARY JSON"
+        ],
+        "sideEffects": [
+          "正式模式会向喜马拉雅签到接口提交签到，可能增加账号连续签到记录或获得签到奖励"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "喜马拉雅每日签到",
+      "path": "scripts/xmly.js",
+      "sha256": "53cc946d1ecd83346d79cb31c55de7832eb97686b0e224808607f7e56224b30a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "unitaryhighs/ql_sign_script",
+        "branch": "main",
+        "commit": "caa96862c9a31521347217b3b20b8ba3f6413c18",
+        "originalPath": "sign/xmly.js"
+      },
+      "cron": "10 0 12 * * *",
+      "command": "node scripts/xmly.js",
+      "environment": [
+        {
+          "name": "XMLY_LIST",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录喜马拉雅网页或 App，在本人设备的开发者工具或抓包工具中找到发往 ximalaya.com 的本人请求，复制完整 Cookie；若该账号请求还包含 X-Xuid-Fp，可一并填写。请勿向他人分享这些值。",
+          "format": "每行一个账号，填写 Cookie；可选在该行首个制表符后填写同账号的 X-Xuid-Fp，即 Cookie<TAB>X-Xuid-Fp。账号之间只能使用换行分隔。"
+        },
+        {
+          "name": "XMLY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网预演时设置为 1；预演不会调用签到接口或通知脚本。",
+          "format": "1 表示启用，未设置或其他值表示关闭。"
+        },
+        {
+          "name": "XMLY_TIMEOUT_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况设置单次签到请求超时秒数；通常无需设置。",
+          "format": "3 至 60 的数字，默认 12。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写需要发送通知的脚本选择器；可用本任务 catalogId、脚本文件名、相对路径或星号通配符。",
+          "format": "多个选择器用逗号、分号、空白或换行分隔；* 表示所有脚本，显式空值表示全部禁用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当青龙通知脚本不在标准目录时，填写包含 sendNotify.js 或 notify.py 的目录。",
+          "format": "青龙容器内的绝对目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "XMLY_LIST 中每个非空行是一个独立账号；脚本逐个执行并汇总，任何账号失败都会使进程以非零状态退出。Cookie 与同账号可选 X-Xuid-Fp 仅在该行首个制表符处分隔，不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用喜马拉雅账号 Cookie 执行每日签到",
+        "支持换行分隔的多账号独立执行与汇总",
+        "支持可选的同账号 X-Xuid-Fp 请求参数",
+        "提供完全断网的预演模式",
+        "按青龙通知策略发送脱敏结果摘要",
+        "输出带时间戳的阶段日志、账号统计和单行 TASK_SUMMARY JSON"
+      ],
+      "sideEffects": [
+        "正式模式会向喜马拉雅签到接口提交签到，可能增加账号连续签到记录或获得签到奖励"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/44110e6cc005cbcd",
+        "candidateSha256": "104a7ac6bd6231b2fb75dc6ba343b1366e14145482b48bccbec7b1cb6fd5d741"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "104a7ac6bd6231b2fb75dc6ba343b1366e14145482b48bccbec7b1cb6fd5d741",
+        "releaseSha256": "53cc946d1ecd83346d79cb31c55de7832eb97686b0e224808607f7e56224b30a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:36:30.435430+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "104a7ac6bd6231b2fb75dc6ba343b1366e14145482b48bccbec7b1cb6fd5d741",
+          "toCandidateSha256": "53cc946d1ecd83346d79cb31c55de7832eb97686b0e224808607f7e56224b30a",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "0630d19a6fd1dd0b",
       "applicationKey": "unitaryhighs/ql_sign_script::xuejieba",
       "checkProfile": {
@@ -37696,6 +37846,212 @@
       }
     },
     {
+      "catalogId": "f3d4c9cbaf4b9ce7",
+      "applicationKey": "yuxian158/check::acfun",
+      "checkProfile": {
+        "requiredEnv": [
+          "ACFUN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ACF",
+          "ACFUN_ACTIONS",
+          "ACFUN_CONTENT_ID",
+          "ACFUN_VIDEO_ID",
+          "ACFUN_SUBCHANNEL_ID",
+          "ACFUN_SUBCHANNEL_NAME",
+          "ACFUN_LOCAL_TEXT",
+          "ACFUN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ACFUN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ACFUN_ACTIONS": "sign",
+          "ACFUN_LOCAL_TEXT": "今天也要开心呀！",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "成功（明确业务响应）",
+          "最终状态：success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "使用 AcFun 手机号和密码登录，并在官方响应提供时显示非敏感昵称、用户名或公开 UID。",
+          "默认执行每日签到；点赞、取消点赞、分享任务上报、投香蕉和发布弹幕均需显式选择。",
+          "点赞、取消点赞和投香蕉可使用指定稿件，也可选择每日榜单首个稿件；弹幕仅允许使用明确指定的稿件、视频和分区。",
+          "发布弹幕时优先从一言 HTTPS 接口获取文案并保留作者及来源，所有声明的远端失败情形都会回退到本地文案。",
+          "支持规范逐行多账号，并兼容旧版 ACF 逐行或 JSON 参数。",
+          "提供完全断网预演、分账号分阶段时间轴日志、脱敏统计、单行 TASK_SUMMARY JSON 和青龙通知。"
+        ],
+        "sideEffects": [
+          "执行 AcFun 每日签到。",
+          "按显式动作点赞或取消点赞目标稿件。",
+          "按显式动作上报分享任务。",
+          "按显式动作向目标稿件投出一个香蕉。",
+          "按显式动作向目标视频发布一条弹幕。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AcFun每日签到与可选互动",
+      "path": "scripts/yuxian158_check_acfun.py",
+      "sha256": "0d1091647c5f29e627578fa0826e48fa7eabbb3e87e61aabe59f77c69f0a4095",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_AcFun.py"
+      },
+      "cron": "44 2 * * *",
+      "command": "python3 scripts/yuxian158_check_acfun.py",
+      "environment": [
+        {
+          "name": "ACFUN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "填写 AcFun 登录手机号和对应密码；每个账号独占一行，请仅保存在青龙环境变量中。旧版 ACF 变量可作为可选兼容输入。",
+          "format": "每行 手机号|密码；只按第一个竖线分割，因此密码中的后续竖线会被保留。"
+        },
+        {
+          "name": "ACF",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅供旧版任务迁移；内容仍来自本人 AcFun 登录手机号和密码。设置 ACFUN_ACCOUNTS 后会优先使用新变量。",
+          "format": "可使用每行 手机号|密码，或由 phone 和 password 字段组成的 JSON 对象或对象数组。"
+        },
+        {
+          "name": "ACFUN_ACTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要显式选择动作；为避免默认修改内容互动状态，默认只签到。",
+          "format": "逗号分隔，可选 sign,like,unlike,share,banana,danmu；默认 sign。"
+        },
+        {
+          "name": "ACFUN_CONTENT_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从目标 AcFun 视频页面地址取得稿件编号；点赞、取消点赞、投香蕉或弹幕时必填。点赞、取消点赞和投香蕉也可填写 rank 以选取每日榜单首项。",
+          "format": "十进制稿件编号；部分互动也支持固定值 rank。"
+        },
+        {
+          "name": "ACFUN_VIDEO_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从目标稿件的具体视频分集信息取得；仅发布弹幕时必填。",
+          "format": "十进制视频编号。"
+        },
+        {
+          "name": "ACFUN_SUBCHANNEL_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从目标稿件所属分区信息取得；仅发布弹幕时必填。",
+          "format": "十进制分区编号。"
+        },
+        {
+          "name": "ACFUN_SUBCHANNEL_NAME",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写目标稿件页面显示的分区名称；仅发布弹幕时必填。",
+          "format": "非空中文或文本分区名称。"
+        },
+        {
+          "name": "ACFUN_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置随机文案服务不可用时发布的本地弹幕文本。",
+          "format": "去除多余空白后不超过 280 个字符。"
+        },
+        {
+          "name": "ACFUN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "测试配置时设为 1；预演不会发起任何网络请求，也不会修改账号状态。",
+          "format": "1 表示完全断网预演，0 表示正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要限制通知脚本时填写目录编号、产品专属发布路径、文件名或通配符；设置为空值会关闭全部脚本通知。",
+          "format": "逗号、分号、空白或换行分隔；本任务可用 f3d4c9cbaf4b9ce7、scripts/ck_acfun_daily.py 或 ck_acfun_daily.py。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知脚本不在标准目录时，填写包含 notify.py 或 sendNotify.js 的目录。",
+          "format": "青龙容器内的绝对目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "ACFUN_ACCOUNTS 每个非空行表示一个账号，按第一个竖线拆分手机号和密码；账号独立执行，任一账号失败时进程整体返回非零状态。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 AcFun 手机号和密码登录，并在官方响应提供时显示非敏感昵称、用户名或公开 UID。",
+        "默认执行每日签到；点赞、取消点赞、分享任务上报、投香蕉和发布弹幕均需显式选择。",
+        "点赞、取消点赞和投香蕉可使用指定稿件，也可选择每日榜单首个稿件；弹幕仅允许使用明确指定的稿件、视频和分区。",
+        "发布弹幕时优先从一言 HTTPS 接口获取文案并保留作者及来源，所有声明的远端失败情形都会回退到本地文案。",
+        "支持规范逐行多账号，并兼容旧版 ACF 逐行或 JSON 参数。",
+        "提供完全断网预演、分账号分阶段时间轴日志、脱敏统计、单行 TASK_SUMMARY JSON 和青龙通知。"
+      ],
+      "sideEffects": [
+        "执行 AcFun 每日签到。",
+        "按显式动作点赞或取消点赞目标稿件。",
+        "按显式动作上报分享任务。",
+        "按显式动作向目标稿件投出一个香蕉。",
+        "按显式动作向目标视频发布一条弹幕。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/f3d4c9cbaf4b9ce7",
+        "candidateSha256": "67941999e53a82765caebdcf0b984331ca4fee9d5ed1151ff585fa9b3f534d86"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "67941999e53a82765caebdcf0b984331ca4fee9d5ed1151ff585fa9b3f534d86",
+        "releaseSha256": "0d1091647c5f29e627578fa0826e48fa7eabbb3e87e61aabe59f77c69f0a4095",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:36:55.396610+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "67941999e53a82765caebdcf0b984331ca4fee9d5ed1151ff585fa9b3f534d86",
+          "toCandidateSha256": "0d1091647c5f29e627578fa0826e48fa7eabbb3e87e61aabe59f77c69f0a4095",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "9a5f757a8ae60a32",
       "applicationKey": "yuxian158/check::csdn",
       "checkProfile": {
@@ -37851,6 +38207,181 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "a6950183ec17a4902100aaaaa60c252d058d5173a2a69b7795a4801515a9ac4e",
           "toCandidateSha256": "d283398aca9aa9411633038f2c803a31c7784808463080f48901723ae541feac",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "df7ef61ae68efc75",
+      "applicationKey": "yuxian158/check::duokan",
+      "checkProfile": {
+        "requiredEnv": [
+          "DUOKAN_COOKIE"
+        ],
+        "optionalEnv": [
+          "DUOKAN_TASKS",
+          "DUOKAN_TIMEOUT",
+          "DUOKAN_MAX_REWARDS",
+          "DUOKAN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS"
+        ],
+        "dryRunEnv": {
+          "DUOKAN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "DUOKAN_TASKS": "sign,info",
+          "DUOKAN_TIMEOUT": "15",
+          "DUOKAN_MAX_REWARDS": "20",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "✅ 业务成功",
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用多看阅读 Cookie 执行每日签到。",
+          "查询当前书豆总额、到期批次和到期日期。",
+          "通过显式 delay 任务延期接口标记为可延期的书豆批次。",
+          "通过显式 free 任务查询并领取今日限免书籍。",
+          "通过显式 gift 任务检查并领取体验任务奖励。",
+          "通过显式 add_draw 和 draw 任务添加抽奖机会并执行抽奖。",
+          "通过显式 download 任务领取下载任务奖励，并设置安全循环上限。",
+          "通过显式 task 任务领取五类其他活动奖励。",
+          "支持多账号独立执行、逐阶段统计、青龙通知和单行 TASK_SUMMARY 汇总。",
+          "支持完全断网的配置预演，不访问多看接口或修改账号状态。"
+        ],
+        "sideEffects": [
+          "默认 sign 任务会提交每日签到并改变账号签到状态。",
+          "显式 free 任务会创建价格为零的书籍订单并把限免书加入账号。",
+          "显式 gift、download 和 task 任务会领取活动奖励并改变书豆或活动任务状态。",
+          "显式 add_draw 任务会增加抽奖机会，显式 draw 任务会执行抽奖并可能消耗机会。",
+          "显式 delay 任务会延期符合条件的书豆到期批次。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "多看阅读",
+      "path": "scripts/yuxian158_check_duokan.py",
+      "sha256": "4a07aa48a232aa2061a9adb84b6ee5757bb2780dd18739cf4080c6171cc6cb9d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yuxian158/check",
+        "branch": "master",
+        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+        "originalPath": "dailycheckin_scripts/ck_duokan.py"
+      },
+      "cron": "23 2 * * *",
+      "command": "python3 scripts/yuxian158_check_duokan.py",
+      "environment": [
+        {
+          "name": "DUOKAN_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录多看阅读网页后，在浏览器开发者工具的网络面板中打开 www.duokan.com 请求，复制自己的完整 Cookie；必须包含 device_id 和有效登录会话字段。不要把该值分享给他人。",
+          "format": "每行一个账号；每行是以分号分隔的 Cookie 字段，字段采用 名称=值，解析时只按每个字段的第一个等号分割。"
+        },
+        {
+          "name": "DUOKAN_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需选择要执行的任务；默认只执行签到和书豆查询，具有额外副作用的任务必须显式启用。",
+          "format": "用英文逗号分隔且不得重复：sign,info,free,gift,add_draw,draw,download,task,delay。"
+        },
+        {
+          "name": "DUOKAN_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况设置单次请求超时秒数，通常保留默认值即可。",
+          "format": "1 至 60 的整数，默认 15。"
+        },
+        {
+          "name": "DUOKAN_MAX_REWARDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用于限制体验奖励机会数和下载奖励循环次数，避免异常接口导致过量请求。",
+          "format": "1 至 200 的整数，默认 20。"
+        },
+        {
+          "name": "DUOKAN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 可进行完全断网的配置预演；预演只检查参数和任务计划，不代表线上业务成功。",
+          "format": "1 表示开启；0、false、no 或 off 表示关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要只通知部分脚本时填写脚本选择器；设置后将替换默认选择范围，空值表示全部关闭。",
+          "format": "可用逗号、分号、空白或换行分隔；支持 df7ef61ae68efc75、scripts/duokan_reading.py、duokan_reading.py、candidate.py、通配符或 *。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "DUOKAN_COOKIE 每个非空行对应一个账号；各账号独立解析和执行，任一账号或任一所选任务失败时进程返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用多看阅读 Cookie 执行每日签到。",
+        "查询当前书豆总额、到期批次和到期日期。",
+        "通过显式 delay 任务延期接口标记为可延期的书豆批次。",
+        "通过显式 free 任务查询并领取今日限免书籍。",
+        "通过显式 gift 任务检查并领取体验任务奖励。",
+        "通过显式 add_draw 和 draw 任务添加抽奖机会并执行抽奖。",
+        "通过显式 download 任务领取下载任务奖励，并设置安全循环上限。",
+        "通过显式 task 任务领取五类其他活动奖励。",
+        "支持多账号独立执行、逐阶段统计、青龙通知和单行 TASK_SUMMARY 汇总。",
+        "支持完全断网的配置预演，不访问多看接口或修改账号状态。"
+      ],
+      "sideEffects": [
+        "默认 sign 任务会提交每日签到并改变账号签到状态。",
+        "显式 free 任务会创建价格为零的书籍订单并把限免书加入账号。",
+        "显式 gift、download 和 task 任务会领取活动奖励并改变书豆或活动任务状态。",
+        "显式 add_draw 任务会增加抽奖机会，显式 draw 任务会执行抽奖并可能消耗机会。",
+        "显式 delay 任务会延期符合条件的书豆到期批次。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/df7ef61ae68efc75",
+        "candidateSha256": "13348e3433b2d2e4f2f78a5fb9c96b72c4a1f90de9bceb7012ed2624386216f5"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "13348e3433b2d2e4f2f78a5fb9c96b72c4a1f90de9bceb7012ed2624386216f5",
+        "releaseSha256": "4a07aa48a232aa2061a9adb84b6ee5757bb2780dd18739cf4080c6171cc6cb9d",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:36:34.830099+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "13348e3433b2d2e4f2f78a5fb9c96b72c4a1f90de9bceb7012ed2624386216f5",
+          "toCandidateSha256": "4a07aa48a232aa2061a9adb84b6ee5757bb2780dd18739cf4080c6171cc6cb9d",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
