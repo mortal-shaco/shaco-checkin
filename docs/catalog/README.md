@@ -6,7 +6,7 @@
 | --- | --- |
 | 上架 | 5 |
 | 已检查 | 0 |
-| 待检查 | 213 |
+| 待检查 | 214 |
 
 ## 字母索引
 
@@ -17,7 +17,7 @@
 - [云盘](categories/cloud.md)（13）
 - [签到](categories/checkin.md)（175）
 - [社区](categories/community.md)（1）
-- [AI服务](categories/ai.md)（9）
+- [AI服务](categories/ai.md)（10）
 - [影音](categories/video.md)（2）
 - [其他](categories/other.md)（18）
 

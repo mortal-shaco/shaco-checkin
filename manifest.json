@@ -8253,6 +8253,178 @@
       }
     },
     {
+      "catalogId": "9b86f9dc679c7816",
+      "applicationKey": "oreoslab/checkinpanel::euserv",
+      "checkProfile": {
+        "requiredEnv": [
+          "EUSERV_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "EUSERV",
+          "EUSERV_DRY_RUN",
+          "EUSERV_HTTP_TIMEOUT",
+          "EUSERV_PIN_WAIT_SECONDS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "EUSERV_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "EUSERV_HTTP_TIMEOUT": "20",
+          "EUSERV_PIN_WAIT_SECONDS": "15",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "续期成功并通过复查",
+          "最终状态：成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "登录 EUserv 并在需要时调用 TrueCaptcha 识别验证码",
+          "读取 EUserv 服务器列表并判断每台服务器是否进入续期窗口",
+          "通过 Mailparser 获取六位续期 PIN，申请安全令牌并提交续期",
+          "续期提交后重新读取服务器状态，只有确认不再显示可续期才判定成功",
+          "支持多个账号逐行配置、独立处理和汇总失败退出",
+          "支持完全断网预演、时间轴日志、脱敏通知和单行结构化汇总"
+        ],
+        "sideEffects": [
+          "登录时可能消耗 TrueCaptcha 识别次数并查询其用量",
+          "打开续期安全校验窗口会触发 EUserv 向账号邮箱发送续期 PIN",
+          "对进入续期窗口的服务器提交合同续期",
+          "非预演模式下按通知开关发送脱敏任务结果"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "EUserv 自动续期",
+      "path": "scripts/ck_euserv.py",
+      "sha256": "4364d5d8150e1d64cde62049891db9ea193453be7986250247d8a0c11d300f9e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OreosLab/checkinpanel",
+        "branch": "master",
+        "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
+        "originalPath": "ck_euserv.py"
+      },
+      "cron": "56 10 */7 * *",
+      "command": "python3 scripts/ck_euserv.py",
+      "environment": [
+        {
+          "name": "EUSERV_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 EUserv 获取账号密码；在 TrueCaptcha 控制台创建 userid 与 apikey；将 EUserv 续期 PIN 邮件自动转发到 Mailparser，并从解析结果下载地址取得末尾 ID。每个账号的全部字段写成一行 JSON。",
+          "format": "每个非空行一个 JSON 对象，必含 username、password、mailparser_dl_url_id、userid、apikey；账号之间只能换行分隔。"
+        },
+        {
+          "name": "EUSERV",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容变量；凭据获取方法与 EUSERV_ACCOUNTS 相同。仅在未设置 EUSERV_ACCOUNTS 时读取。",
+          "format": "支持逐行 JSON、JSON 数组，或含 EUSERV 数组的 JSON 对象。建议迁移到 EUSERV_ACCOUNTS。"
+        },
+        {
+          "name": "EUSERV_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1，可检查配置与日志而不发起任何网络请求或续期操作。",
+          "format": "1、true、yes 或 on 表示启用。"
+        },
+        {
+          "name": "EUSERV_HTTP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况自行设置单次 HTTP 请求超时；不设置时为 20 秒。",
+          "format": "3 到 120 之间的秒数。"
+        },
+        {
+          "name": "EUSERV_PIN_WAIT_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按邮件转发与 Mailparser 解析速度自行设置；不设置时为 15 秒。",
+          "format": "0 到 300 之间的秒数。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要只通知指定脚本时自行设置选择器；空值表示全部禁用。",
+          "format": "可用逗号、分号、空白或换行分隔 catalogId、文件名或通配模式；* 表示全部脚本。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知脚本不在标准目录时，填写包含 notify.py 或 sendNotify.js 的目录。",
+          "format": "本机绝对目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行只放一个账号 JSON 对象；同一账号的 EUserv、Mailparser 与 TrueCaptcha 凭据必须位于同一对象中。各账号独立执行，任一账号配置或业务失败时进程返回非零状态。"
+      },
+      "dependencies": [],
+      "features": [
+        "登录 EUserv 并在需要时调用 TrueCaptcha 识别验证码",
+        "读取 EUserv 服务器列表并判断每台服务器是否进入续期窗口",
+        "通过 Mailparser 获取六位续期 PIN，申请安全令牌并提交续期",
+        "续期提交后重新读取服务器状态，只有确认不再显示可续期才判定成功",
+        "支持多个账号逐行配置、独立处理和汇总失败退出",
+        "支持完全断网预演、时间轴日志、脱敏通知和单行结构化汇总"
+      ],
+      "sideEffects": [
+        "登录时可能消耗 TrueCaptcha 识别次数并查询其用量",
+        "打开续期安全校验窗口会触发 EUserv 向账号邮箱发送续期 PIN",
+        "对进入续期窗口的服务器提交合同续期",
+        "非预演模式下按通知开关发送脱敏任务结果"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/9b86f9dc679c7816",
+        "candidateSha256": "e279d31b5e40e850d8c205d09c4306ab5f2bc40fb0912a1d8208d76642b5b4ce"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "e279d31b5e40e850d8c205d09c4306ab5f2bc40fb0912a1d8208d76642b5b4ce",
+        "releaseSha256": "4364d5d8150e1d64cde62049891db9ea193453be7986250247d8a0c11d300f9e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-19T01:48:16.843200+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "e279d31b5e40e850d8c205d09c4306ab5f2bc40fb0912a1d8208d76642b5b4ce",
+          "toCandidateSha256": "4364d5d8150e1d64cde62049891db9ea193453be7986250247d8a0c11d300f9e",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "08575e47b55daffb",
       "applicationKey": "oreoslab/checkinpanel::everphoto",
       "checkProfile": {
