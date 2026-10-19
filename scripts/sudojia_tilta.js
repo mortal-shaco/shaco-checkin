@@ -15,6 +15,22 @@
  * QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["8a2853d90ebdcb0c", "scripts/sudojia_tilta.js", "sudojia_tilta.js", "sudojia_tilta"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');

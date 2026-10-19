@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/enshan_checkin.py`
 - 青龙命令：`python3 scripts/enshan_checkin.py`
 - 建议 Cron：`59 1 * * *`
-- 发布哈希：`c60406102e692ce961e2d1aac2ce99d722a9f5ac8aa3cf6f6e668315af59756e`
+- 发布哈希：`0b94395999c8f3ffcb588b324b0daa3673cf69ff2636baee2ccf511f847a69ce`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -113,8 +113,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关；正式模式通过已有 notify.py 发送脱敏摘要，预演只生成摘要。
-- 填写格式：默认 1；0、false、no、off 关闭。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -122,6 +122,13 @@
 - 敏感：否
 - 获取或设置：可选青龙 notify.py 所在目录；未配置时尝试导入 notify 并发现青龙标准目录。通知不可用不会改变业务退出码。
 - 填写格式：本地目录路径，非必填；脚本业务不依赖通知模块。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -133,7 +140,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c60406102e692ce961e2d1aac2ce99d722a9f5ac8aa3cf6f6e668315af59756e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
+SHA-256 `0b94395999c8f3ffcb588b324b0daa3673cf69ff2636baee2ccf511f847a69ce`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
 
 ## 副作用与风险
 

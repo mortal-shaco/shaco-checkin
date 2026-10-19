@@ -37,6 +37,24 @@ ZIPPO_DRY_RUN=1 完全断网，只核验配置和执行计划，不代表实际�
 QINGLONG_NOTIFY=0 关闭通知；默认通过青龙 notify.py 发送脱敏汇总。
 通知不可用或失败不会改变业务退出码。预演中只生成通知摘要，不加载通知模块或发送网络通知。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('60f9d3538e9f8470', 'scripts/zippo.py', 'zippo.py', 'zippo')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import datetime
 import importlib

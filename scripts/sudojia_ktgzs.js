@@ -12,6 +12,22 @@
  * Node.js >=18，无第三方业务依赖。通知可使用青龙 sendNotify.js。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["3c1b078ac7332577", "scripts/sudojia_ktgzs.js", "sudojia_ktgzs.js", "sudojia_ktgzs"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');

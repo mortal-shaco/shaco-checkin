@@ -16,6 +16,22 @@
  * 签名沿用上游固定 userId=10086；凭据 id 保留，不擅改未经验证的接口。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["125dbe5e1b6b8274", "scripts/sudojia_mawuwang.js", "sudojia_mawuwang.js", "sudojia_mawuwang"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const crypto = require('node:crypto');
 const fs = require('node:fs');

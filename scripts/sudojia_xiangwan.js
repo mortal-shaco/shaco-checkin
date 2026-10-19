@@ -13,10 +13,26 @@
  * 在享玩游戏APP注册并设置登录密码；非短信验证码，无需抓包。
  * XWGAME_DRY_RUN=1 完全断网预演，不读写缓存、不发送通知。
  * XWGAME_TOKEN_CACHE：可选缓存文件路径，默认不保存 Token；启用后权限为 0600。
- * QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭。QINGLONG_NOTIFY_DIR 为通知模块目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。QINGLONG_NOTIFY_DIR 为通知模块目录。
  * 默认动作仅为登录、每日签到和查询余额；不兑换、不邀请、不发布内容。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["d59346ef3ccb8591", "scripts/sudojia_xiangwan.js", "sudojia_xiangwan.js", "sudojia_xiangwan"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const crypto = require('node:crypto');
 const fs = require('node:fs/promises');

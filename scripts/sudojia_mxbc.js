@@ -15,11 +15,27 @@
  * 将授权的 PEM 完整文本（含 BEGIN/END 和换行）放入此环境变量，
  * 也可将完整 PEM 编码为 Base64 后填入。不要填写请求中的 sign 值。
  * MXBC_DRY_RUN=1：完全离线，模拟三个步骤，不读取私钥、不发送签到或通知。
- * QINGLONG_NOTIFY=0/false/no/off：关闭通知；默认开启。
+ * QINGLONG_NOTIFY=0/false/no/off：关闭通知；未设置时按上架状态。
  * QINGLONG_NOTIFY_DIR：可选，青龙 sendNotify.js 或 notify.py 所在目录。
  * 业务仅执行账号验证、每日签到、积分查询，不兑换、不改资料、不发布文字。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["8898c6203ce46def", "scripts/sudojia_mxbc.js", "sudojia_mxbc.js", "sudojia_mxbc"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const crypto = require('node:crypto');
 const fs = require('node:fs');

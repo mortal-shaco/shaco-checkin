@@ -30,8 +30,26 @@ Cookie，及 refresh_client_ticket 请求体的 ct；同一账号合并在同一
 可选 TG_BOT_TOKEN/TG_USER_ID 启用 Telegram 商店长图；图片失败回退文字。
 可选 VALORANT_FONT_PATH 指定已安装中文字体；不下载字体或其他程序。
 VALORANT_DRY_RUN=1：模拟完整流程，绝不调用网络或外部通知模块。
-QINGLONG_NOTIFY 默认 1，关闭值 0/false/no/off 同时关闭文字与图片推送。
+QINGLONG_NOTIFY 未设置时按上架状态，关闭值 0/false/no/off 同时关闭文字与图片推送。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('1153449ac9321744', 'scripts/valorantstore.py', 'valorantstore.py', 'valorantstore')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import os
 import sys
 import re

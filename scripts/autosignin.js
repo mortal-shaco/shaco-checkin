@@ -37,6 +37,22 @@ QINGLONG_NOTIFY=0: 关闭通知；可用 QINGLONG_NOTIFY_DIR 指定青龙通知�
 令牌刷新返回的新凭据只在内存使用，不修改环境变量，也不打印；凭据失效后手动重新获取。
 */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["ee45e24a6845dbc0", "scripts/autosignin.js", "autosignin.js", "autosignin"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

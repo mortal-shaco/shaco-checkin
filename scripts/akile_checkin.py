@@ -35,11 +35,29 @@ AKILE_REFRESH_TOKEN=1：显式开启到期前 14 小时保活及认证补救刷�
 多账号顺序替换同一变量的一行，其他行原样保留。回写失败会令任务非零退出。
 统计默认保存在同目录 state.json；AKILE_STATE_FILE 可指定可写文件，更新时保留。
 DAILY_ALL_DISABLED 支持 akile/akile_checkin/akilecloud；DAILY_ALL_CHILD=1 保留合集 JSON。
-QINGLONG_NOTIFY 默认 1，0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定青龙通知模块目录。
+QINGLONG_NOTIFY 未设置时按上架状态，0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定青龙通知模块目录。
 签到只提交一次，必须由今日官方流水复核；不确定结果或统计异常均非零退出。
 """
 
 from __future__ import annotations
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('48ce92fe72bec5fa', 'scripts/akile_checkin.py', 'akile_checkin.py', 'akile_checkin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import argparse
 import base64

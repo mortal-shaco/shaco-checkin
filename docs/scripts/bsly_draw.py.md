@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bsly_draw.py`
 - 青龙命令：`python3 scripts/bsly_draw.py`
 - 建议 Cron：`23 0 * * *`
-- 发布哈希：`690be1e878eb6c9690e3298edc62ccb0053b5d4eece1348b3283adcde0f44a7a`
+- 发布哈希：`4557fc180db8755605a29053ed35fa56c32beff6f0c59171d8095db8eb37e207`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -57,8 +57,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：使用青龙既有通知配置；默认 1。
-- 填写格式：0、false、no、off（忽略大小写）关闭通知；其他值开启。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -66,6 +66,13 @@
 - 敏感：否
 - 获取或设置：可选填写青龙公共 notify.py 或 sendNotify.js 所在目录；留空自动发现。
 - 填写格式：本地目录路径；优先 notify.py，失败后尝试其他可用桥接及 sendNotify.js，后者需要青龙环境已有 Node.js。业务 HTTP 不依赖这些桥接。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -77,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `690be1e878eb6c9690e3298edc62ccb0053b5d4eece1348b3283adcde0f44a7a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28b170786df4dff2`。
+SHA-256 `4557fc180db8755605a29053ed35fa56c32beff6f0c59171d8095db8eb37e207`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28b170786df4dff2`。
 
 ## 副作用与风险
 

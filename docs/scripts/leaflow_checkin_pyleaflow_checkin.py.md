@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/leaflow_checkin_pyleaflow_checkin.py`
 - 青龙命令：`python3 scripts/leaflow_checkin_pyleaflow_checkin.py`
 - 建议 Cron：`14 0 * * *`
-- 发布哈希：`c6bb96a22fdc8410cf82d18ce50187f467f4e0405c6182472fba31bf664c2dcd`
+- 发布哈希：`71c01645d789f97abe601d2639525ae2cbd6b103d2ca904ec3bceef7590c7c45`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -138,8 +138,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：通过青龙环境变量控制任务汇总通知。
-- 填写格式：默认 1；0/false/no/off 关闭；预演只生成本地通知内容，不加载或调用通知模块。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -162,6 +162,13 @@
 - 获取或设置：需要代理时按运行环境配置，脚本不记录代理值。
 - 填写格式：标准库支持的代理地址；兼容 https_proxy。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -172,7 +179,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c6bb96a22fdc8410cf82d18ce50187f467f4e0405c6182472fba31bf664c2dcd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
+SHA-256 `71c01645d789f97abe601d2639525ae2cbd6b103d2ca904ec3bceef7590c7c45`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
 
 ## 副作用与风险
 

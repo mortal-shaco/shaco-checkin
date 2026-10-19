@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bilibili.py`
 - 青龙命令：`python3 scripts/bilibili.py`
 - 建议 Cron：`6 2 * * *`
-- 发布哈希：`d1311e0d2eec1547083765778593d4fa25af5611e1c9c174f5f0afcdae27de15`
+- 发布哈希：`924145cb14305b06af36f8bb0e0a6cf58acfd4b90f642eb85773d071db67afb6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -97,8 +97,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知全局开关；实际运行发现 notify.py 并调用 send，通知故障不改变业务退出码；离线预演只生成脱敏摘要，不调用可能联网的通知传输。
-- 填写格式：默认 1；0/false/no/off 关闭
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -106,6 +106,13 @@
 - 敏感：否
 - 获取或设置：可选，填写青龙公共 notify.py 所在目录；优先 import notify，再尝试本目录及 /ql/data/scripts、/ql/scripts。不需要项目私有模块。
 - 填写格式：本地目录路径，不含凭据
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -117,7 +124,7 @@ BILIBILI_COOKIE 每个非空行一个账号，同一账号的 SESSDATA、bili_jc
 
 ## 验证与兼容性
 
-SHA-256 `d1311e0d2eec1547083765778593d4fa25af5611e1c9c174f5f0afcdae27de15`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ca4e1c75a27952c1`。
+SHA-256 `924145cb14305b06af36f8bb0e0a6cf58acfd4b90f642eb85773d071db67afb6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ca4e1c75a27952c1`。
 
 ## 副作用与风险
 

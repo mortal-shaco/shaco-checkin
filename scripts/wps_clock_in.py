@@ -27,6 +27,24 @@
 WPS_DRY_RUN=1完全断网预演；QINGLONG_NOTIFY=0关闭通知。
 只依赖Python标准库；notify.py为可选青龙通知集成，不影响业务退出码。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('aa7303325b9bca16', 'scripts/wps_clock_in.py', 'wps_clock_in.py', 'wps_clock_in')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 import importlib.util
 import json

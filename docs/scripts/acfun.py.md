@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/acfun.py`
 - 青龙命令：`python3 scripts/acfun.py`
 - 建议 Cron：`9 0 * * *`
-- 发布哈希：`490a15e6deb49fb75e600e7859a848bf7051b75425e827b8fcbaef9dbe81b6d0`
+- 发布哈希：`bd54c8a5aa76d498a009524fb705f5653aeac8ca718f2c99315a528522528db5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -58,8 +58,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：使用青龙自带通知配置；默认开启。离线烟雾测试设为 0；开启时预演仍尝试通知入口，但禁止网络和外部进程。
-- 填写格式：0、false、no、off 关闭，其余值开启，默认 1。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -67,6 +67,13 @@
 - 敏感：否
 - 获取或设置：若青龙的 notify.py 不在常规路径，可设置其所在目录；无需私有工作流仓库。
 - 填写格式：可选目录路径；依次尝试导入 notify.send、此目录的 notify.py、/ql/data/scripts/notify.py、/ql/scripts/notify.py。通知不可用或失败不改变业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -78,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `490a15e6deb49fb75e600e7859a848bf7051b75425e827b8fcbaef9dbe81b6d0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
+SHA-256 `bd54c8a5aa76d498a009524fb705f5653aeac8ca718f2c99315a528522528db5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
 
 ## 副作用与风险
 

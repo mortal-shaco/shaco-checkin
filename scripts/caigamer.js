@@ -28,10 +28,26 @@ SOFTWARE.
 登录 https://caigamer.cn 后，在浏览器开发者工具的网络面板中，
 读取本站已登录请求的 Cookie 请求头，包含 bbs_sid 和 bbs_token。
 CAIGAMER_DRY_RUN=1：完全断网预演，不签到、不向外发送通知。
-QINGLONG_NOTIFY 默认 1，0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定青龙通知目录。
+QINGLONG_NOTIFY 未设置时按上架状态，0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定青龙通知目录。
 仅自动签到，无发帖、评论、分享、账号资料修改；不重试状态变更请求。
 */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["8bd252d858b7095c", "scripts/caigamer.js", "caigamer.js", "caigamer"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

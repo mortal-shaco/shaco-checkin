@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/fwxs_checkin.js`
 - 青龙命令：`node scripts/fwxs_checkin.js`
 - 建议 Cron：`57 1 * * *`
-- 发布哈希：`d9a8a2381b2636367f93f477fca57e7efb6fe2f133231e0121b4a2acec4b5a43`
+- 发布哈希：`936764a7447fc322ff3635fd6c2072f1503632c1a85f3f7c46f618eeb4a94a7b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -42,8 +42,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：按需在青龙环境变量中设置，默认启用。
-- 填写格式：0、false、no、off 关闭通知，其他值启用；断网预演仅模拟通知。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -51,6 +51,13 @@
 - 敏感：否
 - 获取或设置：可选填写青龙公共通知模块 sendNotify.js 所在目录；默认查找 /ql/data/scripts、/ql/scripts 和脚本目录。
 - 填写格式：本机目录路径；通知模块不可用或失败时不改变业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -62,7 +69,7 @@ fwxs 每个非空行一个账号；同一账号仅需完整 Cookie。逐账号�
 
 ## 验证与兼容性
 
-SHA-256 `d9a8a2381b2636367f93f477fca57e7efb6fe2f133231e0121b4a2acec4b5a43`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
+SHA-256 `936764a7447fc322ff3635fd6c2072f1503632c1a85f3f7c46f618eeb4a94a7b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
 
 ## 副作用与风险
 

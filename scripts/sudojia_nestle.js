@@ -16,10 +16,26 @@
  * 先不设置此变量，查看任务编号，再在小程序确认任务内容及风险后配置。
  * 默认仅查询，不提交任何任务；白名单对所有账号生效，缺失任务视为失败。
  * NESTLE_DRY_RUN=1：内置模拟，不请求业务接口或通知服务。
- * QINGLONG_NOTIFY 默认开启；0/false/no/off 关闭。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。
  * QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["e68269710bb6fed2", "scripts/sudojia_nestle.js", "sudojia_nestle.js", "sudojia_nestle"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

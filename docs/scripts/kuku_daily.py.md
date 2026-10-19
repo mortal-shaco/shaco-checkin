@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kuku_daily.py`
 - 青龙命令：`python3 scripts/kuku_daily.py`
 - 建议 Cron：`21 0 * * *`
-- 发布哈希：`73cff9b29d67c83d6fa39f8a562f018c1c7bf8c010892ecc07e4e3c780a9fa23`
+- 发布哈希：`f91c396750ebf88a7a84488a1e6af856d3b58e0d2a0f7c9a2eb1eb8f14fc3cec`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -75,8 +75,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知全局开关，默认开启。
-- 填写格式：0、false、no、off 关闭，其余非空值开启。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -92,6 +92,13 @@
 - 获取或设置：兼容旧通知关闭开关。
 - 填写格式：1 关闭通知。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -102,7 +109,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `73cff9b29d67c83d6fa39f8a562f018c1c7bf8c010892ecc07e4e3c780a9fa23`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
+SHA-256 `f91c396750ebf88a7a84488a1e6af856d3b58e0d2a0f7c9a2eb1eb8f14fc3cec`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
 
 ## 副作用与风险
 

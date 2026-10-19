@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kurobbs_sign.py`
 - 青龙命令：`python3 scripts/kurobbs_sign.py`
 - 建议 Cron：`16 1 * * *`
-- 发布哈希：`fe2d67de49de75eb35b3ef4f5f95937ba01aa28521d60a8e8ffc42d8a7105d81`
+- 发布哈希：`ba8b69f916ffd74d402b05c53fde344f1866a6b4e18e46b9bf1b813733d06960`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -74,8 +74,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关；默认尝试 notify.py，通知不可用不改变业务退出码。
-- 填写格式：默认 1；0、false、no、off 禁用
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -83,6 +83,13 @@
 - 敏感：否
 - 获取或设置：可选：青龙现有 notify.py 所在目录；未配置时尝试导入 notify 和青龙标准目录，不需私人仓库。
 - 填写格式：通知模块目录路径
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -94,7 +101,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fe2d67de49de75eb35b3ef4f5f95937ba01aa28521d60a8e8ffc42d8a7105d81`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
+SHA-256 `ba8b69f916ffd74d402b05c53fde344f1866a6b4e18e46b9bf1b813733d06960`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
 
 ## 副作用与风险
 

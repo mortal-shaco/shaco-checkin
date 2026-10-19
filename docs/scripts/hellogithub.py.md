@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hellogithub.py`
 - 青龙命令：`python3 scripts/hellogithub.py`
 - 建议 Cron：`31 8 1 * *`
-- 发布哈希：`3d34166fc762317bddb54e6b121c022afbcc52c8c8d3e263660ae0b28f8add1e`
+- 发布哈希：`45280c4f705f455b151b322e88d3201210a564c1bc8f637e13b884de6b7852c6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -43,8 +43,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：使用青龙全局通知开关，渠道凭据在青龙 notify.py 内配置。
-- 填写格式：默认 1；0、false、no、off 禁用；新刊未提交通知时不更新状态且退出非零。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -52,6 +52,13 @@
 - 敏感：否
 - 获取或设置：需要时填写青龙 notify.py 所在目录；默认查找脚本同目录及青龙标准目录，也支持导入 notify.send。
 - 填写格式：本地目录路径。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -63,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3d34166fc762317bddb54e6b121c022afbcc52c8c8d3e263660ae0b28f8add1e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e249d85fcb6de594`。
+SHA-256 `45280c4f705f455b151b322e88d3201210a564c1bc8f637e13b884de6b7852c6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e249d85fcb6de594`。
 
 ## 副作用与风险
 

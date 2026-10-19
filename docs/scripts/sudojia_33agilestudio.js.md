@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_33agilestudio.js`
 - 青龙命令：`node scripts/sudojia_33agilestudio.js`
 - 建议 Cron：`24 0 * * *`
-- 发布哈希：`fabe80bb639d6f60d0d99dad8721b7b7eb77080cb23a91bce8e22b86cc11e070`
+- 发布哈希：`9a987bd491452098fb95e56e14cf2085c002215f73b293a15872a212deba6009`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -43,8 +43,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：按通知需要配置，默认启用。
-- 填写格式：0、false、no、off 关闭，不区分大小写；预演始终只生成摘要，不联网投递。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -52,6 +52,13 @@
 - 敏感：否
 - 获取或设置：仅在青龙通知模块不在默认目录时，填写已有 sendNotify.js 所在目录；否则自动查找 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：本机通知模块目录路径，仅用于可选通知，业务无此依赖。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -63,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fabe80bb639d6f60d0d99dad8721b7b7eb77080cb23a91bce8e22b86cc11e070`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
+SHA-256 `9a987bd491452098fb95e56e14cf2085c002215f73b293a15872a212deba6009`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
 
 ## 副作用与风险
 

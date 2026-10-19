@@ -41,6 +41,24 @@ QINGLONG_NOTIFY=0 可关闭通知；QINGLONG_NOTIFY_DIR 指向面板 notify.py �
 EXIT_WHEN_FAIL 保留为兼容输入，但不再允许失败返回零。上游未指定 cron，本版每日 08:15。
 依赖：requests>=2.31、cryptography>=43；通过公共包仓库安装，无自动安装行为。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('e02ed814df52c998', 'scripts/f1owkang_qingskyland_skyland.py', 'f1owkang_qingskyland_skyland.py', 'f1owkang_qingskyland_skyland')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import base64
 import gzip
 import hashlib

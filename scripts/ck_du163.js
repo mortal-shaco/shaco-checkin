@@ -31,10 +31,26 @@
  * sign.json 请求，复制请求 Cookie（必须含 _xsrf）及可选 User-Agent。
  * 不要分享 Cookie。旧 utils/getData 私有配置无需保留。
  * DU163_DRY_RUN=1 完全断网：校验参数并模拟响应与通知，不验证真实账号。
- * QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。
  * QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["f5d67f6a8e38d7ae", "scripts/ck_du163.js", "ck_du163.js", "ck_du163"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('https');
 const fs = require('fs');
 const path = require('path');

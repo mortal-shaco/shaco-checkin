@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nga_checkin.py`
 - 青龙命令：`python3 scripts/nga_checkin.py`
 - 建议 Cron：`49 0 * * *`
-- 发布哈希：`724783e875e86725a0e04c92799cfab5528f81bc26137f31c4b79b230486160f`
+- 发布哈希：`cda63baeeade1bf0452482af26cc13ce059996ae32d3fbba1a188b0bda472689`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -131,8 +131,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关；0、false、no、off 关闭，通知失败不影响业务退出码。
-- 填写格式：默认 1
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -140,6 +140,13 @@
 - 敏感：否
 - 获取或设置：可选青龙通知模块目录，含 notify.py 或 sendNotify.js；业务运行不依赖该目录。
 - 填写格式：默认 未设置
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -151,7 +158,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `724783e875e86725a0e04c92799cfab5528f81bc26137f31c4b79b230486160f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
+SHA-256 `cda63baeeade1bf0452482af26cc13ce059996ae32d3fbba1a188b0bda472689`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/workbuddy_daily.py`
 - 青龙命令：`python3 scripts/workbuddy_daily.py`
 - 建议 Cron：`15 7,12 * * *`
-- 发布哈希：`c19edebe6a0dadfe35a56781102c70a0a42ddc1b319bd884c3dee395de043f52`
+- 发布哈希：`380807aa96f5bfee6d532ba09e64444eaa315a76b1cd9dc2578792258d9fe4c8`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -136,8 +136,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：使用青龙已有 notify.py 发送脱敏总结；默认开启；通知不可用不改变业务退出码。
-- 填写格式：默认1；0、false、no、off关闭；断网预演仅模拟通知。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -145,6 +145,13 @@
 - 敏感：否
 - 获取或设置：可选指定青龙通知模块所在目录；未指定时尝试导入 notify 及青龙标准脚本目录。
 - 填写格式：含 notify.py 的本地目录；不作为业务运行依赖。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -156,7 +163,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c19edebe6a0dadfe35a56781102c70a0a42ddc1b319bd884c3dee395de043f52`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
+SHA-256 `380807aa96f5bfee6d532ba09e64444eaa315a76b1cd9dc2578792258d9fe4c8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
 
 ## 副作用与风险
 

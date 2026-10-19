@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/forum_download.py`
 - 青龙命令：`python3 scripts/forum_download.py`
 - 建议 Cron：`29 2 * * *`
-- 发布哈希：`d023bc68fec8f262e2e23fd5d7eb2d62828beb0943499568d1223a13375d9a50`
+- 发布哈希：`a899c4f3f8983dc390c74d3bee5c835cc65325e10a491f6ceb399267250d3131`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -65,8 +65,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：使用青龙已有 notify.py 发送脱敏总结；预演仅打印通知内容。
-- 填写格式：默认 1；0、false、no、off 关闭。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -74,6 +74,13 @@
 - 敏感：否
 - 获取或设置：可指定青龙 notify.py 所在目录；默认尝试导入 notify 及 /ql/data/scripts、/ql/scripts。
 - 填写格式：可选本地目录；通知失败保留业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -85,7 +92,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d023bc68fec8f262e2e23fd5d7eb2d62828beb0943499568d1223a13375d9a50`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
+SHA-256 `a899c4f3f8983dc390c74d3bee5c835cc65325e10a491f6ceb399267250d3131`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
 
 ## 副作用与风险
 

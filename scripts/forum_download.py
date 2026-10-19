@@ -18,6 +18,24 @@ work 的 Referer 和表单沿用上游；间隔限制出现后停止点击，再
 上游未声明 cron；本版本建议每日 08:20，可在青龙调整。
 FORUM_DRY_RUN=1 完全断网，包括通知；真实运行通知遵守 QINGLONG_NOTIFY。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('e60b615a6554e2b6', 'scripts/forum_download.py', 'forum_download.py', 'forum_download')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import importlib
 import importlib.util

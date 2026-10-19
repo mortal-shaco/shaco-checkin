@@ -26,8 +26,26 @@ hsayCookie 每个非空行填写一个完整 Token；兼容文档中的 HSAYCook
 不再使用 @ 分隔账号；Token 内容不拆分。HSAY_DRY_RUN=1 完全断网预演。
 保留每日 9、18 点计划。实际运行会签到领取奖励，不发帖、不消费积分。
 上游的 appid、活动和门店参数原样保留；接口过期时失败退出，不猜测接口。
-通知默认开启；QINGLONG_NOTIFY=0 关闭，QINGLONG_NOTIFY_DIR 指定青龙通知目录。
+通知默认按上架状态；QINGLONG_NOTIFY=0 关闭，QINGLONG_NOTIFY_DIR 指定青龙通知目录。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('1a646b7bbddbaa7d', 'scripts/hsay.py', 'hsay.py', 'hsay')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 import hashlib
 import json

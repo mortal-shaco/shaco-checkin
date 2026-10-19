@@ -12,7 +12,7 @@
 # 作为 Token；若登录流程变化，请从本人已登录客户端的授权请求获取 token。
 # 不要把 Token、Cookie 或响应发给他人。
 # SKYLAND_DRY_RUN=1：断网预演，不登录、不签到、不调用远程通知。
-# QINGLONG_NOTIFY=0：关闭通知；默认开启，可设置 QINGLONG_NOTIFY_DIR。
+# QINGLONG_NOTIFY=0：关闭通知；未设置时按上架状态，可设置 QINGLONG_NOTIFY_DIR。
 #
 # MIT License
 # Original attribution: CN-Grace/QinglongScripts contributors.
@@ -32,6 +32,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('0bde30a1db078051', 'scripts/skyland.py', 'skyland.py', 'skyland')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import base64
 import gzip
 import hashlib

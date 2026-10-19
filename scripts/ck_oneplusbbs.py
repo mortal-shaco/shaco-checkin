@@ -27,6 +27,24 @@
 ONEPLUSBBS_DRAW=1 显式授权最多十次抽奖，每次消耗十加油。
 ONEPLUSBBS_DRY_RUN=1 完全断网预演；QINGLONG_NOTIFY=0 关闭通知。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('f0626c73779225ec', 'scripts/ck_oneplusbbs.py', 'ck_oneplusbbs.py', 'ck_oneplusbbs')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import html
 import importlib.util
 import json

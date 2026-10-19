@@ -35,6 +35,24 @@ CODEARTS_DRY_RUN=1 完全断网，不读写台账，不发送通知（输出模�
 状态保存在脚本目录，原子写入、权限 0600；请勿将凭据状态文件公开上传。
 上游未指定 cron，本维护版建议北京时间每日 08:15，面板时区需为亚洲/上海。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('b896028c3fdcd52d', 'scripts/codearts_daily.py', 'codearts_daily.py', 'codearts_daily')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import base64
 import hashlib
 import hmac

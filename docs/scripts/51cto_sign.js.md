@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/51cto_sign.js`
 - 青龙命令：`node scripts/51cto_sign.js`
 - 建议 Cron：`17 2 * * *`
-- 发布哈希：`aa9a3cbefc3d430220969034c3f61c9bf36e002a1bd2c10e3151e78db496009f`
+- 发布哈希：`53a99da38f892c97adaceae2b960a81dc1a13ba5a1736a783218cf4b6580105d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -43,8 +43,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙面板按需设置，默认开启。
-- 填写格式：0、false、no、off关闭通知，其他值开启。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -52,6 +52,13 @@
 - 敏感：否
 - 获取或设置：填写已有青龙sendNotify.js所在目录，不需另一个项目仓库。
 - 填写格式：可选本地目录；同时自动查找青龙标准脚本目录和当前目录。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -63,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `aa9a3cbefc3d430220969034c3f61c9bf36e002a1bd2c10e3151e78db496009f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d81ca9fcd4ad24e1`。
+SHA-256 `53a99da38f892c97adaceae2b960a81dc1a13ba5a1736a783218cf4b6580105d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d81ca9fcd4ad24e1`。
 
 ## 副作用与风险
 

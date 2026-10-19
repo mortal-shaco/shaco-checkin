@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/dailynewscn.js`
 - 青龙命令：`node scripts/dailynewscn.js`
 - 建议 Cron：`0 15 9 * * *`
-- 发布哈希：`f2c3d44944b98f1c36d9d248b6b80554a34a74656b6df7d267acf7a1583b1268`
+- 发布哈希：`1b53595cc7e73c631a72aa2c684397141949880ea460b2047ead9798cad8609c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -193,8 +193,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：手工设置全局通知开关。
-- 填写格式：默认 1；0、false、no、off 禁用。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -202,6 +202,13 @@
 - 敏感：否
 - 获取或设置：可选，填写青龙自身 sendNotify.js 所在目录；默认发现 /ql/data/scripts 或 /ql/scripts。
 - 填写格式：本机目录路径；缺失或通知失败保持业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -213,7 +220,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f2c3d44944b98f1c36d9d248b6b80554a34a74656b6df7d267acf7a1583b1268`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f3d5ae90c3c979bf`。
+SHA-256 `1b53595cc7e73c631a72aa2c684397141949880ea460b2047ead9798cad8609c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f3d5ae90c3c979bf`。
 
 ## 副作用与风险
 

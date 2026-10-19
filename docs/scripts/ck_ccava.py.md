@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_ccava.py`
 - 青龙命令：`python3 scripts/ck_ccava.py`
 - 建议 Cron：`31 1 * * *`
-- 发布哈希：`f4a6df8705e0b8d1e2503d0d396e35e5f2afb2a858a237d40ddc3102c8e4fc00`
+- 发布哈希：`e8b3a12f12e8231ee08e019ca24f6acba11f8bc0bcc86cdcfda7424bda6d4cdf`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -43,8 +43,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知默认开启；需要关闭时自行设置为 0。
-- 填写格式：0、false、no 或 off 关闭；默认 1。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -52,6 +52,13 @@
 - 敏感：否
 - 获取或设置：可选，填写青龙现有 notify.py 所在目录；优先使用可导入的 notify.send，再检查此目录及青龙标准脚本目录。无需安装私有工作流工具。
 - 填写格式：本机目录路径；通知失败不会改变业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -63,7 +70,7 @@ CCAVA_COOKIE 的每个非空行表示一个账号，逐行独立执行；任意�
 
 ## 验证与兼容性
 
-SHA-256 `f4a6df8705e0b8d1e2503d0d396e35e5f2afb2a858a237d40ddc3102c8e4fc00`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/93e0b2068d55d68f`。
+SHA-256 `e8b3a12f12e8231ee08e019ca24f6acba11f8bc0bcc86cdcfda7424bda6d4cdf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/93e0b2068d55d68f`。
 
 ## 副作用与风险
 

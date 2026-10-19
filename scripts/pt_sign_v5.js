@@ -50,6 +50,22 @@ SOFTWARE.
 
 
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["ff443f9fbbdbade5", "scripts/pt_sign_v5.js", "pt_sign_v5.js", "pt_sign_v5"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 // 每个站点的 Cookie 改为一行一个账号，不按 &、@ 等符号切分。
 // PT_SITES 默认 hdkyl,carpt,afun；只运行部分站点时显式设置此变量。
 // PT_DRY_RUN=1 时完全断网，通知仅模拟；PT_DEBUG 不再输出 HTML 或凭据。

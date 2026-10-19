@@ -33,13 +33,31 @@ WangChao：每个非空行一个“登录手机号#密码”，只按第一个 #
 WANGCHAO_DRY_RUN=1：完全断网预演，不登录、不读取远程内容、不修改账号。
 WANGCHAO_LOTTERY=1：明确启用每日一次抽奖（消耗次数），默认 0。
 WANGCHAO_BONUS=1：明确启用活动入口浏览，默认 0；不重放随机文章阅读来虚增次数。
-QINGLONG_NOTIFY 默认 1；可设 0/false/no/off 关闭。可选 QINGLONG_NOTIFY_DIR 指向
+QINGLONG_NOTIFY 未设置时按上架状态；可设 0/false/no/off 关闭。可选 QINGLONG_NOTIFY_DIR 指向
 青龙通知模块目录。通知缺失或失败不改变业务退出码；预演通知也禁止网络。
 实时运行依赖青龙 Python 依赖管理中安装公共包 pycryptodome、gmssl；不自动安装。
 保留登录、进入 App、每日阅读、阅读进度确认、可选活动入口浏览、可选抽奖、
 最近十条抽奖记录。上游停用的“诗韵望潮”答题/红包活动不自动复活。
 接口均依据此上游快照恢复，断网验证不能确认当前活动可用或真实业务成功。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('d0c1751256314943', 'scripts/wangchao.py', 'wangchao.py', 'wangchao')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import base64
 import contextlib

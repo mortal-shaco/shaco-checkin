@@ -17,10 +17,28 @@ OFFICEACE_TOKENS 每个非空行一个账号：AK|SK|security_token|project_id|b
 默认领取奖励；不发帖、不消费积分、不更改账号配置。
 OFFICEACE_DRY_RUN=1 完全离线，只验证配置、签名和任务计划。
 OFFICEACE_RETRIES 默认 2（首次之外的重试次数，最大 5）。
-QINGLONG_NOTIFY 默认 1；NO_NOTIFY=1 兼容关闭通知。
+QINGLONG_NOTIFY 未设置时按上架状态；NO_NOTIFY=1 兼容关闭通知。
 支持 QYWX_TOKEN/WECHAT_WEBHOOK、PLUSPLUS_TOKEN 的可选兼容推送。
 Python 3.8+，业务 HTTP 与签名仅用标准库，通知组件可选。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('61204ec3f68839fd', 'scripts/officeace_daily.py', 'officeace_daily.py', 'officeace_daily')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import argparse
 import hashlib
 import hmac as _hmaclib

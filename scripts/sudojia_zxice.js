@@ -10,10 +10,26 @@
  * ZX_ICE_TOKEN：登录甄稀冰淇淋微信小程序，抓取本人发往
  * msmarket.msx.digitalyili.com 的请求头 access-token；每个非空行一个账号。
  * ZX_ICE_DRY_RUN=1：完全断网，仅校验配置、展示执行计划和生成本地通知摘要。
- * QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。
  * QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["eb4b0810d476bc5e", "scripts/sudojia_zxice.js", "sudojia_zxice.js", "sudojia_zxice"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

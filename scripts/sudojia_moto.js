@@ -15,10 +15,26 @@
  * https://api.58moto.com 请求头 token 和对应 uid，组合为 token#uid。
  * 每个非空行一个账号，仅在第一个 # 处分隔；不使用 & 或 @ 分隔账号。
  * MOTO_DRY_RUN=1：只检查配置和模拟流程，禁止所有网络与外部通知调用。
- * QINGLONG_NOTIFY=0/false/no/off 关闭通知，默认开启。
+ * QINGLONG_NOTIFY=0/false/no/off 关闭通知，未设置时按上架状态。
  * QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = true;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["2e1e25aaedb9b2c3", "scripts/sudojia_moto.js", "sudojia_moto.js", "sudojia_moto"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

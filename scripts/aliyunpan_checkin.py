@@ -36,7 +36,7 @@ refreshToken 为旧变量别名；ALIYUN_REFRESH_TOKEN 设置时优先，别名�
 fb6c6aa9c49c315f2e5c32949eef06689aa2ea7e；保留该来源署名。
 原来源定时为 0 9 * * *，与每日签到兼容；规范脚本保留 3 11 * * *。
 预演模拟 HTTP、通知及领奖，不联网、不等待、不写入凭据文件。
-QINGLONG_NOTIFY 默认 1；设为 0/false/no/off 可关闭。QINGLONG_NOTIFY_DIR
+QINGLONG_NOTIFY 未设置时按上架状态；设为 0/false/no/off 可关闭。QINGLONG_NOTIFY_DIR
 可指定青龙 notify.py 所在目录，通知故障不改变业务退出码。
 安全持久化默认关闭，只在显式开启且令牌轮换时原子写入权限 0600 的文件。
 该文件每行对应原账号顺序的当前刷新令牌，应安全更新青龙环境变量，勿公开。
@@ -80,6 +80,24 @@ files, databases, or invoke Qinglong executables.
 """
 
 from __future__ import annotations
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('9c6fa7a75879fa8b', 'scripts/aliyunpan_checkin.py', 'aliyunpan_checkin.py', 'aliyunpan_checkin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import json
 import hashlib

@@ -11,7 +11,7 @@ KANXUE_COOKIE_LIST（必填）：登录 https://bbs.kanxue.com 后，在浏览�
 工具的网络面板查看本站请求，将请求头 Cookie 的完整值填入青龙环境变量。
 每个非空行一个账号，不使用 & 或 @ 分隔，Cookie 中的分号和等号原样保留。
 KANXUE_DRY_RUN=1：完全断网预演，不验证登录、不发送签到请求。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。
 QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
 只执行签到，不发帖、评论、分享或修改账号资料。
 
@@ -33,6 +33,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["ada2bb484eeceac4", "scripts/kanxue.js", "kanxue.js", "kanxue"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('https');
 const fs = require('fs');
 const path = require('path');

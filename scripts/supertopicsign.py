@@ -26,6 +26,24 @@ IS_SORT 支持 INCREASE/DECREASE/NONE；SIGN_ONCE_COUNT 为每账号请求上限
 0 表示不限。上游配置默认值未随源码提供，本版本默认保持列表顺序、处理全部。
 WEIBO_SUPERTOPIC_DRY_RUN=1 完全离线，仅校验参数、模拟流程和通知。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('a5e811acce266569', 'scripts/supertopicsign.py', 'supertopicsign.py', 'supertopicsign')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 import importlib.util
 import json

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nodeseek.py`
 - 青龙命令：`python3 scripts/nodeseek.py`
 - 建议 Cron：`3 2 * * *`
-- 发布哈希：`100eb89e754758960b360bc7a0669d9ba6be3707aa5d27c5df57d795d9cda3b1`
+- 发布哈希：`8c9816477ef70cfcf6f80cfa100c129d2064ba735f5caed242f6c3dc9b7cb2c0`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -57,8 +57,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：默认 1，正式运行调用青龙 notify.py；预演仅输出脱敏通知摘要。
-- 填写格式：0、false、no、off 关闭；其他值启用。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -66,6 +66,13 @@
 - 敏感：否
 - 获取或设置：可填青龙通知模块目录；默认先导入 notify.send，再查找 /ql/data/scripts/notify.py 和 /ql/scripts/notify.py。
 - 填写格式：包含 notify.py 的本地目录；通知不可用或失败不影响业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -77,7 +84,7 @@ NS_COOKIE 每个非空行一个账号，逐个独立签到；任意账号失败�
 
 ## 验证与兼容性
 
-SHA-256 `100eb89e754758960b360bc7a0669d9ba6be3707aa5d27c5df57d795d9cda3b1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c28f0207e2b02a7b`。
+SHA-256 `8c9816477ef70cfcf6f80cfa100c129d2064ba735f5caed242f6c3dc9b7cb2c0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c28f0207e2b02a7b`。
 
 ## 副作用与风险
 

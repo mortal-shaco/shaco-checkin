@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/skyland.py`
 - 青龙命令：`python3 scripts/skyland.py`
 - 建议 Cron：`6 0 * * *`
-- 发布哈希：`0ccfcdb5b0519335011c1d06a89280bab409976a56fc39ad2184e1cfd26ddfbe`
+- 发布哈希：`15184a87a6def9bfd3b696a4c6719c4fa9a378b6c2316b5f153e299e87c9a0fc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -45,8 +45,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知默认开启；需要关闭时设置为 0。
-- 填写格式：0、false、no、off 关闭，默认 1。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -54,6 +54,13 @@
 - 敏感：否
 - 获取或设置：可选，填写青龙已有 notify.py 所在目录；默认发现青龙标准路径或导入 notify.send，无通知模块仍可执行签到。
 - 填写格式：本地通知模块目录路径。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -65,7 +72,7 @@ SKYLAND_TOKEN 每个非空行一个账号，忽略空行；账号与角色独立
 
 ## 验证与兼容性
 
-SHA-256 `0ccfcdb5b0519335011c1d06a89280bab409976a56fc39ad2184e1cfd26ddfbe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
+SHA-256 `15184a87a6def9bfd3b696a4c6719c4fa9a378b6c2316b5f153e299e87c9a0fc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0bde30a1db078051`。
 
 ## 副作用与风险
 

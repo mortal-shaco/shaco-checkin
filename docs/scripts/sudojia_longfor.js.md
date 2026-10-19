@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_longfor.js`
 - 青龙命令：`node scripts/sudojia_longfor.js`
 - 建议 Cron：`39 1 * * *`
-- 发布哈希：`3e5f8a2094658a9160a4b0942e65e762a691536d7b39c3d9e89b6a28590cefae`
+- 发布哈希：`aca5bccde82f74b8b8192a1338f576a6ae71eea9bd841a42ef2fe100c01fccaf`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -63,8 +63,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关。
-- 填写格式：默认 1；0、false、no、off 关闭
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -72,6 +72,13 @@
 - 敏感：否
 - 获取或设置：填写青龙现有 sendNotify.js 所在目录；未设置时查找青龙标准脚本目录。
 - 填写格式：本地目录路径，仅用于可选通知
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -83,7 +90,7 @@ LONG_FOR_TOKEN 每个非空行一个账号，逐个独立处理；任一账号�
 
 ## 验证与兼容性
 
-SHA-256 `3e5f8a2094658a9160a4b0942e65e762a691536d7b39c3d9e89b6a28590cefae`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a4edb286cd8742e3`。
+SHA-256 `aca5bccde82f74b8b8192a1338f576a6ae71eea9bd841a42ef2fe100c01fccaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a4edb286cd8742e3`。
 
 ## 副作用与风险
 

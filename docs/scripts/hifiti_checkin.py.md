@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hifiti_checkin.py`
 - 青龙命令：`python3 scripts/hifiti_checkin.py`
 - 建议 Cron：`14 1 * * *`
-- 发布哈希：`b9bb7ebb39283dcb8723c0ed14cc184baae55d405109dc99f3ce1c505a9e5a5e`
+- 发布哈希：`56e43899706864cd1dd2d3cb74a839806952fdeb448af8449043dd10bf11d579`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -65,8 +65,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙中默认启用通知，沿用面板 notify.py 或 sendNotify.js 配置。
-- 填写格式：默认 1；0、false、no、off 关闭。通知不可用或失败不改变业务退出码。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -74,6 +74,13 @@
 - 敏感：否
 - 获取或设置：若面板通知模块不在默认脚本目录，可设置其所在目录；独立运行无需配置。
 - 填写格式：包含 notify.py 或 sendNotify.js 的目录路径，仅用于可选青龙通知。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -85,7 +92,7 @@ HiFiTi_COOKIE 和 HIFIHI_COOKIE 各自每个非空行一个账号，账号独立
 
 ## 验证与兼容性
 
-SHA-256 `b9bb7ebb39283dcb8723c0ed14cc184baae55d405109dc99f3ce1c505a9e5a5e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
+SHA-256 `56e43899706864cd1dd2d3cb74a839806952fdeb448af8449043dd10bf11d579`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
 
 ## 副作用与风险
 

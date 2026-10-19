@@ -26,6 +26,24 @@ TY_DRAW_SIGNIN=1：签到后抽取签到奖励；TY_DRAW_PHOTOS=1：抽取相册
 迁移为 TY_ACCOUNTS 每行用户名|密码；合并后沿用规范任务每日16:01，无需重复任务。
 QINGLONG_NOTIFY=0 可关闭通知；可用 QINGLONG_NOTIFY_DIR 指定青龙通知目录。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('70f2505a78eb7276', 'scripts/ty_netdisk_checkin.py', 'ty_netdisk_checkin.py', 'ty_netdisk_checkin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import os
 import re
 import sys

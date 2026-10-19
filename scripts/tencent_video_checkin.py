@@ -29,11 +29,29 @@ TENCENT_VIDEO_COOKIES：每个非空行一个完整 Cookie；支持 # 开头的�
 建议保留 vqq_vuserid、vqq_appid、vdevice_qimei36、ip 等原始字段，不伪造。
 Cookie 内以分号分隔字段，仅按第一个等号拆分字段，值中的等号原样保留。
 TENCENT_VIDEO_DRY_RUN=1：验证配置并预演四项任务，禁止所有网络与外部通知。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭所有通知。
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭所有通知。
 青龙通知不可用时兼容 PUSHPLUS_TOKEN、SENDKEY，均为可选敏感凭据。
 预演时仍向青龙通知函数提供脱敏总结，但阻断网络和子进程发送。
 任何账号的任一步骤失败均非零退出；通知失败不改变业务退出码。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('79a75a8c4715aa96', 'scripts/tencent_video_checkin.py', 'tencent_video_checkin.py', 'tencent_video_checkin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 import importlib.util
 import json

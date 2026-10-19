@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_opposhop.js`
 - 青龙命令：`node scripts/sudojia_opposhop.js`
 - 建议 Cron：`12 0 * * *`
-- 发布哈希：`e9d59a758346682c273928baaa7184e0cd9ebc2997029e7772f847a6f0cbc953`
+- 发布哈希：`8b224ed15acf8bc989aa71aab2423aee439fe7481991031ba5b1ff4b9f61d4ab`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -58,8 +58,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：默认启用青龙通知；设为 0、false、no 或 off 可关闭。
-- 填写格式：默认 1
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -67,6 +67,13 @@
 - 敏感：否
 - 获取或设置：可选：填写青龙 sendNotify.js 所在目录；未设置时检查 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：本地目录绝对路径
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -78,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e9d59a758346682c273928baaa7184e0cd9ebc2997029e7772f847a6f0cbc953`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/11bf36237211e761`。
+SHA-256 `8b224ed15acf8bc989aa71aab2423aee439fe7481991031ba5b1ff4b9f61d4ab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/11bf36237211e761`。
 
 ## 副作用与风险
 

@@ -10,10 +10,26 @@
  * 每个非空行一个账号，不使用 & 或 @ 分隔。不要公开凭据。
  * SHYP_DRY_RUN=1 完全断网预演。Node.js >=18，无第三方业务依赖。
  * SHYP_ENABLE_FAVOR / SHYP_ENABLE_COMMENT / SHYP_ENABLE_SHARE=1 显式开启对应动作。
- * QINGLONG_NOTIFY 默认开启；QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态；QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  * 不自动兑换商品，不下载或安装任何程序。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["b9c2b0f38de689f1", "scripts/sudojia_shmedia.js", "sudojia_shmedia.js", "sudojia_shmedia"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

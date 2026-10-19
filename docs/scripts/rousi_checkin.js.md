@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/rousi_checkin.js`
 - 青龙命令：`node scripts/rousi_checkin.js`
 - 建议 Cron：`37 0 * * *`
-- 发布哈希：`6285b7a23281fb2ce99837ed20e2f312acac74e55f4e241240e115a44971cb3a`
+- 发布哈希：`d195f93453cc7ffa05757861c03a397201d1cd647296b6767f83164c8545bf81`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -625,8 +625,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：在青龙环境变量中自行设置通知开关。
-- 填写格式：默认 1；0、false、no、off 关闭青龙与 PushPlus 通知。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -656,6 +656,13 @@
 - 获取或设置：根据自己的 PushPlus 推送渠道设置。
 - 填写格式：默认 wechat；兼容 pushplusvip、wxgo、qywxgo、email、feishu、dingtalk、bark，其余值按上游使用 send。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -666,7 +673,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6285b7a23281fb2ce99837ed20e2f312acac74e55f4e241240e115a44971cb3a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c5c6df4d8a81a7f`。
+SHA-256 `d195f93453cc7ffa05757861c03a397201d1cd647296b6767f83164c8545bf81`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c5c6df4d8a81a7f`。
 
 ## 副作用与风险
 

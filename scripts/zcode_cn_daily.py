@@ -33,12 +33,30 @@ ZCODE_CAPTCHA_PARAM：可选全局验证码，仅补齐账号未填写的值，�
 ZCODE_ACTIVATION：默认 0；设 1 显式补报 app_launch/app_daily_active，可能影响领取资格。
 --preview：只读预览（绝不上报事件或领取）；--only N：仅运行第 N 个账号；
 --no-notify：禁用通知；ZCODE_CN_DRY_RUN=1：完全断网，通知仅模拟，不验证真实账号。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭。自动发现青龙 notify.py，
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。自动发现青龙 notify.py，
 可用 QINGLONG_NOTIFY_DIR 指定目录；通知失败不改变业务退出码。
 原推送参数 PUSHPLUS_TOKEN/BARK_URL/WECOM_WEBHOOK/DINGTALK_WEBHOOK/
 DINGTALK_SECRET 保留，青龙通知不可用时尝试。不得配置非 HTTPS 推送地址。
 不自动登录、不安装软件、不发布文本、不重试领取 POST，以避免重复副作用。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('a0a7b04503bfb900', 'scripts/zcode_cn_daily.py', 'zcode_cn_daily.py', 'zcode_cn_daily')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 # 随任务提供的源码没有额外版权声明；保留来源归属及 MIT 许可。
 # 
 # MIT License

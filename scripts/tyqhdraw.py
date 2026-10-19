@@ -16,9 +16,27 @@ TYQH_DRAW_LIMIT 可设为 1..10。开启前请在官方活动页了解当前兑�
 滑块使用本脚本的本地图像匹配（Pillow、numpy），不上传图片至第三方。
 旧 ocr_url 无需设置；不再依赖 OCR 容器、服务或任何安装引导程序。
 TYQH_DRY_RUN=1 完全断网，包括模拟通知；预演成功不表示业务成功。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭。支持青龙 notify.py，
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。支持青龙 notify.py，
 QINGLONG_NOTIFY_DIR 可选指定其所在目录；通知故障不改变业务退出码。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('8ccef1e6eb2d7404', 'scripts/tyqhdraw.py', 'tyqhdraw.py', 'tyqhdraw')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import base64
 import datetime
 import hashlib

@@ -9,7 +9,7 @@
  * 登录 https://oshwhub.com/sign_in，在浏览器开发者工具网络面板中，
  * 从 oshwhub.com 已登录请求复制完整 Cookie 到 JLC_COOKIE，每个非空行一个账号。
  * 不以 & 或 @ 分隔账号。JLC_YJ_DRY_RUN=1 完全离线预演。
- * QINGLONG_NOTIFY 默认开启；0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定通知模块目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定通知模块目录。
  * 默认 JLC_TASKS=oshwhub，保留开源平台身份、签到、积分和 44 5 * * * 调度。
  * JLC_TASKS=mapp：下单助手，原调度 30 6 * * *；all：依次执行两套流程。
  * 可在青龙为同一文件设置两条任务，分别注入上述开关，保留各自调度。
@@ -39,6 +39,22 @@
  * 许可：GPL-3.0（保留上述两个来源的版权与归属）。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["38602005c4e13646", "scripts/sudojia_jlc_yj.js", "sudojia_jlc_yj.js", "sudojia_jlc_yj"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

@@ -1,6 +1,22 @@
 // name: 什么值得买签到
 // cron: 58 0 * * *
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["621df252c315f2d1", "scripts/smzdm_checkin.js", "smzdm_checkin.js", "smzdm_checkin"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2023 Hex
 // Source: hex-ci/smzdm_script, smzdm_checkin.js (MIT).

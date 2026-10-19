@@ -47,9 +47,27 @@ AUTOCLAW_INTL_DRY_RUN=1 也启用全任务断网预演。
 默认不落盘凭据；如需保存续期结果，显式设置 AUTOCLAW_CN_STORE_FILE 为受保护的
 私有绝对路径，文件以 0600 原子写入，必须排除出公开订阅/仓库。续期仅刷新本次内存。
 AUTOCLAW_CN_DRY_RUN=1 完全断网预演，既不读写缓存也不发送真实通知。
-QINGLONG_NOTIFY 默认 1；支持青龙 notify.py/sendNotify.js，并兼容原推送变量。
+QINGLONG_NOTIFY 未设置时按上架状态；支持青龙 notify.py/sendNotify.js，并兼容原推送变量。
 无需私有仓库或桌面端程序参与执行；仅使用 Python 标准库，无额外运行依赖。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('3813c988ddc0c592', 'scripts/autoclaw_cn_daily.py', 'autoclaw_cn_daily.py', 'autoclaw_cn_daily')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import argparse
 import base64
 import hashlib

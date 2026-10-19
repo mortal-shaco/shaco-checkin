@@ -26,6 +26,24 @@ mobile 兼容但不使用、不输出。禁止共享默认设备或伪造定位�
 未取得商品/库存或业务成功码均视为失败。申购成功不代表中签或购买成功。
 登录参考 imaotai_login.py 为交互配置工具，不合并短信发送和账号文件写入。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('ef664085f75113bd', 'scripts/imaotai.py', 'imaotai.py', 'imaotai')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import base64
 import datetime as dt
 import importlib.util

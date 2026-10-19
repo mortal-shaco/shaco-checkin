@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ikuuu_checkin.py`
 - 青龙命令：`python3 scripts/ikuuu_checkin.py`
 - 建议 Cron：`15 1 * * *`
-- 发布哈希：`1d7b8177e210f42f0bd15e8afa0707ed9e61f69770f11b7cae6011401d8c5e40`
+- 发布哈希：`04cf0579328d95ab6644bc7c8580bc358d811e3e2f4eae450203f8d057bb239f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,8 +90,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：使用青龙现有通知配置；可通过此总开关同时控制青龙与 PushPlus 通知。
-- 填写格式：默认 1；0/false/no/off 关闭；预演仅展示通知摘要。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -107,6 +107,13 @@
 - 获取或设置：可选，在 PushPlus 官网个人账号获取推送 Token；无需配置即可使用青龙现有通知。
 - 填写格式：单个通知 Token；仅向 HTTPS PushPlus 通知接口发送，不进入日志；受 QINGLONG_NOTIFY 控制，预演不投递。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -117,7 +124,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1d7b8177e210f42f0bd15e8afa0707ed9e61f69770f11b7cae6011401d8c5e40`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
+SHA-256 `04cf0579328d95ab6644bc7c8580bc358d811e3e2f4eae450203f8d057bb239f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 
 ## 副作用与风险
 

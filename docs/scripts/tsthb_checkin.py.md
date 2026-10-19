@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tsthb_checkin.py`
 - 青龙命令：`python3 scripts/tsthb_checkin.py`
 - 建议 Cron：`19 1 * * *`
-- 发布哈希：`6c0cc5f81969e34701241ae0391a8d1672dc781f350de74e833eb7458b6ad4c5`
+- 发布哈希：`1b1dbd16d097b4946dbfb0c1ce4fdbab78ffa801a323f2f0f78bec56d1d03aed`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -58,8 +58,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：自行设置青龙通知开关；默认 1。通知不可用不影响业务退出码。
-- 填写格式：0、false、no、off 关闭，忽略大小写。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -67,6 +67,13 @@
 - 敏感：否
 - 获取或设置：可选，填写已有青龙 notify.py 所在目录；未配置时尝试导入 notify，并查找 /ql/data/scripts 和 /ql/scripts。签到本身不依赖通知文件。
 - 填写格式：可选目录路径；不会下载安装通知组件。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -78,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6c0cc5f81969e34701241ae0391a8d1672dc781f350de74e833eb7458b6ad4c5`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
+SHA-256 `1b1dbd16d097b4946dbfb0c1ce4fdbab78ffa801a323f2f0f78bec56d1d03aed`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 
 ## 副作用与风险
 

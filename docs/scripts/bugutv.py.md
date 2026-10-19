@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bugutv.py`
 - 青龙命令：`python3 scripts/bugutv.py`
 - 建议 Cron：`12 1 * * *`
-- 发布哈希：`9746631e907d1b977bcce3d1c0e5a70dfb38241580d1cf984ac4129cc487aa96`
+- 发布哈希：`7c64cebce709a42dedbf4e7c947b320cd5dd8cb645aae4e80f649b9600ef76d9`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -51,8 +51,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关，默认调用青龙notify.py发送脱敏总结。通知失败不影响业务退出码；离线预演也调用本地通知模块，但禁止其网络连接。
-- 填写格式：默认1；0、false、no、off关闭全部通知，包括可选Server酱。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -75,6 +75,13 @@
 - 获取或设置：原脚本配置名称的可选环境兼容输入，迁移原有Server酱SendKey时使用；建议改用BUGUTV_SERVER_SEND_KEY。
 - 填写格式：单个SendKey，仅在未设置BUGUTV_SERVER_SEND_KEY时使用。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -85,7 +92,7 @@ BUGUTV_ACCOUNTS每个非空行一个用户名|密码，各账号使用独立Cook
 
 ## 验证与兼容性
 
-SHA-256 `9746631e907d1b977bcce3d1c0e5a70dfb38241580d1cf984ac4129cc487aa96`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ca80eead6ecc78a`。
+SHA-256 `7c64cebce709a42dedbf4e7c947b320cd5dd8cb645aae4e80f649b9600ef76d9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ca80eead6ecc78a`。
 
 ## 副作用与风险
 

@@ -43,8 +43,26 @@ herb-game 需 JYJ_HERB_SCORE 填写本人本次实际游戏成绩，不生成成
 beat 记录脚本实际经过的秒数，不伪造拍一拍成绩。turntable 最多3次，
 herb-game 每轮1次；任何业务失败均失败闭合，不推断为已完成。
 JYJ_DRY_RUN=1 完全断网，仅验证参数和计划；不会验证真实业务。
-QINGLONG_NOTIFY 默认1，设0关闭；预演只调用本地通知适配器且阻断网络。
+QINGLONG_NOTIFY 未设置时按上架状态，设0关闭；预演只调用本地通知适配器且阻断网络。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('d484be6cd2a617db', 'scripts/jyj.py', 'jyj.py', 'jyj')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import base64
 import datetime
 import importlib.util

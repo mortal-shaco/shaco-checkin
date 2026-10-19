@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/cg163_autocheckin.py`
 - 青龙命令：`python3 scripts/cg163_autocheckin.py`
 - 建议 Cron：`34 1 * * *`
-- 发布哈希：`4f34abf0d80470e2ac15a5068c50c66d44dc5f9a151633f1c8e992324f958816`
+- 发布哈希：`ca46c5f6cb35d1643dd3a27b91fe4508aae86dc92d84b82b25898a3ff7490ce5`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -57,8 +57,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙环境变量中配置全局通知开关，默认启用。
-- 填写格式：0、false、no、off 关闭青龙及 PushPlus 通知；其他值启用。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -66,6 +66,13 @@
 - 敏感：否
 - 获取或设置：可选，填写本机青龙 notify.py 所在目录；未配置时自动查找可导入的 notify 及青龙标准目录。
 - 填写格式：本地目录路径；仅用于可选通知，不是业务依赖。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -77,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4f34abf0d80470e2ac15a5068c50c66d44dc5f9a151633f1c8e992324f958816`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/97b71fc6fc5c5c72`。
+SHA-256 `ca46c5f6cb35d1643dd3a27b91fe4508aae86dc92d84b82b25898a3ff7490ce5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/97b71fc6fc5c5c72`。
 
 ## 副作用与风险
 

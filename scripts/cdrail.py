@@ -13,8 +13,26 @@ CDRAIL_DATA 每个非空行一个 JSON 对象（推荐）或 URL 编码查询字
 账号仅以换行分隔，@ 是凭据内容。CDRAIL_DRY_RUN=1 完全断网预演。
 TIMEOUT 默认15秒；RANDOM_SIGNIN 默认true；MAX_RANDOM_DELAY 默认3600秒。
 MAX_RETRIES 不再重放具有签到副作用的请求，PRIVACY_MODE 不再允许泄露凭据。
-QINGLONG_NOTIFY 默认1；可选 QINGLONG_NOTIFY_DIR 指向青龙通知模块目录。
+QINGLONG_NOTIFY 未设置时按上架状态；可选 QINGLONG_NOTIFY_DIR 指向青龙通知模块目录。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('7389d13167df31b6', 'scripts/cdrail.py', 'cdrail.py', 'cdrail')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 # MIT License
 # Attribution: agluo/ql-script-hub contributors
 # Permission is hereby granted, free of charge, to any person obtaining a copy

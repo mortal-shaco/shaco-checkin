@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/smzdm_checkin.js`
 - 青龙命令：`node scripts/smzdm_checkin.js`
 - 建议 Cron：`58 0 * * *`
-- 发布哈希：`9bc9b351c3d5bb40e8e9af0d76c661d6a7e1b77252e8e1c4ab30a40237deb93e`
+- 发布哈希：`91cd8c77fdb589abd96ea3f32532249724e55bcb2ff7fbdec8ffd8e218b7df08`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -126,8 +126,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关；未配置时尝试青龙通知，失败后保留既有推送回退。
-- 填写格式：默认 1；0、false、no、off 关闭。离线预演仅生成脱敏通知摘要。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -150,6 +150,13 @@
 - 获取或设置：在本人 Server酱账户取得 SendKey，仅用于前两种通知不可用或失败时回退。
 - 填写格式：可选推送密钥，受 QINGLONG_NOTIFY 控制。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -160,7 +167,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9bc9b351c3d5bb40e8e9af0d76c661d6a7e1b77252e8e1c4ab30a40237deb93e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
+SHA-256 `91cd8c77fdb589abd96ea3f32532249724e55bcb2ff7fbdec8ffd8e218b7df08`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/comicai_ai_cookie.py`
 - 青龙命令：`python3 scripts/comicai_ai_cookie.py`
 - 建议 Cron：`46 1 * * *`
-- 发布哈希：`7bc9effea735009d6ba475228b6558b43353fe9cf6f56cfb9edbdd24b6a58f0e`
+- 发布哈希：`2b771a12559cfcb29ddf5d6a5bcc30a20a27a4bc30ef3600db6145f3f05fd0ed`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -58,8 +58,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：在青龙中自行设置全局通知开关，默认启用。
-- 填写格式：0、false、no、off 关闭通知，默认 1；通知失败不改变业务退出码。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -67,6 +67,13 @@
 - 敏感：否
 - 获取或设置：如已有青龙 notify.py 不在常规目录，可填写其所在目录，无需安装额外应用。
 - 填写格式：本地目录路径；依次尝试导入 notify、指定目录及 /ql/data/scripts、/ql/scripts 的 notify.py。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -78,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7bc9effea735009d6ba475228b6558b43353fe9cf6f56cfb9edbdd24b6a58f0e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
+SHA-256 `2b771a12559cfcb29ddf5d6a5bcc30a20a27a4bc30ef3600db6145f3f05fd0ed`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
 
 ## 副作用与风险
 

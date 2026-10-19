@@ -17,10 +17,26 @@ cron: 36 7,13 * * *
 // 兼容原 JSON 数组或每行 {"token": "完整 Cookie"}，不要用 @ 或 & 分隔账号。
 // aliyunWeb_interact=true 显式开启随机公开互动；aliyunWeb_video/stock 默认 false。
 // aliyunWeb_time 默认 12，时区默认 Asia/Shanghai；原场景参数仅提示手动完成。
-// ALIYUN_WEB_DRY_RUN=1 完全断网预演；QINGLONG_NOTIFY 默认 1，off 可关闭。
+// ALIYUN_WEB_DRY_RUN=1 完全断网预演；QINGLONG_NOTIFY 未设置时按上架状态，off 可关闭。
 // 正式运行安装公共依赖 cheerio@1.0.0；业务实现均包含于本文件，无需私有仓库。
 // 原声明引用文件未随输入提供；本文保留上游全部可见作者、来源和许可说明。
 "use strict";
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["5c73bf2cb192e0d0", "scripts/aliyun_web.js", "aliyun_web.js", "aliyun_web"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');

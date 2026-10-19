@@ -17,7 +17,7 @@ NETEASE_API_BASE：显式配置已信任、兼容网易云 Node.js API 接口的
 NETEASE_SCROBBLE=1 才提交模拟听歌记录（最多 300 首）；默认关闭，避免
 未经选择修改播放历史。接口接受记录不代表实际听歌、升级或经验已到账。
 NETEASE_DRY_RUN=1 完全断网预演，包括通知和 Bark 都只模拟，不验证账号。
-QINGLONG_NOTIFY 默认开启；设为 0/false/no/off 关闭。可选
+QINGLONG_NOTIFY 未设置时按上架状态；设为 0/false/no/off 关闭。可选
 QINGLONG_NOTIFY_DIR 指向青龙通知模块所在目录，BARK_URL 保留兼容。
 日志仅写标准输出，不创建上游的账号昵称日志文件。
 兼容 NETEASE_COOKIES（设置时优先于 NETEASE_COOKIE）；每行完整 Cookie，
@@ -54,6 +54,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('a8a311f3f5aaa2e6', 'scripts/netease_task.py', 'netease_task.py', 'netease_task')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import base64
 import datetime
 import importlib.util

@@ -8,10 +8,26 @@
  * PANG_GE_TOKEN：打开微信胖哥俩肉蟹煲小程序并登录，在本人授权抓包中
  * 获取 https://saash5.namek.com.cn 请求头 token。每个非空行一个账号，不用 & 分隔。
  * PANG_GE_DRY_RUN=1：仅本地预演，通知也模拟，绝不联网。
- * QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭。QINGLONG_NOTIFY_DIR 可指定通知模块目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。QINGLONG_NOTIFY_DIR 可指定通知模块目录。
  * Node.js >=18；无需安装依赖。不自动更新，不输出手机号及原始响应。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["75d3da7186c8c51b", "scripts/sudojia_pangge.js", "sudojia_pangge.js", "sudojia_pangge"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const crypto = require('node:crypto');
 const fs = require('node:fs');

@@ -8,7 +8,7 @@ cron: 0 15 9 * * *
 参数：DAILYNEWSCN_LIST 为必填执行标记，填写 1 即可，无需注册、Cookie 或 Token。
 兼容旧变量中的非空值；按非空行读取，但公开日报只获取一次，不向接口发送这些值。
 DAILYNEWSCN_DRY_RUN=1：完全断网预演，包括模拟通知，不加载通知模块。
-QINGLONG_NOTIFY 默认 1，可用 0、false、no、off 禁用。
+QINGLONG_NOTIFY 未设置时按上架状态，可用 0、false、no、off 禁用。
 QINGLONG_NOTIFY_DIR 可选：青龙 sendNotify.js 所在目录。
 DAILYNEWSCN_TASK 默认 dailynewscn；填写 bdhot 仅获取百度热搜榜；填写 chouq 仅随机抽签。
 日报保持 cron: 0 15 9 * * *；百度榜另建青龙任务指向同一文件，
@@ -112,6 +112,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["f3d5ae90c3c979bf", "scripts/dailynewscn.js", "dailynewscn.js", "dailynewscn"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const http = require('node:http');
 const fs = require('node:fs');

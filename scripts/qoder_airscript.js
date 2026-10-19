@@ -52,10 +52,26 @@ QODER_ONLY 或 --only 指定从 1 开始的账号序号；--no-notify 关闭全�
 取号脚本是 Windows 参数获取工具，02_checkin 是依赖入口，不另行发布。
 上次失败记录只有执行器 Codex exited 1，没有导入堆栈；本次直接使用 Node
 标准库，生成 schemaVersion 1 契约并实测语法及无网络执行，避免依赖工作流。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭所有通知。
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭所有通知。
 QINGLONG_NOTIFY_DIR 可指定含 sendNotify.js 的青龙通知目录。
 */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["e034e75509550071", "scripts/qoder_airscript.js", "qoder_airscript.js", "qoder_airscript"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const fs = require('node:fs');
 const path = require('node:path');
 const https = require('node:https');

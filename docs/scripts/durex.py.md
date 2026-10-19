@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/durex.py`
 - 青龙命令：`python3 scripts/durex.py`
 - 建议 Cron：`52 0 * * *`
-- 发布哈希：`c28ed6d55ebc66f380cc5690cd463de069e9e73594fb0af0923f0ff24a6d58f1`
+- 发布哈希：`315cf86ea2ad52be595ffa63f07dda4ebb29f90fa87d8235ab1526255016d4b1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -71,8 +71,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关；通知模块由青龙提供。
-- 填写格式：默认 1；0、false、no、off 关闭；断网预演仅生成本地通知预览。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -80,6 +80,13 @@
 - 敏感：否
 - 获取或设置：填写已安装青龙 notify.py 所在目录；不需要下载其他仓库。
 - 填写格式：可选目录路径；否则查找可导入的 notify 和 /ql/data/scripts、/ql/scripts。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -91,7 +98,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c28ed6d55ebc66f380cc5690cd463de069e9e73594fb0af0923f0ff24a6d58f1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
+SHA-256 `315cf86ea2ad52be595ffa63f07dda4ebb29f90fa87d8235ab1526255016d4b1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 
 ## 副作用与风险
 

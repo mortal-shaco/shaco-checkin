@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ssl_cert_check.py`
 - 青龙命令：`python3 scripts/ssl_cert_check.py`
 - 建议 Cron：`10 2 * * *`
-- 发布哈希：`795836a5ba135ad4e7d25e11a1556adf23cc13d8fe2433393ac8ef28f29da20a`
+- 发布哈希：`0256063951f1e150c29347fcb889d3eb3d5203dde6adc687bb87da4eed258e6c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,8 +86,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知全局开关，默认1；断网预演只生成摘要并记录通知预览。
-- 填写格式：0、false、no、off 关闭，其他值启用
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -95,6 +95,13 @@
 - 敏感：否
 - 获取或设置：可选：填写青龙已有 notify.py 所在目录；否则自动发现标准青龙位置或可导入的 notify 模块。
 - 填写格式：本地通知目录；不影响独立业务运行，通知失败不更改业务退出码
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -106,7 +113,7 @@ SSL_ACCOUNTS 每个非空行一个完整 JSON 账号对象，认证与区域配�
 
 ## 验证与兼容性
 
-SHA-256 `795836a5ba135ad4e7d25e11a1556adf23cc13d8fe2433393ac8ef28f29da20a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cf6fb60f0d69e9ed`。
+SHA-256 `0256063951f1e150c29347fcb889d3eb3d5203dde6adc687bb87da4eed258e6c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cf6fb60f0d69e9ed`。
 
 ## 副作用与风险
 

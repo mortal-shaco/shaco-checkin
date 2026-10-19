@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/supertopicsign.py`
 - 青龙命令：`python3 scripts/supertopicsign.py`
 - 建议 Cron：`41 1 * * *`
-- 发布哈希：`bfd409817ecf5cfeea14c7fdd06c92d48888a00499e2e1488c0e3acd019f8554`
+- 发布哈希：`3a3132f8fc7624512907172a1f1816507f4c3cb6f59de4fa629ea0ba36dc7242`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -66,8 +66,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知全局开关；实网运行在所有结果后调用可用的 notify.py/send，通知失败保留业务退出码。
-- 填写格式：默认 1；0、false、no、off 为关闭
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -75,6 +75,13 @@
 - 敏感：否
 - 获取或设置：可选填写青龙 notify.py 所在目录；也自动检查 Python 导入路径及 /ql/data/scripts、/ql/scripts。
 - 填写格式：本地目录路径
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -86,7 +93,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `bfd409817ecf5cfeea14c7fdd06c92d48888a00499e2e1488c0e3acd019f8554`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5e811acce266569`。
+SHA-256 `3a3132f8fc7624512907172a1f1816507f4c3cb6f59de4fa629ea0ba36dc7242`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5e811acce266569`。
 
 ## 副作用与风险
 

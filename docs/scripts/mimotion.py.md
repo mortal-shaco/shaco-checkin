@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/mimotion.py`
 - 青龙命令：`python3 scripts/mimotion.py`
 - 建议 Cron：`46 0 * * *`
-- 发布哈希：`065b1c6cd7be4d60da5332ca5d38de53830d899000d656717b839f243efaac3e`
+- 发布哈希：`1f5f1e3c53247e4534117c51368c9be13d52b7093b18addfc410e23f5b6fed22`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -68,8 +68,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知总开关；默认调用 notify.py，缺失、超时或发送失败仅记录，不覆盖业务退出码。
-- 填写格式：默认 1；0、false、no、off 关闭。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -77,6 +77,13 @@
 - 敏感：否
 - 获取或设置：可选青龙通知模块目录；自动优先导入 notify，再查该目录以及 /ql/data/scripts、/ql/scripts。
 - 填写格式：包含 notify.py 的本地目录；不是业务脚本依赖。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -88,7 +95,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `065b1c6cd7be4d60da5332ca5d38de53830d899000d656717b839f243efaac3e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
+SHA-256 `1f5f1e3c53247e4534117c51368c9be13d52b7093b18addfc410e23f5b6fed22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
 
 ## 副作用与风险
 

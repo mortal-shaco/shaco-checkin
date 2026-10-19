@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_duokan.py`
 - 青龙命令：`python3 scripts/ck_duokan.py`
 - 建议 Cron：`5 2 * * *`
-- 发布哈希：`bbe67e041d49f4c75dc3d606a64f088671bda7a5d677f737c9d1a014b6efbeea`
+- 发布哈希：`a32e3645538e1cac860689848c7ffa18b475e314e36e5671ff39bec4b2377f57`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,8 +79,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：默认调用青龙 notify.py 发送脱敏总结；设为 0、false、no 或 off 关闭。预演时只模拟通知以保证完全断网。模块不可用或失败时保留业务退出码。
-- 填写格式：默认 1；0、false、no、off 为关闭值，不区分大小写。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -88,6 +88,13 @@
 - 敏感：否
 - 获取或设置：可选：填写青龙 notify.py 所在目录；还会查找可导入的 notify 模块、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。只用于通知，业务逻辑不依赖外部仓库。
 - 填写格式：本机通知模块目录路径。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -99,7 +106,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `bbe67e041d49f4c75dc3d606a64f088671bda7a5d677f737c9d1a014b6efbeea`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c722e904dffeaf49`。
+SHA-256 `a32e3645538e1cac860689848c7ffa18b475e314e36e5671ff39bec4b2377f57`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c722e904dffeaf49`。
 
 ## 副作用与风险
 

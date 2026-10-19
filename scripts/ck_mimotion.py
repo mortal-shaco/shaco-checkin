@@ -35,6 +35,24 @@ min_step/max_step 保持原默认值 10000/19999。密码只由 JSON 解析，�
 上游没有 cron；此版本建议每日 20:00（按青龙本地时区），可自行调整。
 MIMOTION_DRY_RUN=1 完全断网，仅校验参数及构造请求，通知仅预览。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('04e92730d2cbeb73', 'scripts/ck_mimotion.py', 'ck_mimotion.py', 'ck_mimotion')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import contextlib
 import datetime as dt
 import importlib.util

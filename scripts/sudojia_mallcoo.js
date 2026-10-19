@@ -10,9 +10,25 @@
  * MALLCOO_TOKEN：登录欣都龙城微信小程序，抓取 https://m.mallcoo.cn
  * 请求 Body 中 Header.Token 的值；每个非空行一个账号，不使用 & 或 @ 分隔。
  * MALLCOO_DRY_RUN=1：完全断网预演，包括通知仅预演。
- * QINGLONG_NOTIFY 默认开启；0/false/no/off 关闭，可用 QINGLONG_NOTIFY_DIR 指定通知模块目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭，可用 QINGLONG_NOTIFY_DIR 指定通知模块目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["7817ed50f25e649b", "scripts/sudojia_mallcoo.js", "sudojia_mallcoo.js", "sudojia_mallcoo"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

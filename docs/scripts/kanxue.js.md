@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kanxue.js`
 - 青龙命令：`node scripts/kanxue.js`
 - 建议 Cron：`0 35 11 * * *`
-- 发布哈希：`e56f8983e110ca4e6d1af661b968a593a0b896fb9befb4f38f02f7ee95924466`
+- 发布哈希：`0470702ce86f15e65eb22335a8c7920a4039a8912e748c7aad95f9808baee33a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -43,8 +43,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：使用青龙已有通知配置；需要关闭通知时手动设置本变量。
-- 填写格式：默认 1；0/false/no/off 关闭，不区分大小写。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -52,6 +52,13 @@
 - 敏感：否
 - 获取或设置：可选：填写青龙 sendNotify.js 所在目录；默认依次查找 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：目录路径；通知组件为可选青龙集成，不影响签到独立运行。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -63,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e56f8983e110ca4e6d1af661b968a593a0b896fb9befb4f38f02f7ee95924466`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ada2bb484eeceac4`。
+SHA-256 `0470702ce86f15e65eb22335a8c7920a4039a8912e748c7aad95f9808baee33a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ada2bb484eeceac4`。
 
 ## 副作用与风险
 

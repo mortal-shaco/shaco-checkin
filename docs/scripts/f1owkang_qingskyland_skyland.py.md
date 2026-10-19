@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/f1owkang_qingskyland_skyland.py`
 - 青龙命令：`python3 scripts/f1owkang_qingskyland_skyland.py`
 - 建议 Cron：`22 2 * * *`
-- 发布哈希：`19dabc96db951ee468f3881ccbc3227ce3e45f546b224a933aaa66db7015a52d`
+- 发布哈希：`f316fbd751fa06db050cd91b78f6fb1f6d7e2c351dc29cdcc22e9e78739b92d7`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,8 +78,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关；离线预演只生成脱敏通知正文，禁止调用可能联网的通知模块。
-- 填写格式：默认 1；0/false/no/off 关闭。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -95,6 +95,13 @@
 - 获取或设置：仅为旧配置兼容保留；任意账号失败始终非零退出，无需设置此变量。
 - 填写格式：旧版 on/off 输入不再允许失败返回零。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -105,7 +112,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `19dabc96db951ee468f3881ccbc3227ce3e45f546b224a933aaa66db7015a52d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e02ed814df52c998`。
+SHA-256 `f316fbd751fa06db050cd91b78f6fb1f6d7e2c351dc29cdcc22e9e78739b92d7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e02ed814df52c998`。
 
 ## 副作用与风险
 

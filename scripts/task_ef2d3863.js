@@ -16,11 +16,27 @@ SPDX-License-Identifier: Apache-2.0
 不要将凭据截图、日志或浏览器存储内容公开。旧变量名 refreshToken 保持兼容。
 不再读取青龙管理 API 或自动改写凭据；服务端轮换后须自行更新凭据。
 ALIYUNDRIVE_DRY_RUN=1：完全断网预演（含通知预演），不验证真实账号。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭。QINGLONG_NOTIFY_DIR 指向
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。QINGLONG_NOTIFY_DIR 指向
 公开青龙通知模块 sendNotify.js 所在目录；通知失败不改变业务退出码。
 */
 'use strict';
 
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["ef2d3863a5184a74", "scripts/task_ef2d3863.js", "task_ef2d3863.js", "task_ef2d3863"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');

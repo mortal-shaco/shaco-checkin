@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tencent_video_checkin.py`
 - 青龙命令：`python3 scripts/tencent_video_checkin.py`
 - 建议 Cron：`11 1 * * *`
-- 发布哈希：`2e987ab42af5244ba771e3fb0b97bc7b174579c025d0acad0a695e29d727843a`
+- 发布哈希：`6f4bbdc5f8521d7a47f7383978ea3578ed9677baf872e24c296aac51e825ec42`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -51,8 +51,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：按需在青龙环境变量中设置，控制全部通知渠道。
-- 填写格式：默认 1；0/false/no/off 关闭。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -75,6 +75,13 @@
 - 获取或设置：从 Server酱官网取得 SendKey；青龙及 PushPlus 不可用时尝试。
 - 填写格式：单个 SendKey，与账号 Cookie 分开配置。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -85,7 +92,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2e987ab42af5244ba771e3fb0b97bc7b174579c025d0acad0a695e29d727843a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
+SHA-256 `6f4bbdc5f8521d7a47f7383978ea3578ed9677baf872e24c296aac51e825ec42`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
 
 ## 副作用与风险
 

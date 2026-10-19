@@ -27,6 +27,24 @@ JSON 字符串中的特殊字符须按 JSON 规则转义；账号以换行分隔
 AIRPORT_DRY_RUN=1 完全断网预演；QINGLONG_NOTIFY=0 关闭通知。
 预演只检查配置与流程，不代表真实登录或签到成功，不发送网络通知。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('d763137ff5e4fad6', 'scripts/ck_airport.py', 'ck_airport.py', 'ck_airport')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 import html
 import http.cookiejar

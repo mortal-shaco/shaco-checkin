@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/quark_signin.py`
 - 青龙命令：`python3 scripts/quark_signin.py`
 - 建议 Cron：`15 0 * * *`
-- 发布哈希：`6ceaa556fd1a1ebaac0832bed906f60c259d321c7e0908fb89ee86f829a7496b`
+- 发布哈希：`f579c1bccda6aad0574f1796454f4f197da7ade6d2c974714b368dcaa59473ac`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -60,8 +60,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：默认使用青龙已有通知配置；自行设置为 0 可关闭。
-- 填写格式：默认 1；0/false/no/off 关闭；通知失败保留业务退出码。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -69,6 +69,13 @@
 - 敏感：否
 - 获取或设置：可选填写青龙 notify.py 所在目录；未填写时自动尝试导入 notify 及青龙标准脚本目录。
 - 填写格式：目录路径，无需配置任何业务凭据；预演不加载或调用通知模块。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -80,7 +87,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6ceaa556fd1a1ebaac0832bed906f60c259d321c7e0908fb89ee86f829a7496b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
+SHA-256 `f579c1bccda6aad0574f1796454f4f197da7ade6d2c974714b368dcaa59473ac`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
 
 ## 副作用与风险
 

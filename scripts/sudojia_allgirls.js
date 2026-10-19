@@ -9,11 +9,27 @@
  * ALL_GIRLS_TOKEN：在所有女生会员服务中心小程序登录，抓取 7.wawo.cc
  * 请求头 AccessToken 的完整值；每个非空行一个账号，不使用 & 或 @ 分隔。
  * ALL_GIRLS_DRY_RUN=1：完全断网预演，不证明凭据有效。
- * QINGLONG_NOTIFY 默认开启；0/false/no/off 关闭。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。
  * QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  * 仅签到会改变账号状态，不执行更新、安装或公开内容发布。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["e8776198aafad33e", "scripts/sudojia_allgirls.js", "sudojia_allgirls.js", "sudojia_allgirls"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

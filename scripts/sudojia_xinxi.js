@@ -19,9 +19,25 @@
  * XINXI_DRY_RUN=1 完全断网预演；XINXI_FREE_DRAW=1 启用一次免费抽奖；
  * XINXI_REWARD_TASKS=1 启用分享任务记账及商城浏览奖励（各最多两次）。
  * 随机想要商品、点赞帖子、关注和取关已移除，避免改变个人偏好和社交关系。
- * QINGLONG_NOTIFY 默认开启；QINGLONG_NOTIFY_DIR 可指定青龙通知模块目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态；QINGLONG_NOTIFY_DIR 可指定青龙通知模块目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["83f21cfa63eab18f", "scripts/sudojia_xinxi.js", "sudojia_xinxi.js", "sudojia_xinxi"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

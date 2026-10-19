@@ -15,6 +15,24 @@ Authorization 请求头值（不是整串 Cookie）。CG163_ACCOUNTS 每行一�
 CG163_DRY_RUN=1 完全断网模拟；每天 08:00 为建议时间，原源码没有 cron。
 仅明确业务成功响应计为成功；未知响应失败闭合，不打印响应正文。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('97b71fc6fc5c5c72', 'scripts/cg163_autocheckin.py', 'cg163_autocheckin.py', 'cg163_autocheckin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 import importlib
 import importlib.util

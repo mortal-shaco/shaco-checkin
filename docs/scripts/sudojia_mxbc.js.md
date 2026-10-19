@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_mxbc.js`
 - 青龙命令：`node scripts/sudojia_mxbc.js`
 - 建议 Cron：`22 1 * * *`
-- 发布哈希：`6a47d1cec2205fe5cab699b530306589ff1fdb44d10f993c569ddfc49e47d29f`
+- 发布哈希：`4020cb6cea155a8106ad14fd30bd679c3afdf25b1c6c7f46aad9ebec6cf7b3a4`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -51,8 +51,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：在青龙环境变量中设置，默认开启。
-- 填写格式：0、false、no、off（不区分大小写）关闭；其他值开启。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -60,6 +60,13 @@
 - 敏感：否
 - 获取或设置：需要自定义通知位置时，填写可信的青龙 sendNotify.js 或 notify.py 所在目录；不设置时依次查找 /ql/data/scripts、/ql/scripts，最后尝试 Python 导入 notify。
 - 填写格式：本机可信通知模块目录的路径；业务执行不依赖该目录。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -71,7 +78,7 @@ MXBC_TOKEN 每个非空行一个账号，逐个独立验证、签到和查询；
 
 ## 验证与兼容性
 
-SHA-256 `6a47d1cec2205fe5cab699b530306589ff1fdb44d10f993c569ddfc49e47d29f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8898c6203ce46def`。
+SHA-256 `4020cb6cea155a8106ad14fd30bd679c3afdf25b1c6c7f46aad9ebec6cf7b3a4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8898c6203ce46def`。
 
 ## 副作用与风险
 

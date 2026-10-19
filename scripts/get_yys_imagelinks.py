@@ -28,10 +28,28 @@ YYS_IMAGE_DIR 默认 ./yys原画；YYS_VIDEO_DIR 默认 ./yys视频。
 视频目录内 downloaded_videos.txt 保留已下载标题记录；实际文件也须通过格式检查。
 YYS_VIDEO_LIMIT 默认 0（全部未下载视频），YYS_VIDEO_INTERVAL 默认 2 秒。
 YYS_DRY_RUN=1 完全断网，不创建目录，不调用实际通知服务。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。可用 QINGLONG_NOTIFY_DIR
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。可用 QINGLONG_NOTIFY_DIR
 指定青龙自带 notify.py 目录。预演时输出脱敏通知摘要。
 上游无 cron；本维护版采用每周日 09:00，可在青龙修改。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('21c2272d2f618e0f', 'scripts/get_yys_imagelinks.py', 'get_yys_imagelinks.py', 'get_yys_imagelinks')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import hashlib
 import json

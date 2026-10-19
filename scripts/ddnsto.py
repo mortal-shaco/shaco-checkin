@@ -15,9 +15,27 @@ www.ddnsto.com 请求中的完整 Cookie（必须含 csrftoken）。先在官网
 它不是登录用户ID。不要公开 Cookie 或路由器ID。
 兼容单账号 ddns_userid + ddns_cookie；配置 DDNSTO_ACCOUNTS 时优先使用它。
 DDNSTO_DRY_RUN=1：仅校验配置和演示流程，禁止 HTTP 和通知网络连接。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭。可指定 QINGLONG_NOTIFY_DIR。
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。可指定 QINGLONG_NOTIFY_DIR。
 只请求上游 product_id=2，不支付订单，不修改服务器设置。接口变化失败闭合。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('e7b851436459bf8f', 'scripts/ddnsto.py', 'ddnsto.py', 'ddnsto')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime as dt
 import importlib.util
 import json

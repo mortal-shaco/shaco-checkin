@@ -12,10 +12,26 @@
  * 在使用的机场网页底部确认 Powered by SSPANEL；从浏览器地址栏获取站点地址，
  * 使用本人注册邮箱和登录密码。先按第一个逗号、再按第一个冒号分割，密码可含冒号、逗号、&、@。
  * SSPANEL_DRY_RUN=1：仅校验配置并模拟流程；通知也禁止联网。
- * QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。
  * QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["3ab685f53b0a5cc0", "scripts/sudojia_sspanel.js", "sudojia_sspanel.js", "sudojia_sspanel"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

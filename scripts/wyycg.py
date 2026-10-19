@@ -15,6 +15,24 @@ PushPlus 令牌；也可使用契约中的对应环境变量。推荐青龙统�
 WYYCG_DRY_RUN=1 完全断网，只检查配置与模拟流程，包括不调用通知模块。
 签到可能领取云游戏时长；不执行消费、发帖或修改账户的其他动作。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('a414f4add19cb6a5', 'scripts/wyycg.py', 'wyycg.py', 'wyycg')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 import importlib
 import importlib.util

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nte.py`
 - 青龙命令：`python3 scripts/nte.py`
 - 建议 Cron：`0 1 * * *`
-- 发布哈希：`1c2f7f45c0d41394957f7e00ec3e0f19d314df8c74a90f0c8d6a3993f907ccac`
+- 发布哈希：`8c31ee3b54f2405461352343017d1ec0bce054fce84313d3df984973ee2ad80a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -71,8 +71,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：使用青龙全局通知配置。预演仅生成脱敏摘要，不请求通知服务。
-- 填写格式：默认 1；0、false、no、off 关闭。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -80,6 +80,13 @@
 - 敏感：否
 - 获取或设置：可选：填写青龙现有通知模块目录；不可用时保留业务退出码。
 - 填写格式：包含 notify.py 的目录；未设置时尝试 import notify、/ql/data/scripts/notify.py、/ql/scripts/notify.py。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -91,7 +98,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1c2f7f45c0d41394957f7e00ec3e0f19d314df8c74a90f0c8d6a3993f907ccac`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6919295133257387`。
+SHA-256 `8c31ee3b54f2405461352343017d1ec0bce054fce84313d3df984973ee2ad80a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6919295133257387`。
 
 ## 副作用与风险
 

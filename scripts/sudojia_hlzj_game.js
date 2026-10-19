@@ -11,10 +11,26 @@
  * 每个非空行一个账号，不支持 & 或 @ 分隔。不要提供整段请求体。
  * HLZJ_DRY_RUN=1 完全断网预演（通知仅预览）；HLZJ_USE_POWER=1 开启消耗电力及宝箱。
  * HLZJ_POWER_LIMIT 默认 20，每账号每次最多 1–100 次消耗请求；达到上限仍有任务则失败。
- * QINGLONG_NOTIFY 默认 1；可选 QINGLONG_NOTIFY_DIR 指定青龙通知模块目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态；可选 QINGLONG_NOTIFY_DIR 指定青龙通知模块目录。
  * 原源码未启用的浏览、三餐礼包、答题、投资不属于默认任务，本版不执行。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["4d08d343f131700e", "scripts/sudojia_hlzj_game.js", "sudojia_hlzj_game.js", "sudojia_hlzj_game"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const crypto = require('node:crypto');
 const path = require('node:path');

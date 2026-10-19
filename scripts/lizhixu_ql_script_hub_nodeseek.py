@@ -30,8 +30,26 @@
 保留 NS_RANDOM=true、RANDOM_SIGNIN=true、MAX_RANDOM_DELAY=3600。
 NODESEEK_DRY_RUN=1 完全断网且不等待、不签到、通知器在禁止网络传输的环境中尝试发送摘要。
 依赖：公开 PyPI 包 curl_cffi，使用其内置 HTTP 客户端及浏览器指纹。
-QINGLONG_NOTIFY 默认开启；通知组件缺失或失败不影响业务退出码。
+QINGLONG_NOTIFY 未设置时按上架状态；通知组件缺失或失败不影响业务退出码。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('7990614346ba82e0', 'scripts/lizhixu_ql_script_hub_nodeseek.py', 'lizhixu_ql_script_hub_nodeseek.py', 'lizhixu_ql_script_hub_nodeseek')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import json
 from pathlib import Path
 import math

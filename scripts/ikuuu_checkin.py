@@ -20,7 +20,7 @@ The upstream attribution and MIT license are preserved.
 仅在未设置 IKUUU_ACCOUNT 时使用。不再用 & 分隔账号。
 IKUUU_MAX_RANDOM_DELAY 可设 0..3600 秒，默认 0。
 IKUUU_DRY_RUN=1 完全断网预演，不发送通知、不等待。
-QINGLONG_NOTIFY 默认 1，设 0/false/no/off 关闭通知。
+QINGLONG_NOTIFY 未设置时按上架状态，设 0/false/no/off 关闭通知。
 IKUUU_PROFILE=1 开启资料读取，默认 0 保留原维护版本的签到流程。
 开启后资料读取失败仍继续签到，但该账号整体失败；不输出页面或服务端原始消息。
 新增 Cookie 登录：IKUUU_ACCOUNT 每行也可填写 cookie:完整 Cookie，
@@ -36,6 +36,24 @@ IKUUU_FLOW=1 开启剩余流量查询；默认仅 Cookie 模式开启，不改�
 """
 
 from __future__ import annotations
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('7ea70c9e9d579efb', 'scripts/ikuuu_checkin.py', 'ikuuu_checkin.py', 'ikuuu_checkin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import base64
 import importlib.util

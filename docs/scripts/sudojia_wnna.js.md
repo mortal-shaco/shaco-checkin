@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_wnna.js`
 - 青龙命令：`node scripts/sudojia_wnna.js`
 - 建议 Cron：`29 0 * * *`
-- 发布哈希：`0a5197a147394f5d5d0961b89afeb4598925862c320cb6f2ab16cab8b107a56a`
+- 发布哈希：`b523e14123109cc438888f2ad5deaf7cb92256b538e8b5cfb78176fc93e12a7f`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -42,8 +42,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：按需设置，默认启用青龙通知。断网预演仅输出通知摘要，不加载通知模块。
-- 填写格式：0、false、no、off 关闭，不区分大小写。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -51,6 +51,13 @@
 - 敏感：否
 - 获取或设置：青龙通知模块不在默认目录时，填写包含 sendNotify.js 的目录。默认查找 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：本地目录路径，可选。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -62,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `0a5197a147394f5d5d0961b89afeb4598925862c320cb6f2ab16cab8b107a56a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/364d0c6592e14300`。
+SHA-256 `b523e14123109cc438888f2ad5deaf7cb92256b538e8b5cfb78176fc93e12a7f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/364d0c6592e14300`。
 
 ## 副作用与风险
 

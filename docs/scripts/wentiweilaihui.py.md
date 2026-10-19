@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wentiweilaihui.py`
 - 青龙命令：`python3 scripts/wentiweilaihui.py`
 - 建议 Cron：`31 1 1 1 1`
-- 发布哈希：`8b91dfeaf811a69d736a0c006bfa94c02a8801b8198dfa624ecebe775c9fa129`
+- 发布哈希：`68b125c40a7a893cbdb13bdd9bef92d88e2a004293fc33d0afc3754be90b7cb0`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -43,8 +43,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关，默认启用。配置青龙 notify.py 或 sendNotify.js 的推送渠道。
-- 填写格式：0、false、no、off 禁用，其余值启用；预演仅模拟通知，保证完全断网。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -52,6 +52,13 @@
 - 敏感：否
 - 获取或设置：仅在通知模块位于自定义目录时填写，默认发现可导入 notify 或青龙标准目录。
 - 填写格式：包含 notify.py 或 sendNotify.js 的本地目录，不用于业务接口或凭据配置；JavaScript 通知仅在已有 Node.js 时可用。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -63,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8b91dfeaf811a69d736a0c006bfa94c02a8801b8198dfa624ecebe775c9fa129`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afa2f50b7baa69db`。
+SHA-256 `68b125c40a7a893cbdb13bdd9bef92d88e2a004293fc33d0afc3754be90b7cb0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afa2f50b7baa69db`。
 
 ## 副作用与风险
 

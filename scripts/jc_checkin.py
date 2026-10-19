@@ -28,12 +28,30 @@ JC_ACCOUNTS：每个非空行一个 邮箱|密码，仅按首个 | 分割，密�
 凭据取自本人注册的账号；仅支持邮箱及密码登录，验证码/二步验证会失败。
 单账号兼容 EMAIL、PASSWORD；JC_ACCOUNTS 设置后优先使用，禁止混合分隔账号。
 JC_DRY_RUN=1：断网预演，不登录、不签到、不推送，青龙通知在禁网子进程中尝试。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。QINGLONG_NOTIFY_DIR 可指定
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。QINGLONG_NOTIFY_DIR 可指定
 notify.py 所在目录。JC_PUSHPLUS=1 且 SCKEY 非空时额外发送 HTTPS PushPlus 通知，
 SCKEY 为本人 PushPlus 控制台 token；默认关闭，避免未经选择向第三方发送内容。
 推荐每天 08:00 执行一次；原始源码没有 cron，用户可调整面板定时规则。
 仅 ret=1（或 JSON true）视为成功；未知/已签到但 ret 非成功均失败闭合。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('fd9b2a23e39332a5', 'scripts/jc_checkin.py', 'jc_checkin.py', 'jc_checkin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import contextlib
 import http.cookiejar

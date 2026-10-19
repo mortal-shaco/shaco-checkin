@@ -25,7 +25,7 @@
 #
 # 必填 ARKNIGHTS_STATE_FILE：独立可写 JSON 文件路径；兼容原 config/.arknights_banner_state.json。
 # ARKNIGHTS_DRY_RUN=1：使用内置公告样例，不请求网络、不加载通知代码、不读写状态。
-# QINGLONG_NOTIFY 默认 1：通过青龙 notify.py 发送公告文字与每次运行总结。
+# QINGLONG_NOTIFY 未设置时按上架状态：通过青龙 notify.py 发送公告文字与每次运行总结。
 # 可选 ARKNIGHTS_TELEGRAM：每行一个“机器人 Token|聊天 ID”，仅在有封面时发图片。
 # Token 由 Telegram BotFather 获取，聊天 ID 由自己机器人的 getUpdates 获取；不要公开。
 # Telegram 是可选封面补充，文字仍走青龙通知，图片失败保留公告重试。
@@ -33,6 +33,24 @@
 # 首次推送最新一期；以后扫描 LATEST 全部（上限 50 页）及 ACTIVITY 前 5 页。
 # 公开资料任务无需游戏登录；不会签到、抽卡、发布评论或修改游戏账号。
 
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('918364c17c412528', 'scripts/arknightsbanner.py', 'arknightsbanner.py', 'arknightsbanner')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import contextlib
 import html as html_lib
 import importlib.util

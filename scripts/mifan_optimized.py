@@ -31,8 +31,26 @@ MIFAN_DRY_RUN=1 完全断网预演，不加载通知模块、不创建进度文�
 旧 AI_PROVIDER、MOONSHOT_API_KEY、DEEPSEEK_API_KEY 不再用于自动发布，避免
 额外付费及将动态内容发送第三方；公开评论遵从任务指定的一言/本地策略。
 MIFAN_STATE_DIR 默认为脚本旁 .mifan-state，按账号哈希隔离进度。
-QINGLONG_NOTIFY 默认 1；设为 0/false/no/off 关闭。通知失败不改变业务退出码。
+QINGLONG_NOTIFY 未设置时按上架状态；设为 0/false/no/off 关闭。通知失败不改变业务退出码。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('68feda0fb9579305', 'scripts/mifan_optimized.py', 'mifan_optimized.py', 'mifan_optimized')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import contextlib
 import hashlib
 import importlib.util

@@ -8,6 +8,22 @@
 // 不需 MITM、不写入本地凭据。POJIE_DRY_RUN=1 完全断网预演。
 // BARK_KEY（兼容 barkKey）可选；QINGLONG_NOTIFY=0 关闭所有通知。
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["0ee602c1c54b9470", "scripts/52pojie.js", "52pojie.js", "52pojie"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');

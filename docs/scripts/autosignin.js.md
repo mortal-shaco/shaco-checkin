@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/autosignin.js`
 - 青龙命令：`node scripts/autosignin.js`
 - 建议 Cron：`37 2 * * *`
-- 发布哈希：`3b229dc9dcc59e1ebe7bcd6c07f04645a2ee5b83bc5fe5dd7d996f35ca7c6b12`
+- 发布哈希：`a95601c070be8bb9599d55656685a2f1501cf5c400921f9006fd3104af132767`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -50,8 +50,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关，默认开启；可设置关闭值。
-- 填写格式：默认 1；0、false、no、off 关闭，不区分大小写。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -59,6 +59,13 @@
 - 敏感：否
 - 获取或设置：可选，填写已配置的青龙 sendNotify.js 所在目录；默认依次查找 /ql/data/scripts、/ql/scripts。
 - 填写格式：本机目录路径；模块不可用或失败不改变业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -70,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3b229dc9dcc59e1ebe7bcd6c07f04645a2ee5b83bc5fe5dd7d996f35ca7c6b12`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ee45e24a6845dbc0`。
+SHA-256 `a95601c070be8bb9599d55656685a2f1501cf5c400921f9006fd3104af132767`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ee45e24a6845dbc0`。
 
 ## 副作用与风险
 

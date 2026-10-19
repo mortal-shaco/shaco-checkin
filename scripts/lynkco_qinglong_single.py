@@ -20,9 +20,27 @@ LYNKCO_SHARE_MODE 默认simple，设full使用完整三步链，需 LYNKCO_CONTE
 simple失败且提供CONTENT_ID时保留完整链回退。可用LYNKCO_ARTICLE_ID固定文章。
 LYNKCO_TIMEOUT默认30秒，LYNKCO_ENERGY_DELAY默认5秒。
 LYNKCO_DRY_RUN=1完全断网，检查配置与演练步骤，不宣称真实业务成功。
-QINGLONG_NOTIFY默认1；兼容LYNKCO_QL_NOTIFY。可选Bark通知变量保留。
+QINGLONG_NOTIFY 未设置时按上架状态；兼容LYNKCO_QL_NOTIFY。可选Bark通知变量保留。
 不自动安装依赖，不运行交互短信登录/验证码服务器，不缓存或写入凭据。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('c087eb48daa78349', 'scripts/lynkco_qinglong_single.py', 'lynkco_qinglong_single.py', 'lynkco_qinglong_single')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 # MIT License — upstream: zhaosongbing/LynkCoHelper-QingLong
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

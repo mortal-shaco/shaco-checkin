@@ -14,7 +14,7 @@ BSLY_DRY_RUN=1: 完全断网预演（通知仅本地模拟）。
 BSLY_ENABLE_DRAW=1: 明确允许消耗抽奖机会；默认关闭，关闭的实跑非零退出。
 BSLY_MAX_DRAWS: 每账号最多请求次数，默认 1，范围 1..100。
 上游没有 cron；维护版保留每天 09:00，用户应根据活动规则调整。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。QINGLONG_NOTIFY_DIR 可指定
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。QINGLONG_NOTIFY_DIR 可指定
 青龙公共通知目录，支持 notify.py 和 sendNotify.js；失败不改变业务退出码。
 参考来源不增加新的抽奖动作；原 GET、Token、User-Agent、Referer 和成功条件保留。
 
@@ -36,6 +36,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 原文件及维护候选未提供版权人声明；保留来源归属，不推测版权人。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('28b170786df4dff2', 'scripts/bsly_draw.py', 'bsly_draw.py', 'bsly_draw')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import importlib.util
 import json
 import os

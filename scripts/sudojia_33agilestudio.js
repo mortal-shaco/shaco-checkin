@@ -10,10 +10,26 @@
  * 登录 https://33.agilestudio.cn 注册并设置邮箱密码。
  * AGILE_STUDIO_ACCOUNTS：每个非空行一个 邮箱#密码，仅首个 # 是分隔符。
  * AGILE_STUDIO_DRY_RUN=1：只校验配置及演示流程，不登录、不签到、不联网通知。
- * QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。
  * QINGLONG_NOTIFY_DIR 可指定青龙 sendNotify.js 所在目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["28da2f8c0aec7716", "scripts/sudojia_33agilestudio.js", "sudojia_33agilestudio.js", "sudojia_33agilestudio"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const crypto = require('node:crypto');
 const path = require('node:path');

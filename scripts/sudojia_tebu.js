@@ -11,9 +11,25 @@
  * https://mall-mobile-v6.vecrp.com 的请求头 token；每个非空行一个账号。
  * 不支持 & 或 @ 分隔账号；不要填入 Cookie 或整个请求头。
  * TEBU_DRY_RUN=1：完全断网预演，不签到，不加载通知模块，仅生成通知摘要。
- * QINGLONG_NOTIFY 默认 1，0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定通知目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态，0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定通知目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["a2b79c7df4dc31e7", "scripts/sudojia_tebu.js", "sudojia_tebu.js", "sudojia_tebu"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

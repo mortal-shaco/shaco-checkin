@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/aliyundrive_checkin.js`
 - 青龙命令：`node scripts/aliyundrive_checkin.js`
 - 建议 Cron：`55 1 * * *`
-- 发布哈希：`fee8a691a59047cf508700e812eea33b121d73673ecdeaff276de5c0bf0d7e8d`
+- 发布哈希：`657e7afb2150a0e056702ce468013806b9ec354f1007b90179cdc4017c214559`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -52,8 +52,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：在青龙环境变量中手动设置。
-- 填写格式：默认 1；0、false、no、off 关闭全部通知，大小写不敏感。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -61,6 +61,13 @@
 - 敏感：否
 - 获取或设置：如默认青龙路径未找到通知模块，填写本机青龙 sendNotify.js 所在目录。业务执行不依赖此目录。
 - 填写格式：可选通知模块目录；默认依次查找 /ql/data/scripts、/ql/scripts 和候选脚本所在目录。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -72,7 +79,7 @@ refreshToken 每个非空行一个账号；账号顺序独立执行，任一账�
 
 ## 验证与兼容性
 
-SHA-256 `fee8a691a59047cf508700e812eea33b121d73673ecdeaff276de5c0bf0d7e8d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd7e90cbb255e115`。
+SHA-256 `657e7afb2150a0e056702ce468013806b9ec354f1007b90179cdc4017c214559`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bd7e90cbb255e115`。
 
 ## 副作用与风险
 

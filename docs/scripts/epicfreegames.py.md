@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/epicfreegames.py`
 - 青龙命令：`python3 scripts/epicfreegames.py`
 - 建议 Cron：`11 8 * * 6`
-- 发布哈希：`0d68673ee7b8157ea510d15b64b1fbe2605b87f73665a70ca6ea840e3d50f7fb`
+- 发布哈希：`dfe8a7dbf01f10eec1111ee8e115b59ddade78808139a802f25be2c1756eac7a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,8 +77,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：默认 1，调用青龙 notify.py 发送脱敏任务汇总；断网预演只模拟通知。
-- 填写格式：0/false/no/off 关闭汇总通知，不影响 Telegram 游戏提醒。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -86,6 +86,13 @@
 - 敏感：否
 - 获取或设置：可选指定已有青龙 notify.py 的目录；也自动查找脚本目录及青龙标准目录。
 - 填写格式：包含 notify.py 的本地目录。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -97,7 +104,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `0d68673ee7b8157ea510d15b64b1fbe2605b87f73665a70ca6ea840e3d50f7fb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
+SHA-256 `dfe8a7dbf01f10eec1111ee8e115b59ddade78808139a802f25be2c1756eac7a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/lynkco_qinglong_single.py`
 - 青龙命令：`python3 scripts/lynkco_qinglong_single.py`
 - 建议 Cron：`1 2 * * *`
-- 发布哈希：`1a1e794187c7a4a3fe295d5e753ee9e8e5ee85e4f9532ed11736b5a8e74e84ee`
+- 发布哈希：`d06be60b2fef8816d2200d614c9e69c6e645cf60eaa74c070b1240aedcf694b8`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -158,8 +158,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关，默认1。
-- 填写格式：0、false、no、off关闭全部通知，其余开启；通知失败不改变业务退出码。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `LYNKCO_QL_NOTIFY`
 
@@ -189,6 +189,13 @@
 - 获取或设置：自行配置通知图标地址，可留空。
 - 填写格式：可选图标URL。
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -199,7 +206,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1a1e794187c7a4a3fe295d5e753ee9e8e5ee85e4f9532ed11736b5a8e74e84ee`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
+SHA-256 `d06be60b2fef8816d2200d614c9e69c6e645cf60eaa74c070b1240aedcf694b8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
 
 ## 副作用与风险
 

@@ -14,11 +14,27 @@
  * JSON.parse(localStorage.token).refresh_token；仅复制到青龙私密环境变量，不分享或写入日志。
  * ALIYUN_PUSH_PLUS：可选，PushPlus 官网账户中的推送令牌；仅通过 HTTPS 发送总结。
  * ALIYUNDRIVE_DRY_RUN=1：完全断网预演（通知也模拟），不验证真实凭据或业务成功。
- * QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭全部通知。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭全部通知。
  * QINGLONG_NOTIFY_DIR：可选，青龙 sendNotify.js 所在目录。
  * 默认签到并领取当日奖励、展示签到日历和奖励概览，不执行其他账号修改。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["bd7e90cbb255e115", "scripts/aliyundrive_checkin.js", "aliyundrive_checkin.js", "aliyundrive_checkin"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('https');
 const path = require('path');
 const fs = require('fs');

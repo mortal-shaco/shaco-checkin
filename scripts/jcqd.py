@@ -37,10 +37,28 @@ JCQD_DRY_RUN=1 完全断网预演，包含通知不联网、不导入通知模�
 IKUUU_BASE_URL 可指定经本人确认的官方 HTTPS 域名，绕过导航页。
 默认从 https://ikuuu.club/ 提取且仅接受 ikuuu.art / ikuuu.club 域名。
 如官方更换域名，请人工核实后设置 IKUUU_BASE_URL，勿填不可信站点。
-QINGLONG_NOTIFY 默认 1；设为 0/false/no/off 关闭通知。
+QINGLONG_NOTIFY 未设置时按上架状态；设为 0/false/no/off 关闭通知。
 依赖：青龙 Python 依赖管理安装 requests；Python 3.9 或以上。
 每日 09:00 为维护版建议定时；上游没有声明定时表达式。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('757bc6292780fb17', 'scripts/jcqd.py', 'jcqd.py', 'jcqd')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import importlib
 import importlib.util

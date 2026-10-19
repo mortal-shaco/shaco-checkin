@@ -11,7 +11,7 @@ NZZ_COOKIE 必填：在 https://www.2nzz.com 登录后，从浏览器开发者�
 每个非空行代表一个账号；分号分隔 Cookie 字段，字段只按首个等号拆分。
 旧框架的 check_item.cookie 内容可直接放入此变量，不再读取私有配置文件。
 NZZ_DRY_RUN=1 仅校验配置并预演，绝不访问网络或调用通知模块。
-QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭通知。
+QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭通知。
 原文件无 cron；新增每日 08:30 的青龙默认调度，可在面板修改。
 只签到，不发帖、不评论、不分享、不消费。TLS 或业务校验失败不降级。
 
@@ -35,6 +35,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('a50eecf80a170dc5', 'scripts/ck_2nzz.py', 'ck_2nzz.py', 'ck_2nzz')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 
 import contextlib
 import datetime

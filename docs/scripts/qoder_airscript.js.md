@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/qoder_airscript.js`
 - 青龙命令：`node scripts/qoder_airscript.js`
 - 建议 Cron：`23 2 * * *`
-- 发布哈希：`b83138ba122e32aa9a80fb8bc24803cb4fa53020546af9cad4b0c897da015725`
+- 发布哈希：`c6a9b67309bec4c82a6962bf9126101341ef9f3c8695583d99ecb3601d7fe62e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -75,8 +75,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：按青龙通知需求设置，默认开启。
-- 填写格式：0/false/no/off 关闭全部通知；--no-notify 同样关闭通知。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -84,6 +84,13 @@
 - 敏感：否
 - 获取或设置：可选填写青龙中含 sendNotify.js 的通知目录；未设置时查找 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：通知模块所在目录，仅用于通知，业务独立运行；模块不存在或投递失败不改变业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -95,7 +102,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b83138ba122e32aa9a80fb8bc24803cb4fa53020546af9cad4b0c897da015725`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
+SHA-256 `c6a9b67309bec4c82a6962bf9126101341ef9f3c8695583d99ecb3601d7fe62e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 
 ## 副作用与风险
 

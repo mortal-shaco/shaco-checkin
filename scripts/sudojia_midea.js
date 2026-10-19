@@ -10,9 +10,25 @@
  * MIDEA_COOKIE：在本人登录的美的会员微信小程序中，抓取 mvip.midea.cn
  * 请求头 Cookie 的完整值，每个非空行一个账号；不使用 & 分隔。
  * MIDEA_DRY_RUN=1：完全离线模拟，不验证凭据，不实际发送通知。
- * QINGLONG_NOTIFY 默认 1；0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定通知模块目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭；QINGLONG_NOTIFY_DIR 可指定通知模块目录。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["4d2bfc3b3a861962", "scripts/sudojia_midea.js", "sudojia_midea.js", "sudojia_midea"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const path = require('node:path');
 const fs = require('node:fs');

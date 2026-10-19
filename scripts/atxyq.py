@@ -19,9 +19,27 @@ ATXYQ_ASSIST 可填自己确认的目标 JSON，字段 topicId、text、userId�
 开启 ATXYQ_HELP_LIKE=1 或 ATXYQ_INVITE=1 才执行助力或邀请绑定。
 不读取上游远程助力配置或广告，不默认删除、公开互动或绑定邀请。
 ATXYQ_DRY_RUN=1 完全断网，仅验证配置和动作计划（含通知模拟），不是业务成功。
-QINGLONG_NOTIFY 默认 1；置 0/false/no/off 禁用；可指定 QINGLONG_NOTIFY_DIR。
+QINGLONG_NOTIFY 未设置时按上架状态；置 0/false/no/off 禁用；可指定 QINGLONG_NOTIFY_DIR。
 所有账号独立处理，任一失败退出非零；未知响应失败闭合，不输出原始响应。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('6b6ae91490051bce', 'scripts/atxyq.py', 'atxyq.py', 'atxyq')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 import importlib.util
 import json

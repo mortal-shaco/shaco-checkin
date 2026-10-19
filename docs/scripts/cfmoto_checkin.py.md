@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/cfmoto_checkin.py`
 - 青龙命令：`task scripts/cfmoto_checkin.py`
 - 建议 Cron：`5 0 * * *`
-- 发布哈希：`9ef21fc0ec56e3996f6abf44493f1fd2e8a7aad29e034fee7516d06125564fc9`
+- 发布哈希：`d45204f3a633d6ef06813b9a637ed6add21ba382be8788f439062dce1e00cce6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -63,7 +63,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：无需获取；默认通过青龙通知组件推送脱敏任务总结，设为 0 可关闭。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 - 默认值：`1`
 
 ### `CFMOTO_NOTIFY`
@@ -86,6 +87,13 @@
 - 获取或设置：无需获取；仅预演时手工设为 1。
 - 默认值：`0`
 
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -96,7 +104,7 @@ CFMOTO_COOKIE 每行一个账号
 
 ## 验证与兼容性
 
-SHA-256 `9ef21fc0ec56e3996f6abf44493f1fd2e8a7aad29e034fee7516d06125564fc9`；live 业务成功证据位于 `projects/checkin/validation/0ba7bb41fd4c339c`。
+SHA-256 `d45204f3a633d6ef06813b9a637ed6add21ba382be8788f439062dce1e00cce6`；live 业务成功证据位于 `projects/checkin/validation/0ba7bb41fd4c339c`。
 
 ## 副作用与风险
 

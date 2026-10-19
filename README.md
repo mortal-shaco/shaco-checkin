@@ -2,15 +2,16 @@
 
 通用签到类青龙脚本发布仓库。脚本经来源、许可证和基础检查后自动发布；真实账号人工核验后标记为已检查或上架。公开说明与本地「脚本管理」使用同一套状态：`上架` / `已检查` / `待检查`。
 
-当前公开脚本 **204** 个：上架 **4** · 已检查 **1** · 待检查 **199**。  
+当前公开脚本 **204** 个：上架 **5** · 已检查 **0** · 待检查 **199**。  
 本页保留上架/已检查全表与待检查预览；全部脚本请用 [脚本目录索引](docs/catalog/README.md)（字母 / 分类）浏览，详单在 [`docs/scripts/`](docs/scripts/)。
+待检查脚本尚未验证真实账号业务，基础核验通过不代表业务成功。
 
 ## 脚本状态总览
 
 | 管理状态 | 数量 | 含义 |
 | --- | --- | --- |
-| 上架 | 4 | 维护者确认保留的当前版本 |
-| 已检查 | 1 | 必填参数齐备且已有当前版本本地运行记录，尚未点击上架 |
+| 上架 | 5 | 维护者确认保留的当前版本 |
+| 已检查 | 0 | 必填参数齐备且已有当前版本本地运行记录，尚未点击上架 |
 | 待检查 | 199 | 已发布，但尚未完成当前版本的参数配置与本地运行核验 |
 
 ### 上架脚本
@@ -20,13 +21,12 @@
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `19 2 * * *` | 上架 | [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `5 0 * * *` | 上架 | [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)（`docs/scripts/cfmoto_checkin.py.md`） |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `22 8,14,20 * * *` | 上架 | [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)（`docs/scripts/kuaishou_reward_status.py.md`） |
+| 摩托范每日签到 | `scripts/sudojia_moto.js` | `node scripts/sudojia_moto.js` | `26 0 * * *` | 上架 | [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)（`docs/scripts/sudojia_moto.js.md`） |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `28 2 * * *` | 上架 | [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
 
 ### 已检查脚本
 
-| 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
-| --- | --- | --- | --- | --- | --- |
-| 摩托范每日签到 | `scripts/sudojia_moto.js` | `node scripts/sudojia_moto.js` | `26 0 * * *` | 已检查 | [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)（`docs/scripts/sudojia_moto.js.md`） |
+_当前无此类脚本。_
 
 ### 待检查脚本
 
@@ -70,6 +70,13 @@
 
 采用固定的目录级规则，不再逐个枚举脚本：白名单只同步 `scripts/` 下的 `js`、`py`、`sh` 文件，因此以后新增业务脚本无需修改订阅。黑名单进一步排除文档、测试、脱敏验证材料、`shared/` 公共组件、缓存、隐藏文件和下划线开头的辅助文件。非任务组件必须放入 `shared/`，不得放在 `scripts/`；`scripts/` 中的任务必须带青龙可识别的 `name:` / `cron:` 元数据。若面板显示“文件后缀”，填写 `js py sh`。`docs/` 仅供阅读，不会进入青龙任务同步。
 
+## 通知策略
+
+默认仅“上架”脚本调用青龙通知渠道；“已检查”和“待检查”脚本照常执行业务，但不推送消息。通知内容保持脱敏，通知失败不改变业务退出码。
+
+- `QINGLONG_NOTIFY_SCRIPTS`：可选的脚本选择列表，设置后替代默认上架列表。用逗号、分号、空格或换行分隔 catalog ID、`scripts/` 相对路径、文件名或通配符；例如 `kuaishou_reward_status.py,scripts/tieba_*.py`，`*` 表示全部，空值表示全部关闭。
+- `QINGLONG_NOTIFY=1`：强制全部脚本开启通知；`QINGLONG_NOTIFY=0`：强制全部关闭。显式总开关优先于脚本选择列表。
+
 ## 定时任务
 
 业务 Cron 已错峰排布，尽量避免整点扎堆。依赖安装任务固定每周一 04:23。
@@ -89,8 +96,8 @@
 - `scripts/baiduwangpan_checkin.py`（上架）：每日百度网盘会员签到，明确验证积分或已完成状态；获取并提交每日会员成长问题答案；读取并报告脱敏用户名、会员等级、成长值和会员类型。完整说明见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`（上架）：执行每日签到；发帖和评论优先使用接口随机文本，返回出处时拼接作者与作品信息，接口异常时使用本地文案兜底；按配置发布帖子、评论、点赞并完成分享积分任务。完整说明见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`（上架）：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。完整说明见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
+- `scripts/sudojia_moto.js`（上架）：查询账号信息并显示官方昵称，刷新当前运行中的会话凭据；提交每日签到，严格根据签到接口数字业务码 0 确认成功；按明确要求暂停签到状态查询及二次核验；查询当前能量。完整说明见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
 - `scripts/tieba_checkin.py`（上架）：保留登录验证和 TBS 获取、读取关注贴吧、识别当日已签到项目、为未签到贴吧逐吧签到，沿用明确成功码和已签到判断。；直接显示官方接口返回的昵称、用户名或公开 UID，方便核对账号。；显式开启后通过 APP 成长接口验证登录、取得独立 TBS，并执行成长任务每日签到，要求业务码明确为 0。。完整说明见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
-- `scripts/sudojia_moto.js`（已检查）：查询账号信息并显示官方昵称，刷新当前运行中的会话凭据；提交每日签到，严格根据签到接口数字业务码 0 确认成功；按明确要求暂停签到状态查询及二次核验；查询当前能量。完整说明见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
 
 ## 环境变量与参数
 
@@ -105,8 +112,8 @@
 - `scripts/baiduwangpan_checkin.py`：必选 `BAIDU_COOKIE`；详见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`：必选 `CFMOTO_COOKIE`；详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：必选 `KUAISHOU_COOKIE`；详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
-- `scripts/tieba_checkin.py`：必选 `TIEBA_COOKIE`；详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 - `scripts/sudojia_moto.js`：必选 `MOTO_TOKEN`；详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
+- `scripts/tieba_checkin.py`：必选 `TIEBA_COOKIE`；详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 
 ### 可选参数
 
@@ -118,11 +125,11 @@
 
 ## 验证与兼容性
 
-- `scripts/baiduwangpan_checkin.py`（上架）：SHA-256 `c4520fd973766aa749bc2f38347f188ff0983f07c79368d960b31da3752c8d6a`；含 live 业务证据。详见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
-- `scripts/cfmoto_checkin.py`（上架）：SHA-256 `9ef21fc0ec56e3996f6abf44493f1fd2e8a7aad29e034fee7516d06125564fc9`；含 live 业务证据。详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
-- `scripts/kuaishou_reward_status.py`（上架）：SHA-256 `23cafa1a94f92edaaad1f1f5a503574f1c8f2bec24cf35057a42d20365fa520f`；含 live 业务证据。详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
-- `scripts/tieba_checkin.py`（上架）：SHA-256 `ed85866f4ca9097b0dbcfe843b67f9e36827bcba9b43e8ec07b3a30e374f2b32`；基础核验通过，业务待检查。详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
-- `scripts/sudojia_moto.js`（已检查）：SHA-256 `679d21005c525ac34f4d993466f0b0b3a4c7d30264249e45a07e321118559beb`；基础核验通过，业务待检查。详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
+- `scripts/baiduwangpan_checkin.py`（上架）：SHA-256 `2db22c6f881e4294d0f252c644deb05127988fa5d350645c05fb0f0067fb42f9`；含 live 业务证据。详见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
+- `scripts/cfmoto_checkin.py`（上架）：SHA-256 `d45204f3a633d6ef06813b9a637ed6add21ba382be8788f439062dce1e00cce6`；含 live 业务证据。详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
+- `scripts/kuaishou_reward_status.py`（上架）：SHA-256 `c689f2a14014bfe2374054469b4564608b5db69b981f10cabbca842321f24f63`；含 live 业务证据。详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
+- `scripts/sudojia_moto.js`（上架）：SHA-256 `d51fe6ba62db0760730c65268b698ce67296d2dad96fe22e2048c2652359c14c`；基础核验通过，业务待检查。详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
+- `scripts/tieba_checkin.py`（上架）：SHA-256 `7b9a2055ee9da66997f67ad484ee4574b9b29850e5b87b881bca8e592e422816`；基础核验通过，业务待检查。详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。`待检查` 不代表业务失败，只表示维护者尚未完成当前版本人工核验。
 
@@ -131,8 +138,8 @@
 - `scripts/baiduwangpan_checkin.py`：为每个已配置的百度网盘账号执行每日会员签到；为每个已配置的百度网盘账号提交每日会员问题答案。完整说明见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`：改变账号的当日签到和积分状态；最多发布三个公开帖子并留下可见内容。完整说明见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：见详单。完整说明见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
-- `scripts/tieba_checkin.py`：正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态及可能产生签到奖励。；仅显式开启成长任务且 Cookie 同时含 BDUSS 和 CUID 时提交 APP 成长每日签到，改变当日成长签到状态及可能产生的成长奖励。。完整说明见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 - `scripts/sudojia_moto.js`：正式运行提交每日签到，可能获得能量奖励；不自动重试提交；正式运行时通过青龙通知模块发送脱敏任务摘要（可关闭）。完整说明见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
+- `scripts/tieba_checkin.py`：正式执行时提交关注贴吧签到，改变对应贴吧当日签到状态及可能产生签到奖励。；仅显式开启成长任务且 Cookie 同时含 BDUSS 和 CUID 时提交 APP 成长每日签到，改变当日成长签到状态及可能产生的成长奖励。。完整说明见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 
 使用测试账号先行验证。停止使用时应禁用任务、删除订阅和敏感环境变量；怀疑凭据泄漏时立即在对应平台撤销会话。
 
@@ -143,5 +150,5 @@
 - `scripts/baiduwangpan_checkin.py`：上游 `agluo/ql-script-hub` / `baiduwangpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。 详见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`：作者自有来源 `shaco_autowork/cf_sign.py`。 详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。 详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
-- `scripts/tieba_checkin.py`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_tieba.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。 详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 - `scripts/sudojia_moto.js`：上游 `sudojia/AutoTaskScript` / `src/client/sudojia_moto.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。 详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
+- `scripts/tieba_checkin.py`：上游 `sudojia/AutoTaskScript` / `src/web/sudojia_tieba.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。 详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。

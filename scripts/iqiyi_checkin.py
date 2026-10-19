@@ -48,11 +48,29 @@ IQIYI_DAILY_TASKS=1 查询每日成长任务，加入待执行任务、通知完
 新开关均默认关闭；请先在官方应用确认活动仍有效、领取条件和权益影响。
 以上无需额外凭据；可选 P00002、QC005 无须另配环境变量。
 IQIYI_DRY_RUN=1 完全断网，只验证配置与请求构造，不代表业务成功。
-QINGLONG_NOTIFY 默认 1；设为 0/false/no/off 关闭通知。
+QINGLONG_NOTIFY 未设置时按上架状态；设为 0/false/no/off 关闭通知。
 可用 QINGLONG_NOTIFY_DIR 指定青龙通知目录；兼容 PUSHPLUS_TOKEN、SENDKEY
 作为青龙通知不可用时的可选通知后备。预演不调用任何通知渠道。
 每日 10:05 运行。未提供 Cookie、任一账号或启用的步骤失败均非零退出。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('7701c083c0ca06d5', 'scripts/iqiyi_checkin.py', 'iqiyi_checkin.py', 'iqiyi_checkin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import contextlib
 import hashlib
 import importlib.util

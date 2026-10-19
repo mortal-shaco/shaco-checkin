@@ -29,6 +29,24 @@ NS_RANDOM=true 随机奖励，false 固定奖励；NS_IMPERSONATE=chrome110。
 运行依赖 curl_cffi（青龙依赖管理中从公开 Python 包注册表安装）。
 通知可用青龙 notify.py；QINGLONG_NOTIFY=0 关闭通知。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('c28f0207e2b02a7b', 'scripts/nodeseek.py', 'nodeseek.py', 'nodeseek')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import importlib
 import importlib.util
 import json

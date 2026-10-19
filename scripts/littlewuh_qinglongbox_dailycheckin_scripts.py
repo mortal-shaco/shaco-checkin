@@ -11,7 +11,7 @@ NZZ_COOKIE：登录 https://www.2nzz.com 后在浏览器开发者工具的网络
 复制本站请求的 Cookie 请求头值（不含 Cookie:）。每个非空行为一个账号，
 Cookie 内部用分号分隔；值中的等号保留。不支持用 & 或 @ 分隔账号。
 NZZ_DRY_RUN=1：仅检查配置和预演，不发送 HTTP 请求或签到。
-QINGLONG_NOTIFY=0：关闭通知；默认开启，可用 QINGLONG_NOTIFY_DIR 指定
+QINGLONG_NOTIFY=0：关闭通知；未设置时按上架状态，可用 QINGLONG_NOTIFY_DIR 指定
 青龙 notify.py 目录。预演通知在禁止网络和子进程的隔离助手中尝试，无法
 离线投递时记录状态，不改变业务退出码。
 
@@ -21,6 +21,24 @@ QINGLONG_NOTIFY=0：关闭通知；默认开启，可用 QINGLONG_NOTIFY_DIR 指
 原路径及签到表单保持一致；为保护 Cookie，仅 HTTPS，证书验证开启，
 禁止跨域或降级跳转。HTTPS 能力尚未经联网验证；不支持时失败而不降级。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('cb2f4adeccaa95b9', 'scripts/littlewuh_qinglongbox_dailycheckin_scripts.py', 'littlewuh_qinglongbox_dailycheckin_scripts.py', 'littlewuh_qinglongbox_dailycheckin_scripts')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime
 from html.parser import HTMLParser
 import http.cookiejar

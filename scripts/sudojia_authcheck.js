@@ -18,6 +18,22 @@
  * 厚工坊、库街区、南航缺少可证实的正向契约，维护版拒绝在线调用并报未验证。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["505cfecf6964c372", "scripts/sudojia_authcheck.js", "sudojia_authcheck.js", "sudojia_authcheck"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/akile_checkin.py`
 - 青龙命令：`python3 scripts/akile_checkin.py`
 - 建议 Cron：`44 0 * * *`
-- 发布哈希：`886990d3e79437d31df0cd23d50afd779f50ef17b2f345a4bfde3b517569fd89`
+- 发布哈希：`56c5f64c4272e8b01c9adc8cbbe30d738780385cca71db993c6de07c94d00d4c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,8 +84,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：在青龙环境变量中设置通知开关。
-- 填写格式：默认 1；0、false、no、off 关闭；预演只模拟通知。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -93,6 +93,13 @@
 - 敏感：否
 - 获取或设置：使用自定义青龙通知目录时填写。
 - 填写格式：包含 notify.py 或 sendNotify.js 的目录；通知不可用不改变业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -104,7 +111,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `886990d3e79437d31df0cd23d50afd779f50ef17b2f345a4bfde3b517569fd89`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/48ce92fe72bec5fa`。
+SHA-256 `56c5f64c4272e8b01c9adc8cbbe30d738780385cca71db993c6de07c94d00d4c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/48ce92fe72bec5fa`。
 
 ## 副作用与风险
 

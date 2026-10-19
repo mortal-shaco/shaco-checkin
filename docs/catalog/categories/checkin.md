@@ -128,7 +128,7 @@
 | 欣都龙城每日签到 | `scripts/sudojia_mallcoo.js` | `node scripts/sudojia_mallcoo.js` | `9 1 * * *` | 待检查 | [sudojia_mallcoo.js.md](../../scripts/sudojia_mallcoo.js.md)（`docs/scripts/sudojia_mallcoo.js.md`） |
 | 馬伍旺饮料厂 | `scripts/sudojia_mawuwang.js` | `node scripts/sudojia_mawuwang.js` | `13 0 * * *` | 待检查 | [sudojia_mawuwang.js.md](../../scripts/sudojia_mawuwang.js.md)（`docs/scripts/sudojia_mawuwang.js.md`） |
 | 美的会员 | `scripts/sudojia_midea.js` | `node scripts/sudojia_midea.js` | `48 0 * * *` | 待检查 | [sudojia_midea.js.md](../../scripts/sudojia_midea.js.md)（`docs/scripts/sudojia_midea.js.md`） |
-| 摩托范每日签到 | `scripts/sudojia_moto.js` | `node scripts/sudojia_moto.js` | `26 0 * * *` | 已检查 | [sudojia_moto.js.md](../../scripts/sudojia_moto.js.md)（`docs/scripts/sudojia_moto.js.md`） |
+| 摩托范每日签到 | `scripts/sudojia_moto.js` | `node scripts/sudojia_moto.js` | `26 0 * * *` | 上架 | [sudojia_moto.js.md](../../scripts/sudojia_moto.js.md)（`docs/scripts/sudojia_moto.js.md`） |
 | 蜜雪冰城每日签到 | `scripts/sudojia_mxbc.js` | `node scripts/sudojia_mxbc.js` | `22 1 * * *` | 待检查 | [sudojia_mxbc.js.md](../../scripts/sudojia_mxbc.js.md)（`docs/scripts/sudojia_mxbc.js.md`） |
 | 奈雪点单 | `scripts/sudojia_naixue.js` | `node scripts/sudojia_naixue.js` | `32 1 * * *` | 待检查 | [sudojia_naixue.js.md](../../scripts/sudojia_naixue.js.md)（`docs/scripts/sudojia_naixue.js.md`） |
 | 南方航空 | `scripts/sudojia_nfhk.js` | `node scripts/sudojia_nfhk.js` | `26 1 * * *` | 待检查 | [sudojia_nfhk.js.md](../../scripts/sudojia_nfhk.js.md)（`docs/scripts/sudojia_nfhk.js.md`） |

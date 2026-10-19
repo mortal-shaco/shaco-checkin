@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_colorful_mall.js`
 - 青龙命令：`node scripts/sudojia_colorful_mall.js`
 - 建议 Cron：`22 0 * * *`
-- 发布哈希：`138fb2417e69288c3c061559d9efdf638bdb5c7917d084c5025a18254eca8187`
+- 发布哈希：`4157eae2d51782131c122baef74c1ec811d7f495b30c0323773faec65d70d4ab`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -58,8 +58,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知全局开关，默认开启。
-- 填写格式：0、false、no、off 关闭，忽略大小写；其他值开启。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -67,6 +67,13 @@
 - 敏感：否
 - 获取或设置：可选，填写现有青龙 sendNotify.js 所在目录；未设置时依次检查 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：本地目录路径；通知不可用或失败不改变业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -78,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `138fb2417e69288c3c061559d9efdf638bdb5c7917d084c5025a18254eca8187`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/246de3f61ba99194`。
+SHA-256 `4157eae2d51782131c122baef74c1ec811d7f495b30c0323773faec65d70d4ab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/246de3f61ba99194`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hsay.py`
 - 青龙命令：`python3 scripts/hsay.py`
 - 建议 Cron：`21 9,18 * * *`
-- 发布哈希：`439e6a26e51b5463c6d28ff3df7fee23cec6699004b23ba0b35dcc5de5a0de61`
+- 发布哈希：`e675184cc0dd4f3bc74056c9b39ae074bfa26ffc2302242f979957bea3274fd1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -49,8 +49,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙环境变量中设置；默认开启。
-- 填写格式：0、false、no、off 关闭，其余值开启。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -58,6 +58,13 @@
 - 敏感：否
 - 获取或设置：如通知模块不在标准青龙脚本目录，填写包含 notify.py 的现有本地目录。仅通知可选，业务不依赖该文件。
 - 填写格式：本地目录路径。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -69,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `439e6a26e51b5463c6d28ff3df7fee23cec6699004b23ba0b35dcc5de5a0de61`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
+SHA-256 `e675184cc0dd4f3bc74056c9b39ae074bfa26ffc2302242f979957bea3274fd1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/skland_daily.py`
 - 青龙命令：`python3 scripts/skland_daily.py`
 - 建议 Cron：`33 1 * * *`
-- 发布哈希：`3b8ad3f091f30610bbab558ac233cd02e17900d4a42a894a6df72e9c6aa18bfc`
+- 发布哈希：`1724fe8e2d6c457334b8174dabbfccee72d8b4be174f22e8276a5d54d43cb0bd`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -140,8 +140,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知总开关，默认 1；预演只生成本地脱敏摘要，不调用网络通知。
-- 填写格式：0、false、no、off 关闭；其他值开启。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -149,6 +149,13 @@
 - 敏感：否
 - 获取或设置：填写青龙 notify.py 所在目录；可省略以自动查找 notify 模块及青龙标准目录。
 - 填写格式：目录路径；通知模块不可用、超时或失败时保留业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -160,7 +167,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3b8ad3f091f30610bbab558ac233cd02e17900d4a42a894a6df72e9c6aa18bfc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
+SHA-256 `1724fe8e2d6c457334b8174dabbfccee72d8b4be174f22e8276a5d54d43cb0bd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
 
 ## 副作用与风险
 

@@ -34,7 +34,7 @@
   YDYP_UPLOAD            是否执行上传任务(106),默认 false
   YDYP_DELETE_AFTER      上传完成后是否删除文件,默认 false
   YDYP_DRY_RUN           设为 1 时完全断网预演，不验证真实业务
-  QINGLONG_NOTIFY        全局通知开关，默认 1
+  QINGLONG_NOTIFY        全局通知开关，未设置时按上架状态
   QINGLONG_NOTIFY_DIR    可选，青龙通知模块目录
   PUSHPLUS_TOKEN         PushPlus 推送 token(可选)
   SENDKEY                Server酱 SendKey(可选)
@@ -46,6 +46,24 @@
   4. 查看请求头 Authorization 字段(形如 Basic xxxxxx)
   5. 连同手机号填入青龙面板环境变量
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('117317c83fa5c3cc', 'scripts/139_yunduo.py', '139_yunduo.py', '139_yunduo')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 # MIT License — 上游许可，来源 deeplee/personal-scripts。
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

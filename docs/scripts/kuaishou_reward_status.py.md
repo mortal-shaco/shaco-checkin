@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kuaishou_reward_status.py`
 - 青龙命令：`python3 scripts/kuaishou_reward_status.py`
 - 建议 Cron：`22 8,14,20 * * *`
-- 发布哈希：`23cafa1a94f92edaaad1f1f5a503574f1c8f2bec24cf35057a42d20365fa520f`
+- 发布哈希：`c689f2a14014bfe2374054469b4564608b5db69b981f10cabbca842321f24f63`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -39,7 +39,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：无需获取；默认通过青龙 notify.py 推送脱敏任务总结，设为 0 可关闭。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 - 默认值：`1`
 
 ### `QINGLONG_NOTIFY_DIR`
@@ -48,6 +49,13 @@
 - 敏感：否
 - 获取或设置：仅当 notify.py 不在青龙标准路径时，填写其所在目录。
 - 填写格式：本地目录路径
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -59,7 +67,7 @@ KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务�
 
 ## 验证与兼容性
 
-SHA-256 `23cafa1a94f92edaaad1f1f5a503574f1c8f2bec24cf35057a42d20365fa520f`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
+SHA-256 `c689f2a14014bfe2374054469b4564608b5db69b981f10cabbca842321f24f63`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
 
 ## 副作用与风险
 

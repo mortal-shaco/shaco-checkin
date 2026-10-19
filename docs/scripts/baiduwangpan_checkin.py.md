@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/baiduwangpan_checkin.py`
 - 青龙命令：`python3 scripts/baiduwangpan_checkin.py`
 - 建议 Cron：`19 2 * * *`
-- 发布哈希：`c4520fd973766aa749bc2f38347f188ff0983f07c79368d960b31da3752c8d6a`
+- 发布哈希：`2db22c6f881e4294d0f252c644deb05127988fa5d350645c05fb0f0067fb42f9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -49,8 +49,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙全局通知开关，默认启用；设为 0、false、no 或 off 可禁用。
-- 填写格式：1/0 或常见布尔值
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -58,6 +58,13 @@
 - 敏感：否
 - 获取或设置：如青龙 notify.py 不在标准位置，可设为其所在目录。
 - 填写格式：包含 notify.py 的目录路径
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -69,7 +76,7 @@ BAIDU_COOKIE 中每个非空行是一个独立账号；依次处理，任一账�
 
 ## 验证与兼容性
 
-SHA-256 `c4520fd973766aa749bc2f38347f188ff0983f07c79368d960b31da3752c8d6a`；live 业务成功证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
+SHA-256 `2db22c6f881e4294d0f252c644deb05127988fa5d350645c05fb0f0067fb42f9`；live 业务成功证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
 
 ## 副作用与风险
 

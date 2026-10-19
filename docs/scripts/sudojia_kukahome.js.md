@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_kukahome.js`
 - 青龙命令：`node scripts/sudojia_kukahome.js`
 - 建议 Cron：`9 2 * * *`
-- 发布哈希：`30f908db58595d06f2bc31eace09e2335e143ec0b040f6b6963c769eb29afca3`
+- 发布哈希：`dff6bd437c0ba864d340b25eb01b49535cddc58e879964a9236434a926f34aa3`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -49,8 +49,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙环境变量中设置，全局通知开关。
-- 填写格式：默认 1；0、false、no、off 关闭，不区分大小写。预演只生成摘要，不联网发送。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -58,6 +58,13 @@
 - 敏感：否
 - 获取或设置：可选，填写已有青龙 sendNotify.js 所在目录；未设置时依次查找 /ql/data/scripts、/ql/scripts。
 - 填写格式：本地通知模块目录路径；不可用时记录通知失败并保留业务退出码。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -69,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `30f908db58595d06f2bc31eace09e2335e143ec0b040f6b6963c769eb29afca3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cea8801e001e143d`。
+SHA-256 `dff6bd437c0ba864d340b25eb01b49535cddc58e879964a9236434a926f34aa3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cea8801e001e143d`。
 
 ## 副作用与风险
 

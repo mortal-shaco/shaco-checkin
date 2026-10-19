@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/zodgame_test.py`
 - 青龙命令：`python3 scripts/zodgame_test.py`
 - 建议 Cron：`35 2 * * *`
-- 发布哈希：`1e857142bc69365af62731bda0edb67f0b56d367ebf134f1e20cdd283e46f8b4`
+- 发布哈希：`d690b0be80cd9ce4902fcc64d6369a3c9c285aa8fecd72fa3bd1d04ee8ad486a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -60,8 +60,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知配置可正常发送后默认开启；如需关闭通知，设置为 0。通知缺失或失败不改变业务退出码。
-- 填写格式：默认 1；0、false、no、off 关闭
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -69,6 +69,13 @@
 - 敏感：否
 - 获取或设置：可选，指定现有青龙 notify.py 所在目录；默认尝试导入 notify，再查找 /ql/data/scripts 与 /ql/scripts。无需该模块即可执行业务。
 - 填写格式：本机青龙通知模块所在目录
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -80,7 +87,7 @@ ZODGAME_COOKIE 每个非空行一个账号，Cookie 内部保留分号和后续�
 
 ## 验证与兼容性
 
-SHA-256 `1e857142bc69365af62731bda0edb67f0b56d367ebf134f1e20cdd283e46f8b4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4bfbfde0f17e39`。
+SHA-256 `d690b0be80cd9ce4902fcc64d6369a3c9c285aa8fecd72fa3bd1d04ee8ad486a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4bfbfde0f17e39`。
 
 ## 副作用与风险
 

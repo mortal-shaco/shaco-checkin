@@ -32,6 +32,24 @@ XML CDATA 成功检查、青龙通知、时间轴统计与 TASK_SUMMARY、断网
 交付契约显式指定 scripts/2cycdx_signin.py；无接口失效、凭据变化或相关参考源。
 产品专属发布路径以契约 publishPath 为准；不能以隔离文件名覆盖其他产品。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('4a0d6e0728deb3f6', 'scripts/2cycdx.py', '2cycdx.py', '2cycdx')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import importlib
 import importlib.util
 import json

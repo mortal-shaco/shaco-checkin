@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/huaruntong_wx.py`
 - 青龙命令：`python3 scripts/huaruntong_wx.py`
 - 建议 Cron：`18 1 1 1 1`
-- 发布哈希：`1a28b596a596f8784db376512bfac296d201c8a59c9bc888d737a93052e121c8`
+- 发布哈希：`a1a8a4e01bc45df4db9d474f094de35765952a50ef29e2479d26c7e2f0e70e00`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -42,8 +42,8 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙环境变量中自行设置。
-- 填写格式：默认 1；0、false、no、off 关闭通知。断网预演仅模拟发送通知，不调用任何通知模块。
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
 
 ### `QINGLONG_NOTIFY_DIR`
 
@@ -51,6 +51,13 @@
 - 敏感：否
 - 获取或设置：可选，填写青龙现有 notify.py 或 sendNotify.js 所在目录。默认尝试导入 notify，再查找 /ql/data/scripts 和 /ql/scripts。
 - 填写格式：本机目录路径；不下载或安装通知程序。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
 
 ## 参数获取方法
 
@@ -62,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1a28b596a596f8784db376512bfac296d201c8a59c9bc888d737a93052e121c8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/13902b7b1dd570d1`。
+SHA-256 `a1a8a4e01bc45df4db9d474f094de35765952a50ef29e2479d26c7e2f0e70e00`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/13902b7b1dd570d1`。
 
 ## 副作用与风险
 

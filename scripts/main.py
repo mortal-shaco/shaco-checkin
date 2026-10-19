@@ -27,8 +27,26 @@
 WALLHAVEN_PAGES 默认 5；上游未定义 cron，此版本提供每天 08:00 的建议计划。
 无需 Cookie、Token 或账号；不处理 AList 参数。已有有效图片跳过，绝不覆盖。
 WALLHAVEN_DRY_RUN=1 完全断网，不创建目录或图片，也不调用通知模块。
-QINGLONG_NOTIFY 默认 1；通知不可用不改变下载退出码。
+QINGLONG_NOTIFY 未设置时按上架状态；通知不可用不改变下载退出码。
 """
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('c0137ce8eaf72832', 'scripts/main.py', 'main.py', 'main')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 import datetime as dt
 import importlib
 import importlib.util

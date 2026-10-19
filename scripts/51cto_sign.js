@@ -13,10 +13,26 @@
  * 兼容每行 用户名@密码；只在第一个分隔符拆分，密码中的后续分隔符保留。
  * 邮箱用户名必须使用 |；不再用 & 或 @ 分隔账号。密码不去除首尾空格。
  * ICTO_BLOG_DRY_RUN=1：完全断网预演，不登录、不签到、不调用通知模块。
- * QINGLONG_NOTIFY 默认1，0/false/no/off关闭；QINGLONG_NOTIFY_DIR可指定通知模块目录。
+ * QINGLONG_NOTIFY 未设置时按上架状态，0/false/no/off关闭；QINGLONG_NOTIFY_DIR可指定通知模块目录。
  * 仅登录和签到，不发布文章、评论、分享，不持久化凭据；验证码登录不能绕过。
  */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["d81ca9fcd4ad24e1", "scripts/51cto_sign.js", "51cto_sign.js", "51cto_sign"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('node:https');
 const crypto = require('node:crypto');
 const fs = require('node:fs');

@@ -38,6 +38,22 @@ VORTEXA_DRY_RUN=1 完全断网；通知辅助脚本也在断网子进程中尝�
 更多可选参数、获取说明和安全边界见同目录 contract.json。
 */
 'use strict';
+// qinglong-notification-policy: begin
+(() => {
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
+  let enabled = false;
+  if (selection !== undefined) {
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["7f027fefd96fedf2", "scripts/vortexa_free_claim.js", "vortexa_free_claim.js", "vortexa_free_claim"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      return identities.some((identity) => new RegExp(pattern).test(identity));
+    });
+  }
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
+})();
+// qinglong-notification-policy: end
 const https = require('https');
 const zlib = require('zlib');
 const crypto = require('crypto');
