@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # name: Fa米家每日签到与发米粒查询
-# cron: 47 1 * * *
+# cron: 58 1 * * *
 # 上游：OreosLab/checkinpanel，ck_fmapp.py（MIT）
 # 保留上游任务标识：new Env('Fa米家每日签到与发米粒查询');
 """Fa米家每日签到、昵称与发米粒查询。
 
-FMAPP：每个非空行为一个 JSON 对象，包含 token、cookie、blackbox、device_id。
+FMAPP（兼容 FMAPP_ACCOUNTS）：每个非空行为一个 JSON 对象，包含 token、cookie、blackbox、device_id。
 在自己的已登录 Fa米家 App 请求中获取这些请求头；切勿分享抓包内容。
 可选字段 fmversion、os、useragent 默认分别为 2.2.3、ios、Fa。
 FMAPP_DRY_RUN=1 为完全断网预演；QINGLONG_NOTIFY=0 关闭通知。
@@ -86,6 +86,11 @@ def parse_account(line):
     account = json.loads(line)
     if not isinstance(account, dict):
         raise ValueError("账号必须是 JSON 对象")
+    # 兼容另一份同产品脚本的 App 请求头字段名。
+    for canonical, alias in (("blackbox", "blackBox"), ("device_id", "deviceId"),
+                             ("fmversion", "fmVersion"), ("useragent", "userAgent")):
+        if canonical not in account and alias in account:
+            account[canonical] = account[alias]
     for key in REQUIRED:
         value = account.get(key)
         if not isinstance(value, str) or not value.strip():
@@ -122,7 +127,7 @@ def post(path, headers, payload):
     body = None if payload is None else json.dumps(payload).encode("utf-8")
     request = urllib.request.Request(BASE + path, data=body, headers=headers, method="POST")
     opener = urllib.request.build_opener(NoRedirect())
-    with opener.open(request, timeout=15) as response:
+    with opener.open(request, timeout=timeout_seconds()) as response:
         if response.status != 200:
             raise ValueError("HTTP 状态异常")
         raw = response.read(1024 * 1024 + 1)
@@ -135,6 +140,15 @@ def post(path, headers, payload):
     if not isinstance(data, dict):
         raise ValueError("响应数据结构异常")
     return data
+
+
+def timeout_seconds():
+    default = 15.0 if os.getenv("FMAPP") else 10.0
+    try:
+        value = float(os.getenv("FMAPP_TIMEOUT", str(default)))
+    except ValueError:
+        return default
+    return value if 1 <= value <= 60 else default
 
 
 def scalar(data, key):
@@ -187,7 +201,7 @@ def notify(summary, dry_run):
         candidates.append(Path(local_spec.origin))
     candidates.extend([Path("/ql/data/scripts/notify.py"), Path("/ql/scripts/notify.py")])
     # 子进程隔离发送器的打印、异常和退出；凭据不传入通知子进程。
-    child_env = {k: v for k, v in os.environ.items() if k != "FMAPP"}
+    child_env = {k: v for k, v in os.environ.items() if k not in {"FMAPP", "FMAPP_ACCOUNTS"}}
     py_code = (
         "import importlib.util,sys; "
         "sys.path.insert(0,sys.argv[1]); "
@@ -227,14 +241,15 @@ def notify(summary, dry_run):
 def main():
     started = time.monotonic()
     dry_run = enabled("FMAPP_DRY_RUN")
-    lines = [line.strip() for line in os.getenv("FMAPP", "").splitlines() if line.strip()]
+    account_input = os.getenv("FMAPP") or os.getenv("FMAPP_ACCOUNTS", "")
+    lines = [line.strip() for line in account_input.splitlines() if line.strip()]
     log(f"========== {TITLE} ==========")
     log(f"开始时间：{now()}；模式：{'断网预演' if dry_run else '正式运行'}；账号数：{len(lines)}")
     totals = {"total": 0, "success": 0, "alreadyComplete": 0, "skipped": 0, "failed": 0}
     results = []
     config_error = not lines
     if not lines:
-        log("❌ 配置错误：请设置 FMAPP，每个非空行填写一个账号 JSON 对象")
+        log("❌ 配置错误：请设置 FMAPP 或 FMAPP_ACCOUNTS，每个非空行填写一个账号 JSON 对象")
     for account_index, line in enumerate(lines, 1):
         account_start = time.monotonic()
         counts = {"total": 3, "success": 0, "alreadyComplete": 0, "skipped": 0, "failed": 0}

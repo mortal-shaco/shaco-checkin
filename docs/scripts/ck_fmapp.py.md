@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_fmapp.py`
 - 青龙命令：`python3 scripts/ck_fmapp.py`
-- 建议 Cron：`47 1 * * *`
-- 发布哈希：`9fb405d39b9873dfb7848d99dab4914f15540ae53ab2282698361e51ebbe47d3`
+- 建议 Cron：`58 1 * * *`
+- 发布哈希：`92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -15,6 +15,8 @@
 - 每行一个 JSON 账号，保留上游四个凭据字段及三个可选请求头默认值
 - 完全断网预演、分阶段脱敏日志、账号统计及单行 TASK_SUMMARY 结构化结果
 - 正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭
+- 兼容 FMAPP_ACCOUNTS 旧变量和 blackBox、deviceId、fmVersion、userAgent 字段别名
+- 支持 FMAPP_TIMEOUT 1 至 60 秒；原 FMAPP 默认 15 秒、旧 FMAPP_ACCOUNTS 默认 10 秒
 
 ## 环境变量与参数
 
@@ -52,6 +54,20 @@
 - 获取或设置：使用自定义青龙通知模块目录时设置，通常无需配置。
 - 填写格式：包含 notify.py 或 sendNotify.js 的本机目录；也会自动检查可导入的 notify 模块及 /ql/data/scripts、/ql/scripts。通知不可用不改变业务退出码。
 
+### `FMAPP_ACCOUNTS`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：与 FMAPP 相同；旧 Fa米家任务已使用该变量时可直接沿用。
+- 填写格式：每个非空行一个 JSON 账号对象；仅在 FMAPP 为空时读取；兼容 blackBox、deviceId、fmVersion、userAgent 字段别名。
+
+### `FMAPP_TIMEOUT`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：在青龙环境变量中按网络情况设置。
+- 填写格式：1 至 60 秒；FMAPP 默认 15 秒，旧 FMAPP_ACCOUNTS 默认 10 秒。
+
 ### `QINGLONG_NOTIFY_SCRIPTS`
 
 - 必填：否
@@ -69,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9fb405d39b9873dfb7848d99dab4914f15540ae53ab2282698361e51ebbe47d3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b448219b57620cb7`。
+SHA-256 `92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b448219b57620cb7`。
 
 ## 副作用与风险
 

@@ -8804,7 +8804,8 @@
           "FMAPP_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "FMAPP_ACCOUNTS",
+          "FMAPP_TIMEOUT"
         ],
         "dryRunEnv": {
           "FMAPP_DRY_RUN": "1"
@@ -8835,7 +8836,7 @@
       },
       "displayName": "Fa米家每日签到与发米粒查询",
       "path": "scripts/ck_fmapp.py",
-      "sha256": "9fb405d39b9873dfb7848d99dab4914f15540ae53ab2282698361e51ebbe47d3",
+      "sha256": "92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -8843,9 +8844,21 @@
         "repository": "OreosLab/checkinpanel",
         "branch": "master",
         "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
-        "originalPath": "ck_fmapp.py"
+        "originalPath": "ck_fmapp.py",
+        "related": [
+          {
+            "repository": "yuxian158/check",
+            "url": "https://github.com/yuxian158/check.git",
+            "branch": "master",
+            "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+            "originalPath": "dailycheckin_scripts/ck_fmapp.py",
+            "catalogId": "4bf795804a91086f",
+            "sha256": "0a0c7d16448d603efb8f1cc0e1b3016f5d6bc9e0b284aa05e78f64f0db97a2b7",
+            "license": "MIT"
+          }
+        ]
       },
-      "cron": "47 1 * * *",
+      "cron": "58 1 * * *",
       "command": "python3 scripts/ck_fmapp.py",
       "environment": [
         {
@@ -8877,6 +8890,20 @@
           "format": "包含 notify.py 或 sendNotify.js 的本机目录；也会自动检查可导入的 notify 模块及 /ql/data/scripts、/ql/scripts。通知不可用不改变业务退出码。"
         },
         {
+          "name": "FMAPP_ACCOUNTS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 FMAPP 相同；旧 Fa米家任务已使用该变量时可直接沿用。",
+          "format": "每个非空行一个 JSON 账号对象；仅在 FMAPP 为空时读取；兼容 blackBox、deviceId、fmVersion、userAgent 字段别名。"
+        },
+        {
+          "name": "FMAPP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中按网络情况设置。",
+          "format": "1 至 60 秒；FMAPP 默认 15 秒，旧 FMAPP_ACCOUNTS 默认 10 秒。"
+        },
+        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
@@ -8896,7 +8923,9 @@
         "查询发米粒余额",
         "每行一个 JSON 账号，保留上游四个凭据字段及三个可选请求头默认值",
         "完全断网预演、分阶段脱敏日志、账号统计及单行 TASK_SUMMARY 结构化结果",
-        "正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭"
+        "正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭",
+        "兼容 FMAPP_ACCOUNTS 旧变量和 blackBox、deviceId、fmVersion、userAgent 字段别名",
+        "支持 FMAPP_TIMEOUT 1 至 60 秒；原 FMAPP 默认 15 秒、旧 FMAPP_ACCOUNTS 默认 10 秒"
       ],
       "sideEffects": [
         "向 Fa米家提交每日签到，按服务端规则更新签到记录并发放发米粒"
@@ -8912,20 +8941,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/b448219b57620cb7",
-        "candidateSha256": "f93f1b6e51ebc091bc66928bb537ec0c322a62e6337e1a5789601c504f497720"
+        "candidateSha256": "15923c31252320179be876a8d5f55b316d75dd5010717edf7b2fce7c1211f037"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "f93f1b6e51ebc091bc66928bb537ec0c322a62e6337e1a5789601c504f497720",
-        "releaseSha256": "9fb405d39b9873dfb7848d99dab4914f15540ae53ab2282698361e51ebbe47d3",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "15923c31252320179be876a8d5f55b316d75dd5010717edf7b2fce7c1211f037",
+        "releaseSha256": "92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.153887+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "f93f1b6e51ebc091bc66928bb537ec0c322a62e6337e1a5789601c504f497720",
-          "toCandidateSha256": "9fb405d39b9873dfb7848d99dab4914f15540ae53ab2282698361e51ebbe47d3",
+          "approvedAt": "2026-10-23T17:29:17.434799+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "15923c31252320179be876a8d5f55b316d75dd5010717edf7b2fce7c1211f037",
+          "toCandidateSha256": "92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -40283,151 +40312,6 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "ae672b43e126e9a98b1ce5d5d508b18bdc66276a8ddd20197c3a815425e5efde",
           "toCandidateSha256": "78f700c1309af4cd72297059fdf1e6eeb2afc0ea0d995f2dc17ee01c71ec3331",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
-      "catalogId": "4bf795804a91086f",
-      "applicationKey": "yuxian158/check::fmapp",
-      "checkProfile": {
-        "requiredEnv": [
-          "FMAPP_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "FMAPP_TIMEOUT",
-          "FMAPP_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS"
-        ],
-        "dryRunEnv": {
-          "FMAPP_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "FMAPP_TIMEOUT": "10",
-          "QINGLONG_NOTIFY": "auto"
-        },
-        "successPatterns": [
-          "签到接口返回成功",
-          "账号身份：",
-          "米粒数量：",
-          "最终状态：成功",
-          "\"status\":\"success\""
-        ],
-        "features": [
-          "使用 Fa米家官方接口执行每日签到，并显示接口返回的签到奖励进度。",
-          "查询并显示官方返回的账号昵称，便于核对执行账号。",
-          "查询并显示当前发米粒余额。",
-          "支持按行配置多个账号，逐账号独立执行并汇总成败。",
-          "支持完全不访问 Fa米家业务接口的断网预演模式。",
-          "输出带时间戳的阶段日志、账号统计、任务统计和单行 TASK_SUMMARY JSON。",
-          "按青龙通知开关和脚本选择器发送不含凭据与原始响应的任务摘要。"
-        ],
-        "sideEffects": [
-          "调用签到接口会完成当日签到，并可能增加发米粒或推进连续签到进度。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "Fa米家每日签到",
-      "path": "scripts/yuxian158_check_fmapp.py",
-      "sha256": "63c7b194e7ac1404a4652498e7977b9640e6f062a6498af10881f0f73153dcf1",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "yuxian158/check",
-        "branch": "master",
-        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
-        "originalPath": "dailycheckin_scripts/ck_fmapp.py"
-      },
-      "cron": "52 0 * * *",
-      "command": "python3 scripts/yuxian158_check_fmapp.py",
-      "environment": [
-        {
-          "name": "FMAPP_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录 Fa米家 App 后，在本人设备上抓取 fmapp.chinafamilymart.com.cn 接口请求头中的 token、Cookie、blackBox 和 deviceId；只保存自己的账号信息，不要在日志或聊天中粘贴这些值。",
-          "format": "每个非空行一个 JSON 对象，必填字段为 token、cookie、blackbox、device_id；兼容 blackBox、deviceId、fmVersion、userAgent 字段名。示例只应使用占位值：{\"token\":\"<TOKEN>\",\"cookie\":\"<COOKIE>\",\"blackbox\":\"<BLACKBOX>\",\"device_id\":\"<DEVICE_ID>\"}"
-        },
-        {
-          "name": "FMAPP_TIMEOUT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按网络情况设置单次接口超时秒数；不设置时使用 10 秒。",
-          "format": "1 至 60 的数字"
-        },
-        {
-          "name": "FMAPP_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要仅检查参数且完全不访问 Fa米家接口时设为 1。",
-          "format": "1、true、yes 或 on 表示启用"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要只为指定脚本发送通知时设置选择器；可使用目录中的发布路径、文件名或目录通配符。",
-          "format": "以逗号、分号、空白或换行分隔；支持 4bf795804a91086f、scripts/famijia_daily.py、famijia_daily.py 或 *"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "FMAPP_ACCOUNTS 每个非空行表示一个账号，行内使用一个 JSON 对象组合该账号的全部配套凭据；各账号独立执行，任一账号配置或任务失败都会使进程以非零状态退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "使用 Fa米家官方接口执行每日签到，并显示接口返回的签到奖励进度。",
-        "查询并显示官方返回的账号昵称，便于核对执行账号。",
-        "查询并显示当前发米粒余额。",
-        "支持按行配置多个账号，逐账号独立执行并汇总成败。",
-        "支持完全不访问 Fa米家业务接口的断网预演模式。",
-        "输出带时间戳的阶段日志、账号统计、任务统计和单行 TASK_SUMMARY JSON。",
-        "按青龙通知开关和脚本选择器发送不含凭据与原始响应的任务摘要。"
-      ],
-      "sideEffects": [
-        "调用签到接口会完成当日签到，并可能增加发米粒或推进连续签到进度。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/4bf795804a91086f",
-        "candidateSha256": "acc7a6d9a2b53292d79bc73203cba8ad8bb0eaf3df2e12f08a0f78c703dcbe1e"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "acc7a6d9a2b53292d79bc73203cba8ad8bb0eaf3df2e12f08a0f78c703dcbe1e",
-        "releaseSha256": "63c7b194e7ac1404a4652498e7977b9640e6f062a6498af10881f0f73153dcf1",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T02:08:58.864419+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "acc7a6d9a2b53292d79bc73203cba8ad8bb0eaf3df2e12f08a0f78c703dcbe1e",
-          "toCandidateSha256": "63c7b194e7ac1404a4652498e7977b9640e6f062a6498af10881f0f73153dcf1",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

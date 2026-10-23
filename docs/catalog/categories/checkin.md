@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **178** 个脚本。返回 [`目录首页`](../README.md)。
+共 **177** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -37,7 +37,7 @@
 | CSDN签到与可选抽奖 | `scripts/ck_csdn.py` | `python3 scripts/ck_csdn.py` | `38 1 * * *` | 待检查 | [ck_csdn.py.md](../../scripts/ck_csdn.py.md)（`docs/scripts/ck_csdn.py.md`） |
 | 网易蜗牛读书 | `scripts/ck_du163.js` | `node scripts/ck_du163.js` | `42 2 * * *` | 待检查 | [ck_du163.js.md](../../scripts/ck_du163.js.md)（`docs/scripts/ck_du163.js.md`） |
 | 多看阅读 | `scripts/ck_duokan.py` | `python3 scripts/ck_duokan.py` | `5 2 * * *` | 待检查 | [ck_duokan.py.md](../../scripts/ck_duokan.py.md)（`docs/scripts/ck_duokan.py.md`） |
-| Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `47 1 * * *` | 待检查 | [ck_fmapp.py.md](../../scripts/ck_fmapp.py.md)（`docs/scripts/ck_fmapp.py.md`） |
+| Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `58 1 * * *` | 待检查 | [ck_fmapp.py.md](../../scripts/ck_fmapp.py.md)（`docs/scripts/ck_fmapp.py.md`） |
 | 网易云游戏每日签到 | `scripts/ck_game163.py` | `python3 scripts/ck_game163.py` | `21 1 * * *` | 待检查 | [ck_game163.py.md](../../scripts/ck_game163.py.md)（`docs/scripts/ck_game163.py.md`） |
 | 全民K歌每日任务 | `scripts/ck_kgqq.py` | `python3 scripts/ck_kgqq.py` | `35 2 * * *` | 待检查 | [ck_kgqq.py.md](../../scripts/ck_kgqq.py.md)（`docs/scripts/ck_kgqq.py.md`） |
 | 魅族社区签到 | `scripts/ck_meizu.py` | `python3 scripts/ck_meizu.py` | `30 1 * * *` | 待检查 | [ck_meizu.py.md](../../scripts/ck_meizu.py.md)（`docs/scripts/ck_meizu.py.md`） |
@@ -178,7 +178,6 @@
 | AcFun每日签到与可选互动 | `scripts/yuxian158_check_acfun.py` | `python3 scripts/yuxian158_check_acfun.py` | `44 2 * * *` | 待检查 | [yuxian158_check_acfun.py.md](../../scripts/yuxian158_check_acfun.py.md)（`docs/scripts/yuxian158_check_acfun.py.md`） |
 | 哔哩哔哩每日任务 | `scripts/yuxian158_check_bilibili.py` | `python3 scripts/yuxian158_check_bilibili.py` | `2 0 * * *` | 待检查 | [yuxian158_check_bilibili.py.md](../../scripts/yuxian158_check_bilibili.py.md)（`docs/scripts/yuxian158_check_bilibili.py.md`） |
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `23 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
-| Fa米家每日签到 | `scripts/yuxian158_check_fmapp.py` | `python3 scripts/yuxian158_check_fmapp.py` | `52 0 * * *` | 待检查 | [yuxian158_check_fmapp.py.md](../../scripts/yuxian158_check_fmapp.py.md)（`docs/scripts/yuxian158_check_fmapp.py.md`） |
 | Zippo会员中心 | `scripts/zippo.py` | `python3 scripts/zippo.py` | `56 0 * * *` | 待检查 | [zippo.py.md](../../scripts/zippo.py.md)（`docs/scripts/zippo.py.md`） |
 | 知末签到 | `scripts/znzmo.js` | `node scripts/znzmo.js` | `0 55 11 * * *` | 待检查 | [znzmo.js.md](../../scripts/znzmo.js.md)（`docs/scripts/znzmo.js.md`） |
 | Zodgame签到与广告任务 | `scripts/zodgame_test.py` | `python3 scripts/zodgame_test.py` | `35 2 * * *` | 待检查 | [zodgame_test.py.md](../../scripts/zodgame_test.py.md)（`docs/scripts/zodgame_test.py.md`） |

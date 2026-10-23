@@ -55,7 +55,7 @@
 | 多看阅读 | `scripts/ck_duokan.py` | `python3 scripts/ck_duokan.py` | `5 2 * * *` | 待检查 | [ck_duokan.py.md](../scripts/ck_duokan.py.md)（`docs/scripts/ck_duokan.py.md`） |
 | EUserv 自动续期 | `scripts/ck_euserv.py` | `python3 scripts/ck_euserv.py` | `56 10 */7 * *` | 待检查 | [ck_euserv.py.md](../scripts/ck_euserv.py.md)（`docs/scripts/ck_euserv.py.md`） |
 | 时光相册每日签到 | `scripts/ck_everphoto.py` | `python3 scripts/ck_everphoto.py` | `3 0 * * *` | 待检查 | [ck_everphoto.py.md](../scripts/ck_everphoto.py.md)（`docs/scripts/ck_everphoto.py.md`） |
-| Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `47 1 * * *` | 待检查 | [ck_fmapp.py.md](../scripts/ck_fmapp.py.md)（`docs/scripts/ck_fmapp.py.md`） |
+| Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `58 1 * * *` | 待检查 | [ck_fmapp.py.md](../scripts/ck_fmapp.py.md)（`docs/scripts/ck_fmapp.py.md`） |
 | FreeNom 域名续期维护 | `scripts/ck_freenom.py` | `python3 scripts/ck_freenom.py` | `30 7 */10 * *` | 待检查 | [ck_freenom.py.md](../scripts/ck_freenom.py.md)（`docs/scripts/ck_freenom.py.md`） |
 | 网易云游戏每日签到 | `scripts/ck_game163.py` | `python3 scripts/ck_game163.py` | `21 1 * * *` | 待检查 | [ck_game163.py.md](../scripts/ck_game163.py.md)（`docs/scripts/ck_game163.py.md`） |
 | 全民K歌每日任务 | `scripts/ck_kgqq.py` | `python3 scripts/ck_kgqq.py` | `35 2 * * *` | 待检查 | [ck_kgqq.py.md](../scripts/ck_kgqq.py.md)（`docs/scripts/ck_kgqq.py.md`） |
@@ -223,7 +223,6 @@
 | 哔哩哔哩每日任务 | `scripts/yuxian158_check_bilibili.py` | `python3 scripts/yuxian158_check_bilibili.py` | `2 0 * * *` | 待检查 | [yuxian158_check_bilibili.py.md](../scripts/yuxian158_check_bilibili.py.md)（`docs/scripts/yuxian158_check_bilibili.py.md`） |
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `23 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
 | 时光相册每日签到 | `scripts/yuxian158_check_everphoto.py` | `python3 scripts/yuxian158_check_everphoto.py` | `28 1 * * *` | 待检查 | [yuxian158_check_everphoto.py.md](../scripts/yuxian158_check_everphoto.py.md)（`docs/scripts/yuxian158_check_everphoto.py.md`） |
-| Fa米家每日签到 | `scripts/yuxian158_check_fmapp.py` | `python3 scripts/yuxian158_check_fmapp.py` | `52 0 * * *` | 待检查 | [yuxian158_check_fmapp.py.md](../scripts/yuxian158_check_fmapp.py.md)（`docs/scripts/yuxian158_check_fmapp.py.md`） |
 | 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `39 2 * * *` | 待检查 | [yyshuijuantime.py.md](../scripts/yyshuijuantime.py.md)（`docs/scripts/yyshuijuantime.py.md`） |
 | ZCode 国内版领套餐 | `scripts/zcode_cn_daily.py` | `python3 scripts/zcode_cn_daily.py` | `36 1 * * *` | 待检查 | [zcode_cn_daily.py.md](../scripts/zcode_cn_daily.py.md)（`docs/scripts/zcode_cn_daily.py.md`） |
 | Zippo会员中心 | `scripts/zippo.py` | `python3 scripts/zippo.py` | `56 0 * * *` | 待检查 | [zippo.py.md](../scripts/zippo.py.md)（`docs/scripts/zippo.py.md`） |
