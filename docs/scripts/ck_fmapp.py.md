@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/ck_fmapp.py`
 - 青龙命令：`python3 scripts/ck_fmapp.py`
-- 建议 Cron：`58 1 * * *`
-- 发布哈希：`92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0`
+- 建议 Cron：`57 1 * * *`
+- 发布哈希：`5c7d1126eef3513dfe046073d0335f3401ad02e0961016d28ef56b47b1cd1fc6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -17,6 +17,7 @@
 - 正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭
 - 兼容 FMAPP_ACCOUNTS 旧变量和 blackBox、deviceId、fmVersion、userAgent 字段别名
 - 支持 FMAPP_TIMEOUT 1 至 60 秒；原 FMAPP 默认 15 秒、旧 FMAPP_ACCOUNTS 默认 10 秒
+- 旧 Fa米家脚本 ID 和文件名仍可选择青龙通知
 
 ## 环境变量与参数
 
@@ -85,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b448219b57620cb7`。
+SHA-256 `5c7d1126eef3513dfe046073d0335f3401ad02e0961016d28ef56b47b1cd1fc6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b448219b57620cb7`。
 
 ## 副作用与风险
 

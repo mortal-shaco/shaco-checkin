@@ -8836,7 +8836,7 @@
       },
       "displayName": "Fa米家每日签到与发米粒查询",
       "path": "scripts/ck_fmapp.py",
-      "sha256": "92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0",
+      "sha256": "5c7d1126eef3513dfe046073d0335f3401ad02e0961016d28ef56b47b1cd1fc6",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -8858,7 +8858,7 @@
           }
         ]
       },
-      "cron": "58 1 * * *",
+      "cron": "57 1 * * *",
       "command": "python3 scripts/ck_fmapp.py",
       "environment": [
         {
@@ -8925,7 +8925,8 @@
         "完全断网预演、分阶段脱敏日志、账号统计及单行 TASK_SUMMARY 结构化结果",
         "正式运行调用青龙通知发送器发送脱敏任务总结，支持全局关闭",
         "兼容 FMAPP_ACCOUNTS 旧变量和 blackBox、deviceId、fmVersion、userAgent 字段别名",
-        "支持 FMAPP_TIMEOUT 1 至 60 秒；原 FMAPP 默认 15 秒、旧 FMAPP_ACCOUNTS 默认 10 秒"
+        "支持 FMAPP_TIMEOUT 1 至 60 秒；原 FMAPP 默认 15 秒、旧 FMAPP_ACCOUNTS 默认 10 秒",
+        "旧 Fa米家脚本 ID 和文件名仍可选择青龙通知"
       ],
       "sideEffects": [
         "向 Fa米家提交每日签到，按服务端规则更新签到记录并发放发米粒"
@@ -8941,20 +8942,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/b448219b57620cb7",
-        "candidateSha256": "15923c31252320179be876a8d5f55b316d75dd5010717edf7b2fce7c1211f037"
+        "candidateSha256": "09cee0d61b2aa73defefb151311ee4e91ddbd7b8255edbea8914810799955de7"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "15923c31252320179be876a8d5f55b316d75dd5010717edf7b2fce7c1211f037",
-        "releaseSha256": "92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0",
+        "validatedSha256": "09cee0d61b2aa73defefb151311ee4e91ddbd7b8255edbea8914810799955de7",
+        "releaseSha256": "5c7d1126eef3513dfe046073d0335f3401ad02e0961016d28ef56b47b1cd1fc6",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-23T17:29:17.434799+00:00",
+          "approvedAt": "2026-10-23T17:32:47.592789+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "15923c31252320179be876a8d5f55b316d75dd5010717edf7b2fce7c1211f037",
-          "toCandidateSha256": "92f85bdfe006d26eef0812e29f57c95cdcdd1741390f4123fd5aee5cfd3e46f0",
+          "fromCandidateSha256": "09cee0d61b2aa73defefb151311ee4e91ddbd7b8255edbea8914810799955de7",
+          "toCandidateSha256": "5c7d1126eef3513dfe046073d0335f3401ad02e0961016d28ef56b47b1cd1fc6",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

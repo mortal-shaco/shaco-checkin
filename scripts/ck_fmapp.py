@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: Fa米家每日签到与发米粒查询
-# cron: 58 1 * * *
+# cron: 57 1 * * *
 # 上游：OreosLab/checkinpanel，ck_fmapp.py（MIT）
 # 保留上游任务标识：new Env('Fa米家每日签到与发米粒查询');
 """Fa米家每日签到、昵称与发米粒查询。
@@ -40,7 +40,11 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
         _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('b448219b57620cb7', 'scripts/ck_fmapp.py', 'ck_fmapp.py', 'ck_fmapp')
+        _ql_notify_identities = (
+            'b448219b57620cb7', 'scripts/ck_fmapp.py', 'ck_fmapp.py', 'ck_fmapp',
+            '4bf795804a91086f', 'scripts/yuxian158_check_fmapp.py',
+            'yuxian158_check_fmapp.py', 'yuxian158_check_fmapp',
+        )
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors

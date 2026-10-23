@@ -23,7 +23,7 @@
 | 多看阅读 | `scripts/ck_duokan.py` | `python3 scripts/ck_duokan.py` | `5 2 * * *` | 待检查 | [ck_duokan.py.md](../../scripts/ck_duokan.py.md)（`docs/scripts/ck_duokan.py.md`） |
 | EUserv 自动续期 | `scripts/ck_euserv.py` | `python3 scripts/ck_euserv.py` | `56 10 */7 * *` | 待检查 | [ck_euserv.py.md](../../scripts/ck_euserv.py.md)（`docs/scripts/ck_euserv.py.md`） |
 | 时光相册每日签到 | `scripts/ck_everphoto.py` | `python3 scripts/ck_everphoto.py` | `3 0 * * *` | 待检查 | [ck_everphoto.py.md](../../scripts/ck_everphoto.py.md)（`docs/scripts/ck_everphoto.py.md`） |
-| Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `58 1 * * *` | 待检查 | [ck_fmapp.py.md](../../scripts/ck_fmapp.py.md)（`docs/scripts/ck_fmapp.py.md`） |
+| Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `57 1 * * *` | 待检查 | [ck_fmapp.py.md](../../scripts/ck_fmapp.py.md)（`docs/scripts/ck_fmapp.py.md`） |
 | FreeNom 域名续期维护 | `scripts/ck_freenom.py` | `python3 scripts/ck_freenom.py` | `30 7 */10 * *` | 待检查 | [ck_freenom.py.md](../../scripts/ck_freenom.py.md)（`docs/scripts/ck_freenom.py.md`） |
 | 网易云游戏每日签到 | `scripts/ck_game163.py` | `python3 scripts/ck_game163.py` | `21 1 * * *` | 待检查 | [ck_game163.py.md](../../scripts/ck_game163.py.md)（`docs/scripts/ck_game163.py.md`） |
 | 全民K歌每日任务 | `scripts/ck_kgqq.py` | `python3 scripts/ck_kgqq.py` | `35 2 * * *` | 待检查 | [ck_kgqq.py.md](../../scripts/ck_kgqq.py.md)（`docs/scripts/ck_kgqq.py.md`） |

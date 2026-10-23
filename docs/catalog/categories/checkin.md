@@ -37,7 +37,7 @@
 | CSDN签到与可选抽奖 | `scripts/ck_csdn.py` | `python3 scripts/ck_csdn.py` | `38 1 * * *` | 待检查 | [ck_csdn.py.md](../../scripts/ck_csdn.py.md)（`docs/scripts/ck_csdn.py.md`） |
 | 网易蜗牛读书 | `scripts/ck_du163.js` | `node scripts/ck_du163.js` | `42 2 * * *` | 待检查 | [ck_du163.js.md](../../scripts/ck_du163.js.md)（`docs/scripts/ck_du163.js.md`） |
 | 多看阅读 | `scripts/ck_duokan.py` | `python3 scripts/ck_duokan.py` | `5 2 * * *` | 待检查 | [ck_duokan.py.md](../../scripts/ck_duokan.py.md)（`docs/scripts/ck_duokan.py.md`） |
-| Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `58 1 * * *` | 待检查 | [ck_fmapp.py.md](../../scripts/ck_fmapp.py.md)（`docs/scripts/ck_fmapp.py.md`） |
+| Fa米家每日签到与发米粒查询 | `scripts/ck_fmapp.py` | `python3 scripts/ck_fmapp.py` | `57 1 * * *` | 待检查 | [ck_fmapp.py.md](../../scripts/ck_fmapp.py.md)（`docs/scripts/ck_fmapp.py.md`） |
 | 网易云游戏每日签到 | `scripts/ck_game163.py` | `python3 scripts/ck_game163.py` | `21 1 * * *` | 待检查 | [ck_game163.py.md](../../scripts/ck_game163.py.md)（`docs/scripts/ck_game163.py.md`） |
 | 全民K歌每日任务 | `scripts/ck_kgqq.py` | `python3 scripts/ck_kgqq.py` | `35 2 * * *` | 待检查 | [ck_kgqq.py.md](../../scripts/ck_kgqq.py.md)（`docs/scripts/ck_kgqq.py.md`） |
 | 魅族社区签到 | `scripts/ck_meizu.py` | `python3 scripts/ck_meizu.py` | `30 1 * * *` | 待检查 | [ck_meizu.py.md](../../scripts/ck_meizu.py.md)（`docs/scripts/ck_meizu.py.md`） |
