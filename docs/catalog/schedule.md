@@ -21,8 +21,7 @@
 | 机场签到（速鹰666） | `scripts/airport.py` | `python3 scripts/airport.py` | `27 1 * * *` | 待检查 | [airport.py.md](../scripts/airport.py.md)（`docs/scripts/airport.py.md`） |
 | AkileCloud 签到与保活 | `scripts/akile_checkin.py` | `python3 scripts/akile_checkin.py` | `44 0 * * *` | 待检查 | [akile_checkin.py.md](../scripts/akile_checkin.py.md)（`docs/scripts/akile_checkin.py.md`） |
 | 阿里云社区 | `scripts/aliyun_web.js` | `node scripts/aliyun_web.js` | `36 7,13 * * *` | 待检查 | [aliyun_web.js.md](../scripts/aliyun_web.js.md)（`docs/scripts/aliyun_web.js.md`） |
-| 阿里云盘每日签到 | `scripts/aliyundrive_checkin.js` | `node scripts/aliyundrive_checkin.js` | `55 1 * * *` | 待检查 | [aliyundrive_checkin.js.md](../scripts/aliyundrive_checkin.js.md)（`docs/scripts/aliyundrive_checkin.js.md`） |
-| 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `43 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
+| 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `47 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `38 0 * * *` | 待检查 | [aolaxing.py.md](../scripts/aolaxing.py.md)（`docs/scripts/aolaxing.py.md`） |
 | Hax 与 Woiden 可开通区域监控 | `scripts/api_hax.py` | `python3 scripts/api_hax.py` | `44 */6 * * *` | 待检查 | [api_hax.py.md](../scripts/api_hax.py.md)（`docs/scripts/api_hax.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |

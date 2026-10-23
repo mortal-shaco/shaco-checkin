@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 阿里云盘签到
-# cron: 43 1 * * *
+# cron: 47 1 * * *
 # dependencies: ecdsa (仅启用设备签名时需要)
 """Aliyun Drive daily check-in.
 
@@ -25,6 +25,7 @@ Optional environment:
   ALIYUN_MAX_DELAY_SECONDS=0          Random delay before live execution.
   ALIYUN_PERSIST_ROTATED_TOKENS=1     Opt in to the file adapter below.
   ALIYUN_TOKEN_OUTPUT_FILE=/path      Destination for rotated tokens.
+  ALIYUN_PUSH_PLUS=token             Optional PushPlus notification token.
 
 获取参数：登录阿里云盘网页版，打开开发者工具 Application → Local Storage，
 查看当前站点的 token 项，复制 refresh_token 字段（不要复制整段 JSON）。
@@ -64,6 +65,9 @@ AUTO_UPDATE_TOKEN、PRIVACY_MODE、SHOW_TOKEN_IN_NOTIFICATION 不再用于
 保留原作者 Telegram@sudojia、站点 https://blog.imzjw.cn 与日期
 2024/5/18 的署名；合并其 ALI_REFRESH_TOKEN 参数兼容和身份展示能力。
 组合维护版本按有效许可证 GPL-3.0 发布，同时完整保留下列 MIT 声明。
+聚合 huwangkeji/aliyundrive_checkin 的每日签到、当日领奖、签到日历、
+奖励概览和可选 HTTPS PushPlus 推送；原脚本 GPL-3.0，提交
+267ee025840c5b55dce5b5e1e365fb52ac500fce，保留原作者署名。
 
 MIT License
 Copyright (c) agluo/ql-script-hub contributors.
@@ -135,6 +139,7 @@ SIGN_URL = "https://member.aliyundrive.com/v1/activity/sign_in_list"
 USER_INFO_URL = "https://user.aliyundrive.com/v2/user/get"
 STORAGE_URL = "https://api.aliyundrive.com/v2/user/get"
 SESSION_URL = "https://api.aliyundrive.com/users/v1/users/device/create_session"
+PUSHPLUS_URL = "https://www.pushplus.plus/send"
 REQUEST_TIMEOUT_SECONDS = 20
 USER_AGENT = "qinglong-aliyun-drive-checkin/2.0"
 TRUE_VALUES = {"1", "true", "yes", "on"}
@@ -228,16 +233,34 @@ def notify_summary(body: str, dry_run: bool) -> str:
     if dry_run:
         timeline("通知阶段：预演模拟发送脱敏总结（不调用网络）", "└─")
         return "✅ 预演通知已模拟"
+    results = []
     sender = load_notify_sender()
     if sender is None:
         print("WARNING: Qinglong notify.py was not found; task status is unchanged", file=sys.stderr)
-        return "⚠️ 未找到通知组件"
-    try:
-        sender(NOTIFY_TITLE, body)
-        return "✅ 青龙任务总结已推送"
-    except Exception:
-        print("WARNING: notification delivery failed; task status is unchanged", file=sys.stderr)
-        return "⚠️ 推送失败"
+        results.append("⚠️ 未找到青龙通知组件")
+    else:
+        try:
+            sender(NOTIFY_TITLE, body)
+            results.append("✅ 青龙任务总结已推送")
+        except Exception:
+            print("WARNING: notification delivery failed; task status is unchanged", file=sys.stderr)
+            results.append("⚠️ 青龙推送失败")
+    pushplus_token = os.getenv("ALIYUN_PUSH_PLUS", "").strip()
+    if pushplus_token:
+        try:
+            status, payload = post_json(PUSHPLUS_URL, {
+                "token": pushplus_token,
+                "title": NOTIFY_TITLE,
+                "content": body,
+                "template": "txt",
+            }, "PushPlus notification")
+            if status != 200 or payload.get("code") != 200:
+                raise CheckinError("PushPlus did not confirm delivery")
+            results.append("✅ PushPlus 已推送")
+        except (CheckinError, ValueError):
+            print("WARNING: PushPlus delivery failed; task status is unchanged", file=sys.stderr)
+            results.append("⚠️ PushPlus 推送失败")
+    return "；".join(results)
 
 
 def log_banner(mode: str, account_count: int) -> None:

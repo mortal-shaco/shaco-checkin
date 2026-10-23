@@ -1,12 +1,11 @@
 # 分类索引 · 云盘
 
-共 **15** 个脚本。返回 [`目录首页`](../README.md)。
+共 **14** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | 139云盘云朵任务 | `scripts/139_yunduo.py` | `python3 scripts/139_yunduo.py` | `11 0 * * *` | 待检查 | [139_yunduo.py.md](../../scripts/139_yunduo.py.md)（`docs/scripts/139_yunduo.py.md`） |
-| 阿里云盘每日签到 | `scripts/aliyundrive_checkin.js` | `node scripts/aliyundrive_checkin.js` | `55 1 * * *` | 待检查 | [aliyundrive_checkin.js.md](../../scripts/aliyundrive_checkin.js.md)（`docs/scripts/aliyundrive_checkin.js.md`） |
-| 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `43 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
+| 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `47 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
 | 阿里云盘签到与奖励领取 | `scripts/autosignin.js` | `node scripts/autosignin.js` | `37 2 * * *` | 待检查 | [autosignin.js.md](../../scripts/autosignin.js.md)（`docs/scripts/autosignin.js.md`） |
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `36 2 * * *` | 待检查 | [baidu.py.md](../../scripts/baidu.py.md)（`docs/scripts/baidu.py.md`） |
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `19 2 * * *` | 上架 | [baiduwangpan_checkin.py.md](../../scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |
