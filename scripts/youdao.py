@@ -1,11 +1,14 @@
 # name: 有道云笔记每日空间奖励
-# cron: 47 0 * * *
-"""独立维护版；来源 Sitoi/dailycheckin dailycheckin/youdao/main.py。
-上游提交：135cc236e59ac4f14bcddc44acb3cbb3ed6010b5，许可证 MIT。
+# cron: 55 0 * * *
+"""独立维护版；来源 Sitoi/dailycheckin dailycheckin/youdao/main.py，
+以及 lizhixu/ql-script-hub 的 youdao.py。
+上游提交：135cc236e59ac4f14bcddc44acb3cbb3ed6010b5、
+ac591a320092dcaeaf236b7c2b6acfd28981e589；均为 MIT。
 YOUDAO_COOKIE：网页 note.youdao.com 登录后，从开发者工具 Network 中复制
 发往 note.youdao.com 请求的完整 Cookie 请求头（不含 Cookie: 前缀）。
 每行一个账号；分号分隔 Cookie 字段，字段只在第一个等号处分割。
 默认依次同步奖励、签到、领取三次广告空间奖励；会改变账号空间额度。
+YOUDAO_AD_REWARDS=0 可关闭三次广告奖励；默认 1 保留原动作。
 YOUDAO_DRY_RUN=1 完全断网预演，通知也只模拟；不验证真实凭据。
 QINGLONG_NOTIFY=0 关闭通知；可用 QINGLONG_NOTIFY_DIR 指定青龙通知目录。
 上游未提供调度，本维护版建议每日 08:00（以青龙时区为准）。
@@ -215,6 +218,7 @@ def notify(body, dry):
 def main():
     started = time.monotonic()
     dry = enabled("YOUDAO_DRY_RUN")
+    ads_enabled = enabled("YOUDAO_AD_REWARDS", "1")
     accounts = [line.strip() for line in os.getenv("YOUDAO_COOKIE", "").splitlines() if line.strip()]
     log(f"========== {TITLE} ==========")
     log(f"开始时间：{datetime.now():%Y-%m-%d %H:%M:%S}；模式：{'断网预演' if dry else '实际运行'}；账号数：{len(accounts)}")
@@ -246,6 +250,11 @@ def main():
             for number, (label, path, key) in enumerate(stages, 2):
                 stage_start = time.monotonic()
                 log(f"账号 {index} 阶段 {number}/6：{label}")
+                if label.startswith("广告奖励") and not ads_enabled:
+                    counts["skipped"] += 1
+                    completed += 1
+                    log("⏭️ 广告奖励已通过 YOUDAO_AD_REWARDS=0 关闭")
+                    continue
                 if dry:
                     log("⏭️ 预演：接口、方法和奖励校验已就绪，不发送请求")
                 else:

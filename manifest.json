@@ -18827,173 +18827,6 @@
       }
     },
     {
-      "catalogId": "bd893babb907859b",
-      "applicationKey": "lizhixu/ql-script-hub::youdao",
-      "checkProfile": {
-        "requiredEnv": [
-          "YOUDAO_COOKIE"
-        ],
-        "optionalEnv": [
-          "YOUDAO_DRY_RUN",
-          "YOUDAO_AD_REWARDS",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
-        ],
-        "dryRunEnv": {
-          "YOUDAO_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "YOUDAO_DRY_RUN": "0",
-          "YOUDAO_AD_REWARDS": "1",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "最终状态：success",
-          "TASK_SUMMARY="
-        ],
-        "features": [
-          "HTTPS 会话刷新",
-          "同步奖励并核验 rewardSpace 字段",
-          "每日签到并核验 space 字段",
-          "三次广告空间奖励及独立关闭开关",
-          "汇总已核验的空间奖励",
-          "显示官方返回的非敏感账号身份",
-          "换行多账号独立执行与失败退出码",
-          "完全断网预演及参数检查",
-          "分阶段计时、账号与任务统计及单行结构化汇总",
-          "青龙脱敏通知，兼容 notify.py 和 sendNotify.js，失败不影响业务退出码"
-        ],
-        "sideEffects": [
-          "正式运行刷新登录会话",
-          "正式运行同步奖励并增加云笔记空间",
-          "正式运行每日签到并领取空间奖励",
-          "默认正式运行领取三次广告空间奖励，可通过 YOUDAO_AD_REWARDS=0 关闭",
-          "启用通知时向青龙已配置渠道发送脱敏任务摘要"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "有道云笔记签到",
-      "path": "scripts/lizhixu_ql_script_hub_youdao.py",
-      "sha256": "7db85865608c99143c6d7e3e681db21a3b8306eec16f4b254177532bcef2e36b",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "lizhixu/ql-script-hub",
-        "branch": "main",
-        "commit": "ac591a320092dcaeaf236b7c2b6acfd28981e589",
-        "originalPath": "youdao.py"
-      },
-      "cron": "56 1 * * *",
-      "command": "python3 scripts/lizhixu_ql_script_hub_youdao.py",
-      "environment": [
-        {
-          "name": "YOUDAO_COOKIE",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "浏览器登录有道云笔记 https://note.youdao.com，打开开发者工具的网络面板，选择该域名的已登录请求，复制请求头中的完整 Cookie 值。必须包含 YNOTE_PERS；不要复制 Cookie: 前缀，也不要将凭据贴入日志。",
-          "format": "每个非空行一个账号的完整 Cookie，字段按分号分隔，每个字段仅在第一个等号处分开，后续等号和 & 保留为凭据内容；不使用 & 或 @ 分隔账号。"
-        },
-        {
-          "name": "YOUDAO_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置为 1 开启断网预演，默认 0；预演仅检查参数和执行计划，不确认真实业务成功，也不调用通知模块。",
-          "format": "1 或 0，也支持 true/false、yes/no、on/off。"
-        },
-        {
-          "name": "YOUDAO_AD_REWARDS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置；默认 1 保留三次广告空间奖励，设为 0 关闭该动作，签到和同步仍执行。",
-          "format": "1 或 0，也支持 true/false、yes/no、on/off。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录；未设置时自动查找青龙标准目录及可导入的 notify 模块。业务请求不依赖通知模块；缺失、失败或超时均保留业务退出码。",
-          "format": "本机通知模块目录路径；只用于可选通知。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "YOUDAO_COOKIE 每个非空行一个账号；逐个独立处理，任一账号失败或配置无效均以非零退出码结束。"
-      },
-      "dependencies": [
-        "requests"
-      ],
-      "features": [
-        "HTTPS 会话刷新",
-        "同步奖励并核验 rewardSpace 字段",
-        "每日签到并核验 space 字段",
-        "三次广告空间奖励及独立关闭开关",
-        "汇总已核验的空间奖励",
-        "显示官方返回的非敏感账号身份",
-        "换行多账号独立执行与失败退出码",
-        "完全断网预演及参数检查",
-        "分阶段计时、账号与任务统计及单行结构化汇总",
-        "青龙脱敏通知，兼容 notify.py 和 sendNotify.js，失败不影响业务退出码"
-      ],
-      "sideEffects": [
-        "正式运行刷新登录会话",
-        "正式运行同步奖励并增加云笔记空间",
-        "正式运行每日签到并领取空间奖励",
-        "默认正式运行领取三次广告空间奖励，可通过 YOUDAO_AD_REWARDS=0 关闭",
-        "启用通知时向青龙已配置渠道发送脱敏任务摘要"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/bd893babb907859b",
-        "candidateSha256": "6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6",
-        "releaseSha256": "7db85865608c99143c6d7e3e681db21a3b8306eec16f4b254177532bcef2e36b",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.159128+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "6aca37b98181444404cc54f0917b8aab7d6a0995e485aff80918ec32a205e3a6",
-          "toCandidateSha256": "7db85865608c99143c6d7e3e681db21a3b8306eec16f4b254177532bcef2e36b",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
       "catalogId": "3328423575cf7143",
       "applicationKey": "lobsterai",
       "checkProfile": {
@@ -20496,48 +20329,48 @@
         ],
         "optionalEnv": [
           "NETEASE_COOKIES",
-          "NETEASE_WEB_SIGN_WEAPI",
+          "NETEASE_MUSIC_U",
           "NETEASE_SCROBBLE",
+          "NETEASE_WEB_SIGN_WEAPI",
           "NETEASE_DRY_RUN",
           "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR",
           "PUSHPLUS_TOKEN",
           "SENDKEY",
-          "BARK_URL",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "BARK_URL"
         ],
         "dryRunEnv": {
           "NETEASE_DRY_RUN": "1"
         },
         "liveEnv": {
-          "NETEASE_DRY_RUN": "0",
           "NETEASE_SCROBBLE": "0",
           "NETEASE_WEB_SIGN_WEAPI": "0",
-          "QINGLONG_NOTIFY": "1"
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
-          "TASK_SUMMARY=",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
+          "最终状态：success",
+          "TASK_SUMMARY="
         ],
         "features": [
-          "登录确认并显示官方非敏感昵称或公开 UID",
-          "手机签到与网页签到，识别业务码 -2 的今日已完成",
-          "可选官方 weapi 网页签到，显示返回积分",
-          "云贝签到与已完成任务奖励领取",
-          "VIP 成长值批量领取，保留任务查询与按任务 ID 领取备用接口",
-          "显式开启的模拟听歌，保留四个榜单获取链路及 300 首成功判定",
-          "等级与累计听歌数量查询",
-          "每行多账号、旧 Cookie 变量、注释与整行引号兼容",
-          "青龙通知失败后依次尝试 PushPlus 与 Server酱，保留独立 Bark 通知",
-          "完全断网预演、编号时间轴日志、逐账号统计与唯一结构化任务汇总"
+          "确认登录并显示官方昵称、用户名或公开用户编号",
+          "手机端与网页端每日签到，识别今日已签到并显示返回积分",
+          "可选通过官方 weapi 执行网页签到",
+          "云贝签到、连签奖励领取、已完成云贝任务奖励领取及余额查询",
+          "黑胶乐签打卡、VIP 每日成长任务逐项奖励领取、批量成长值领取及按任务编号备用领取",
+          "查询 VIP 等级、成长值和昨日新增成长值",
+          "显式开启时通过四个榜单获取歌曲并提交最多三百首模拟播放记录，按三百首确认成功",
+          "查询账号等级与累计听歌数量",
+          "每行多账号、旧 Cookie 变量和 MUSIC_U 变量兼容",
+          "青龙通知、PushPlus 与 Server酱顺序备用及独立 Bark 通知",
+          "完全断网预演、分阶段时间轴日志、逐账号统计及单行结构化汇总"
         ],
         "sideEffects": [
-          "手机、网页与云贝签到改变签到记录或积分",
-          "领取已完成云贝任务奖励",
-          "领取 VIP 成长值",
-          "仅显式开启时提交模拟播放历史记录",
-          "正式执行且通知开启时发送青龙或备用渠道通知，并按配置发送 Bark 通知"
+          "手机端、网页端与云贝签到会改变签到记录或积分",
+          "领取云贝连签奖励及已完成的云贝任务奖励",
+          "黑胶乐签打卡及领取 VIP 每日任务和成长值奖励",
+          "仅显式开启模拟听歌时提交播放历史记录",
+          "正式运行且通知开启时发送青龙或备用渠道通知，并按配置发送 Bark 通知"
         ]
       },
       "postReview": {
@@ -20546,7 +20379,7 @@
       },
       "displayName": "网易云全能打卡",
       "path": "scripts/netease_task.py",
-      "sha256": "01ae6aa547d2467234439acb3a45e9cd240a32e3ae4952e3a5e2d4c3f23c7deb",
+      "sha256": "e24b76bcb0e7df479cb84cb08b29487d324ee5e6265dca9c6270dfa031e3a949",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -20565,53 +20398,70 @@
             "catalogId": "4bc7f79f3e7ce4d0",
             "sha256": "220050a2290466787c8c509cd0f607f66e7038ed59f49df2b5895b2eea328e42",
             "license": "MIT"
+          },
+          {
+            "repository": "Tsuki-polaris/qinglong-netease-full-sign--",
+            "url": "https://github.com/Tsuki-polaris/qinglong-netease-full-sign--.git",
+            "branch": "main",
+            "commit": "9e8dfdd5d0cb6dadf0aebbe86f368752aa2b4773",
+            "originalPath": "ql_netease_full_sign.js",
+            "catalogId": "6509b5485be83574",
+            "sha256": "f6751667f1fb32974e95c56646784beb935b5188955990205053826c239b00b7",
+            "license": "MIT"
           }
         ]
       },
-      "cron": "42 1 * * *",
+      "cron": "53 1 * * *",
       "command": "python3 scripts/netease_task.py",
       "environment": [
         {
           "name": "NETEASE_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "浏览器登录网易云音乐网页版，在 F12 → Application → Cookies 中复制同一账号 MUSIC_U 和 __csrf；不要发送给不可信 API 服务。",
-          "format": "每个非空行一条完整 Cookie，必须包含非空 MUSIC_U 和 __csrf；字段用分号分隔，值中的 =、&、@ 原样保留。"
+          "howToGet": "登录网易云音乐网页版，在浏览器开发者工具的站点 Cookie 中复制同一账号的完整 Cookie，至少保留 MUSIC_U 与 __csrf；在青龙环境变量中每行填写一个账号。",
+          "format": "每行一份完整 Cookie；字段以分号分隔，字段值中的等号原样保留；可有空行、井号开头注释或整行引号。"
         },
         {
           "name": "NETEASE_COOKIES",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧版多账号 Cookie 兼容输入，获取方法同 NETEASE_COOKIE。",
-          "format": "每个非空行一条 Cookie，支持 # 注释和包裹整行的引号；非空时优先于 NETEASE_COOKIE。"
+          "howToGet": "与 NETEASE_COOKIE 相同；旧版多账号变量，设置后优先读取。",
+          "format": "每行一份完整 Cookie，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "NETEASE_MUSIC_U",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录网易云音乐网页版，在开发者工具的 Cookie 中复制 MUSIC_U 字段值；仅在两个完整 Cookie 变量均未设置时使用。",
+          "format": "每行一个 MUSIC_U 值；为兼容上游输入，完整 Cookie 仍为首选。"
         },
         {
           "name": "NETEASE_API_BASE",
           "required": true,
           "sensitive": false,
-          "howToGet": "提供自行信任的网易云 Node.js API 兼容 HTTPS 服务；必须支持维护脚本的登录、签到、云贝任务、VIP、榜单、听歌记录和等级接口。脚本自行通过 HTTP 调用，不安装或调用外部程序。",
-          "format": "正式执行必填，断网预演可省略；HTTPS 地址，不含认证信息、查询参数或片段，该服务会接收账号 Cookie。"
-        },
-        {
-          "name": "NETEASE_WEB_SIGN_WEAPI",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中按需开启；从公开 Python 包仓库安装 pycryptodome。",
-          "format": "1 使用官方 weapi 网页签到并显示积分；默认 0 保留原 API 方式，其他阶段不变。"
+          "howToGet": "正式运行前填写自己信任且兼容网易云音乐接口的 HTTPS 服务地址；该服务会接收 Cookie，断网预演不需要。",
+          "format": "不含账号密码、查询参数和片段的 HTTPS 基础地址。"
         },
         {
           "name": "NETEASE_SCROBBLE",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需在青龙环境变量中显式开启，知悉会修改播放历史。",
-          "format": "默认 0；只有 1 开启随机模拟听歌记录，最多 300 首。"
+          "howToGet": "如明确需要模拟听歌，在青龙环境变量中设为 1；默认关闭。",
+          "format": "仅 1 开启。"
+        },
+        {
+          "name": "NETEASE_WEB_SIGN_WEAPI",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如需把原有网页签到切换为网易云官方 weapi，在青龙环境变量中设为 1。",
+          "format": "仅 1 开启，默认沿用兼容接口。"
         },
         {
           "name": "NETEASE_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量或本地测试环境设置。",
-          "format": "1 为完全断网预演，默认 0 为正式执行；预演不验证真实账号。"
+          "howToGet": "在青龙环境变量中设为 1，可进行完全断网预演。",
+          "format": "仅 1 开启。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -20621,67 +20471,68 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要限制自动通知脚本时填写脚本名、相对路径或目录标识；设置为空表示自动模式下不通知。",
+          "format": "多个选择器可用逗号、分号或空白分隔，支持星号通配。"
+        },
+        {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选指定青龙通知模块目录；默认自动查找 notify 模块及 /ql/data/scripts、/ql/scripts。",
+          "howToGet": "青龙通知模块位于非标准目录时填写其所在目录。",
           "format": "包含 notify.py 的目录路径。"
         },
         {
           "name": "PUSHPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "登录 PushPlus 官网，在个人中心获取推送令牌。",
-          "format": "单个令牌；青龙通知失败时使用 HTTPS JSON 接口，业务码 200 才确认送达。"
+          "howToGet": "在 PushPlus 官网个人中心获取推送凭据；仅在青龙通知不可用时作为备用渠道。",
+          "format": "单个推送凭据。"
         },
         {
           "name": "SENDKEY",
           "required": false,
           "sensitive": true,
-          "howToGet": "登录 Server酱官网获取 SendKey。",
-          "format": "单个 SendKey；青龙与 PushPlus 均不可用时使用，业务码 0 才确认送达。"
+          "howToGet": "登录 Server酱 官网获取 SendKey；仅在青龙和 PushPlus 均不可用时使用。",
+          "format": "单个 SendKey。"
         },
         {
           "name": "BARK_URL",
           "required": false,
           "sensitive": true,
-          "howToGet": "在 Bark 应用中复制可信 HTTPS 推送地址，包含推送密钥。",
-          "format": "HTTPS 地址，不含查询参数或片段；保留独立推送，受全局通知开关控制。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "从自己使用的 Bark 服务取得完整 HTTPS 推送地址；此渠道按原有行为独立发送。",
+          "format": "完整 HTTPS 地址，不含查询参数。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号的完整 Cookie；同账号 MUSIC_U 与 __csrf 放在同一行，不以 & 或 @ 分隔账号。逐账号独立处理，任一账号失败时整体非零退出。"
+        "rule": "每个非空行填写同一账号的完整 Cookie；空行和井号开头的注释会跳过。各账号独立处理，任何账号失败则进程非零退出。"
       },
       "dependencies": [
         "pycryptodome"
       ],
       "features": [
-        "登录确认并显示官方非敏感昵称或公开 UID",
-        "手机签到与网页签到，识别业务码 -2 的今日已完成",
-        "可选官方 weapi 网页签到，显示返回积分",
-        "云贝签到与已完成任务奖励领取",
-        "VIP 成长值批量领取，保留任务查询与按任务 ID 领取备用接口",
-        "显式开启的模拟听歌，保留四个榜单获取链路及 300 首成功判定",
-        "等级与累计听歌数量查询",
-        "每行多账号、旧 Cookie 变量、注释与整行引号兼容",
-        "青龙通知失败后依次尝试 PushPlus 与 Server酱，保留独立 Bark 通知",
-        "完全断网预演、编号时间轴日志、逐账号统计与唯一结构化任务汇总"
+        "确认登录并显示官方昵称、用户名或公开用户编号",
+        "手机端与网页端每日签到，识别今日已签到并显示返回积分",
+        "可选通过官方 weapi 执行网页签到",
+        "云贝签到、连签奖励领取、已完成云贝任务奖励领取及余额查询",
+        "黑胶乐签打卡、VIP 每日成长任务逐项奖励领取、批量成长值领取及按任务编号备用领取",
+        "查询 VIP 等级、成长值和昨日新增成长值",
+        "显式开启时通过四个榜单获取歌曲并提交最多三百首模拟播放记录，按三百首确认成功",
+        "查询账号等级与累计听歌数量",
+        "每行多账号、旧 Cookie 变量和 MUSIC_U 变量兼容",
+        "青龙通知、PushPlus 与 Server酱顺序备用及独立 Bark 通知",
+        "完全断网预演、分阶段时间轴日志、逐账号统计及单行结构化汇总"
       ],
       "sideEffects": [
-        "手机、网页与云贝签到改变签到记录或积分",
-        "领取已完成云贝任务奖励",
-        "领取 VIP 成长值",
-        "仅显式开启时提交模拟播放历史记录",
-        "正式执行且通知开启时发送青龙或备用渠道通知，并按配置发送 Bark 通知"
+        "手机端、网页端与云贝签到会改变签到记录或积分",
+        "领取云贝连签奖励及已完成的云贝任务奖励",
+        "黑胶乐签打卡及领取 VIP 每日任务和成长值奖励",
+        "仅显式开启模拟听歌时提交播放历史记录",
+        "正式运行且通知开启时发送青龙或备用渠道通知，并按配置发送 Bark 通知"
       ],
       "review": {
         "staticPassed": true,
@@ -20694,20 +20545,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/a8a311f3f5aaa2e6",
-        "candidateSha256": "a94fc863e187c81a29f6c44ab88c30162bc3d1570ebbe602a70ed4824a198fbe"
+        "candidateSha256": "b2b134829f4bcfca5a64f59d09d512580804533ccf453d7c92831982560e4770"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "a94fc863e187c81a29f6c44ab88c30162bc3d1570ebbe602a70ed4824a198fbe",
-        "releaseSha256": "01ae6aa547d2467234439acb3a45e9cd240a32e3ae4952e3a5e2d4c3f23c7deb",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "b2b134829f4bcfca5a64f59d09d512580804533ccf453d7c92831982560e4770",
+        "releaseSha256": "e24b76bcb0e7df479cb84cb08b29487d324ee5e6265dca9c6270dfa031e3a949",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.564606+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "a94fc863e187c81a29f6c44ab88c30162bc3d1570ebbe602a70ed4824a198fbe",
-          "toCandidateSha256": "01ae6aa547d2467234439acb3a45e9cd240a32e3ae4952e3a5e2d4c3f23c7deb",
+          "approvedAt": "2026-10-23T17:18:32.854331+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b2b134829f4bcfca5a64f59d09d512580804533ccf453d7c92831982560e4770",
+          "toCandidateSha256": "e24b76bcb0e7df479cb84cb08b29487d324ee5e6265dca9c6270dfa031e3a949",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -39441,7 +39292,7 @@
           "YOUDAO_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "YOUDAO_AD_REWARDS"
         ],
         "dryRunEnv": {
           "YOUDAO_DRY_RUN": "1"
@@ -39461,13 +39312,14 @@
           "连续领取三次广告空间奖励，分别验证 space 字段。",
           "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，不从 Cookie 提取身份。",
           "多账号独立处理，统计已确认奖励、阶段耗时及账号结果，输出单行结构化任务总结。",
-          "完全断网预演及青龙脱敏通知，通知失败不改变业务退出码。"
+          "完全断网预演及青龙脱敏通知，通知失败不改变业务退出码。",
+          "通过 YOUDAO_AD_REWARDS=0 显式关闭三次广告奖励；默认仍执行原有三次请求。"
         ],
         "sideEffects": [
           "刷新账号登录会话。",
           "领取每日同步奖励并增加账号空间。",
           "提交每日签到并领取空间奖励。",
-          "提交三次广告奖励请求并增加账号空间。",
+          "默认提交三次广告奖励请求并增加账号空间；YOUDAO_AD_REWARDS=0 时跳过。",
           "实际运行时通过青龙发送脱敏通知。"
         ]
       },
@@ -39477,7 +39329,7 @@
       },
       "displayName": "有道云笔记每日空间奖励",
       "path": "scripts/youdao.py",
-      "sha256": "f26f5a211e02d19807322faa5d43c0d1e7c91610da0d54f6c163492d28b00871",
+      "sha256": "15903aa6f22a3142f994f573106b7bac7e9198615bf4f2a03515d0a29ed8602e",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -39485,9 +39337,21 @@
         "repository": "Sitoi/dailycheckin",
         "branch": "main",
         "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
-        "originalPath": "dailycheckin/youdao/main.py"
+        "originalPath": "dailycheckin/youdao/main.py",
+        "related": [
+          {
+            "repository": "lizhixu/ql-script-hub",
+            "url": "https://github.com/lizhixu/ql-script-hub.git",
+            "branch": "main",
+            "commit": "ac591a320092dcaeaf236b7c2b6acfd28981e589",
+            "originalPath": "youdao.py",
+            "catalogId": "bd893babb907859b",
+            "sha256": "f2176d4e12be02f87d445887fbbc3574fd99c6109e6cee50cff96f2ce4edb9a1",
+            "license": "MIT"
+          }
+        ]
       },
-      "cron": "47 0 * * *",
+      "cron": "55 0 * * *",
       "command": "python3 scripts/youdao.py",
       "environment": [
         {
@@ -39519,6 +39383,13 @@
           "format": "本地目录路径。"
         },
         {
+          "name": "YOUDAO_AD_REWARDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置；默认 1 保留三次广告空间奖励，设为 0 关闭该动作，签到和同步仍执行。",
+          "format": "1 或 0，也支持 true/false、yes/no、on/off。"
+        },
+        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
@@ -39539,13 +39410,14 @@
         "连续领取三次广告空间奖励，分别验证 space 字段。",
         "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID，不从 Cookie 提取身份。",
         "多账号独立处理，统计已确认奖励、阶段耗时及账号结果，输出单行结构化任务总结。",
-        "完全断网预演及青龙脱敏通知，通知失败不改变业务退出码。"
+        "完全断网预演及青龙脱敏通知，通知失败不改变业务退出码。",
+        "通过 YOUDAO_AD_REWARDS=0 显式关闭三次广告奖励；默认仍执行原有三次请求。"
       ],
       "sideEffects": [
         "刷新账号登录会话。",
         "领取每日同步奖励并增加账号空间。",
         "提交每日签到并领取空间奖励。",
-        "提交三次广告奖励请求并增加账号空间。",
+        "默认提交三次广告奖励请求并增加账号空间；YOUDAO_AD_REWARDS=0 时跳过。",
         "实际运行时通过青龙发送脱敏通知。"
       ],
       "review": {
@@ -39559,20 +39431,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/4cc5f70c13c67bbd",
-        "candidateSha256": "0c740bfa5e0616e362c80e44bb42aedacc6cf7785d7a0665f4f9be29f4ddb799"
+        "candidateSha256": "02c6641837ec5bc2f3c41f5969aeedc08d0684e933ca3ec6e3f1ed5a4a814f61"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "0c740bfa5e0616e362c80e44bb42aedacc6cf7785d7a0665f4f9be29f4ddb799",
-        "releaseSha256": "f26f5a211e02d19807322faa5d43c0d1e7c91610da0d54f6c163492d28b00871",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "02c6641837ec5bc2f3c41f5969aeedc08d0684e933ca3ec6e3f1ed5a4a814f61",
+        "releaseSha256": "15903aa6f22a3142f994f573106b7bac7e9198615bf4f2a03515d0a29ed8602e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.168175+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "0c740bfa5e0616e362c80e44bb42aedacc6cf7785d7a0665f4f9be29f4ddb799",
-          "toCandidateSha256": "f26f5a211e02d19807322faa5d43c0d1e7c91610da0d54f6c163492d28b00871",
+          "approvedAt": "2026-10-23T17:18:01.831826+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "02c6641837ec5bc2f3c41f5969aeedc08d0684e933ca3ec6e3f1ed5a4a814f61",
+          "toCandidateSha256": "15903aa6f22a3142f994f573106b7bac7e9198615bf4f2a03515d0a29ed8602e",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

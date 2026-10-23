@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 # name: 网易云全能打卡
-# cron: 42 1 * * *
+# cron: 53 1 * * *
 # SPDX-License-Identifier: MIT
 # 来源：Han-cy77/Qinglong_auto，netease_task.py
 # 合并来源：deeplee/personal-scripts，netease_music_checkin.py
 # 合并提交：c8c7c0f4fd1802df86c32a86c26b5c26cfef5023（MIT）
 # 原始提交：4bac7c4f709db60a648c4bd498e99f9c7e66b63b
+# 新合并来源：Tsuki-polaris/qinglong-netease-full-sign--，ql_netease_full_sign.js
+# 原来源声明：@author Your Name；@version 1.0.0；@license MIT
+# 原来源免责声明：本脚本仅供学习交流使用，请勿用于商业用途；
+# 使用本脚本造成的任何后果由使用者自行承担；本脚本不存储、不上传任何用户数据；
+# 使用前请确认遵守网易云音乐用户服务条款。
 """网易云全能打卡（独立 Python 标准库版本）。
 
 NETEASE_COOKIE：登录网易云音乐网页版，在浏览器开发者工具的网络请求中
@@ -17,13 +22,18 @@ NETEASE_API_BASE：显式配置已信任、兼容网易云 Node.js API 接口的
 NETEASE_SCROBBLE=1 才提交模拟听歌记录（最多 300 首）；默认关闭，避免
 未经选择修改播放历史。接口接受记录不代表实际听歌、升级或经验已到账。
 NETEASE_DRY_RUN=1 完全断网预演，包括通知和 Bark 都只模拟，不验证账号。
-QINGLONG_NOTIFY 未设置时按上架状态；设为 0/false/no/off 关闭。可选
+QINGLONG_NOTIFY 默认开启；设为 0/false/no/off 关闭。可选
 QINGLONG_NOTIFY_DIR 指向青龙通知模块所在目录，BARK_URL 保留兼容。
 日志仅写标准输出，不创建上游的账号昵称日志文件。
 兼容 NETEASE_COOKIES（设置时优先于 NETEASE_COOKIE）；每行完整 Cookie，
 支持空行、# 注释和包裹整行的引号，不以 & 或 @ 分割账号。
 NETEASE_WEB_SIGN_WEAPI=1 使用官方 weapi 网页签到并显示积分，需安装公开
 包 pycryptodome；默认仍使用已有 API 网页签到，其他任务保持原有接口。
+主来源的连签奖励、云贝余额、黑胶乐签、VIP 每日任务和成长值详情通过
+网易云官方 weapi 请求，需安装同一公开包 pycryptodome。若缺少包，这些
+阶段明确失败，不会被当作业务成功。
+兼容 NETEASE_MUSIC_U：仅在未设置 NETEASE_COOKIE/NETEASE_COOKIES 时
+使用；每行仅填写同一账号的 MUSIC_U 值。完整 Cookie 仍是维护版首选。
 登录网页 music.163.com 后，F12 → Application → Cookies，复制 MUSIC_U
 及 __csrf（同一账号）；API 服务请使用自行信任的兼容 HTTPS 服务，该服务
 将接收 Cookie。不能使用来源不明的公共服务。
@@ -34,6 +44,8 @@ NETEASE_WEB_SIGN_WEAPI=1 使用官方 weapi 网页签到并显示积分，需安
 功能盘点：原来源网页签到与维护版网页签到相同，补入直接 weapi 传输、
 积分显示、旧 Cookie 解析、PushPlus 与 Server酱通知；维护版全部八个阶段、
 四榜单听歌链路、VIP 批量及按 ID 备用链路、Bark 和成功判定均保留。
+本次加入上游原有的连签奖励、云贝余额、黑胶乐签、VIP 逐项奖励与成长值
+详情，沿用每日 09:30 定时；上游原定时为每日 09:00。
 
 MIT License
 Copyright notice: upstream source contains no explicit copyright notice.
@@ -74,6 +86,7 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
 # qinglong-notification-policy: end
 import base64
 import datetime
+import fnmatch
 import importlib.util
 import json
 import os
@@ -249,13 +262,17 @@ def weapi_encrypt(plain_dict):
 
 def parse_accounts():
     raw = os.getenv('NETEASE_COOKIES', '').strip() or os.getenv('NETEASE_COOKIE', '')
+    legacy_music_u = not raw.strip()
+    if legacy_music_u:
+        raw = os.getenv('NETEASE_MUSIC_U', '')
     accounts = []
     for line in raw.splitlines():
         line = line.strip()
         if len(line) >= 2 and line[0] == line[-1] and line[0] in ('"', "'"):
             line = line[1:-1].strip()
         if line and not line.startswith('#'):
-            accounts.append(line)
+            # 上游仅接受 MUSIC_U 值。分号属于 Cookie 字段分隔，不能作为账号分隔。
+            accounts.append('MUSIC_U=' + line + '; os=pc; appver=2.10.6;' if legacy_music_u else line)
     return accounts
 
 
@@ -272,6 +289,20 @@ class Account:
 
     def api(self, path, **values):
         return http_json(self.base + path, {'cookie': self.cookie, **values})
+
+    def weapi(self, host, path, values=None):
+        if host not in {'music.163.com', 'interface3.music.163.com'}:
+            raise RequestFailure('官方接口主机无效')
+        fields = dict(values or {})
+        fields.setdefault('csrf_token', cookie_fields(self.cookie).get('__csrf', ''))
+        try:
+            encrypted = weapi_encrypt(fields)
+        except ImportError:
+            raise RequestFailure('官方 weapi 阶段缺少公开依赖 pycryptodome，请在青龙依赖管理中安装') from None
+        return http_json('https://' + host + path, encrypted, headers={
+            'Cookie': self.cookie, 'Origin': 'https://music.163.com',
+            'Referer': 'https://music.163.com/', 'User-Agent': 'Mozilla/5.0',
+        })
 
     def require(self, data):
         if not good(data):
@@ -307,7 +338,7 @@ class Account:
     def sign(self, kind):
         if kind == 1 and os.getenv('NETEASE_WEB_SIGN_WEAPI', '0') == '1':
             try:
-                values = weapi_encrypt({'type': 1, 'csrf_token': cookie_fields(self.cookie)['__csrf']})
+                values = weapi_encrypt({'type': 1, 'csrf_token': cookie_fields(self.cookie).get('__csrf', '')})
             except ImportError:
                 raise RequestFailure('官方 weapi 模式缺少公开依赖 pycryptodome，请在青龙依赖管理中安装') from None
             result = http_json('https://music.163.com/weapi/point/dailyTask', values, headers={
@@ -327,6 +358,41 @@ class Account:
         result = self.require(self.api('/yunbei/sign'))
         points = number(nested(result, ('point',), ('data', 'point'), default=0))
         return 'success', f'签到接口已确认成功，新增云贝 {points}'
+
+    def yunbei_progress(self):
+        result = self.require(self.weapi('music.163.com', '/weapi/pointmall/user/sign/progress'))
+        configs = nested(result, ('data', 'lotteryConfig'))
+        if not isinstance(configs, list):
+            raise RequestFailure('连签奖励列表缺失或格式无效')
+        eligible = [item for item in configs if isinstance(item, dict)
+                    and number(item.get('baseLotteryId')) > 0
+                    and number(item.get('baseLotteryStatus')) == 1]
+        received = 0
+        failed = 0
+        for item in eligible:
+            try:
+                claim = self.require(self.weapi('music.163.com',
+                    '/weapi/pointmall/user/lottery/get',
+                    {'userLotteryId': str(item['baseLotteryId'])}))
+                if 'data' not in claim or claim['data'] is None:
+                    raise RequestFailure('领取响应缺少奖励数据')
+                received += 1
+                log(f'连签奖励 {received + failed}/{len(eligible)}：✅ 领取已确认')
+            except RequestFailure:
+                failed += 1
+                log(f'连签奖励 {received + failed}/{len(eligible)}：❌ 领取未确认')
+        if failed:
+            return 'failure', f'可领取 {len(eligible)}，成功 {received}，失败 {failed}'
+        if not eligible:
+            return 'alreadyComplete', '当前没有可领取的连签奖励'
+        return 'success', f'可领取 {len(eligible)}，成功 {received}'
+
+    def yunbei_balance(self):
+        result = self.require(self.weapi('music.163.com', '/weapi/v1/user/info'))
+        balance = nested(result, ('userPoint', 'balance'), ('data', 'userPoint', 'balance'))
+        if balance is None:
+            raise RequestFailure('云贝余额字段缺失')
+        return 'success', f'当前云贝余额 {number(balance)}'
 
     def yunbei_tasks(self):
         tasks = collect_task_items(self.require(self.api('/yunbei/tasks/todo')))
@@ -366,6 +432,68 @@ class Account:
         value = number(nested(res, ('growthPoint',), ('score',), ('point',),
                               ('data', 'growthPoint'), ('data', 'score'), ('data', 'point'), default=0))
         return 'success', f'成长值领取接口已确认，新增 {value}'
+
+    def vip_sign(self):
+        if not self.vip:
+            return 'skipped', '普通账号无黑胶乐签资格'
+        result = self.require(self.weapi('interface3.music.163.com',
+                                         '/weapi/vip-center-bff/task/sign'))
+        if result.get('data') is True:
+            return 'success', '黑胶乐签已确认成功，预计新增 3 成长值'
+        if result.get('data') is False:
+            return 'alreadyComplete', '黑胶乐签今日已完成'
+        raise RequestFailure('黑胶乐签响应缺少明确结果')
+
+    def vip_missions(self):
+        if not self.vip:
+            return 'skipped', '普通账号无 VIP 成长任务'
+        result = self.require(self.weapi('interface3.music.163.com',
+            '/weapi/middle/vip/mission/user/progress/list'))
+        missions = result.get('data')
+        if not isinstance(missions, list):
+            raise RequestFailure('VIP 成长任务列表缺失或格式无效')
+        eligible = []
+        for mission in missions:
+            if not isinstance(mission, dict):
+                continue
+            stages = mission.get('stageProgressDTOS')
+            if not isinstance(stages, list):
+                continue
+            eligible.extend(stage for stage in stages if isinstance(stage, dict)
+                            and number(stage.get('stageStatus')) == 100
+                            and stage.get('userRewardId') and stage.get('userProgressId'))
+        received = 0
+        failed = 0
+        growth = 0
+        for stage in eligible:
+            try:
+                self.require(self.weapi('interface3.music.163.com',
+                    '/weapi/middle/vip/mission/user/reward/receive', {
+                        'userRewardId': str(stage['userRewardId']),
+                        'userProgressId': str(stage['userProgressId']),
+                    }))
+                received += 1
+                growth += number(stage.get('worth') or stage.get('rewardCount'))
+                log(f'VIP 每日奖励 {received + failed}/{len(eligible)}：✅ 领取已确认')
+            except RequestFailure:
+                failed += 1
+                log(f'VIP 每日奖励 {received + failed}/{len(eligible)}：❌ 领取未确认')
+        if failed:
+            return 'failure', f'可领取 {len(eligible)}，成功 {received}，失败 {failed}'
+        if not eligible:
+            return 'alreadyComplete', '当前没有可领取的 VIP 每日奖励'
+        return 'success', f'领取 {received} 项，预计新增成长值 {growth}'
+
+    def vip_info(self):
+        if not self.vip:
+            return 'skipped', '普通账号无 VIP 成长值详情'
+        result = self.require(self.weapi('music.163.com',
+            '/weapi/vipnewcenter/app/level/growhpoint/basic'))
+        info = nested(result, ('data', 'userLevel'), ('data',))
+        if not isinstance(info, dict) or info.get('growthPoint') is None:
+            raise RequestFailure('VIP 成长值详情缺失')
+        level = info.get('levelName') or ('Lv.' + str(info['level']) if info.get('level') is not None else '未知')
+        return 'success', f'VIP 等级 {level}；成长值 {number(info["growthPoint"])}；昨日新增 {number(info.get("yesterdayPoint"))}'
 
     def scrobble(self):
         if os.getenv('NETEASE_SCROBBLE', '0') != '1':
@@ -409,8 +537,16 @@ class Account:
 
 
 def notify(summary, dry):
-    if os.getenv('QINGLONG_NOTIFY', '1').lower().strip() in DISABLED:
+    switch = os.getenv('QINGLONG_NOTIFY', 'auto').lower().strip()
+    if switch in DISABLED:
         return '已关闭'
+    selection = os.getenv('QINGLONG_NOTIFY_SCRIPTS')
+    if selection is not None:
+        selectors = re.split(r'[,;\s]+', selection.strip()) if selection.strip() else []
+        names = {'6509b5485be83574', 'a8a311f3f5aaa2e6', 'candidate.py',
+                 'netease_task.py', 'scripts/netease_task.py'}
+        if not any(fnmatch.fnmatch(name, pattern) for name in names for pattern in selectors):
+            return '未列入通知名单'
     if dry:
         log('⏭️ 通知预演：青龙、PushPlus、Server酱与 Bark 均不联网')
         return '断网预演'
@@ -473,6 +609,7 @@ def notify(summary, dry):
 def main():
     started = time.monotonic()
     dry = os.getenv('NETEASE_DRY_RUN', '0') == '1'
+    legacy_alias = not (os.getenv('NETEASE_COOKIES', '').strip() or os.getenv('NETEASE_COOKIE', '').strip())
     cookies = parse_accounts()
     SECRETS.extend(os.getenv(key, '').strip() for key in ('PUSHPLUS_TOKEN', 'SENDKEY', 'BARK_URL'))
     for cookie in cookies:
@@ -484,7 +621,7 @@ def main():
     configuration_error = not cookies
     base = ''
     if not cookies:
-        log('❌ 配置错误：缺少必填 NETEASE_COOKIE，每个非空行一个账号')
+        log('❌ 配置错误：缺少必填 NETEASE_COOKIE；兼容 NETEASE_COOKIES 或 NETEASE_MUSIC_U，每行一个账号')
     if not dry:
         try:
             base = secure_url(os.getenv('NETEASE_API_BASE', '').strip())
@@ -496,15 +633,21 @@ def main():
         before = time.monotonic()
         if configuration_error:
             account.step('配置检查', lambda: ('failure', '全局 API 地址无效，未发送请求'))
-        elif not all(cookie_fields(cookie).get(key) for key in ('MUSIC_U', '__csrf')):
+        elif not cookie_fields(cookie).get('MUSIC_U') or (
+            not legacy_alias and not cookie_fields(cookie).get('__csrf')):
             account.step('凭据格式检查', lambda: ('failure', '缺少 MUSIC_U 或 __csrf；未发送请求'))
         elif dry:
-            for title in ['登录状态', '手机签到', '网页签到', '云贝签到', '云贝奖励领取', 'VIP 成长值及备用接口', '模拟听歌开关', '等级查询']:
+            for title in ['登录状态', '手机签到', '网页签到', '云贝签到', '云贝连签奖励',
+                          '云贝奖励领取', '云贝余额', '黑胶乐签', 'VIP 每日奖励',
+                          'VIP 成长值及备用接口', 'VIP 成长值详情', '模拟听歌开关', '等级查询']:
                 account.step(title, lambda: ('skipped', 'DRY_RUN_OK：未发送请求，未执行副作用，不验证业务成功'))
         elif account.step('登录状态', account.login):
             for title, action in [('手机签到', lambda: account.sign(0)), ('网页签到', lambda: account.sign(1)),
-                                  ('云贝签到', account.yunbei_sign), ('云贝奖励领取', account.yunbei_tasks),
-                                  ('VIP 成长值', account.vip_growth), ('模拟听歌', account.scrobble), ('等级查询', account.level)]:
+                                  ('云贝签到', account.yunbei_sign), ('云贝连签奖励', account.yunbei_progress),
+                                  ('云贝奖励领取', account.yunbei_tasks), ('云贝余额', account.yunbei_balance),
+                                  ('黑胶乐签', account.vip_sign), ('VIP 每日奖励', account.vip_missions),
+                                  ('VIP 成长值', account.vip_growth), ('VIP 成长值详情', account.vip_info),
+                                  ('模拟听歌', account.scrobble), ('等级查询', account.level)]:
                 account.step(title, action)
         elapsed = round(time.monotonic() - before, 2)
         log(f'账号 {index} 统计：总任务 {sum(account.stats.values())}，成功 {account.stats["success"]}，已完成 {account.stats["alreadyComplete"]}，跳过 {account.stats["skipped"]}，失败 {account.stats["failure"]}；耗时 {elapsed} 秒')
