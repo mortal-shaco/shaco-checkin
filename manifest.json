@@ -8101,6 +8101,7 @@
           "CSDN_DRY_RUN",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_DIR",
+          "csdn_cookie",
           "QINGLONG_NOTIFY_SCRIPTS"
         ],
         "dryRunEnv": {
@@ -8122,12 +8123,14 @@
           "显示官方响应中的昵称、用户名、显示名称或公开 UID，抑制手机号等敏感字段",
           "完全离线预演、请求超时、响应大小限制、禁止重定向转发凭据和明确业务成功校验",
           "按账号和编号阶段记录脱敏结果、耗时和统计，输出唯一 TASK_SUMMARY JSON",
-          "通过青龙 notify.py 通知正式运行的成功、部分失败、失败与配置错误；预演生成摘要并记录离线跳过，通知故障不改变业务退出码"
+          "通过青龙 notify.py 通知正式运行的成功、部分失败、失败与配置错误；预演生成摘要并记录离线跳过，通知故障不改变业务退出码",
+          "未设置 CSDN_COOKIE 时兼容读取旧变量 csdn_cookie；可在 notify.py 缺失时使用 sendNotify.js，预演不联网通知。"
         ],
         "sideEffects": [
           "签到改变当天签到状态并可能领取奖励",
           "显式开启抽奖后消耗抽奖机会并可能领取奖品",
-          "正式运行向配置的青龙通知渠道发送脱敏任务摘要"
+          "正式运行向配置的青龙通知渠道发送脱敏任务摘要",
+          "通知启用且仅有青龙 sendNotify.js 时，可经该组件发送脱敏摘要。"
         ]
       },
       "postReview": {
@@ -8136,7 +8139,7 @@
       },
       "displayName": "CSDN签到与可选抽奖",
       "path": "scripts/ck_csdn.py",
-      "sha256": "161d9580a41bb0e7ea7a89338fb4c97b2db1c8e76b6877869d0dbc5a22ccd419",
+      "sha256": "7bbc517c105bb8438d186d1e970bd1f8b1286eda01a70db1b466540e53345f8a",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -8144,9 +8147,21 @@
         "repository": "OreosLab/checkinpanel",
         "branch": "master",
         "commit": "911402e4b2e559ffd62c4949a971ddd6834edd7d",
-        "originalPath": "ck_csdn.py"
+        "originalPath": "ck_csdn.py",
+        "related": [
+          {
+            "repository": "yuxian158/check",
+            "url": "https://github.com/yuxian158/check.git",
+            "branch": "master",
+            "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+            "originalPath": "dailycheckin_scripts/ck_csdn.py",
+            "catalogId": "9a5f757a8ae60a32",
+            "sha256": "d3834d6746d6739b30520c9023a13b5ecec2812904fb30d66cf917396fc8c6a1",
+            "license": "MIT"
+          }
+        ]
       },
-      "cron": "28 1 * * *",
+      "cron": "38 1 * * *",
       "command": "python3 scripts/ck_csdn.py",
       "environment": [
         {
@@ -8155,6 +8170,13 @@
           "sensitive": true,
           "howToGet": "在浏览器登录 CSDN，打开开发者工具网络面板，从发往 me.csdn.net 的已登录请求中复制 Cookie 请求头值；勿公开或提交凭据。",
           "format": "每个非空行一个账号的完整 Cookie，字段用分号分隔，字段仅按第一个等号切分，保留值中的后续等号；不含 Cookie: 前缀，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "csdn_cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容变量，获取方式与 CSDN_COOKIE 相同；仅在未设置 CSDN_COOKIE 时读取。",
+          "format": "每个非空行一个账号；不得与 CSDN_COOKIE 混合配置。"
         },
         {
           "name": "CSDN_DRAW",
@@ -8205,12 +8227,14 @@
         "显示官方响应中的昵称、用户名、显示名称或公开 UID，抑制手机号等敏感字段",
         "完全离线预演、请求超时、响应大小限制、禁止重定向转发凭据和明确业务成功校验",
         "按账号和编号阶段记录脱敏结果、耗时和统计，输出唯一 TASK_SUMMARY JSON",
-        "通过青龙 notify.py 通知正式运行的成功、部分失败、失败与配置错误；预演生成摘要并记录离线跳过，通知故障不改变业务退出码"
+        "通过青龙 notify.py 通知正式运行的成功、部分失败、失败与配置错误；预演生成摘要并记录离线跳过，通知故障不改变业务退出码",
+        "未设置 CSDN_COOKIE 时兼容读取旧变量 csdn_cookie；可在 notify.py 缺失时使用 sendNotify.js，预演不联网通知。"
       ],
       "sideEffects": [
         "签到改变当天签到状态并可能领取奖励",
         "显式开启抽奖后消耗抽奖机会并可能领取奖品",
-        "正式运行向配置的青龙通知渠道发送脱敏任务摘要"
+        "正式运行向配置的青龙通知渠道发送脱敏任务摘要",
+        "通知启用且仅有青龙 sendNotify.js 时，可经该组件发送脱敏摘要。"
       ],
       "review": {
         "staticPassed": true,
@@ -8223,20 +8247,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/90f965ebca645fae",
-        "candidateSha256": "f0db6c24d95b12149b23e26b1a152acd7959f6437d45859238c6a3a0c2d9b606"
+        "candidateSha256": "7ec3dccf6f885bbfcbcf7c69e0467618d8986a45617684f8bf18d458c5a8a190"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "f0db6c24d95b12149b23e26b1a152acd7959f6437d45859238c6a3a0c2d9b606",
-        "releaseSha256": "161d9580a41bb0e7ea7a89338fb4c97b2db1c8e76b6877869d0dbc5a22ccd419",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "7ec3dccf6f885bbfcbcf7c69e0467618d8986a45617684f8bf18d458c5a8a190",
+        "releaseSha256": "7bbc517c105bb8438d186d1e970bd1f8b1286eda01a70db1b466540e53345f8a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.153572+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "f0db6c24d95b12149b23e26b1a152acd7959f6437d45859238c6a3a0c2d9b606",
-          "toCandidateSha256": "161d9580a41bb0e7ea7a89338fb4c97b2db1c8e76b6877869d0dbc5a22ccd419",
+          "approvedAt": "2026-10-23T17:02:17.680893+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "7ec3dccf6f885bbfcbcf7c69e0467618d8986a45617684f8bf18d458c5a8a190",
+          "toCandidateSha256": "7bbc517c105bb8438d186d1e970bd1f8b1286eda01a70db1b466540e53345f8a",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -39942,169 +39966,6 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "57a86f3a704171affc47f60bbb8e60485259cc81f29a78508bc787c3a491d95d",
           "toCandidateSha256": "c958a220e197219d11f854e3bea8c0f63a886c97426f4d271b2f33240e912f2a",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
-      "catalogId": "9a5f757a8ae60a32",
-      "applicationKey": "yuxian158/check::csdn",
-      "checkProfile": {
-        "requiredEnv": [
-          "CSDN_COOKIE"
-        ],
-        "optionalEnv": [
-          "csdn_cookie",
-          "CSDN_DRAW",
-          "CSDN_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "CSDN_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "CSDN_DRAW": "0",
-          "QINGLONG_NOTIFY": "auto"
-        },
-        "successPatterns": [
-          "每日签到业务结果已确认",
-          "最终状态：success",
-          "\"status\":\"success\""
-        ],
-        "features": [
-          "使用 CSDN 登录 Cookie 执行每日签到，并对 HTTP 状态、业务代码和结果说明进行明确成功校验。",
-          "通过 CSDN_DRAW 显式选择是否在签到后执行抽奖，默认不消耗抽奖机会。",
-          "支持每行一个账号并逐账号隔离失败，任一账号失败时整体返回非零退出码。",
-          "提供完全断网的预演模式，用于校验参数格式、账号数量和任务规划。",
-          "输出带时间戳的分阶段脱敏日志、账号统计、总统计和单行 TASK_SUMMARY JSON。",
-          "按青龙全局开关和脚本选择规则发送脱敏任务通知，通知失败不覆盖业务退出码。",
-          "当官方响应提供昵称、用户名、显示名称或公开 UID 时，原样显示可公开账号身份。"
-        ],
-        "sideEffects": [
-          "正式执行时为每个有效账号发起 CSDN 每日签到。",
-          "启用 CSDN_DRAW 时发起一次抽奖，可能消耗账号的抽奖机会。",
-          "按通知配置向青龙通知渠道发送不含凭据和原始响应的任务摘要。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "CSDN每日签到与可选抽奖",
-      "path": "scripts/yuxian158_check_csdn.py",
-      "sha256": "d283398aca9aa9411633038f2c803a31c7784808463080f48901723ae541feac",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "yuxian158/check",
-        "branch": "master",
-        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
-        "originalPath": "dailycheckin_scripts/ck_csdn.py"
-      },
-      "cron": "36 1 * * *",
-      "command": "python3 scripts/yuxian158_check_csdn.py",
-      "environment": [
-        {
-          "name": "CSDN_COOKIE",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "浏览器登录 CSDN 后，打开开发者工具网络面板，从发往 CSDN 的已登录请求中复制完整 Cookie 请求头；不要将其写入日志或公开仓库。",
-          "format": "每个非空行一个账号；行内为分号分隔的名称=值字段，字段只在第一个等号处分割。"
-        },
-        {
-          "name": "csdn_cookie",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧版兼容变量，获取方式与 CSDN_COOKIE 相同；仅在未设置 CSDN_COOKIE 时读取。",
-          "format": "每个非空行一个账号；不得与 CSDN_COOKIE 混合配置。"
-        },
-        {
-          "name": "CSDN_DRAW",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "如需在签到后执行抽奖，将该变量设为 1；抽奖可能消耗抽奖机会，因此默认关闭。",
-          "format": "1/0、true/false、yes/no 或 on/off。"
-        },
-        {
-          "name": "CSDN_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "测试配置和任务规划时设为 1；该模式不会发出网络请求。",
-          "format": "1/0、true/false、yes/no 或 on/off。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要仅让部分脚本通知时，填写目录标识、产品专属路径、文件名或文件名通配符。",
-          "format": "多个选择器用逗号、分号、空白或换行分隔；* 代表全部；显式空值代表全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知脚本不在标准目录时，填写包含 notify.py 或 sendNotify.js 的目录。",
-          "format": "青龙容器内的绝对目录路径。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "CSDN_COOKIE 每个非空行表示一个账号；各账号独立处理，任一账号失败时整个进程返回非零退出码。"
-      },
-      "dependencies": [],
-      "features": [
-        "使用 CSDN 登录 Cookie 执行每日签到，并对 HTTP 状态、业务代码和结果说明进行明确成功校验。",
-        "通过 CSDN_DRAW 显式选择是否在签到后执行抽奖，默认不消耗抽奖机会。",
-        "支持每行一个账号并逐账号隔离失败，任一账号失败时整体返回非零退出码。",
-        "提供完全断网的预演模式，用于校验参数格式、账号数量和任务规划。",
-        "输出带时间戳的分阶段脱敏日志、账号统计、总统计和单行 TASK_SUMMARY JSON。",
-        "按青龙全局开关和脚本选择规则发送脱敏任务通知，通知失败不覆盖业务退出码。",
-        "当官方响应提供昵称、用户名、显示名称或公开 UID 时，原样显示可公开账号身份。"
-      ],
-      "sideEffects": [
-        "正式执行时为每个有效账号发起 CSDN 每日签到。",
-        "启用 CSDN_DRAW 时发起一次抽奖，可能消耗账号的抽奖机会。",
-        "按通知配置向青龙通知渠道发送不含凭据和原始响应的任务摘要。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/9a5f757a8ae60a32",
-        "candidateSha256": "a6950183ec17a4902100aaaaa60c252d058d5173a2a69b7795a4801515a9ac4e"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "a6950183ec17a4902100aaaaa60c252d058d5173a2a69b7795a4801515a9ac4e",
-        "releaseSha256": "d283398aca9aa9411633038f2c803a31c7784808463080f48901723ae541feac",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:35:42.428686+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "a6950183ec17a4902100aaaaa60c252d058d5173a2a69b7795a4801515a9ac4e",
-          "toCandidateSha256": "d283398aca9aa9411633038f2c803a31c7784808463080f48901723ae541feac",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

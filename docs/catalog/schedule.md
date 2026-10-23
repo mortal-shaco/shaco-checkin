@@ -51,7 +51,7 @@
 | 百度搜索资源平台 | `scripts/ck_baidu_url_submit.py` | `python3 scripts/ck_baidu_url_submit.py` | `8 2 * * *` | 待检查 | [ck_baidu_url_submit.py.md](../scripts/ck_baidu_url_submit.py.md)（`docs/scripts/ck_baidu_url_submit.py.md`） |
 | Bilibili 每日任务 | `scripts/ck_bilibili.py` | `python3 scripts/ck_bilibili.py` | `39 0 * * *` | 待检查 | [ck_bilibili.py.md](../scripts/ck_bilibili.py.md)（`docs/scripts/ck_bilibili.py.md`） |
 | CCAVA每日签到 | `scripts/ck_ccava.py` | `python3 scripts/ck_ccava.py` | `31 1 * * *` | 待检查 | [ck_ccava.py.md](../scripts/ck_ccava.py.md)（`docs/scripts/ck_ccava.py.md`） |
-| CSDN签到与可选抽奖 | `scripts/ck_csdn.py` | `python3 scripts/ck_csdn.py` | `28 1 * * *` | 待检查 | [ck_csdn.py.md](../scripts/ck_csdn.py.md)（`docs/scripts/ck_csdn.py.md`） |
+| CSDN签到与可选抽奖 | `scripts/ck_csdn.py` | `python3 scripts/ck_csdn.py` | `38 1 * * *` | 待检查 | [ck_csdn.py.md](../scripts/ck_csdn.py.md)（`docs/scripts/ck_csdn.py.md`） |
 | 网易蜗牛读书 | `scripts/ck_du163.js` | `node scripts/ck_du163.js` | `42 2 * * *` | 待检查 | [ck_du163.js.md](../scripts/ck_du163.js.md)（`docs/scripts/ck_du163.js.md`） |
 | 多看阅读 | `scripts/ck_duokan.py` | `python3 scripts/ck_duokan.py` | `5 2 * * *` | 待检查 | [ck_duokan.py.md](../scripts/ck_duokan.py.md)（`docs/scripts/ck_duokan.py.md`） |
 | EUserv 自动续期 | `scripts/ck_euserv.py` | `python3 scripts/ck_euserv.py` | `56 10 */7 * *` | 待检查 | [ck_euserv.py.md](../scripts/ck_euserv.py.md)（`docs/scripts/ck_euserv.py.md`） |
@@ -222,7 +222,6 @@
 | 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `47 0 * * *` | 待检查 | [youdao.py.md](../scripts/youdao.py.md)（`docs/scripts/youdao.py.md`） |
 | AcFun每日签到与可选互动 | `scripts/yuxian158_check_acfun.py` | `python3 scripts/yuxian158_check_acfun.py` | `44 2 * * *` | 待检查 | [yuxian158_check_acfun.py.md](../scripts/yuxian158_check_acfun.py.md)（`docs/scripts/yuxian158_check_acfun.py.md`） |
 | 哔哩哔哩每日任务 | `scripts/yuxian158_check_bilibili.py` | `python3 scripts/yuxian158_check_bilibili.py` | `2 0 * * *` | 待检查 | [yuxian158_check_bilibili.py.md](../scripts/yuxian158_check_bilibili.py.md)（`docs/scripts/yuxian158_check_bilibili.py.md`） |
-| CSDN每日签到与可选抽奖 | `scripts/yuxian158_check_csdn.py` | `python3 scripts/yuxian158_check_csdn.py` | `36 1 * * *` | 待检查 | [yuxian158_check_csdn.py.md](../scripts/yuxian158_check_csdn.py.md)（`docs/scripts/yuxian158_check_csdn.py.md`） |
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `23 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
 | 时光相册每日签到 | `scripts/yuxian158_check_everphoto.py` | `python3 scripts/yuxian158_check_everphoto.py` | `28 1 * * *` | 待检查 | [yuxian158_check_everphoto.py.md](../scripts/yuxian158_check_everphoto.py.md)（`docs/scripts/yuxian158_check_everphoto.py.md`） |
 | Fa米家每日签到 | `scripts/yuxian158_check_fmapp.py` | `python3 scripts/yuxian158_check_fmapp.py` | `52 0 * * *` | 待检查 | [yuxian158_check_fmapp.py.md](../scripts/yuxian158_check_fmapp.py.md)（`docs/scripts/yuxian158_check_fmapp.py.md`） |

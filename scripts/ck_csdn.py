@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # name: CSDN签到与可选抽奖
-# cron: 28 1 * * *
-# Upstream: OreosLab/checkinpanel, ck_csdn.py
-# Commit: 911402e4b2e559ffd62c4949a971ddd6834edd7d
+# cron: 38 1 * * *
+# Upstream: OreosLab/checkinpanel, ck_csdn.py; yuxian158/check, dailycheckin_scripts/ck_csdn.py
+# Commits: 911402e4b2e559ffd62c4949a971ddd6834edd7d; 723c834f121ff4eef2dec7afe521071a7efff1a9
 # SPDX-License-Identifier: MIT
 # 原始任务标识：new Env('CSDN签到与可选抽奖');
 """CSDN 每日签到；CSDN_DRAW=1 显式开启抽奖。
@@ -11,6 +11,8 @@ CSDN_COOKIE：浏览器登录 https://www.csdn.net 后，在开发者工具的�
 复制发往 me.csdn.net 的请求 Cookie 头值。每个非空行一个账号，保留完整
 Cookie，不含 Cookie: 前缀；不得使用 & 或 @ 分隔账号。
 CSDN_DRY_RUN=1 完全离线预演，不校验凭据有效性，不发送联网通知。
+兼容旧变量 csdn_cookie；仅在 CSDN_COOKIE 未设置时读取，不合并两者。
+QINGLONG_NOTIFY_DIR 可指定 notify.py 或 sendNotify.js 所在目录。
 
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -53,6 +55,7 @@ import importlib.util
 import json
 import os
 import re
+import subprocess
 import time
 import urllib.request
 from datetime import datetime
@@ -168,11 +171,23 @@ def notify(body, dry):
                 paths.append(Path(folder) / "notify.py")
             paths += [Path("/ql/data/scripts/notify.py"), Path("/ql/scripts/notify.py")]
             path = next((p for p in paths if p.is_file()), None)
-            if path is None:
-                raise ImportError("通知组件不可用")
-            spec = importlib.util.spec_from_file_location("qinglong_notify", path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
+            if path is not None:
+                spec = importlib.util.spec_from_file_location("qinglong_notify", path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+            else:
+                js_paths = [p.parent / "sendNotify.js" for p in paths]
+                js_path = next((p for p in js_paths if p.is_file()), None)
+                if js_path is None:
+                    raise ImportError("通知组件不可用")
+                subprocess.run(
+                    ["node", "-e", "require(process.argv[1]).sendNotify(process.argv[2],process.argv[3]).catch(()=>process.exit(1))",
+                     str(js_path), TITLE, body],
+                    check=True, timeout=30,
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                )
+                log("✅ 通知：摘要已交给青龙通知组件")
+                return "delivered"
         module.send(TITLE, body)
         log("✅ 通知：摘要已交给青龙通知组件")
         return "delivered"
@@ -184,7 +199,8 @@ def notify(body, dry):
 def main():
     started = time.monotonic()
     dry = os.environ.get("CSDN_DRY_RUN", "0").strip().lower() in {"1", "true", "yes", "on"}
-    lines = [line.strip() for line in os.environ.get("CSDN_COOKIE", "").splitlines() if line.strip()]
+    raw_accounts = os.environ.get("CSDN_COOKIE") or os.environ.get("csdn_cookie", "")
+    lines = [line.strip() for line in raw_accounts.splitlines() if line.strip()]
     log(f"========== {TITLE} ==========")
     log(f"开始时间：{datetime.now():%Y-%m-%d %H:%M:%S}；模式：{'离线预演' if dry else '正式执行'}；账号数：{len(lines)}")
     totals = dict(success=0, already=0, skipped=0, failed=0)
