@@ -2,7 +2,7 @@
 
 通用签到类青龙脚本发布仓库。脚本经来源、许可证和基础检查后自动发布；真实账号人工核验后标记为已检查或上架。公开说明与本地「脚本管理」使用同一套状态：`上架` / `已检查` / `待检查`。
 
-当前公开脚本 **223** 个：上架 **4** · 已检查 **0** · 待检查 **219**。  
+当前公开脚本 **222** 个：上架 **3** · 已检查 **0** · 待检查 **219**。  
 本页保留上架/已检查全表与待检查预览；全部脚本请用 [脚本目录索引](docs/catalog/README.md)（字母 / 分类）浏览，详单在 [`docs/scripts/`](docs/scripts/)。
 待检查脚本尚未验证真实账号业务，基础核验通过不代表业务成功。
 
@@ -10,7 +10,7 @@
 
 | 管理状态 | 数量 | 含义 |
 | --- | --- | --- |
-| 上架 | 4 | 维护者确认保留的当前版本 |
+| 上架 | 3 | 维护者确认保留的当前版本 |
 | 已检查 | 0 | 必填参数齐备且已有当前版本本地运行记录，尚未点击上架 |
 | 待检查 | 219 | 已发布，但尚未完成当前版本的参数配置与本地运行核验 |
 
@@ -18,7 +18,6 @@
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
-| 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `19 2 * * *` | 上架 | [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `5 0 * * *` | 上架 | [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)（`docs/scripts/cfmoto_checkin.py.md`） |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `22 8,14,20 * * *` | 上架 | [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)（`docs/scripts/kuaishou_reward_status.py.md`） |
 | 摩托范每日签到 | `scripts/sudojia_moto.js` | `node scripts/sudojia_moto.js` | `26 0 * * *` | 上架 | [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)（`docs/scripts/sudojia_moto.js.md`） |
@@ -92,7 +91,6 @@ _当前无此类脚本。_
 
 完整功能列表写在各脚本详单。本页仅摘要上架/已检查脚本；其余请通过目录索引打开详单。
 
-- `scripts/baiduwangpan_checkin.py`（上架）：每日百度网盘会员签到，明确验证积分或已完成状态；获取并提交每日会员成长问题答案；读取并报告脱敏用户名、会员等级、成长值和会员类型。完整说明见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`（上架）：执行每日签到；发帖和评论优先使用接口随机文本，返回出处时拼接作者与作品信息，接口异常时使用本地文案兜底；按配置发布帖子、评论、点赞并完成分享积分任务。完整说明见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`（上架）：只读查询快手收益与任务状态；按白名单输出非敏感状态字段；换行多账号独立执行并汇总。完整说明见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`（上架）：查询账号信息并显示官方昵称，刷新当前运行中的会话凭据；提交每日签到，严格根据签到接口数字业务码 0 确认成功；按明确要求暂停签到状态查询及二次核验；查询当前能量。完整说明见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
@@ -107,7 +105,6 @@ _当前无此类脚本。_
 
 各脚本必选变量名称如下；格式、默认值与示例见对应详单。
 
-- `scripts/baiduwangpan_checkin.py`：必选 `BAIDU_COOKIE`；详见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`：必选 `CFMOTO_COOKIE`；详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：必选 `KUAISHOU_COOKIE`；详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`：必选 `MOTO_TOKEN`；详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
@@ -122,7 +119,6 @@ _当前无此类脚本。_
 
 ## 验证与兼容性
 
-- `scripts/baiduwangpan_checkin.py`（上架）：SHA-256 `2db22c6f881e4294d0f252c644deb05127988fa5d350645c05fb0f0067fb42f9`；含 live 业务证据。详见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`（上架）：SHA-256 `d45204f3a633d6ef06813b9a637ed6add21ba382be8788f439062dce1e00cce6`；含 live 业务证据。详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`（上架）：SHA-256 `c689f2a14014bfe2374054469b4564608b5db69b981f10cabbca842321f24f63`；含 live 业务证据。详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`（上架）：SHA-256 `d51fe6ba62db0760730c65268b698ce67296d2dad96fe22e2048c2652359c14c`；基础核验通过，业务待检查。详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
@@ -131,7 +127,6 @@ _当前无此类脚本。_
 
 ## 副作用与风险
 
-- `scripts/baiduwangpan_checkin.py`：为每个已配置的百度网盘账号执行每日会员签到；为每个已配置的百度网盘账号提交每日会员问题答案。完整说明见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`：改变账号的当日签到和积分状态；最多发布三个公开帖子并留下可见内容。完整说明见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：见详单。完整说明见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`：正式运行提交每日签到，可能获得能量奖励；不自动重试提交；正式运行时通过青龙通知模块发送脱敏任务摘要（可关闭）。完整说明见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
@@ -142,7 +137,6 @@ _当前无此类脚本。_
 
 仓库发布许可证：`GPL-3.0-only`。每个脚本仍保留准确来源：
 
-- `scripts/baiduwangpan_checkin.py`：上游 `agluo/ql-script-hub` / `baiduwangpan_checkin.py` / `a8d39b97cb22c3ac657089014df754342b456ff6`。 详见 [baiduwangpan_checkin.py.md](docs/scripts/baiduwangpan_checkin.py.md)。
 - `scripts/cfmoto_checkin.py`：作者自有来源 `shaco_autowork/cf_sign.py`。 详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
 - `scripts/kuaishou_reward_status.py`：洁净室独立实现 `candidates/ks_cleanroom_v1/kuaishou_reward_status.py`；行为规格 `specs/kuaishou-reward-status.md`；隔离证据 `reviews/clean-room/kuaishou-reward-status.md`。 详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
 - `scripts/sudojia_moto.js`：上游 `sudojia/AutoTaskScript` / `src/client/sudojia_moto.js` / `4a55327baed0321bdf95802a75cc8363cae118b0`。 详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。

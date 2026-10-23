@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 百度网盘签到
-# cron: 19 2 * * *
+# cron: 27 2 * * *
 # SPDX-License-Identifier: MIT
 # Maintained standalone adaptation of baiduwangpan_checkin.py from
 # agluo/ql-script-hub, commit a8d39b97cb22c3ac657089014df754342b456ff6.
@@ -9,8 +9,9 @@
 """Baidu Netdisk daily membership sign-in and growth-question task.
 
 Configuration:
-  BAIDU_COOKIE              Required. One complete Cookie header per non-empty
+  BAIDU_COOKIE              Required (or BAIDUWP_COOKIE). One complete Cookie header per non-empty
                             line (one account per line).
+  BAIDUWP_TASKS             Optional signin,quiz,info selection; all by default.
   BAIDUWANGPAN_DRY_RUN=1    Validate configuration without network or changes.
   BAIDUWANGPAN_DELAY_MAX=0  Optional maximum random seconds between accounts.
   QINGLONG_NOTIFY=1         Set to 0/false/no/off to disable Qinglong notices.
@@ -21,6 +22,7 @@ and copying its complete Cookie request header. Treat it as a password.
 """
 
 from __future__ import annotations
+
 # qinglong-notification-policy: begin
 import fnmatch as _ql_notify_fnmatch
 import os as _ql_notify_os
@@ -31,7 +33,10 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
         _ql_notify_enabled = True
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('d9230b69d9462c7c', 'scripts/baiduwangpan_checkin.py', 'baiduwangpan_checkin.py', 'baiduwangpan_checkin')
+        _ql_notify_identities = (
+            'd9230b69d9462c7c', 'scripts/baiduwangpan_checkin.py', 'baiduwangpan_checkin.py',
+            '74d362990ff7d2f9', 'scripts/baiduwp.py', 'baiduwp.py', 'baiduwp',
+        )
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors
@@ -53,7 +58,7 @@ from pathlib import Path
 from typing import Any, Iterator
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 
 APP_ID = "250528"
@@ -97,15 +102,31 @@ def parse_nonnegative_int(name: str, default: int = 0) -> int:
 
 
 def cookies_from_env() -> list[str]:
-    cookies = [line.strip() for line in os.environ.get("BAIDU_COOKIE", "").splitlines() if line.strip()]
+    raw = os.environ.get("BAIDU_COOKIE") or os.environ.get("BAIDUWP_COOKIE", "")
+    cookies = [line.strip() for line in raw.splitlines() if line.strip()]
     if not cookies:
         raise TaskError(
-            "BAIDU_COOKIE is required; copy the complete Cookie request header "
+            "BAIDU_COOKIE or BAIDUWP_COOKIE is required; copy the complete Cookie request header "
             "from a signed-in pan.baidu.com browser request and put one account per line"
         )
-    if any("=" not in cookie for cookie in cookies):
+    if any(any(ord(char) < 32 or ord(char) == 127 for char in cookie)
+           or not any("=" in part and all(value.strip() for value in part.split("=", 1))
+                      for part in cookie.split(";")) for cookie in cookies):
         raise TaskError("each BAIDU_COOKIE line must be a complete Cookie header containing key=value")
     return cookies
+
+
+def selected_tasks() -> tuple[str, ...]:
+    tasks = tuple(dict.fromkeys(item.strip().lower() for item in
+                                os.environ.get("BAIDUWP_TASKS", "signin,quiz,info").split(",") if item.strip()))
+    if not tasks or any(task not in {"signin", "quiz", "info"} for task in tasks):
+        raise TaskError("BAIDUWP_TASKS must select signin, quiz and/or info")
+    return tasks
+
+
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 
 def walk_dicts(value: Any) -> Iterator[dict[str, Any]]:
@@ -151,7 +172,7 @@ class BaiduClient:
             method="GET",
         )
         try:
-            with urlopen(request, timeout=TIMEOUT_SECONDS) as response:
+            with build_opener(NoRedirect()).open(request, timeout=TIMEOUT_SECONDS) as response:
                 status = response.status
                 body = response.read(MAX_RESPONSE_BYTES + 1)
         except HTTPError as exc:
@@ -247,29 +268,36 @@ class BaiduClient:
         }
 
 
-def run_account(cookie: str, index: int, dry_run: bool) -> AccountResult:
+def run_account(cookie: str, index: int, dry_run: bool, tasks: tuple[str, ...]) -> AccountResult:
     result = AccountResult(account=index)
     if dry_run:
-        result.signin = "dry_run"
-        result.question = "dry_run"
-        result.profile = {"status": "dry_run"}
+        result.signin = "dry_run" if "signin" in tasks else "skipped"
+        result.question = "dry_run" if "quiz" in tasks else "skipped"
+        result.profile = {"status": "dry_run" if "info" in tasks else "skipped"}
         result.success = True
         return result
 
     client = BaiduClient(cookie)
-    try:
-        result.signin = client.signin()
-    except TaskError as exc:
-        result.errors.append(str(exc))
-    try:
-        answer, ask_id = client.get_question()
-        result.question = client.answer_question(answer, ask_id)
-    except TaskError as exc:
-        result.errors.append(str(exc))
-    try:
-        result.profile = client.profile()
-    except TaskError as exc:
-        result.errors.append(f"profile verification failed: {exc}")
+    legacy_cookie = not os.environ.get("BAIDU_COOKIE") and bool(os.environ.get("BAIDUWP_COOKIE"))
+    for position, task in enumerate(tasks):
+        try:
+            if task == "signin":
+                result.signin = client.signin()
+            elif task == "quiz":
+                answer, ask_id = client.get_question()
+                result.question = client.answer_question(answer, ask_id)
+            else:
+                result.profile = client.profile()
+        except TaskError as exc:
+            result.errors.append(str(exc))
+        if task == "signin" and legacy_cookie and position < len(tasks) - 1:
+            time.sleep(3)
+    if "signin" not in tasks:
+        result.signin = "skipped"
+    if "quiz" not in tasks:
+        result.question = "skipped"
+    if "info" not in tasks:
+        result.profile = {"status": "skipped"}
     result.success = not result.errors and all(
         value != "not_run" for value in (result.signin, result.question)
     )
@@ -327,6 +355,9 @@ def notify_summary(status: str, total: int, successful: int, failed: int, dry_ru
         f"状态: {status}; 模式: {mode}; 账号总数: {total}; "
         f"成功数: {successful}; 失败数: {failed}"
     )
+    if dry_run:
+        print("QINGLONG_NOTIFY_DRY_RUN")
+        return "预演跳过发送"
     sender = load_notify_sender()
     if sender is None:
         print("QINGLONG_NOTIFY_UNAVAILABLE", file=sys.stderr)
@@ -343,7 +374,7 @@ def notify_summary(status: str, total: int, successful: int, failed: int, dry_ru
 def log_task_summary(summary: dict[str, Any], notification: str, started: float) -> None:
     elapsed = round(time.monotonic() - started, 1)
     payload = {**summary, "elapsed_seconds": elapsed, "notification": notification}
-    label = "预演通过" if summary.get("mode") == "dry-run" and summary.get("status") == "success" else {
+    label = "预演通过" if summary.get("status") == "dry-run" else {
         "success": "全部成功",
         "partial_failure": "部分失败",
         "failure": "失败",
@@ -364,10 +395,11 @@ def log_task_summary(summary: dict[str, Any], notification: str, started: float)
 
 def main() -> int:
     started = time.monotonic()
-    dry_run = enabled("BAIDUWANGPAN_DRY_RUN")
+    dry_run = enabled("BAIDUWANGPAN_DRY_RUN") or enabled("BAIDUWP_DRY_RUN")
     try:
         cookies = cookies_from_env()
         delay_max = parse_nonnegative_int("BAIDUWANGPAN_DELAY_MAX", 0)
+        tasks = selected_tasks()
     except TaskError as exc:
         summary = {
             "status": "configuration_error",
@@ -395,7 +427,7 @@ def main() -> int:
             time.sleep(random.randint(0, delay_max))
         timeline(f"账号 {index:02d}：[2/4] 每日签到")
         try:
-            account_result = run_account(cookie, index, dry_run)
+            account_result = run_account(cookie, index, dry_run, tasks)
         except Exception:
             account_result = AccountResult(account=index, errors=["unexpected internal account error"])
         results.append(account_result)
@@ -412,7 +444,8 @@ def main() -> int:
 
     successful = sum(result.success for result in results)
     failed = len(results) - successful
-    status = "success" if failed == 0 else ("partial_failure" if successful else "failure")
+    status = ("dry-run" if dry_run and failed == 0 else
+              "success" if failed == 0 else ("partial_failure" if successful else "failure"))
     summary = {
         "status": status,
         "mode": "dry-run" if dry_run else "live",

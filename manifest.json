@@ -4303,9 +4303,53 @@
     },
     {
       "catalogId": "d9230b69d9462c7c",
+      "applicationKey": "baiduwangpan",
+      "checkProfile": {
+        "requiredEnv": [
+          "BAIDU_COOKIE"
+        ],
+        "optionalEnv": [
+          "BAIDUWANGPAN_DRY_RUN",
+          "BAIDUWANGPAN_DELAY_MAX",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "BAIDUWP_COOKIE",
+          "BAIDUWP_TASKS",
+          "BAIDUWP_DRY_RUN"
+        ],
+        "dryRunEnv": {
+          "BAIDUWANGPAN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BAIDUWANGPAN_DELAY_MAX": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"failed\":0",
+          "BAIDUWANGPAN_ALL_ACCOUNTS_OK"
+        ],
+        "features": [
+          "每日百度网盘会员签到，明确验证积分或已完成状态",
+          "获取并提交每日会员成长问题答案",
+          "读取并报告脱敏用户名、会员等级、成长值和会员类型",
+          "逐行多账号独立处理与结构化 JSON 汇总",
+          "完全断网的配置预演",
+          "成功、部分失败、失败、配置错误和预演状态的青龙脱敏汇总通知"
+        ],
+        "sideEffects": [
+          "为每个已配置的百度网盘账号执行每日会员签到",
+          "为每个已配置的百度网盘账号提交每日会员问题答案",
+          "在通知开启且青龙通知模块可用时发送一条脱敏任务汇总通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
       "displayName": "百度网盘签到",
       "path": "scripts/baiduwangpan_checkin.py",
-      "sha256": "2db22c6f881e4294d0f252c644deb05127988fa5d350645c05fb0f0067fb42f9",
+      "sha256": "b9e5cc63e71a13413e7b7b36fe51b58bdcbbb22d6fc9d509f042029beb6f5ef8",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -4313,9 +4357,21 @@
         "repository": "agluo/ql-script-hub",
         "branch": "master",
         "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-        "originalPath": "baiduwangpan_checkin.py"
+        "originalPath": "baiduwangpan_checkin.py",
+        "related": [
+          {
+            "repository": "Sitoi/dailycheckin",
+            "url": "https://github.com/Sitoi/dailycheckin.git",
+            "branch": "main",
+            "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
+            "originalPath": "dailycheckin/baiduwp/main.py",
+            "catalogId": "74d362990ff7d2f9",
+            "sha256": "de0327ad62e443cba41246c4ad47cf65e2f8706e5a41f6eec0db537fe0da7f59",
+            "license": "MIT"
+          }
+        ]
       },
-      "cron": "19 2 * * *",
+      "cron": "27 2 * * *",
       "command": "python3 scripts/baiduwangpan_checkin.py",
       "environment": [
         {
@@ -4354,6 +4410,27 @@
           "format": "包含 notify.py 的目录路径"
         },
         {
+          "name": "BAIDUWP_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 BAIDU_COOKIE 相同；原 baiduwp.py 的环境变量可直接沿用。",
+          "format": "每个非空行一个完整 Cookie；BAIDU_COOKIE 非空时优先读取新变量。"
+        },
+        {
+          "name": "BAIDUWP_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中指定需要执行的会员任务。",
+          "format": "逗号分隔 signin、quiz、info；默认全部执行，重复项只执行一次。"
+        },
+        {
+          "name": "BAIDUWP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "沿用原 baiduwp.py 的断网预演开关。",
+          "format": "1、true、yes 或 on 启用完全断网预演。"
+        },
+        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
@@ -4373,183 +4450,15 @@
         "读取并报告脱敏用户名、会员等级、成长值和会员类型",
         "逐行多账号独立处理与结构化 JSON 汇总",
         "完全断网的配置预演",
-        "成功、部分失败、失败、配置错误和预演状态的青龙脱敏汇总通知"
+        "成功、部分失败、失败、配置错误和预演状态的青龙脱敏汇总通知",
+        "兼容 BAIDUWP_COOKIE 与 BAIDUWP_DRY_RUN 旧变量；BAIDU_COOKIE 优先",
+        "BAIDUWP_TASKS 可选择 signin、quiz、info，默认全执行，旧账号在签到后保留 3 秒请求间隔",
+        "旧 baiduwp.py 的通知选择器 ID 与路径仍可匹配"
       ],
       "sideEffects": [
         "为每个已配置的百度网盘账号执行每日会员签到",
         "为每个已配置的百度网盘账号提交每日会员问题答案",
         "在通知开启且青龙通知模块可用时发送一条脱敏任务汇总通知"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": true,
-        "humanAccepted": true,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "passed",
-        "evidence": "projects/checkin/validation/d9230b69d9462c7c",
-        "candidateSha256": "93bf4735b84783510eac5eba003a1ca482cfa25770c3021c940e80d9c07d6b13",
-        "evidenceCandidateSha256": "62f7ef25d8af43f989a7b654931ecda2bedf743019859996ae3d7861a9534612",
-        "reuseAttestation": {
-          "component": "shared-logging",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-09-29T08:35:07.144259+00:00",
-          "reason": "按用户确认的第三版时间轴模板统一百度网盘签到日志；仅改变时间戳、阶段展示和任务统计，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "62f7ef25d8af43f989a7b654931ecda2bedf743019859996ae3d7861a9534612",
-          "toCandidateSha256": "93bf4735b84783510eac5eba003a1ca482cfa25770c3021c940e80d9c07d6b13",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "93bf4735b84783510eac5eba003a1ca482cfa25770c3021c940e80d9c07d6b13",
-        "releaseSha256": "2db22c6f881e4294d0f252c644deb05127988fa5d350645c05fb0f0067fb42f9",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.152048+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "93bf4735b84783510eac5eba003a1ca482cfa25770c3021c940e80d9c07d6b13",
-          "toCandidateSha256": "2db22c6f881e4294d0f252c644deb05127988fa5d350645c05fb0f0067fb42f9",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      },
-      "applicationKey": "baiduwangpan",
-      "checkProfile": {
-        "optionalEnv": [
-          "QINGLONG_NOTIFY_SCRIPTS"
-        ]
-      }
-    },
-    {
-      "catalogId": "74d362990ff7d2f9",
-      "applicationKey": "sitoi/dailycheckin::baiduwp",
-      "checkProfile": {
-        "requiredEnv": [
-          "BAIDUWP_COOKIE"
-        ],
-        "optionalEnv": [
-          "BAIDUWP_TASKS",
-          "BAIDUWP_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
-        ],
-        "dryRunEnv": {
-          "BAIDUWP_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "BAIDUWP_TASKS": "signin,quiz,info",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "\"status\":\"success\"",
-          "\"exit_code\":0"
-        ],
-        "features": [
-          "会员成长值签到并报告获得成长值",
-          "获取每日题目并提交官方返回的答案，报告答题成长值",
-          "查询当前会员等级和成长值",
-          "展示官方返回的非敏感账号身份",
-          "可选择单项或组合任务，支持每行一个账号",
-          "完全断网参数预演、独立账号失败统计及单行结构化任务汇总",
-          "正式执行结束后调用青龙通知，通知失败不改变业务退出码"
-        ],
-        "sideEffects": [
-          "执行会员签到，增加会员成长值",
-          "提交每日题目答案，可能增加会员成长值",
-          "启用通知时发送脱敏任务总结"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "百度网盘会员成长值",
-      "path": "scripts/baiduwp.py",
-      "sha256": "b425f35b245dbc331b21c24d9516567e01efbb57ad926db0d1b0e44965726c9e",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "Sitoi/dailycheckin",
-        "branch": "main",
-        "commit": "135cc236e59ac4f14bcddc44acb3cbb3ed6010b5",
-        "originalPath": "dailycheckin/baiduwp/main.py"
-      },
-      "cron": "4 1 * * *",
-      "command": "python3 scripts/baiduwp.py",
-      "environment": [
-        {
-          "name": "BAIDUWP_COOKIE",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "在浏览器登录 https://pan.baidu.com，打开开发者工具网络面板，选择发送到 pan.baidu.com 的已登录请求，复制完整 Cookie 请求头值，不包含 Cookie: 前缀。Cookie 失效时重新登录获取。无需原仓库 config.json。",
-          "format": "每个非空行为一个账号的完整 Cookie；分号和等号保留，不使用 & 或 @ 分隔账号。"
-        },
-        {
-          "name": "BAIDUWP_TASKS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需设置任务选择；不设置时依次执行会员签到、每日答题和会员信息查询。",
-          "format": "英文逗号分隔 signin,quiz,info；可单独选择；重复项只执行一次。"
-        },
-        {
-          "name": "BAIDUWP_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "预演时设为 1；正式执行时设为 0 或不设置。",
-          "format": "1、true、yes、on 启用完全断网预演；预演不验证实际登录状态，通知也仅模拟。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选填写已有青龙 notify.py 所在目录；默认自动查找可导入的 notify 模块及 /ql/data/scripts、/ql/scripts。",
-          "format": "本地目录路径，仅用于可选通知，不是业务执行依赖。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "BAIDUWP_COOKIE 每个非空行为一个账号，各账号独立执行；任一账号或子任务失败均整体非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "会员成长值签到并报告获得成长值",
-        "获取每日题目并提交官方返回的答案，报告答题成长值",
-        "查询当前会员等级和成长值",
-        "展示官方返回的非敏感账号身份",
-        "可选择单项或组合任务，支持每行一个账号",
-        "完全断网参数预演、独立账号失败统计及单行结构化任务汇总",
-        "正式执行结束后调用青龙通知，通知失败不改变业务退出码"
-      ],
-      "sideEffects": [
-        "执行会员签到，增加会员成长值",
-        "提交每日题目答案，可能增加会员成长值",
-        "启用通知时发送脱敏任务总结"
       ],
       "review": {
         "staticPassed": true,
@@ -4561,21 +4470,21 @@
         "status": "basic-passed",
         "businessResult": "not-verified",
         "mode": "basic",
-        "evidence": "projects/checkin/validation/74d362990ff7d2f9",
-        "candidateSha256": "419008b91e8a348b310d5de9d819e6670ec665dd212922406e85348e52f6b0d6"
+        "evidence": "projects/checkin/validation/d9230b69d9462c7c",
+        "candidateSha256": "f1b7c292dc599b69cef12a1ed70091a8403ac0c279ab6a6d04021effe633476c"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "419008b91e8a348b310d5de9d819e6670ec665dd212922406e85348e52f6b0d6",
-        "releaseSha256": "b425f35b245dbc331b21c24d9516567e01efbb57ad926db0d1b0e44965726c9e",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "f1b7c292dc599b69cef12a1ed70091a8403ac0c279ab6a6d04021effe633476c",
+        "releaseSha256": "b9e5cc63e71a13413e7b7b36fe51b58bdcbbb22d6fc9d509f042029beb6f5ef8",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.152125+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "419008b91e8a348b310d5de9d819e6670ec665dd212922406e85348e52f6b0d6",
-          "toCandidateSha256": "b425f35b245dbc331b21c24d9516567e01efbb57ad926db0d1b0e44965726c9e",
+          "approvedAt": "2026-10-23T17:42:40.704905+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "f1b7c292dc599b69cef12a1ed70091a8403ac0c279ab6a6d04021effe633476c",
+          "toCandidateSha256": "b9e5cc63e71a13413e7b7b36fe51b58bdcbbb22d6fc9d509f042029beb6f5ef8",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

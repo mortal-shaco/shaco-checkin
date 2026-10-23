@@ -1,6 +1,6 @@
 # 分类索引 · 云盘
 
-共 **14** 个脚本。返回 [`目录首页`](../README.md)。
+共 **13** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -8,8 +8,7 @@
 | 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `47 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
 | 阿里云盘签到与奖励领取 | `scripts/autosignin.js` | `node scripts/autosignin.js` | `37 2 * * *` | 待检查 | [autosignin.js.md](../../scripts/autosignin.js.md)（`docs/scripts/autosignin.js.md`） |
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `36 2 * * *` | 待检查 | [baidu.py.md](../../scripts/baidu.py.md)（`docs/scripts/baidu.py.md`） |
-| 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `19 2 * * *` | 上架 | [baiduwangpan_checkin.py.md](../../scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |
-| 百度网盘会员成长值 | `scripts/baiduwp.py` | `python3 scripts/baiduwp.py` | `4 1 * * *` | 待检查 | [baiduwp.py.md](../../scripts/baiduwp.py.md)（`docs/scripts/baiduwp.py.md`） |
+| 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `27 2 * * *` | 待检查 | [baiduwangpan_checkin.py.md](../../scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |
 | 百度站点提交 | `scripts/ck_baidu.py` | `python3 scripts/ck_baidu.py` | `6 0 * * *` | 待检查 | [ck_baidu.py.md](../../scripts/ck_baidu.py.md)（`docs/scripts/ck_baidu.py.md`） |
 | 百度搜索资源平台 | `scripts/ck_baidu_url_submit.py` | `python3 scripts/ck_baidu_url_submit.py` | `8 2 * * *` | 待检查 | [ck_baidu_url_submit.py.md](../../scripts/ck_baidu_url_submit.py.md)（`docs/scripts/ck_baidu_url_submit.py.md`） |
 | 时光相册每日签到 | `scripts/ck_everphoto.py` | `python3 scripts/ck_everphoto.py` | `3 0 * * *` | 待检查 | [ck_everphoto.py.md](../../scripts/ck_everphoto.py.md)（`docs/scripts/ck_everphoto.py.md`） |

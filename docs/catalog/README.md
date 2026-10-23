@@ -4,7 +4,7 @@
 
 | 管理状态 | 数量 |
 | --- | --- |
-| 上架 | 4 |
+| 上架 | 3 |
 | 已检查 | 0 |
 | 待检查 | 219 |
 
@@ -14,7 +14,7 @@
 
 ## 分类索引
 
-- [云盘](categories/cloud.md)（14）
+- [云盘](categories/cloud.md)（13）
 - [签到](categories/checkin.md)（177）
 - [社区](categories/community.md)（1）
 - [AI服务](categories/ai.md)（10）
