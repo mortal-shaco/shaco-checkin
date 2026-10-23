@@ -18640,7 +18640,7 @@
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-23T17:06:26.335433+00:00",
+          "approvedAt": "2026-10-23T17:05:49.740756+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "d8ca3e2180385a9de485a27d68d340aab7425df98a35f3e40725c0e0c1f7cd38",
           "toCandidateSha256": "ecb27e91f8d882015882232840053dc21daee6db522ced6b65468982c9b43c87",
@@ -20235,6 +20235,250 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "4e8149eb7fd9f48b6a92c4b22190c633a40d7def1754bb196a3c26bcbf30d7cc",
           "toCandidateSha256": "1f5f1e3c53247e4534117c51368c9be13d52b7093b18addfc410e23f5b6fed22",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "2d3c603c8a58ed00",
+      "applicationKey": "modelscope",
+      "checkProfile": {
+        "requiredEnv": [
+          "MODELSCOPE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "MODELSCOPE_CN_TOKENS",
+          "MODELSCOPE_INTL_TOKENS",
+          "MODELSCOPE_CN_TOKEN",
+          "MODELSCOPE_INTL_TOKEN",
+          "MODELSCOPE_PROXY",
+          "MODELSCOPE_VERIFY_DELAY",
+          "MODELSCOPE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "MODELSCOPE_NO_NOTIFY",
+          "QINGLONG_NOTIFY_DIR",
+          "PLUSPLUS_TOKEN",
+          "BARK_URL",
+          "WECOM_WEBHOOK",
+          "QYWX_TOKEN",
+          "DINGTALK_WEBHOOK"
+        ],
+        "dryRunEnv": {
+          "MODELSCOPE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MODELSCOPE_VERIFY_DELAY": "2",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到到账",
+          "今日已领取",
+          "每日签到已触发",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "国内站和国际站按各自会话值每日签到，保留两站同任务运行能力",
+          "国内站以北京时间当日魔粒账单确认签到到账，重复签到显示今日已领取",
+          "国际站以登录接口的明确业务成功结果确认签到触发",
+          "查询魔粒可用余额、总余额和今日推理用量",
+          "支持按账号序号选择运行及旧版查询模式",
+          "支持代理、国内站账单延时核验及旧版环境变量",
+          "支持逐行多账号、无网络预演、时间轴日志和结构化结果汇总",
+          "运行结束发送脱敏青龙通知，并兼容已配置的旧版推送渠道"
+        ],
+        "sideEffects": [
+          "调用登录信息接口触发当日签到及可能的魔粒发放",
+          "启用通知时向青龙或已配置的兼容推送渠道发送脱敏任务结果"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "ModelScope 魔搭每日签到",
+      "path": "scripts/modelscope_daily.py",
+      "sha256": "59f9403ceae2737dbd646c739bb5eb6600b43bc4d24d54d5c955d89c51c5299d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/ModelScope-Daily",
+        "branch": "main",
+        "commit": "98a3863d33212879f5513ea57c535f2e6dff9717",
+        "originalPath": "modelscope_daily.py"
+      },
+      "cron": "30 0 * * *",
+      "command": "python3 scripts/modelscope_daily.py",
+      "environment": [
+        {
+          "name": "MODELSCOPE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录对应的 ModelScope 国内站或国际站，在浏览器开发者工具的 Cookie 中找到 m_session_id；每行填写一个账号。也兼容下方旧版站点变量。",
+          "format": "每行 cn:备注|m_session_id 或 intl:备注|m_session_id；备注可留空，凭据中的后续竖线保留"
+        },
+        {
+          "name": "MODELSCOPE_CN_TOKENS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版国内站多账号兼容变量：登录 modelscope.cn 后从浏览器 Cookie 取得 m_session_id；仅在统一账号变量为空时读取。",
+          "format": "每行 备注|m_session_id，备注可省略"
+        },
+        {
+          "name": "MODELSCOPE_INTL_TOKENS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版国际站多账号兼容变量：登录 modelscope.ai 后从浏览器 Cookie 取得 m_session_id；仅在统一账号变量为空时读取。",
+          "format": "每行 备注|m_session_id，备注可省略"
+        },
+        {
+          "name": "MODELSCOPE_CN_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版国内站单账号兼容变量：登录国内站后从浏览器 Cookie 取得 m_session_id；仅在该站多账号变量为空时读取。",
+          "format": "单个 m_session_id 值"
+        },
+        {
+          "name": "MODELSCOPE_INTL_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版国际站单账号兼容变量：登录国际站后从浏览器 Cookie 取得 m_session_id；仅在该站多账号变量为空时读取。",
+          "format": "单个 m_session_id 值"
+        },
+        {
+          "name": "MODELSCOPE_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "如需代理，由用户自行配置可用的 HTTPS 代理地址；地址中可能含认证信息。",
+          "format": "HTTPS 代理地址"
+        },
+        {
+          "name": "MODELSCOPE_VERIFY_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "国内站签到后账单尚未到账时的重查等待时间，默认 2 秒。",
+          "format": "0 至 30 的整数秒数"
+        },
+        {
+          "name": "MODELSCOPE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 可检查账号配置并预演日志，不发送任何网络请求。",
+          "format": "1 表示无网络预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可指定需要通知的脚本；设置后替换默认选择，空值关闭全部通知。",
+          "format": "目录标识、脚本名或通配符；逗号、分号或空白分隔"
+        },
+        {
+          "name": "MODELSCOPE_NO_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版通知关闭开关。",
+          "format": "1 表示关闭通知"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义青龙 notify.py 所在目录；通常无需设置。",
+          "format": "本地目录路径"
+        },
+        {
+          "name": "PLUSPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "如继续使用旧版 PushPlus 推送，在自己的 PushPlus 账户中获取令牌。",
+          "format": "PushPlus 令牌"
+        },
+        {
+          "name": "BARK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "如继续使用旧版 Bark 推送，在自己的 Bark 客户端中获取 HTTPS 推送地址。",
+          "format": "HTTPS 推送地址"
+        },
+        {
+          "name": "WECOM_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "如继续使用旧版企业微信推送，在自己的群机器人设置中获取 Webhook 地址。",
+          "format": "HTTPS Webhook 地址"
+        },
+        {
+          "name": "QYWX_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版企业微信兼容变量：在自己的群机器人设置中获取 Webhook 密钥。",
+          "format": "Webhook 密钥或 HTTPS 地址"
+        },
+        {
+          "name": "DINGTALK_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "如继续使用旧版钉钉推送，在自己的群机器人设置中获取 Webhook 地址。",
+          "format": "HTTPS Webhook 地址"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行对应一个账号；统一变量中先写国内站 cn 或国际站 intl，再写备注和会话值。账号逐个处理，任一账号失败时进程以非零码退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "国内站和国际站按各自会话值每日签到，保留两站同任务运行能力",
+        "国内站以北京时间当日魔粒账单确认签到到账，重复签到显示今日已领取",
+        "国际站以登录接口的明确业务成功结果确认签到触发",
+        "查询魔粒可用余额、总余额和今日推理用量",
+        "支持按账号序号选择运行及旧版查询模式",
+        "支持代理、国内站账单延时核验及旧版环境变量",
+        "支持逐行多账号、无网络预演、时间轴日志和结构化结果汇总",
+        "运行结束发送脱敏青龙通知，并兼容已配置的旧版推送渠道"
+      ],
+      "sideEffects": [
+        "调用登录信息接口触发当日签到及可能的魔粒发放",
+        "启用通知时向青龙或已配置的兼容推送渠道发送脱敏任务结果"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/2d3c603c8a58ed00",
+        "candidateSha256": "d4cd29ba2be9cb173bfecc3e5adc1192895a86f6a6e46207748f16d83796e6c5"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "d4cd29ba2be9cb173bfecc3e5adc1192895a86f6a6e46207748f16d83796e6c5",
+        "releaseSha256": "59f9403ceae2737dbd646c739bb5eb6600b43bc4d24d54d5c955d89c51c5299d",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-23T17:17:27.860478+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "d4cd29ba2be9cb173bfecc3e5adc1192895a86f6a6e46207748f16d83796e6c5",
+          "toCandidateSha256": "59f9403ceae2737dbd646c739bb5eb6600b43bc4d24d54d5c955d89c51c5299d",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
