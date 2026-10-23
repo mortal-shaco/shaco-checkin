@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **179** 个脚本。返回 [`目录首页`](../README.md)。
+共 **178** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -29,7 +29,6 @@
 | 网易云游戏每日签到 | `scripts/cg163_autocheckin.py` | `python3 scripts/cg163_autocheckin.py` | `34 1 * * *` | 待检查 | [cg163_autocheckin.py.md](../../scripts/cg163_autocheckin.py.md)（`docs/scripts/cg163_autocheckin.py.md`） |
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `13 1 * * *` | 待检查 | [chatglm_daily.py.md](../../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
-| 咔叽网单签到 | `scripts/ck_2nzz.py` | `python3 scripts/ck_2nzz.py` | `40 1 * * *` | 待检查 | [ck_2nzz.py.md](../../scripts/ck_2nzz.py.md)（`docs/scripts/ck_2nzz.py.md`） |
 | AcFun每日签到与可选互动 | `scripts/ck_acfun.py` | `python3 scripts/ck_acfun.py` | `20 0 * * *` | 待检查 | [ck_acfun.py.md](../../scripts/ck_acfun.py.md)（`docs/scripts/ck_acfun.py.md`） |
 | 机场签到 | `scripts/ck_airport.py` | `python3 scripts/ck_airport.py` | `16 2 * * *` | 待检查 | [ck_airport.py.md](../../scripts/ck_airport.py.md)（`docs/scripts/ck_airport.py.md`） |
 | 爱企查每日任务 | `scripts/ck_aqc.js` | `node scripts/ck_aqc.js` | `9 0-23/8 * * *` | 待检查 | [ck_aqc.js.md](../../scripts/ck_aqc.js.md)（`docs/scripts/ck_aqc.js.md`） |
@@ -77,7 +76,7 @@
 | 科技玩家签到 | `scripts/kjwj.py` | `python3 scripts/kjwj.py` | `41 2 * * *` | 待检查 | [kjwj.py.md](../../scripts/kjwj.py.md)（`docs/scripts/kjwj.py.md`） |
 | 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `16 1 * * *` | 待检查 | [kurobbs_sign.py.md](../../scripts/kurobbs_sign.py.md)（`docs/scripts/kurobbs_sign.py.md`） |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `14 0 * * *` | 待检查 | [leaflow_checkin_pyleaflow_checkin.py.md](../../scripts/leaflow_checkin_pyleaflow_checkin.py.md)（`docs/scripts/leaflow_checkin_pyleaflow_checkin.py.md`） |
-| 咔叽网单每日签到 | `scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `7 2 * * *` | 待检查 | [littlewuh_qinglongbox_dailycheckin_scripts.py.md](../../scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md)（`docs/scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md`） |
+| 咔叽网单每日签到 | `scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `16 2 * * *` | 待检查 | [littlewuh_qinglongbox_dailycheckin_scripts.py.md](../../scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md)（`docs/scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md`） |
 | NodeSeek 签到与收益统计 | `scripts/lizhixu_ql_script_hub_nodeseek.py` | `python3 scripts/lizhixu_ql_script_hub_nodeseek.py` | `10 1 * * *` | 待检查 | [lizhixu_ql_script_hub_nodeseek.py.md](../../scripts/lizhixu_ql_script_hub_nodeseek.py.md)（`docs/scripts/lizhixu_ql_script_hub_nodeseek.py.md`） |
 | 有道云笔记签到 | `scripts/lizhixu_ql_script_hub_youdao.py` | `python3 scripts/lizhixu_ql_script_hub_youdao.py` | `56 1 * * *` | 待检查 | [lizhixu_ql_script_hub_youdao.py.md](../../scripts/lizhixu_ql_script_hub_youdao.py.md)（`docs/scripts/lizhixu_ql_script_hub_youdao.py.md`） |
 | LobsterAI 每日签到 | `scripts/lobsterai_checkin.py` | `python3 scripts/lobsterai_checkin.py` | `27 0 * * *` | 待检查 | [lobsterai_checkin.py.md](../../scripts/lobsterai_checkin.py.md)（`docs/scripts/lobsterai_checkin.py.md`） |

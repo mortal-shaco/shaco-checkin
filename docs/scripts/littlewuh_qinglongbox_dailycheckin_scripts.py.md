@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/littlewuh_qinglongbox_dailycheckin_scripts.py`
 - 青龙命令：`python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py`
-- 建议 Cron：`7 2 * * *`
-- 发布哈希：`e1a37d99b2a27852c93530373fdcc8308f6da8443e477ce47d5d3c7de0050890`
+- 建议 Cron：`16 2 * * *`
+- 发布哈希：`ecb27e91f8d882015882232840053dc21daee6db522ced6b65468982c9b43c87`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@ NZZ_COOKIE 每个非空行一个账号，各账号独立 Cookie 会话；任一�
 
 ## 验证与兼容性
 
-SHA-256 `e1a37d99b2a27852c93530373fdcc8308f6da8443e477ce47d5d3c7de0050890`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cb2f4adeccaa95b9`。
+SHA-256 `ecb27e91f8d882015882232840053dc21daee6db522ced6b65468982c9b43c87`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cb2f4adeccaa95b9`。
 
 ## 副作用与风险
 

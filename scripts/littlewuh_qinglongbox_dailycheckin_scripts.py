@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 # name: 咔叽网单每日签到
-# cron: 7 2 * * *
-# publish-path: scripts/kaji_2nzz_checkin.py
+# cron: 16 2 * * *
+# publish-path: scripts/littlewuh_qinglongbox_dailycheckin_scripts.py
 # SPDX-License-Identifier: MIT
-# 来源：LittleWuh/qinglongbox，dailycheckin_scripts/ck_2nzz.py
-# 上游提交：02e1c7a0788a62a7434f686118506ca5702fba24；保留上游署名。
+# 来源：LittleWuh/qinglongbox 与 yuxian158/check 的 dailycheckin_scripts/ck_2nzz.py
+# 上游提交：02e1c7a0788a62a7434f686118506ca5702fba24；723c834f121ff4eef2dec7afe521071a7efff1a9。
+# 两个仓库中的原始任务 SHA-256 相同；保留双方署名及 MIT 许可。
 """咔叽网单每日签到（Python 3，仅标准库）。
 
 NZZ_COOKIE：登录 https://www.2nzz.com 后在浏览器开发者工具的网络面板
 复制本站请求的 Cookie 请求头值（不含 Cookie:）。每个非空行为一个账号，
 Cookie 内部用分号分隔；值中的等号保留。不支持用 & 或 @ 分隔账号。
 NZZ_DRY_RUN=1：仅检查配置和预演，不发送 HTTP 请求或签到。
-QINGLONG_NOTIFY=0：关闭通知；未设置时按上架状态，可用 QINGLONG_NOTIFY_DIR 指定
+QINGLONG_NOTIFY=0：关闭通知；默认开启，可用 QINGLONG_NOTIFY_DIR 指定
 青龙 notify.py 目录。预演通知在禁止网络和子进程的隔离助手中尝试，无法
 离线投递时记录状态，不改变业务退出码。
 
-产品专属发布路径：scripts/kaji_2nzz_checkin.py；不要发布为 ck_2nzz.py。
-交付文件 candidate.py 是隔离修复器的固定名称，发布器应使用上述产品专属路径。
+当前公开入口为 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py。
+历史建议路径 scripts/kaji_2nzz_checkin.py 与当前订阅清单不同，以清单为准。
 原脚本无 cron；本维护版建议每天 08:30。仅签到，不发布文字或消耗资产。
 原路径及签到表单保持一致；为保护 Cookie，仅 HTTPS，证书验证开启，
 禁止跨域或降级跳转。HTTPS 能力尚未经联网验证；不支持时失败而不降级。
@@ -54,7 +55,7 @@ import urllib.request
 
 BASE = 'https://www.2nzz.com'
 TITLE = '咔叽网单'
-PUBLISH_PATH = 'scripts/kaji_2nzz_checkin.py'
+PUBLISH_PATH = 'scripts/littlewuh_qinglongbox_dailycheckin_scripts.py'
 TIMEOUT = 15
 LIMIT = 2 * 1024 * 1024
 FALSE = {'0', 'false', 'no', 'off'}

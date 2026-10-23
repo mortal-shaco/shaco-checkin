@@ -1,6 +1,6 @@
 # 字母索引 · C
 
-共 **31** 个脚本。返回 [`目录首页`](../README.md)。
+共 **30** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -11,7 +11,6 @@
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `13 1 * * *` | 待检查 | [chatglm_daily.py.md](../../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | 词霸每日一句 | `scripts/ciba.js` | `node scripts/ciba.js` | `0 25 11 * * *` | 待检查 | [ciba.js.md](../../scripts/ciba.js.md)（`docs/scripts/ciba.js.md`） |
-| 咔叽网单签到 | `scripts/ck_2nzz.py` | `python3 scripts/ck_2nzz.py` | `40 1 * * *` | 待检查 | [ck_2nzz.py.md](../../scripts/ck_2nzz.py.md)（`docs/scripts/ck_2nzz.py.md`） |
 | AcFun每日签到与可选互动 | `scripts/ck_acfun.py` | `python3 scripts/ck_acfun.py` | `20 0 * * *` | 待检查 | [ck_acfun.py.md](../../scripts/ck_acfun.py.md)（`docs/scripts/ck_acfun.py.md`） |
 | 机场签到 | `scripts/ck_airport.py` | `python3 scripts/ck_airport.py` | `16 2 * * *` | 待检查 | [ck_airport.py.md](../../scripts/ck_airport.py.md)（`docs/scripts/ck_airport.py.md`） |
 | 爱企查每日任务 | `scripts/ck_aqc.js` | `node scripts/ck_aqc.js` | `9 0-23/8 * * *` | 待检查 | [ck_aqc.js.md](../../scripts/ck_aqc.js.md)（`docs/scripts/ck_aqc.js.md`） |

@@ -6691,150 +6691,6 @@
       }
     },
     {
-      "catalogId": "a50eecf80a170dc5",
-      "applicationKey": "yuxian158/check::dailycheckin-scripts",
-      "checkProfile": {
-        "requiredEnv": [
-          "NZZ_COOKIE"
-        ],
-        "optionalEnv": [
-          "NZZ_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
-        ],
-        "dryRunEnv": {
-          "NZZ_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "NZZ_DRY_RUN": "0",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "签到信息: 签到成功（明确响应）",
-          "签到信息: 今日已签到（明确响应）",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
-        ],
-        "features": [
-          "使用登录 Cookie 获取签到令牌，保留原签到接口路径、请求方法和表单字段。",
-          "查询并直接显示官方页面返回的公开 UID。",
-          "执行每日签到，区分明确成功、明确已完成与失败；混合已签到或时间未开始提示不判成功。",
-          "支持每行一个账号、独立错误处理及任一失败非零退出。",
-          "完全断网预演、分阶段脱敏日志、账号和任务统计及单行 TASK_SUMMARY 记录。",
-          "成功、部分失败、失败、配置错误发送青龙脱敏通知；预演只展示通知摘要，关闭开关受支持。"
-        ],
-        "sideEffects": [
-          "正式运行向咔叽网单提交每日签到，可能获得站点签到奖励。",
-          "正式运行且通知开启时通过青龙配置的通知渠道发送脱敏任务摘要。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "咔叽网单签到",
-      "path": "scripts/ck_2nzz.py",
-      "sha256": "682412b98a11ac48c479b29bc7647403985bfb8c7fe53da97f8bd7942fcc92f1",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "yuxian158/check",
-        "branch": "master",
-        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
-        "originalPath": "dailycheckin_scripts/ck_2nzz.py"
-      },
-      "cron": "40 1 * * *",
-      "command": "python3 scripts/ck_2nzz.py",
-      "environment": [
-        {
-          "name": "NZZ_COOKIE",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "在咔叽网单官方网站登录后，打开浏览器开发者工具网络面板，从发往 www.2nzz.com 的已登录请求复制完整 Cookie 请求头值。原框架 check_item.cookie 的原始值可直接迁入；不读取原框架配置文件。",
-          "format": "每个非空行一个账号；只填写 Cookie 值，不包含 Cookie: 前缀。Cookie 字段使用分号分隔，字段仅按首个等号拆分，后续等号保留；禁止使用 & 或 @ 分隔账号。"
-        },
-        {
-          "name": "NZZ_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中设置为 1 开启完全断网预演；正式执行时删除或设为 0。",
-          "format": "1、true、yes、on 开启，默认 0；预演仅校验凭据格式，不验证真实业务成功。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，填写青龙已有 notify.py 所在目录；留空时先尝试导入 notify，再查找青龙标准脚本目录。",
-          "format": "本机目录路径；仅用于通知，不是业务依赖；通知故障不改变业务退出码。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "NZZ_COOKIE 每个非空行一个账号；空行忽略，独立处理所有账号，任一账号失败则进程非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "使用登录 Cookie 获取签到令牌，保留原签到接口路径、请求方法和表单字段。",
-        "查询并直接显示官方页面返回的公开 UID。",
-        "执行每日签到，区分明确成功、明确已完成与失败；混合已签到或时间未开始提示不判成功。",
-        "支持每行一个账号、独立错误处理及任一失败非零退出。",
-        "完全断网预演、分阶段脱敏日志、账号和任务统计及单行 TASK_SUMMARY 记录。",
-        "成功、部分失败、失败、配置错误发送青龙脱敏通知；预演只展示通知摘要，关闭开关受支持。"
-      ],
-      "sideEffects": [
-        "正式运行向咔叽网单提交每日签到，可能获得站点签到奖励。",
-        "正式运行且通知开启时通过青龙配置的通知渠道发送脱敏任务摘要。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/a50eecf80a170dc5",
-        "candidateSha256": "7f3516766b49802f68470d5adb40d69a59014b79178df5de52a083e60f8af02b"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "7f3516766b49802f68470d5adb40d69a59014b79178df5de52a083e60f8af02b",
-        "releaseSha256": "682412b98a11ac48c479b29bc7647403985bfb8c7fe53da97f8bd7942fcc92f1",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.547331+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "7f3516766b49802f68470d5adb40d69a59014b79178df5de52a083e60f8af02b",
-          "toCandidateSha256": "682412b98a11ac48c479b29bc7647403985bfb8c7fe53da97f8bd7942fcc92f1",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
       "catalogId": "21b5208e088c5d34",
       "applicationKey": "oreoslab/checkinpanel::ck",
       "checkProfile": {
@@ -18648,8 +18504,7 @@
         "optionalEnv": [
           "NZZ_DRY_RUN",
           "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "NZZ_DRY_RUN": "1"
@@ -18684,7 +18539,7 @@
       },
       "displayName": "咔叽网单每日签到",
       "path": "scripts/littlewuh_qinglongbox_dailycheckin_scripts.py",
-      "sha256": "e1a37d99b2a27852c93530373fdcc8308f6da8443e477ce47d5d3c7de0050890",
+      "sha256": "ecb27e91f8d882015882232840053dc21daee6db522ced6b65468982c9b43c87",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -18692,9 +18547,21 @@
         "repository": "LittleWuh/qinglongbox",
         "branch": "main",
         "commit": "02e1c7a0788a62a7434f686118506ca5702fba24",
-        "originalPath": "dailycheckin_scripts/ck_2nzz.py"
+        "originalPath": "dailycheckin_scripts/ck_2nzz.py",
+        "related": [
+          {
+            "repository": "yuxian158/check",
+            "url": "https://github.com/yuxian158/check.git",
+            "branch": "master",
+            "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+            "originalPath": "dailycheckin_scripts/ck_2nzz.py",
+            "catalogId": "a50eecf80a170dc5",
+            "sha256": "78327d4526d7c4e58449d6c6001482fb60b89ad2dbc1f973ac4b1c11a90d27c2",
+            "license": "MIT"
+          }
+        ]
       },
-      "cron": "7 2 * * *",
+      "cron": "16 2 * * *",
       "command": "python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py",
       "environment": [
         {
@@ -18763,20 +18630,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/cb2f4adeccaa95b9",
-        "candidateSha256": "452d717accff504282d0dc786d8dbf350a19a0101c330a1242401c761f0ad682"
+        "candidateSha256": "d8ca3e2180385a9de485a27d68d340aab7425df98a35f3e40725c0e0c1f7cd38"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "452d717accff504282d0dc786d8dbf350a19a0101c330a1242401c761f0ad682",
-        "releaseSha256": "e1a37d99b2a27852c93530373fdcc8308f6da8443e477ce47d5d3c7de0050890",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "d8ca3e2180385a9de485a27d68d340aab7425df98a35f3e40725c0e0c1f7cd38",
+        "releaseSha256": "ecb27e91f8d882015882232840053dc21daee6db522ced6b65468982c9b43c87",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.561157+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "452d717accff504282d0dc786d8dbf350a19a0101c330a1242401c761f0ad682",
-          "toCandidateSha256": "e1a37d99b2a27852c93530373fdcc8308f6da8443e477ce47d5d3c7de0050890",
+          "approvedAt": "2026-10-23T17:06:26.335433+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "d8ca3e2180385a9de485a27d68d340aab7425df98a35f3e40725c0e0c1f7cd38",
+          "toCandidateSha256": "ecb27e91f8d882015882232840053dc21daee6db522ced6b65468982c9b43c87",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
