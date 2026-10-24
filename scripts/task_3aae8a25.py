@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # coding: utf-8
 # name: 雨云签到与安全续费
-# cron: 39 0 * * *
+# cron: 40 0 * * *
 # 上游: LMTXQ/Rainyun-QingLong main.py
 # 上游提交: c589e71cebb4c15fc6b0e3087a2bff4aaf032be1
 # 原项目基于 SerendipityR-2022/Rainyun-Qiandao 与 fatekey/Rainyun-Qiandao
+# 兼容来源: cloudcranes/some_scripts rainyun.py 与 FalseHappiness/RainyunCheckIn app.py
 """雨云每日签到与可选服务器积分续费。
 
-必填环境变量 RAINYUN_ACCOUNT，每个非空行代表一个账号。推荐每行填写一个
+使用 RAINYUN_ACCOUNT（兼容旧变量 rainyun_ck），每个非空行代表一个账号。推荐每行填写一个
 JSON 对象：{"username":"用户名","password":"密码","autoRenew":false,
 "apiKey":"可选 API Key"}。仅签到时也兼容“用户名#密码”，只在第一个 #
 处分隔，密码内后续的 # 会保留；还兼容上游的 JSON 二维数组。
@@ -21,6 +22,8 @@ MIT License
 Copyright (c) LMTXQ/Rainyun-QingLong contributors
 Copyright (c) SerendipityR-2022/Rainyun-Qiandao contributors
 Copyright (c) fatekey/Rainyun-Qiandao contributors
+Copyright (c) cloudcranes/some_scripts contributors
+Copyright (c) FalseHappiness/RainyunCheckIn contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +53,7 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
         _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('3aae8a254cd15cdd', 'scripts/task_3aae8a25.py', 'task_3aae8a25.py', 'task_3aae8a25')
+        _ql_notify_identities = ('3aae8a254cd15cdd', 'scripts/task_3aae8a25.py', 'task_3aae8a25.py', 'task_3aae8a25', '89f2e9b460331a75', 'scripts/rainyun.py', 'rainyun.py', 'rainyun')
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors
@@ -220,9 +223,9 @@ def make_account(username, password, auto_renew=False, api_key="", position=0):
 
 
 def parse_accounts():
-    raw = os.environ.get("RAINYUN_ACCOUNT", "")
+    raw = account_input()
     if not raw.strip():
-        return [], ["缺少必填环境变量 RAINYUN_ACCOUNT"]
+        return [], ["缺少账号配置 RAINYUN_ACCOUNT 或 rainyun_ck"]
 
     accounts = []
     errors = []
@@ -265,6 +268,11 @@ def parse_accounts():
         except TaskError as exc:
             errors.append(f"账号 {index}：{exc}")
     return accounts, errors
+
+
+def account_input():
+    """Prefer the maintained setting, while keeping the old rainyun_ck task usable."""
+    return os.environ.get("RAINYUN_ACCOUNT", "") or os.environ.get("rainyun_ck", "")
 
 
 class RejectRedirect(urllib.request.HTTPRedirectHandler):
@@ -508,7 +516,16 @@ def notification_selected():
     selectors = [item for item in re.split(r"[,;\s]+", raw) if item]
     if not selectors:
         return False, "QINGLONG_NOTIFY_SCRIPTS 为空"
-    candidates = (CATALOG_ID, "candidate.py", "main.py", APPLICATION_KEY)
+    candidates = (
+        CATALOG_ID,
+        "candidate.py",
+        "main.py",
+        APPLICATION_KEY,
+        "89f2e9b460331a75",
+        "scripts/rainyun.py",
+        "rainyun.py",
+        "rainyun",
+    )
     for selector in selectors:
         if selector == "*" or any(
             fnmatch.fnmatchcase(candidate, selector) for candidate in candidates
@@ -772,7 +789,7 @@ def main():
         settings = Settings()
         settings_error = str(exc)
 
-    has_account_value = bool(os.environ.get("RAINYUN_ACCOUNT", "").strip())
+    has_account_value = bool(account_input().strip())
     invalid_account_count = len(account_errors) if has_account_value else 0
     configured_account_count = len(accounts) + invalid_account_count
     summary = {

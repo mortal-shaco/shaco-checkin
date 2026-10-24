@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 # name: 多看阅读
-# cron: 23 2 * * *
-# 建议发布路径：scripts/duokan_reading.py（产品专属路径，避免 ck_duokan.py 冲突）
-# 上游：yuxian158/check，dailycheckin_scripts/ck_duokan.py
-# 原始许可：MIT；保留上游归属，原文件没有单独版权声明。
+# cron: 25 2 * * *
+# 规范发布路径：scripts/yuxian158_check_duokan.py
+# 上游：yuxian158/check，dailycheckin_scripts/ck_duokan.py；
+# 关联来源：OreosLab/checkinpanel，ck_duokan.py，提交 911402e4b2e559ffd62c4949a971ddd6834edd7d。
+# 两份来源许可均为 MIT；保留上游归属，原文件没有单独版权声明。
 # SPDX-License-Identifier: MIT
 """多看阅读独立维护版。
 
 DUOKAN_COOKIE：登录多看阅读后，使用自己的浏览器开发者工具网络面板，
 复制 www.duokan.com 请求的完整 Cookie（必须含 device_id 和登录会话）。
 每行一个账号，Cookie 字段以分号分隔，仅在第一个等号处分割。
+兼容 DUOKAN：逐行 Cookie，或旧版 [{"cookie":"..."}] JSON 列表。
 DUOKAN_TASKS 默认 sign,info；可选 free,gift,add_draw,draw,download,task,delay。
+兼容 DUOKAN_DELAY、DUOKAN_FREE、DUOKAN_DRAW=1，按旧顺序追加
+delay、free、draw；不会自动添加 add_draw 或其他领取动作。
 free 会创建零价订单；其他可选动作可能改变书豆或消耗活动机会，请自行选择。
 DUOKAN_DRY_RUN=1 完全断网；只验证配置及展示执行计划，不代表业务成功。
-上游未提供 cron，此处建议每日 08:20（青龙本地时区）。
+本项目规范计划每日 02:23；旧 ck_duokan 的每日 02:05 计划可改为调用此脚本。
 依赖仅 Python 3 标准库；通知模块是可选青龙集成，不影响业务退出码。
 
 MIT License
@@ -43,7 +47,7 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
         _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('df7ef61ae68efc75', 'scripts/yuxian158_check_duokan.py', 'yuxian158_check_duokan.py', 'yuxian158_check_duokan')
+        _ql_notify_identities = ('df7ef61ae68efc75', 'scripts/yuxian158_check_duokan.py', 'yuxian158_check_duokan.py', 'yuxian158_check_duokan', 'c722e904dffeaf49', 'scripts/ck_duokan.py', 'ck_duokan.py', 'ck_duokan')
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors
@@ -57,6 +61,7 @@ import importlib
 import importlib.util
 import io
 import json
+import math
 import os
 import re
 import socket
@@ -72,9 +77,16 @@ GIFT_SIGNS = ['d16ad58199c69518a4afd87b5cf0fe67', '828672d6bc39ccd25e1f6ad34e00b
 TASK_CODES = ["K7S36GFSZC", "A2AMBFHP6C", "K5HHKUU14D", "J18UK6YYAY", "1BJGW140U5"]
 LABELS = {"sign":"每日签到", "info":"书豆查询", "free":"领取今日限免", "gift":"体验奖励", "add_draw":"添加抽奖机会", "draw":"抽奖", "download":"下载奖励", "task":"其他活动奖励", "delay":"书豆延期"}
 FALSE = {"0", "false", "no", "off"}
+TRUE = {"1", "true", "yes", "on"}
 SECRETS = []
 CATALOG_ID = "df7ef61ae68efc75"
-PUBLISH_PATH = "scripts/duokan_reading.py"
+PUBLISH_PATH = "scripts/yuxian158_check_duokan.py"
+NOTIFICATION_IDENTITIES = {
+    CATALOG_ID, "c722e904dffeaf49", PUBLISH_PATH,
+    "yuxian158_check_duokan.py", "yuxian158_check_duokan",
+    "scripts/ck_duokan.py", "ck_duokan.py", "ck_duokan",
+    "scripts/duokan_reading.py", "duokan_reading.py", "duokan_reading",
+}
 
 class TaskError(Exception):
     pass
@@ -105,7 +117,39 @@ def integer(name, default, maximum):
         raise TaskError(f"{name} 超出允许范围 1 至 {maximum}")
     return n
 
+def flag(name):
+    value = os.getenv(name, "0").strip().lower()
+    if value not in TRUE | FALSE:
+        raise TaskError(f"{name} 必须为 1 或 0（也接受 true/false、yes/no、on/off）")
+    return value in TRUE
+
+def timeout_seconds():
+    try:
+        value = float(os.getenv("DUOKAN_TIMEOUT", "15"))
+    except ValueError:
+        raise TaskError("DUOKAN_TIMEOUT 必须为 1 至 60 的秒数") from None
+    if not math.isfinite(value) or not 1 <= value <= 60:
+        raise TaskError("DUOKAN_TIMEOUT 必须为 1 至 60 的秒数")
+    return value
+
+def account_lines():
+    canonical = os.getenv("DUOKAN_COOKIE", "").strip()
+    raw = canonical or os.getenv("DUOKAN", "").strip()
+    if not raw:
+        raise TaskError("缺少必填环境变量 DUOKAN_COOKIE（兼容 DUOKAN）")
+    if not canonical and raw.startswith("["):
+        try:
+            data = json.loads(raw)
+            if not isinstance(data, list) or not data:
+                raise ValueError()
+            return [entry.get("cookie") if isinstance(entry, dict) else None for entry in data]
+        except ValueError:
+            raise TaskError("DUOKAN 兼容 JSON 格式错误") from None
+    return [line.strip() for line in raw.splitlines() if line.strip()]
+
 def parse_cookie(line):
+    if not isinstance(line, str) or not line.strip():
+        raise TaskError("账号 Cookie 为空或格式错误")
     values = {}
     SECRETS.append(line)
     for field in line.split(";"):
@@ -117,7 +161,8 @@ def parse_cookie(line):
         if key in values:
             raise TaskError("Cookie 字段重复")
         values[key] = value
-        SECRETS.append(value)
+        if key.lower() not in ("uid", "user_id", "userid"):
+            SECRETS.append(value)
     if not values.get("device_id") or len(values) < 2:
         raise TaskError("Cookie 必须包含 device_id 和登录会话字段")
     return values
@@ -144,6 +189,8 @@ class Client:
         req = Request("https://www.duokan.com" + path, data=None if data is None else urlencode(data).encode(), headers=headers)
         try:
             with self.opener.open(req, timeout=self.timeout) as response:
+                if response.status != 200:
+                    raise TaskError("接口 HTTP 状态异常")
                 raw = response.read(1024 * 1024 + 1)
                 if len(raw) > 1024 * 1024:
                     raise TaskError("接口响应过大")
@@ -154,12 +201,26 @@ class Client:
             raise TaskError("HTTP、网络或 JSON 响应异常（详情已脱敏）") from None
         if not isinstance(result, dict):
             raise TaskError("接口响应结构异常")
-        for obj in (result, result.get("data")):
+        containers = [result]
+        if isinstance(result.get("data"), dict):
+            containers.append(result["data"])
+        for obj in list(containers):
+            if isinstance(obj.get("user"), dict):
+                containers.append(obj["user"])
+        for obj in containers:
             if isinstance(obj, dict):
                 for field in ("nickname", "username", "display_name", "uid"):
                     identity = obj.get(field)
-                    if isinstance(identity, (str,int)) and not isinstance(identity, bool) and identity and (field,str(identity)) not in self.identities:
-                        self.identities.add((field,str(identity)))
+                    if not isinstance(identity, (str, int)) or isinstance(identity, bool):
+                        continue
+                    identity = str(identity)
+                    if (not identity or any(ord(c) < 32 for c in identity)
+                            or re.fullmatch(r"(?:\+?86)?1[3-9]\d{9}", identity)
+                            or any(secret and secret in identity for key, secret in self.cookies.items()
+                                   if key.lower() not in ("uid", "user_id", "userid"))):
+                        continue
+                    if (field, identity) not in self.identities:
+                        self.identities.add((field, identity))
                         log(f"官方账号身份 {field}：{identity}")
         return result
 
@@ -168,6 +229,9 @@ class Client:
         # 保留源码已明确使用的 result=0、msg=成功；其它响应失败闭合。
         msg = result.get("msg")
         code = result.get("result")
+        if isinstance(msg, str) and any(word in msg for word in
+                ("失败", "尚未登录", "未登录", "失效", "错误")):
+            raise TaskError("接口报告业务失败")
         if (type(code) is int and code == 0) or (code is None and msg in ("成功", "签到成功")):
             return "success"
         if code is None and msg in ("今日已签到", "今天已签到", "已经签到", "已签到"):
@@ -176,12 +240,16 @@ class Client:
 
     def awards(self):
         r = self.request("/store/v0/award/coin/list", self.signed(sandbox=0, withid=1))
+        if "result" in r:
+            self.verify(r)
         msg = r.get("msg")
         if isinstance(msg, str) and any(word in msg for word in ("尚未登录", "未登录", "登录失效")):
             raise TaskError("书豆查询登录状态无效")
         data = r.get("data")
         awards = data.get("award") if isinstance(data, dict) else None
-        if not isinstance(awards, list) or any(not isinstance(x,dict) or type(x.get("coin")) not in (int,float) for x in awards):
+        if not isinstance(awards, list) or any(
+                not isinstance(x, dict) or type(x.get("coin")) not in (int, float)
+                or not math.isfinite(x["coin"]) or x["coin"] < 0 for x in awards):
             raise TaskError("书豆列表响应结构异常")
         return awards
 
@@ -206,6 +274,8 @@ class Client:
             return "already" if action == "delay" and count == 0 else "success"
         if action == "free":
             r = self.request("/hs/v4/channel/query/2027")
+            if "result" in r:
+                self.verify(r)
             try:
                 bid = r["items"][0]["data"]["book_id"]
                 if not isinstance(bid,(str,int)) or isinstance(bid,bool) or not str(bid):
@@ -222,9 +292,12 @@ class Client:
             if not isinstance(title, str) or not title.strip():
                 raise TaskError("未获得可验证的限免书籍信息")
             if not ((type(result.get("result")) is int and result["result"] == 0) or
-                    (isinstance(msg, str) and
+                    ("result" not in result and isinstance(msg, str) and
                      ("成功" in msg or any(word in msg for word in ("已经购买", "已购买", "已拥有"))))):
                 raise TaskError("未获得可验证的限免领取成功标志")
+            if isinstance(msg, str) and any(word in msg for word in
+                    ("失败", "尚未登录", "未登录", "失效", "错误")):
+                raise TaskError("限免领取接口报告业务失败")
             log(f"今日限免书籍：{title}")
             return "success"
         if action == "gift":
@@ -284,13 +357,15 @@ class Client:
         raise TaskError("未知任务")
 
 def notification_selected():
+    if "QINGLONG_NOTIFY" in os.environ:
+        return os.environ["QINGLONG_NOTIFY"].strip().lower() not in FALSE
     configured = os.getenv("QINGLONG_NOTIFY_SCRIPTS")
     if configured is None:
         return True
-    selectors = [item for item in re.split(r"[,;\s]+", configured.strip()) if item]
+    selectors = [item.lower() for item in re.split(r"[,;\s]+", configured.strip()) if item]
     if not selectors:
         return False
-    identities = {CATALOG_ID, PUBLISH_PATH, Path(PUBLISH_PATH).name, Path(__file__).name}
+    identities = NOTIFICATION_IDENTITIES | {Path(__file__).name.lower()}
     return any(selector == "*" or any(fnmatch.fnmatchcase(identity, selector) for identity in identities)
                for selector in selectors)
 
@@ -301,7 +376,10 @@ def notify(summary, dry):
         return "未列入通知清单"
     body = (f"账号总数：{summary['accounts']}，成功：{summary['success']}，失败：{summary['failure']}；"
             f"状态：{summary['status']}；子任务成功：{summary['steps']['success']}，失败：{summary['steps']['failure']}")
-    # dry-run 仍尝试青龙 Python 通知入口，但禁止通知库联网并捕获其输出。
+    if dry:
+        log("✅ 通知预演：" + body + "（未加载通知模块，未联网）")
+        return "预演已模拟通知"
+    # 真实运行加载青龙 Python 通知入口；捕获模块输出避免泄漏凭据。
     previous_alarm = signal.getsignal(signal.SIGALRM)
     def notify_timeout(signum, frame):
         raise TimeoutError("通知超时")
@@ -357,20 +435,26 @@ def notify(summary, dry):
 
 def main():
     started = time.monotonic()
-    dry = os.getenv("DUOKAN_DRY_RUN", "0").strip().lower() not in FALSE
-    lines = [x.strip() for x in os.getenv("DUOKAN_COOKIE", "").splitlines() if x.strip()]
+    dry = os.getenv("DUOKAN_DRY_RUN", "0").strip().lower() in TRUE
+    lines = []
     log("========== 多看阅读 ==========")
     log("开始时间："+time.strftime("%Y-%m-%d %H:%M:%S"))
-    log(f"模式：{'断网预演' if dry else '正式运行'}；账号数：{len(lines)}")
     summary = dict(accounts=len(lines),success=0,failure=0,dryRun=dry,steps=dict(total=0,success=0,already=0,skipped=0,failure=0))
     config_error = False
     try:
-        if not lines:
-            raise TaskError("缺少必填环境变量 DUOKAN_COOKIE")
+        dry = flag("DUOKAN_DRY_RUN")
+        lines = account_lines()
+        summary['accounts'] = len(lines)
+        summary['dryRun'] = dry
+        log(f"模式：{'断网预演' if dry else '正式运行'}；账号数：{len(lines)}")
         actions = [x.strip() for x in os.getenv("DUOKAN_TASKS", "sign,info").split(",") if x.strip()]
         if not actions or len(set(actions)) != len(actions) or any(x not in LABELS for x in actions):
             raise TaskError("DUOKAN_TASKS 为空、重复或包含未知任务")
-        timeout = integer("DUOKAN_TIMEOUT",15,60)
+        for name, action in (("DUOKAN_DELAY", "delay"), ("DUOKAN_FREE", "free"),
+                             ("DUOKAN_DRAW", "draw")):
+            if flag(name) and action not in actions:
+                actions.append(action)
+        timeout = timeout_seconds()
         limit = integer("DUOKAN_MAX_REWARDS",20,200)
     except TaskError as exc:
         log(f"❌ 配置错误：{exc}")
