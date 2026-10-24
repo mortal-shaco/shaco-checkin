@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 # name: 雨云签到与安全续费
-# cron: 40 0 * * *
+# cron: 47 0 * * *
 # 上游: LMTXQ/Rainyun-QingLong main.py
 # 上游提交: c589e71cebb4c15fc6b0e3087a2bff4aaf032be1
 # 原项目基于 SerendipityR-2022/Rainyun-Qiandao 与 fatekey/Rainyun-Qiandao
@@ -272,7 +272,8 @@ def parse_accounts():
 
 def account_input():
     """Prefer the maintained setting, while keeping the old rainyun_ck task usable."""
-    return os.environ.get("RAINYUN_ACCOUNT", "") or os.environ.get("rainyun_ck", "")
+    canonical = os.environ.get("RAINYUN_ACCOUNT", "")
+    return canonical if canonical.strip() else os.environ.get("rainyun_ck", "")
 
 
 class RejectRedirect(urllib.request.HTTPRedirectHandler):
@@ -507,6 +508,8 @@ def notification_selected():
     switch = os.environ.get("QINGLONG_NOTIFY", "auto").strip().lower()
     if switch in FALSE_VALUES or switch == "":
         return False, "QINGLONG_NOTIFY 已关闭"
+    if switch in TRUE_VALUES:
+        return True, "QINGLONG_NOTIFY 已开启"
     if switch not in TRUE_VALUES | {"auto"}:
         log("⚠️ QINGLONG_NOTIFY 值无法识别，按 auto 处理")
 
@@ -518,6 +521,9 @@ def notification_selected():
         return False, "QINGLONG_NOTIFY_SCRIPTS 为空"
     candidates = (
         CATALOG_ID,
+        "scripts/task_3aae8a25.py",
+        "task_3aae8a25.py",
+        "task_3aae8a25",
         "candidate.py",
         "main.py",
         APPLICATION_KEY,

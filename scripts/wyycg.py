@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: 网易云游戏自动签到
-# cron: 47 1 * * *
+# cron: 42 1 * * *
 # SPDX-License-Identifier: Apache-2.0
 # 原作者：GamerNoTitle https://bili33.top
 # 来源：https://github.com/GamerNoTitle/wyycg-autocheckin
@@ -14,7 +14,7 @@ WYYCG_ACCOUNTS：登录 https://cg.163.com 后在浏览器开发者工具的网�
 GAME163 旧 JSON 账号数组、wyycg_cookies 或第一个位置参数。
 可选位置参数依次是 Telegram 接收者、机器人令牌、ServerChan 密钥、QQ 密钥、
 PushPlus 令牌；也可使用契约中的对应环境变量。PPKEY 保留旧 PushPlus 推送。
-本项目规范计划每日 01:38；旧 cg163、game163 计划分别为每日 01:34、01:21，可改为调用此脚本。
+本项目规范计划每日 01:42；旧 cg163、game163 计划分别为每日 01:34、01:21，可改为调用此脚本。
 WYYCG_DRY_RUN=1（兼容 CG163_DRY_RUN、GAME163_DRY_RUN）完全断网，
 只检查配置与模拟流程，包括不调用通知模块。
 签到可能领取云游戏时长；不执行消费、发帖或修改账户的其他动作。
@@ -127,6 +127,13 @@ def http_json(url, method='GET', headers=None, body=None, allow_text=False):
 
 def business_result(payload, profile='standard'):
     """分别保持三版的明确成功契约；共享旧变量取可核验判定的并集。"""
+    if isinstance(payload, dict):
+        for key in ('msg', 'message', 'detail'):
+            message = payload.get(key)
+            if isinstance(message, str) and any(
+                    marker in message.lower() for marker in
+                    ('失败', '错误', '未登录', '失效', '拒绝', 'failed', 'failure', 'error', 'invalid', 'denied')):
+                return False, False
     if profile == 'standard':
         if payload is True:
             return True, False
@@ -134,7 +141,8 @@ def business_result(payload, profile='standard'):
             return False, False
         if payload.get('success') is False or payload.get('ok') is False or payload.get('error'):
             return False, False
-        if 'code' in payload and payload['code'] not in (0, 200, '0', '200'):
+        if 'code' in payload and (
+                isinstance(payload['code'], bool) or payload['code'] not in (0, 200, '0', '200')):
             return False, False
         return payload.get('success') is True or payload.get('ok') is True, False
     if profile in ('cg163', 'shared'):
@@ -164,9 +172,16 @@ def business_result(payload, profile='standard'):
             payload.get('error') not in (None, False, '', 0)):
         return False, False
     for key in ('code', 'status', 'retcode'):
-        if key in payload:
-            value = payload[key]
-            if isinstance(value, bool) or value not in (0, 200, '0', '200'):
+        value = payload.get(key)
+        if value is False:
+            return False, False
+        if isinstance(value, (int, float)) and not isinstance(value, bool) and value not in (0, 200):
+            return False, False
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in ('error', 'failed', 'failure'):
+                return False, False
+            if normalized.lstrip('-').isdigit() and normalized not in ('0', '200'):
                 return False, False
     message = next((payload[key].strip().rstrip('。！!.')
                     for key in ('msg', 'message', 'detail')
@@ -235,7 +250,10 @@ def identity(payload, secrets):
                 continue
             value = str(value)
             # 官方非敏感身份原样显示；疑似手机号或含凭据内容禁止输出。
-            if value and not any(secret and secret in value for secret in secrets) and not re.search(r'(?<!\d)1[3-9]\d{9}(?!\d)', value):
+            if (value and len(value) <= 200
+                    and not any(secret and secret in value for secret in secrets)
+                    and not re.search(r'(?<!\d)1[3-9]\d{9}(?!\d)', value)
+                    and not re.search(r'(?i)(bearer\s|token\s*[=:]|cookie\s*[=:]|session\s*[=:])', value)):
                 if not any(ord(char) < 32 for char in value):
                     return value
     return ''
@@ -369,9 +387,7 @@ def main():
         accounts, profile = load_accounts()
     except TaskError as exc:
         accounts, profile, account_error = [], 'standard', str(exc)
-    dry = (enabled('WYYCG_DRY_RUN') or
-           (profile in ('cg163', 'shared') and enabled('CG163_DRY_RUN')) or
-           (profile == 'game163' and enabled('GAME163_DRY_RUN')))
+    dry = any(enabled(name) for name in ('WYYCG_DRY_RUN', 'CG163_DRY_RUN', 'GAME163_DRY_RUN'))
     names = ['WYYCG_TELEGRAM_ID', 'WYYCG_TELEGRAM_TOKEN', 'WYYCG_SERVERCHAN_KEY', 'WYYCG_QQ_KEY', 'WYYCG_PUSHPLUS_TOKEN']
     settings = [os.getenv(name) or (sys.argv[i+2] if len(sys.argv) > i+2 else '') for i, name in enumerate(names)]
     log(f'===== {TITLE} =====')

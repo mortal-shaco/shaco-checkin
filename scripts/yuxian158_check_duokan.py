@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # name: 多看阅读
-# cron: 25 2 * * *
+# cron: 28 2 * * *
 # 规范发布路径：scripts/yuxian158_check_duokan.py
 # 上游：yuxian158/check，dailycheckin_scripts/ck_duokan.py；
 # 关联来源：OreosLab/checkinpanel，ck_duokan.py，提交 911402e4b2e559ffd62c4949a971ddd6834edd7d。
@@ -17,7 +17,7 @@ DUOKAN_TASKS 默认 sign,info；可选 free,gift,add_draw,draw,download,task,del
 delay、free、draw；不会自动添加 add_draw 或其他领取动作。
 free 会创建零价订单；其他可选动作可能改变书豆或消耗活动机会，请自行选择。
 DUOKAN_DRY_RUN=1 完全断网；只验证配置及展示执行计划，不代表业务成功。
-本项目规范计划每日 02:23；旧 ck_duokan 的每日 02:05 计划可改为调用此脚本。
+本项目规范计划每日 02:28；旧 ck_duokan 的每日 02:05 计划可改为调用此脚本。
 依赖仅 Python 3 标准库；通知模块是可选青龙集成，不影响业务退出码。
 
 MIT License
@@ -320,7 +320,11 @@ class Client:
                 msg = result.get("msg")
                 if isinstance(msg, str) and any(word in msg for word in ("尚未登录", "未登录", "登录失效")):
                     raise TaskError("体验奖励登录状态无效")
-                if (type(result.get("result")) is int and result["result"] == 0) or msg == "成功":
+                try:
+                    outcome = self.verify(result)
+                except TaskError:
+                    continue
+                if outcome == "success":
                     claimed += 1
                     log(f"体验奖励第 {claimed}/{chances} 次：成功")
                     if claimed == chances:

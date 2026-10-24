@@ -34158,7 +34158,7 @@
       },
       "displayName": "雨云签到与安全续费",
       "path": "scripts/task_3aae8a25.py",
-      "sha256": "04ee415e3d74a69e08575b15b062e30580041eec769a883dbdcc3adef219bc85",
+      "sha256": "626f80e1ba5e90ae0a793f46f9af7c87e5867e2565ec2181517f89195ed3308f",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -34190,15 +34190,18 @@
           }
         ]
       },
-      "cron": "40 0 * * *",
+      "cron": "47 0 * * *",
       "command": "python3 scripts/task_3aae8a25.py",
       "environment": [
         {
           "name": "RAINYUN_ACCOUNT",
           "required": true,
           "sensitive": true,
-          "howToGet": "用户名和密码来自雨云官网账号；如需续费，API Key 从雨云控制台的 API 设置中创建。推荐把同一账号的字段写在同一行 JSON 对象中。 沿用旧任务时也可只设置 rainyun_ck。",
-          "format": "每个非空行一个账号，推荐 {\"username\":\"用户名\",\"password\":\"密码\",\"autoRenew\":false,\"apiKey\":\"可选 API Key\"}；仅签到兼容 用户名#密码，并只在第一个 # 处分隔；也兼容上游 JSON 二维数组。"
+          "howToGet": "用户名和密码来自雨云官网账号；如需续费，API Key 从雨云控制台的 API 设置中创建。推荐把同一账号的字段写在同一行 JSON 对象中。 沿用旧任务时也可只设置 rainyun_ck。 规范变量与所列旧变量任选其一；只保留旧变量也可运行。",
+          "format": "每个非空行一个账号，推荐 {\"username\":\"用户名\",\"password\":\"密码\",\"autoRenew\":false,\"apiKey\":\"可选 API Key\"}；仅签到兼容 用户名#密码，并只在第一个 # 处分隔；也兼容上游 JSON 二维数组。",
+          "alternatives": [
+            "rainyun_ck"
+          ]
         },
         {
           "name": "rainyun_ck",
@@ -34262,7 +34265,8 @@
         "业务步骤完成或失败后，在已登录的情况下执行退出登录并核验结果。",
         "支持每行一个账号、账号失败隔离以及任一账号失败时整体返回非零状态。",
         "提供完全断网预演、分阶段脱敏日志、逐账号统计和单行 TASK_SUMMARY JSON 汇总。",
-        "按全局开关和脚本选择器调用青龙 Python 或 JavaScript 通知，并在通知失败时保留业务退出码。"
+        "按全局开关和脚本选择器调用青龙 Python 或 JavaScript 通知，并在通知失败时保留业务退出码。",
+        "规范任务每日 00:47；旧雨云 01:28 定时任务如需保留原 Cron，请将命令改为 python3 scripts/task_3aae8a25.py。"
       ],
       "sideEffects": [
         "正式运行时执行雨云每日签到并领取积分。",
@@ -34289,20 +34293,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/3aae8a254cd15cdd",
-        "candidateSha256": "6fefa939f85d121b1346ef4cbbdc7fec6f2dd0ce4f66f913c50e2d519c277e9e"
+        "candidateSha256": "b2065e0dcb28bc7cb5c7ef9b92ebf42d3cc453f868daa5df9d35869f5a57fa13"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "6fefa939f85d121b1346ef4cbbdc7fec6f2dd0ce4f66f913c50e2d519c277e9e",
-        "releaseSha256": "04ee415e3d74a69e08575b15b062e30580041eec769a883dbdcc3adef219bc85",
+        "validatedSha256": "b2065e0dcb28bc7cb5c7ef9b92ebf42d3cc453f868daa5df9d35869f5a57fa13",
+        "releaseSha256": "626f80e1ba5e90ae0a793f46f9af7c87e5867e2565ec2181517f89195ed3308f",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-24T06:29:05.168203+00:00",
+          "approvedAt": "2026-10-24T06:54:09.506518+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "6fefa939f85d121b1346ef4cbbdc7fec6f2dd0ce4f66f913c50e2d519c277e9e",
-          "toCandidateSha256": "04ee415e3d74a69e08575b15b062e30580041eec769a883dbdcc3adef219bc85",
+          "fromCandidateSha256": "b2065e0dcb28bc7cb5c7ef9b92ebf42d3cc453f868daa5df9d35869f5a57fa13",
+          "toCandidateSha256": "626f80e1ba5e90ae0a793f46f9af7c87e5867e2565ec2181517f89195ed3308f",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -37954,7 +37958,7 @@
           "兼容原 wyycg_cookies 凭据变量及可选 PPKEY 推送",
           "完全断网预演、分阶段脱敏日志和结构化汇总",
           "所有运行结果均尝试青龙通知，支持全局关闭并保留业务退出码",
-          "每日网易云游戏签到，保留每天 08:20 的计划和原请求路径、POST 方法及请求头格式。",
+          "每日网易云游戏签到，保留原请求路径、POST 方法及请求头格式。",
           "换行多账号及原 authorization 字段配置兼容，各账号独立处理。",
           "标准库实现 HTTPS 请求，设置超时、响应大小上限并拒绝跳转。",
           "仅接受明确签到成功或已签到文字；空响应、未知业务结果和错误均失败闭合。",
@@ -37978,7 +37982,7 @@
       },
       "displayName": "网易云游戏自动签到",
       "path": "scripts/wyycg.py",
-      "sha256": "aa3dce562c711a85fcaae625ea5a3f217bafe265e6a8ccefa9716cb657547f8c",
+      "sha256": "487107cc9afd4017ca07bd6f77112ffc4545b5e33c4cc62648ca812ba2cdcb44",
       "stage": "released",
       "license": "Apache-2.0",
       "licenseGate": "allowed-permissive",
@@ -38020,15 +38024,21 @@
           }
         ]
       },
-      "cron": "47 1 * * *",
+      "cron": "42 1 * * *",
       "command": "python3 scripts/wyycg.py",
       "environment": [
         {
           "name": "WYYCG_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录网易云游戏网页 https://cg.163.com，在浏览器开发者工具网络面板查看 n.cg.163.com 的账户配置或签到请求，复制 Authorization 请求头完整值。不要填写 Cookie 请求头，也不要公开凭据。",
-          "format": "每个非空行一个账号的完整 Authorization 值；保留凭据内部字符，不使用 #、&、@ 分隔账号。"
+          "howToGet": "登录网易云游戏网页 https://cg.163.com，在浏览器开发者工具网络面板查看 n.cg.163.com 的账户配置或签到请求，复制 Authorization 请求头完整值。不要填写 Cookie 请求头，也不要公开凭据。 规范变量与所列旧变量任选其一；只保留旧变量也可运行。",
+          "format": "每个非空行一个账号的完整 Authorization 值；保留凭据内部字符，不使用 #、&、@ 分隔账号。",
+          "alternatives": [
+            "wyycg_cookies",
+            "CG163_ACCOUNTS",
+            "GAME163_AUTHORIZATION",
+            "GAME163"
+          ]
         },
         {
           "name": "wyycg_cookies",
@@ -38164,13 +38174,14 @@
         "兼容原 wyycg_cookies 凭据变量及可选 PPKEY 推送",
         "完全断网预演、分阶段脱敏日志和结构化汇总",
         "所有运行结果均尝试青龙通知，支持全局关闭并保留业务退出码",
-        "每日网易云游戏签到，保留每天 08:20 的计划和原请求路径、POST 方法及请求头格式。",
+        "每日网易云游戏签到，保留原请求路径、POST 方法及请求头格式。",
         "换行多账号及原 authorization 字段配置兼容，各账号独立处理。",
         "标准库实现 HTTPS 请求，设置超时、响应大小上限并拒绝跳转。",
         "仅接受明确签到成功或已签到文字；空响应、未知业务结果和错误均失败闭合。",
         "官方返回安全的昵称、用户名、显示名或公开 UID 时显示原值，不输出凭据及原始响应。",
         "完全断网预演，通知仅模拟；实际模式在成功、部分失败、失败和配置错误后尝试青龙通知。",
-        "时间轴日志、阶段耗时、账号与任务统计，以及恰好一条 TASK_SUMMARY JSON 记录。"
+        "时间轴日志、阶段耗时、账号与任务统计，以及恰好一条 TASK_SUMMARY JSON 记录。",
+        "规范任务每日 01:42；旧网易云游戏 01:21、01:34 定时任务如需保留原 Cron，请将命令改为 python3 scripts/wyycg.py。"
       ],
       "sideEffects": [
         "执行每日签到，可能领取云游戏时长",
@@ -38202,20 +38213,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/a414f4add19cb6a5",
-        "candidateSha256": "d53bd2cc33fbd5d701067cc10044f213587ac69651a9a505eff336b1623b817f"
+        "candidateSha256": "9f4d3ab00c00aaf2a8d26428c9caf38d9d2399fe0775c32b32e735da120ebd5a"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "d53bd2cc33fbd5d701067cc10044f213587ac69651a9a505eff336b1623b817f",
-        "releaseSha256": "aa3dce562c711a85fcaae625ea5a3f217bafe265e6a8ccefa9716cb657547f8c",
+        "validatedSha256": "9f4d3ab00c00aaf2a8d26428c9caf38d9d2399fe0775c32b32e735da120ebd5a",
+        "releaseSha256": "487107cc9afd4017ca07bd6f77112ffc4545b5e33c4cc62648ca812ba2cdcb44",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-24T06:36:47.045160+00:00",
+          "approvedAt": "2026-10-24T06:54:09.535107+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "d53bd2cc33fbd5d701067cc10044f213587ac69651a9a505eff336b1623b817f",
-          "toCandidateSha256": "aa3dce562c711a85fcaae625ea5a3f217bafe265e6a8ccefa9716cb657547f8c",
+          "fromCandidateSha256": "9f4d3ab00c00aaf2a8d26428c9caf38d9d2399fe0775c32b32e735da120ebd5a",
+          "toCandidateSha256": "487107cc9afd4017ca07bd6f77112ffc4545b5e33c4cc62648ca812ba2cdcb44",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -39474,7 +39485,7 @@
       },
       "displayName": "多看阅读",
       "path": "scripts/yuxian158_check_duokan.py",
-      "sha256": "e88b3b6ca44e2c8a46a67d6bc2a4f4ccda6f394e20af3891205cfa94c66597ee",
+      "sha256": "f731c4be4a29ce2fe675d27559fef84cf044f689c9e556f9dec84314424b08c4",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -39496,15 +39507,18 @@
           }
         ]
       },
-      "cron": "25 2 * * *",
+      "cron": "28 2 * * *",
       "command": "python3 scripts/yuxian158_check_duokan.py",
       "environment": [
         {
           "name": "DUOKAN_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录多看阅读网页后，在浏览器开发者工具的网络面板中打开 www.duokan.com 请求，复制自己的完整 Cookie；必须包含 device_id 和有效登录会话字段。不要把该值分享给他人。",
-          "format": "每行一个账号；每行是以分号分隔的 Cookie 字段，字段采用 名称=值，解析时只按每个字段的第一个等号分割。"
+          "howToGet": "登录多看阅读网页后，在浏览器开发者工具的网络面板中打开 www.duokan.com 请求，复制自己的完整 Cookie；必须包含 device_id 和有效登录会话字段。不要把该值分享给他人。 规范变量与所列旧变量任选其一；只保留旧变量也可运行。",
+          "format": "每行一个账号；每行是以分号分隔的 Cookie 字段，字段采用 名称=值，解析时只按每个字段的第一个等号分割。",
+          "alternatives": [
+            "DUOKAN"
+          ]
         },
         {
           "name": "DUOKAN_TASKS",
@@ -39608,7 +39622,8 @@
         "可选消耗已有机会参加上游抽奖活动，最多六次且失败即停止。",
         "多账号独立处理、凭据格式检查、无网络预演、请求超时和明确业务成功核验。",
         "显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。",
-        "脱敏时间轴、阶段与账号统计、唯一单行结构化任务汇总以及青龙通知。"
+        "脱敏时间轴、阶段与账号统计、唯一单行结构化任务汇总以及青龙通知。",
+        "规范任务每日 02:28；旧多看 02:05 定时任务如需保留原 Cron，请将命令改为 python3 scripts/yuxian158_check_duokan.py。"
       ],
       "sideEffects": [
         "默认 sign 任务会提交每日签到并改变账号签到状态。",
@@ -39639,20 +39654,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/df7ef61ae68efc75",
-        "candidateSha256": "6fb516e4782c990470e13be466e2b6ecf9db8ea8cd30e573718982f24bdd032d"
+        "candidateSha256": "8242ee2685b1460320186bfda137949fa67bc1e59109474e71783174d8625871"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "6fb516e4782c990470e13be466e2b6ecf9db8ea8cd30e573718982f24bdd032d",
-        "releaseSha256": "e88b3b6ca44e2c8a46a67d6bc2a4f4ccda6f394e20af3891205cfa94c66597ee",
+        "validatedSha256": "8242ee2685b1460320186bfda137949fa67bc1e59109474e71783174d8625871",
+        "releaseSha256": "f731c4be4a29ce2fe675d27559fef84cf044f689c9e556f9dec84314424b08c4",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-24T06:33:32.855521+00:00",
+          "approvedAt": "2026-10-24T06:56:31.985979+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "6fb516e4782c990470e13be466e2b6ecf9db8ea8cd30e573718982f24bdd032d",
-          "toCandidateSha256": "e88b3b6ca44e2c8a46a67d6bc2a4f4ccda6f394e20af3891205cfa94c66597ee",
+          "fromCandidateSha256": "8242ee2685b1460320186bfda137949fa67bc1e59109474e71783174d8625871",
+          "toCandidateSha256": "f731c4be4a29ce2fe675d27559fef84cf044f689c9e556f9dec84314424b08c4",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
