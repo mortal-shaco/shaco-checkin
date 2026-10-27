@@ -91,7 +91,7 @@
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `13 1 * * *` | 待检查 | [passnat_checkin.py.md](../../scripts/passnat_checkin.py.md)（`docs/scripts/passnat_checkin.py.md`） |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
-| Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `23 2 * * *` | 待检查 | [qoder_airscript.js.md](../../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
+| Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
 | Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `42 0 * * *` | 待检查 | [rousi_checkin.js.md](../../scripts/rousi_checkin.js.md)（`docs/scripts/rousi_checkin.js.md`） |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |

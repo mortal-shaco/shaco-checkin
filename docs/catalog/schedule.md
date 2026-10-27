@@ -125,7 +125,7 @@
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
 | 青龙备份与阿里云盘签到 | `scripts/qinglong_backup.py` | `python3 scripts/qinglong_backup.py` | `11 1 * * *` | 待检查 | [qinglong_backup.py.md](../scripts/qinglong_backup.py.md)（`docs/scripts/qinglong_backup.py.md`） |
-| Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `23 2 * * *` | 待检查 | [qoder_airscript.js.md](../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
+| Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `15 0 * * *` | 待检查 | [quark_signin.py.md](../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `2 9 * * *` | 待检查 | [raccoon_daily.py.md](../scripts/raccoon_daily.py.md)（`docs/scripts/raccoon_daily.py.md`） |
 | Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `42 0 * * *` | 待检查 | [rousi_checkin.js.md](../scripts/rousi_checkin.js.md)（`docs/scripts/rousi_checkin.js.md`） |
