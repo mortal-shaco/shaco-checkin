@@ -11925,6 +11925,174 @@
       }
     },
     {
+      "catalogId": "8aba65e222e7eb74",
+      "applicationKey": "xlzs001/emos-loon-sign::python",
+      "checkProfile": {
+        "requiredEnv": [
+          "EMOS_TOKENS"
+        ],
+        "optionalEnv": [
+          "EMOS_TOKEN",
+          "EMOS_DRY_RUN",
+          "EMOS_BASE",
+          "EMOS_LOCAL_TEXT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "EMOS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "EMOS_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功（已复核）",
+          "今日已签到（已核实）"
+        ],
+        "features": [
+          "查询今日签到状态，已完成时跳过重复签到。",
+          "使用本人 Token 执行每日签到，并通过重新查询 is_sign 确认业务完成；限流、冲突及 HTTP 200 不能单独视为成功。",
+          "查询并完整显示接口提供的非凭据公开账号名称或公开编号，同时隐藏手机号和凭据。",
+          "显示签到接口返回的获得积分、连续签到天数和签到排名等数值。",
+          "保留 EMOS_TOKENS 与 EMOS_TOKEN 参数兼容、两个官方域名的读取回退和随机本地签到短句。",
+          "签到文案优先从一言获取，按策略保留作者和作品署名；接口、网络、超时、超长、解析及缺失文本异常均回退本地文案，且不向供应商发送账号凭据。",
+          "支持换行多账号、完全断网预演、逐账号阶段日志、单条结构化汇总及青龙脱敏通知；通知失败不改变业务退出码。"
+        ],
+        "sideEffects": [
+          "对尚未签到的账号执行签到，提交公开签到文案，可能增加积分及连续签到天数并产生签到排名。",
+          "在通知开关和选择列表允许时，通过青龙通知渠道发送脱敏任务总结；断网预演禁止通知联网。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "EMOS 每日签到",
+      "path": "scripts/emos_sign.py",
+      "sha256": "dff85c0996086003c529d6e5e978f94be43cb07f1710f1e590928df2e01301b0",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "xlzs001/emos-loon-sign",
+        "branch": "main",
+        "commit": "5816810371fe4e866b27d2dc9bbdd190232069c9",
+        "originalPath": "python/emos_sign.py"
+      },
+      "cron": "30 8 * * *",
+      "command": "python3 scripts/emos_sign.py",
+      "environment": [
+        {
+          "name": "EMOS_TOKENS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://emos.best 后，在浏览器开发者工具的网络面板查看本人 /api/sign/check 或 /api/user 请求；复制 Authorization 请求头中 Bearer 后的完整 Token，保存到青龙环境变量。不要分享抓包或请求头。",
+          "format": "每个非空行一个完整 Token，不加 Bearer 前缀，不使用逗号、分号、& 或 @ 分隔账号；Token 内部内容原样保留。"
+        },
+        {
+          "name": "EMOS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容变量，获取方式同 EMOS_TOKENS；建议迁移到规范变量。",
+          "format": "单个 Token 或每个非空行一个 Token；仅当 EMOS_TOKENS 为空时使用。"
+        },
+        {
+          "name": "EMOS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置；验证或首次配置时设为 1。",
+          "format": "1、true、yes、on 启用完全断网预演；0、false、no、off 执行真实签到，默认 0。"
+        },
+        {
+          "name": "EMOS_BASE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，按实际可用的官方域名设置；不需要额外凭据。",
+          "format": "仅允许 https://emos.best 或 https://api.emos.best，允许末尾斜杠；默认依次使用这两个地址。自定义地址不在白名单时停止执行，防止凭据外送。"
+        },
+        {
+          "name": "EMOS_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，手动填写公开的签到短句；不要填写任何个人隐私或凭据。",
+          "format": "一言失败时的本地回退文案，合并空白后不超过 280 个字符；为空或过长时随机使用上游内置短句。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，在青龙环境变量中填写需要通知的脚本选择列表。",
+          "format": "逗号、分号或空白分隔的目录编号、脚本相对路径、文件名或文件名通配符；支持本任务编号、emos_sign.py、candidate.py 和 *。设置为空关闭自动选择；未设置时默认不在通知名单。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已配置好的青龙 notify.py 或 sendNotify.js 所在目录；不是业务运行依赖。",
+          "format": "本地通知适配器目录；同时支持导入 notify.send，以及 /ql/data/scripts 和 /ql/scripts 下的标准通知文件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号的完整 Token，账号独立处理；规范变量 EMOS_TOKENS 优先，EMOS_TOKEN 仅作兼容输入。任一账号失败时整体非零退出。不要用逗号、分号、& 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询今日签到状态，已完成时跳过重复签到。",
+        "使用本人 Token 执行每日签到，并通过重新查询 is_sign 确认业务完成；限流、冲突及 HTTP 200 不能单独视为成功。",
+        "查询并完整显示接口提供的非凭据公开账号名称或公开编号，同时隐藏手机号和凭据。",
+        "显示签到接口返回的获得积分、连续签到天数和签到排名等数值。",
+        "保留 EMOS_TOKENS 与 EMOS_TOKEN 参数兼容、两个官方域名的读取回退和随机本地签到短句。",
+        "签到文案优先从一言获取，按策略保留作者和作品署名；接口、网络、超时、超长、解析及缺失文本异常均回退本地文案，且不向供应商发送账号凭据。",
+        "支持换行多账号、完全断网预演、逐账号阶段日志、单条结构化汇总及青龙脱敏通知；通知失败不改变业务退出码。"
+      ],
+      "sideEffects": [
+        "对尚未签到的账号执行签到，提交公开签到文案，可能增加积分及连续签到天数并产生签到排名。",
+        "在通知开关和选择列表允许时，通过青龙通知渠道发送脱敏任务总结；断网预演禁止通知联网。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/8aba65e222e7eb74",
+        "candidateSha256": "c9b1739e3a60eed52e6cbcd2b9afdbdc234b5866cd56d659337e15203eb57673"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "c9b1739e3a60eed52e6cbcd2b9afdbdc234b5866cd56d659337e15203eb57673",
+        "releaseSha256": "dff85c0996086003c529d6e5e978f94be43cb07f1710f1e590928df2e01301b0",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-27T09:46:57.661367+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "c9b1739e3a60eed52e6cbcd2b9afdbdc234b5866cd56d659337e15203eb57673",
+          "toCandidateSha256": "dff85c0996086003c529d6e5e978f94be43cb07f1710f1e590928df2e01301b0",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "bec8a601d5a51b0a",
       "applicationKey": "enshan",
       "checkProfile": {
@@ -20680,6 +20848,206 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "b2b134829f4bcfca5a64f59d09d512580804533ccf453d7c92831982560e4770",
           "toCandidateSha256": "e24b76bcb0e7df479cb84cb08b29487d324ee5e6265dca9c6270dfa031e3a949",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "241e7ff85e417257",
+      "applicationKey": "newapi",
+      "checkProfile": {
+        "requiredEnv": [
+          "NEWAPI_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "NEWAPI_DRY_RUN",
+          "NEWAPI_TASKS",
+          "NEWAPI_USER_AGENT",
+          "CONFIG_URL",
+          "CONFIG_AUTH",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NEWAPI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NEWAPI_TASKS": "checkin,history"
+        },
+        "successPatterns": [
+          "TASK_SUMMARY=",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "多站点多账号每日签到，兼容会话 Cookie、系统访问令牌及配套密码续期；认证失败可在本次进程内重新登录，不回写配置。",
+          "读取官方用户名、昵称、显示名称和公开 UID，按返回值显示可公开身份，抑制凭据和手机号。",
+          "遇到接口明确要求 PoW 时按来源协议获取挑战、有限时计算并提交，不输出挑战或 nonce。",
+          "读取当月签到天数、累计额度、今日签到状态及本次签到奖励和日期，可通过任务开关选择签到或查询。",
+          "兼容可选 HTTPS 云端配置读取与本地账号回退，隔离云端认证、禁止认证重定向及云端通知覆盖。",
+          "断网预演、超时及响应体上限、逐账号失败隔离、脱敏时间轴日志、单行结构化汇总及青龙通知策略。",
+          "只有 HTTP 200 且 success 为布尔真才确认接口业务成功；已签到消息还须通过月度记录 checked_in_today 为真确认。"
+        ],
+        "sideEffects": [
+          "checkin 任务向目标站点提交每日签到并领取该站点签到额度。",
+          "仅配套密码已配置且需要登录或续期时创建新的站点登录会话；会话仅保存在当前进程。",
+          "正式运行且通知策略选中时向青龙配置的通知渠道发送脱敏任务汇总。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "NewAPI 自动签到",
+      "path": "scripts/newapi.py",
+      "sha256": "9516e15fd3e0488f44e8dbe978c3710ca4e6b75a558cce970f74419840c9281e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Jasonliu-0/Newapi-checkin",
+        "branch": "main",
+        "commit": "49089a5bbe4c063fdb814e77d27168e55bed1700",
+        "originalPath": "checkin.py",
+        "related": [
+          {
+            "catalogId": "ab397327403ac236",
+            "sha256": "80a414ec2365caa41bce968420132af13e208c682cf397988f3e1b649c62d922",
+            "repository": "Jasonliu-0/Newapi-checkin",
+            "url": "https://github.com/Jasonliu-0/Newapi-checkin.git",
+            "branch": "main",
+            "commit": "49089a5bbe4c063fdb814e77d27168e55bed1700",
+            "originalPath": "cf_bypass.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "106c3fa7c7c80496",
+            "sha256": "5909614faa9110cd736e3bac39e89593c2b920fe23fb63f71162ba1be8233639",
+            "repository": "Jasonliu-0/Newapi-checkin",
+            "url": "https://github.com/Jasonliu-0/Newapi-checkin.git",
+            "branch": "main",
+            "commit": "49089a5bbe4c063fdb814e77d27168e55bed1700",
+            "originalPath": "config_helper.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "18 8 * * *",
+      "command": "python3 scripts/newapi.py",
+      "environment": [
+        {
+          "name": "NEWAPI_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录各自 NewAPI 站点；开发者工具 Application → Cookies 复制 session 值，或在个人设置生成系统访问令牌。user_id 从本人 /api/user/self 的 data.id 或请求头 new-api-user 获取，不能根据用户名猜测。密码续期可填写本人登录用户名及密码；cf_clearance 从本站 Cookie 获取，可能绑定出口与 User-Agent。无需提交凭据或依赖其他仓库文件。",
+          "format": "每个非空行一个 JSON 对象：url 为 HTTPS 站点根地址；session、access_token 至少一个，或同时填写 login_username 与 login_password。可选 user_id、cf_clearance、name。兼容旧 JSON 数组及每行 URL#SESSION、URL#SESSION#ACCESS_TOKEN；含 # 的凭据请使用 JSON，禁止逗号、&、@ 分隔账号。session 填 Cookie 值而非整个 Cookie 头，access_token 保留个人设置要求的原始格式。"
+        },
+        {
+          "name": "NEWAPI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，预演不发送业务、云配置或通知请求。",
+          "format": "1 启用断网预演；默认正式运行。"
+        },
+        {
+          "name": "NEWAPI_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要在青龙环境变量中选择任务；默认同时执行签到及月度统计。",
+          "format": "checkin,history；也可仅 checkin 或 history。"
+        },
+        {
+          "name": "NEWAPI_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如站点校验浏览器指纹，从获取 Cookie 时的浏览器请求复制 User-Agent；不保证解除浏览器验证。",
+          "format": "单行 User-Agent 字符串；默认保留上游 Chrome 120 标识。"
+        },
+        {
+          "name": "CONFIG_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入：由本人管理的 HTTPS WebDAV 或直接下载配置地址。不得把用户名密码放进 URL。优先读取云端，失败回退 NEWAPI_ACCOUNTS；预演只读取本地占位账号。",
+          "format": "HTTPS 地址；内容为账号 JSON 数组或含 accounts 数组的对象。忽略云端通知配置。"
+        },
+        {
+          "name": "CONFIG_AUTH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人云存储设置取得 WebDAV 用户名及应用密码，或该配置服务的只读令牌。只发送给 CONFIG_URL，不发送到签到站点。",
+          "format": "token:令牌 或 用户名:密码；用户名密码只以第一个冒号为边界，密码中的后续冒号保留。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知脚本选择列表；未设置时本待验证候选默认不推送。设为 * 可选择所有脚本。",
+          "format": "以逗号、分号、空白或换行分隔；支持 catalogId 241e7ff85e417257、脚本文件名、scripts/相对路径及文件名通配符；空值关闭全部。全局开关优先。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙已配置的通知模块目录；也会尝试导入 notify.send 或查找 /ql/data/scripts/notify.py、/ql/scripts/notify.py。业务任务无需此文件即可运行。",
+          "format": "含 notify.py 的本地目录路径；不下载或安装模块。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "一个非空行对应一个账号，同账号站点和凭据合并在单行 JSON 对象中；兼容旧 JSON 数组。每个账号独立核对并执行，任一账号或配置失败整体非零退出；不按 &、@ 或逗号拆分账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "多站点多账号每日签到，兼容会话 Cookie、系统访问令牌及配套密码续期；认证失败可在本次进程内重新登录，不回写配置。",
+        "读取官方用户名、昵称、显示名称和公开 UID，按返回值显示可公开身份，抑制凭据和手机号。",
+        "遇到接口明确要求 PoW 时按来源协议获取挑战、有限时计算并提交，不输出挑战或 nonce。",
+        "读取当月签到天数、累计额度、今日签到状态及本次签到奖励和日期，可通过任务开关选择签到或查询。",
+        "兼容可选 HTTPS 云端配置读取与本地账号回退，隔离云端认证、禁止认证重定向及云端通知覆盖。",
+        "断网预演、超时及响应体上限、逐账号失败隔离、脱敏时间轴日志、单行结构化汇总及青龙通知策略。",
+        "只有 HTTP 200 且 success 为布尔真才确认接口业务成功；已签到消息还须通过月度记录 checked_in_today 为真确认。"
+      ],
+      "sideEffects": [
+        "checkin 任务向目标站点提交每日签到并领取该站点签到额度。",
+        "仅配套密码已配置且需要登录或续期时创建新的站点登录会话；会话仅保存在当前进程。",
+        "正式运行且通知策略选中时向青龙配置的通知渠道发送脱敏任务汇总。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/241e7ff85e417257",
+        "candidateSha256": "44a52cc30c254ab8d5405eefa7afcfd06a8964106e88743619aa1a53fd51856e"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "44a52cc30c254ab8d5405eefa7afcfd06a8964106e88743619aa1a53fd51856e",
+        "releaseSha256": "9516e15fd3e0488f44e8dbe978c3710ca4e6b75a558cce970f74419840c9281e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-27T09:55:03.467253+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "44a52cc30c254ab8d5405eefa7afcfd06a8964106e88743619aa1a53fd51856e",
+          "toCandidateSha256": "9516e15fd3e0488f44e8dbe978c3710ca4e6b75a558cce970f74419840c9281e",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

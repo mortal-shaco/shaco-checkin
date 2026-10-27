@@ -71,6 +71,7 @@
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `32 2 * * *` | 待检查 | [ddnsto.py.md](../scripts/ddnsto.py.md)（`docs/scripts/ddnsto.py.md`） |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |
+| EMOS 每日签到 | `scripts/emos_sign.py` | `python3 scripts/emos_sign.py` | `30 8 * * *` | 待检查 | [emos_sign.py.md](../scripts/emos_sign.py.md)（`docs/scripts/emos_sign.py.md`） |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
 | Epic免费游戏 | `scripts/epicfreegames.py` | `python3 scripts/epicfreegames.py` | `11 8 * * 6` | 待检查 | [epicfreegames.py.md](../scripts/epicfreegames.py.md)（`docs/scripts/epicfreegames.py.md`） |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `12 1 1 1 1` | 待检查 | [erke.py.md](../scripts/erke.py.md)（`docs/scripts/erke.py.md`） |
@@ -116,6 +117,7 @@
 | 小米运动账号验证与步数上传 | `scripts/mimotion.py` | `python3 scripts/mimotion.py` | `46 0 * * *` | 待检查 | [mimotion.py.md](../scripts/mimotion.py.md)（`docs/scripts/mimotion.py.md`） |
 | ModelScope 魔搭每日签到 | `scripts/modelscope_daily.py` | `python3 scripts/modelscope_daily.py` | `0 9 * * *` | 待检查 | [modelscope_daily.py.md](../scripts/modelscope_daily.py.md)（`docs/scripts/modelscope_daily.py.md`） |
 | 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `53 1 * * *` | 待检查 | [netease_task.py.md](../scripts/netease_task.py.md)（`docs/scripts/netease_task.py.md`） |
+| NewAPI 自动签到 | `scripts/newapi.py` | `python3 scripts/newapi.py` | `18 8 * * *` | 待检查 | [newapi.py.md](../scripts/newapi.py.md)（`docs/scripts/newapi.py.md`） |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `49 0 * * *` | 待检查 | [nga_checkin.py.md](../scripts/nga_checkin.py.md)（`docs/scripts/nga_checkin.py.md`） |
 | NodeSeek签到 | `scripts/nodeseek.py` | `python3 scripts/nodeseek.py` | `3 2 * * *` | 待检查 | [nodeseek.py.md](../scripts/nodeseek.py.md)（`docs/scripts/nodeseek.py.md`） |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `41 0 * * *` | 待检查 | [nodeseek_checkin.py.md](../scripts/nodeseek_checkin.py.md)（`docs/scripts/nodeseek_checkin.py.md`） |

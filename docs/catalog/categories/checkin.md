@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **175** 个脚本。返回 [`目录首页`](../README.md)。
+共 **177** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -49,6 +49,7 @@
 | WPS天天领福利（可选任务中心） | `scripts/daily_benefits.py` | `python3 scripts/daily_benefits.py` | `47 1 1 1 1` | 待检查 | [daily_benefits.py.md](../../scripts/daily_benefits.py.md)（`docs/scripts/daily_benefits.py.md`） |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |
+| EMOS 每日签到 | `scripts/emos_sign.py` | `python3 scripts/emos_sign.py` | `30 8 * * *` | 待检查 | [emos_sign.py.md](../../scripts/emos_sign.py.md)（`docs/scripts/emos_sign.py.md`） |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `12 1 1 1 1` | 待检查 | [erke.py.md](../../scripts/erke.py.md)（`docs/scripts/erke.py.md`） |
 | 森空岛自动签到 | `scripts/f1owkang_qingskyland_skyland.py` | `python3 scripts/f1owkang_qingskyland_skyland.py` | `22 2 * * *` | 待检查 | [f1owkang_qingskyland_skyland.py.md](../../scripts/f1owkang_qingskyland_skyland.py.md)（`docs/scripts/f1owkang_qingskyland_skyland.py.md`） |
@@ -83,6 +84,7 @@
 | 米饭APP日常维护 | `scripts/mifan_optimized.py` | `python3 scripts/mifan_optimized.py` | `59 0 * * *` | 待检查 | [mifan_optimized.py.md](../../scripts/mifan_optimized.py.md)（`docs/scripts/mifan_optimized.py.md`） |
 | ModelScope 魔搭每日签到 | `scripts/modelscope_daily.py` | `python3 scripts/modelscope_daily.py` | `0 9 * * *` | 待检查 | [modelscope_daily.py.md](../../scripts/modelscope_daily.py.md)（`docs/scripts/modelscope_daily.py.md`） |
 | 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `53 1 * * *` | 待检查 | [netease_task.py.md](../../scripts/netease_task.py.md)（`docs/scripts/netease_task.py.md`） |
+| NewAPI 自动签到 | `scripts/newapi.py` | `python3 scripts/newapi.py` | `18 8 * * *` | 待检查 | [newapi.py.md](../../scripts/newapi.py.md)（`docs/scripts/newapi.py.md`） |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `49 0 * * *` | 待检查 | [nga_checkin.py.md](../../scripts/nga_checkin.py.md)（`docs/scripts/nga_checkin.py.md`） |
 | NodeSeek签到 | `scripts/nodeseek.py` | `python3 scripts/nodeseek.py` | `3 2 * * *` | 待检查 | [nodeseek.py.md](../../scripts/nodeseek.py.md)（`docs/scripts/nodeseek.py.md`） |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `41 0 * * *` | 待检查 | [nodeseek_checkin.py.md](../../scripts/nodeseek_checkin.py.md)（`docs/scripts/nodeseek_checkin.py.md`） |
