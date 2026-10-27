@@ -81,7 +81,7 @@
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `18 1 * * *` | 待检查 | [fxh.js.md](../scripts/fxh.js.md)（`docs/scripts/fxh.js.md`） |
 | 阴阳师官网视频与原画 | `scripts/get_yys_cgvideo.py` | `python3 scripts/get_yys_cgvideo.py` | `11 9 * * 0` | 待检查 | [get_yys_cgvideo.py.md](../scripts/get_yys_cgvideo.py.md)（`docs/scripts/get_yys_cgvideo.py.md`） |
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `28 9 * * 0` | 待检查 | [get_yys_imagelinks.py.md](../scripts/get_yys_imagelinks.py.md)（`docs/scripts/get_yys_imagelinks.py.md`） |
-| GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `30 0 * * *` | 待检查 | [glados.py.md](../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
+| GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
 | HelloGitHub月刊提醒 | `scripts/hellogithub.py` | `python3 scripts/hellogithub.py` | `31 8 1 * *` | 待检查 | [hellogithub.py.md](../scripts/hellogithub.py.md)（`docs/scripts/hellogithub.py.md`） |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `14 1 * * *` | 待检查 | [hifiti_checkin.py.md](../scripts/hifiti_checkin.py.md)（`docs/scripts/hifiti_checkin.py.md`） |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `32 0 * * *` | 待检查 | [hlyl.py.md](../scripts/hlyl.py.md)（`docs/scripts/hlyl.py.md`） |

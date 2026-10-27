@@ -6,4 +6,4 @@
 | --- | --- | --- | --- | --- | --- |
 | 阴阳师官网视频与原画 | `scripts/get_yys_cgvideo.py` | `python3 scripts/get_yys_cgvideo.py` | `11 9 * * 0` | 待检查 | [get_yys_cgvideo.py.md](../../scripts/get_yys_cgvideo.py.md)（`docs/scripts/get_yys_cgvideo.py.md`） |
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `28 9 * * 0` | 待检查 | [get_yys_imagelinks.py.md](../../scripts/get_yys_imagelinks.py.md)（`docs/scripts/get_yys_imagelinks.py.md`） |
-| GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `30 0 * * *` | 待检查 | [glados.py.md](../../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
+| GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
