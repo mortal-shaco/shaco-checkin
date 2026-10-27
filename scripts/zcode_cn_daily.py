@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: ZCode 国内版领套餐
-# cron: 36 1 * * *
+# cron: 1 9 * * *
 # 来源：L0NE-6/ZCode-Daily，zcode_cn_daily.py、zcode_intl_daily.py；登录说明参考 zcode_login.py
 # 上游许可：MIT；本维护版本沿用 MIT。
 """
@@ -33,8 +33,12 @@ ZCODE_CAPTCHA_PARAM：可选全局验证码，仅补齐账号未填写的值，�
 ZCODE_ACTIVATION：默认 0；设 1 显式补报 app_launch/app_daily_active，可能影响领取资格。
 --preview：只读预览（绝不上报事件或领取）；--only N：仅运行第 N 个账号；
 --no-notify：禁用通知；ZCODE_CN_DRY_RUN=1：完全断网，通知仅模拟，不验证真实账号。
-QINGLONG_NOTIFY 未设置时按上架状态；0/false/no/off 关闭。自动发现青龙 notify.py，
-可用 QINGLONG_NOTIFY_DIR 指定目录；通知失败不改变业务退出码。
+QINGLONG_NOTIFY 默认 auto，按通知策略仅通知选中的脚本；未配置选择列表时不推送。
+设 1/true/yes/on 开启；0/false/no/off 关闭，--no-notify 优先关闭。
+QINGLONG_NOTIFY_SCRIPTS 设置后替换默认选择，空值关闭；逗号、分号或空白分隔，
+支持目录相对路径、文件名、文件名通配符及目录编号 a0a7b04503bfb900，* 选择全部。
+自动发现青龙 notify.py 或 sendNotify.js；可用 QINGLONG_NOTIFY_DIR 指定目录。
+通知失败不改变业务退出码；预演只模拟通知，绝不导入或运行通知模块。
 原推送参数 PUSHPLUS_TOKEN/BARK_URL/WECOM_WEBHOOK/DINGTALK_WEBHOOK/
 DINGTALK_SECRET 保留，青龙通知不可用时尝试。不得配置非 HTTPS 推送地址。
 不自动登录、不安装软件、不发布文本、不重试领取 POST，以避免重复副作用。
@@ -83,6 +87,7 @@ import argparse
 import base64
 import hashlib
 import hmac
+import fnmatch
 import importlib.util
 import json
 import os
@@ -428,16 +433,10 @@ def parse_account(line, region="cn"):
     return {'jwt': token, 'device_mid': mid, 'captcha': captcha, 'user_id': jwt_user_id(token), 'region': region}
 
 
-def verify_response(response, action):
-    payload = json_of(response)
-    code = payload.get('code')
-    if response.status_code != 200 or type(code) is not int or code != 0:
-        label = FAILURE_LABELS.get(code) if isinstance(code, int) else None
-        # 只打印本地映射和 HTTP 状态，不信任服务器错误文本或任意业务字段。
-        raise TaskError(action + '失败：' + (label or '业务响应未确认成功') + '（HTTP %d）' % response.status_code)
-    if not isinstance(payload.get('data'), dict):
-        raise TaskError(action + '响应缺少有效 data')
-    data = payload['data']
+def log_identities(payload):
+    data = payload.get('data')
+    if not isinstance(data, dict):
+        return
     identities = [data.get('user'), data.get('account'), data]
     for identity in identities:
         if not isinstance(identity, dict):
@@ -446,7 +445,58 @@ def verify_response(response, action):
             value = identity.get(key)
             if isinstance(value, (str, int)) and not isinstance(value, bool) and str(value):
                 log('👤 官方账号身份 ' + key + ': ' + safe(value, public_uid=key in ('public_uid', 'user_id', 'uid')))
+
+
+def verify_response(response, action):
+    payload = json_of(response)
+    log_identities(payload)
+    code = payload.get('code')
+    if response.status_code != 200 or type(code) is not int or code != 0:
+        label = FAILURE_LABELS.get(code) if isinstance(code, int) else None
+        # 只打印本地映射和 HTTP 状态，不信任服务器错误文本或任意业务字段。
+        raise TaskError(action + '失败：' + (label or '业务响应未确认成功') + '（HTTP %d）' % response.status_code)
+    if not isinstance(payload.get('data'), dict):
+        raise TaskError(action + '响应缺少有效 data')
     return payload
+
+
+def verify_claim(response, selected, captcha):
+    """只接受参考源码确认的业务码；不信任远端错误文本。"""
+    payload = json_of(response)
+    code = payload.get('code')
+    if response.status_code == 200 and type(code) is int and code == 1003:
+        log_identities(payload)
+        log('☑️ ALREADY_COMPLETE：官方确认该账号已领取本期套餐')
+        return 'alreadyComplete'
+    try:
+        body = verify_response(response, '套餐领取')
+    except TaskError as error:
+        hints = ''
+        if type(code) is int and code == 1005:
+            data = payload.get('data')
+            plan = data.get('plan') if isinstance(data, dict) else None
+            if isinstance(plan, dict):
+                ends = plan.get('ends_at', plan.get('endsAt'))
+                # 时间只接受数值，不输出未经校验的响应字段。
+                if isinstance(ends, (int, float)) and not isinstance(ends, bool):
+                    try:
+                        retry_at = datetime.fromtimestamp(ends, BEIJING_TZ).strftime('%Y-%m-%d %H:%M')
+                        hints = '；下轮重试不早于 ' + retry_at
+                    except (ValueError, OverflowError, OSError):
+                        pass
+        if type(code) is int and code == 3007 and not captcha:
+            hints += '；从浏览器 claim 请求获取验证码，填入账号行末段或 ZCODE_CAPTCHA_PARAM'
+        if type(code) is int and code == 3001:
+            hints += '；检查设备值、客户端版本及验证码有效期'
+        raise TaskError(str(error) + hints) from None
+    plan = body['data'].get('plan')
+    if not isinstance(plan, dict) or not plan:
+        raise TaskError('领取响应缺少有效套餐，未确认成功')
+    returned_id = first_text(plan.get('plan_id'), plan.get('planId'))
+    if returned_id and returned_id != selected['plan_id']:
+        raise TaskError('返回套餐与目标不一致')
+    log('✅ CLAIM_SUCCESS：领取成功；' + safe(selected['name']) + '（' + safe(format_time(plan.get('starts_at', plan.get('startsAt')))) + ' ~ ' + safe(format_time(plan.get('ends_at', plan.get('endsAt')))) + '）')
+    return 'success'
 
 
 def run_account(account, args, index):
@@ -462,8 +512,9 @@ def run_account(account, args, index):
                 log('⏭️ 已跳过；耗时 %.2fs' % (time.monotonic() - stamp))
                 return None
             result = action()
-            stats['success'] += 1
-            log('✅ 阶段完成；耗时 %.2fs' % (time.monotonic() - stamp))
+            completed = isinstance(result, str) and result == 'alreadyComplete'
+            stats['alreadyComplete' if completed else 'success'] += 1
+            log(('☑️ 阶段已完成' if completed else '✅ 阶段完成') + '；耗时 %.2fs' % (time.monotonic() - stamp))
             return result
         except Exception as error:
             stats['failure'] += 1
@@ -516,14 +567,7 @@ def run_account(account, args, index):
                         raise TaskError('指定的 ZCODE_PLAN_ID 不在可领列表')
                     log('目标套餐：' + safe(describe_plan(selected)))
                     response = claim(account['jwt'], selected['plan_id'], account['device_mid'], account['captcha'])
-                    body = verify_response(response, '套餐领取')
-                    plan = body['data'].get('plan')
-                    if not isinstance(plan, dict) or not plan:
-                        raise TaskError('领取响应缺少有效套餐，未确认成功')
-                    returned_id = first_text(plan.get('plan_id'), plan.get('planId'))
-                    if returned_id and returned_id != selected['plan_id']:
-                        raise TaskError('返回套餐与目标不一致')
-                    log('✅ CLAIM_SUCCESS：领取成功；' + safe(selected['name']) + '（' + safe(format_time(plan.get('starts_at', plan.get('startsAt')))) + ' ~ ' + safe(format_time(plan.get('ends_at', plan.get('endsAt')))) + '）')
+                    return verify_claim(response, selected, account['captcha'])
                 stage(3, '领取套餐（不重试写请求）', redeem)
     except TaskError:
         pass
@@ -532,8 +576,23 @@ def run_account(account, args, index):
     return stats
 
 
+def notification_selected():
+    switch = _env('QINGLONG_NOTIFY').lower() or 'auto'
+    if switch in ('0', 'false', 'no', 'off'):
+        return False
+    if 'QINGLONG_NOTIFY_SCRIPTS' in os.environ:
+        selectors = re.split(r'[,;\s]+', _env('QINGLONG_NOTIFY_SCRIPTS'))
+        identities = ('a0a7b04503bfb900', 'zcode_cn_daily.py', 'zcode_intl_daily.py',
+                      'checkin/zcode_cn_daily.py', 'checkin/zcode_intl_daily.py',
+                      'candidates/a0a7b04503bfb900/zcode_cn_daily.py', Path(__file__).name)
+        return any(fnmatch.fnmatchcase(identity, selector) for selector in selectors if selector
+                   for identity in identities)
+    # 策略未提供默认名单：auto 不擅自订阅；显式全局开启仍可通知。
+    return switch in ('1', 'true', 'yes', 'on')
+
+
 def deliver_notification(title, content, disabled=False):
-    if disabled or _env('QINGLONG_NOTIFY').lower() in ('0', 'false', 'no', 'off'):
+    if disabled or not notification_selected():
         log('⏭️ 通知已关闭')
         return 'disabled'
     if DRY:
@@ -564,6 +623,21 @@ def deliver_notification(title, content, disabled=False):
                                     text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
             if result.returncode == 0:
                 log('✅ 青龙通知已调用')
+                return 'sent'
+        except Exception:
+            pass
+    js_runner = ('const fs=require("fs"); const [p,t,c]=JSON.parse(fs.readFileSync(0,"utf8")); '
+                 'Promise.resolve().then(()=>require(p).sendNotify(t,c))'
+                 '.then(r=>{process.exitCode=r===false?1:0}).catch(()=>{process.exitCode=1});')
+    for path in dict.fromkeys(p / 'sendNotify.js' for p in dirs):
+        if not path.is_file():
+            continue
+        try:
+            result = subprocess.run(['node', '-e', js_runner],
+                                    input=json.dumps([str(path.resolve()), title, content]),
+                                    text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
+            if result.returncode == 0:
+                log('✅ 青龙 JavaScript 通知已调用')
                 return 'sent'
         except Exception:
             pass
@@ -659,7 +733,7 @@ def main():
         log('⚠️ 通知异常；保留业务退出码')
     summary['elapsedSeconds'] = round(time.monotonic() - started, 2)
     summary['finishedAt'] = beijing_now().isoformat(timespec='seconds')
-    log('总耗时 %.2fs；完成时间 %s；最终状态 %s' % (summary['elapsedSeconds'], summary['finishedAt'], status))
+    log('总耗时 %.2fs；完成时间 %s；通知状态 %s；最终状态 %s' % (summary['elapsedSeconds'], summary['finishedAt'], summary['notification'], status))
     print('TASK_SUMMARY=' + json.dumps(summary, ensure_ascii=False, separators=(',', ':')), flush=True)
     return exit_code
 

@@ -1,10 +1,10 @@
 {
   "catalogId": "224698e8fa0ac8f6",
-  "candidateSha256": "d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9",
+  "candidateSha256": "ecd5f606bf623d820eef35d1dce1a08ac07df55b59a1ee65a01c27604a9eeeee",
   "mode": "basic",
   "exitCode": 0,
   "businessResult": "not-verified",
-  "testedAt": "2026-10-13T11:02:59.630253+00:00",
+  "testedAt": "2026-10-27T08:54:03.962973+00:00",
   "checks": [
     "exact-hash",
     "syntax",

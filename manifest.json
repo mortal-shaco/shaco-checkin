@@ -1977,6 +1977,209 @@
       }
     },
     {
+      "catalogId": "e083167c5e868b00",
+      "applicationKey": "zephyr-xiao/qinglong-script::akiyakiko-ehentaiautosignin",
+      "checkProfile": {
+        "requiredEnv": [
+          "E_COOKIE"
+        ],
+        "optionalEnv": [
+          "E_PROXY",
+          "E_USER_AGENT",
+          "E_DRY_RUN",
+          "E_COOKIE_CACHE",
+          "E_COOKIE_FILE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "E_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "E_DRY_RUN": "0",
+          "E_COOKIE_CACHE": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功：已验证黎明事件及奖励领取提示",
+          "今日已完成：已验证登录身份与已领取提示"
+        ],
+        "features": [
+          "按原计划每六小时第 1 分钟访问 E-Hentai 新闻页，核验每日黎明签到奖励或明确的今日已领取提示。",
+          "识别 Random Encounter 并提示人工处理或等待结束；不自动进入战斗，待处理时返回非零退出码。",
+          "保留 E_COOKIE、E_PROXY、E_USER_AGENT 参数；支持完整 Cookie 中包含等号的值与逐行多账号。",
+          "默认 TLS 三次重试后回退 TLS 1.2 三次，验证服务器证书，限制请求超时和响应大小，禁止凭据重定向。",
+          "识别 Cookie 续期和过期提示数量，保留全部原始字段，只合并上游允许的六类字段；显式开启后使用私密缓存兼容旧版本凭据读取。",
+          "显示官方明确返回的当前登录用户名，隐藏凭据、手机号及原始响应；不输出代理地址或完整请求头。",
+          "完全断网预演、时间轴阶段日志、账号与子任务统计、恰好一行 TASK_SUMMARY 结构化输出及失败闭合退出码。",
+          "所有结局均生成脱敏通知总结，依全局开关和脚本名单调用青龙通知；预演仅本地演示，通知不可用不改变业务结果。"
+        ],
+        "sideEffects": [
+          "正式运行访问新闻页可能领取每日奖励、刷新会话或触发随机事件。",
+          "仅显式设置 E_COOKIE_CACHE=1 时将通过业务核验的续期 Cookie 写入本地私密缓存，不修改环境变量。",
+          "正式运行且通知启用时通过部署环境的青龙通知模块向已配置的渠道发送脱敏总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "E-Hentai 自动签到",
+      "path": "scripts/akiyakiko_ehentaiautosignin.py",
+      "sha256": "5c95452fac74926e807c0aee2bef12ac38915f8912be7209f1500b3b2b5e4c2c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "zephyr-xiao/qinglong-script",
+        "branch": "main",
+        "commit": "8117361cd9a9cfaa93ffe93b9ccc90016c12e422",
+        "originalPath": "AkiyaKiko_EhentaiAutoSignIn/autosignin.py",
+        "related": [
+          {
+            "catalogId": "b1a9444984543fab",
+            "sha256": "76a2a83d57893068688fcf0f7e549094b3d69253dbd4d8ce14d26e610ddfa93c",
+            "repository": "zephyr-xiao/qinglong-script",
+            "url": "https://github.com/zephyr-xiao/qinglong-script.git",
+            "branch": "main",
+            "commit": "8117361cd9a9cfaa93ffe93b9ccc90016c12e422",
+            "originalPath": "AkiyaKiko_EhentaiAutoSignIn/notify.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "12f3bd4769a4c28b",
+            "sha256": "7da67c95e7758063fb278497fcea4388a1651e5e1ac5a07b03f5d7b2d4e2585f",
+            "repository": "zephyr-xiao/qinglong-script",
+            "url": "https://github.com/zephyr-xiao/qinglong-script.git",
+            "branch": "main",
+            "commit": "8117361cd9a9cfaa93ffe93b9ccc90016c12e422",
+            "originalPath": "AkiyaKiko_EhentaiAutoSignIn/sendNotify.js",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 */6 * * *",
+      "command": "python3 scripts/akiyakiko_ehentaiautosignin.py",
+      "environment": [
+        {
+          "name": "E_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://e-hentai.org 后打开开发者工具的网络面板，访问 news.php，从该请求的请求头中复制完整 Cookie；至少包含 ipb_member_id 与 ipb_pass_hash。不要复制 Cookie: 前缀。请勿把凭据发给他人。",
+          "format": "每个非空行填写一个账号的完整 Cookie；账号内字段用分号分隔，字段仅按首个等号拆分，后续等号、& 和 @ 原样保留。显式启用私密缓存时可兼容从缓存读取，但首次配置及预演仍应填写本变量。"
+        },
+        {
+          "name": "E_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "按部署环境需要，从自己的代理服务取得地址；不填则直连且不读取系统代理。",
+          "format": "单行 HTTP 或 HTTPS 代理地址，可含该代理自己的认证信息；不会输出地址。不支持其他代理协议。"
+        },
+        {
+          "name": "E_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从浏览器开发者工具中同一请求的 User-Agent 请求头复制；不填使用上游默认浏览器标识。",
+          "format": "单行可打印 ASCII 文本，不得包含凭据。"
+        },
+        {
+          "name": "E_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网预演时设为 1；正式运行不设置或设为 0。",
+          "format": "1/0、true/false、yes/no、on/off；预演仅校验配置并生成本地通知预演，不验证真实登录或签到。"
+        },
+        {
+          "name": "E_COOKIE_CACHE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "确需跨运行保存服务器续期 Cookie 时主动设为 1，默认 0。",
+          "format": "1/0、true/false、yes/no、on/off；预演始终不读写缓存，正式运行仅保存业务核验通过的账号更新。"
+        },
+        {
+          "name": "E_COOKIE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "启用缓存时可指定自己可写的私密文件路径；默认脚本旁的 ehentai_cookie.txt。使用旧缓存前先确保文件仅当前用户可读写（权限 600）。",
+          "format": "本地文件路径；每行一个账号，与 E_COOKIE 顺序一致；拒绝符号链接，原子写入并设置权限 600。环境变量优先，修改账号顺序后需重新配置。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 auto 模式列出需要通知的脚本；本任务没有内置默认名单。",
+          "format": "支持 catalogId、AkiyaKiko_EhentaiAutoSignIn/autosignin.py、autosignin.py、当前文件名及文件名通配符；逗号、分号或空白分隔，* 匹配全部，空值不选中任何脚本。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知模块不在标准目录时填写该模块所在的可信目录；不需要克隆其他项目。",
+          "format": "本地目录，包含 notify.py 或 sendNotify.js；也会尝试导入 notify.send 并查找 /ql/data/scripts 和 /ql/scripts；模块缺失仅告警。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "E_COOKIE 每个非空行是一个独立账号；同一账号配套 Cookie 字段放在同一行，以分号分隔，每字段仅按首个等号拆分。禁止使用 & 或 @ 分隔账号。逐账号独立执行，任一账号配置、网络、业务核验失败或出现待处理随机事件时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "按原计划每六小时第 1 分钟访问 E-Hentai 新闻页，核验每日黎明签到奖励或明确的今日已领取提示。",
+        "识别 Random Encounter 并提示人工处理或等待结束；不自动进入战斗，待处理时返回非零退出码。",
+        "保留 E_COOKIE、E_PROXY、E_USER_AGENT 参数；支持完整 Cookie 中包含等号的值与逐行多账号。",
+        "默认 TLS 三次重试后回退 TLS 1.2 三次，验证服务器证书，限制请求超时和响应大小，禁止凭据重定向。",
+        "识别 Cookie 续期和过期提示数量，保留全部原始字段，只合并上游允许的六类字段；显式开启后使用私密缓存兼容旧版本凭据读取。",
+        "显示官方明确返回的当前登录用户名，隐藏凭据、手机号及原始响应；不输出代理地址或完整请求头。",
+        "完全断网预演、时间轴阶段日志、账号与子任务统计、恰好一行 TASK_SUMMARY 结构化输出及失败闭合退出码。",
+        "所有结局均生成脱敏通知总结，依全局开关和脚本名单调用青龙通知；预演仅本地演示，通知不可用不改变业务结果。"
+      ],
+      "sideEffects": [
+        "正式运行访问新闻页可能领取每日奖励、刷新会话或触发随机事件。",
+        "仅显式设置 E_COOKIE_CACHE=1 时将通过业务核验的续期 Cookie 写入本地私密缓存，不修改环境变量。",
+        "正式运行且通知启用时通过部署环境的青龙通知模块向已配置的渠道发送脱敏总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e083167c5e868b00",
+        "candidateSha256": "1221401f5dfe5339099feb13a3af190045d808f98c743c27ef697963ecb75131"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "1221401f5dfe5339099feb13a3af190045d808f98c743c27ef697963ecb75131",
+        "releaseSha256": "5c95452fac74926e807c0aee2bef12ac38915f8912be7209f1500b3b2b5e4c2c",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-27T09:06:41.663782+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "1221401f5dfe5339099feb13a3af190045d808f98c743c27ef697963ecb75131",
+          "toCandidateSha256": "5c95452fac74926e807c0aee2bef12ac38915f8912be7209f1500b3b2b5e4c2c",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "5c73bf2cb192e0d0",
       "applicationKey": "aliyun-developer-community",
       "checkProfile": {
@@ -3583,11 +3786,13 @@
         "optionalEnv": [
           "AUTOCLAW_INTL_TOKENS",
           "AUTOCLAW_REGION",
-          "AUTOCLAW_CN_DRY_RUN",
-          "AUTOCLAW_INTL_DRY_RUN",
+          "AUTOCLAW_PROMOTION",
           "AUTOCLAW_CN_STORE_FILE",
           "AUTOCLAW_INTL_STORE_FILE",
+          "AUTOCLAW_CN_DRY_RUN",
+          "AUTOCLAW_INTL_DRY_RUN",
           "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR",
           "PUSHPLUS_TOKEN",
           "BARK_URL",
@@ -3595,41 +3800,42 @@
           "DINGTALK_WEBHOOK",
           "DINGTALK_SECRET",
           "QL_URL",
-          "QL_TOKEN",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "QL_TOKEN"
         ],
         "dryRunEnv": {
           "AUTOCLAW_CN_DRY_RUN": "1"
         },
         "liveEnv": {
           "AUTOCLAW_REGION": "cn",
-          "QINGLONG_NOTIFY": "1"
+          "AUTOCLAW_PROMOTION": "off",
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
           "签到成功，获得",
           "今天已签到（接口明确确认）",
           "token 续期成功",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
+          "TASK_SUMMARY=.*\"status\":\"success\".*\"exitCode\":0"
         ],
         "features": [
-          "国内版每日签到及积分奖励结果显示，明确业务码及成功标记校验",
-          "登录态过期后自动续期并重试签到，签名校验失败时使用 agent-refresh 备用接口",
-          "无明确领取结果时只读查询任务清单用于诊断，不将诊断冒充领取成功",
-          "支持 --refresh-only 仅续期、--only N 选择账号和 --no-notify 关闭通知",
-          "显式启用的私有凭据缓存读取和安全原子保存；默认不落盘登录态",
-          "换行多账号独立执行，任一失败整体非零退出",
-          "断网预演、分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY 汇总",
-          "官方返回昵称、用户名、显示名称或公开 UID 时显示该非秘密身份",
-          "青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送",
-          "显式 --region intl 或 AUTOCLAW_REGION=intl 使用国际版官方接口及独立凭据；保留国内版默认行为",
-          "显式 --region both 按同一每日时机独立执行两地区账号，缓存按地区配置；某地区缺配置仍处理另一地区账号并整体失败"
+          "每日签到并根据 HTTP 状态、业务码及奖励或明确成功标志核验；明确已签到单独统计，未知响应不冒充成功。",
+          "国内版默认运行；--region cn/intl/both 或 AUTOCLAW_REGION 选择地区，凭据仅发送至对应地区官方域名。",
+          "每行一个账号，逐账号独立执行；--only N 选择所选地区中的账号，both 时国内在前；任一账号或配置失败整体非零退出。",
+          "登录态过期自动续期并重试签到；保留 refresh 主接口及签名错误 400002 时的 agent-refresh 备用接口，支持 --refresh-only。",
+          "签到缺少成功标志时只读查询任务清单诊断，任务清单不代替奖励领取成功证据。",
+          "可选私有凭据缓存读取与续期结果原子保存；默认仅在本次内存更新，断网预演不读写缓存。",
+          "北京当天活动福利积分核查，匹配活跃与新用户奖励元数据，报告最近 50 笔收入中的命中逐笔积分和合计；默认关闭，read 模式只读。",
+          "--promotion claim 显式开启登录活跃奖励触发，先查流水，未入账才调用 user-info，等待后复核；仅接口受理不视为到账。",
+          "保留青龙通知组件及青龙 API、PushPlus、Bark、企业微信、钉钉备用链；支持全局开关、任务名单及 --no-notify；通知失败保留业务退出码。",
+          "成功、部分失败、失败、配置错误均生成脱敏通知摘要，断网预演只模拟通知；时间轴、逐账号阶段和统计完整，恰好一条 TASK_SUMMARY JSON。",
+          "官方返回非敏感昵称、用户名、显示名称或公开 UID 时原样显示；不输出手机号、凭据、设备标识、自由响应文本或原始异常。",
+          "标准库独立实现 HTTPS、证书验证、超时、响应大小限制及禁止重定向；状态变更不自动网络重试；断网预演不调用任何外部提供方。"
         ],
         "sideEffects": [
-          "真实运行提交所选地区 daily_signin 签到任务，可能获得积分",
-          "登录态过期或 --refresh-only 时续期登录态，可能使旧登录态失效",
-          "仅显式配置对应地区 STORE_FILE 时写入受保护的本地凭据缓存",
-          "通知开启时通过已配置渠道发送脱敏摘要；预演仅模拟通知"
+          "默认提交每日签到并可能领取积分；--refresh-only 不签到。",
+          "登录态过期或 --refresh-only 时续期，可能轮换服务端会话。",
+          "仅显式 --promotion claim 或 AUTOCLAW_PROMOTION=claim 时触发登录活跃，可能领取活动奖励。",
+          "仅显式配置私有缓存路径时保存续期结果，写入本地凭据文件；断网预演不读写。",
+          "通知开启且非断网预演时，通过用户配置的通知通道发送脱敏任务摘要。"
         ]
       },
       "postReview": {
@@ -3638,7 +3844,7 @@
       },
       "displayName": "AutoClaw 国内版每日签到",
       "path": "scripts/autoclaw_cn_daily.py",
-      "sha256": "535625c25c63d3c738c11a0d9b919d833cacb2bb3f04d1d477f89cc368609f07",
+      "sha256": "497df1c163561ea9fd933bdaca5cf661cae8a8f39536cfd7bff7413968a9c3e8",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -3652,7 +3858,7 @@
             "repository": "L0NE-6/AutoClaw-Daily",
             "url": "https://github.com/L0NE-6/AutoClaw-Daily.git",
             "branch": "main",
-            "commit": "745a15b42d58bcaf9bb50920f5405e04b4f4964b",
+            "commit": "5f25714bac106cfdb4a0ede4682033f9604f7af9",
             "originalPath": "autoclaw_intl_daily.py",
             "catalogId": "8e8ba0ac423781b3",
             "sha256": "47ace8da3ff03ba2736bfac346a49a59762ec2b6d53c31e2c281ee021f5f3dc6",
@@ -3660,57 +3866,64 @@
           }
         ]
       },
-      "cron": "30 0 * * *",
+      "cron": "15 8 * * *",
       "command": "python3 scripts/autoclaw_cn_daily.py",
       "environment": [
         {
           "name": "AUTOCLAW_CN_TOKENS",
           "required": true,
           "sensitive": true,
-          "howToGet": "默认国内模式必填。在国内版官方桌面端登录，从自己的登录响应安全提取 access_token、refresh_token 和同次登录的 device_id。只有登录态也可签到，过期后须重新登录。国际模式改用 AUTOCLAW_INTL_TOKENS；两地区凭据不能混用。不要分享或提交登录响应。",
-          "format": "每个非空行一个账号。推荐 JSON 对象，access 必填，refresh、device_id 可选。兼容 token、token|refresh_token、token|refresh_token|device_id、备注|token|refresh_token|device_id 和旧备注|JWT 格式。逐次只按首个 | 切分，最后字段保留剩余文本；可带 Bearer 前缀。禁止用 &、@ 分隔账号；特殊字符或歧义格式使用 JSON。"
+          "howToGet": "在 AutoClaw 国内版官方桌面端登录自己的账号，从自己的登录响应安全提取 access_token、refresh_token 和同次登录的 device_id；只有 access_token 也可签到，失效后须重新登录。不要向他人发送响应或将凭据提交仓库。默认国内模式必填；显式仅国际模式时不读取。",
+          "format": "每个非空行一个账号；推荐单行 JSON 对象，文本字段 access 必填，refresh、device_id 可选。兼容 token、token|refresh_token、token|refresh_token|device_id、备注|token|refresh_token|device_id，以及旧备注|JWT、备注|JWT|refresh_token；逐次只分割首个 |，末字段保留余下文本。有歧义或含特殊字符时用 JSON；可带 Bearer 前缀；禁止用 &、@ 分隔账号。"
         },
         {
           "name": "AUTOCLAW_INTL_TOKENS",
           "required": false,
           "sensitive": true,
-          "howToGet": "选择 intl 或 both 时必填。在国际版官方桌面端登录，提取自己的登录响应；也可在自己的电脑检查 ~/.openclaw-autoclaw/openclaw.json，定位 models.providers 下 models[].headers.X-Authorization 并移除 Bearer 前缀。脚本运行不读取该文件或依赖桌面端。该来源通常没有续期登录态，失效后重新登录并更新变量。",
-          "format": "每个非空行一个账号；字段和国内变量相同，推荐 JSON 对象。无续期登录态时只填 access，不伪造 refresh。"
+          "howToGet": "仅 --region intl/both 或 AUTOCLAW_REGION=intl/both 时必填。在国际版官方桌面端登录，从自己的登录响应提取凭据；若仅能在本机配置获取，可在自己的电脑查看 ~/.openclaw-autoclaw/openclaw.json 中 models.providers 下 models[].headers 的 X-Authorization，去掉 Bearer 前缀。该来源通常没有 refresh_token，失效须重新登录。定时脚本不读取此文件。",
+          "format": "每个非空行一个账号；推荐单行 JSON 对象，文本字段 access 必填，refresh、device_id 可选。兼容 token、token|refresh_token、token|refresh_token|device_id、备注|token|refresh_token|device_id，以及旧备注|JWT、备注|JWT|refresh_token；逐次只分割首个 |，末字段保留余下文本。有歧义或含特殊字符时用 JSON；可带 Bearer 前缀；禁止用 &、@ 分隔账号。"
         },
         {
           "name": "AUTOCLAW_REGION",
           "required": false,
           "sensitive": false,
-          "howToGet": "按登录态所属地区自行设置，命令 --region 优先。",
-          "format": "cn 默认国内版；intl 国际版；both 两地区执行，先国内后国际，所选每个地区均须配置账号。"
+          "howToGet": "按自己的账号地区选择；命令行 --region 优先。",
+          "format": "默认 cn 为国内版，intl 为国际版，both 为国内后国际；各地区凭据及缓存隔离。"
         },
         {
-          "name": "AUTOCLAW_CN_DRY_RUN",
+          "name": "AUTOCLAW_PROMOTION",
           "required": false,
           "sensitive": false,
-          "howToGet": "预演时自行启用；默认关闭。",
-          "format": "1、true、yes、on 启用全任务断网预演，不请求接口、不读写缓存、不实际推送。"
-        },
-        {
-          "name": "AUTOCLAW_INTL_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "国际版兼容预演开关，任一地区开关启用均使整个任务断网。",
-          "format": "1、true、yes、on 启用；默认关闭。"
+          "howToGet": "按活动风险选择；命令行 --promotion 优先。",
+          "format": "默认 off 关闭，保持维护候选默认签到行为；read 只读核查最近 50 笔收入中的北京当天活动积分；claim 显式允许未入账时调用 user-info 触发活跃奖励并复核。--refresh-only 不执行活动阶段。"
         },
         {
           "name": "AUTOCLAW_CN_STORE_FILE",
           "required": false,
           "sensitive": true,
-          "howToGet": "需要保存续期结果时显式选择私有缓存路径，排除出订阅和仓库；默认不落盘。",
-          "format": "非符号链接的私有绝对路径；已有文件须为 0600，父目录须存在；以 0600 原子写入。"
+          "howToGet": "需要跨运行保存续期结果时，用户须指定公开订阅和仓库以外的私有绝对文件路径，并准备受保护父目录；默认不读写凭据文件。",
+          "format": "非符号链接的绝对路径；已有文件须为 0600 或更严格权限；0600 原子写入，仅国内账号使用。"
         },
         {
           "name": "AUTOCLAW_INTL_STORE_FILE",
           "required": false,
           "sensitive": true,
-          "howToGet": "需要保存国际版续期结果时显式选择独立私有缓存路径，不与国内版共用；默认不落盘。",
-          "format": "非符号链接的私有绝对路径；已有文件须为 0600，父目录须存在；以 0600 原子写入。"
+          "howToGet": "国际账号需要持久化时显式指定与国内缓存不同的私有绝对文件路径；默认不读写。",
+          "format": "同国内缓存约束，仅国际账号使用，不得指向国内缓存文件。"
+        },
+        {
+          "name": "AUTOCLAW_CN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地断网预演时设置为 1；无需真实凭据，仍校验账号格式。",
+          "format": "1、true、yes、on 启用整项任务断网预演；默认关闭。不联网、不读写缓存、不执行真实通知组件。"
+        },
+        {
+          "name": "AUTOCLAW_INTL_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "保留国际版兼容入口，设置为 1 同样启用全任务断网预演。",
+          "format": "与 AUTOCLAW_CN_DRY_RUN 相同，任一开关启用即全任务断网。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -3720,93 +3933,95 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要限定自动通知任务时配置；设置后替换默认名单，仅在 QINGLONG_NOTIFY 自动模式生效。",
+          "format": "逗号、分号或空白分隔目录编号、脚本相对路径、文件名或通配符；本任务编号为 3813c988ddc0c592，规范文件名为 autoclaw_cn_daily.py；* 全选，空值关闭全部自动通知。"
+        },
+        {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选指定现有青龙通知组件目录；默认发现可导入 notify、/ql/data/scripts、/ql/scripts。",
-          "format": "目录内为 notify.py 或 sendNotify.js，不下载或安装组件。"
+          "howToGet": "需要指定青龙通知组件时填其目录；否则尝试 import notify.send、/ql/data/scripts、/ql/scripts。通知不可用不改变业务退出码。",
+          "format": "含 notify.py 或 sendNotify.js 的目录；组件是可选通知扩展，业务 HTTP 由本脚本实现。"
         },
         {
           "name": "PUSHPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选从自己的 PushPlus 官方账号获取，青龙组件不可用时备用。",
-          "format": "单个推送令牌。"
+          "howToGet": "在自己的 PushPlus 账号获取推送令牌，用作青龙通知失败后的备用通道。",
+          "format": "单个推送令牌，不用于 AutoClaw 登录。"
         },
         {
           "name": "BARK_URL",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选从自己的 Bark 客户端获取推送地址。",
-          "format": "含推送密钥的完整 HTTPS 地址。"
+          "howToGet": "从自己管理的 Bark 服务获取推送地址，用作备用通道。",
+          "format": "包含推送密钥的完整 HTTPS 地址。"
         },
         {
           "name": "WECOM_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选从自己的企业微信群机器人配置页获取。",
+          "howToGet": "从自己管理的企业微信群机器人配置获取，用作备用通道。",
           "format": "完整 HTTPS 机器人地址或机器人密钥。"
         },
         {
           "name": "DINGTALK_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选从自己的钉钉群机器人配置页获取。",
+          "howToGet": "从自己管理的钉钉群机器人配置获取，用作备用通道。",
           "format": "完整 HTTPS 机器人地址。"
         },
         {
           "name": "DINGTALK_SECRET",
           "required": false,
           "sensitive": true,
-          "howToGet": "启用加签时从同一钉钉机器人配置页获取。",
-          "format": "与 DINGTALK_WEBHOOK 配套的加签密钥。"
+          "howToGet": "钉钉机器人启用加签时从该机器人安全设置获取，须与 DINGTALK_WEBHOOK 配套。",
+          "format": "机器人加签密钥；未启用加签时留空。"
         },
         {
           "name": "QL_URL",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选显式配置支持原通知接口的青龙面板地址，仅作为组件备用通道。",
-          "format": "HTTPS 面板根地址，需配套 QL_TOKEN。"
+          "howToGet": "仅需要旧版青龙 API 通知备用通道时填写自己的青龙服务地址。",
+          "format": "HTTPS 青龙服务根地址，与 QL_TOKEN 配套。"
         },
         {
           "name": "QL_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选从自己的青龙面板获取对应 API 令牌。",
-          "format": "与 QL_URL 配套的访问令牌。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "从自己授权的青龙服务获取通知 API 令牌，仅用作显式配置的备用通道。",
+          "format": "单个 API 令牌，与 QL_URL 配套。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，同账号配套凭据合并在对应地区的一个变量内，推荐 JSON。账号独立执行，任一账号失败或所选地区缺少配置时整体非零退出。--only N 选择所选地区列表中的第 N 个账号；both 时先国内后国际。"
+        "rule": "每个非空行一个账号；同账号登录态、续期令牌、设备标识合并在同一行。兼容旧竖线格式，逐次只分割首个字段分隔符，末字段保留余下文本；复杂凭据用单行 JSON。不得用 &、@ 分隔账号。国内、国际独立凭据；所选地区均须配置。"
       },
       "dependencies": [],
       "features": [
-        "国内版每日签到及积分奖励结果显示，明确业务码及成功标记校验",
-        "登录态过期后自动续期并重试签到，签名校验失败时使用 agent-refresh 备用接口",
-        "无明确领取结果时只读查询任务清单用于诊断，不将诊断冒充领取成功",
-        "支持 --refresh-only 仅续期、--only N 选择账号和 --no-notify 关闭通知",
-        "显式启用的私有凭据缓存读取和安全原子保存；默认不落盘登录态",
-        "换行多账号独立执行，任一失败整体非零退出",
-        "断网预演、分阶段脱敏日志、账号与任务统计和单行 TASK_SUMMARY 汇总",
-        "官方返回昵称、用户名、显示名称或公开 UID 时显示该非秘密身份",
-        "青龙通知组件优先，兼容 PushPlus、Bark、企业微信、钉钉和显式青龙 API 备用推送",
-        "显式 --region intl 或 AUTOCLAW_REGION=intl 使用国际版官方接口及独立凭据；保留国内版默认行为",
-        "显式 --region both 按同一每日时机独立执行两地区账号，缓存按地区配置；某地区缺配置仍处理另一地区账号并整体失败"
+        "每日签到并根据 HTTP 状态、业务码及奖励或明确成功标志核验；明确已签到单独统计，未知响应不冒充成功。",
+        "国内版默认运行；--region cn/intl/both 或 AUTOCLAW_REGION 选择地区，凭据仅发送至对应地区官方域名。",
+        "每行一个账号，逐账号独立执行；--only N 选择所选地区中的账号，both 时国内在前；任一账号或配置失败整体非零退出。",
+        "登录态过期自动续期并重试签到；保留 refresh 主接口及签名错误 400002 时的 agent-refresh 备用接口，支持 --refresh-only。",
+        "签到缺少成功标志时只读查询任务清单诊断，任务清单不代替奖励领取成功证据。",
+        "可选私有凭据缓存读取与续期结果原子保存；默认仅在本次内存更新，断网预演不读写缓存。",
+        "北京当天活动福利积分核查，匹配活跃与新用户奖励元数据，报告最近 50 笔收入中的命中逐笔积分和合计；默认关闭，read 模式只读。",
+        "--promotion claim 显式开启登录活跃奖励触发，先查流水，未入账才调用 user-info，等待后复核；仅接口受理不视为到账。",
+        "保留青龙通知组件及青龙 API、PushPlus、Bark、企业微信、钉钉备用链；支持全局开关、任务名单及 --no-notify；通知失败保留业务退出码。",
+        "成功、部分失败、失败、配置错误均生成脱敏通知摘要，断网预演只模拟通知；时间轴、逐账号阶段和统计完整，恰好一条 TASK_SUMMARY JSON。",
+        "官方返回非敏感昵称、用户名、显示名称或公开 UID 时原样显示；不输出手机号、凭据、设备标识、自由响应文本或原始异常。",
+        "标准库独立实现 HTTPS、证书验证、超时、响应大小限制及禁止重定向；状态变更不自动网络重试；断网预演不调用任何外部提供方。"
       ],
       "sideEffects": [
-        "真实运行提交所选地区 daily_signin 签到任务，可能获得积分",
-        "登录态过期或 --refresh-only 时续期登录态，可能使旧登录态失效",
-        "仅显式配置对应地区 STORE_FILE 时写入受保护的本地凭据缓存",
-        "通知开启时通过已配置渠道发送脱敏摘要；预演仅模拟通知"
+        "默认提交每日签到并可能领取积分；--refresh-only 不签到。",
+        "登录态过期或 --refresh-only 时续期，可能轮换服务端会话。",
+        "仅显式 --promotion claim 或 AUTOCLAW_PROMOTION=claim 时触发登录活跃，可能领取活动奖励。",
+        "仅显式配置私有缓存路径时保存续期结果，写入本地凭据文件；断网预演不读写。",
+        "通知开启且非断网预演时，通过用户配置的通知通道发送脱敏任务摘要。"
       ],
       "review": {
         "staticPassed": true,
@@ -3819,20 +4034,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/3813c988ddc0c592",
-        "candidateSha256": "f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426"
+        "candidateSha256": "6233dc8a16f4d57aa5d59ce5171ced418379acb714ae8487c20baec907fd6e9a"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426",
-        "releaseSha256": "535625c25c63d3c738c11a0d9b919d833cacb2bb3f04d1d477f89cc368609f07",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "6233dc8a16f4d57aa5d59ce5171ced418379acb714ae8487c20baec907fd6e9a",
+        "releaseSha256": "497df1c163561ea9fd933bdaca5cf661cae8a8f39536cfd7bff7413968a9c3e8",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.543888+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "f8bdc918bce6376ca7e1a8cb8d182c987fd9ff3286a808187d66a3768305a426",
-          "toCandidateSha256": "535625c25c63d3c738c11a0d9b919d833cacb2bb3f04d1d477f89cc368609f07",
+          "approvedAt": "2026-10-27T08:56:44.224726+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "6233dc8a16f4d57aa5d59ce5171ced418379acb714ae8487c20baec907fd6e9a",
+          "toCandidateSha256": "497df1c163561ea9fd933bdaca5cf661cae8a8f39536cfd7bff7413968a9c3e8",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -17091,41 +17306,39 @@
           "KUKU_ACCOUNTS"
         ],
         "optionalEnv": [
+          "KUKU_TOKENS",
           "KUKU_COOKIES",
           "KUKU_STOKEN",
-          "KUKU_TOKENS",
           "KUKU_PROXY",
           "KUKU_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
           "KUKU_NO_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "KUKU_DRY_RUN": "1"
         },
-        "liveEnv": {},
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
         "successPatterns": [
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
+          "TASK_SUMMARY=.*\"status\":\"success\"",
+          "TASK_SUMMARY=.*\"exitCode\":0"
         ],
         "features": [
-          "查询每日积分任务面板并验证业务登录状态",
-          "领取每日登录 LOGIN 奖励",
-          "领取对话 CHAT 任务奖励，不实际发送对话",
-          "明确 SUCCESS 且奖励为零时识别幂等已完成",
-          "逐行多账号及旧 Cookie 请求头、编辑器 JSON、对象格式兼容",
-          "使用 --only 序号选择一个账号",
-          "可选 HTTP/HTTPS 代理",
-          "显示官方响应中的昵称、用户名、显示名称或公开 UID",
-          "带阶段耗时、账号与任务统计的脱敏日志及单行 TASK_SUMMARY",
-          "青龙通知及全局关闭开关，通知失败保留业务退出码",
-          "完全断网参数预演及拟发送通知摘要"
+          "查询每日积分面板，并显示官方返回的非敏感昵称、用户名、显示名称或公开 UID；隐藏手机号和凭据。",
+          "依次领取每日登录 LOGIN 与对话任务 CHAT 奖励；各任务失败独立记录，重复领取仅在明确 SUCCESS 且奖励为零时记为已完成。",
+          "支持每行一个账号、旧凭据变量、Cookie 请求头和多种 JSON 格式，以及 --only 序号选择账号。",
+          "优先使用手动配置的产品 STOKEN，缺少时使用同账号 BDUSS、PTOKEN，通过官方接口纯算法换发；只在本次运行内存中使用。",
+          "支持 HTTP/HTTPS 代理；业务请求具有超时、大小限制、重定向阻断、HTTP 状态和业务状态检查。",
+          "提供完全断网预演、带时间戳的编号阶段日志、逐账号统计及兼容的单行 TASK_SUMMARY 结构化汇总。",
+          "成功、部分失败、失败、参数错误及预演均生成脱敏通知摘要，遵守全局开关与通知名单，经青龙 Python 或 JavaScript 通知模块发送；预演仅展示摘要。"
         ],
         "sideEffects": [
-          "领取每日登录任务积分",
-          "领取对话任务积分",
-          "正式运行时通过青龙通知模块发送脱敏结果"
+          "正式运行领取每日登录 LOGIN 和对话任务 CHAT 奖励，可能增加账号积分；不会实际发送聊天或发布内容。",
+          "未提供产品 STOKEN 时向百度官方认证接口换发当前账号的 genflowpro 会话令牌；不保存本地令牌缓存。",
+          "通知被选中且非预演时，向青龙配置的通知渠道发送脱敏统计摘要。"
         ]
       },
       "postReview": {
@@ -17134,7 +17347,7 @@
       },
       "displayName": "KukuAI 每日积分",
       "path": "scripts/kuku_daily.py",
-      "sha256": "f91c396750ebf88a7a84488a1e6af856d3b58e0d2a0f7c9a2eb1eb8f14fc3cec",
+      "sha256": "f4ab9950449cdbd18ba8379ee8c0308fbbe5a7033fc8968186e70eb023696568",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -17144,50 +17357,57 @@
         "commit": "6912419c6b29365bb7b3172cc3c18bf7b763812d",
         "originalPath": "kuku_daily.py"
       },
-      "cron": "21 0 * * *",
+      "cron": "0 8 * * *",
       "command": "python3 scripts/kuku_daily.py",
       "environment": [
         {
           "name": "KUKU_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录官方库库 AI 客户端，自行从可查看的 kuku.baidu.com 官方业务请求中复制同账号 Cookie 和 genflowpro 产品作用域 STOKEN；网页通行证令牌不一定有效。脚本不负责换发，请勿使用第三方凭据获取服务。",
-          "format": "每个非空行一个账号：产品作用域STOKEN|完整Cookie；仅在第一个竖线处分割。Cookie 支持请求头、单行编辑器 JSON 或键值对象，必须包含 BDUSS。"
-        },
-        {
-          "name": "KUKU_COOKIES",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "兼容旧单账号输入，从官方业务请求复制 Cookie；与同账号 KUKU_STOKEN 配套。配置规范变量或 KUKU_TOKENS 时忽略此项。",
-          "format": "Cookie 请求头、编辑器 JSON 或键值对象，包含 BDUSS。"
-        },
-        {
-          "name": "KUKU_STOKEN",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "兼容旧单账号输入，从官方客户端同账号业务请求获取 genflowpro 产品作用域 STOKEN；脚本不调用 DLL。",
-          "format": "完整产品会话令牌，与 KUKU_COOKIES 配套。"
+          "howToGet": "登录官方库库 AI，在官方业务请求中复制同账号的 BDUSS Cookie 和 genflowpro 产品作用域 STOKEN。也可从已登录百度的浏览器开发者工具「应用/存储→Cookie」或官方请求 Cookie 中取得同账号 BDUSS、PTOKEN，用于脚本通过官方 HTTPS 接口换发。网页通行证 STOKEN 不等于产品 STOKEN；失效时需重新获取。勿使用第三方凭据服务或在日志分享凭据。",
+          "format": "每个非空行一个账号：产品STOKEN|完整Cookie。只在第一个 | 处分割，后续 Cookie 内容保留；Cookie 支持请求头、单行编辑器 JSON、含 cookies/cookie 的对象、键值对象。无产品 STOKEN 时保留开头 |，Cookie 必须含同账号 BDUSS 和 PTOKEN；有 STOKEN 时 Cookie 至少含完整 BDUSS。不用 &、@ 分隔账号。"
         },
         {
           "name": "KUKU_TOKENS",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容旧多账号输入，按各账号官方会话信息填写；没有规范变量时使用，不输出备注。",
-          "format": "每个非空行：备注|BDUSS|PTOKEN|STOKEN；最多分割前三个竖线。不支持用 & 或 @ 分隔账号。"
+          "howToGet": "兼容原脚本的多账号输入，所需凭据从同一账号官方 Cookie 和业务请求取得，建议迁移到 KUKU_ACCOUNTS。",
+          "format": "仅当 KUKU_ACCOUNTS 为空时使用；每行 备注|BDUSS|PTOKEN[|STOKEN]，第四段可省略或留空以换发。备注不作为官方身份显示。禁止使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "KUKU_COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号输入，在官方库库 AI 登录后从开发者工具复制完整 Cookie 或 Cookie 编辑器导出内容。BDUSS、PTOKEN 与 KUKU_STOKEN 必须属于同一账号。",
+          "format": "仅当 KUKU_ACCOUNTS、KUKU_TOKENS 均为空时使用；一个账号的 Cookie 请求头、编辑器 JSON 或键值对象。至少含 BDUSS；未配置 KUKU_STOKEN 时另需 PTOKEN。"
+        },
+        {
+          "name": "KUKU_STOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号输入，从官方 kuku.baidu.com 业务请求中取得 genflowpro 产品作用域 STOKEN。无该令牌可留空并在 KUKU_COOKIES 配置 BDUSS、PTOKEN 以自动换发。",
+          "format": "仅与 KUKU_COOKIES 配套使用的同账号产品 STOKEN 字符串，不包含 STOKEN= 前缀。配置后优先使用，失效不会自动覆盖。"
         },
         {
           "name": "KUKU_PROXY",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选，自行填写可信代理；代理地址可能含认证信息，日志不输出。",
-          "format": "HTTP 或 HTTPS 代理地址；不支持 SOCKS。"
+          "howToGet": "可选，从自己的可信代理服务配置中取得；未设置时业务请求直连，不继承系统代理。",
+          "format": "有效的 http:// 或 https:// 代理地址；标准库模式不支持 SOCKS。代理用于官方换发和每日积分请求，不传给通知子进程。"
         },
         {
           "name": "KUKU_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "预演时设置为 1。",
-          "format": "1 开启完全断网预演，0 正式领取。"
+          "howToGet": "本地或青龙测试时设置为 1，正式领取时删除或设置为 0。",
+          "format": "1 启用完全断网预演；0/false/no/off 或空值关闭。预演不验证凭据有效性，不换发、不领取、不导入通知模块。"
+        },
+        {
+          "name": "KUKU_NO_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容原脚本的通知关闭开关。",
+          "format": "1 强制关闭本脚本通知；其他值由全局通知策略决定。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -17197,50 +17417,39 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，填写青龙 notify.py 所在目录；也自动查找青龙标准目录或可导入通知模块。",
-          "format": "本机通知模块目录，仅用于可选通知，不是业务依赖。"
-        },
-        {
-          "name": "KUKU_NO_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "兼容旧通知关闭开关。",
-          "format": "1 关闭通知。"
-        },
-        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "需要选择通知脚本时设置，当前目录 ID 为 224698e8fa0ac8f6，规范文件名为 kuku_daily.py。",
+          "format": "支持目录 ID、脚本相对路径、文件名和文件名通配符；逗号、分号或空白分隔，* 表示全部。设置后替换默认名单；显式空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知文件不在标准位置时，填写自己可信的通知模块目录；无需下载或安装引导程序。",
+          "format": "包含 notify.py 或 sendNotify.js 的本地目录。依次尝试 import notify.send、指定目录及 /ql/data/scripts、/ql/scripts 中的 Python 通知模块，再尝试同目录 JavaScript 模块。JavaScript 通知仅在已有 Node.js 时可用，不影响业务独立运行。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，账号独立处理；规范输入只在第一个竖线处分割令牌与 Cookie。旧凭据输入可兼容替代规范变量。任一账号格式或业务失败时整体非零退出。"
+        "rule": "每个非空行一个账号，同账号凭据集中在 KUKU_ACCOUNTS，以第一个 | 分隔 STOKEN 和 Cookie；各账号、各奖励独立处理，任一账号失败则整体非零退出。支持 --only 序号，只核验所选账号。"
       },
       "dependencies": [],
       "features": [
-        "查询每日积分任务面板并验证业务登录状态",
-        "领取每日登录 LOGIN 奖励",
-        "领取对话 CHAT 任务奖励，不实际发送对话",
-        "明确 SUCCESS 且奖励为零时识别幂等已完成",
-        "逐行多账号及旧 Cookie 请求头、编辑器 JSON、对象格式兼容",
-        "使用 --only 序号选择一个账号",
-        "可选 HTTP/HTTPS 代理",
-        "显示官方响应中的昵称、用户名、显示名称或公开 UID",
-        "带阶段耗时、账号与任务统计的脱敏日志及单行 TASK_SUMMARY",
-        "青龙通知及全局关闭开关，通知失败保留业务退出码",
-        "完全断网参数预演及拟发送通知摘要"
+        "查询每日积分面板，并显示官方返回的非敏感昵称、用户名、显示名称或公开 UID；隐藏手机号和凭据。",
+        "依次领取每日登录 LOGIN 与对话任务 CHAT 奖励；各任务失败独立记录，重复领取仅在明确 SUCCESS 且奖励为零时记为已完成。",
+        "支持每行一个账号、旧凭据变量、Cookie 请求头和多种 JSON 格式，以及 --only 序号选择账号。",
+        "优先使用手动配置的产品 STOKEN，缺少时使用同账号 BDUSS、PTOKEN，通过官方接口纯算法换发；只在本次运行内存中使用。",
+        "支持 HTTP/HTTPS 代理；业务请求具有超时、大小限制、重定向阻断、HTTP 状态和业务状态检查。",
+        "提供完全断网预演、带时间戳的编号阶段日志、逐账号统计及兼容的单行 TASK_SUMMARY 结构化汇总。",
+        "成功、部分失败、失败、参数错误及预演均生成脱敏通知摘要，遵守全局开关与通知名单，经青龙 Python 或 JavaScript 通知模块发送；预演仅展示摘要。"
       ],
       "sideEffects": [
-        "领取每日登录任务积分",
-        "领取对话任务积分",
-        "正式运行时通过青龙通知模块发送脱敏结果"
+        "正式运行领取每日登录 LOGIN 和对话任务 CHAT 奖励，可能增加账号积分；不会实际发送聊天或发布内容。",
+        "未提供产品 STOKEN 时向百度官方认证接口换发当前账号的 genflowpro 会话令牌；不保存本地令牌缓存。",
+        "通知被选中且非预演时，向青龙配置的通知渠道发送脱敏统计摘要。"
       ],
       "review": {
         "staticPassed": true,
@@ -17253,20 +17462,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/224698e8fa0ac8f6",
-        "candidateSha256": "d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9"
+        "candidateSha256": "ecd5f606bf623d820eef35d1dce1a08ac07df55b59a1ee65a01c27604a9eeeee"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9",
-        "releaseSha256": "f91c396750ebf88a7a84488a1e6af856d3b58e0d2a0f7c9a2eb1eb8f14fc3cec",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "ecd5f606bf623d820eef35d1dce1a08ac07df55b59a1ee65a01c27604a9eeeee",
+        "releaseSha256": "f4ab9950449cdbd18ba8379ee8c0308fbbe5a7033fc8968186e70eb023696568",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.560363+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "d16dbbed6f9a6a5ebe6daa4597c46b4e692c7f363beb4a6296bb1e1fceb35fc9",
-          "toCandidateSha256": "f91c396750ebf88a7a84488a1e6af856d3b58e0d2a0f7c9a2eb1eb8f14fc3cec",
+          "approvedAt": "2026-10-27T08:54:03.963333+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "ecd5f606bf623d820eef35d1dce1a08ac07df55b59a1ee65a01c27604a9eeeee",
+          "toCandidateSha256": "f4ab9950449cdbd18ba8379ee8c0308fbbe5a7033fc8968186e70eb023696568",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -19514,9 +19723,9 @@
           "MODELSCOPE_PROXY",
           "MODELSCOPE_VERIFY_DELAY",
           "MODELSCOPE_DRY_RUN",
+          "MODELSCOPE_NO_NOTIFY",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_SCRIPTS",
-          "MODELSCOPE_NO_NOTIFY",
           "QINGLONG_NOTIFY_DIR",
           "PLUSPLUS_TOKEN",
           "BARK_URL",
@@ -19532,24 +19741,22 @@
           "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
-          "签到到账",
-          "今日已领取",
-          "每日签到已触发",
-          "TASK_SUMMARY="
+          "最终状态：成功",
+          "\"exitCode\":0"
         ],
         "features": [
-          "国内站和国际站按各自会话值每日签到，保留两站同任务运行能力",
-          "国内站以北京时间当日魔粒账单确认签到到账，重复签到显示今日已领取",
-          "国际站以登录接口的明确业务成功结果确认签到触发",
-          "查询魔粒可用余额、总余额和今日推理用量",
-          "支持按账号序号选择运行及旧版查询模式",
-          "支持代理、国内站账单延时核验及旧版环境变量",
-          "支持逐行多账号、无网络预演、时间轴日志和结构化结果汇总",
-          "运行结束发送脱敏青龙通知，并兼容已配置的旧版推送渠道"
+          "国内站与国际站每日登录签到，保留每天 9 点定时；国内站查询当日魔粒账单，国际站按官方登录接口业务成功确认，明确提示无账单回读。",
+          "国内站按北京时间筛选 EARN 类型、daily_active 与 aliyun_bindlogin 规则；保留签到前、签到后及延迟回读，区分今日已领取与签到到账，并显示到账数量和账单标题。",
+          "查询可用及总魔粒余额、今日推理调用用量；保留辅助查询失败提示和不阻断签到主任务的边界。",
+          "显示官方返回的昵称、用户名或公开 UID，保留自定义账号备注；不输出凭据、手机号或原始响应。",
+          "规范多账号与四种旧凭据变量兼容，保留 --query、--only N、--no-notify；--query 仍调用可能触发签到的登录信息接口。",
+          "自带标准库 HTTPS 请求、超时、响应大小限制、代理与 TLS 校验；拒绝重定向，区分 401 凭据失效与 403 风控。",
+          "完全断网预演、逐账号隔离、部分失败非零退出、带时间戳的阶段日志和每次恰好一条 TASK_SUMMARY 结构化汇总。",
+          "青龙 notify.py 或 sendNotify.js 通知发现及 PushPlus、Bark、企业微信、钉钉兼容渠道，遵守统一清单与开关，通知失败保留业务退出码；预演仅生成通知摘要。"
         ],
         "sideEffects": [
-          "调用登录信息接口触发当日签到及可能的魔粒发放",
-          "启用通知时向青龙或已配置的兼容推送渠道发送脱敏任务结果"
+          "正式执行时调用登录信息接口可能触发当日签到并领取魔粒；--query 亦保留该行为。",
+          "启用通知时通过青龙及已配置的兼容渠道发送脱敏任务汇总；无网络预演不发送。"
         ]
       },
       "postReview": {
@@ -19558,7 +19765,7 @@
       },
       "displayName": "ModelScope 魔搭每日签到",
       "path": "scripts/modelscope_daily.py",
-      "sha256": "59f9403ceae2737dbd646c739bb5eb6600b43bc4d24d54d5c955d89c51c5299d",
+      "sha256": "2a95265bfabf2f6b927222ad0786b58ba5d804bd7b5bd8d2206d70b513e25cc9",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -19568,64 +19775,71 @@
         "commit": "98a3863d33212879f5513ea57c535f2e6dff9717",
         "originalPath": "modelscope_daily.py"
       },
-      "cron": "30 0 * * *",
+      "cron": "0 9 * * *",
       "command": "python3 scripts/modelscope_daily.py",
       "environment": [
         {
           "name": "MODELSCOPE_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录对应的 ModelScope 国内站或国际站，在浏览器开发者工具的 Cookie 中找到 m_session_id；每行填写一个账号。也兼容下方旧版站点变量。",
-          "format": "每行 cn:备注|m_session_id 或 intl:备注|m_session_id；备注可留空，凭据中的后续竖线保留"
+          "howToGet": "分别登录国内站 https://modelscope.cn 或国际站 https://www.modelscope.ai；按 F12，在应用或存储的 Cookie 中复制对应站点 m_session_id 的值。不是个人中心的 API Token；国内、国际凭据不可互换。",
+          "format": "每个非空行一个账号：cn:备注|会话值 或 intl:备注|会话值。备注可留空，写作 cn:|会话值；只在首个 | 处分割，后续字符完整保留。此变量非空时优先于所有旧凭据变量。"
         },
         {
           "name": "MODELSCOPE_CN_TOKENS",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧版国内站多账号兼容变量：登录 modelscope.cn 后从浏览器 Cookie 取得 m_session_id；仅在统一账号变量为空时读取。",
-          "format": "每行 备注|m_session_id，备注可省略"
+          "howToGet": "兼容旧版：在国内站登录后，从开发者工具的 Cookie 中取得 m_session_id 值。规范配置优先使用 MODELSCOPE_ACCOUNTS。",
+          "format": "每个非空行一个账号，格式为 备注|会话值 或仅会话值；仅在首个 | 处分割，不再使用 & 或 @ 分隔账号。"
         },
         {
           "name": "MODELSCOPE_INTL_TOKENS",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧版国际站多账号兼容变量：登录 modelscope.ai 后从浏览器 Cookie 取得 m_session_id；仅在统一账号变量为空时读取。",
-          "format": "每行 备注|m_session_id，备注可省略"
+          "howToGet": "兼容旧版：在国际站登录后，从开发者工具的 Cookie 中取得 m_session_id 值。规范配置优先使用 MODELSCOPE_ACCOUNTS。",
+          "format": "每个非空行一个账号，格式为 备注|会话值 或仅会话值；仅在首个 | 处分割，不再使用 & 或 @ 分隔账号。"
         },
         {
           "name": "MODELSCOPE_CN_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧版国内站单账号兼容变量：登录国内站后从浏览器 Cookie 取得 m_session_id；仅在该站多账号变量为空时读取。",
-          "format": "单个 m_session_id 值"
+          "howToGet": "兼容旧版国内站单账号，获取方式同国内站 Cookie；规范配置优先使用 MODELSCOPE_ACCOUNTS。",
+          "format": "仅填写一个 m_session_id 值；仅在规范变量及对应多账号变量均为空时生效。"
         },
         {
           "name": "MODELSCOPE_INTL_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧版国际站单账号兼容变量：登录国际站后从浏览器 Cookie 取得 m_session_id；仅在该站多账号变量为空时读取。",
-          "format": "单个 m_session_id 值"
+          "howToGet": "兼容旧版国际站单账号，获取方式同国际站 Cookie；规范配置优先使用 MODELSCOPE_ACCOUNTS。",
+          "format": "仅填写一个 m_session_id 值；仅在规范变量及对应多账号变量均为空时生效。"
         },
         {
           "name": "MODELSCOPE_PROXY",
           "required": false,
           "sensitive": true,
-          "howToGet": "如需代理，由用户自行配置可用的 HTTPS 代理地址；地址中可能含认证信息。",
-          "format": "HTTPS 代理地址"
+          "howToGet": "可选：使用自己维护的可信代理地址；未配置时沿用运行环境的代理设置。",
+          "format": "HTTP 或 HTTPS 代理地址，可含代理认证信息，不会输出到日志。"
         },
         {
           "name": "MODELSCOPE_VERIFY_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "国内站签到后账单尚未到账时的重查等待时间，默认 2 秒。",
-          "format": "0 至 30 的整数秒数"
+          "howToGet": "自行设置国内站两次到账回读之间的等待时间。",
+          "format": "整数秒，默认 2；范围限制为 0 至 30，非整数回退为 2。"
         },
         {
           "name": "MODELSCOPE_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "设置为 1 可检查账号配置并预演日志，不发送任何网络请求。",
-          "format": "1 表示无网络预演"
+          "howToGet": "用于首次配置检查与完全断网预演；不代表真实业务成功。",
+          "format": "1、true、yes 或 on 启用；不访问业务接口、通知服务或文本服务。"
+        },
+        {
+          "name": "MODELSCOPE_NO_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要关闭本脚本全部推送时设置；也可传入 --no-notify。",
+          "format": "1 关闭；覆盖青龙通知与全部兼容渠道。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -19638,78 +19852,71 @@
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "可指定需要通知的脚本；设置后替换默认选择，空值关闭全部通知。",
-          "format": "目录标识、脚本名或通配符；逗号、分号或空白分隔"
-        },
-        {
-          "name": "MODELSCOPE_NO_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧版通知关闭开关。",
-          "format": "1 表示关闭通知"
+          "howToGet": "自行选择需要推送的脚本；设置后替代默认通知清单。",
+          "format": "逗号、分号或空白分隔目录编号、脚本相对路径、文件名或文件名通配符；支持 2d3c603c8a58ed00、scripts/modelscope_daily.py；* 选择全部，空值禁用全部。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "自定义青龙 notify.py 所在目录；通常无需设置。",
-          "format": "本地目录路径"
+          "howToGet": "可选：指定已安装青龙通知模块所在目录，否则依次发现可导入的 notify.send、/ql/data/scripts、/ql/scripts。",
+          "format": "目录路径，包含 notify.py 或 sendNotify.js；JavaScript 通知仅在青龙已有 Node.js 时使用，业务脚本本身不依赖 Node.js。"
         },
         {
           "name": "PLUSPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "如继续使用旧版 PushPlus 推送，在自己的 PushPlus 账户中获取令牌。",
-          "format": "PushPlus 令牌"
+          "howToGet": "可选兼容渠道：登录 PushPlus 后在个人页面复制自己的推送令牌。",
+          "format": "仅填写令牌；受统一通知开关控制。"
         },
         {
           "name": "BARK_URL",
           "required": false,
           "sensitive": true,
-          "howToGet": "如继续使用旧版 Bark 推送，在自己的 Bark 客户端中获取 HTTPS 推送地址。",
-          "format": "HTTPS 推送地址"
+          "howToGet": "可选兼容渠道：从自己的 Bark 客户端复制推送地址，含设备推送密钥。",
+          "format": "完整 HTTPS 推送基础地址；受统一通知开关控制。"
         },
         {
           "name": "WECOM_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "如继续使用旧版企业微信推送，在自己的群机器人设置中获取 Webhook 地址。",
-          "format": "HTTPS Webhook 地址"
+          "howToGet": "可选兼容渠道：在自己管理的企业微信群机器人设置中复制 Webhook。",
+          "format": "完整 HTTPS Webhook，或仅机器人 key；优先于 QYWX_TOKEN，受统一通知开关控制。"
         },
         {
           "name": "QYWX_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "旧版企业微信兼容变量：在自己的群机器人设置中获取 Webhook 密钥。",
-          "format": "Webhook 密钥或 HTTPS 地址"
+          "howToGet": "兼容企业微信旧参数，获取方式同群机器人 Webhook。",
+          "format": "完整 HTTPS Webhook 或机器人 key，仅在 WECOM_WEBHOOK 未配置时使用。"
         },
         {
           "name": "DINGTALK_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "如继续使用旧版钉钉推送，在自己的群机器人设置中获取 Webhook 地址。",
-          "format": "HTTPS Webhook 地址"
+          "howToGet": "可选兼容渠道：在自己管理的钉钉群机器人设置中复制 Webhook；仅支持原有无额外签名配置的机器人。",
+          "format": "完整 HTTPS Webhook；受统一通知开关控制。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行对应一个账号；统一变量中先写国内站 cn 或国际站 intl，再写备注和会话值。账号逐个处理，任一账号失败时进程以非零码退出。"
+        "rule": "每个非空行一个账号，规范变量使用 cn:备注|会话值 或 intl:备注|会话值；备注可为空，只在首个 | 处分割。规范变量非空则优先，否则按国内、国际顺序读取旧变量。各账号独立执行，任一账号失败或到账未确认时整体非零退出；--only N 使用该配置顺序选择账号。"
       },
       "dependencies": [],
       "features": [
-        "国内站和国际站按各自会话值每日签到，保留两站同任务运行能力",
-        "国内站以北京时间当日魔粒账单确认签到到账，重复签到显示今日已领取",
-        "国际站以登录接口的明确业务成功结果确认签到触发",
-        "查询魔粒可用余额、总余额和今日推理用量",
-        "支持按账号序号选择运行及旧版查询模式",
-        "支持代理、国内站账单延时核验及旧版环境变量",
-        "支持逐行多账号、无网络预演、时间轴日志和结构化结果汇总",
-        "运行结束发送脱敏青龙通知，并兼容已配置的旧版推送渠道"
+        "国内站与国际站每日登录签到，保留每天 9 点定时；国内站查询当日魔粒账单，国际站按官方登录接口业务成功确认，明确提示无账单回读。",
+        "国内站按北京时间筛选 EARN 类型、daily_active 与 aliyun_bindlogin 规则；保留签到前、签到后及延迟回读，区分今日已领取与签到到账，并显示到账数量和账单标题。",
+        "查询可用及总魔粒余额、今日推理调用用量；保留辅助查询失败提示和不阻断签到主任务的边界。",
+        "显示官方返回的昵称、用户名或公开 UID，保留自定义账号备注；不输出凭据、手机号或原始响应。",
+        "规范多账号与四种旧凭据变量兼容，保留 --query、--only N、--no-notify；--query 仍调用可能触发签到的登录信息接口。",
+        "自带标准库 HTTPS 请求、超时、响应大小限制、代理与 TLS 校验；拒绝重定向，区分 401 凭据失效与 403 风控。",
+        "完全断网预演、逐账号隔离、部分失败非零退出、带时间戳的阶段日志和每次恰好一条 TASK_SUMMARY 结构化汇总。",
+        "青龙 notify.py 或 sendNotify.js 通知发现及 PushPlus、Bark、企业微信、钉钉兼容渠道，遵守统一清单与开关，通知失败保留业务退出码；预演仅生成通知摘要。"
       ],
       "sideEffects": [
-        "调用登录信息接口触发当日签到及可能的魔粒发放",
-        "启用通知时向青龙或已配置的兼容推送渠道发送脱敏任务结果"
+        "正式执行时调用登录信息接口可能触发当日签到并领取魔粒；--query 亦保留该行为。",
+        "启用通知时通过青龙及已配置的兼容渠道发送脱敏任务汇总；无网络预演不发送。"
       ],
       "review": {
         "staticPassed": true,
@@ -19722,20 +19929,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/2d3c603c8a58ed00",
-        "candidateSha256": "d4cd29ba2be9cb173bfecc3e5adc1192895a86f6a6e46207748f16d83796e6c5"
+        "candidateSha256": "12d0356e8f91d81512f5784678cbb8ac6b263f63fe160bee4d5b4ba1e2c11f62"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "d4cd29ba2be9cb173bfecc3e5adc1192895a86f6a6e46207748f16d83796e6c5",
-        "releaseSha256": "59f9403ceae2737dbd646c739bb5eb6600b43bc4d24d54d5c955d89c51c5299d",
+        "validatedSha256": "12d0356e8f91d81512f5784678cbb8ac6b263f63fe160bee4d5b4ba1e2c11f62",
+        "releaseSha256": "2a95265bfabf2f6b927222ad0786b58ba5d804bd7b5bd8d2206d70b513e25cc9",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-23T17:17:27.860478+00:00",
+          "approvedAt": "2026-10-27T08:54:32.295208+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "d4cd29ba2be9cb173bfecc3e5adc1192895a86f6a6e46207748f16d83796e6c5",
-          "toCandidateSha256": "59f9403ceae2737dbd646c739bb5eb6600b43bc4d24d54d5c955d89c51c5299d",
+          "fromCandidateSha256": "12d0356e8f91d81512f5784678cbb8ac6b263f63fe160bee4d5b4ba1e2c11f62",
+          "toCandidateSha256": "2a95265bfabf2f6b927222ad0786b58ba5d804bd7b5bd8d2206d70b513e25cc9",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -39999,6 +40206,7 @@
           "ZCODE_CN_DRY_RUN",
           "ZCODE_INTL_DRY_RUN",
           "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR",
           "PUSHPLUS_TOKEN",
           "BARK_URL",
@@ -40006,36 +40214,37 @@
           "DINGTALK_WEBHOOK",
           "DINGTALK_SECRET",
           "QL_URL",
-          "QL_TOKEN",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "QL_TOKEN"
         ],
         "dryRunEnv": {
           "ZCODE_CN_DRY_RUN": "1"
         },
         "liveEnv": {
-          "ZCODE_ACTIVATION": "0",
+          "ZCODE_REGION": "cn",
           "ZCODE_APP_VERSION": "3.14.0",
-          "QINGLONG_NOTIFY": "1"
+          "ZCODE_ACTIVATION": "0"
         },
         "successPatterns": [
           "CLAIM_SUCCESS",
-          "PREVIEW_SUCCESS"
+          "PREVIEW_SUCCESS",
+          "ALREADY_COMPLETE"
         ],
         "features": [
-          "保留国内版默认任务，新增显式国际版及跨区域账号选择；两类凭据独立处理。",
-          "查询可领取套餐、权益及有效期，并按北京时间显示。",
-          "优先级最高套餐自动领取，同优先级保持上游顺序；可指定套餐。",
-          "支持每账号验证码及全局补齐参数、客户端版本和固定设备参数。",
-          "支持 --preview 只读预览、--only 账号筛选和 --no-notify 通知关闭。",
-          "支持显式激活事件补报，默认关闭。",
-          "支持每行一个账号、账号独立处理和失败非零退出。",
-          "支持完全断网预演、时间轴日志、账号统计及唯一 TASK_SUMMARY 记录。",
-          "发送青龙脱敏总结，兼容原推送通道及青龙接口，通知失败保留业务退出码。"
+          "国内版和国际版套餐任务合并为一个规范脚本；默认国内版，通过 --region cn/intl/all 或 ZCODE_REGION 显式选择，保持各自凭据及设备隔离。",
+          "读取套餐列表、权益额度和每日或一次性周期，按最高优先级领取，同优先级取首项，支持 ZCODE_PLAN_ID 指定套餐。",
+          "支持账号设备值、账号验证码、全局验证码补齐、客户端版本及自动识别操作系统平台；兼容已有设备文件，只读且非必需。",
+          "支持 --preview 只读模式、--only N 账号筛选和 --no-notify；每行一个账号，兼容备注前缀并保留验证码中的竖线等后续字符。",
+          "保留维护版显式启用的客户端启动和日活事件补报；默认关闭，预览始终关闭，上报失败仍继续其余业务但保留失败退出码。",
+          "严格核验 HTTP 状态、整数业务码及套餐响应；官方明确返回 1003 时计为本期已领取，1005 提示下次重试时间，3001 和 3007 提供参数修复指引。",
+          "固定北京时间展示套餐有效期、执行起止时间；保留每日 09:00 调度元数据，青龙调度时区需设置 Asia/Shanghai。",
+          "完全断网预演；可选青龙 notify.py 或 sendNotify.js 通知，保留 PushPlus、Bark、企业微信、钉钉加签及旧青龙接口的顺序回退链，支持全局开关及脚本选择。",
+          "时间轴分阶段日志、官方非秘密账号身份、账号及任务统计、唯一单行 TASK_SUMMARY 结构化汇总；不输出凭据和原始响应，任一账号失败非零退出。",
+          "仅用 Python 标准库实现 HTTPS 请求，验证 TLS、限制响应大小、设置超时、禁止重定向与写请求自动重试；无需其他仓库、应用程序或安装引导。"
         ],
         "sideEffects": [
-          "实际领取时发放或变更账号套餐权益。",
-          "仅 ZCODE_ACTIVATION=1 且非只读、非预演时补报启动和日活事件，可能影响套餐资格。",
-          "实际模式且通知启用时发送脱敏任务总结。"
+          "默认实际运行在成功预览后提交一次套餐领取请求，可能增加账号套餐权益；--preview 或断网预演不领取。",
+          "仅 ZCODE_ACTIVATION=1 且非预览、非预演时上报 app_launch 和 app_daily_active，可能影响账号领取资格。",
+          "通知已启用且非断网预演时向青龙配置或兼容推送通道发送脱敏任务统计；通知失败不改变业务退出码。"
         ]
       },
       "postReview": {
@@ -40044,7 +40253,7 @@
       },
       "displayName": "ZCode 国内版领套餐",
       "path": "scripts/zcode_cn_daily.py",
-      "sha256": "3a3583d82d298eff8d41b53228dbf4071db4461e6aade80aa1712bd1b4eb0a72",
+      "sha256": "a0269da3682ee2877af7b5fba31fb70ce4f63bb226e903ca434a10e2ec3ad110",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -40058,7 +40267,7 @@
             "repository": "L0NE-6/ZCode-Daily",
             "url": "https://github.com/L0NE-6/ZCode-Daily.git",
             "branch": "main",
-            "commit": "68e3adf4b5deb036f2a992a5aca24f02f3a64ade",
+            "commit": "c1c6deceaab08850096e60db6088d0c8db96b569",
             "originalPath": "zcode_intl_daily.py",
             "catalogId": "06675c9bdbcdef9d",
             "sha256": "0de32dacacef678944b12446e8408d3313e3e3eac1c7e29c8205c6f3b51f7972",
@@ -40066,71 +40275,71 @@
           }
         ]
       },
-      "cron": "36 1 * * *",
+      "cron": "1 9 * * *",
       "command": "python3 scripts/zcode_cn_daily.py",
       "environment": [
         {
           "name": "ZCODE_CN_TOKENS",
           "required": true,
           "sensitive": true,
-          "howToGet": "默认国内版任务必填。在官方 ZCode 国内版完成登录，在浏览器网络面板查看 billing/preview 或 billing/claim 请求，取 Authorization 的 Bearer 后套餐 JWT、X-Device-Mid 设备值及 claim 的 X-Aliyun-Captcha-Verify-Param。不可使用推理 API Key。选择 intl 时改用国际版账号变量。",
-          "format": "每行一个账号：jwt、jwt|device_mid、jwt|device_mid|captcha_param 或 备注|jwt|device_mid|captcha_param。验证码保留后续竖线，不用 & 或 @ 分隔账号。"
+          "howToGet": "在官方 ZCode 国内版完成登录，在浏览器开发者工具网络面板找到 https://zcode.z.ai/api/v1/zcode-plan/billing/preview 或 billing/claim 请求。Authorization 中 Bearer 后的完整内容为套餐 JWT，X-Device-Mid 为设备值；claim 的 X-Aliyun-Captcha-Verify-Param 为验证码。套餐 JWT 与推理 API Key、推理 access_token 不同。验证码可能短时一次性，业务码 3007 时重新抓取。此变量是默认国内版任务的必填凭据。",
+          "format": "每行一个账号；支持 套餐JWT、套餐JWT|设备值、套餐JWT|设备值|验证码、备注|套餐JWT|设备值|验证码。只依次按首个竖线拆字段，验证码剩余字符完整保留；不以 & 或 @ 分隔账号。设备留空时兼容读取脚本旁已有的对应区域设备文件，否则确定性生成且不写文件。"
         },
         {
           "name": "ZCODE_INTL_TOKENS",
           "required": false,
           "sensitive": true,
-          "howToGet": "选择 intl 时必填，all 时配置需要执行的区域。在官方 ZCode 国际版（z.ai）完成登录或客户端网页授权，在网络面板查看 billing/preview 或 billing/claim，获取套餐 JWT、设备及验证码。JWT 与国内版不互通，勿使用推理 access_token。验证码失效时重新获取。",
-          "format": "每行一个账号，格式与 ZCODE_CN_TOKENS 相同。"
+          "howToGet": "使用官方 ZCode 国际版账号完成登录，从同一套餐请求获取国际版套餐 JWT、设备值和验证码；不能使用国内版凭据或推理 access_token。选择 --region intl 时此变量必填；--region all 按国内、国际顺序处理已配置账号。人工网页授权仅用于获取参数，不在定时任务内自动执行。",
+          "format": "每行一个账号；支持 套餐JWT、套餐JWT|设备值、套餐JWT|设备值|验证码、备注|套餐JWT|设备值|验证码。只依次按首个竖线拆字段，验证码剩余字符完整保留；不以 & 或 @ 分隔账号。设备留空时兼容读取脚本旁已有的对应区域设备文件，否则确定性生成且不写文件。"
         },
         {
           "name": "ZCODE_REGION",
           "required": false,
           "sensitive": false,
-          "howToGet": "按账号所属区域设置，也可用 --region 覆盖。",
-          "format": "cn（默认）、intl 或 all；all 按国内、国际顺序处理已配置账号。"
+          "howToGet": "按账号所属区域设置；命令行 --region 优先。",
+          "format": "cn、intl 或 all；默认 cn"
         },
         {
           "name": "ZCODE_PLAN_ID",
           "required": false,
           "sensitive": false,
-          "howToGet": "从官方套餐预览请求的返回数据获取 plan_id。",
-          "format": "套餐标识，留空按最高优先级选择，同优先级取首项。"
+          "howToGet": "先用 --preview 查看套餐，再从官方套餐响应的 plan_id 字段获取；留空按最高优先级选择，同优先级取首项。",
+          "format": "单个套餐标识，可选"
         },
         {
           "name": "ZCODE_APP_VERSION",
           "required": false,
           "sensitive": false,
-          "howToGet": "从官方客户端版本或套餐请求参数获取。",
-          "format": "版本字符串，默认 3.14.0。"
+          "howToGet": "从官方客户端版本信息或领取请求头 X-ZCode-App-Version 获取。",
+          "format": "客户端版本号，默认 3.14.0"
         },
         {
           "name": "ZCODE_CAPTCHA_PARAM",
           "required": false,
           "sensitive": true,
-          "howToGet": "从当前账号 claim 请求的 X-Aliyun-Captcha-Verify-Param 获取；建议放入对应账号行，3007 时重新获取。",
-          "format": "仅补齐账号行未提供的验证码，可能短时一次性。"
+          "howToGet": "在官方浏览器领取请求的 X-Aliyun-Captcha-Verify-Param 中复制完整值；仅补齐账号行未配置的验证码，多账号优先分别填写。",
+          "format": "完整验证码参数，不改写内容"
         },
         {
           "name": "ZCODE_ACTIVATION",
           "required": false,
           "sensitive": false,
-          "howToGet": "确认需要补报客户端启动和日活事件时显式设置。",
-          "format": "0（默认）或 1；预览和断网预演始终不发送。"
+          "howToGet": "只有确认需要补报客户端启动及日活事件时才手动开启；上报失败仍继续预览和领取，但本轮非零退出。",
+          "format": "0 或 1；默认 0；--preview 始终关闭上报"
         },
         {
           "name": "ZCODE_CN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "用于断网验证，不验证真实业务。",
-          "format": "1/true/yes/on 开启全进程预演；默认关闭。"
+          "howToGet": "离线检查时设置；不验证真实凭据，不请求业务或通知接口，也不读取、写入设备文件。",
+          "format": "1、true、yes、on 开启整个进程断网预演；默认关闭"
         },
         {
           "name": "ZCODE_INTL_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "国际版兼容预演开关，作用于全部区域。",
-          "format": "1/true/yes/on 开启全进程预演；默认关闭。"
+          "howToGet": "国际版兼容的断网预演开关，任一区域开关开启即覆盖整个进程。",
+          "format": "1、true、yes、on 开启；默认关闭"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -40140,90 +40349,91 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置后替换默认通知名单；可填写 a0a7b04503bfb900、checkin/zcode_cn_daily.py、文件名或文件名通配符。",
+          "format": "逗号、分号、空白或换行分隔；* 选择全部；显式空值关闭全部，仍服从全局关闭"
+        },
+        {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "填写青龙 notify.py 所在目录，默认自动发现脚本目录和标准青龙目录。",
-          "format": "本机通知模块目录。"
+          "howToGet": "可选填写青龙现有 notify.py 或 sendNotify.js 所在目录；自动查找可导入的 notify 模块、脚本目录及 /ql/data/scripts、/ql/scripts。",
+          "format": "现有通知模块的目录路径；无需下载或安装引导"
         },
         {
           "name": "PUSHPLUS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "从 PushPlus 用户中心获取；青龙通知不可用时使用。",
-          "format": "推送令牌。"
+          "howToGet": "可选从 PushPlus 官方账号获取推送令牌；青龙通知不可用时按顺序尝试兼容通道。",
+          "format": "完整推送令牌"
         },
         {
           "name": "BARK_URL",
           "required": false,
           "sensitive": true,
-          "howToGet": "从 Bark 应用获取；青龙通知不可用时使用。",
-          "format": "完整 HTTPS 推送地址。"
+          "howToGet": "可选从自己的 Bark 客户端获取专属推送地址；不得使用非 HTTPS 地址。",
+          "format": "完整 HTTPS 推送地址"
         },
         {
           "name": "WECOM_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "从企业微信机器人设置获取。",
-          "format": "完整 HTTPS Webhook 或机器人密钥。"
+          "howToGet": "可选从企业微信群机器人配置获取 Webhook 或其 key。",
+          "format": "HTTPS Webhook 地址或机器人 key"
         },
         {
           "name": "DINGTALK_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "从钉钉机器人设置获取。",
-          "format": "完整 HTTPS Webhook。"
+          "howToGet": "可选从钉钉群自定义机器人配置获取 Webhook。",
+          "format": "完整 HTTPS Webhook 地址"
         },
         {
           "name": "DINGTALK_SECRET",
           "required": false,
           "sensitive": true,
-          "howToGet": "从钉钉机器人加签设置获取。",
-          "format": "与 Webhook 配套的签名密钥。"
+          "howToGet": "机器人启用加签时，从同一钉钉机器人的安全设置获取，与 Webhook 配套使用。",
+          "format": "完整加签密钥；可选通知配置"
         },
         {
           "name": "QL_URL",
           "required": false,
           "sensitive": false,
-          "howToGet": "从原有青龙通知接口部署配置获取，优先使用 notify.py。",
-          "format": "HTTPS 青龙地址，不带末尾斜线。"
+          "howToGet": "兼容已有青龙通知接口配置，在本地青龙配置中查询；仅在其他通知通道不可用时使用。",
+          "format": "青龙面板 HTTPS 根地址，与 QL_TOKEN 配套；可选"
         },
         {
           "name": "QL_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "从原有青龙通知接口配置获取。",
-          "format": "与 QL_URL 配套的通知令牌。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "兼容已有青龙通知接口令牌，从自己的青龙通知配置获取，不用于套餐认证。",
+          "format": "与 QL_URL 配套的完整令牌；可选"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每行一个账号，JWT、设备和验证码放在同一行；逐字段只在首个竖线处分割，验证码保留余下内容。国内及国际账号分别填写变量，默认国内版，--region intl 选择国际版，--region all 执行已配置区域。--only 按所选区域合并顺序筛选。任一账号或显式激活事件失败则非零退出。"
+        "rule": "每个非空行一个账号，忽略以 # 开头的注释行；每行一个账号；支持 套餐JWT、套餐JWT|设备值、套餐JWT|设备值|验证码、备注|套餐JWT|设备值|验证码。只依次按首个竖线拆字段，验证码剩余字符完整保留；不以 & 或 @ 分隔账号。设备留空时兼容读取脚本旁已有的对应区域设备文件，否则确定性生成且不写文件。账号独立执行，任一失败整体非零退出。--only N 只处理所选区域范围内的第 N 个账号。"
       },
       "dependencies": [],
       "features": [
-        "保留国内版默认任务，新增显式国际版及跨区域账号选择；两类凭据独立处理。",
-        "查询可领取套餐、权益及有效期，并按北京时间显示。",
-        "优先级最高套餐自动领取，同优先级保持上游顺序；可指定套餐。",
-        "支持每账号验证码及全局补齐参数、客户端版本和固定设备参数。",
-        "支持 --preview 只读预览、--only 账号筛选和 --no-notify 通知关闭。",
-        "支持显式激活事件补报，默认关闭。",
-        "支持每行一个账号、账号独立处理和失败非零退出。",
-        "支持完全断网预演、时间轴日志、账号统计及唯一 TASK_SUMMARY 记录。",
-        "发送青龙脱敏总结，兼容原推送通道及青龙接口，通知失败保留业务退出码。"
+        "国内版和国际版套餐任务合并为一个规范脚本；默认国内版，通过 --region cn/intl/all 或 ZCODE_REGION 显式选择，保持各自凭据及设备隔离。",
+        "读取套餐列表、权益额度和每日或一次性周期，按最高优先级领取，同优先级取首项，支持 ZCODE_PLAN_ID 指定套餐。",
+        "支持账号设备值、账号验证码、全局验证码补齐、客户端版本及自动识别操作系统平台；兼容已有设备文件，只读且非必需。",
+        "支持 --preview 只读模式、--only N 账号筛选和 --no-notify；每行一个账号，兼容备注前缀并保留验证码中的竖线等后续字符。",
+        "保留维护版显式启用的客户端启动和日活事件补报；默认关闭，预览始终关闭，上报失败仍继续其余业务但保留失败退出码。",
+        "严格核验 HTTP 状态、整数业务码及套餐响应；官方明确返回 1003 时计为本期已领取，1005 提示下次重试时间，3001 和 3007 提供参数修复指引。",
+        "固定北京时间展示套餐有效期、执行起止时间；保留每日 09:00 调度元数据，青龙调度时区需设置 Asia/Shanghai。",
+        "完全断网预演；可选青龙 notify.py 或 sendNotify.js 通知，保留 PushPlus、Bark、企业微信、钉钉加签及旧青龙接口的顺序回退链，支持全局开关及脚本选择。",
+        "时间轴分阶段日志、官方非秘密账号身份、账号及任务统计、唯一单行 TASK_SUMMARY 结构化汇总；不输出凭据和原始响应，任一账号失败非零退出。",
+        "仅用 Python 标准库实现 HTTPS 请求，验证 TLS、限制响应大小、设置超时、禁止重定向与写请求自动重试；无需其他仓库、应用程序或安装引导。"
       ],
       "sideEffects": [
-        "实际领取时发放或变更账号套餐权益。",
-        "仅 ZCODE_ACTIVATION=1 且非只读、非预演时补报启动和日活事件，可能影响套餐资格。",
-        "实际模式且通知启用时发送脱敏任务总结。"
+        "默认实际运行在成功预览后提交一次套餐领取请求，可能增加账号套餐权益；--preview 或断网预演不领取。",
+        "仅 ZCODE_ACTIVATION=1 且非预览、非预演时上报 app_launch 和 app_daily_active，可能影响账号领取资格。",
+        "通知已启用且非断网预演时向青龙配置或兼容推送通道发送脱敏任务统计；通知失败不改变业务退出码。"
       ],
       "review": {
         "staticPassed": true,
@@ -40236,20 +40446,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/a0a7b04503bfb900",
-        "candidateSha256": "eb116de594499370a5d81ce9174885f9e61d4681d756c136696c2f60d1634e84"
+        "candidateSha256": "a0c6007bbcd735075fd999eb00f00347b3f0a2c8a201047f289d9ab38e1246b1"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "eb116de594499370a5d81ce9174885f9e61d4681d756c136696c2f60d1634e84",
-        "releaseSha256": "3a3583d82d298eff8d41b53228dbf4071db4461e6aade80aa1712bd1b4eb0a72",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "a0c6007bbcd735075fd999eb00f00347b3f0a2c8a201047f289d9ab38e1246b1",
+        "releaseSha256": "a0269da3682ee2877af7b5fba31fb70ce4f63bb226e903ca434a10e2ec3ad110",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.589246+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "eb116de594499370a5d81ce9174885f9e61d4681d756c136696c2f60d1634e84",
-          "toCandidateSha256": "3a3583d82d298eff8d41b53228dbf4071db4461e6aade80aa1712bd1b4eb0a72",
+          "approvedAt": "2026-10-27T08:52:58.780172+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "a0c6007bbcd735075fd999eb00f00347b3f0a2c8a201047f289d9ab38e1246b1",
+          "toCandidateSha256": "a0269da3682ee2877af7b5fba31fb70ce4f63bb226e903ca434a10e2ec3ad110",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: AutoClaw 国内版每日签到
-# cron: 30 0 * * *
+# cron: 15 8 * * *
 # 来源: L0NE-6/AutoClaw-Daily, autoclaw_cn_daily.py、autoclaw_intl_daily.py
 # 协议和参数获取参考: autoclaw_login.py（MIT）
 # 上游许可: MIT；维护版本采用 MIT，保留上游署名。
@@ -22,7 +22,11 @@
 # SOFTWARE.
 """
 AutoClaw 国内版每日签到（兼容国际版的独立维护版）
-功能：每日签到、登录态过期续期（含 agent-refresh 备用接口）、只读任务清单诊断。
+功能：每日签到、登录态过期续期（含 agent-refresh 备用接口）、只读任务清单诊断、
+北京当天活动积分流水核查；--promotion claim 显式触发登录活跃奖励并复核到账。
+AUTOCLAW_PROMOTION 默认 off 保持既有签到行为；read 只读，claim 允许触发；仅续期模式不查活动。
+上游新增活动接口与国际版参考一致，签名/每日签到/续期协议未变；无真实接口验证。
+活动异常单独统计，不改写签到结论；任何已启用阶段失败仍以非零退出。
 原脚本未提供 cron；此处建议每天北京时间 08:15 运行，可在青龙调整。
 参数：AUTOCLAW_CN_TOKENS 每个非空行一个账号，禁止用 & 或 @ 分隔账号。
 建议每行 JSON 对象：{"access":"登录态","refresh":"续期登录态","device_id":"设备标识"}。
@@ -47,7 +51,11 @@ AUTOCLAW_INTL_DRY_RUN=1 也启用全任务断网预演。
 默认不落盘凭据；如需保存续期结果，显式设置 AUTOCLAW_CN_STORE_FILE 为受保护的
 私有绝对路径，文件以 0600 原子写入，必须排除出公开订阅/仓库。续期仅刷新本次内存。
 AUTOCLAW_CN_DRY_RUN=1 完全断网预演，既不读写缓存也不发送真实通知。
-QINGLONG_NOTIFY 未设置时按上架状态；支持青龙 notify.py/sendNotify.js，并兼容原推送变量。
+QINGLONG_NOTIFY 默认 auto（本脚本在默认通知名单中）；显式 1 开启、0 关闭。
+QINGLONG_NOTIFY_SCRIPTS 设置后替换默认名单，支持目录相对路径、文件名通配符、目录编号；
+以逗号、分号或空白分隔，空值关闭所有自动通知，* 全选；--no-notify 优先关闭。
+支持青龙 notify.py/sendNotify.js，并保留青龙 API、PushPlus、Bark、企业微信、钉钉备用链。
+定时脚本不发送短信、不登录新账号、不读取桌面配置；登录工具仅用作凭据获取参考。
 无需私有仓库或桌面端程序参与执行；仅使用 Python 标准库，无额外运行依赖。
 """
 # qinglong-notification-policy: begin
@@ -70,6 +78,9 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
 # qinglong-notification-policy: end
 import argparse
 import base64
+import datetime
+import fnmatch
+import re
 import hashlib
 import hmac
 import importlib.util
@@ -102,10 +113,28 @@ AUTH_EXPIRED_CODES = (410000, 400000)
 DRY = any(os.environ.get(name, "").lower() in ("1", "true", "yes", "on")
           for name in ("AUTOCLAW_CN_DRY_RUN", "AUTOCLAW_INTL_DRY_RUN"))
 TITLE = "AutoClaw 国内版每日签到"
+CATALOG_ID = "3813c988ddc0c592"
+LEDGERS_PATH = ("/agent-assetmgr/api/v1/ledgers_std?asset_type=point&wallet_type=all"
+                "&cursor=&page_size=50&flow_direction=income")
+USER_INFO_PATH = "/userapi/v1/user-info"
+ACTIVE_EVENT_TYPE_PREFIXES = ("autoclaw_user_active", "autoclaw_user_signup_day")
+ACTIVE_ACTIVITY_PREFIXES = ("autoclaw_user_active_reward", "autoclaw_user_active_bonus",
+                            "autoclaw_new_user_day_1_to_7_bonus")
+PROMOTION_SETTLE_SECONDS = 1.5
+SECRETS = set()
+
+
+def remember_secrets(account):
+    for field in ("access", "refresh", "device_id"):
+        if account.get(field):
+            SECRETS.add(account[field])
 
 
 def log(message):
-    print(time.strftime("[%H:%M:%S] ") + message, flush=True)
+    text = str(message)
+    for secret in sorted(SECRETS, key=len, reverse=True):
+        text = text.replace(secret, "[凭据已隐藏]")
+    print(time.strftime("[%H:%M:%S] ") + text, flush=True)
 
 
 class TaskError(Exception):
@@ -183,6 +212,12 @@ def show_identity(payload, account):
     data = payload.get("data")
     if not isinstance(data, dict):
         return
+    # 登录/续期返回的新凭据同样不得通过身份字段泄漏。
+    for key in ("access_token", "accessToken", "token", "refresh_token", "refreshToken", "device_id"):
+        if isinstance(data.get(key), str) and data[key]:
+            value = strip_bearer(data[key])
+            if value:
+                SECRETS.add(value)
     holders = [data]
     for key in ("user", "user_info", "account"):
         if isinstance(data.get(key), dict):
@@ -191,7 +226,9 @@ def show_identity(payload, account):
         for key in ("nickname", "username", "display_name", "displayName", "public_uid", "uid"):
             value = holder.get(key)
             if isinstance(value, (str, int)) and not isinstance(value, bool) and str(value):
-                if str(value) not in (account["access"], account.get("refresh"), account.get("device_id")):
+                # 非凭据身份原样展示；手机号或包含凭据的异常字段不展示。
+                phone = re.search(r"(?<!\d)(?:\+?86[ -]?)?1[3-9](?:[ -]?\d){9}(?!\d)", str(value))
+                if not phone and not any(secret in str(value) for secret in SECRETS):
                     log("官方账号身份 " + key + ": " + json.dumps(value, ensure_ascii=False))
 
 
@@ -305,6 +342,7 @@ def apply_store(account):
                 if not isinstance(saved.get(field, ""), str):
                     raise TaskError("凭据缓存字段无效")
             account.update({field: saved.get(field) or account[field] for field in ("access", "refresh", "device_id")})
+            remember_secrets(account)
             log("使用显式配置的私有凭据缓存")
             return
 
@@ -355,6 +393,7 @@ def refresh_account(account):
         show_identity(payload, account)
         account["access"] = access
         account["refresh"] = strip_bearer(first_text(data.get("refresh_token"), data.get("refreshToken"))) or account["refresh"]
+        remember_secrets(account)
         persist(account, old_keys)
         return
     raise TaskError("两个续期接口均未通过")
@@ -366,6 +405,7 @@ def task_list_hint(account):
     payload = json_of(response)
     if not accepted(response, payload):
         raise TaskError("任务清单未通过业务校验")
+    show_identity(payload, account)
     rows = payload.get("data")
     if isinstance(rows, list):
         for row in rows:
@@ -378,10 +418,10 @@ def task_list_hint(account):
 def do_checkin(account):
     def complete():
         response = request("POST", REGION_APIS[account.get("region", "cn")] + TASK_COMPLETE_PATH, signed_headers(account["access"]), {"task_id": TASK_ID})
-        return response, json_of(response)
+        return response, {} if response.status_code == 401 else json_of(response)
     log("提交每日签到任务")
     response, payload = complete()
-    if payload.get("code") in AUTH_EXPIRED_CODES or response.status_code == 401:
+    if response.status_code == 401 or payload.get("code") in AUTH_EXPIRED_CODES:
         refresh_account(account)
         log("续期后重新提交签到")
         response, payload = complete()
@@ -404,6 +444,82 @@ def do_checkin(account):
         return "alreadyComplete"
     task_list_hint(account)
     raise TaskError("上游未返回签到成功或已完成标记")
+
+
+def today_key():
+    return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).strftime("%Y-%m-%d")
+
+
+def _promotion_entry(entry, today):
+    if not isinstance(entry, dict):
+        return None
+    meta = entry.get("metadata") if isinstance(entry.get("metadata"), dict) else {}
+    if str(meta.get("grant_date") or "") != today:
+        return None
+    event = str(meta.get("event_type") or "")
+    activity = str(meta.get("activity_id") or "")
+    if not (event.startswith(ACTIVE_EVENT_TYPE_PREFIXES)
+            or activity.startswith(ACTIVE_ACTIVITY_PREFIXES)):
+        return None
+    value = entry.get("amount")
+    try:
+        points = int(value) if not isinstance(value, bool) else 0
+    except (TypeError, ValueError, OverflowError):
+        points = 0
+    if points <= 0:
+        raise TaskError("活动流水命中，但缺少有效正积分，无法确认到账")
+    # 保留逐笔明细和合计能力，不输出服务端自由文本。
+    return {"points": points, "date": today}
+
+
+def promotion_status(account):
+    log("只读查询北京当天活动积分流水（最近 50 笔收入）")
+    response = request("GET", REGION_APIS[account.get("region", "cn")] + LEDGERS_PATH,
+                       signed_headers(account["access"]))
+    payload = json_of(response)
+    if not accepted(response, payload):
+        raise TaskError("活动流水未通过 HTTP 或业务码校验")
+    show_identity(payload, account)
+    data = payload.get("data")
+    entries = data.get("entries") if isinstance(data, dict) else None
+    if not isinstance(entries, list):
+        raise TaskError("活动流水缺少有效 entries 列表")
+    today = today_key()
+    matched = [item for item in (_promotion_entry(entry, today) for entry in entries) if item]
+    return {"granted": bool(matched), "points": sum(item["points"] for item in matched),
+            "entries": matched}
+
+
+def trigger_login_active(account):
+    log("显式授权：调用登录活跃接口触发活动奖励，不主动轮换 refresh_token")
+    response = request("POST", REGION_APIS[account.get("region", "cn")] + USER_INFO_PATH,
+                       signed_headers(account["access"]),
+                       {"source_id": "autoclaw", "device_id": account.get("device_id", "")})
+    payload = json_of(response)
+    if not accepted(response, payload):
+        raise TaskError("登录活跃触发未通过 HTTP 或业务码校验")
+    show_identity(payload, account)
+    log("✅ 活跃接口已受理，等待流水复核；尚不视为奖励到账")
+
+
+def do_promotion(account, mode):
+    if mode == "off":
+        log("⏭️ 活动福利已关闭")
+        return "skipped"
+    status = promotion_status(account)
+    if not status["granted"] and mode == "claim":
+        trigger_login_active(account)
+        time.sleep(PROMOTION_SETTLE_SECONDS)
+        status = promotion_status(account)
+    if status["granted"]:
+        for number, item in enumerate(status["entries"], 1):
+            log("活动入账第 %d 笔：北京日期 %s，+%d 积分" % (number, item["date"], item["points"]))
+        log("✅ 活动福利 +%d 已到账，共 %d 笔" % (status["points"], len(status["entries"])))
+        return "success"
+    if mode == "claim":
+        raise TaskError("活跃触发后流水仍未确认当天奖励，可能未处于活动期或存在延迟；不宣称到账")
+    log("☑️ 流水查询通过，最近 50 笔未发现当天活动入账；只读模式不触发奖励")
+    return "success"
 
 
 def post_json(url, payload, timeout=20):
@@ -515,8 +631,29 @@ def notify_ql(title, content):
     return False
 
 
+def notification_enabled(disabled):
+    switch = _env("QINGLONG_NOTIFY").lower()
+    if disabled or switch in ("0", "false", "no", "off"):
+        return False
+    if switch in ("1", "true", "yes", "on"):
+        return True
+    if "QINGLONG_NOTIFY_SCRIPTS" not in os.environ:
+        return True  # 本维护任务是默认通知名单成员。
+    selectors = [s for s in re.split(r"[,;\s]+", os.environ["QINGLONG_NOTIFY_SCRIPTS"]) if s]
+    names = {CATALOG_ID, Path(__file__).name, "autoclaw_cn_daily.py",
+             "checkin/autoclaw_cn_daily.py", "scripts/checkin/autoclaw_cn_daily.py",
+             "candidates/3813c988ddc0c592/autoclaw_cn_daily.py"}
+    # 同时支持脚本实际位于青龙 scripts 目录中的相对路径。
+    for root in (Path("/ql/data/scripts"), Path("/ql/scripts")):
+        try:
+            names.add(Path(__file__).absolute().relative_to(root).as_posix())
+        except ValueError:
+            pass
+    return any(fnmatch.fnmatchcase(name, selector) for selector in selectors for name in names)
+
+
 def notify_all(content, disabled):
-    if disabled or _env("QINGLONG_NOTIFY").lower() in ("0", "false", "no", "off"):
+    if not notification_enabled(disabled):
         log("⏭️ 通知已关闭")
         return "disabled"
     if DRY:
@@ -534,7 +671,7 @@ def notify_all(content, disabled):
 
 class SafeParser(argparse.ArgumentParser):
     def error(self, message):
-        raise TaskError("命令参数无效；支持 --region cn/intl/both、--only 正整数、--refresh-only、--no-notify")
+        raise TaskError("命令参数无效；支持 --region cn/intl/both、--only 正整数、--refresh-only、--promotion off/read/claim、--no-notify")
 
 
 def main():
@@ -549,6 +686,7 @@ def main():
     try:
         parser = SafeParser(description=TITLE)
         parser.add_argument("--region", choices=("cn", "intl", "both"), default=_env("AUTOCLAW_REGION") or "cn")
+        parser.add_argument("--promotion", choices=("off", "read", "claim"), default=_env("AUTOCLAW_PROMOTION") or "off")
         parser.add_argument("--only", type=int)
         parser.add_argument("--refresh-only", action="store_true")
         parser.add_argument("--no-notify", action="store_true")
@@ -556,6 +694,8 @@ def main():
         disabled = args.no_notify
         if args.region not in ("cn", "intl", "both"):
             raise TaskError("AUTOCLAW_REGION 只能为 cn、intl 或 both")
+        if args.promotion not in ("off", "read", "claim"):
+            raise TaskError("AUTOCLAW_PROMOTION 只能为 off、read 或 claim")
         regions = ("cn", "intl") if args.region == "both" else (args.region,)
         missing = []
         for region in regions:
@@ -581,11 +721,13 @@ def main():
             failed = False
             log("----- 账号 %d（%s）-----" % (index, "国际版" if region == "intl" else "国内版"))
             stages = [("参数校验", None), ("凭据缓存", None), ("仅续期" if args.refresh_only else "每日签到", None)]
+            if not args.refresh_only:
+                stages.append(("活动福利（%s）" % args.promotion, None))
             account = None
             for number, (name, _) in enumerate(stages, 1):
                 stage_start = time.monotonic()
                 stats["total"] += 1
-                log("阶段 %d/3：%s" % (number, name))
+                log("阶段 %d/%d：%s" % (number, len(stages), name))
                 outcome = "success"
                 try:
                     if failed:
@@ -594,6 +736,7 @@ def main():
                     elif number == 1:
                         account = parse_account(line)
                         account["region"] = region
+                        remember_secrets(account)
                         log("✅ 参数校验通过（凭据不显示）")
                     elif DRY:
                         outcome = "skipped"
@@ -601,6 +744,8 @@ def main():
                     elif number == 2:
                         apply_store(account)
                         log("✅ 缓存阶段完成")
+                    elif number == 4:
+                        outcome = do_promotion(account, args.promotion)
                     elif args.refresh_only:
                         refresh_account(account)
                         log("✅ token 续期成功")
@@ -625,15 +770,18 @@ def main():
     exit_code = 1 if configuration_error or failures else 0
     status = "configuration-error" if configuration_error else ("partial-failure" if failures and successes else "failure" if failures else "dry-run" if DRY else "success")
     count = len(results) if results else len(lines)
-    content = "账号总数 %d，成功数 %d，失败数 %d；状态 %s" % (count, successes, failures if not configuration_error else max(1, count), status)
-    log("阶段 4：任务汇总与通知")
+    configuration_failures = len(missing) if configuration_error and "missing" in locals() and missing else (1 if configuration_error else 0)
+    reported_failures = failures
+    content = "账号总数 %d，成功数 %d，失败数 %d；状态 %s" % (count, successes, reported_failures, status)
+    content += "；配置错误数 %d" % configuration_failures
+    log("汇总阶段 1/1：任务汇总与通知")
     notification_start = time.monotonic()
     try:
         notification = notify_all(content, disabled)
     except Exception:
         log("⚠️ 通知组件异常，保留业务退出码（详情已脱敏）")
         notification = "unavailable"
-    log("阶段 4 耗时 %.2f 秒" % (time.monotonic() - notification_start))
+    log("汇总阶段 1 耗时 %.2f 秒" % (time.monotonic() - notification_start))
     totals = {key: sum(r["tasks"][key] for r in results) for key in ("total", "success", "alreadyComplete", "skipped", "failure")}
     log("----------------------------------------")
     log(content)
@@ -641,7 +789,7 @@ def main():
     log("总耗时：%.2f 秒" % (time.monotonic() - started))
     log("完成时间：" + time.strftime("%Y-%m-%d %H:%M:%S"))
     log("最终状态：" + status + "；通知状态：" + notification)
-    print("TASK_SUMMARY=" + json.dumps({"status": status, "mode": "dry-run" if DRY else "live", "accountCount": count, "successCount": successes, "failureCount": failures if not configuration_error else max(1, count), "accounts": results, "tasks": totals, "notification": notification, "exitCode": exit_code}, ensure_ascii=False, separators=(",", ":")), flush=True)
+    print("TASK_SUMMARY=" + json.dumps({"status": status, "mode": "dry-run" if DRY else "live", "accountCount": count, "successCount": successes, "failureCount": reported_failures, "accounts": results, "tasks": totals, "notification": notification, "exitCode": exit_code, "configurationFailureCount": configuration_failures}, ensure_ascii=False, separators=(",", ":")), flush=True)
     return exit_code
 
 
