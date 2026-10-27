@@ -1,12 +1,13 @@
 # 字母索引 · A
 
-共 **15** 个脚本。返回 [`目录首页`](../README.md)。
+共 **16** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](../../scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `17 1 * * *` | 待检查 | [agentrouter.py.md](../../scripts/agentrouter.py.md)（`docs/scripts/agentrouter.py.md`） |
 | 机场签到（速鹰666） | `scripts/airport.py` | `python3 scripts/airport.py` | `27 1 * * *` | 待检查 | [airport.py.md](../../scripts/airport.py.md)（`docs/scripts/airport.py.md`） |
+| 机场自动登录签到 | `scripts/aitport.js` | `node scripts/aitport.js` | `1 8 * * *` | 待检查 | [aitport.js.md](../../scripts/aitport.js.md)（`docs/scripts/aitport.js.md`） |
 | AkileCloud 签到与保活 | `scripts/akile_checkin.py` | `python3 scripts/akile_checkin.py` | `44 0 * * *` | 待检查 | [akile_checkin.py.md](../../scripts/akile_checkin.py.md)（`docs/scripts/akile_checkin.py.md`） |
 | E-Hentai 自动签到 | `scripts/akiyakiko_ehentaiautosignin.py` | `python3 scripts/akiyakiko_ehentaiautosignin.py` | `0 */6 * * *` | 待检查 | [akiyakiko_ehentaiautosignin.py.md](../../scripts/akiyakiko_ehentaiautosignin.py.md)（`docs/scripts/akiyakiko_ehentaiautosignin.py.md`） |
 | 阿里云社区 | `scripts/aliyun_web.js` | `node scripts/aliyun_web.js` | `36 7,13 * * *` | 待检查 | [aliyun_web.js.md](../../scripts/aliyun_web.js.md)（`docs/scripts/aliyun_web.js.md`） |

@@ -12,6 +12,7 @@
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](../../scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `17 1 * * *` | 待检查 | [agentrouter.py.md](../../scripts/agentrouter.py.md)（`docs/scripts/agentrouter.py.md`） |
 | 机场签到（速鹰666） | `scripts/airport.py` | `python3 scripts/airport.py` | `27 1 * * *` | 待检查 | [airport.py.md](../../scripts/airport.py.md)（`docs/scripts/airport.py.md`） |
+| 机场自动登录签到 | `scripts/aitport.js` | `node scripts/aitport.js` | `1 8 * * *` | 待检查 | [aitport.js.md](../../scripts/aitport.js.md)（`docs/scripts/aitport.js.md`） |
 | AkileCloud 签到与保活 | `scripts/akile_checkin.py` | `python3 scripts/akile_checkin.py` | `44 0 * * *` | 待检查 | [akile_checkin.py.md](../../scripts/akile_checkin.py.md)（`docs/scripts/akile_checkin.py.md`） |
 | E-Hentai 自动签到 | `scripts/akiyakiko_ehentaiautosignin.py` | `python3 scripts/akiyakiko_ehentaiautosignin.py` | `0 */6 * * *` | 待检查 | [akiyakiko_ehentaiautosignin.py.md](../../scripts/akiyakiko_ehentaiautosignin.py.md)（`docs/scripts/akiyakiko_ehentaiautosignin.py.md`） |
 | 阿里云社区 | `scripts/aliyun_web.js` | `node scripts/aliyun_web.js` | `36 7,13 * * *` | 待检查 | [aliyun_web.js.md](../../scripts/aliyun_web.js.md)（`docs/scripts/aliyun_web.js.md`） |
@@ -91,7 +92,6 @@
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `23 2 * * *` | 待检查 | [qoder_airscript.js.md](../../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
-| 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `14 2 * * *` | 待检查 | [raccoon_daily.py.md](../../scripts/raccoon_daily.py.md)（`docs/scripts/raccoon_daily.py.md`） |
 | Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `42 0 * * *` | 待检查 | [rousi_checkin.js.md](../../scripts/rousi_checkin.js.md)（`docs/scripts/rousi_checkin.js.md`） |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |
@@ -165,7 +165,7 @@
 | 华润通文体未来荟签到 | `scripts/wentiweilaihui.py` | `python3 scripts/wentiweilaihui.py` | `31 1 1 1 1` | 待检查 | [wentiweilaihui.py.md](../../scripts/wentiweilaihui.py.md)（`docs/scripts/wentiweilaihui.py.md`） |
 | 万能福利吧每日签到 | `scripts/wnflb.js` | `node scripts/wnflb.js` | `0 45 11 * * *` | 待检查 | [wnflb.js.md](../../scripts/wnflb.js.md)（`docs/scripts/wnflb.js.md`） |
 | WorkBuddy签到 | `scripts/workbuddy.py` | `python3 scripts/workbuddy.py` | `45 1 * * *` | 待检查 | [workbuddy.py.md](../../scripts/workbuddy.py.md)（`docs/scripts/workbuddy.py.md`） |
-| WorkBuddy 国内版日常维护 | `scripts/workbuddy_daily.py` | `python3 scripts/workbuddy_daily.py` | `15 7,12 * * *` | 待检查 | [workbuddy_daily.py.md](../../scripts/workbuddy_daily.py.md)（`docs/scripts/workbuddy_daily.py.md`） |
+| WorkBuddy 国内版日常维护 | `scripts/workbuddy_daily.py` | `python3 scripts/workbuddy_daily.py` | `27 7,12 * * *` | 待检查 | [workbuddy_daily.py.md](../../scripts/workbuddy_daily.py.md)（`docs/scripts/workbuddy_daily.py.md`） |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `43 1 * * *` | 待检查 | [wps_clock_in.py.md](../../scripts/wps_clock_in.py.md)（`docs/scripts/wps_clock_in.py.md`） |
 | 网易云游戏自动签到 | `scripts/wyycg.py` | `python3 scripts/wyycg.py` | `42 1 * * *` | 待检查 | [wyycg.py.md](../../scripts/wyycg.py.md)（`docs/scripts/wyycg.py.md`） |
 | 喜马拉雅每日签到 | `scripts/xmly.js` | `node scripts/xmly.js` | `10 0 12 * * *` | 待检查 | [xmly.js.md](../../scripts/xmly.js.md)（`docs/scripts/xmly.js.md`） |

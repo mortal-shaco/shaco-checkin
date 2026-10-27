@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # name: CodeArts 每日福利领取
-# cron: 52 1 * * *
+# cron: 16 8 * * *
 # 上游作者及来源：L0NE-6/CodeArts-Daily，codearts_daily.py
 # 许可证：MIT（保留上游署名；所提供源文件无其他版权声明）
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,7 +30,15 @@ JSON 可含 expiration、domain_id、user_name；续期需 refresh_token 与同�
 续期可选依赖 cryptography（公共 PyPI），不自动安装。
 --preview 仅查询，不续期或写台账；--only N 选择原始行序号；--force 显式绕过
 本地每日六次、十分钟间隔限制；--no-notify 或 QINGLONG_NOTIFY=0 关闭通知。
-CODEARTS_DRY_RUN=1 完全断网，不读写台账，不发送通知（输出模拟通知摘要）。
+CODEARTS_DRY_RUN=1 完全断网，仅内存模拟台账和领取/确认/回读，不发送通知。
+QINGLONG_NOTIFY 默认为 auto；本任务列入默认通知名单。QINGLONG_NOTIFY_SCRIPTS
+设置后替换名单，支持脚本路径、文件名、文件名通配符、来源目录标识及 *，空值关闭。
+QINGLONG_NOTIFY=1 显式开启，=0 显式关闭，--no-notify 优先关闭。
+可选 QINGLONG_NOTIFY_DIR 指向已有青龙 notify.py 或 sendNotify.js；不自动安装。
+兼容 PUSHPLUS_TOKEN、BARK_URL、WECOM_WEBHOOK、DINGTALK_WEBHOOK、DINGTALK_SECRET
+备用通知；仅 HTTPS，永不向通知渠道发送账号凭据。
+协议随当前上游更新为 DESKTOP/Host 签名、code=0/200、userBenefitId 确认；
+保留版本 2 台账幂等键迁移到版本 3，缺少确认 ID 时拒绝重复领取。
 正常模式保留领取/确认/回读；学生认证、邀请好友不自动领取。
 状态保存在脚本目录，原子写入、权限 0600；请勿将凭据状态文件公开上传。
 上游未指定 cron，本维护版建议北京时间每日 08:15，面板时区需为亚洲/上海。
@@ -69,9 +77,19 @@ import urllib.parse
 import importlib.util
 import tempfile
 import argparse
+import uuid
+import re
+import fnmatch
+import subprocess
+import contextlib
+import io
 
 DRY_RUN = os.environ.get("CODEARTS_DRY_RUN", "").lower() in ("1", "true", "yes", "on")
 STATS = None
+_DRY_SERVICE = None
+_DRY_STATE = {}
+_SECRET_VALUES = set()
+_PRINTED_IDENTITIES = set()
 
 class TaskError(RuntimeError):
     pass
@@ -90,7 +108,8 @@ except Exception:
     pass
 
 BASE = "https://snap-access.cn-north-4.myhuaweicloud.com"
-DELIVERY_PATH = "/v1/ops/delivery?channel=IDE"
+OPS_CHANNEL = "DESKTOP"
+DELIVERY_PATH = "/v1/ops/delivery?channel=" + OPS_CHANNEL
 CLAIM_PATH = "/v1/ops/claim"
 CONFIRM_PATH = "/v1/ops/confirm"
 TOKEN_URL = "https://sts.cn-north-4.myhuaweicloud.com/v1/oauth2/tokens"
@@ -100,7 +119,7 @@ SIGN_ALGORITHM = "SDK-HMAC-SHA256"
 EMPTY_BODY_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 STORE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "codearts_credentials.json")
 LEDGER_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "codearts_welfare_ledger.json")
-LEDGER_VERSION = 2
+LEDGER_VERSION = 3
 MAX_ATTEMPTS_PER_DAY = 6
 MIN_ATTEMPT_GAP_SECONDS = 10 * 60
 BEIJING_OFFSET_SECONDS = 8 * 60 * 60
@@ -112,7 +131,100 @@ FORCE = False
 
 
 def log(msg):
-    print("%s %s" % (time.strftime("[%H:%M:%S]"), msg), flush=True)
+    print("%s %s" % (time.strftime("[%H:%M:%S]"), redact(str(msg))), flush=True)
+
+
+
+def redact(text):
+    for value in sorted(_SECRET_VALUES, key=len, reverse=True):
+        if value:
+            text = text.replace(value, "[凭据已隐藏]")
+    text = re.sub(r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d{9}(?!\d)", "[手机号已隐藏]", text)
+    return text
+
+
+def register_secrets(credential):
+    for key in ("access_key_id", "secret_access_key", "security_token", "refresh_token", "code_verifier", "domain_id"):
+        if isinstance(credential.get(key), str) and credential[key]:
+            _SECRET_VALUES.add(credential[key])
+    jwk = credential.get("dpop_jwk") or {}
+    for key in ("d", "x", "y"):
+        if isinstance(jwk.get(key), str) and jwk[key]:
+            _SECRET_VALUES.add(jwk[key])
+
+
+def print_official_identity(credential, *payloads):
+    register_secrets(credential)
+    candidates = []
+    for value in payloads:
+        if isinstance(value, dict):
+            candidates.append(value)
+            candidates.extend(value[k] for k in ("user", "account", "profile") if isinstance(value.get(k), dict))
+    for data in candidates:
+        for field in ("nickname", "user_name", "userName", "displayName", "username", "uid"):
+            value = data.get(field)
+            if not isinstance(value, (str, int)) or isinstance(value, bool):
+                continue
+            identity = str(value)
+            if not identity or any(s and s in identity for s in _SECRET_VALUES):
+                continue
+            if re.search(r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d{9}(?!\d)", identity):
+                continue
+            if any(ord(c) < 32 or ord(c) == 127 for c in identity):
+                continue
+            if identity not in _PRINTED_IDENTITIES:
+                log("官方账号身份：%s" % identity)
+                _PRINTED_IDENTITIES.add(identity)
+
+
+class DryRunService:
+    """仅内存中的官方协议替身；不持有、发送或输出真实凭据。"""
+    def __init__(self):
+        self.calls = []
+        self.items = [
+            dict(campaignId=101, type="USER_LOGIN", title="每日福利", claimable=True,
+                 status="AVAILABLE", benefitAmount=10, benefitUnit="CREDIT"),
+            dict(campaignId=102, type="NEW_USER_REGISTER", title="新人注册礼", claimable=True,
+                 status="AVAILABLE", benefitAmount=20, benefitUnit="CREDIT"),
+            dict(campaignId=103, type="STUDENT_CERTIFIED", title="学生认证", claimable=True,
+                 status="AVAILABLE", benefitAmount=30, benefitUnit="CREDIT"),
+            dict(campaignId=104, type="INVITE_USER", title="邀请好友", claimable=True,
+                 status="AVAILABLE", benefitAmount=40, benefitUnit="CREDIT")]
+        self.keys = {}
+
+    def respond(self, method, url, headers, body=None, data=None):
+        if not (url.startswith(BASE + "/v1/ops/") and headers.get("Authorization")
+                and headers.get("Host") == urlsplit(BASE).netloc
+                and headers.get("X-Language") == "zh-cn"):
+            raise TaskError("预演接口或签名头不符合契约")
+        if body is None and data:
+            body = json.loads(data)
+        self.calls.append((method, url, body))
+        if method == "GET" and url == BASE + DELIVERY_PATH:
+            answer = {"items": self.items, "nickname": "离线演示账号"}
+        elif method == "POST" and url == BASE + CLAIM_PATH:
+            if not isinstance(body, dict) or body.get("channel") != OPS_CHANNEL or not body.get("idempotentKey"):
+                raise TaskError("预演领取字段不符合契约")
+            item = next((x for x in self.items if x["campaignId"] == body.get("campaignId")), None)
+            if not item or item["type"] not in ("USER_LOGIN", "NEW_USER_REGISTER"):
+                raise TaskError("预演拒绝越界领取")
+            key = body["idempotentKey"]
+            if key in self.keys and self.keys[key] != item["campaignId"]:
+                raise TaskError("预演幂等键冲突")
+            self.keys[key] = item["campaignId"]
+            item.update(status="CLAIMED", claimable=False, userBenefitId="dry-benefit-%d" % item["campaignId"])
+            answer = {"userBenefitId": item["userBenefitId"]}
+        elif method == "POST" and url == BASE + CONFIRM_PATH:
+            if not isinstance(body, dict) or set(body) != {"userBenefitId"}:
+                raise TaskError("预演确认必须使用 userBenefitId")
+            item = next((x for x in self.items if x.get("userBenefitId") == body["userBenefitId"]), None)
+            if not item:
+                raise TaskError("预演确认福利记录不存在")
+            item.update(status="CONFIRMED", claimable=False)
+            answer = {}
+        else:
+            raise TaskError("断网预演禁止未知接口")
+        return Response(200, json.dumps({"code": 200, "result": answer}).encode("utf-8"))
 
 
 def split_accounts(raw):
@@ -121,7 +233,9 @@ def split_accounts(raw):
 
 def request(method, url, headers=None, body=None, data=None, timeout=20, retries=3):
     if DRY_RUN:
-        raise TaskError("断网预演禁止网络请求")
+        if _DRY_SERVICE is None:
+            raise TaskError("断网预演禁止网络请求：未初始化模拟服务")
+        return _DRY_SERVICE.respond(method, url, headers or {}, body, data)
     if not url.startswith("https://"):
         raise TaskError("仅允许 HTTPS 请求")
     if body is not None:
@@ -498,7 +612,11 @@ def refresh_credential(credential):
         raise RuntimeError("令牌响应缺少 AK/SK/STS")
     for key in ("domain_id", "user_name", "code_verifier", "dpop_jwk", "note", "_store_key"):
         fresh[key] = credential.get(key, "" if key != "dpop_jwk" else {})
+    for key in ("domain_id", "user_name"):
+        fresh[key] = read(key) or fresh[key]
+    register_secrets(fresh)
     persist(fresh)
+    print_official_identity(fresh, payload, data)
     log("   🔄 凭据已续期并保存")
     return fresh
 
@@ -543,24 +661,31 @@ def ledger_of(store, identity):
     """
     ledger = fresh_ledger()
     entry = (store.get("accounts") or {}).get(identity)
-    if not isinstance(entry, dict):
+    if entry is None:
         return ledger
+    if not isinstance(entry, dict):
+        raise TaskError("本地账号台账无效，已停止写操作")
     ledger["newbieSettled"] = entry.get("newbieSettled") is True
     stored = entry.get("ledger")
     if stored is None:
         return ledger
     day = stored.get("day") if isinstance(stored, dict) else None
     attempts = stored.get("attempts") if isinstance(stored, dict) else None
-    if (not isinstance(stored, dict) or stored.get("version") != LEDGER_VERSION
-            or not isinstance(day, str) or not isinstance(attempts, int)
-            or attempts < 0):
+    if (not isinstance(stored, dict) or stored.get("version") not in (2, LEDGER_VERSION)
+            or not isinstance(day, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day)
+            or type(attempts) is not int or attempts < 0):
         raise RuntimeError("本地领取台账无效，未发送领取请求；请备份并核查记录，勿直接删除幂等记录")
+    try:
+        datetime.strptime(day, "%Y-%m-%d")
+    except ValueError:
+        raise TaskError("本地台账日期无效，已停止写操作") from None
     today = beijing_day()
     if day > today:
         raise RuntimeError("系统日期（%s）早于领取记录（%s），先纠正时钟再领取" % (today, day))
     if day < today:
         return ledger
     ledger["day"] = day
+    ledger["version"] = LEDGER_VERSION
     ledger["attempts"] = attempts
     ledger["lastAttemptMs"] = stored.get("lastAttemptMs") if isinstance(stored.get("lastAttemptMs"), int) else 0
     ledger["accepted"] = stored.get("accepted") is True
@@ -595,7 +720,7 @@ def gap_remaining_seconds(ledger):
 
 # ---------- ops 请求与领取流程 ----------
 
-def welfare_request(credential, method, path, body=None):
+def welfare_request(credential, method, path, body=None, extra_headers=None):
     label = {DELIVERY_PATH: "读取福利活动", CLAIM_PATH: "领取福利", CONFIRM_PATH: "确认福利"}[path]
     started = time.monotonic()
     if STATS is not None:
@@ -603,31 +728,35 @@ def welfare_request(credential, method, path, body=None):
         number = STATS["total"]
     else:
         number = 1
-    log("阶段 %d：%s 开始" % (number, label))
+    log("阶段 %d：%s 开始%s" % (number, label, "（内存模拟）" if DRY_RUN else ""))
     try:
         url = BASE + path
-        headers = {"Content-Type": "application/json", "Agent-Type": "PromptCenter", "X-Language": "en-us"}
+        headers = {"Content-Type": "application/json", "Agent-Type": "PromptCenter", "X-Language": "zh-cn"}
+        if extra_headers:
+            headers.update(extra_headers)
         payload = json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8") if body is not None else b""
-        signed = sign_request(method, url, headers, payload, credential, include_host=False)
+        signed = sign_request(method, url, headers, payload, credential, include_host=True)
         response = request(method, url, headers=signed, data=payload if body is not None else None, timeout=20)
-        if response.status_code != 200:
+        if not 200 <= response.status_code < 300:
             raise TaskError("福利接口 HTTP %s，未确认成功" % response.status_code)
         parsed = json_of(response)
-        if type(parsed.get("code")) is not int or parsed["code"] != 0:
+        code = parsed.get("code")
+        if isinstance(code, bool) or str(code) not in ("0", "200"):
             hint = benefit_hint(json.dumps(parsed, ensure_ascii=False))
             raise TaskError("福利接口业务状态未确认成功" + hint)
-        data = parsed.get("data")
-        if isinstance(data, dict):
-            for field in ("nickname", "user_name", "userName", "displayName", "username", "uid"):
-                if isinstance(data.get(field), (str, int)) and not isinstance(data.get(field), bool):
-                    identity = str(data[field]).replace("\n", " ").replace("\r", " ")
-                    # Do not print a returned identity if it equals credential material or a phone number.
-                    secrets = [str(credential.get(k, "")) for k in ("access_key_id", "secret_access_key", "security_token", "refresh_token", "code_verifier")]
-                    if not any(s and s in identity for s in secrets) and not (identity.isdigit() and len(identity) == 11):
-                        log("官方账号身份：%s" % identity)
+        data_value, result_value = parsed.get("data"), parsed.get("result")
+        if isinstance(data_value, (dict, list)) and data_value:
+            data = data_value
+        elif result_value is not None:
+            data = result_value
+        elif data_value is not None:
+            data = data_value
+        else:
+            data = {}
+        print_official_identity(credential, parsed, data)
         if STATS is not None:
             STATS["success"] += 1
-        log("阶段 %d：%s ✅ code=0；耗时 %.2f 秒" % (number, label, time.monotonic()-started))
+        log("阶段 %d：%s ✅ code=%s；耗时 %.2f 秒" % (number, label, code, time.monotonic()-started))
         return data
     except Exception:
         if STATS is not None:
@@ -645,10 +774,12 @@ def benefit_hint(text):
 
 
 def fetch_deliveries(credential):
-    data = welfare_request(credential, "GET", DELIVERY_PATH)
+    data = welfare_request(
+        credential, "GET", DELIVERY_PATH,
+        extra_headers={"x-snap-traceid": str(uuid.uuid4())})
     items = data.get("items") if isinstance(data, dict) else None
     if not isinstance(items, list):
-        raise RuntimeError("福利接口没有返回 items 字段")
+        raise TaskError("福利接口没有返回 items 字段")
     campaigns = []
     for item in items:
         if not isinstance(item, dict):
@@ -660,6 +791,8 @@ def fetch_deliveries(credential):
             "title": item.get("title") or "",
             "claimable": item.get("claimable") is True,
             "status": item.get("status") or "",
+            "benefitId": first_text(item.get("userBenefitId"), item.get("user_benefit_id"),
+                                    item.get("benefitId"), item.get("benefit_id")),
             "amount": item.get("benefitAmount") or 0,
             "unit": item.get("benefitUnit") or "",
         })
@@ -685,16 +818,38 @@ def has_work(campaign):
 
 
 def claim_one(credential, campaign, idempotent_key):
-    """领一笔（campaignId 原样带回，不改类型）；响应 id 对不上就不进入 confirm 阶段。"""
+    """领取一笔并返回 confirm 所需的 userBenefitId。"""
     data = welfare_request(credential, "POST", CLAIM_PATH,
-                           {"campaignId": campaign["id"], "idempotentKey": idempotent_key, "channel": "IDE"})
-    returned = str(data.get("campaignId")) if isinstance(data, dict) else ""
-    if returned != campaign["key"]:
-        raise RuntimeError("领取响应活动 ID 不匹配（要 %s，回 %s），未进入确认阶段" % (campaign["key"], returned))
+                           {"campaignId": campaign["id"], "idempotentKey": idempotent_key,
+                            "channel": OPS_CHANNEL})
+    if not isinstance(data, dict):
+        raise TaskError("领取响应缺少对象数据，未进入确认阶段")
+    returned = first_text(data.get("campaignId"), data.get("campaign_id"))
+    if returned and returned != campaign["key"]:
+        raise TaskError("领取响应活动 ID 不匹配，未进入确认阶段")
+    benefit_id = first_text(data.get("userBenefitId"), data.get("user_benefit_id"),
+                            data.get("benefitId"), data.get("benefit_id"), data.get("id"))
+    if not benefit_id:
+        raise TaskError("领取响应缺少 userBenefitId，无法安全确认到账")
+    return benefit_id
 
+
+def confirm_one(credential, user_benefit_id):
+    """按最新桌面客户端协议确认领取记录。"""
+    return welfare_request(credential, "POST", CONFIRM_PATH,
+                           {"userBenefitId": user_benefit_id})
+
+def confirm_campaign(credential, campaign, progress):
+    """确认一条已领取记录；缺少 userBenefitId 时拒绝猜测或重放 claim。"""
+    benefit_id = first_text(progress.get("userBenefitId"))
+    if not benefit_id:
+        raise TaskError("已领取但台账缺少 userBenefitId；本次不重放 claim，也不用 campaignId 冒充确认 ID")
+    confirm_one(credential, benefit_id)
+    progress["confirmedRequested"] = True
+    return benefit_id
 
 def do_checkin(credential):
-    credential = credential if PREVIEW_ONLY else ensure_fresh(credential)
+    credential = credential if PREVIEW_ONLY or DRY_RUN else ensure_fresh(credential)
     identity = identity_of(credential)
     store = {} if PREVIEW_ONLY else load_ledger_store()
     ledger = fresh_ledger() if PREVIEW_ONLY else ledger_of(store, identity)
@@ -744,20 +899,28 @@ def do_checkin(credential):
         progress = ledger["campaigns"].get(key) or {}
         if item["status"] == "CLAIMED":
             progress["claimed"] = True
+            if item.get("benefitId") and not progress.get("userBenefitId"):
+                progress["userBenefitId"] = item["benefitId"]
         if not progress.get("claimed") and item["claimable"]:
             if not progress.get("idempotentKey"):
                 progress["idempotentKey"] = "claim_%s_%d" % (key, now_ms)
             ledger["campaigns"][key] = progress
             persist_ledger(store, identity, ledger)
-            claim_one(credential, item, progress["idempotentKey"])
+            benefit_id = claim_one(credential, item, progress["idempotentKey"])
             progress["claimed"] = True
+            progress["userBenefitId"] = benefit_id
             ledger["campaigns"][key] = progress
             persist_ledger(store, identity, ledger)
         if progress.get("claimed"):
             # 已领但未确认：只补 confirm，不重复发 claim
-            welfare_request(credential, "POST", CONFIRM_PATH, {"campaignId": item["id"]})
+            ledger["campaigns"][key] = progress
+            persist_ledger(store, identity, ledger)
+            confirm_campaign(credential, item, progress)
+            ledger["campaigns"][key] = progress
+            persist_ledger(store, identity, ledger)
         submitted.append(item)
-        time.sleep(1.0)
+        if not DRY_RUN:
+            time.sleep(1.0)
 
     # 回读二次确认：claim / confirm 都只回 code:0，那是「受理」不是「到账」
     verified = fetch_deliveries(credential)
@@ -793,6 +956,8 @@ def do_checkin(credential):
 
 
 def read_state(path):
+    if DRY_RUN:
+        return json.loads(json.dumps(_DRY_STATE.get(path, {})))
     try:
         with open(path, encoding="utf-8") as handle:
             data = json.load(handle)
@@ -807,7 +972,8 @@ def read_state(path):
 
 def atomic_state(path, data):
     if DRY_RUN:
-        raise TaskError("断网预演禁止状态写入")
+        _DRY_STATE[path] = json.loads(json.dumps(data))
+        return
     temp = None
     try:
         fd, temp = tempfile.mkstemp(prefix=".codearts-", dir=os.path.dirname(path))
@@ -889,35 +1055,70 @@ def notify_dingtalk(title, content):
 
 
 
+def notification_enabled():
+    switch = _env("QINGLONG_NOTIFY").lower() or "auto"
+    if NO_NOTIFY or switch in ("0", "false", "no", "off"):
+        return False
+    if switch in ("1", "true", "yes", "on"):
+        return True
+    if "QINGLONG_NOTIFY_SCRIPTS" not in os.environ:
+        # This task is one of the explicitly maintained listed defaults.
+        return True
+    selectors = [x for x in re.split(r"[,;\s]+", os.environ["QINGLONG_NOTIFY_SCRIPTS"]) if x]
+    aliases = ("b896028c3fdcd52d", "candidate.py", "codearts_daily.py",
+               "checkin/codearts_daily.py", "scripts/codearts_daily.py",
+               "scripts/checkin/codearts_daily.py", "candidates/b896028c3fdcd52d/codearts_daily.py")
+    return any(fnmatch.fnmatchcase(alias, selector) for selector in selectors for alias in aliases)
+
+
 def notify_summary(content):
-    if NO_NOTIFY or os.environ.get("QINGLONG_NOTIFY", "1").lower() in ("0", "false", "no", "off"):
+    if not notification_enabled():
         return "已关闭"
     if DRY_RUN:
         log("通知预演（未发送）：" + content)
         return "断网预演"
+    content = redact(content)
+    title = "CodeArts 每日福利领取"
     candidates = []
+    js_candidates = []
     directory = os.environ.get("QINGLONG_NOTIFY_DIR", "")
-    if directory:
-        candidates.append(os.path.join(directory, "notify.py"))
-    candidates.extend(["/ql/data/scripts/notify.py", "/ql/scripts/notify.py"])
+    for root in ([directory] if directory else []) + ["/ql/data/scripts", "/ql/scripts"]:
+        candidates.append(os.path.join(root, "notify.py"))
+        js_candidates.append(os.path.join(root, "sendNotify.js"))
+    # Panel modules may print provider errors containing URLs/tokens. Suppress their raw output.
     try:
-        from notify import send
-        send("CodeArts 每日福利领取", content)
-        return "已发送"
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            from notify import send
+            result = send(title, content)
+        if result is not False:
+            return "已发送"
     except Exception:
         pass
     for path in candidates:
         if not os.path.isfile(path):
             continue
         try:
-            spec = importlib.util.spec_from_file_location("codearts_ql_notify", path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            module.send("CodeArts 每日福利领取", content)
-            return "已发送"
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                spec = importlib.util.spec_from_file_location("codearts_ql_notify", path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                result = module.send(title, content)
+            if result is not False:
+                return "已发送"
         except Exception:
             continue
-    delivered = [handler("CodeArts 每日福利领取", content) for handler in
+    js_code = "Promise.resolve(require(process.argv[1]).sendNotify(process.argv[2],process.argv[3])).then(r=>{if(r===false)process.exitCode=1}).catch(()=>{process.exitCode=1})"
+    for path in js_candidates:
+        if not os.path.isfile(path):
+            continue
+        try:
+            answer = subprocess.run(["node", "-e", js_code, path, title, content],
+                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30, check=False)
+            if answer.returncode == 0:
+                return "已发送"
+        except Exception:
+            continue
+    delivered = [handler(title, content) for handler in
                  (notify_pushplus, notify_bark, notify_wecom, notify_dingtalk)]
     if any(delivered):
         log("⚠️ 青龙通知不可用；备用渠道已发送，保留业务退出码")
@@ -927,13 +1128,17 @@ def notify_summary(content):
 
 
 def main():
-    global PREVIEW_ONLY, NO_NOTIFY, FORCE, STATS
+    global PREVIEW_ONLY, NO_NOTIFY, FORCE, STATS, _DRY_SERVICE, _DRY_STATE, _PRINTED_IDENTITIES
     started = time.monotonic()
     log("========== CodeArts 每日福利领取 ==========")
     log("开始时间：" + time.strftime("%Y-%m-%d %H:%M:%S"))
     results = []
     config_error = False
+    PREVIEW_ONLY = FORCE = False
+    NO_NOTIFY = "--no-notify" in sys.argv[1:]
     accounts = parse_accounts(os.environ.get("CODEARTS_CREDENTIALS", ""))
+    for credential in accounts:
+        register_secrets(credential)
     class SafeParser(argparse.ArgumentParser):
         def error(self, message):
             raise TaskError("命令参数无效")
@@ -957,30 +1162,32 @@ def main():
             if args.only is not None and index != args.only:
                 continue
             moment = time.monotonic()
+            _PRINTED_IDENTITIES = set()
             STATS = dict(total=0, success=0, alreadyComplete=0, skipped=0, failed=0)
             log("账号 %d 开始" % index)
             success = False
             try:
                 if credential.get("_invalid"):
                     raise TaskError("账号配置无效：需单行 JSON 或 AK|SK|STS")
+                register_secrets(credential)
                 if DRY_RUN:
-                    STATS.update(total=3, success=3)
-                    for number, label in enumerate(("凭据格式与本地签名", "领取/确认/回读流程", "通知摘要"), 1):
-                        if number == 1:
-                            signed = sign_request("GET", BASE+DELIVERY_PATH, {"Content-Type":"application/json"}, b"", credential)
-                            assert signed.get("Authorization")
-                        log("阶段 %d：%s ✅ 预演通过；耗时 0.00 秒；未发请求或写入" % (number, label))
-                    success, message = True, "DRY_RUN_OK：配置及流程预演通过，未验证真实业务"
-                else:
-                    apply_store(credential)
-                    success, message, _ = do_checkin(credential)
-                    if "已确认到账" in message and "本次提交" not in message:
-                        STATS["alreadyComplete"] += 1
-                    if not success:
-                        STATS["failed"] += 1
-                        STATS["total"] += 1
+                    _DRY_SERVICE = DryRunService()
+                    _DRY_STATE = {}
+                apply_store(credential)
+                register_secrets(credential)
+                success, message, _ = do_checkin(credential)
+                if "已确认到账" in message and "本次提交" not in message:
+                    STATS["total"] += 1
+                    STATS["alreadyComplete"] += 1
+                if not success:
+                    STATS["failed"] += 1
+                    STATS["total"] += 1
+                if DRY_RUN:
+                    message = ("DRY_RUN_OK：内存协议模拟通过，未验证真实业务" if success
+                               else "断网预演失败：" + message)
                 log(("✅ " if success else "❌ ") + message)
             except Exception as error:
+                success = False
                 if STATS["failed"] == 0:
                     STATS["failed"] += 1
                     STATS["total"] += 1
@@ -996,14 +1203,18 @@ def main():
     code = 1 if config_error or bad or not results else 0
     status = "configuration-error" if config_error else ("dry-run" if DRY_RUN and code==0 else ("success" if code==0 else ("partial-failure" if good else "failure")))
     body = "账号总数 %d，执行 %d，成功 %d，失败 %d；状态 %s" % (len(accounts), len(results), good, bad, status)
-    notification = notify_summary(body)
+    try:
+        notification = notify_summary(body)
+    except Exception:
+        notification = "不可用或失败"
+        log("⚠️ 通知失败，保留业务退出码")
     log("----------------------------------------")
     log("任务统计：" + body)
     totals = {key: sum(r["tasks"][key] for r in results) for key in ("total", "success", "alreadyComplete", "skipped", "failed")}
     log("子任务统计：总数 %(total)d；成功 %(success)d；已完成 %(alreadyComplete)d；跳过 %(skipped)d；失败 %(failed)d" % totals)
     finish = time.strftime("%Y-%m-%d %H:%M:%S")
     log("完成时间：%s；总耗时 %.2f 秒；通知：%s；最终状态：%s" % (finish, time.monotonic()-started, notification, status))
-    print("TASK_SUMMARY=" + json.dumps(dict(application="codearts", mode="dry-run" if DRY_RUN else "live", status=status, accountCount=len(accounts), processed=len(results), succeeded=good, failed=bad, configurationError=config_error, accounts=results, tasks=totals, notification=notification, finishTime=finish, durationSeconds=round(time.monotonic()-started,3), exitCode=code), ensure_ascii=False, separators=(",", ":")))
+    print("TASK_SUMMARY=" + json.dumps(dict(application="codearts", mode="dry-run" if DRY_RUN else ("preview" if PREVIEW_ONLY else "live"), status=status, accountCount=len(accounts), processed=len(results), succeeded=good, failed=bad, configurationError=config_error, accounts=results, tasks=totals, notification=notification, finishTime=finish, durationSeconds=round(time.monotonic()-started,3), exitCode=code), ensure_ascii=False, separators=(",", ":")))
     return code
 
 
