@@ -46,8 +46,17 @@ TRAE_AUTH_DIR 默认为脚本同目录 auths（只用于显式 login 的写入�
 未设置时保持规范脚本原有启动及账号间错峰，不增加默认一小时等待。
 兼容 TRAE_JITTER_MAX 显式设置启动错峰上限；维护默认仍为 20 秒，上游原默认 600 秒不迁移。
 TRAE_DRY_RUN=1：只验证配置及列出动作；禁止所有联网和文件写入。
+通知遵守青龙名单策略：QINGLONG_NOTIFY 默认 auto；设 1 强制启用，0 关闭。
+auto 时仅 QINGLONG_NOTIFY_SCRIPTS 匹配本脚本才通知；未配置名单默认不推送。
+名单支持目录相对路径、文件名、文件名通配符及目录编号 71de90498a3a6ded；
+以逗号、分号或空白分隔，* 全选，显式空名单全关。直接推送也遵守此开关。
+QINGLONG_NOTIFY_DIR 可显式指定 notify.py/sendNotify.js 所在目录；失败不改业务退出码。
+预演仍向选中的本地通知器提交脱敏摘要，但阻止通知器联网、启动进程及文件写入。
+PushPlus 兼容 PLUSPLUS_TOKEN、PLUSHPLUS_TOKEN、PUSHPLUS_TOKEN，按此顺序取首个非空值。
 本脚本不会发布帖子、评论或分享。不会自动切换其他账号设备或改写账号源文件。
 令牌续期会轮换服务端 refreshToken，并以 0600 权限缓存最新凭据。
+兼容上游 JWT 的 exp、TokenExpireAt、tokenExpireAt 到期声明，接受数字或字符串及秒/毫秒。
+显式提供 storagePath 时，也读取该设备对应的续期证明；不会探测其他客户端目录。
 仅 code=0、9095 或经过核验的当天完成状态算签到成功；冷却及未开放非成功。
 
 MIT License
@@ -87,6 +96,7 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
 # qinglong-notification-policy: end
 import base64
 import datetime
+import fnmatch
 import hashlib
 import json
 import math
@@ -425,9 +435,16 @@ def write_json(path, data):
 def jwt_exp(token):
     try:
         part = token.split('.')[1]
-        return int(json.loads(base64.urlsafe_b64decode(part + '=' * (-len(part) % 4))).get('exp', 0))
+        payload = json.loads(base64.urlsafe_b64decode(part + '=' * (-len(part) % 4)))
+        if not isinstance(payload, dict):
+            return 0
+        for claim in ('exp', 'TokenExpireAt', 'tokenExpireAt'):
+            expiry = expiry_seconds(payload.get(claim))
+            if expiry:
+                return int(expiry)
     except Exception:
-        return 0
+        pass
+    return 0
 
 
 def expiry_seconds(value):
@@ -790,28 +807,64 @@ def balance(acc, cache, cache_path):
     raise TaskError('积分余额查询未获得明确成功及有效数值')
 
 
+def notification_enabled():
+    switch = os.getenv('QINGLONG_NOTIFY', 'auto').strip().lower()
+    if switch in DISABLED:
+        return False
+    if switch in ('1', 'true', 'yes', 'on'):
+        return True
+    # 任务没有提供默认入选名单，auto 不擅自向所有用户发送通知。
+    selectors = re.split(r'[,;\s]+', os.getenv('QINGLONG_NOTIFY_SCRIPTS', '').strip())
+    path = Path(__file__).resolve()
+    names = {'71de90498a3a6ded', path.name, 'trae_checkin.py'}
+    for root in (Path('/ql/data/scripts'), Path('/ql/scripts'), Path.cwd()):
+        try:
+            names.add(path.relative_to(root).as_posix())
+        except ValueError:
+            pass
+    if 'scripts' in path.parts:
+        names.add(Path(*path.parts[path.parts.index('scripts') + 1:]).as_posix())
+    return any(selector and fnmatch.fnmatchcase(name, selector)
+               for selector in selectors for name in names)
+
+
 def notification(body):
-    if os.getenv('QINGLONG_NOTIFY', '1').strip().lower() in DISABLED:
+    if not notification_enabled():
         return '已关闭'
     directory = os.getenv('QINGLONG_NOTIFY_DIR', '')
     paths = ([Path(directory) / 'notify.py'] if directory else []) + [Path('/ql/data/scripts/notify.py'), Path('/ql/scripts/notify.py')]
     py_path = next((p for p in paths if p.is_file()), None)
     # 在子进程中导入，限制时长并截获第三方日志，绝不改变业务退出码。
-    program = '''import importlib.util, json, sys
+    program = '''import importlib.util, json, os, sys
 v=json.loads(sys.stdin.read())
+sys.dont_write_bytecode=True
+sys.path.insert(0,v['scriptDir'])
 if v['dryRun']:
- import socket
- def deny(*args, **kwargs):
-  raise RuntimeError('dry-run network disabled')
- socket.socket.connect=deny; socket.socket.connect_ex=deny; socket.socket.sendto=deny
- socket.getaddrinfo=deny; socket.create_connection=deny
+ # 审计钩子覆盖 socket、间接子进程及文件变更，不能仅拦截 urlopen。
+ def guard(event,args):
+  if (event.startswith(('socket.','subprocess.','ctypes.'))
+      or event in ('os.system','os.fork','os.forkpty','os.posix_spawn','os.exec',
+                   'os.spawn','os.startfile','os.startfile/2','pty.spawn',
+                   'os.remove','os.rename','os.rmdir','os.mkdir','os.chmod',
+                   'os.chown','os.truncate','os.link','os.symlink','os.utime',
+                   'os.setxattr','os.removexattr')):
+   raise RuntimeError('dry-run side effects disabled')
+  if event=='open':
+   mode=args[1]; flags=args[2]
+   writing=isinstance(mode,str) and any(c in mode for c in 'wax+')
+   writing=writing or (isinstance(flags,int) and bool(flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND)))
+   if writing:
+    raise RuntimeError('dry-run file writes disabled')
+ sys.addaudithook(guard)
 if v['path']:
  s=importlib.util.spec_from_file_location('qinglong_notify', v['path']); m=importlib.util.module_from_spec(s); s.loader.exec_module(m)
 else:
  import notify as m
 m.send(v['title'], v['body'])
 '''
-    payload = {'dryRun': DRY, 'path': str(py_path) if py_path else '', 'title': 'Trae 每日签到与积分查询', 'body': body}
+    payload = {'dryRun': DRY, 'path': str(py_path.resolve()) if py_path else '',
+               'scriptDir': str(Path(__file__).resolve().parent),
+               'title': 'Trae 每日签到与积分查询', 'body': body}
     try:
         result = subprocess.run([sys.executable, '-B', '-c', program], input=json.dumps(payload), text=True,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20)
@@ -833,9 +886,19 @@ if(p.dryRun){
  globalThis.fetch=deny;
  const cp=require('child_process');
  for(const n of ['exec','execFile','spawn','fork','execSync','execFileSync','spawnSync'])cp[n]=deny;
+ const writeFlags=f=>typeof f==='number' ? !!(f & (fs.constants.O_WRONLY|fs.constants.O_RDWR|fs.constants.O_CREAT|fs.constants.O_TRUNC|fs.constants.O_APPEND)) : /[wa+]/.test(f||'r');
+ for(const n of ['appendFile','writeFile','write','writev','truncate','ftruncate','rename','unlink','rm','rmdir','mkdir','mkdtemp','copyFile','cp','link','symlink','chmod','chown','lchmod','lchown','fchmod','fchown','utimes','lutimes','futimes']){
+  if(fs[n])fs[n]=deny;if(fs[n+'Sync'])fs[n+'Sync']=deny;if(fs.promises[n])fs.promises[n]=deny;
+ }
+ fs.createWriteStream=deny;
+ for(const n of ['open','openSync']){const original=fs[n];fs[n]=function(file,flags,...rest){if(writeFlags(flags))return deny();return original.call(fs,file,flags,...rest);};}
+ // FileHandle 可自行写入；预演通知器只能用只读 fs API。
+ fs.promises.open=deny;
+ const wt=require('worker_threads');wt.Worker=deny;
+ process.dlopen=deny;
 }
 Promise.resolve(require(p.path).sendNotify(p.title,p.body)).catch(()=>{process.exitCode=1});"""
-        payload['path'] = str(js_path)
+        payload['path'] = str(js_path.resolve())
         try:
             result = subprocess.run(['node', '-e', program_js], input=json.dumps(payload), text=True,
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20)
@@ -851,7 +914,7 @@ Promise.resolve(require(p.path).sendNotify(p.title,p.body)).catch(()=>{process.e
 
 
 def direct_push(body):
-    if DRY or os.getenv('QINGLONG_NOTIFY', '1').strip().lower() in DISABLED:
+    if DRY or not notification_enabled():
         return
     key = os.getenv('QYWX_TOKEN') or os.getenv('WECHAT_WEBHOOK')
     if key:
@@ -866,7 +929,7 @@ def direct_push(body):
             log('企业微信通知：' + ('已发送' if 200 <= status < 300 and data.get('errcode') == 0 else '失败'))
         except Exception:
             log('企业微信通知：失败')
-    token = os.getenv('PLUSPLUS_TOKEN', '')
+    token = (os.getenv('PLUSPLUS_TOKEN') or os.getenv('PLUSHPLUS_TOKEN') or os.getenv('PUSHPLUS_TOKEN') or '').strip()
     if token:
         try:
             status, data = http('https://www.pushplus.plus/send', {'Content-Type': 'application/json'},
@@ -1124,6 +1187,19 @@ def load_explicit_credentials(acc):
                 storage = json.load(handle)
             if not acc.get('deviceId'):
                 acc['deviceId'] = dc_device_id(storage)
+            device_value = storage.get('iCubeAuthInfo://icube-dc:' + acc.get('deviceId', ''))
+            if device_value and not (acc.get('deviceKeyPem') and acc.get('devicePubPem')):
+                try:
+                    device = json.loads(device_value if device_value.startswith('{') else decrypt_storage_value(device_value.strip()))
+                    if isinstance(device, dict):
+                        for field, upstream in (('deviceKeyPem', 'privateKeyPEM'), ('devicePubPem', 'publicKeyPEM')):
+                            if not acc.get(field) and isinstance(device.get(upstream), str):
+                                acc[field] = device[upstream]
+                        if not acc.get('machineId') and isinstance(storage.get('telemetry.machineId'), str):
+                            acc['machineId'] = storage['telemetry.machineId']
+                        SECRETS.extend([acc.get('deviceKeyPem', ''), acc.get('devicePubPem', ''), acc.get('machineId', '')])
+                except Exception:
+                    log('⚠️ 显式存储中的设备证明无法解析；保留已配置证明及原有续期回退链')
             raw = storage.get(STORAGE_KEY, '')
         else:
             return
@@ -1255,6 +1331,7 @@ def interactive_login(device_id, timeout):
     server.timeout = 0.5
     host = '127.0.0.1:%d' % server.server_address[1]
     params = {'client_id': ClientID, 'auth_from': 'solo', 'login_channel': 'native_ide',
+              'auth_type': 'local', 'x_device_id': device_id, 'login_trace_id': secrets.token_hex(16),
               'plugin_version': '2.3.62834', 'auth_callback_url': 'http://' + host + path,
               'x_app_version': '0.1.52', 'x_app_type': 'stable',
               'device_id': device_id, 'machine_id': machine_id}
