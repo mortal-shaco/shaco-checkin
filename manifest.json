@@ -19626,6 +19626,200 @@
       }
     },
     {
+      "catalogId": "e559f6b278de9d78",
+      "applicationKey": "mediastorm-club",
+      "checkProfile": {
+        "requiredEnv": [
+          "MEDIASTORM_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ACCESS_TOKEN",
+          "SESSION_ID",
+          "MEDIASTORM_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MEDIASTORM_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MEDIASTORM_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到"
+        ],
+        "features": [
+          "执行影视飓风会员每日签到，显示服务端返回的签到奖励标题。",
+          "识别原接口今日已签到业务码 1000030071，作为已完成处理；仅业务码 0 且 success 严格为 true 时认定新签到成功。",
+          "保留原小程序请求 URL、GET 方法、查询参数、请求头及 Extra-Data 会话结构；为请求设置超时和响应大小限制，拒绝重定向，避免自动重试造成不确定的重复签到。",
+          "兼容 ACCESS_TOKEN、SESSION_ID 单账号参数及脚本同目录 .env 凭据读取，进程环境优先；不在导入阶段读取凭据。",
+          "支持每行一个账号的规范组合变量，账号独立处理并汇总失败退出码。",
+          "提供完全断网预演，完成参数校验和请求构造，不把预演记作真实签到成功。",
+          "返回公开昵称、用户名、显示名或公开 UID 时显示该身份，过滤凭据及手机号；失败时不打印服务端原始响应或异常原文。",
+          "提供带时间戳的编号阶段、每账号与全任务统计、单行 TASK_SUMMARY JSON，以及受青龙全局开关和脚本选择器控制的脱敏通知。"
+        ],
+        "sideEffects": [
+          "正式模式向服务端发起每日签到，领取该接口自动发放的签到奖励。",
+          "正式模式且通知被启用时，通过已有青龙通知组件向已配置渠道发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "影视飓风会员签到",
+      "path": "scripts/mediastorm_club.py",
+      "sha256": "76599a9dd7bb2397fa1e253a96c2803295eef45cf4b4c8e262c99158963d9112",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Transmigration-zhou/mediastorm-club-checkin",
+        "branch": "master",
+        "commit": "d89811f1122aa4d0a441c4cf5340df50a80f15fc",
+        "originalPath": "checkin.py",
+        "related": [
+          {
+            "catalogId": "87d13b62725b6886",
+            "sha256": "c27550053b73fe65b6f750a746795bb08042f77d1b2504d84a6cae13e7a839c1",
+            "repository": "Transmigration-zhou/mediastorm-club-checkin",
+            "url": "https://github.com/Transmigration-zhou/mediastorm-club-checkin.git",
+            "branch": "master",
+            "commit": "d89811f1122aa4d0a441c4cf5340df50a80f15fc",
+            "originalPath": "tests/test_checkin.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "84bcbfd74058270d",
+            "sha256": "fc5b46b4624debf321b34b87eb6684d8e0e553b48b206bb79ffd78d3221bcdc9",
+            "repository": "Transmigration-zhou/mediastorm-club-checkin",
+            "url": "https://github.com/Transmigration-zhou/mediastorm-club-checkin.git",
+            "branch": "master",
+            "commit": "d89811f1122aa4d0a441c4cf5340df50a80f15fc",
+            "originalPath": "update_token.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "336b9d10a7cce6d5",
+            "sha256": "cf25347416351f462b638237887d6fac3b5e44d60fd9c29d11a0741d59d27d09",
+            "repository": "Transmigration-zhou/mediastorm-club-checkin",
+            "url": "https://github.com/Transmigration-zhou/mediastorm-club-checkin.git",
+            "branch": "master",
+            "commit": "d89811f1122aa4d0a441c4cf5340df50a80f15fc",
+            "originalPath": "tests/test_update_token.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "3 9 * * *",
+      "command": "python3 scripts/mediastorm_club.py",
+      "environment": [
+        {
+          "name": "MEDIASTORM_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录微信影视飓风会员小程序，使用本人授权的 HTTPS 抓包工具查看签到请求 checkinV2.json：查询参数 access_token 为第一项，Extra-Data 请求头 JSON 的 sid 为第二项。同一行必须取自同一账号同一次会话；失效后重新登录抓取，勿分享抓包。此变量为规范凭据入口；未设置时才兼容旧参数。",
+          "format": "每个非空行一个账号：access_token|sid；只按第一个 | 分割，不使用 & 或 @ 分隔账号；两项不能为空或含首尾空白及控制字符。"
+        },
+        {
+          "name": "ACCESS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容参数：取自上述签到请求 URL 的 access_token 查询参数；必须与 SESSION_ID 配套，且仅在未设置 MEDIASTORM_ACCOUNTS 时生效。",
+          "format": "单个账号的访问令牌，不含参数名或 URL。"
+        },
+        {
+          "name": "SESSION_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容参数：取自同一签到请求 Extra-Data JSON 的 sid；必须与 ACCESS_TOKEN 配套，且仅在未设置 MEDIASTORM_ACCOUNTS 时生效。",
+          "format": "单个账号的会话值，不含字段名或整个请求头。"
+        },
+        {
+          "name": "MEDIASTORM_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地预演或青龙环境变量中设置为 1；不调用业务接口、文本提供方及通知模块。",
+          "format": "1、true、yes、on 启用；其他值为正式模式，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知脚本选择列表；设置后替换默认列表，支持当前目录编号 e559f6b278de9d78、脚本相对路径、文件名、文件名通配符。当前任务无默认启用名单，auto 下未设置则不发送。",
+          "format": "逗号、分号、空白或换行分隔；* 选择全部；空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选青龙通知组件目录；可放置已配置的 notify.py 或 sendNotify.js。也会尝试导入 notify.send，以及 /ql/data/scripts 和 /ql/scripts 标准目录。业务运行不依赖通知组件。",
+          "format": "本机目录路径；JavaScript 通知兼容方式需要已有 Node.js，脚本不会下载或安装。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "MEDIASTORM_ACCOUNTS 每个非空行一个账号，每行 access_token|sid，只按第一个 | 分割并保留后续会话文本；账号独立处理，任一账号失败整体非零退出。组合变量优先，格式错误不回退旧参数。"
+      },
+      "dependencies": [],
+      "features": [
+        "执行影视飓风会员每日签到，显示服务端返回的签到奖励标题。",
+        "识别原接口今日已签到业务码 1000030071，作为已完成处理；仅业务码 0 且 success 严格为 true 时认定新签到成功。",
+        "保留原小程序请求 URL、GET 方法、查询参数、请求头及 Extra-Data 会话结构；为请求设置超时和响应大小限制，拒绝重定向，避免自动重试造成不确定的重复签到。",
+        "兼容 ACCESS_TOKEN、SESSION_ID 单账号参数及脚本同目录 .env 凭据读取，进程环境优先；不在导入阶段读取凭据。",
+        "支持每行一个账号的规范组合变量，账号独立处理并汇总失败退出码。",
+        "提供完全断网预演，完成参数校验和请求构造，不把预演记作真实签到成功。",
+        "返回公开昵称、用户名、显示名或公开 UID 时显示该身份，过滤凭据及手机号；失败时不打印服务端原始响应或异常原文。",
+        "提供带时间戳的编号阶段、每账号与全任务统计、单行 TASK_SUMMARY JSON，以及受青龙全局开关和脚本选择器控制的脱敏通知。"
+      ],
+      "sideEffects": [
+        "正式模式向服务端发起每日签到，领取该接口自动发放的签到奖励。",
+        "正式模式且通知被启用时，通过已有青龙通知组件向已配置渠道发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e559f6b278de9d78",
+        "candidateSha256": "fe1e65770a44b7f9150453c7caf20f279b266ef63c8f43393e33d2cb5eec220a"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "fe1e65770a44b7f9150453c7caf20f279b266ef63c8f43393e33d2cb5eec220a",
+        "releaseSha256": "76599a9dd7bb2397fa1e253a96c2803295eef45cf4b4c8e262c99158963d9112",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-27T09:45:57.770557+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "fe1e65770a44b7f9150453c7caf20f279b266ef63c8f43393e33d2cb5eec220a",
+          "toCandidateSha256": "76599a9dd7bb2397fa1e253a96c2803295eef45cf4b4c8e262c99158963d9112",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "68feda0fb9579305",
       "applicationKey": "meefan-daily",
       "checkProfile": {
