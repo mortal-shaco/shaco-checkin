@@ -20609,6 +20609,313 @@
       }
     },
     {
+      "catalogId": "3ec01ce8ee76b6c7",
+      "applicationKey": "mybt",
+      "checkProfile": {
+        "requiredEnv": [
+          "MYBT_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "MYBT_TOKEN",
+          "MYBT_USERNAME",
+          "MYBT_PASSWORD",
+          "CASDOOR_USERNAME",
+          "CASDOOR_PASSWORD",
+          "MYBT_COOKIE",
+          "MYBT_USER_ID",
+          "MYBT_TURNSTILE_TOKEN",
+          "MYBT_SECRET",
+          "MYBT_BASE_URL",
+          "MYBT_AUTH_URL",
+          "MYBT_DO_VISIT",
+          "MYBT_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "WX_TEST_APPID",
+          "WX_TEST_APP_SECRET",
+          "WX_TEST_TEMPLATE_ID",
+          "WX_TEST_OPENID",
+          "WXPUSHER_APP_TOKEN",
+          "WXPUSHER_UIDS",
+          "PUSHPLUS_TOKEN"
+        ],
+        "dryRunEnv": {
+          "MYBT_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MYBT_DO_VISIT": "1",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "DONE: success"
+        ],
+        "features": [
+          "使用本人 Casdoor 账号密码自动登录续期，兼容手动提供的 Turnstile 验证码令牌；登录失败回退已有 Token，并通过业务接口重新验证有效性",
+          "兼容授权码回调、回调直接返回 Token、登录后继续授权，以及 login_code 经 /api/auth/session 交换会话令牌",
+          "按上游规范生成 HMAC 请求签名，并从 /api/auth/me 更新账号签名密钥",
+          "查询并直接显示官方返回的非敏感昵称、用户名、显示名称和公开 UID；过滤凭据、手机号及日志控制字符",
+          "每日签到并核验新增积分字段，识别明确的今日已完成响应；默认执行访问积分任务，可用独立开关关闭",
+          "查询任务前后积分；保留 DONE: success、DONE: failed 和 points_after 输出，并追加一条 TASK_SUMMARY JSON 汇总",
+          "每行一个账号，兼容旧单账号变量；账号失败互不阻塞，任一失败整体非零退出",
+          "完全断网预演，展示计划、校验配置，不执行网络请求，不声明真实业务成功",
+          "时间轴日志包含阶段编号、耗时、账号任务统计、最终状态及通知状态",
+          "成功、部分失败、失败、配置错误均尝试发送青龙脱敏汇总；预演仅生成通知摘要并禁止实际发送；支持全局通知开关及脚本选择",
+          "保留微信测试号优先、WxPusher 与已配置的 PushPlus 原可选通知行为；第三方通知异常不改变业务退出码"
+        ],
+        "sideEffects": [
+          "正式执行且提供账号密码时创建 Casdoor 登录会话并在内存续期站点令牌",
+          "正式执行每日签到，可能增加账号积分并写入签到记录",
+          "正式执行且 MYBT_DO_VISIT 开启时记录访问任务并可能增加账号积分",
+          "通知启用且模块或原通知渠道已配置时向本人接收渠道发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "mybt 每日签到与访问积分",
+      "path": "scripts/mybt.py",
+      "sha256": "56e6107bdcec52c1cb8c8f25eaf5fe68819828e64bbb6b882192c0eeca22fe03",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "elongou-checkin/mybt-signin",
+        "branch": "master",
+        "commit": "f4bafa58df133dc3185e1f7908bb21ffc5d577e6",
+        "originalPath": "signin.py"
+      },
+      "cron": "2 8 * * *",
+      "command": "python3 scripts/mybt.py",
+      "environment": [
+        {
+          "name": "MYBT_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人 mybt/Casdoor 登录账号与密码；或在本人登录 mybt 后，打开浏览器开发者工具的网络面板，查看本站 /api/auth/me 请求的 Authorization 请求头，提取 Bearer 后的令牌。可选 Cookie 同样取自本站请求头；不得共享凭据。验证码令牌仅从本人交互式验证获取。推荐使用本变量，兼容旧单账号变量作为替代输入。",
+          "format": "每个非空行一个 JSON 对象，不要写成数组。每行提供 token，或成对提供 username、password；同时提供两者时先自动登录，失败再验证备用 token。可选字符串字段：cookie、user_id、turnstile_token、secret。亦支持 用户名|密码，仅在第一个 | 分割，后续 | 属于密码。JSON 中可用转义表示特殊字符，但字段不能含换行。不得用 & 或 @ 分隔账号。设置本变量后不再读取旧凭据变量，空值视为配置错误。"
+        },
+        {
+          "name": "MYBT_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧单账号兼容输入：从本人登录后 /api/auth/me 请求的 Authorization 头获取；推荐改用 MYBT_ACCOUNTS 的 token 字段。",
+          "format": "单个令牌，可带 Bearer 前缀；仅在未设置 MYBT_ACCOUNTS 时读取，可作为自动登录失败的兜底。"
+        },
+        {
+          "name": "MYBT_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人 Casdoor 登录用户名；旧单账号兼容输入，推荐使用 MYBT_ACCOUNTS 的 username 字段。",
+          "format": "与 MYBT_PASSWORD 成对设置；未设置 MYBT_ACCOUNTS 时生效。"
+        },
+        {
+          "name": "MYBT_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人 Casdoor 登录密码；推荐使用 MYBT_ACCOUNTS 的 password 字段。",
+          "format": "与 MYBT_USERNAME 成对设置；未设置 MYBT_ACCOUNTS 时生效。"
+        },
+        {
+          "name": "CASDOOR_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "原脚本的 Casdoor 用户名兼容别名，取自本人登录账号。",
+          "format": "仅在未设置 MYBT_ACCOUNTS 且 MYBT_USERNAME 为空时替代用户名。"
+        },
+        {
+          "name": "CASDOOR_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "原脚本的 Casdoor 密码兼容别名，取自本人登录密码。",
+          "format": "仅在未设置 MYBT_ACCOUNTS 且 MYBT_PASSWORD 为空时替代密码。"
+        },
+        {
+          "name": "MYBT_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "如本站需要附加 Cookie，在本人登录后从本站业务请求的 Cookie 请求头获取；不需要时留空。",
+          "format": "旧单账号完整 Cookie 文本，不分割分号；仅在未设置 MYBT_ACCOUNTS 时生效，多账号放入各行 cookie 字段。"
+        },
+        {
+          "name": "MYBT_USER_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从本人 /api/auth/me 响应中的公开用户编号获取。",
+          "format": "旧单账号参数兼容接收；原接口并未发送此字段，因此不再要求填写或从未验证的令牌载荷推断身份。实际身份以官方 /api/auth/me 响应为准。"
+        },
+        {
+          "name": "MYBT_TURNSTILE_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅在 Casdoor 要求验证时，从本人完成的 Cloudflare Turnstile 交互式验证获取；短期有效，过期请重新验证。脚本不绕过人机验证。",
+          "format": "旧单账号验证码令牌；未设置 MYBT_ACCOUNTS 时读取，多账号使用各行 turnstile_token 字段。"
+        },
+        {
+          "name": "MYBT_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "通常无需配置。初始请求沿用上游的公共签名初始值 change-this-secret，成功查询 /api/auth/me 后自动采用其 sign_secret；如本人站点部署变更签名初始值，向该站点管理者确认。",
+          "format": "全局 HMAC 签名初始值，各账号的 secret 字段可覆盖；不是登录密码。不会将服务器返回的签名密钥输出或写入文件。"
+        },
+        {
+          "name": "MYBT_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认沿用上游 https://mybt.kiteyuan.info；如本人使用的站点地址变更，先通过官方渠道确认再设置。",
+          "format": "HTTPS 站点根地址，不能含账号密码、路径、查询或片段；有凭据的业务请求禁止重定向。"
+        },
+        {
+          "name": "MYBT_AUTH_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认沿用上游 https://auth.kiteyuan.info；可从本人登录时的 Casdoor 授权地址确认，不要填写不可信地址。",
+          "format": "HTTPS 授权站点根地址；登录重定向仅允许该站点与配置的 mybt 站点，携带密码的提交不允许重定向。"
+        },
+        {
+          "name": "MYBT_DO_VISIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据是否需要原脚本的访问积分任务设置；默认开启，保留上游行为。",
+          "format": "1、true、yes、on、y 开启；0、false、no、off、n 关闭；不区分大小写。与账号凭据分开设置。"
+        },
+        {
+          "name": "MYBT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地或青龙配置检查时设置为 1，正式运行时设为 0 或删除。",
+          "format": "布尔开关，默认 0。开启后只校验配置和展示任务计划；不进行登录、业务、通知或其他网络请求，不代表真实签到成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要覆盖默认通知清单时设置。",
+          "format": "通知未被总开关禁用时，按目录编号 3ec01ce8ee76b6c7、脚本相对路径、文件名或文件名通配符匹配；逗号、分号或空白分隔；* 表示全部，显式空值表示全部禁用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如青龙通知模块位于自定义可信目录，填写该目录；默认先尝试导入 notify.send，再查找标准青龙脚本目录。",
+          "format": "已存在的可信目录，内含 notify.py 或 sendNotify.js；不会下载通知模块。未安装通知模块仍可独立完成业务。"
+        },
+        {
+          "name": "WX_TEST_APPID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选微信测试号通知：从本人微信公众平台测试号页面获取 AppID；需与其余三个 WX_TEST_* 参数配套。",
+          "format": "单个测试号 AppID；四项完整时优先尝试原通知渠道，失败转入 WxPusher 与已配置的 PushPlus，不替代青龙通知。"
+        },
+        {
+          "name": "WX_TEST_APP_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人微信公众平台测试号页面获取 AppSecret，仅本人保存。",
+          "format": "与 WX_TEST_APPID、WX_TEST_TEMPLATE_ID、WX_TEST_OPENID 配套的密钥。"
+        },
+        {
+          "name": "WX_TEST_TEMPLATE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在本人微信测试号创建包含 result 和 detail 两个字段的模板，复制模板编号。",
+          "format": "单个模板编号；与其余 WX_TEST_* 参数配套。"
+        },
+        {
+          "name": "WX_TEST_OPENID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人关注测试号后，从测试号页面的用户列表获取接收者标识。",
+          "format": "单个接收者标识；与其余 WX_TEST_* 参数配套，日志不显示此标识。"
+        },
+        {
+          "name": "WXPUSHER_APP_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选原通知渠道：在本人 WxPusher 管理台创建应用并取得应用令牌。",
+          "format": "与 WXPUSHER_UIDS 配套；微信测试号未配置或发送失败时尝试，仍保留已配置的 PushPlus 发送。"
+        },
+        {
+          "name": "WXPUSHER_UIDS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人关注 WxPusher 应用后获取接收用户编号。",
+          "format": "多个通知接收者用逗号分隔；仅为通知接收者，不能用于分隔业务账号。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选原通知渠道：从本人 PushPlus 控制台获取推送令牌。",
+          "format": "单个推送令牌；微信测试号未成功发送时，按上游行为向配置的 PushPlus 发送脱敏汇总。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "MYBT_ACCOUNTS 每个非空行一个账号，将同账号登录凭据、备用令牌和可选 Cookie 放在同一 JSON 对象中；也兼容仅按第一个 | 分割的 用户名|密码 格式。账号独立登录、独立 Cookie 会话、独立执行及统计；一行失败不阻止其他账号，任一账号失败整体非零退出。未设置规范变量时兼容旧变量的单账号输入。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用本人 Casdoor 账号密码自动登录续期，兼容手动提供的 Turnstile 验证码令牌；登录失败回退已有 Token，并通过业务接口重新验证有效性",
+        "兼容授权码回调、回调直接返回 Token、登录后继续授权，以及 login_code 经 /api/auth/session 交换会话令牌",
+        "按上游规范生成 HMAC 请求签名，并从 /api/auth/me 更新账号签名密钥",
+        "查询并直接显示官方返回的非敏感昵称、用户名、显示名称和公开 UID；过滤凭据、手机号及日志控制字符",
+        "每日签到并核验新增积分字段，识别明确的今日已完成响应；默认执行访问积分任务，可用独立开关关闭",
+        "查询任务前后积分；保留 DONE: success、DONE: failed 和 points_after 输出，并追加一条 TASK_SUMMARY JSON 汇总",
+        "每行一个账号，兼容旧单账号变量；账号失败互不阻塞，任一失败整体非零退出",
+        "完全断网预演，展示计划、校验配置，不执行网络请求，不声明真实业务成功",
+        "时间轴日志包含阶段编号、耗时、账号任务统计、最终状态及通知状态",
+        "成功、部分失败、失败、配置错误均尝试发送青龙脱敏汇总；预演仅生成通知摘要并禁止实际发送；支持全局通知开关及脚本选择",
+        "保留微信测试号优先、WxPusher 与已配置的 PushPlus 原可选通知行为；第三方通知异常不改变业务退出码"
+      ],
+      "sideEffects": [
+        "正式执行且提供账号密码时创建 Casdoor 登录会话并在内存续期站点令牌",
+        "正式执行每日签到，可能增加账号积分并写入签到记录",
+        "正式执行且 MYBT_DO_VISIT 开启时记录访问任务并可能增加账号积分",
+        "通知启用且模块或原通知渠道已配置时向本人接收渠道发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3ec01ce8ee76b6c7",
+        "candidateSha256": "000173b61ebb9f90b020c4b4a306e3a571574ff01462c8ab8d741514c40d9361"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "000173b61ebb9f90b020c4b4a306e3a571574ff01462c8ab8d741514c40d9361",
+        "releaseSha256": "56e6107bdcec52c1cb8c8f25eaf5fe68819828e64bbb6b882192c0eeca22fe03",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-10-27T09:58:48.670039+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "000173b61ebb9f90b020c4b4a306e3a571574ff01462c8ab8d741514c40d9361",
+          "toCandidateSha256": "56e6107bdcec52c1cb8c8f25eaf5fe68819828e64bbb6b882192c0eeca22fe03",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "a8a311f3f5aaa2e6",
       "applicationKey": "netease-music",
       "checkProfile": {

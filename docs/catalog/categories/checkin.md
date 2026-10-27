@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **177** 个脚本。返回 [`目录首页`](../README.md)。
+共 **178** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -83,6 +83,7 @@
 | 影视飓风会员签到 | `scripts/mediastorm_club.py` | `python3 scripts/mediastorm_club.py` | `3 9 * * *` | 待检查 | [mediastorm_club.py.md](../../scripts/mediastorm_club.py.md)（`docs/scripts/mediastorm_club.py.md`） |
 | 米饭APP日常维护 | `scripts/mifan_optimized.py` | `python3 scripts/mifan_optimized.py` | `59 0 * * *` | 待检查 | [mifan_optimized.py.md](../../scripts/mifan_optimized.py.md)（`docs/scripts/mifan_optimized.py.md`） |
 | ModelScope 魔搭每日签到 | `scripts/modelscope_daily.py` | `python3 scripts/modelscope_daily.py` | `0 9 * * *` | 待检查 | [modelscope_daily.py.md](../../scripts/modelscope_daily.py.md)（`docs/scripts/modelscope_daily.py.md`） |
+| mybt 每日签到与访问积分 | `scripts/mybt.py` | `python3 scripts/mybt.py` | `2 8 * * *` | 待检查 | [mybt.py.md](../../scripts/mybt.py.md)（`docs/scripts/mybt.py.md`） |
 | 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `53 1 * * *` | 待检查 | [netease_task.py.md](../../scripts/netease_task.py.md)（`docs/scripts/netease_task.py.md`） |
 | NewAPI 自动签到 | `scripts/newapi.py` | `python3 scripts/newapi.py` | `18 8 * * *` | 待检查 | [newapi.py.md](../../scripts/newapi.py.md)（`docs/scripts/newapi.py.md`） |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `49 0 * * *` | 待检查 | [nga_checkin.py.md](../../scripts/nga_checkin.py.md)（`docs/scripts/nga_checkin.py.md`） |
