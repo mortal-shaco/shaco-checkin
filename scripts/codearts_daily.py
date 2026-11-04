@@ -25,7 +25,8 @@ CODEARTS_CREDENTIALS：每个非空行一个账号，单行 JSON 或 AK|SK|STS�
 security_token；不可使用其他应用的永久 AK/SK 替代临时登录凭据。
 可在自己设备上查看官方客户端登录态或自己的 HTTPS 登录响应，不分享凭据。
 JSON 可含 expiration、domain_id、user_name；续期需 refresh_token 与同次登录的
- oauth_context.pkce_pair.code_verifier、oauth_context.dpop_key_pair.private_key_jwk。
+ oauth_context.pkce_pair.code_verifier、oauth_context.dpop_key_pair.private_key_jwk；
+可选 oauth_context.client_id 覆盖默认客户端标识。
 保留 camelCase/ak/sk/sts 别名。STS 文本中的 | 不再拆分；不以 &/@ 分隔账号。
 续期可选依赖 cryptography（公共 PyPI），不自动安装。
 --preview 仅查询，不续期或写台账；--only N 选择原始行序号；--force 显式绕过
@@ -39,6 +40,8 @@ QINGLONG_NOTIFY=1 显式开启，=0 显式关闭，--no-notify 优先关闭。
 备用通知；仅 HTTPS，永不向通知渠道发送账号凭据。
 协议随当前上游更新为 DESKTOP/Host 签名、code=0/200、userBenefitId 确认；
 保留版本 2 台账幂等键迁移到版本 3，缺少确认 ID 时拒绝重复领取。
+JSON oauth_context.client_id 可覆盖默认 vscode-codebot；续期失败识别 STS5.1806
+等终态并落盘，ops 空 200 响应按会话过期处理；续期成功但凭据落盘失败亦标终态。
 正常模式保留领取/确认/回读；学生认证、邀请好友不自动领取。
 状态保存在脚本目录，原子写入、权限 0600；请勿将凭据状态文件公开上传。
 上游未指定 cron，本维护版建议北京时间每日 08:15，面板时区需为亚洲/上海。
@@ -94,10 +97,29 @@ _PRINTED_IDENTITIES = set()
 class TaskError(RuntimeError):
     pass
 
+
+class CredentialStoreError(TaskError):
+    """凭据存储写入失败（权限 / 磁盘 / 序列化）。"""
+
+
+class TerminalCredentialError(TaskError):
+    """凭据已终态失效，必须重新登录；调用方不得把它当普通异常重试。"""
+
+
+class SessionExpiredError(TerminalCredentialError):
+    """CodeArts 会话已过期（HTTP 200 + 空 body），必须重新登录。"""
+
+
 class Response:
     def __init__(self, status, content):
         self.status_code = status
-        self.content = content
+        self.content = content if isinstance(content, (bytes, bytearray)) else (
+            b"" if content is None else str(content).encode("utf-8"))
+
+    @property
+    def text(self):
+        return self.content.decode("utf-8", errors="replace")
+
     def json(self):
         return json.loads(self.content)
 
@@ -450,6 +472,7 @@ def normalize_credential(raw):
     pkce = oauth.get("pkce_pair") if isinstance(oauth.get("pkce_pair"), dict) else {}
     dpop = oauth.get("dpop_key_pair") if isinstance(oauth.get("dpop_key_pair"), dict) else {}
     jwk = dpop.get("private_key_jwk") if isinstance(dpop.get("private_key_jwk"), dict) else {}
+    oauth_client_id = oauth.get("client_id")
     return {
         "access_key_id": first_text(raw.get("access_key_id"), raw.get("accessKeyId"), raw.get("ak")),
         "secret_access_key": first_text(raw.get("secret_access_key"), raw.get("secretAccessKey"), raw.get("sk")),
@@ -460,8 +483,14 @@ def normalize_credential(raw):
         "user_name": first_text(raw.get("user_name"), raw.get("userName")),
         "code_verifier": first_text(pkce.get("code_verifier"), raw.get("code_verifier")),
         "dpop_jwk": jwk,
+        "client_id": oauth_client_id.strip() if isinstance(oauth_client_id, str) and oauth_client_id.strip() else "",
         "note": first_text(raw.get("note")),
     }
+
+
+def client_id_of(credential):
+    value = credential.get("client_id")
+    return value.strip() if isinstance(value, str) and value.strip() else CLIENT_ID
 
 
 def parse_accounts(raw):
@@ -496,14 +525,23 @@ def load_store():
     return read_state(STORE_FILE)
 
 def save_store(store):
-    atomic_state(STORE_FILE, store)
+    """原子写入凭据存储；任何写入失败都必须抛给调用方。
+
+    旧实现把异常吞成一行日志：续期接口已经消耗一次性 refresh_token 后，
+    新凭据只剩内存引用，进程退出即永久丢失，下一轮继续拿旧 token 兑换。
+    """
+    try:
+        atomic_state(STORE_FILE, store)
+    except TaskError as error:
+        raise CredentialStoreError("凭据存储写入失败: %s" % error) from error
 
 def apply_store(credential):
     saved = load_store().get(identity_of(credential))
     if not isinstance(saved, dict):
         return False
     for key in ("access_key_id", "secret_access_key", "security_token", "expiration",
-                "refresh_token", "domain_id", "user_name", "code_verifier"):
+                "refresh_token", "domain_id", "user_name", "code_verifier",
+                "client_id", "terminal", "terminal_reason"):
         if saved.get(key):
             credential[key] = saved[key]
     if isinstance(saved.get("dpop_jwk"), dict) and saved["dpop_jwk"]:
@@ -515,7 +553,8 @@ def persist(credential):
     store = load_store()
     store[identity_of(credential)] = {key: credential.get(key) for key in (
         "access_key_id", "secret_access_key", "security_token", "expiration",
-        "refresh_token", "domain_id", "user_name", "code_verifier")}
+        "refresh_token", "domain_id", "user_name", "code_verifier",
+        "client_id", "terminal", "terminal_reason")}
     store[identity_of(credential)]["dpop_jwk"] = credential.get("dpop_jwk") or {}
     store[identity_of(credential)]["at"] = int(time.time())
     save_store(store)
@@ -572,6 +611,33 @@ def dpop_proof(jwk, method, url):
     return "%s.%s" % (signing_input, b64url(raw))
 
 
+def refresh_token_terminal(payload, raw_text=""):
+    """一次性 refresh_token 的终态判据；返回病因，非终态返回空串。
+
+    STS5.1806 是「token 已被兑换过」的专属错误码；error_code / error_msg 两条
+    腿都要认，避免上游只改其中一条时再次把死号当可重试异常。
+    """
+    text = json.dumps(payload, ensure_ascii=False) if isinstance(payload, dict) else ""
+    text = (text + " " + str(raw_text or "")).replace("\\", "").lower()
+    if "sts5.1806" in text:
+        return "STS5.1806"
+    if "refresh token has been used" in text:
+        return "refresh_token_used"
+    if "expiredrefreshtoken" in text:
+        return "invalid_grant"
+    if isinstance(payload, dict) and payload.get("error") == "invalid_grant":
+        return "invalid_grant"
+    return ""
+
+
+def mark_terminal(credential, reason):
+    """把账号标成终态并落盘；写盘失败由调用方转换成终态错误。"""
+    credential["terminal"] = True
+    credential["terminal_reason"] = reason
+    persist(credential)
+    return credential
+
+
 def refresh_credential(credential):
     if not credential.get("refresh_token") or not credential.get("code_verifier"):
         raise RuntimeError("凭据缺少 refresh_token 或 code_verifier，无法续期")
@@ -580,7 +646,7 @@ def refresh_credential(credential):
         raise RuntimeError("凭据缺少 DPoP 私钥（oauth_context.dpop_key_pair.private_key_jwk）")
     proof = dpop_proof(jwk, "POST", TOKEN_URL)
     form = {
-        "client_id": CLIENT_ID,
+        "client_id": client_id_of(credential),
         "code_verifier": credential["code_verifier"],
         "grant_type": "refresh_token",
         "refresh_token": credential["refresh_token"],
@@ -591,7 +657,22 @@ def refresh_credential(credential):
                        data=form, timeout=30)
     payload = json_of(response)
     if response.status_code < 200 or response.status_code >= 300:
-        raise TaskError("令牌续期被拒：HTTP %s" % response.status_code)
+        detail = first_text(payload.get("error_code"), payload.get("error_msg"),
+                            payload.get("error_description"), payload.get("error"),
+                            payload.get("message")) or ("HTTP %s" % response.status_code)
+        # detail 可能含上游错误码，但不应回显可能夹带的令牌原文；仅保留短业务提示。
+        safe_detail = redact(detail)[:120]
+        reason = refresh_token_terminal(payload, getattr(response, "text", ""))
+        if reason:
+            try:
+                mark_terminal(credential, reason)
+            except Exception as store_error:
+                raise TerminalCredentialError(
+                    "刷新令牌已失效（%s），需重新登录；终态标记落盘失败：%s"
+                    % (reason, store_error)) from store_error
+            raise TerminalCredentialError(
+                "刷新令牌已失效（%s），需重新登录：%s" % (reason, safe_detail))
+        raise TaskError("令牌续期被拒：%s" % safe_detail)
     data = payload.get("credentials") if isinstance(payload.get("credentials"), dict) else payload
 
     def read(name):
@@ -614,20 +695,40 @@ def refresh_credential(credential):
         fresh[key] = credential.get(key, "" if key != "dpop_jwk" else {})
     for key in ("domain_id", "user_name"):
         fresh[key] = read(key) or fresh[key]
+    if isinstance(credential.get("client_id"), str) and credential["client_id"].strip():
+        fresh["client_id"] = credential["client_id"].strip()
     register_secrets(fresh)
-    persist(fresh)
+    try:
+        persist(fresh)
+    except Exception as error:
+        # 服务端已消耗旧的一次性 refresh_token；新凭据只存在内存里，
+        # 进程退出就永久丢失，下一轮必然拿旧 token 换回 STS5.1806。
+        credential["terminal"] = True
+        credential["terminal_reason"] = "refresh_persist_failed"
+        fresh["terminal"] = True
+        fresh["terminal_reason"] = "refresh_persist_failed"
+        log("   ⚠️ 续期成功但凭据落盘失败，账号标记为终态")
+        raise TerminalCredentialError(
+            "续期成功但新凭据落盘失败：refresh_token 已在服务端被消耗，"
+            "本地旧 token 已失效，必须重新登录。落盘错误：%s" % error) from error
     print_official_identity(fresh, payload, data)
     log("   🔄 凭据已续期并保存")
     return fresh
 
 
 def ensure_fresh(credential):
+    if credential.get("terminal"):
+        raise TerminalCredentialError(
+            "凭据已标记终态（%s），需重新登录"
+            % (credential.get("terminal_reason") or "unknown"))
     if not expires_within(credential, REFRESH_LEAD_SECONDS):
         return credential
     if credential.get("refresh_token") and credential.get("code_verifier") and (credential.get("dpop_jwk") or {}).get("d"):
         try:
             return refresh_credential(credential)
-        except Exception as error:
+        except TerminalCredentialError:
+            raise
+        except Exception:
             raise TaskError("自动续期失败，请重新获取登录凭据") from None
     log("   ⚠️ 凭据已临近到期且未配置完整续期材料，直接尝试（失败请重新登录获取新凭据）")
     return credential
@@ -673,7 +774,7 @@ def ledger_of(store, identity):
     attempts = stored.get("attempts") if isinstance(stored, dict) else None
     if (not isinstance(stored, dict) or stored.get("version") not in (2, LEDGER_VERSION)
             or not isinstance(day, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day)
-            or type(attempts) is not int or attempts < 0):
+            or type(attempts) is not int or not 0 <= attempts <= MAX_ATTEMPTS_PER_DAY):
         raise RuntimeError("本地领取台账无效，未发送领取请求；请备份并核查记录，勿直接删除幂等记录")
     try:
         datetime.strptime(day, "%Y-%m-%d")
@@ -737,8 +838,15 @@ def welfare_request(credential, method, path, body=None, extra_headers=None):
         payload = json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8") if body is not None else b""
         signed = sign_request(method, url, headers, payload, credential, include_host=True)
         response = request(method, url, headers=signed, data=payload if body is not None else None, timeout=20)
+        raw_text = getattr(response, "text", "") or ""
         if not 200 <= response.status_code < 300:
-            raise TaskError("福利接口 HTTP %s，未确认成功" % response.status_code)
+            raise TaskError("福利接口 HTTP %s，未确认成功%s"
+                            % (response.status_code, benefit_hint(raw_text[:300])))
+        # 实测：CodeArts 会话过期时 ops 接口会返回 HTTP 200 + 空 body（不是 401）。
+        # 这不是成功，也不能按普通异常无限重试——必须按终态让用户重新登录。
+        if not raw_text.strip():
+            raise SessionExpiredError(
+                "CodeArts 会话已过期（ops 接口返回 HTTP 200 空响应），需重新登录")
         parsed = json_of(response)
         code = parsed.get("code")
         if isinstance(code, bool) or str(code) not in ("0", "200"):
