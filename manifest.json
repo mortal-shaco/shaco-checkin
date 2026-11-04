@@ -16760,6 +16760,161 @@
       }
     },
     {
+      "catalogId": "e2926d00ddd5ce46",
+      "applicationKey": "huazhu",
+      "checkProfile": {
+        "requiredEnv": [
+          "HZ_TOKEN"
+        ],
+        "optionalEnv": [
+          "HZ_DRY_RUN",
+          "HZ_TIMEOUT",
+          "HZ_RETRY_TIMES",
+          "HZ_RETRY_DELAY",
+          "HZ_ACCOUNT_GAP",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HZ_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "HZ_TIMEOUT": "25",
+          "HZ_RETRY_TIMES": "3",
+          "HZ_RETRY_DELAY": "5",
+          "HZ_ACCOUNT_GAP": "2",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY={\"status\":\"success\""
+        ],
+        "features": [
+          "使用华住会 userToken 调用签到接口完成每日签到，并校验业务成功码与今日已签状态。",
+          "查询签到状态摘要（积分、今年累计签到天数），若接口返回公开身份则原样展示。",
+          "支持每行一个账号的多账号独立处理与汇总统计。",
+          "支持完全断网预演、时间轴日志、机器可读汇总和青龙通知。"
+        ],
+        "sideEffects": [
+          "实时模式会向华住会提交每日签到，可能增加会员积分或累计签到天数。",
+          "启用通知且发现青龙通知组件时，会发送脱敏任务结果通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "华住会签到",
+      "path": "scripts/huazhu.py",
+      "sha256": "64bc897d283f46ff810a20be564f9e897e40a59d374f89c2e6254bc9d55fccf9",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "Dimlitter/huazhu-auto-checkin",
+        "branch": "main",
+        "commit": "c4a4497cbb52274cf1b2251f30342e447c48e08d",
+        "originalPath": "checkin.py"
+      },
+      "cron": "5 9 * * *",
+      "command": "python3 scripts/huazhu.py",
+      "environment": [
+        {
+          "name": "HZ_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录华住会 App 或网页后，抓包发往 appgw.huazhu.com 的请求，复制 Cookie 中的 userToken 值；请勿把该值发送给他人。",
+          "format": "每行一个账号的 userToken；不要用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "HZ_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；设为 1 可执行完全断网预演。",
+          "format": "启用值为 1、true、yes 或 on。"
+        },
+        {
+          "name": "HZ_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；按网络情况设置单次请求超时秒数。",
+          "format": "1 到 60 之间的整数，默认 25。"
+        },
+        {
+          "name": "HZ_RETRY_TIMES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；遇 429/5xx 或网络异常时的额外重试次数。",
+          "format": "0 到 5 的整数，默认 3。"
+        },
+        {
+          "name": "HZ_RETRY_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；重试基础间隔秒数，按次数线性递增。",
+          "format": "0 到 120 的整数，默认 5。"
+        },
+        {
+          "name": "HZ_ACCOUNT_GAP",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；多账号之间的间隔秒数，用于降低限流风险。",
+          "format": "0 到 30 的整数，默认 2。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无需获取；填写需要通知的脚本选择器，空值表示全部关闭。",
+          "format": "可用逗号、分号、空白或换行分隔；支持目录、文件名、通配符、catalogId 或 *。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通常无需设置；仅在通知脚本不位于青龙标准目录时填写其所在目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的本地目录绝对路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "HZ_TOKEN 中每个非空行代表一个账号；各账号独立执行，任一账号失败时进程返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用华住会 userToken 调用签到接口完成每日签到，并校验业务成功码与今日已签状态。",
+        "查询签到状态摘要（积分、今年累计签到天数），若接口返回公开身份则原样展示。",
+        "支持每行一个账号的多账号独立处理与汇总统计。",
+        "支持完全断网预演、时间轴日志、机器可读汇总和青龙通知。"
+      ],
+      "sideEffects": [
+        "实时模式会向华住会提交每日签到，可能增加会员积分或累计签到天数。",
+        "启用通知且发现青龙通知组件时，会发送脱敏任务结果通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e2926d00ddd5ce46",
+        "candidateSha256": "64bc897d283f46ff810a20be564f9e897e40a59d374f89c2e6254bc9d55fccf9"
+      }
+    },
+    {
       "catalogId": "b7f05744373113a8",
       "applicationKey": "hykb",
       "checkProfile": {
