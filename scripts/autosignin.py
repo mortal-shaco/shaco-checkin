@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # name: E-Hentai 自动签到
-# cron: 42 */6 * * *
+# cron: 18 */6 * * *
 # 来源: AkiyaKiko/EhentaiAutoSignIn, autosignin.py
-# 上游提交: c00c3d42a61b7f526dd41b8df157444380898e57
+# 上游提交: eee89e605d9a2a4312d5b8466388fa19e5c8b8a0
 # 许可证: MIT（任务提供的 effectiveLicense；输入未附单独版权声明）
 """E_COOKIE 每个非空行填写一个账号的完整 Cookie，保留分号内各字段。
 登录 E-Hentai 后从浏览器开发者工具 news.php 请求头获取 Cookie，至少包含
 ipb_member_id 与 ipb_pass_hash。E_PROXY、E_USER_AGENT 保持上游兼容。
 E_DRY_RUN=1 完全断网预演；不请求服务或通知提供方。不会写回 Cookie。
+QINGLONG_NOTIFY=auto|1|0；auto 时仅 QINGLONG_NOTIFY_SCRIPTS 命中本脚本才推送。
 
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -46,6 +47,7 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
 # qinglong-notification-policy: end
 import datetime
 import email.utils
+import fnmatch
 import html.parser
 import http.cookies
 import importlib
@@ -63,9 +65,16 @@ import urllib.request
 
 URL = 'https://e-hentai.org/news.php'
 TITLE = 'E-Hentai 自动签到'
+CATALOG_ID = '7919605278826396'
+SOURCE_PATH = 'AkiyaKiko/EhentaiAutoSignIn/autosignin.py'
+COOKIE_FIELDS = ('ipb_member_id', 'ipb_pass_hash', 'sk', 'hath_perks', 'nw', 'event')
+ENABLED = {'1', 'true', 'yes', 'on'}
 DISABLED = {'0', 'false', 'no', 'off'}
 UA = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36')
+ACCEPT = ('text/html,application/xhtml+xml,application/xml;q=0.9,'
+          'image/avif,image/webp,image/apng,*/*;q=0.8,'
+          'application/signed-exchange;v=b3;q=0.7')
 
 
 def log(message):
@@ -78,6 +87,7 @@ class Page(html.parser.HTMLParser):
         self.depth = 0
         self.event_depth = None
         self.events = []
+        self.parts = []
         self.identities = []
         self.identity_depth = None
         self.has_event = False
@@ -106,6 +116,7 @@ class Page(html.parser.HTMLParser):
         self.depth = max(0, self.depth - 1)
 
     def handle_data(self, data):
+        self.parts.append(data)
         if self.event_depth is not None:
             self.events.append(data)
         if self.identity_depth is not None:
@@ -143,7 +154,7 @@ def request_page(cookie, proxy, user_agent):
                 urllib.request.ProxyHandler({'http': proxy, 'https': proxy} if proxy else {}),
                 urllib.request.HTTPSHandler(context=context), NoRedirect())
             req = urllib.request.Request(URL, headers={
-                'User-Agent': user_agent, 'Accept': 'text/html,application/xhtml+xml',
+                'User-Agent': user_agent, 'Accept': ACCEPT,
                 'Upgrade-Insecure-Requests': '1', 'Cookie': cookie})
             try:
                 with opener.open(req, timeout=30) as response:
@@ -160,16 +171,26 @@ def request_page(cookie, proxy, user_agent):
                 log('⚠️ 请求失败，错误详情已脱敏')
                 if attempt < 3:
                     time.sleep(2)
+        if not tls12:
+            log('⚠️ 默认 TLS 连续失败，回退到 TLS 1.2')
     raise ValueError('默认 TLS 与 TLS 1.2 请求均失败')
 
 
 def inspect_page(body, set_cookies, fields):
     page = Page()
     page.feed(body)
+    full = ' '.join(' '.join(page.parts).split())
+    text = ' '.join(' '.join(page.events).split())
+    low = full.lower()
     # 只输出官方身份字段，绝不输出事件原文或响应。
     identity = ''.join(page.identities).strip()
     if identity and not any(fields.get(key) and fields[key] in identity for key in ('ipb_pass_hash', 'sk')):
         log('官方账号身份：' + json.dumps(identity, ensure_ascii=False))
+    if any(marker in low for marker in (
+            'please log in', 'not logged in', 'you are not logged',
+            'verify you are human', 'checking your browser',
+            'temporarily banned', 'your ip address has been', 'captcha')):
+        raise ValueError('页面提示未登录、访问限制或人机验证')
     renewed = False
     for raw in set_cookies:
         parsed = http.cookies.SimpleCookie()
@@ -178,9 +199,9 @@ def inspect_page(body, set_cookies, fields):
         except http.cookies.CookieError:
             continue
         for key, morsel in parsed.items():
-            if key in fields and fields[key] != morsel.value:
+            if key in COOKIE_FIELDS and fields.get(key) != morsel.value:
                 renewed = True
-            if key in fields and key != 'event' and morsel['expires']:
+            if key in COOKIE_FIELDS and key != 'event' and morsel['expires']:
                 try:
                     expiry = email.utils.parsedate_to_datetime(morsel['expires']).isoformat()
                     log(f'Cookie 到期提醒：{key}，{expiry}')
@@ -188,25 +209,62 @@ def inspect_page(body, set_cookies, fields):
                     log('⚠️ Cookie 到期时间无法解析')
     if renewed:
         log('⚠️ 服务返回更新 Cookie，请在浏览器重新获取；不写回环境变量')
-    text = ' '.join(' '.join(page.events).split())
-    if 'encounter' in text.lower():
+    if re.search(r'\b(?:random\s+)?encounter\b', text, re.I):
         raise ValueError('出现 Random Encounter，请手动处理或等待事件结束，签到未确认')
+    # 相关源测例使用 “You gain … EXP/Credits”；兼容 “You have gained” 与 Hath。
+    dawn = re.search(r'\bdawn of a new day\b', text, re.I)
+    reward = re.search(
+        r'\b(?:you\s+(?:have\s+)?(?:gain(?:ed)?|receiv(?:e|ed))|'
+        r'(?:gain(?:ed)?|receiv(?:e|ed))\s+\d)[^.!?]{0,180}'
+        r'\b(?:credits?|gp|experience|exp|hath)\b',
+        text, re.I)
     # HTTP 200、无事件区或任意段落均不足以证明签到成功。
-    if re.search(r'\b(?:Dawn of a new day|You have gained)\b', text, re.I) and re.search(
-            r'\b\d[\d,]*\s+(?:EXP|Credits?|Hath)\b', text, re.I):
+    if dawn and reward:
         log('✅ 签到成功：事件区返回明确奖励')
         return 'success'
-    if re.search(r'\b(?:already (?:claimed|received|completed)|have already (?:claimed|received))\b', text, re.I) and re.search(r'\b(?:dawn|daily|reward)\b', text, re.I):
+    if re.search(
+            r'\b(?:already (?:claimed|received|completed|collected)|'
+            r'have already (?:claimed|received|collected))\b', text, re.I) and re.search(
+            r'\b(?:dawn|daily|reward)\b', text, re.I):
         log('☑️ 今日已完成：事件区明确确认')
         return 'already-complete'
+    if not page.has_event:
+        raise ValueError('未找到事件面板且无明确已领取证据，无法确认签到')
     raise ValueError('页面未提供明确签到或已完成证据，可能未登录或响应变化')
 
 
+def notification_selected():
+    mode = os.getenv('QINGLONG_NOTIFY', 'auto').strip().lower()
+    if mode in DISABLED:
+        return False
+    if mode in ENABLED:
+        return True
+    if mode and mode != 'auto':
+        log('⚠️ QINGLONG_NOTIFY 无效，按 auto 处理')
+    if 'QINGLONG_NOTIFY_SCRIPTS' not in os.environ:
+        return False
+    raw = os.environ.get('QINGLONG_NOTIFY_SCRIPTS', '')
+    if not raw.strip():
+        return False
+    selectors = [item for item in re.split(r'[,;\s]+', raw.strip()) if item]
+    names = {
+        CATALOG_ID,
+        SOURCE_PATH,
+        'autosignin.py',
+        'scripts/autosignin.py',
+        Path(__file__).name,
+    }
+    return any(
+        selector == '*' or any(fnmatch.fnmatchcase(name, selector) for name in names)
+        for selector in selectors
+    )
+
+
 def notify_summary(body, dry):
-    if os.getenv('QINGLONG_NOTIFY', '1').strip().lower() in DISABLED:
-        return '已关闭'
     if dry:
         return '断网预演：已生成通知摘要，跳过外部投递'
+    if not notification_selected():
+        return '未启用或未命中脚本名单'
     try:
         try:
             module = importlib.import_module('notify')
@@ -229,9 +287,12 @@ def notify_summary(body, dry):
                 return '已发送'
             path = directory / 'sendNotify.js'
             if path.is_file():
-                subprocess.run(['node', '-e', 'require(process.argv[1]).sendNotify(process.argv[2],process.argv[3])',
-                                str(path), TITLE, body], check=True, timeout=30,
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(
+                    ['node', '-e',
+                     'require(process.argv[1]).sendNotify(process.argv[2],process.argv[3])',
+                     str(path), TITLE, body],
+                    check=True, timeout=30,
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 return '已发送'
         return '通知模块不可用'
     except Exception:
@@ -240,10 +301,11 @@ def notify_summary(body, dry):
 
 def main():
     start = time.monotonic()
-    dry = os.getenv('E_DRY_RUN', '0').strip().lower() in {'1', 'true', 'yes', 'on'}
+    dry = os.getenv('E_DRY_RUN', '0').strip().lower() in ENABLED
     accounts = [line.strip() for line in os.getenv('E_COOKIE', '').splitlines() if line.strip()]
     log(f'===== {TITLE} =====')
-    log(f'开始时间：{datetime.datetime.now().isoformat(timespec="seconds")}；模式：{"断网预演" if dry else "正式运行"}；账号数：{len(accounts)}')
+    log(f'开始时间：{datetime.datetime.now().isoformat(timespec="seconds")}；'
+        f'模式：{"断网预演" if dry else "正式运行"}；账号数：{len(accounts)}')
     results = []
     if not accounts:
         log('❌ 配置错误：必须提供 E_COOKIE，每个非空行一个账号')
@@ -260,7 +322,8 @@ def main():
             ua = os.getenv('E_USER_AGENT') or UA
             if any(c in ua for c in '\r\n\x00'):
                 raise ValueError('E_USER_AGENT 含非法控制字符')
-            log(f'✅ 阶段 1 完成，耗时 {time.monotonic() - stage_start:.2f} 秒；代理：{"已配置" if proxy else "未配置"}')
+            log(f'✅ 阶段 1 完成，耗时 {time.monotonic() - stage_start:.2f} 秒；'
+                f'代理：{"已配置" if proxy else "未配置"}')
             stage_start = time.monotonic()
             log(f'账号 {index} 阶段 2：访问新闻页与核验签到')
             if dry:
@@ -274,31 +337,50 @@ def main():
             log(f'❌ 账号 {index}：{exc}')
         except Exception:
             log(f'❌ 账号 {index}：运行错误，详情已脱敏')
-        stats = {'account': index, 'status': status, 'total': 1,
-                 'success': int(status == 'success'), 'alreadyComplete': int(status == 'already-complete'),
-                 'skipped': int(status == 'dry-run'), 'failed': int(status == 'failure'),
-                 'durationSeconds': round(time.monotonic() - account_start, 2)}
+        stats = {
+            'account': index, 'status': status, 'total': 1,
+            'success': int(status == 'success'),
+            'alreadyComplete': int(status == 'already-complete'),
+            'skipped': int(status == 'dry-run'),
+            'failed': int(status == 'failure'),
+            'durationSeconds': round(time.monotonic() - account_start, 2),
+        }
         results.append(stats)
-        log(f'账号 {index} 统计：总任务 1，成功 {stats["success"]}，已完成 {stats["alreadyComplete"]}，跳过 {stats["skipped"]}，失败 {stats["failed"]}，耗时 {stats["durationSeconds"]} 秒')
+        log(f'账号 {index} 统计：总任务 1，成功 {stats["success"]}，'
+            f'已完成 {stats["alreadyComplete"]}，跳过 {stats["skipped"]}，'
+            f'失败 {stats["failed"]}，耗时 {stats["durationSeconds"]} 秒')
     failed = sum(r['failed'] for r in results)
     passed = len(results) - failed
     exit_code = int(not accounts or failed > 0)
-    final_status = ('configuration-error' if not accounts else 'partial-failure' if failed and passed
-                    else 'failure' if failed else 'dry-run' if dry else 'success')
-    summary = {'task': TITLE, 'mode': 'dry-run' if dry else 'live', 'status': final_status,
-               'accounts': len(accounts), 'success': passed if not dry else 0, 'failed': failed,
-               'skipped': passed if dry else 0, 'results': results, 'exitCode': exit_code}
-    text = f'状态：{final_status}；账号总数：{len(accounts)}；成功：{summary["success"]}；失败：{failed}；预演：{summary["skipped"]}'
+    final_status = (
+        'configuration-error' if not accounts else
+        'partial-failure' if failed and passed else
+        'failure' if failed else
+        'dry-run' if dry else 'success'
+    )
+    summary = {
+        'task': TITLE, 'mode': 'dry-run' if dry else 'live', 'status': final_status,
+        'accounts': len(accounts), 'success': passed if not dry else 0, 'failed': failed,
+        'skipped': passed if dry else 0, 'results': results, 'exitCode': exit_code,
+    }
+    text = (f'状态：{final_status}；账号总数：{len(accounts)}；'
+            f'成功：{summary["success"]}；失败：{failed}；预演：{summary["skipped"]}')
     log('阶段 3：发送脱敏任务通知')
     notification_start = time.monotonic()
     notification = notify_summary(text, dry)
     log(f'阶段 3 完成：{notification}，耗时 {time.monotonic() - notification_start:.2f} 秒')
-    summary.update(notification=notification, durationSeconds=round(time.monotonic()-start, 2),
-                   finishTime=datetime.datetime.now().isoformat(timespec='seconds'))
+    summary.update(
+        notification=notification,
+        durationSeconds=round(time.monotonic() - start, 2),
+        finishTime=datetime.datetime.now().isoformat(timespec='seconds'),
+    )
     log('----------------------------------------')
     log(text)
-    log(f'子任务：总数 {len(results)}，成功 {sum(r["success"] for r in results)}，已完成 {sum(r["alreadyComplete"] for r in results)}，跳过 {summary["skipped"]}，失败 {failed}')
-    log(f'总耗时：{summary["durationSeconds"]} 秒；完成时间：{summary["finishTime"]}；通知：{notification}；最终状态：{final_status}')
+    log(f'子任务：总数 {len(results)}，成功 {sum(r["success"] for r in results)}，'
+        f'已完成 {sum(r["alreadyComplete"] for r in results)}，'
+        f'跳过 {summary["skipped"]}，失败 {failed}')
+    log(f'总耗时：{summary["durationSeconds"]} 秒；完成时间：{summary["finishTime"]}；'
+        f'通知：{notification}；最终状态：{final_status}')
     print('TASK_SUMMARY=' + json.dumps(summary, ensure_ascii=False, separators=(',', ':')))
     return exit_code
 

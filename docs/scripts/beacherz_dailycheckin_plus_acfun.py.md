@@ -1,0 +1,107 @@
+# AcFun Cookie每日任务
+
+- 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
+- 脚本路径：`scripts/beacherz_dailycheckin_plus_acfun.py`
+- 青龙命令：`python3 scripts/beacherz_dailycheckin_plus_acfun.py`
+- 建议 Cron：`21 0 * * *`
+- 发布哈希：`3fe44bfa0a21d422795178d855d00d867f2cce6bc0337a3b4317b21ef4d6c7a8`
+- 许可证：`MIT`
+
+## 脚本功能
+
+- 使用网页 Cookie（acPasstoken 与 auth_key）完成登录态校验，并在 Cookie 或官方接口提供时显示非敏感昵称或公开 UID。
+- 默认执行每日签到与等级、香蕉余额查询；点赞、点赞后取消、分享上报、投香蕉和发布弹幕均需显式选择。
+- 互动类动作可从每日排行榜选取稿件；弹幕动态读取视频与分区字段，禁止硬编码目标回退。
+- 发布弹幕时优先从一言 HTTPS 接口获取文案并保留作者及来源，所有声明的远端失败情形都会回退到本地文案。
+- 支持换行分隔的多账号 Cookie，并兼容可选别名 ACFUN_COOKIES。
+- 提供完全断网预演、分账号分阶段时间轴日志、脱敏统计、单行 TASK_SUMMARY JSON 和青龙通知。
+- 以产品专属路径 scripts/beacherz_dailycheckin_plus_acfun.py 发布，避免覆盖手机号密码版 scripts/acfun.py。
+
+## 环境变量与参数
+
+先配置必选参数再运行；缺少任一必选参数时任务会失败。敏感值不得写入脚本、订阅地址或公开日志。
+
+### 必选参数
+
+### `ACFUN_COOKIE`
+
+- 必填：是
+- 敏感：是
+- 获取或设置：在 AcFun 官网登录本人账号后，从浏览器开发者工具复制整段 Cookie；至少包含 acPasstoken 与 auth_key（通常约一个月过期）。勿把手机号或密码写入脚本。
+- 填写格式：每个非空行一个账号的完整 Cookie 字符串；行内可用分号分隔多个键值。换行分隔多账号，不得使用 & 或 @。
+
+### 可选参数
+
+### `ACFUN_COOKIES`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：兼容别名；仅当 ACFUN_COOKIE 未设置时读取。内容同样来自本人网页登录 Cookie。
+- 填写格式：与 ACFUN_COOKIE 相同：每行一个 Cookie。
+
+### `ACFUN_TASKS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：按需要在青龙中设置；默认 sign,info。公开发布、消费香蕉和点赞操作均须显式选择。
+- 填写格式：逗号分隔 sign（签到）、info（等级和香蕉余额查询）、like（点赞）、like-cycle（点赞后取消）、danmu（公开弹幕）、banana（投一根香蕉）、share（分享任务上报）；不得重复，like 与 like-cycle 不可同时选择。
+
+### `ACFUN_LOCAL_TEXT`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选本地弹幕备用文案；默认“今天也要保持好心情。”；一言不可用或内容校验失败时使用。
+- 填写格式：空白合并后须为 1 至 280 字符，仅 danmu 使用。
+
+### `ACFUN_DRY_RUN`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：离线验证时设置为 1；正式任务不设置或设为 0。
+- 填写格式：1 开启完全断网预演；0、false、no、off 或空值关闭。预演不验证真实业务。
+
+### `QINGLONG_NOTIFY`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。
+- 填写格式：留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。
+
+### `QINGLONG_NOTIFY_SCRIPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：需要限制通知脚本时填写目录编号、产品专属发布路径、文件名或通配符；设置为空值会关闭全部脚本通知。
+- 填写格式：逗号、分号、空白或换行分隔；本任务可用 2ecd586638b72a85、scripts/beacherz_dailycheckin_plus_acfun.py 或 beacherz_dailycheckin_plus_acfun.py。
+
+### `QINGLONG_NOTIFY_DIR`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：若青龙的 notify.py 不在常规路径，可设置其所在目录；无需私有工作流仓库。
+- 填写格式：可选目录路径；依次尝试导入 notify.send、此目录的 notify.py、/ql/data/scripts/notify.py、/ql/scripts/notify.py。
+
+## 参数获取方法
+
+完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
+
+## 多账号
+
+ACFUN_COOKIE 每个非空行表示一个账号的完整 Cookie；账号独立执行，任一账号失败时进程整体返回非零状态。
+
+## 验证与兼容性
+
+SHA-256 `3fe44bfa0a21d422795178d855d00d867f2cce6bc0337a3b4317b21ef4d6c7a8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2ecd586638b72a85`。
+
+## 副作用与风险
+
+- 执行 AcFun 每日签到。
+- 选择 like 时新增点赞；选择 like-cycle 时新增点赞后取消。
+- 选择 danmu 时向所选视频公开发布一条弹幕。
+- 选择 banana 时向所选稿件投出一根香蕉。
+- 选择 share 时上报分享任务完成状态。
+- 开启通知时尝试发送脱敏任务总结。
+
+## 许可证与来源
+
+上游 `BeacherZ/dailycheckin-plus` / `dailycheckin_plus/acfun/main.py` / `8d3078bd1418fb6cef268cb9ccc5b8389dffcf86`。

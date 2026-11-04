@@ -1,10 +1,11 @@
 # 字母索引 · A
 
-共 **16** 个脚本。返回 [`目录首页`](../README.md)。
+共 **17** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](../../scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
+| NewAPI 活动中心签到 | `scripts/activity_checkin.py` | `python3 scripts/activity_checkin.py` | `22 8 * * *` | 待检查 | [activity_checkin.py.md](../../scripts/activity_checkin.py.md)（`docs/scripts/activity_checkin.py.md`） |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `17 1 * * *` | 待检查 | [agentrouter.py.md](../../scripts/agentrouter.py.md)（`docs/scripts/agentrouter.py.md`） |
 | 机场签到（速鹰666） | `scripts/airport.py` | `python3 scripts/airport.py` | `27 1 * * *` | 待检查 | [airport.py.md](../../scripts/airport.py.md)（`docs/scripts/airport.py.md`） |
 | 机场自动登录签到 | `scripts/aitport.js` | `node scripts/aitport.js` | `1 8 * * *` | 待检查 | [aitport.js.md](../../scripts/aitport.js.md)（`docs/scripts/aitport.js.md`） |
@@ -19,4 +20,4 @@
 | 上海杨浦商城定时抢购 | `scripts/auto_buy.py` | `python3 scripts/auto_buy.py` | `0 0 10 * * *` | 待检查 | [auto_buy.py.md](../../scripts/auto_buy.py.md)（`docs/scripts/auto_buy.py.md`） |
 | AutoClaw 国内版每日签到 | `scripts/autoclaw_cn_daily.py` | `python3 scripts/autoclaw_cn_daily.py` | `15 8 * * *` | 待检查 | [autoclaw_cn_daily.py.md](../../scripts/autoclaw_cn_daily.py.md)（`docs/scripts/autoclaw_cn_daily.py.md`） |
 | 阿里云盘签到与奖励领取 | `scripts/autosignin.js` | `node scripts/autosignin.js` | `37 2 * * *` | 待检查 | [autosignin.js.md](../../scripts/autosignin.js.md)（`docs/scripts/autosignin.js.md`） |
-| E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `42 */6 * * *` | 待检查 | [autosignin.py.md](../../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |
+| E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `18 */6 * * *` | 待检查 | [autosignin.py.md](../../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |

@@ -1,5 +1,5 @@
 // name: 什么值得买签到
-// cron: 5 1 * * *
+// cron: 15 1 * * *
 'use strict';
 // qinglong-notification-policy: begin
 (() => {
@@ -24,6 +24,7 @@
 // The MIT notices below are retained for the previously merged components.
 // Copyright (c) 2023 Hex
 // Source: hex-ci/smzdm_script, smzdm_checkin.js (MIT).
+// Catalog 4f26bcb78ce19f2c, upstream commit 0b71d792b84a8550e4b729053fe0da06838efc2d.
 // Upstream attribution: agluo/ql-script-hub (SMZDM_checkin.py).
 // MIT License: Copyright (c) 2023 Hex
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -54,7 +55,7 @@
 // 互动开启时查询前后资产、未读消息和近期经验；无需发布公开文本。
 // 参数：SMZDM_ACCOUNT 每行 sk|完整 Cookie；只在第一个 | 分割。
 // 获取：登录自己的什么值得买客户端，从本人 /checkin 请求取得 sk 和 Cookie 的 sess。
-// 默认 SMZDM_ACTION=checkin，保留签到 31 8 * * *；抽奖单独调度 20 8 * * *，设为 lottery。
+// 默认 SMZDM_ACTION=checkin，保留已发布调度 5 1 * * *；抽奖单独调度 20 8 * * *，设为 lottery。
 // 抽奖兼容 SMZDM_COOKIE，每行完整 Cookie；从本人已登录网页请求头获取，不要公开。
 // SMZDM_ACTION=all 显式同时执行；抽奖可能消耗机会或活动资产，请先核对官方活动规则。
 // SMZDM_LOTTERY_LIFE=1 显式启用原上游未默认执行的生活频道；不自动重试抽奖。
@@ -64,14 +65,16 @@
 // SMZDM_TOKEN_MODE=sess（默认）保留维护接口；robot 显式启用上游 10.4.1 Robot Token 流程。
 // SMZDM_TOKEN_MODE=dual 显式依次执行维护版 App 签到与网页状态核验，兼容 chavyleung 上游的双通道能力。
 // 兼容 SMZDM_COOKIES 或 SMZDM_COOKIE 每行 Cookie，需提供同顺序逐行 SMZDM_SK，或 Cookie 自带 sk。
-// 上游每日 30 9 * * * 可作为签到自定义调度；不要重复建立每日签到任务。
+// 上游每日 10 8 * * * / 30 9 * * * 可作为签到自定义调度；不要重复建立每日签到任务。
+// 不沿用上游按账号派生 sk、sk=1 回退或改写 Cookie 设备字段；必须提供本人真实 sk 与配套 Cookie。
+// 签到前先请求签到卡片以贴近客户端流程；卡片失败不阻断签到。普通奖励业务码 4 视为今日无新增奖励。
 // 通知按青龙 → PushPlus → Server酱回退；PUSHPLUS_TOKEN、SENDKEY 可选且受 QINGLONG_NOTIFY 控制。
 // QINGLONG_NOTIFY_SCRIPTS 可用目录 ID、路径、文件名、通配符或 * 筛选；设置为空表示全部关闭。
 // Additional source: yuxian158/check, dailycheckin_scripts/ck_smzdm.py (MIT).
 // 网页模式 SMZDM_TOKEN_MODE=web：SMZDM_ACCOUNT 每行 |完整 Cookie，无需 sk。
 // 登录本人 www.smzdm.com，在开发者工具 Network 中复制 zhiyou.smzdm.com 请求的完整 Cookie。
 // 网页模式仅执行原上游网页签到和资产查询；仍可显式组合抽奖/互动，不替代默认客户端奖励流程。
-// 原上游网页签到调度 30 8 * * * 可自定义；默认继续使用维护任务 31 8 * * *，避免重复签到任务。
+// 原上游网页签到调度 30 8 * * * 可自定义；默认继续使用已发布调度 5 1 * * *，避免重复签到任务。
 // 网页签到写入后重新查询本人账号的 has_checkin 与签到天数，验证失败不重试写入。
 // Additional source: unitaryhighs/ql_sign_script, sign/smzdm.js (MIT).
 // Original attribution: ql_sign_script : https://github.com/unitaryhighs/ql_sign_script
@@ -456,6 +459,18 @@ async function runLive(account, userAgentOverride = '', report = () => {}, env =
     });
     if (robotToken) account.runtimeSecrets = [robotToken];
   }
+  // 与上游客户端一致：签到前先渲染签到卡片；失败仅告警，不阻断后续签到。
+  {
+    const started = Date.now();
+    report(`[预备] 签到卡片`);
+    try {
+      const data = await checked('/checkin/show_view_v2');
+      if (!Array.isArray(data.rows)) throw new Error('字段缺失');
+      report(`签到卡片：已取得，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '✅');
+    } catch {
+      report(`签到卡片：未取得，继续签到，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '⚠️');
+    }
+  }
   const signed = await stage('每日签到', async () => {
     if (robot && !robotToken) throw new Error('Token 未取得，不提交签到');
     const response = robot
@@ -472,11 +487,26 @@ async function runLive(account, userAgentOverride = '', report = () => {}, env =
     reward = await stage('普通签到奖励', async () => {
       const data = robot ? await (async () => {
         const response = await robotRequest('/checkin/all_reward', account, {sk: account.sk, token: robotToken});
+        // 上游：error_code 4 表示今日无新增奖励，按已处理对待。
+        if (String(response.payload?.error_code) === '4') {
+          report('普通签到奖励：今日无新增奖励', '⏭️');
+          return {normal_reward: {reward_add: {}, gift: {}, no_new_reward: true}};
+        }
         if (apiFailure(response) || !response.payload?.data || typeof response.payload.data !== 'object') throw new Error('奖励未验证');
         return response.payload.data;
-      })() : await checked('/checkin/all_reward');
+      })() : await (async () => {
+        const response = await apiRequest('/checkin/all_reward', account, session, userAgentOverride);
+        if (String(response.payload?.error_code) === '4') {
+          report('普通签到奖励：今日无新增奖励', '⏭️');
+          return {normal_reward: {reward_add: {}, gift: {}, no_new_reward: true}};
+        }
+        if (apiFailure(response)) throw new Error('业务失败');
+        if (!response.payload?.data || typeof response.payload.data !== 'object') throw new Error('字段缺失');
+        return response.payload.data;
+      })();
       if (!data.normal_reward || typeof data.normal_reward !== 'object') throw new Error('字段缺失');
       const normal = data.normal_reward;
+      if (normal.no_new_reward) return data;
       report(`奖励 ${display(normal.reward_add?.title, account)}：${display(normal.reward_add?.content, account)}；连续签到 ${display(normal.sub_title, account)}`, '└─');
       report(`礼包 ${display(normal.gift?.title, account)}：${display(normal.gift?.content_str ?? normal.gift?.sub_content, account)}`, '└─');
       return data;
@@ -486,7 +516,10 @@ async function runLive(account, userAgentOverride = '', report = () => {}, env =
       if (!Array.isArray(data.rows)) throw new Error('字段缺失');
       return data;
     });
-    const available = view?.rows.find((item) => String(item?.cell_type) === '18001')?.cell_data?.checkin_continue?.continue_checkin_reward_show;
+    // 优先 cell_type=18001；兼容上游按任意含 checkin_continue 的卡片判断。
+    const continueRow = view?.rows.find((item) => String(item?.cell_type) === '18001')
+      || view?.rows.find((item) => item?.cell_data?.checkin_continue);
+    const available = continueRow?.cell_data?.checkin_continue?.continue_checkin_reward_show;
     if (available === true || available === 1 || available === '1') {
       const claimed = await stage('额外签到奖励', async () => {
         const data = await checked('/checkin/extra_reward');
@@ -787,7 +820,7 @@ function notificationSelected(env = process.env) {
   const invoked = path.resolve(process.argv[1] || 'candidate.js');
   const basename = path.basename(invoked);
   const normalized = invoked.replaceAll('\\', '/');
-  const identities = ['ac10a6e47692bf1f', '621df252c315f2d1', 'scripts/smzdm_checkin.js', 'smzdm_checkin.js', basename, normalized];
+  const identities = ['ac10a6e47692bf1f', '621df252c315f2d1', '4f26bcb78ce19f2c', 'scripts/smzdm_checkin.js', 'smzdm_checkin.js', basename, normalized];
   return selectors.some((selector) => selector === '*' || identities.some((identity) => globMatch(identity, selector)));
 }
 
