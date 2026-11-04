@@ -4,13 +4,14 @@
 - 脚本路径：`scripts/activity_checkin.py`
 - 青龙命令：`python3 scripts/activity_checkin.py`
 - 建议 Cron：`22 8 * * *`
-- 发布哈希：`5c235fafca6439c7dcaf245e678ead1c489a461c8f96584bc5750c9e16282756`
+- 发布哈希：`e9929e337a1a0282a3798686df6edbf666cafb0f6b6bec7e138835a8f244424b`
 - 许可证：`MIT`
 
 ## 脚本功能
 
 - 账号密码登录获取 JWT，适配活动中心白银签到、星河每日领取与晚晚舟 /api/v1 签到
 - 可按 site_hint 指定站点类型，或自动探测活动中心与星河流程
+- 登录会话数已满时给出可操作说明；签到命令超时后只读复查；服务端已签到/已领取按已完成处理
 - 支持每行一个账号，独立汇总成功、已完成与失败
 - 展示登录返回的非敏感昵称/用户名/公开 UID，隐藏密码、JWT 与原始响应
 - 完全断网预演、请求超时与响应大小限制、时间轴日志与单行 TASK_SUMMARY
@@ -76,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5c235fafca6439c7dcaf245e678ead1c489a461c8f96584bc5750c9e16282756`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1e2ace06c33b3dec`。
+SHA-256 `e9929e337a1a0282a3798686df6edbf666cafb0f6b6bec7e138835a8f244424b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1e2ace06c33b3dec`。
 
 ## 副作用与风险
 

@@ -11,6 +11,9 @@
 写操作需账号密码登录获取 JWT。本维护版转为青龙可调度独立任务，不依赖私有
 仓库、上游模块或外部可执行文件。
 
+上游相对旧版新增：登录会话数已满（AUTH_SESSION_LIMIT）可操作说明；活动中心
+签到命令超时后只读复查；服务端返回「已签到/已领取」时按已完成处理。
+
 ACTIVITY_CHECKIN_ACCOUNTS：每个非空行一个账号。推荐 JSON：
 {"url":"https://站点根","username":"用户名","password":"密码"}；
 可选 user_id、site_hint（activity_center / xingya / wanwanzhou / auto）。
@@ -342,6 +345,19 @@ def extract_message(payload):
     return "业务失败"
 
 
+def is_session_limit_message(code, message):
+    code_text = str(code or "")
+    msg = str(message or "")
+    low = msg.lower()
+    return (
+        code_text == "AUTH_SESSION_LIMIT"
+        or "session limit" in low
+        or "active login sessions" in low
+        or "登录会话数已满" in msg
+        or "会话数已满" in msg
+    )
+
+
 def jwt_login(http, base_url, username, password):
     status, data, _ = http.request(
         "{}/api/user/login".format(base_url),
@@ -350,15 +366,28 @@ def jwt_login(http, base_url, username, password):
     )
     if status in (401, 403):
         raise SafeError("登录凭据无效")
+    if isinstance(data, dict):
+        token = (
+            (data.get("data") or {}).get("access_token")
+            if isinstance(data.get("data"), dict)
+            else None
+        )
+        if isinstance(token, str) and token:
+            user = (data.get("data") or {}).get("user") if isinstance(data.get("data"), dict) else {}
+            if not isinstance(user, dict):
+                user = {}
+            return token, user
+        message = extract_message(data)
+        if is_session_limit_message(data.get("code"), message):
+            raise SafeError(
+                "登录会话数已满（AUTH_SESSION_LIMIT）：账号密码正确，但别处仍有登录会话占名额。"
+                "请在已登录设备打开「登录会话」并退出其他会话；无法进入时重置密码使全部会话失效后重试"
+            )
+        if status == 200:
+            raise SafeError("登录失败：{}".format(redact_text(message, [])))
     if status != 200 or not isinstance(data, dict):
         raise SafeError("登录失败（HTTP {}）".format(status))
-    token = (data.get("data") or {}).get("access_token") if isinstance(data.get("data"), dict) else None
-    if not isinstance(token, str) or not token:
-        raise SafeError("登录失败：未返回 JWT")
-    user = (data.get("data") or {}).get("user") if isinstance(data.get("data"), dict) else {}
-    if not isinstance(user, dict):
-        user = {}
-    return token, user
+    raise SafeError("登录失败：未返回 JWT")
 
 
 def identity_from_user(user, secrets):
@@ -369,6 +398,38 @@ def identity_from_user(user, secrets):
         if value:
             return value
     return ""
+
+
+def query_activity_today(http, base_url, headers, today=None):
+    """只读复查活动中心今日签到：返回 (state_or_None, detail, silver)。"""
+    status, payload, _ = http.request(
+        "{}/api/user/activities/status".format(base_url), headers=headers
+    )
+    if status == 404:
+        return None, "该站没有活动中心接口", 0
+    if status in (401, 403):
+        raise SafeError("活动中心状态查询凭据无效")
+    if status != 200 or not isinstance(payload, dict):
+        raise SafeError("活动中心状态查询失败（HTTP {}）".format(status))
+    data = payload.get("data") if isinstance(payload.get("data"), dict) else {}
+    checkin = data.get("checkin") if isinstance(data.get("checkin"), dict) else {}
+    if not checkin:
+        return None, "该站无活动中心数据", 0
+    day = today if today is not None else data.get("today")
+    calendar = checkin.get("calendar") if isinstance(checkin.get("calendar"), list) else []
+    records = [item for item in calendar if isinstance(item, dict) and item.get("day") == day]
+    if records:
+        silver = records[0].get("silver", 0)
+        if not isinstance(silver, (int, float)) or isinstance(silver, bool):
+            silver = 0
+        return "alreadyComplete", "今日已签到（+{} 白银）".format(int(silver)), int(silver)
+    return False, "活动中心显示今日未签到", 0
+
+
+def looks_like_already_done(message):
+    text = str(message or "")
+    low = text.lower()
+    return "already" in low or "已签到" in text or "已领取" in text
 
 
 def checkin_activity_center(http, base_url, jwt, user_id):
@@ -396,33 +457,47 @@ def checkin_activity_center(http, base_url, jwt, user_id):
         raise SafeError("活动中心签到未启用或已暂停")
 
     request_id = str(uuid.uuid4())
-    status, result, _ = http.request(
-        "{}/api/user/activities/command".format(base_url),
-        method="POST",
-        headers=headers,
-        body={"kind": "checkin", "target": None, "request_id": request_id},
-    )
+    try:
+        status, result, _ = http.request(
+            "{}/api/user/activities/command".format(base_url),
+            method="POST",
+            headers=headers,
+            body={"kind": "checkin", "target": None, "request_id": request_id},
+        )
+    except SafeError as error:
+        # 超时/连接重置不等于未入账：短暂等待后只读复查。
+        detail = str(error)
+        if "网络" in detail or "超时" in detail or "TLS" in detail:
+            time.sleep(2)
+            try:
+                state, why, _silver = query_activity_today(http, base_url, headers, today=today)
+            except SafeError:
+                raise SafeError("签到命令异常，且复查失败：{}".format(detail)) from None
+            if state == "alreadyComplete":
+                return state, "签到请求超时，复查确认{}".format(why)
+        raise
+
     if status in (401, 403):
         raise SafeError("签到命令凭据无效")
     if not isinstance(result, dict):
         raise SafeError("签到命令响应无效（HTTP {}）".format(status))
     if not result.get("success"):
-        raise SafeError("活动中心签到失败：{}".format(redact_text(extract_message(result), [])))
+        message = extract_message(result)
+        if looks_like_already_done(message):
+            try:
+                state, why, silver = query_activity_today(http, base_url, headers, today=today)
+            except SafeError:
+                return "alreadyComplete", redact_text(message, [])[:120]
+            if state == "alreadyComplete":
+                return state, why
+            return "alreadyComplete", redact_text(message, [])[:120]
+        raise SafeError("活动中心签到失败：{}".format(redact_text(message, [])))
 
     silver = 0
     try:
-        status2, status_payload, _ = http.request(
-            "{}/api/user/activities/status".format(base_url), headers=headers
-        )
-        if status2 == 200 and isinstance(status_payload, dict):
-            data2 = status_payload.get("data") if isinstance(status_payload.get("data"), dict) else {}
-            checkin2 = data2.get("checkin") if isinstance(data2.get("checkin"), dict) else {}
-            calendar2 = checkin2.get("calendar") if isinstance(checkin2.get("calendar"), list) else []
-            rec = [item for item in calendar2 if isinstance(item, dict) and item.get("day") == today]
-            if rec:
-                value = rec[0].get("silver", 0)
-                if isinstance(value, (int, float)) and not isinstance(value, bool):
-                    silver = int(value)
+        state, why, silver = query_activity_today(http, base_url, headers, today=today)
+        if state == "alreadyComplete":
+            return "success", "签到成功（+{} 白银）".format(silver)
     except SafeError:
         silver = 0
     return "success", "签到成功（+{} 白银）".format(silver)
@@ -447,7 +522,10 @@ def checkin_xingya(http, base_url, jwt, user_id):
         if data.get("already_claimed"):
             return "alreadyComplete", "今日已领取（{} 额度）".format(int(quota))
         return "success", "签到成功（+{} 额度）".format(int(quota))
-    raise SafeError("星河领取失败：{}".format(redact_text(extract_message(result), [])))
+    message = extract_message(result)
+    if looks_like_already_done(message):
+        return "alreadyComplete", redact_text(message, [])[:120]
+    raise SafeError("星河领取失败：{}".format(redact_text(message, [])))
 
 
 def is_activity_center_site(http, base_url, jwt, user_id):
