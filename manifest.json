@@ -3515,6 +3515,182 @@
       }
     },
     {
+      "catalogId": "56e1597cff520f65",
+      "applicationKey": "astudio",
+      "checkProfile": {
+        "requiredEnv": [
+          "ASTUDIO_COOKIES"
+        ],
+        "optionalEnv": [
+          "ASTUDIO_ACCOUNT_FILE",
+          "ASTUDIO_DRY_RUN",
+          "ASTUDIO_TASK",
+          "ASTUDIO_WAIT_SECONDS",
+          "ASTUDIO_TIMEOUT",
+          "ASTUDIO_PROXY",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ASTUDIO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ASTUDIO_WAIT_SECONDS": "2.5",
+          "ASTUDIO_TIMEOUT": "20"
+        },
+        "successPatterns": [
+          "本轮余额增加",
+          "查询完成",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用网页会话 Cookie 触发 AStudio 当天会话活跃并观测每日登录积分是否到账",
+          "读取 membership/plan-config 判断每日登录活动是否启用",
+          "签到前后回读 points/balance 的 totalBalance，仅在余额真实增加时报告观察到增长",
+          "支持仅查询模式（不调用 membership/me 与 points/summary）",
+          "支持多账号分行配置、断网预演、脱敏时间轴日志、TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "请求 membership/me 与 points/summary 触发网页会话活跃，可能促使服务端发放当日登录积分"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AStudio 每日登录积分观测",
+      "path": "scripts/astudio_daily.py",
+      "sha256": "7881d22db73defc11bcb28b81a9d53e035c523aea193fdc7c0eceb7999d6d1b2",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/AStudio-Daily",
+        "branch": "main",
+        "commit": "5b64498f363d224e4b836f95434ef8345e5615a9",
+        "originalPath": "astudio_daily.py",
+        "related": [
+          {
+            "catalogId": "372a4ef1619e7c02",
+            "sha256": "4b0e42a5b13ee605969cade9e3815549aa789f7e1fa052eb6d52b8917b6371ca",
+            "repository": "L0NE-6/AStudio-Daily",
+            "url": "https://github.com/L0NE-6/AStudio-Daily.git",
+            "branch": "main",
+            "commit": "5b64498f363d224e4b836f95434ef8345e5615a9",
+            "originalPath": "tests/test_astudio_daily.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "17 9 * * *",
+      "command": "python3 scripts/astudio_daily.py",
+      "environment": [
+        {
+          "name": "ASTUDIO_COOKIES",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人浏览器登录 https://agent.xfyun.cn/xingchen-studio/ ，打开开发者工具 → 应用/存储 → Cookie，复制同一账号下的 token、account_id，以及可选的 ssoSessionId。不要把 Cookie 发给他人或提交到公开仓库。",
+          "format": "每个非空行一个账号。支持完整 Cookie（token=...; account_id=...; ssoSessionId=...）、管道格式「备注|token|account_id|sso_session_id」（无 sso 时可省略末段；仅按前三个竖线拆分）、或整段 JSON 数组。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "ASTUDIO_ACCOUNT_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入。显式指向本地账号文件时读取；未设置时不会自动扫描脚本同目录默认文件。文件内容格式与 ASTUDIO_COOKIES 相同。",
+          "format": "本地文件路径；每行一个账号或 JSON 数组。"
+        },
+        {
+          "name": "ASTUDIO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证配置时设为 1，不发起任何网络请求。",
+          "format": "1/true/yes/on 开启断网预演；0/false/no/off 真实执行。默认 0。"
+        },
+        {
+          "name": "ASTUDIO_TASK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 query 时仅查询活动配置与余额，不调用活跃触发接口；也可用命令行 --query。",
+          "format": "query 或留空（默认每日登录积分观测）。"
+        },
+        {
+          "name": "ASTUDIO_WAIT_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "活跃触发后等待再回读余额；网络较慢时可适当增大。",
+          "format": "非负秒数，默认 2.5。"
+        },
+        {
+          "name": "ASTUDIO_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "单次 HTTP 超时；网络较慢时可适当增大。",
+          "format": "正整数秒，默认 20。"
+        },
+        {
+          "name": "ASTUDIO_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选 HTTP(S) 代理；一般无需设置。",
+          "format": "代理 URL，例如 http://127.0.0.1:7890。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "QINGLONG_NOTIFY=auto 时，用目录 ID、文件名或通配符选择需要通知的脚本；空值表示全部关闭。",
+          "format": "逗号/分号/空白/换行分隔；* 表示全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义 notify.py / sendNotify.js 所在目录；默认搜索 /ql/data/scripts 与 /ql/scripts。",
+          "format": "本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；同一账号的 token、account_id、可选 ssoSessionId 写在同一行。Cookie、管道或 JSON 均可；管道格式仅按前三个竖线拆分。不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [
+        "requests"
+      ],
+      "features": [
+        "使用网页会话 Cookie 触发 AStudio 当天会话活跃并观测每日登录积分是否到账",
+        "读取 membership/plan-config 判断每日登录活动是否启用",
+        "签到前后回读 points/balance 的 totalBalance，仅在余额真实增加时报告观察到增长",
+        "支持仅查询模式（不调用 membership/me 与 points/summary）",
+        "支持多账号分行配置、断网预演、脱敏时间轴日志、TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "请求 membership/me 与 points/summary 触发网页会话活跃，可能促使服务端发放当日登录积分"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/56e1597cff520f65",
+        "candidateSha256": "7881d22db73defc11bcb28b81a9d53e035c523aea193fdc7c0eceb7999d6d1b2"
+      }
+    },
+    {
       "catalogId": "6b6ae91490051bce",
       "applicationKey": "atxyq",
       "checkProfile": {
