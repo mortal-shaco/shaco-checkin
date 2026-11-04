@@ -6,7 +6,7 @@
 | --- | --- |
 | 上架 | 3 |
 | 已检查 | 0 |
-| 待检查 | 231 |
+| 待检查 | 232 |
 
 ## 字母索引
 
@@ -18,7 +18,7 @@
 - [签到](categories/checkin.md)（188）
 - [社区](categories/community.md)（1）
 - [AI服务](categories/ai.md)（11）
-- [影音](categories/video.md)（2）
+- [影音](categories/video.md)（3）
 - [其他](categories/other.md)（19）
 
 ## 其他入口

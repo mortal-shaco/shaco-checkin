@@ -16768,6 +16768,251 @@
       }
     },
     {
+      "catalogId": "887bba5f8efd3762",
+      "applicationKey": "eplayn/zhihuishu-toolkit::internal",
+      "checkProfile": {
+        "requiredEnv": [
+          "ZHS_HABIT_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ZHS_HABIT_COOKIE",
+          "ZHS_HABIT_RAC",
+          "ZHS_HABIT_REMARK",
+          "ZHS_HABIT_MINUTES",
+          "ZHS_HABIT_CHUNK",
+          "ZHS_HABIT_SPEED",
+          "ZHS_HABIT_FORCE",
+          "ZHS_HABIT_STATE_FILE",
+          "ZHS_HABIT_TIMEOUT",
+          "ZHS_HABIT_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ZHS_HABIT_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ZHS_HABIT_TIMEOUT": "25",
+          "ZHS_HABIT_MINUTES": "25",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "习惯分上报完成",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "按前端节奏分批上报共享课学习时长，用于获取每日习惯分",
+          "读取课程与视频列表并选择视频进行学习时长累计",
+          "校验 Cookie 登录态与 recruitAndCourseId 课程参数",
+          "支持自定义每日分钟数、单批秒数与假定倍速",
+          "本地状态记录今日已完成，可强制再跑",
+          "多账号独立处理，任一账号失败时整体非零退出",
+          "完全断网预演、脱敏时间轴日志、机器可读汇总和青龙通知"
+        ],
+        "sideEffects": [
+          "实时模式会向智慧树学习接口上报学习时长，可能改变账号学习进度与每日习惯分",
+          "会写入本地状态文件记录当日完成情况",
+          "启用通知且发现青龙通知组件时，会发送脱敏任务结果通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "智慧树共享课每日习惯分",
+      "path": "scripts/internal.py",
+      "sha256": "c15be24ec4fa6c77c770dc1a84150c96342244be4de0d96c8e65575445db21aa",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "eplayn/zhihuishu-toolkit",
+        "branch": "main",
+        "commit": "a74a636431530c0843a0f6ba369de36b794a1ccd",
+        "originalPath": "internal/_共享课_每日习惯分.py",
+        "related": [
+          {
+            "catalogId": "918a38561e015f94",
+            "sha256": "dc9a81177cd4cba4c3c8df982e3bdbcf5b7d9405444548eb76ee517af1ba34ce",
+            "repository": "eplayn/zhihuishu-toolkit",
+            "url": "https://github.com/eplayn/zhihuishu-toolkit.git",
+            "branch": "main",
+            "commit": "a74a636431530c0843a0f6ba369de36b794a1ccd",
+            "originalPath": "internal/_共享课_登录.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "fb085dd4736d3a62",
+            "sha256": "6e5fd2fa7a11ab7de48f70c06e3b7f563d134af079254c8098e1d8b1b0cfed17",
+            "repository": "eplayn/zhihuishu-toolkit",
+            "url": "https://github.com/eplayn/zhihuishu-toolkit.git",
+            "branch": "main",
+            "commit": "a74a636431530c0843a0f6ba369de36b794a1ccd",
+            "originalPath": "internal/_共享课_视频.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "20 7 * * *",
+      "command": "python3 scripts/internal.py",
+      "environment": [
+        {
+          "name": "ZHS_HABIT_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录智慧树共享课学习页后，在开发者工具网络面板任选 studyservice-api.zhihuishu.com 请求，复制请求头 Cookie 完整值（需含 jt-cas、CASLOGC 等）。recruitAndCourseId 取自学习页 URL 参数。同仓库登录脚本仅用于本机扫码取 Cookie，不能在青龙里交互扫码。Cookie 约 24 小时过期后需重新获取。不要把 Cookie 发给他人或写入公开仓库。",
+          "format": "每行一个账号：Cookie|recruitAndCourseId，或 备注|Cookie|recruitAndCourseId；账号之间仅用换行分隔，不使用 & 或 @"
+        },
+        {
+          "name": "ZHS_HABIT_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "单账号兼容别名：未配置 ZHS_HABIT_ACCOUNTS 时，与 ZHS_HABIT_RAC 一起填写。已配置 ZHS_HABIT_ACCOUNTS 时忽略本变量。",
+          "format": "完整 Cookie 字符串，需含 jt-cas 与 CASLOGC"
+        },
+        {
+          "name": "ZHS_HABIT_RAC",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "单账号兼容别名：与 ZHS_HABIT_COOKIE 配套填写共享课 recruitAndCourseId。",
+          "format": "学习页 URL 中的 recruitAndCourseId 参数值，不是占位符"
+        },
+        {
+          "name": "ZHS_HABIT_REMARK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单账号模式下的显示备注名，便于日志核对。",
+          "format": "任意短文本"
+        },
+        {
+          "name": "ZHS_HABIT_MINUTES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：每日目标学习分钟数，默认 25（对齐上游前端习惯分目标）。",
+          "format": "1 到 180 之间的数字"
+        },
+        {
+          "name": "ZHS_HABIT_CHUNK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单批上报秒数，默认 540。",
+          "format": "60 到 1800 之间的数字"
+        },
+        {
+          "name": "ZHS_HABIT_SPEED",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：假定播放倍速，影响 watchPoint 采样密度，默认 1.8。",
+          "format": "0.5 到 3 之间的数字"
+        },
+        {
+          "name": "ZHS_HABIT_FORCE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：设为 1 时忽略本地「今日已完成」状态并强制再跑一次。",
+          "format": "1、true、yes、on 表示强制"
+        },
+        {
+          "name": "ZHS_HABIT_STATE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：指定每日完成状态文件路径；留空使用脚本目录下 zhihuishu_habit_state.json。",
+          "format": "可写文件的绝对或相对路径"
+        },
+        {
+          "name": "ZHS_HABIT_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次接口请求超时秒数，默认 25。",
+          "format": "5 到 120 之间的数字"
+        },
+        {
+          "name": "ZHS_HABIT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：设为 1 进入完全断网预演，校验配置与计划步骤但不发起任何网络请求。",
+          "format": "1、true、yes、on 表示开启预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "目录路径；失败后继续尝试 /ql/data/scripts 与 /ql/scripts；通知失败不改变业务退出码"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个账号，行内用竖线分隔：Cookie|recruitAndCourseId，或 备注|Cookie|recruitAndCourseId；账号独立处理，任一账号失败时整体以非零退出码结束"
+      },
+      "dependencies": [
+        "curl_cffi",
+        "pycryptodome"
+      ],
+      "features": [
+        "按前端节奏分批上报共享课学习时长，用于获取每日习惯分",
+        "读取课程与视频列表并选择视频进行学习时长累计",
+        "校验 Cookie 登录态与 recruitAndCourseId 课程参数",
+        "支持自定义每日分钟数、单批秒数与假定倍速",
+        "本地状态记录今日已完成，可强制再跑",
+        "多账号独立处理，任一账号失败时整体非零退出",
+        "完全断网预演、脱敏时间轴日志、机器可读汇总和青龙通知"
+      ],
+      "sideEffects": [
+        "实时模式会向智慧树学习接口上报学习时长，可能改变账号学习进度与每日习惯分",
+        "会写入本地状态文件记录当日完成情况",
+        "启用通知且发现青龙通知组件时，会发送脱敏任务结果通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/887bba5f8efd3762",
+        "candidateSha256": "a0638f8440943a85e9244e68737f1182d06ebe7dd2bd6cd6b266ac95737a6baf"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "a0638f8440943a85e9244e68737f1182d06ebe7dd2bd6cd6b266ac95737a6baf",
+        "releaseSha256": "c15be24ec4fa6c77c770dc1a84150c96342244be4de0d96c8e65575445db21aa",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T11:53:38.225796+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "a0638f8440943a85e9244e68737f1182d06ebe7dd2bd6cd6b266ac95737a6baf",
+          "toCandidateSha256": "c15be24ec4fa6c77c770dc1a84150c96342244be4de0d96c8e65575445db21aa",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "7701c083c0ca06d5",
       "applicationKey": "iqiyi",
       "checkProfile": {
