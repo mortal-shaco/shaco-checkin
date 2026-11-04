@@ -6,19 +6,24 @@
 # 参考: L0NE-6/Raccoon-Daily, raccoon_login.py（凭据获取说明，未合并交互式登录）
 """小浣熊每日积分维护版（Python 3，仅标准库）。
 
-RACCOON_TOKENS：每个非空行一个账号，支持 token、备注|token、备注|token|refresh_token。
-支持 Bearer 前缀；每个字段边界仅拆一次，refresh_token 内的后续 | 原样保留。
-不使用 & 或 @ 分隔账号。备注仅用于兼容解析，不打印。
+RACCOON_TOKENS：每个非空行一个账号，支持 token、备注|token、备注|token|refresh_token、
+备注|token|refresh_token|office_identity（组织账号可附带显式组织身份；无 refresh 时写
+备注|token||office_identity）。支持 Bearer 前缀；备注、access、refresh、组织身份均只在
+各自字段的首个 | 处拆分，后续 | 保留在该字段内。不使用 & 或 @ 分隔账号。备注仅用于
+兼容解析，不打印。组织身份写入请求头 X-Org-Code；值为 personal 或空时按个人账号处理。
 在 https://xiaohuanxiong.com 登录后，通过开发者工具网络面板中本站已登录请求的
-Authorization 获取 access_token；通过本人登录/续期响应的 data.access_token 与
-data.refresh_token 获取配套凭据。也可自行查看官方桌面客户端的本人 auth.json，
-复制 access_token/accessToken 和 refresh_token/refreshToken；本脚本不依赖该文件。
+Authorization 获取 access_token；通过本人登录/续期响应的 data.access_token、
+data.refresh_token 与可选 data.office_identity/officeIdentity 获取配套凭据。也可自行
+查看官方桌面客户端的本人 auth.json，复制 access_token/accessToken、
+refresh_token/refreshToken 与 office_identity/officeIdentity；本脚本不依赖该文件。
 凭据只能私下填入青龙，不能复制到日志。access 有效期约 2~3 小时，refresh 约 30 天，
 以官方实际期限为准。无 refresh 的旧格式仍可使用，但过期需手动重新登录。
 RACCOON_TOKEN_FILE：续期缓存路径，默认本脚本旁 raccoon_tokens.json；续期会轮换
 refresh 并以 0600 权限原子保存。保持此文件私密且持久，禁止纳入版本控制或公开。
-缓存绑定原始凭据和站点；修改凭据后不复用旧缓存。临期 5 分钟主动续期，认证失败后
-至多重试一次；缓存续期凭据优先、环境凭据兜底。请求重定向被禁止，TLS 正常校验。
+缓存绑定原始凭据、组织身份和站点；修改凭据后不复用旧缓存。临期 5 分钟主动续期，
+认证失败后至多重试一次；缓存续期凭据优先、环境凭据兜底。请求重定向被禁止，TLS 正常校验。
+客户端桌面身份头与上游对齐：X-Client-Name=raccoon-work，X-Client-Version=v1.1.5；
+手机端奖励仍使用 app-android / v1.0.3。
 RACCOON_STATE_FILE：奖励台账路径，默认本脚本旁 raccoon_onboarding.json。
 RACCOON_MAIN_SITE_URL：可选 HTTPS 站点，默认 https://xiaohuanxiong.com。
 RACCOON_DRY_RUN=1：完全断网、无文件写入的预演（通知仅模拟）。
@@ -30,7 +35,7 @@ catalog-id、scripts/raccoon_daily.py、raccoon_daily.py、文件名通配符或
 QINGLONG_NOTIFY_DIR 指向青龙通知模块目录。dry-run 仅模拟选中的通知，不加载通知模块。
 通知优先调用青龙 notify.py，保留 PUSHPLUS_TOKEN、BARK_URL、WECOM_WEBHOOK、
 DINGTALK_WEBHOOK/DINGTALK_SECRET 和 QL_URL/QL_TOKEN 兼容渠道。
-上游未声明 cron；维护版建议每天北京时间 09:00，青龙应设置相应时区。
+上游未声明 cron；维护版建议每天北京时间 09:02，青龙应设置相应时区。
 
 MIT License
 本文件继承任务声明的上游 MIT 许可；所提供源文件未含额外版权声明。
@@ -88,7 +93,8 @@ BEIJING = timezone(timedelta(hours=8))
 TITLE = "小浣熊每日积分"
 CATALOG_ID = "d4bfc257a45d9e8d"
 REFRESH = "/api/web/auth/v1/refresh"
-CLIENT_VERSION = "v1.0.35"
+CLIENT_NAME = "raccoon-work"
+CLIENT_VERSION = "v1.1.5"
 SETTINGS = "/api/web/office/v3/setting_info"
 BILLS = "/api/web/points/v1/bills?paging.limit=20&paging.offset=0"
 GRANTS = (("desktop_login_grant", "首次电脑端登录奖励", "desktop-windows", CLIENT_VERSION, "/api/web/desktop/v1/login/points/grant"),
@@ -172,9 +178,39 @@ def unwrap(payload):
     return payload["data"]
 
 
-def headers(token, platform="desktop-windows", version=CLIENT_VERSION):
-    return {"Authorization": "Bearer " + token, "X-Client-Platform": platform,
-            "X-Client-Version": version, "X-Raccoon-Language": "zh"}
+def credential_org_code(credentials):
+    """仅从显式凭据字段读取组织身份；personal/空值按个人账号处理。"""
+    if not isinstance(credentials, dict):
+        return ""
+    value = ""
+    for key in ("office_identity", "officeIdentity"):
+        raw = credentials.get(key)
+        if isinstance(raw, str) and raw.strip():
+            value = raw.strip()
+            break
+    if not value or value == "personal":
+        return ""
+    if not value.isascii() or any(ord(char) < 32 or ord(char) == 127 for char in value):
+        raise TaskError("小浣熊组织身份格式无效，请重新导入登录态")
+    return value
+
+
+def account_identity_label(credentials):
+    try:
+        return "组织" if credential_org_code(credentials) else "个人"
+    except TaskError:
+        return "组织字段异常"
+
+
+def headers(token, platform="desktop-windows", version=CLIENT_VERSION, credentials=None):
+    hdr = {"Authorization": "Bearer " + token, "X-Client-Platform": platform,
+           "X-Client-Version": version, "X-Raccoon-Language": "zh"}
+    if platform == "desktop-windows":
+        hdr["X-Client-Name"] = CLIENT_NAME
+    org_code = credential_org_code(credentials)
+    if org_code:
+        hdr["X-Org-Code"] = org_code
+    return hdr
 
 
 def accounts_from(raw):
@@ -185,13 +221,22 @@ def accounts_from(raw):
             continue
         line = line.strip('"\'')
         remainder = line.split("|", 1)[1] if "|" in line else line
-        token, refresh = remainder.split("|", 1) if "|" in remainder else (remainder, "")
-        token, refresh = strip_bearer(token), strip_bearer(refresh)
+        token, rest = remainder.split("|", 1) if "|" in remainder else (remainder, "")
+        refresh, office = rest.split("|", 1) if "|" in rest else (rest, "")
+        token, refresh, office = strip_bearer(token), strip_bearer(refresh), office.strip()
         SECRETS.update(v for v in (token, refresh) if v)
+        account = {"token": token, "refresh": refresh, "office_identity": office,
+                   "_input_token": token, "_input_refresh": refresh,
+                   "_input_office_identity": office, "_error": ""}
         invalid = not token or any(ord(c) < 32 or ord(c) == 127 for c in token + refresh)
-        accounts.append({"token": token, "refresh": refresh,
-                         "_input_token": token, "_input_refresh": refresh,
-                         "_error": "账号凭据为空或格式异常" if invalid else ""})
+        if invalid:
+            account["_error"] = "账号凭据为空或格式异常"
+        else:
+            try:
+                credential_org_code(account)
+            except TaskError as exc:
+                account["_error"] = str(exc)
+        accounts.append(account)
     if not accounts:
         raise TaskError("请配置 RACCOON_TOKENS，每个非空行一个账号")
     return accounts
@@ -276,7 +321,12 @@ def token_path():
 
 def account_key(account, origin):
     # 不使用备注或序号关联缓存，避免账号重新排序后读到其他人的凭据。
-    raw = json.dumps([origin, account["_input_token"], account["_input_refresh"]], ensure_ascii=False)
+    raw = json.dumps([
+        origin,
+        account["_input_token"],
+        account["_input_refresh"],
+        account.get("_input_office_identity") or account.get("office_identity") or "",
+    ], ensure_ascii=False)
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
@@ -407,18 +457,24 @@ def run_account(index, account, args, origin, dry):
             stats["failure"] += 1
             log("❌ %s（%.2f秒）" % (str(exc) if isinstance(exc, TaskError) else "执行失败（已隐藏异常细节）", time.monotonic() - begin))
     def trigger():
-        data = call_with_auth(account, origin, lambda token: unwrap(http_json(origin + SETTINGS, headers(token))))
+        data = call_with_auth(
+            account, origin,
+            lambda token: unwrap(http_json(origin + SETTINGS, headers(token, credentials=account))))
         show_identity(data)
         return "success", "每日触发接口业务成功；最终签到结果以账单为准"
     def bills():
-        data = call_with_auth(account, origin, lambda token: unwrap(http_json(origin + BILLS, headers(token), timeout=30)))
+        data = call_with_auth(
+            account, origin,
+            lambda token: unwrap(http_json(origin + BILLS, headers(token, credentials=account), timeout=30)))
         show_identity(data)
         return "success", daily_total(data)
     if account.get("_error"):
         stats.update(total=1, failure=1)
         log("账号%d 阶段1：❌ %s（0.00秒）" % (index, account["_error"]))
-    elif not args.query:
-        stage("每日积分触发", trigger)
+    else:
+        log("账号%d身份：%s" % (index, account_identity_label(account)))
+        if not args.query:
+            stage("每日积分触发", trigger)
     if not account.get("_error"):
         stage("北京时间今日账单核验", bills)
     if not account.get("_error") and not args.query and not args.skip_onboarding:
@@ -437,7 +493,12 @@ def run_account(index, account, args, origin, dry):
                     ledger = {**old, **ledger}
                 if ledger.get(key):
                     return "alreadyComplete", "本地台账已结算，不重复请求"
-                data = call_with_auth(account, origin, lambda token: unwrap(http_json(origin + path, headers(token, platform, version), body={})))
+                data = call_with_auth(
+                    account, origin,
+                    lambda token: unwrap(http_json(
+                        origin + path,
+                        headers(token, platform, version, credentials=account),
+                        body={})))
                 show_identity(data)
                 if type(data.get("granted")) is not bool:
                     raise TaskError("奖励接口缺少明确 granted 布尔结果")

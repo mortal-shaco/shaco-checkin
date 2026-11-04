@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/raccoon_daily.py`
 - 青龙命令：`python3 scripts/raccoon_daily.py`
 - 建议 Cron：`2 9 * * *`
-- 发布哈希：`4d8dcc14d0147333733254d97be3caf0ae5b688238b5fcc0a743b61f483206df`
+- 发布哈希：`3db9abada9d7cef685b2bb4eaaf6d7962521059902f861234e888182a32122a1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -12,7 +12,8 @@
 - 每日触发小浣熊积分发放，严格校验 HTTP 与业务码，并以北京时间今日正积分账单确认成功。
 - 查询今日积分入账；--query 只查询，不触发每日发放、不领取首次登录奖励；必要的认证续期和私密缓存写入仍可能发生。
 - 分别领取首次电脑端和手机端登录奖励；保留独立台账及旧版台账兼容，已结算奖励不重复请求，--skip-onboarding 可关闭。
-- 支持原有 token 和备注|token 输入，合入配套 refresh_token、临期五分钟自动续期、缓存优先与环境凭据兜底、轮换私密保存及认证失败后一次重试。
+- 支持原有 token 和备注|token 输入，合入配套 refresh_token、可选组织身份 office_identity、临期五分钟自动续期、缓存优先与环境凭据兜底、轮换私密保存及认证失败后一次重试。
+- 桌面请求携带官方客户端名 raccoon-work 与版本 v1.1.5；组织账号附加 X-Org-Code，个人账号不发送组织头。
 - 换行多账号、独立错误隔离、--only N 按原序号筛选；任一执行账号失败整体非零退出。
 - 显示官方返回的非秘密昵称、用户名、显示名或公开 UID；按账号输出带时间戳的编号阶段、耗时、统计和唯一 TASK_SUMMARY 机器记录。
 - 青龙全局通知开关与任务名单选择，覆盖成功、部分失败、失败、配置错误和预演；兼容 Python、JavaScript 及原有 PushPlus、Bark、企业微信、钉钉加签、青龙接口后备链，通知异常不改变业务退出码。
@@ -28,8 +29,8 @@
 
 - 必填：是
 - 敏感：是
-- 获取或设置：在 https://xiaohuanxiong.com 完成本人登录后，从开发者工具网络面板中本站已登录请求的 Authorization 获取 access_token；从本人登录或续期响应的 data.access_token、data.refresh_token 获取配套值。也可自行查看官方桌面客户端本人 auth.json 的 access_token/accessToken、refresh_token/refreshToken 后私下复制；脚本不读取或依赖该文件、不调用其他登录脚本。不要粘贴 Cookie 或回调地址，不要分享凭据。
-- 填写格式：每个非空行一个账号：token、备注|token 或 备注|token|refresh_token；支持 Bearer 前缀和整行引号，# 开头行忽略。先在首个 | 分离备注，再在凭据首个 | 分离 access 与 refresh，refresh 后续字符保留；不使用 &、@ 分隔账号。建议配套填入 refresh，access 过期且没有 refresh 时需重新登录。
+- 获取或设置：在 https://xiaohuanxiong.com 完成本人登录后，从开发者工具网络面板中本站已登录请求的 Authorization 获取 access_token；从本人登录或续期响应的 data.access_token、data.refresh_token 以及可选的 data.office_identity/officeIdentity 获取配套值。也可自行查看官方桌面客户端本人 auth.json 的 access_token/accessToken、refresh_token/refreshToken、office_identity/officeIdentity 后私下复制；脚本不读取或依赖该文件、不调用其他登录脚本。不要粘贴 Cookie 或回调地址，不要分享凭据。
+- 填写格式：每个非空行一个账号：token、备注|token、备注|token|refresh_token，或组织账号 备注|token|refresh_token|office_identity（无 refresh 时写 备注|token||office_identity）。支持 Bearer 前缀和整行引号，# 开头行忽略。备注、access、refresh、组织身份均只在各自字段首个 | 处拆分；不使用 &、@ 分隔账号。值为 personal 或空的组织身份按个人账号处理。建议配套填入 refresh，access 过期且没有 refresh 时需重新登录。
 
 ### 可选参数
 
@@ -38,7 +39,7 @@
 - 必填：否
 - 敏感：否
 - 获取或设置：可自行指定持久私密路径；默认脚本同目录 raccoon_tokens.json。轮换后的 refresh 仅保存本地，不打印；文件不可公开或提交。
-- 填写格式：本地文件路径；原子写入权限 0600；缓存绑定原始配套凭据与 HTTPS 站点，修改凭据后不复用旧绑定；不安全的旧序号缓存不跨账号导入。
+- 填写格式：本地文件路径；原子写入权限 0600；缓存绑定原始配套凭据、组织身份与 HTTPS 站点，修改凭据后不复用旧绑定；不安全的旧序号缓存不跨账号导入。
 
 ### `RACCOON_STATE_FILE`
 
@@ -137,11 +138,11 @@
 
 ## 多账号
 
-每个非空行一个账号，支持 token、备注|token、备注|token|refresh_token；每个字段边界只拆首个 |，保留 refresh 后续内容。支持 Bearer 前缀；忽略 # 注释行，不使用 & 或 @ 分隔账号。各账号独立执行，任一账号失败则整体非零退出。
+每个非空行一个账号，支持 token、备注|token、备注|token|refresh_token、备注|token|refresh_token|office_identity；各字段只拆首个 |，保留后续内容。支持 Bearer 前缀；忽略 # 注释行，不使用 & 或 @ 分隔账号。各账号独立执行，任一账号失败则整体非零退出。
 
 ## 验证与兼容性
 
-SHA-256 `4d8dcc14d0147333733254d97be3caf0ae5b688238b5fcc0a743b61f483206df`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
+SHA-256 `3db9abada9d7cef685b2bb4eaaf6d7962521059902f861234e888182a32122a1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
 
 ## 副作用与风险
 
