@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **211** 个脚本。返回 [`目录首页`](../README.md)。
+共 **212** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -116,6 +116,7 @@
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `6 1 1 1 1` | 待检查 | [ole.py.md](../../scripts/ole.py.md)（`docs/scripts/ole.py.md`） |
 | 欧文 Soul-Mates 每日签到 | `scripts/ouwen.py` | `python3 scripts/ouwen.py` | `0 18 * * *` | 待检查 | [ouwen.py.md](../../scripts/ouwen.py.md)（`docs/scripts/ouwen.py.md`） |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `13 1 * * *` | 待检查 | [passnat_checkin.py.md](../../scripts/passnat_checkin.py.md)（`docs/scripts/passnat_checkin.py.md`） |
+| 哔咔漫画每日打卡 | `scripts/pica_punch.py` | `python3 scripts/pica_punch.py` | `45 5 * * *` | 待检查 | [pica_punch.py.md](../../scripts/pica_punch.py.md)（`docs/scripts/pica_punch.py.md`） |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
