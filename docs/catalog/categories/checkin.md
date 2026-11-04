@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **209** 个脚本。返回 [`目录首页`](../README.md)。
+共 **210** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -194,6 +194,7 @@
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
 | Trae 每日签到与积分查询 | `scripts/trae_checkin.py` | `python3 scripts/trae_checkin.py` | `7,23,37 * * * *` | 待检查 | [trae_checkin.py.md](../../scripts/trae_checkin.py.md)（`docs/scripts/trae_checkin.py.md`） |
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `19 1 * * *` | 待检查 | [tsthb_checkin.py.md](../../scripts/tsthb_checkin.py.md)（`docs/scripts/tsthb_checkin.py.md`） |
+| CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |
 | 华润通文体未来荟签到 | `scripts/wentiweilaihui.py` | `python3 scripts/wentiweilaihui.py` | `31 1 1 1 1` | 待检查 | [wentiweilaihui.py.md](../../scripts/wentiweilaihui.py.md)（`docs/scripts/wentiweilaihui.py.md`） |
 | 网际快车每日签到 | `scripts/wjkc.js` | `node scripts/wjkc.js` | `4 9 * * *` | 待检查 | [wjkc.js.md](../../scripts/wjkc.js.md)（`docs/scripts/wjkc.js.md`） |

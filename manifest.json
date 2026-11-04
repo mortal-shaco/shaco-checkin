@@ -44324,6 +44324,219 @@
       }
     },
     {
+      "catalogId": "862ebb51276428df",
+      "applicationKey": "anchorite-no/cc98-autosign-fast::python-reference",
+      "checkProfile": {
+        "requiredEnv": [
+          "CC98_WEBVPN",
+          "CC98_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WEBVPN_USER",
+          "WEBVPN_PASS",
+          "CC98_ACCOUNT_COUNT",
+          "CC98_TOKEN_PATH",
+          "CC98_SIGN_PATH",
+          "CC98_CONNECT_TIMEOUT_SEC",
+          "CC98_REQUEST_TIMEOUT_SEC",
+          "CC98_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CC98_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CC98_CONNECT_TIMEOUT_SEC": "5",
+          "CC98_REQUEST_TIMEOUT_SEC": "15",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "最终状态 success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "使用浙大 WebVPN 账号登录网关并建立会话",
+          "经固定 WebVPN 路径获取 CC98 OAuth Token 并提交每日签到",
+          "区分签到成功、今日已签到与业务失败，展示财富值奖励与连续签到天数",
+          "展示 CC98 用户名作为公开账号身份，方便核对",
+          "支持每行一个 CC98 账号的多账号独立处理，共用同一 WebVPN 凭据，任一账号失败时非零退出",
+          "支持完全断网预演、请求超时、时间轴日志、脱敏通知与单行 TASK_SUMMARY"
+        ],
+        "sideEffects": [
+          "登录浙大 WebVPN 并在进程内存中保持会话（不落盘 Cookie）",
+          "在 CC98 账号上写入每日签到记录并可能发放财富值奖励",
+          "正式执行且通知开启时向青龙通知组件发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "CC98 WebVPN 每日签到",
+      "path": "scripts/webvpn_fixed_api.py",
+      "sha256": "700964ea5d9bc1026ef63f56e677e55a58e0d091e43dde291c315b1cebd2b9e2",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Anchorite-no/cc98-autosign-fast",
+        "branch": "main",
+        "commit": "3430b23dc1b08a1ac1ca1862a27c864014e541ee",
+        "originalPath": "python-reference/webvpn-fixed-api.py"
+      },
+      "cron": "12 8 * * *",
+      "command": "python3 scripts/webvpn_fixed_api.py",
+      "environment": [
+        {
+          "name": "CC98_WEBVPN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用浙江大学 WebVPN（https://webvpn.zju.edu.cn）可登录的统一身份账号与明文密码。仅写入青龙环境变量，不要分享或提交到公开仓库。",
+          "format": "用户名|密码；仅在第一个竖线处分割，密码中后续竖线保留"
+        },
+        {
+          "name": "CC98_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用 CC98 论坛（https://www.cc98.org）可登录的用户名与明文密码。每个非空行一个账号；不要把凭据发给他人或写入公开仓库。",
+          "format": "每个非空行一个账号：用户名|密码；仅在第一个竖线处分割。空行和以 # 开头的注释行忽略"
+        },
+        {
+          "name": "WEBVPN_USER",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容别名：当 CC98_WEBVPN 为空时，与 WEBVPN_PASS 同时提供即可。优先使用 CC98_WEBVPN。",
+          "format": "WebVPN 用户名明文"
+        },
+        {
+          "name": "WEBVPN_PASS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容别名：当 CC98_WEBVPN 为空时，与 WEBVPN_USER 同时提供即可。优先使用 CC98_WEBVPN。",
+          "format": "WebVPN 密码明文"
+        },
+        {
+          "name": "CC98_ACCOUNT_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选兼容别名：当 CC98_ACCOUNTS 为空时，与 CC98_USER_N/CC98_PASS_N 组合使用。优先使用 CC98_ACCOUNTS。",
+          "format": "正整数，表示兼容模式下的账号个数"
+        },
+        {
+          "name": "CC98_TOKEN_PATH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在上游默认固定路径失效时覆盖；留空使用内置 CC98 Token 的 WebVPN 路径。",
+          "format": "以 / 开头的 WebVPN 路径"
+        },
+        {
+          "name": "CC98_SIGN_PATH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在上游默认固定路径失效时覆盖；留空使用内置 CC98 签到的 WebVPN 路径。",
+          "format": "以 / 开头的 WebVPN 路径"
+        },
+        {
+          "name": "CC98_CONNECT_TIMEOUT_SEC",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况设置连接侧超时参考值；与请求超时一并取较大值用于 urllib。留空默认 5 秒。",
+          "format": "2 至 60 之间的秒数"
+        },
+        {
+          "name": "CC98_REQUEST_TIMEOUT_SEC",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况设置读超时参考值；与连接超时一并取较大值用于 urllib。留空默认 15 秒。",
+          "format": "5 至 120 之间的秒数"
+        },
+        {
+          "name": "CC98_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要验证配置与执行路径但禁止联网时启用；预演不访问 WebVPN/CC98 接口，也不声明真实签到成功。",
+          "format": "布尔值，默认 0；1、true、yes、on 开启完全断网预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、分号、空白或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写已有青龙 notify.py 或 sendNotify.js 所在目录；未填写时尝试导入 notify 和青龙标准脚本目录。",
+          "format": "已有通知模块所在目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "CC98_ACCOUNTS 中每个非空行代表一个 CC98 账号，格式为用户名|密码；仅在第一个竖线处分割。所有账号共用同一 CC98_WEBVPN 网关凭据。脚本逐账号独立处理，任一账号失败时进程非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome"
+      ],
+      "features": [
+        "使用浙大 WebVPN 账号登录网关并建立会话",
+        "经固定 WebVPN 路径获取 CC98 OAuth Token 并提交每日签到",
+        "区分签到成功、今日已签到与业务失败，展示财富值奖励与连续签到天数",
+        "展示 CC98 用户名作为公开账号身份，方便核对",
+        "支持每行一个 CC98 账号的多账号独立处理，共用同一 WebVPN 凭据，任一账号失败时非零退出",
+        "支持完全断网预演、请求超时、时间轴日志、脱敏通知与单行 TASK_SUMMARY"
+      ],
+      "sideEffects": [
+        "登录浙大 WebVPN 并在进程内存中保持会话（不落盘 Cookie）",
+        "在 CC98 账号上写入每日签到记录并可能发放财富值奖励",
+        "正式执行且通知开启时向青龙通知组件发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/862ebb51276428df",
+        "candidateSha256": "0a3dca8ccd4e5d45a41ff3dafa12d5697a4131ba1caeec160891c95b01dbf246"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "0a3dca8ccd4e5d45a41ff3dafa12d5697a4131ba1caeec160891c95b01dbf246",
+        "releaseSha256": "700964ea5d9bc1026ef63f56e677e55a58e0d091e43dde291c315b1cebd2b9e2",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T19:18:44.681580+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "0a3dca8ccd4e5d45a41ff3dafa12d5697a4131ba1caeec160891c95b01dbf246",
+          "toCandidateSha256": "700964ea5d9bc1026ef63f56e677e55a58e0d091e43dde291c315b1cebd2b9e2",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "8484f065335f8ea3",
       "applicationKey": "weibo",
       "checkProfile": {

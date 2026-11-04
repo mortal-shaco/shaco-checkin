@@ -239,6 +239,7 @@
 | 掌瓦每日商店推送 | `scripts/valorantstore.py` | `python3 scripts/valorantstore.py` | `10 0 * * *` | 待检查 | [valorantstore.py.md](../scripts/valorantstore.py.md)（`docs/scripts/valorantstore.py.md`） |
 | Vortexa 免费主机检查与领取 | `scripts/vortexa_free_claim.js` | `node scripts/vortexa_free_claim.js` | `1,11,21,31,41,51 * * * *` | 待检查 | [vortexa_free_claim.js.md](../scripts/vortexa_free_claim.js.md)（`docs/scripts/vortexa_free_claim.js.md`） |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `11 2 * * *` | 待检查 | [wangchao.py.md](../scripts/wangchao.py.md)（`docs/scripts/wangchao.py.md`） |
+| CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |
 | 华润通文体未来荟签到 | `scripts/wentiweilaihui.py` | `python3 scripts/wentiweilaihui.py` | `31 1 1 1 1` | 待检查 | [wentiweilaihui.py.md](../scripts/wentiweilaihui.py.md)（`docs/scripts/wentiweilaihui.py.md`） |
 | 网际快车每日签到 | `scripts/wjkc.js` | `node scripts/wjkc.js` | `4 9 * * *` | 待检查 | [wjkc.js.md](../scripts/wjkc.js.md)（`docs/scripts/wjkc.js.md`） |
