@@ -1,6 +1,6 @@
 # 字母索引 · A
 
-共 **21** 个脚本。返回 [`目录首页`](../README.md)。
+共 **22** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -15,6 +15,7 @@
 | E-Hentai 自动签到 | `scripts/akiyakiko_ehentaiautosignin.py` | `python3 scripts/akiyakiko_ehentaiautosignin.py` | `0 */6 * * *` | 待检查 | [akiyakiko_ehentaiautosignin.py.md](../../scripts/akiyakiko_ehentaiautosignin.py.md)（`docs/scripts/akiyakiko_ehentaiautosignin.py.md`） |
 | 阿里云社区 | `scripts/aliyun_web.js` | `node scripts/aliyun_web.js` | `36 7,13 * * *` | 待检查 | [aliyun_web.js.md](../../scripts/aliyun_web.js.md)（`docs/scripts/aliyun_web.js.md`） |
 | 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `47 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
+| AnyRouter 每日签到 | `scripts/anyrouter_signin.py` | `python3 scripts/anyrouter_signin.py` | `6 9 * * *` | 待检查 | [anyrouter_signin.py.md](../../scripts/anyrouter_signin.py.md)（`docs/scripts/anyrouter_signin.py.md`） |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `38 0 * * *` | 待检查 | [aolaxing.py.md](../../scripts/aolaxing.py.md)（`docs/scripts/aolaxing.py.md`） |
 | Hax 与 Woiden 可开通区域监控 | `scripts/api_hax.py` | `python3 scripts/api_hax.py` | `44 */6 * * *` | 待检查 | [api_hax.py.md](../../scripts/api_hax.py.md)（`docs/scripts/api_hax.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |

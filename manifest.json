@@ -3399,6 +3399,158 @@
       }
     },
     {
+      "catalogId": "71b8e4efd81a4495",
+      "applicationKey": "anyrouter",
+      "checkProfile": {
+        "requiredEnv": [
+          "ANYROUTER_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ANYROUTER_TIMEOUT",
+          "ANYROUTER_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ANYROUTER_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ANYROUTER_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "最终状态 success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "使用账号密码登录 AnyRouter 并获取会话",
+          "自动处理 acw_sc__v2 WAF 挑战后提交每日签到",
+          "区分签到成功、今日已签到与业务失败",
+          "展示官方返回的非凭据公开身份（用户名、昵称或 UID），未返回时使用账号序号",
+          "支持每行一个账号的多账号独立处理，任一账号失败时非零退出",
+          "支持完全断网预演、请求超时、时间轴日志、脱敏通知与单行 TASK_SUMMARY"
+        ],
+        "sideEffects": [
+          "登录后在 AnyRouter 账号上写入每日签到记录并可能发放流量或额度奖励",
+          "正式执行且通知开启时向青龙通知组件发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AnyRouter 每日签到",
+      "path": "scripts/anyrouter_signin.py",
+      "sha256": "158f988d22a7f7ef5555cdafb7ee3f3a3415df26cf4d942ea394919c0f7dab1b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "FallingMY/anyrouter-signin",
+        "branch": "main",
+        "commit": "7aef47ae689834e10940a73fdd39f52deb463031",
+        "originalPath": "anyrouter_signin.py"
+      },
+      "cron": "6 9 * * *",
+      "command": "python3 scripts/anyrouter_signin.py",
+      "environment": [
+        {
+          "name": "ANYROUTER_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用在 AnyRouter（https://anyrouter.top）注册或登录时的用户名与明文密码。仅写入青龙环境变量，不要分享或提交到公开仓库。",
+          "format": "每个非空行一个账号：用户名|密码；仅在第一个竖线处分割，密码中后续竖线保留。空行和以 # 开头的注释行忽略。"
+        },
+        {
+          "name": "ANYROUTER_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况设置单次 HTTPS 请求超时；留空使用 20 秒。",
+          "format": "5 至 60 之间的秒数"
+        },
+        {
+          "name": "ANYROUTER_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要验证配置与执行路径但禁止联网时启用；预演不访问业务接口，也不声明真实签到成功。",
+          "format": "布尔值，默认 0；1、true、yes、on 开启完全断网预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、分号、空白或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写已有青龙 notify.py 或 sendNotify.js 所在目录；未填写时尝试导入 notify 和青龙标准脚本目录。",
+          "format": "已有通知模块所在目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "ANYROUTER_ACCOUNTS 中每个非空行代表一个账号，格式为用户名|密码；仅在第一个竖线处分割。脚本逐账号独立处理，任一账号失败时进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用账号密码登录 AnyRouter 并获取会话",
+        "自动处理 acw_sc__v2 WAF 挑战后提交每日签到",
+        "区分签到成功、今日已签到与业务失败",
+        "展示官方返回的非凭据公开身份（用户名、昵称或 UID），未返回时使用账号序号",
+        "支持每行一个账号的多账号独立处理，任一账号失败时非零退出",
+        "支持完全断网预演、请求超时、时间轴日志、脱敏通知与单行 TASK_SUMMARY"
+      ],
+      "sideEffects": [
+        "登录后在 AnyRouter 账号上写入每日签到记录并可能发放流量或额度奖励",
+        "正式执行且通知开启时向青龙通知组件发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/71b8e4efd81a4495",
+        "candidateSha256": "bb49a04cb1889096716868982869b14590072c8034aafaa94b0a15776fccf5ab"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "bb49a04cb1889096716868982869b14590072c8034aafaa94b0a15776fccf5ab",
+        "releaseSha256": "158f988d22a7f7ef5555cdafb7ee3f3a3415df26cf4d942ea394919c0f7dab1b",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T18:53:00.183738+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "bb49a04cb1889096716868982869b14590072c8034aafaa94b0a15776fccf5ab",
+          "toCandidateSha256": "158f988d22a7f7ef5555cdafb7ee3f3a3415df26cf4d942ea394919c0f7dab1b",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "3ca8984737c9322f",
       "applicationKey": "sitoi/dailycheckin::aolaxing",
       "checkProfile": {
