@@ -1,11 +1,12 @@
 # 字母索引 · L
 
-共 **9** 个脚本。返回 [`目录首页`](../README.md)。
+共 **10** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | LINUX DO 登录与浏览统计 | `scripts/l.py` | `python3 scripts/l.py` | `37 */5 * * *` | 待检查 | [l.py.md](../../scripts/l.py.md)（`docs/scripts/l.py.md`） |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `14 0 * * *` | 待检查 | [leaflow_checkin_pyleaflow_checkin.py.md](../../scripts/leaflow_checkin_pyleaflow_checkin.py.md)（`docs/scripts/leaflow_checkin_pyleaflow_checkin.py.md`） |
+| LeetCode 中文站每日一题自动打卡 | `scripts/leetcode_daily.py` | `python3 scripts/leetcode_daily.py` | `30 0 * * *` | 待检查 | [leetcode_daily.py.md](../../scripts/leetcode_daily.py.md)（`docs/scripts/leetcode_daily.py.md`） |
 | linux.sb 每日签到 | `scripts/linuxsb_daily.py` | `python3 scripts/linuxsb_daily.py` | `10 8 * * *` | 待检查 | [linuxsb_daily.py.md](../../scripts/linuxsb_daily.py.md)（`docs/scripts/linuxsb_daily.py.md`） |
 | 咔叽网单每日签到 | `scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `16 2 * * *` | 待检查 | [littlewuh_qinglongbox_dailycheckin_scripts.py.md](../../scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md)（`docs/scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md`） |
 | NodeSeek 签到与收益统计 | `scripts/lizhixu_ql_script_hub_nodeseek.py` | `python3 scripts/lizhixu_ql_script_hub_nodeseek.py` | `10 1 * * *` | 待检查 | [lizhixu_ql_script_hub_nodeseek.py.md](../../scripts/lizhixu_ql_script_hub_nodeseek.py.md)（`docs/scripts/lizhixu_ql_script_hub_nodeseek.py.md`） |
