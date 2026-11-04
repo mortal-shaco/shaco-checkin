@@ -2,7 +2,7 @@
 
 通用签到类青龙脚本发布仓库。脚本经来源、许可证和基础检查后自动发布；真实账号人工核验后标记为已检查或上架。公开说明与本地「脚本管理」使用同一套状态：`上架` / `已检查` / `待检查`。
 
-当前公开脚本 **251** 个：上架 **3** · 已检查 **0** · 待检查 **248**。  
+当前公开脚本 **252** 个：上架 **3** · 已检查 **0** · 待检查 **249**。  
 本页保留上架/已检查全表与待检查预览；全部脚本请用 [脚本目录索引](docs/catalog/README.md)（字母 / 分类）浏览，详单在 [`docs/scripts/`](docs/scripts/)。
 待检查脚本尚未验证真实账号业务，基础核验通过不代表业务成功。
 
@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | 上架 | 3 | 维护者确认保留的当前版本 |
 | 已检查 | 0 | 必填参数齐备且已有当前版本本地运行记录，尚未点击上架 |
-| 待检查 | 248 | 已发布，但尚未完成当前版本的参数配置与本地运行核验 |
+| 待检查 | 249 | 已发布，但尚未完成当前版本的参数配置与本地运行核验 |
 
 ### 上架脚本
 
@@ -39,9 +39,9 @@ _当前无此类脚本。_
 | 吾爱破解每日签到 | `scripts/52pojie.js` | `node scripts/52pojie.js` | `8 0 * * *` | 待检查 | [52pojie.js.md](docs/scripts/52pojie.js.md)（`docs/scripts/52pojie.js.md`） |
 | 69云签到 | `scripts/69yun_checkin.py` | `python3 scripts/69yun_checkin.py` | `20 0 * * *` | 待检查 | [69yun_checkin.py.md](docs/scripts/69yun_checkin.py.md)（`docs/scripts/69yun_checkin.py.md`） |
 | 华润通999答题 | `scripts/999.py` | `python3 scripts/999.py` | `49 1 1 1 1` | 待检查 | [999.py.md](docs/scripts/999.py.md)（`docs/scripts/999.py.md`） |
-| AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](docs/scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
+| 爱上ASMR每日签到 | `scripts/a3asmr.js` | `node scripts/a3asmr.js` | `15 9 * * *` | 待检查 | [a3asmr.js.md](docs/scripts/a3asmr.js.md)（`docs/scripts/a3asmr.js.md`） |
 
-其余 **240** 个待检查脚本请打开 [脚本目录索引](docs/catalog/README.md)，按字母或分类查看全部。
+其余 **241** 个待检查脚本请打开 [脚本目录索引](docs/catalog/README.md)，按字母或分类查看全部。
 
 ## 青龙面板安装
 

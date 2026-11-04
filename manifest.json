@@ -1222,6 +1222,178 @@
       }
     },
     {
+      "catalogId": "7453e17a3ed8abac",
+      "applicationKey": "igugyj/autosign::a3asmr",
+      "checkProfile": {
+        "requiredEnv": [
+          "A3ASMR_COOKIE"
+        ],
+        "optionalEnv": [
+          "A3ASMR_BASE_URL",
+          "A3ASMR_TIMEOUT_MS",
+          "A3ASMR_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "A3ASMR_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "A3ASMR_BASE_URL": "https://www.a3asmr.com",
+          "A3ASMR_TIMEOUT_MS": "20000",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "使用登录 Cookie 访问签到页并提取 WordPress REST nonce 后提交每日签到",
+          "识别签到成功、今日已签到（页面状态或接口文案）等业务结果",
+          "支持每行一个账号，可选备注标签，独立汇总结果",
+          "展示页面中可解析的非敏感昵称或公开 UID，隐藏 Cookie、nonce 与原始响应",
+          "完全断网预演、超时与响应大小限制、时间轴日志与单行 TASK_SUMMARY",
+          "按青龙通知策略发送脱敏汇总，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式执行时向爱上ASMR 账户提交每日签到，改变当日签到状态并可能发放积分或任务奖励",
+          "通知启用且非预演时向青龙通知渠道投递脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "爱上ASMR每日签到",
+      "path": "scripts/a3asmr.js",
+      "sha256": "dee5686d9158b6ac9470bbfe6b9a728c9fadb6ecb4de52963fef5fc75c0977f3",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "igugyj/AutoSign",
+        "branch": "master",
+        "commit": "dda144379a6bbec3b450113c5282d5d40ff488c9",
+        "originalPath": "src/sites/a3asmr/index.ts",
+        "related": [
+          {
+            "catalogId": "a4115177b742fde1",
+            "sha256": "5b5baa0caa309e534a51fcf3f90de0128aed60f7ff21b1c95bb401ba77f9ea63",
+            "repository": "igugyj/AutoSign",
+            "url": "https://github.com/igugyj/AutoSign.git",
+            "branch": "master",
+            "commit": "dda144379a6bbec3b450113c5282d5d40ff488c9",
+            "originalPath": "src/sites/a3asmr/config.ts",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "15 9 * * *",
+      "command": "node scripts/a3asmr.js",
+      "environment": [
+        {
+          "name": "A3ASMR_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 https://www.a3asmr.com/ 后，打开开发者工具网络面板，选择发往本站的已登录请求，复制请求头 Cookie 的完整值；不要复制响应 Set-Cookie，也不要将凭据发给他人。登录失效后重新获取。",
+          "format": "每个非空行一个账号。整行可为完整 Cookie，或「备注|Cookie」；仅在首个竖线处拆分，后续 Cookie 原文保留。Cookie 内分号与等号原样保留，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "A3ASMR_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按本人实际可访问的站点入口填写；不填则使用默认官方域名。",
+          "format": "站点根地址，默认 https://www.a3asmr.com；末尾斜杠可有可无。"
+        },
+        {
+          "name": "A3ASMR_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况设置请求超时；不设置时使用 20000 毫秒。",
+          "format": "1000 至 60000 的整数毫秒值。"
+        },
+        {
+          "name": "A3ASMR_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在测试环境自行开启；正式执行时删除或设为 0。",
+          "format": "1/true/yes/on 开启完全断网预演；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 auto 模式下需要替换默认通知名单时自行设置。",
+          "format": "逗号、分号或空白分隔；可匹配 catalogId、scripts/a3asmr_checkin.js、a3asmr_checkin.js、当前文件名或通配符；* 全选，空值全关。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "目录路径；失败后继续尝试 /ql/data/scripts 与 /ql/scripts；通知失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 Cookie；可选备注|Cookie，仅拆首个竖线。账号独立执行，任一失败或配置错误则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用登录 Cookie 访问签到页并提取 WordPress REST nonce 后提交每日签到",
+        "识别签到成功、今日已签到（页面状态或接口文案）等业务结果",
+        "支持每行一个账号，可选备注标签，独立汇总结果",
+        "展示页面中可解析的非敏感昵称或公开 UID，隐藏 Cookie、nonce 与原始响应",
+        "完全断网预演、超时与响应大小限制、时间轴日志与单行 TASK_SUMMARY",
+        "按青龙通知策略发送脱敏汇总，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式执行时向爱上ASMR 账户提交每日签到，改变当日签到状态并可能发放积分或任务奖励",
+        "通知启用且非预演时向青龙通知渠道投递脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/7453e17a3ed8abac",
+        "candidateSha256": "237783b9def46b377073bb23ad24085e49692eb01ae62fe39177c508e435bc96"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "237783b9def46b377073bb23ad24085e49692eb01ae62fe39177c508e435bc96",
+        "releaseSha256": "dee5686d9158b6ac9470bbfe6b9a728c9fadb6ecb4de52963fef5fc75c0977f3",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T18:17:24.432617+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "237783b9def46b377073bb23ad24085e49692eb01ae62fe39177c508e435bc96",
+          "toCandidateSha256": "dee5686d9158b6ac9470bbfe6b9a728c9fadb6ecb4de52963fef5fc75c0977f3",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "0f0989a0ef3d7803",
       "applicationKey": "sitoi/dailycheckin::acfun",
       "checkProfile": {
