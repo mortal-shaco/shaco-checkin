@@ -15098,6 +15098,203 @@
       }
     },
     {
+      "catalogId": "0a782191e8bccbe2",
+      "applicationKey": "fzu",
+      "checkProfile": {
+        "requiredEnv": [
+          "FZU_ATTN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "FZU_ATTN_TOKEN",
+          "FZU_ATTN_LONGITUDE",
+          "FZU_ATTN_LATITUDE",
+          "FZU_ATTN_ACTUAL_LOCATION",
+          "FZU_ATTN_ENFORCE_WINDOW",
+          "FZU_ATTN_TIMEOUT",
+          "FZU_ATTN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "FZU_ATTN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "FZU_ATTN_ENFORCE_WINDOW": "1",
+          "FZU_ATTN_TIMEOUT": "15"
+        },
+        "successPatterns": [
+          "晚点名签到成功",
+          "今日已签到",
+          "今日无考勤计划",
+          "TASK_SUMMARY=",
+          "最终状态：SUCCESS"
+        ],
+        "features": [
+          "查询今日晚点名计划与签到状态",
+          "按配置经纬度做校区定位范围校验",
+          "提交晚点名打卡",
+          "按服务器时间进行迟到判定",
+          "可选强制 21:30-23:59 签到窗口",
+          "已签到或无考勤计划时跳过"
+        ],
+        "sideEffects": [
+          "提交晚点名打卡并更新当日考勤状态"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "智汇福大晚点名签到",
+      "path": "scripts/fzu.py",
+      "sha256": "31e0389ca110e559ec25fe58c827353631cfdf151dc2597ede6f37bc6b2ced4c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Mahiroa/fzu-auto-checkin",
+        "branch": "main",
+        "commit": "5b597ac7e6446e0752fcb6029411f3513553360f",
+        "originalPath": "src/checkin.py",
+        "related": [
+          {
+            "catalogId": "c6e5315e64eac351",
+            "sha256": "7977d180532e49ab0cc4f89adf60c8644f3f6ddef534dbcc42bae37bbee4412e",
+            "repository": "Mahiroa/fzu-auto-checkin",
+            "url": "https://github.com/Mahiroa/fzu-auto-checkin.git",
+            "branch": "main",
+            "commit": "5b597ac7e6446e0752fcb6029411f3513553360f",
+            "originalPath": "main.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "81a34ee90cbf8e4c",
+            "sha256": "458d11b535a543c7bc3e5beea39ea91c36b508e3822c321c21bf1a7df5aeb0c1",
+            "repository": "Mahiroa/fzu-auto-checkin",
+            "url": "https://github.com/Mahiroa/fzu-auto-checkin.git",
+            "branch": "main",
+            "commit": "5b597ac7e6446e0752fcb6029411f3513553360f",
+            "originalPath": "src/config.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "35 21 * * *",
+      "command": "python3 scripts/fzu.py",
+      "environment": [
+        {
+          "name": "FZU_ATTN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "打开智汇福大 App → 业务 → 晚点名签到，从免登打开的 H5 地址栏复制 ?token= 后的 token 值（不要分享、不要提交到公开仓库）。同一账号再附上本人真实所在位置的高德经纬度；实际地点文案可选。本脚本不代替 App 登录，也不保存学号密码。",
+          "format": "每个非空行一个账号：token|经度|纬度 或 token|经度|纬度|实际地点。仅按首个竖线分割出 token，其余字段再按竖线拆分。不使用 &、@ 分隔账号。# 开头行忽略。可选前缀 token=。"
+        },
+        {
+          "name": "FZU_ATTN_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入；未设置 FZU_ATTN_ACCOUNTS 时使用。获取方式与账号行中的 token 相同，建议合并到规范变量，并同时配置经纬度。",
+          "format": "单个 token；可写成 token|经度|纬度[|地点]。若仅写 token，须配合 FZU_ATTN_LONGITUDE / FZU_ATTN_LATITUDE。"
+        },
+        {
+          "name": "FZU_ATTN_LONGITUDE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。账号行未写经度时使用的默认经度；单账号兼容配置时与纬度一起填写本人宿舍/校区真实坐标。",
+          "format": "十进制度数，如 119.123456。"
+        },
+        {
+          "name": "FZU_ATTN_LATITUDE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。账号行未写纬度时使用的默认纬度。",
+          "format": "十进制度数，如 26.123456。"
+        },
+        {
+          "name": "FZU_ATTN_ACTUAL_LOCATION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。账号行未写地点文案时的默认 actualLocation 字段；可填校区或楼栋名称。",
+          "format": "短文本，可为空。"
+        },
+        {
+          "name": "FZU_ATTN_ENFORCE_WINDOW",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。是否强制仅在北京时间 21:30-23:59 晚点名窗口内打卡（对齐上游 GitHub 定时窗口语义）。",
+          "format": "1/true/yes/on 开启（默认）；0/false/no/off 关闭。断网预演不受窗口影响。"
+        },
+        {
+          "name": "FZU_ATTN_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。单次 HTTP 超时秒数。",
+          "format": "3–120 之间的数字，默认 15。"
+        },
+        {
+          "name": "FZU_ATTN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证配置时设置为 1。",
+          "format": "1、true、yes、on 启用完全断网预演；0、false、no、off 或空值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中将本任务加入通知名单；存在该变量时替换默认名单。",
+          "format": "逗号、分号或空白分隔；支持 0a782191e8bccbe2、scripts/fzu_attn_checkin.py、fzu_attn_checkin.py、文件名通配符及 *；空值关闭全部名单通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定本人青龙 notify.py 或 sendNotify.js 所在目录；也自动查找青龙标准目录。",
+          "format": "目录路径；优先 Python 通知，兼容 JavaScript 通知。通知缺失、超时或失败保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号。规范变量 FZU_ATTN_ACCOUNTS 填写 token|经度|纬度[|实际地点]（仅按首个竖线分割出 token）。未设置时兼容 FZU_ATTN_TOKEN，并可配合 FZU_ATTN_LONGITUDE / FZU_ATTN_LATITUDE / FZU_ATTN_ACTUAL_LOCATION。账号独立处理，任一失败则进程非零退出。"
+      },
+      "dependencies": [
+        "pycryptodome"
+      ],
+      "features": [
+        "查询今日晚点名计划与签到状态",
+        "按配置经纬度做校区定位范围校验",
+        "提交晚点名打卡",
+        "按服务器时间进行迟到判定",
+        "可选强制 21:30-23:59 签到窗口",
+        "已签到或无考勤计划时跳过"
+      ],
+      "sideEffects": [
+        "提交晚点名打卡并更新当日考勤状态"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0a782191e8bccbe2",
+        "candidateSha256": "31e0389ca110e559ec25fe58c827353631cfdf151dc2597ede6f37bc6b2ced4c"
+      }
+    },
+    {
       "catalogId": "8edbbefea99ad1fb",
       "applicationKey": "qluser-alan/some_scripts::get",
       "checkProfile": {

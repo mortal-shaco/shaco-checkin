@@ -1,0 +1,15 @@
+{
+  "catalogId": "0a782191e8bccbe2",
+  "candidateSha256": "31e0389ca110e559ec25fe58c827353631cfdf151dc2597ede6f37bc6b2ced4c",
+  "mode": "basic",
+  "exitCode": 0,
+  "businessResult": "not-verified",
+  "testedAt": "2026-11-04T16:25:26.934159+00:00",
+  "checks": [
+    "exact-hash",
+    "syntax",
+    "provenance",
+    "license",
+    "usage-documentation"
+  ]
+}
