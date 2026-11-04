@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/smzdm_checkin.js`
 - 青龙命令：`node scripts/smzdm_checkin.js`
 - 建议 Cron：`15 1 * * *`
-- 发布哈希：`e2ad0697027e8110ee9c508885a7aaf6f3edbd48f566177d2d11d906cf97ff6d`
+- 发布哈希：`6c6dacd53a9817e8b401deb32c4c0783b42aecf9a33685a29f73305247ed645a`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -172,7 +172,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e2ad0697027e8110ee9c508885a7aaf6f3edbd48f566177d2d11d906cf97ff6d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
+SHA-256 `6c6dacd53a9817e8b401deb32c4c0783b42aecf9a33685a29f73305247ed645a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/621df252c315f2d1`。
 
 ## 副作用与风险
 

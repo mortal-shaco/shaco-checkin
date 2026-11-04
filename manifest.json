@@ -28119,7 +28119,7 @@
       },
       "displayName": "什么值得买签到",
       "path": "scripts/smzdm_checkin.js",
-      "sha256": "e2ad0697027e8110ee9c508885a7aaf6f3edbd48f566177d2d11d906cf97ff6d",
+      "sha256": "6c6dacd53a9817e8b401deb32c4c0783b42aecf9a33685a29f73305247ed645a",
       "stage": "released",
       "license": "GPL-3.0-only",
       "licenseGate": "allowed-copyleft",
@@ -28145,7 +28145,7 @@
             "repository": "hex-ci/smzdm_script",
             "url": "https://github.com/hex-ci/smzdm_script.git",
             "branch": "main",
-            "commit": "0b71d792b84a8550e4b729053fe0da06838efc2d",
+            "commit": "7132c0c13788b72506a89898c32ab62aa8b3b95a",
             "originalPath": "smzdm_checkin.js",
             "license": "MIT"
           },
@@ -28153,7 +28153,7 @@
             "repository": "hex-ci/smzdm_script",
             "url": "https://github.com/hex-ci/smzdm_script.git",
             "branch": "main",
-            "commit": "0b71d792b84a8550e4b729053fe0da06838efc2d",
+            "commit": "7132c0c13788b72506a89898c32ab62aa8b3b95a",
             "originalPath": "smzdm_lottery.js",
             "catalogId": "01407af9e6b789da",
             "sha256": "0f415f1c12c84dff9e19a8c1cef3691b0c82ab1b7cd325c12544a01b044a72ad",
@@ -28395,20 +28395,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/621df252c315f2d1",
-        "candidateSha256": "e47c1603356a61a32e187114bb11de07d04677b20f7c99ea7b816a8da9e85111"
+        "candidateSha256": "ac41b20b7d62b6935ea6844c249a46bd6cf52c5571473f2c5c6fccb59cb36260"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "e47c1603356a61a32e187114bb11de07d04677b20f7c99ea7b816a8da9e85111",
-        "releaseSha256": "e2ad0697027e8110ee9c508885a7aaf6f3edbd48f566177d2d11d906cf97ff6d",
+        "validatedSha256": "ac41b20b7d62b6935ea6844c249a46bd6cf52c5571473f2c5c6fccb59cb36260",
+        "releaseSha256": "6c6dacd53a9817e8b401deb32c4c0783b42aecf9a33685a29f73305247ed645a",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-04T10:23:20.327219+00:00",
+          "approvedAt": "2026-11-04T13:10:49.600629+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "e47c1603356a61a32e187114bb11de07d04677b20f7c99ea7b816a8da9e85111",
-          "toCandidateSha256": "e2ad0697027e8110ee9c508885a7aaf6f3edbd48f566177d2d11d906cf97ff6d",
+          "fromCandidateSha256": "ac41b20b7d62b6935ea6844c249a46bd6cf52c5571473f2c5c6fccb59cb36260",
+          "toCandidateSha256": "6c6dacd53a9817e8b401deb32c4c0783b42aecf9a33685a29f73305247ed645a",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -42758,6 +42758,7 @@
           "WORKBUDDY_SKIP_TASKS",
           "WORKBUDDY_ALLOW_REPORT",
           "WORKBUDDY_MP_GAP",
+          "WORKBUDDY_MAKEUP_MAX_PER_RUN",
           "WORKBUDDY_TOKEN_STORE",
           "WORKBUDDY_INTL_KEEPALIVE",
           "WORKBUDDY_INTL_MODELS",
@@ -42782,7 +42783,7 @@
           "签到先探测开放与当日状态，领取后回读今日已签；旅行到达时提交服务端record_id并验证奖励积分，空闲派遣后回读；未知结构不能冒充成功。",
           "国内兼容 --query、--refresh、--no-desktop、--only、--gap、--mp-gap、--tasks、--skip-tasks 和原任务代码；黑白名单控制主动任务，保留既有默认及副作用边界。",
           "国内 --credit-report 为独立只读积分日报；--json 保留原脱敏数值数组，周期容量优先、累计容量回退及总用量补全算法保持不变；与刷新、查询及任务筛选互斥。国际版同样支持 --intl --credit-report --json。",
-          "可选抽奖、盲盒、连登兑换、昨日补签、礼包补偿保持独立任务开关，默认不消耗这些资源。",
+          "可选抽奖、盲盒、连登兑换、昨日补签、礼包补偿保持独立任务开关，默认不消耗这些资源；补签按服务端日历选断点并可用 WORKBUDDY_MAKEUP_MAX_PER_RUN 限制张数；礼包与补偿先查状态再按回执积分确认。",
           "显式授权的画布、灵感、专家团、应用、主题、资料库、专家、模板、GLM5.2对话、夜猫子及七环成长链保持原有真实对话、桌面事件、小程序事件与网页回退；每项以服务端终态核验，模拟上报不表示真实桌面业务。",
           "链式任务第一至六环保留原小程序进度、接受、间隔抖动、回读及领奖；第七环优先PC任务列表、接受和桌面灵感事件，未下发时保留原小程序回退链。",
           "新增显式选择的无畏契约拼豆专家及中国电商运营专家、抖音策略师、商家宣传页与海报设计师、直播电商教练；合法任务深链优先专家ID、精确市场查询、静态专家市场及已审核ID回退，保持真实对话与事件回退链。",
@@ -42791,14 +42792,14 @@
           "国际 --intl 保持独立凭据、活动状态探测、当日领奖与回读；关闭活动仅按已知业务码41000或明确状态处理。",
           "国际保活须显式授权；保留四模型及自定义模型回退链，采用参考中5.8.4请求头，每次生成会话与追踪标识，SSE需有效回答及完成标志才成功；保活与领奖分开核验。",
           "国际 --intl --trial 保持独立的一次性专家加油包领取，HTTP及业务码核验，14051表示已领；与日报、刷新和保活开关互斥，不加入默认日常任务。",
-          "续期只使用官方HTTPS接口，轮换前检查本人指定0600缓存可写并原子保存，国内按原条件按需续期，国际保持显式 --refresh；不依赖其他仓库、桌面程序或安装引导。",
+          "国内事件头与桌面指纹对齐官方5.9.3（UA、commit、releaseDate、qimei36）；续期只使用官方HTTPS接口，轮换前检查本人指定0600缓存可写并原子保存；不依赖其他仓库、桌面程序或安装引导。",
           "逐行多账号、完全断网预演、有限超时、HTTPS证书验证、禁止重定向、响应大小上限、逐阶段脱敏日志、官方非敏感身份原样显示、账号与任务统计，以及唯一单行TASK_SUMMARY汇总。",
           "所有终态及配置错误均生成脱敏通知摘要，遵循全局开关与选择清单，支持青龙notify.py或sendNotify.js；预演模拟发送，通知缺失或失败保留业务退出码。"
         ],
         "sideEffects": [
           "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
           "国内只有RT、显式--refresh或配置私有缓存后满足原按需条件时，轮换令牌并原子写入本人指定0600缓存；国际仅显式--refresh时轮换。",
-          "显式选择lottery、blindbox、redeem、makeup、gift时分别消耗抽奖次数、能量、兑换连登奖励、消耗昨日补签卡、领取礼包与补偿。",
+          "显式选择lottery、blindbox、redeem、makeup、gift时分别消耗抽奖次数、能量、兑换连登奖励、消耗补签卡、领取礼包与补偿。",
           "显式选择成长任务且WORKBUDDY_ALLOW_REPORT=1时接受任务、上报事件、创建对话或安装热门技能、改变主题、领取奖励；新建的网页会话在调用结束时发送停止请求，仅操作本次创建的会话；模型对话可能消耗积分。",
           "显式选择daily_activity且授权时发送活跃事件，按配置可能补一次真实模型对话。",
           "国际默认按开放状态领取当日奖励；显式保活可能消耗模型积分，--trial可能领取一次性专家加油包。",
@@ -42811,7 +42812,7 @@
       },
       "displayName": "WorkBuddy 国内版日常维护",
       "path": "scripts/workbuddy_daily.py",
-      "sha256": "70ce57faa1cbedb3fae72c772cf0eb2cb5ef9d01d8127bf76edd3fac062fa7b5",
+      "sha256": "92424e730950c55603924b5c8cca4764f249b9e188c235284e61f4faf3710e2e",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -42825,7 +42826,7 @@
             "repository": "L0NE-6/WorkBuddy-Daily",
             "url": "https://github.com/L0NE-6/WorkBuddy-Daily.git",
             "branch": "main",
-            "commit": "4b194e4879036ab710321f51ccf6346de70fa9dc",
+            "commit": "aaf43f3ab1bb2915f80474b742c5e9611265502a",
             "originalPath": "workbuddy_intl_daily.py",
             "catalogId": "e933f4f4a2d187c7",
             "sha256": "a58a14028e4445c2208c7d27648c80b20246e14670f720c9bf746a518491db2f",
@@ -42835,7 +42836,7 @@
             "repository": "Maquer/workbuddy-checkin",
             "url": "https://github.com/Maquer/workbuddy-checkin.git",
             "branch": "main",
-            "commit": "a45805fc8fbac52eb0c26d6d2c09331ed43c4a5d",
+            "commit": "433e0ecb9914868f14f74da27e90bfbfba549377",
             "originalPath": "workbuddy_checkin.py",
             "catalogId": "67cfcdcca45c59e8",
             "sha256": "ae56c902bf1f41648b272bf41cdb114290d62b9a8a61505446b8b522bf68737c",
@@ -42843,7 +42844,7 @@
           }
         ]
       },
-      "cron": "27 7,12 * * *",
+      "cron": "15 7,12 * * *",
       "command": "python3 scripts/workbuddy_daily.py",
       "environment": [
         {
@@ -42917,6 +42918,13 @@
           "format": "有限的非负秒数，默认45；保持原间隔与抖动逻辑。--gap 默认1.5且最小1秒。"
         },
         {
+          "name": "WORKBUDDY_MAKEUP_MAX_PER_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在显式选择 makeup 补签任务时可选设置。",
+          "format": "正整数，默认1，最大10；每轮最多消耗的补签卡张数。"
+        },
+        {
           "name": "WORKBUDDY_TOKEN_STORE",
           "required": false,
           "sensitive": true,
@@ -42984,7 +42992,7 @@
         "签到先探测开放与当日状态，领取后回读今日已签；旅行到达时提交服务端record_id并验证奖励积分，空闲派遣后回读；未知结构不能冒充成功。",
         "国内兼容 --query、--refresh、--no-desktop、--only、--gap、--mp-gap、--tasks、--skip-tasks 和原任务代码；黑白名单控制主动任务，保留既有默认及副作用边界。",
         "国内 --credit-report 为独立只读积分日报；--json 保留原脱敏数值数组，周期容量优先、累计容量回退及总用量补全算法保持不变；与刷新、查询及任务筛选互斥。国际版同样支持 --intl --credit-report --json。",
-        "可选抽奖、盲盒、连登兑换、昨日补签、礼包补偿保持独立任务开关，默认不消耗这些资源。",
+        "可选抽奖、盲盒、连登兑换、昨日补签、礼包补偿保持独立任务开关，默认不消耗这些资源；补签按服务端日历选断点并可用 WORKBUDDY_MAKEUP_MAX_PER_RUN 限制张数；礼包与补偿先查状态再按回执积分确认。",
         "显式授权的画布、灵感、专家团、应用、主题、资料库、专家、模板、GLM5.2对话、夜猫子及七环成长链保持原有真实对话、桌面事件、小程序事件与网页回退；每项以服务端终态核验，模拟上报不表示真实桌面业务。",
         "链式任务第一至六环保留原小程序进度、接受、间隔抖动、回读及领奖；第七环优先PC任务列表、接受和桌面灵感事件，未下发时保留原小程序回退链。",
         "新增显式选择的无畏契约拼豆专家及中国电商运营专家、抖音策略师、商家宣传页与海报设计师、直播电商教练；合法任务深链优先专家ID、精确市场查询、静态专家市场及已审核ID回退，保持真实对话与事件回退链。",
@@ -42993,14 +43001,14 @@
         "国际 --intl 保持独立凭据、活动状态探测、当日领奖与回读；关闭活动仅按已知业务码41000或明确状态处理。",
         "国际保活须显式授权；保留四模型及自定义模型回退链，采用参考中5.8.4请求头，每次生成会话与追踪标识，SSE需有效回答及完成标志才成功；保活与领奖分开核验。",
         "国际 --intl --trial 保持独立的一次性专家加油包领取，HTTP及业务码核验，14051表示已领；与日报、刷新和保活开关互斥，不加入默认日常任务。",
-        "续期只使用官方HTTPS接口，轮换前检查本人指定0600缓存可写并原子保存，国内按原条件按需续期，国际保持显式 --refresh；不依赖其他仓库、桌面程序或安装引导。",
+        "国内事件头与桌面指纹对齐官方5.9.3（UA、commit、releaseDate、qimei36）；续期只使用官方HTTPS接口，轮换前检查本人指定0600缓存可写并原子保存；不依赖其他仓库、桌面程序或安装引导。",
         "逐行多账号、完全断网预演、有限超时、HTTPS证书验证、禁止重定向、响应大小上限、逐阶段脱敏日志、官方非敏感身份原样显示、账号与任务统计，以及唯一单行TASK_SUMMARY汇总。",
         "所有终态及配置错误均生成脱敏通知摘要，遵循全局开关与选择清单，支持青龙notify.py或sendNotify.js；预演模拟发送，通知缺失或失败保留业务退出码。"
       ],
       "sideEffects": [
         "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
         "国内只有RT、显式--refresh或配置私有缓存后满足原按需条件时，轮换令牌并原子写入本人指定0600缓存；国际仅显式--refresh时轮换。",
-        "显式选择lottery、blindbox、redeem、makeup、gift时分别消耗抽奖次数、能量、兑换连登奖励、消耗昨日补签卡、领取礼包与补偿。",
+        "显式选择lottery、blindbox、redeem、makeup、gift时分别消耗抽奖次数、能量、兑换连登奖励、消耗补签卡、领取礼包与补偿。",
         "显式选择成长任务且WORKBUDDY_ALLOW_REPORT=1时接受任务、上报事件、创建对话或安装热门技能、改变主题、领取奖励；新建的网页会话在调用结束时发送停止请求，仅操作本次创建的会话；模型对话可能消耗积分。",
         "显式选择daily_activity且授权时发送活跃事件，按配置可能补一次真实模型对话。",
         "国际默认按开放状态领取当日奖励；显式保活可能消耗模型积分，--trial可能领取一次性专家加油包。",
@@ -43017,20 +43025,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/132c582ed57df40f",
-        "candidateSha256": "549368da9c22397285dcde735417c131c0545657eee5fd54267b93be7e695d3c"
+        "candidateSha256": "3019748144868a74ca4a5e33245cee9ff16361bed7d4b4ebdd9c0ce599ab5c7e"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "549368da9c22397285dcde735417c131c0545657eee5fd54267b93be7e695d3c",
-        "releaseSha256": "70ce57faa1cbedb3fae72c772cf0eb2cb5ef9d01d8127bf76edd3fac062fa7b5",
+        "validatedSha256": "3019748144868a74ca4a5e33245cee9ff16361bed7d4b4ebdd9c0ce599ab5c7e",
+        "releaseSha256": "92424e730950c55603924b5c8cca4764f249b9e188c235284e61f4faf3710e2e",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-27T09:13:51.211961+00:00",
+          "approvedAt": "2026-11-04T13:11:51.135287+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "549368da9c22397285dcde735417c131c0545657eee5fd54267b93be7e695d3c",
-          "toCandidateSha256": "70ce57faa1cbedb3fae72c772cf0eb2cb5ef9d01d8127bf76edd3fac062fa7b5",
+          "fromCandidateSha256": "3019748144868a74ca4a5e33245cee9ff16361bed7d4b4ebdd9c0ce599ab5c7e",
+          "toCandidateSha256": "92424e730950c55603924b5c8cca4764f249b9e188c235284e61f4faf3710e2e",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -45262,6 +45270,7 @@
           "ZCODE_APP_VERSION",
           "ZCODE_CAPTCHA_PARAM",
           "ZCODE_ACTIVATION",
+          "ZCODE_MARKETING_RECHECK",
           "ZCODE_CN_DRY_RUN",
           "ZCODE_INTL_DRY_RUN",
           "QINGLONG_NOTIFY",
@@ -45280,8 +45289,9 @@
         },
         "liveEnv": {
           "ZCODE_REGION": "cn",
-          "ZCODE_APP_VERSION": "3.14.0",
-          "ZCODE_ACTIVATION": "0"
+          "ZCODE_APP_VERSION": "3.18.0",
+          "ZCODE_ACTIVATION": "0",
+          "ZCODE_MARKETING_RECHECK": "1"
         },
         "successPatterns": [
           "CLAIM_SUCCESS",
@@ -45290,11 +45300,12 @@
         ],
         "features": [
           "国内版和国际版套餐任务合并为一个规范脚本；默认国内版，通过 --region cn/intl/all 或 ZCODE_REGION 显式选择，保持各自凭据及设备隔离。",
-          "读取套餐列表、权益额度和每日或一次性周期，按最高优先级领取，同优先级取首项，支持 ZCODE_PLAN_ID 指定套餐。",
+          "合并 billing/preview 与 marketing/touch 两路套餐来源，读取权益额度与活动窗口，按最高优先级领取，同优先级取首项，支持 ZCODE_PLAN_ID 指定套餐。",
+          "领取后可对营销活动位做 confirm 回执，并按 ZCODE_MARKETING_RECHECK 复查活动位；默认复查开启。",
           "支持账号设备值、账号验证码、全局验证码补齐、客户端版本及自动识别操作系统平台；兼容已有设备文件，只读且非必需。",
           "支持 --preview 只读模式、--only N 账号筛选和 --no-notify；每行一个账号，兼容备注前缀并保留验证码中的竖线等后续字符。",
           "保留维护版显式启用的客户端启动和日活事件补报；默认关闭，预览始终关闭，上报失败仍继续其余业务但保留失败退出码。",
-          "严格核验 HTTP 状态、整数业务码及套餐响应；官方明确返回 1003 时计为本期已领取，1005 提示下次重试时间，3001 和 3007 提供参数修复指引。",
+          "严格核验 HTTP 状态、整数业务码及套餐响应；官方明确返回 1003 或本地台账命中时计为本期已领取，1005 提示下次重试时间，3001 和 3007 提供参数修复指引。",
           "固定北京时间展示套餐有效期、执行起止时间；保留每日 09:00 调度元数据，青龙调度时区需设置 Asia/Shanghai。",
           "完全断网预演；可选青龙 notify.py 或 sendNotify.js 通知，保留 PushPlus、Bark、企业微信、钉钉加签及旧青龙接口的顺序回退链，支持全局开关及脚本选择。",
           "时间轴分阶段日志、官方非秘密账号身份、账号及任务统计、唯一单行 TASK_SUMMARY 结构化汇总；不输出凭据和原始响应，任一账号失败非零退出。",
@@ -45302,7 +45313,9 @@
         ],
         "sideEffects": [
           "默认实际运行在成功预览后提交一次套餐领取请求，可能增加账号套餐权益；--preview 或断网预演不领取。",
+          "领取成功或官方确认已领取后，若套餐带有营销 campaign，会向 marketing/touch/action 提交 confirm 回执。",
           "仅 ZCODE_ACTIVATION=1 且非预览、非预演时上报 app_launch 和 app_daily_active，可能影响账号领取资格。",
+          "实际领取确认后写入区域领取台账文件（仅账号哈希与套餐标识，保留约 90 天）；预演与只读预览不写入；不创建或改写设备文件。",
           "通知已启用且非断网预演时向青龙配置或兼容推送通道发送脱敏任务统计；通知失败不改变业务退出码。"
         ]
       },
@@ -45312,7 +45325,7 @@
       },
       "displayName": "ZCode 国内版领套餐",
       "path": "scripts/zcode_cn_daily.py",
-      "sha256": "a0269da3682ee2877af7b5fba31fb70ce4f63bb226e903ca434a10e2ec3ad110",
+      "sha256": "b832bcd6fe524f1640a0f8bf655cd716d0a5173b94f08af6a0d2cd4efcb6aac3",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -45326,7 +45339,7 @@
             "repository": "L0NE-6/ZCode-Daily",
             "url": "https://github.com/L0NE-6/ZCode-Daily.git",
             "branch": "main",
-            "commit": "c1c6deceaab08850096e60db6088d0c8db96b569",
+            "commit": "1012c08947d39a61552768044a486e77441ac529",
             "originalPath": "zcode_intl_daily.py",
             "catalogId": "06675c9bdbcdef9d",
             "sha256": "0de32dacacef678944b12446e8408d3313e3e3eac1c7e29c8205c6f3b51f7972",
@@ -45369,8 +45382,8 @@
           "name": "ZCODE_APP_VERSION",
           "required": false,
           "sensitive": false,
-          "howToGet": "从官方客户端版本信息或领取请求头 X-ZCode-App-Version 获取。",
-          "format": "客户端版本号，默认 3.14.0"
+          "howToGet": "从官方客户端版本信息或领取请求头 X-ZCode-App-Version 获取。marketing/touch 需要 3.17.1+。",
+          "format": "客户端版本号，默认 3.18.0"
         },
         {
           "name": "ZCODE_CAPTCHA_PARAM",
@@ -45387,10 +45400,17 @@
           "format": "0 或 1；默认 0；--preview 始终关闭上报"
         },
         {
+          "name": "ZCODE_MARKETING_RECHECK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "领取成功或台账确认后可复查营销活动位；设 0 关闭复查。",
+          "format": "0 或 1；默认 1"
+        },
+        {
           "name": "ZCODE_CN_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "离线检查时设置；不验证真实凭据，不请求业务或通知接口，也不读取、写入设备文件。",
+          "howToGet": "离线检查时设置；不验证真实凭据，不请求业务或通知接口，也不读取、写入设备或台账文件。",
           "format": "1、true、yes、on 开启整个进程断网预演；默认关闭"
         },
         {
@@ -45474,16 +45494,17 @@
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，忽略以 # 开头的注释行；每行一个账号；支持 套餐JWT、套餐JWT|设备值、套餐JWT|设备值|验证码、备注|套餐JWT|设备值|验证码。只依次按首个竖线拆字段，验证码剩余字符完整保留；不以 & 或 @ 分隔账号。设备留空时兼容读取脚本旁已有的对应区域设备文件，否则确定性生成且不写文件。账号独立执行，任一失败整体非零退出。--only N 只处理所选区域范围内的第 N 个账号。"
+        "rule": "每个非空行一个账号，忽略以 # 开头的注释行；每行支持 套餐JWT、套餐JWT|设备值、套餐JWT|设备值|验证码、备注|套餐JWT|设备值|验证码。只依次按首个竖线拆字段，验证码剩余字符完整保留；不以 & 或 @ 分隔账号。账号独立执行，任一失败整体非零退出。--only N 只处理所选区域范围内的第 N 个账号。"
       },
       "dependencies": [],
       "features": [
         "国内版和国际版套餐任务合并为一个规范脚本；默认国内版，通过 --region cn/intl/all 或 ZCODE_REGION 显式选择，保持各自凭据及设备隔离。",
-        "读取套餐列表、权益额度和每日或一次性周期，按最高优先级领取，同优先级取首项，支持 ZCODE_PLAN_ID 指定套餐。",
+        "合并 billing/preview 与 marketing/touch 两路套餐来源，读取权益额度与活动窗口，按最高优先级领取，同优先级取首项，支持 ZCODE_PLAN_ID 指定套餐。",
+        "领取后可对营销活动位做 confirm 回执，并按 ZCODE_MARKETING_RECHECK 复查活动位；默认复查开启。",
         "支持账号设备值、账号验证码、全局验证码补齐、客户端版本及自动识别操作系统平台；兼容已有设备文件，只读且非必需。",
         "支持 --preview 只读模式、--only N 账号筛选和 --no-notify；每行一个账号，兼容备注前缀并保留验证码中的竖线等后续字符。",
         "保留维护版显式启用的客户端启动和日活事件补报；默认关闭，预览始终关闭，上报失败仍继续其余业务但保留失败退出码。",
-        "严格核验 HTTP 状态、整数业务码及套餐响应；官方明确返回 1003 时计为本期已领取，1005 提示下次重试时间，3001 和 3007 提供参数修复指引。",
+        "严格核验 HTTP 状态、整数业务码及套餐响应；官方明确返回 1003 或本地台账命中时计为本期已领取，1005 提示下次重试时间，3001 和 3007 提供参数修复指引。",
         "固定北京时间展示套餐有效期、执行起止时间；保留每日 09:00 调度元数据，青龙调度时区需设置 Asia/Shanghai。",
         "完全断网预演；可选青龙 notify.py 或 sendNotify.js 通知，保留 PushPlus、Bark、企业微信、钉钉加签及旧青龙接口的顺序回退链，支持全局开关及脚本选择。",
         "时间轴分阶段日志、官方非秘密账号身份、账号及任务统计、唯一单行 TASK_SUMMARY 结构化汇总；不输出凭据和原始响应，任一账号失败非零退出。",
@@ -45491,7 +45512,9 @@
       ],
       "sideEffects": [
         "默认实际运行在成功预览后提交一次套餐领取请求，可能增加账号套餐权益；--preview 或断网预演不领取。",
+        "领取成功或官方确认已领取后，若套餐带有营销 campaign，会向 marketing/touch/action 提交 confirm 回执。",
         "仅 ZCODE_ACTIVATION=1 且非预览、非预演时上报 app_launch 和 app_daily_active，可能影响账号领取资格。",
+        "实际领取确认后写入区域领取台账文件（仅账号哈希与套餐标识，保留约 90 天）；预演与只读预览不写入；不创建或改写设备文件。",
         "通知已启用且非断网预演时向青龙配置或兼容推送通道发送脱敏任务统计；通知失败不改变业务退出码。"
       ],
       "review": {
@@ -45505,20 +45528,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/a0a7b04503bfb900",
-        "candidateSha256": "a0c6007bbcd735075fd999eb00f00347b3f0a2c8a201047f289d9ab38e1246b1"
+        "candidateSha256": "809b313fccdb19f2b3a977c912633c4a0e103187a752de5365384702b86ec816"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "a0c6007bbcd735075fd999eb00f00347b3f0a2c8a201047f289d9ab38e1246b1",
-        "releaseSha256": "a0269da3682ee2877af7b5fba31fb70ce4f63bb226e903ca434a10e2ec3ad110",
+        "validatedSha256": "809b313fccdb19f2b3a977c912633c4a0e103187a752de5365384702b86ec816",
+        "releaseSha256": "b832bcd6fe524f1640a0f8bf655cd716d0a5173b94f08af6a0d2cd4efcb6aac3",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-27T08:52:58.780172+00:00",
+          "approvedAt": "2026-11-04T13:11:32.825568+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "a0c6007bbcd735075fd999eb00f00347b3f0a2c8a201047f289d9ab38e1246b1",
-          "toCandidateSha256": "a0269da3682ee2877af7b5fba31fb70ce4f63bb226e903ca434a10e2ec3ad110",
+          "fromCandidateSha256": "809b313fccdb19f2b3a977c912633c4a0e103187a752de5365384702b86ec816",
+          "toCandidateSha256": "b832bcd6fe524f1640a0f8bf655cd716d0a5173b94f08af6a0d2cd4efcb6aac3",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
