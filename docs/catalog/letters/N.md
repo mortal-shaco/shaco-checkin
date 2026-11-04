@@ -1,9 +1,10 @@
 # 字母索引 · N
 
-共 **6** 个脚本。返回 [`目录首页`](../README.md)。
+共 **7** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
+| NDNU第二课堂签到签退 | `scripts/ndnu.py` | `python3 scripts/ndnu.py` | `*/5 7-22 * * *` | 待检查 | [ndnu.py.md](../../scripts/ndnu.py.md)（`docs/scripts/ndnu.py.md`） |
 | 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `53 1 * * *` | 待检查 | [netease_task.py.md](../../scripts/netease_task.py.md)（`docs/scripts/netease_task.py.md`） |
 | NewAPI 自动签到 | `scripts/newapi.py` | `python3 scripts/newapi.py` | `18 8 * * *` | 待检查 | [newapi.py.md](../../scripts/newapi.py.md)（`docs/scripts/newapi.py.md`） |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `49 0 * * *` | 待检查 | [nga_checkin.py.md](../../scripts/nga_checkin.py.md)（`docs/scripts/nga_checkin.py.md`） |

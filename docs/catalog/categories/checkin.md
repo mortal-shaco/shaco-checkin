@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **197** 个脚本。返回 [`目录首页`](../README.md)。
+共 **198** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -96,6 +96,7 @@
 | Discuz k_misign 每日签到 | `scripts/misign.js` | `node scripts/misign.js` | `19 8 * * *` | 待检查 | [misign.js.md](../../scripts/misign.js.md)（`docs/scripts/misign.js.md`） |
 | ModelScope 魔搭每日签到 | `scripts/modelscope_daily.py` | `python3 scripts/modelscope_daily.py` | `0 9 * * *` | 待检查 | [modelscope_daily.py.md](../../scripts/modelscope_daily.py.md)（`docs/scripts/modelscope_daily.py.md`） |
 | mybt 每日签到与访问积分 | `scripts/mybt.py` | `python3 scripts/mybt.py` | `2 8 * * *` | 待检查 | [mybt.py.md](../../scripts/mybt.py.md)（`docs/scripts/mybt.py.md`） |
+| NDNU第二课堂签到签退 | `scripts/ndnu.py` | `python3 scripts/ndnu.py` | `*/5 7-22 * * *` | 待检查 | [ndnu.py.md](../../scripts/ndnu.py.md)（`docs/scripts/ndnu.py.md`） |
 | 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `53 1 * * *` | 待检查 | [netease_task.py.md](../../scripts/netease_task.py.md)（`docs/scripts/netease_task.py.md`） |
 | NewAPI 自动签到 | `scripts/newapi.py` | `python3 scripts/newapi.py` | `18 8 * * *` | 待检查 | [newapi.py.md](../../scripts/newapi.py.md)（`docs/scripts/newapi.py.md`） |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `49 0 * * *` | 待检查 | [nga_checkin.py.md](../../scripts/nga_checkin.py.md)（`docs/scripts/nga_checkin.py.md`） |

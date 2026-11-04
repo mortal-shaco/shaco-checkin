@@ -23392,6 +23392,190 @@
       }
     },
     {
+      "catalogId": "1b92bf9b58ea5e07",
+      "applicationKey": "ndnu",
+      "checkProfile": {
+        "requiredEnv": [
+          "NDNU_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "NDNU_SESSION",
+          "NDNU_IMG_BASE64",
+          "NDNU_LOCATIONS",
+          "NDNU_TASK",
+          "NDNU_TIMEOUT",
+          "NDNU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NDNU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NDNU_TASK": "all",
+          "NDNU_TIMEOUT": "20"
+        },
+        "successPatterns": [
+          "签到成功",
+          "签退成功",
+          "已签到 / 签退过",
+          "本轮无需签到",
+          "TASK_SUMMARY=",
+          "最终状态：SUCCESS"
+        ],
+        "features": [
+          "查询待签到课程列表",
+          "查询待签退课程列表",
+          "按课程时间窗口自动签到",
+          "按课程时间窗口自动签退",
+          "上传签到照片并提交坐标",
+          "可配置校园地点坐标",
+          "识别已签到/已签退业务码 000121"
+        ],
+        "sideEffects": [
+          "上传签到照片",
+          "提交课程签到",
+          "提交课程签退"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "NDNU第二课堂签到签退",
+      "path": "scripts/ndnu.py",
+      "sha256": "35340d1664ddda7ccb38cf0d82fdf2f699fdb2775074359492e6d45b517d2d64",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Dobona/NDNU-checkin",
+        "branch": "main",
+        "commit": "eb1018b545c621102ddc3e77e1d667e778b214ab",
+        "originalPath": "main.py",
+        "related": [
+          {
+            "catalogId": "064c48caccb61205",
+            "sha256": "5ed0362b65e90fbd8fd52758cd541d4574da496a3d0c6568561d2bf6977fa184",
+            "repository": "Dobona/NDNU-checkin",
+            "url": "https://github.com/Dobona/NDNU-checkin.git",
+            "branch": "main",
+            "commit": "eb1018b545c621102ddc3e77e1d667e778b214ab",
+            "originalPath": "tools/make_img.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "*/5 7-22 * * *",
+      "command": "python3 scripts/ndnu.py",
+      "environment": [
+        {
+          "name": "NDNU_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人微信中打开宁德师范学院第二课堂（dekt.ndnu.edu.cn）并保持登录，于浏览器或抓包工具中复制请求 Cookie 里的 SESSION 单个值（不要整段 Cookie、不要分享）。照片可将本人签到用 JPG/PNG 转为 Base64 后附在同一行；也可先用上游 make_img 思路本地转码后只把 Base64 填入环境变量。本脚本不再使用 mitmproxy 或系统代理抓包。",
+          "format": "每个非空行一个账号：SESSION 或 SESSION|照片Base64。仅按首个竖线分割，后续内容保留在照片字段。不使用 &、@ 分隔账号。# 开头行忽略。可选前缀 SESSION=。"
+        },
+        {
+          "name": "NDNU_SESSION",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入；未设置 NDNU_ACCOUNTS 时使用。获取方式与 NDNU_ACCOUNTS 相同，建议合并到规范变量。",
+          "format": "与 NDNU_ACCOUNTS 相同：每行 SESSION 或 SESSION|照片Base64。"
+        },
+        {
+          "name": "NDNU_IMG_BASE64",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选。账号行未附带照片时使用的共用签到照片 Base64。将本人 JPG/PNG 等图片内容做 Base64 编码后填入；上传时 type 固定为 17，与上游 img.json 一致。",
+          "format": "纯 Base64 字符串，不含 data: 前缀；勿把凭据发给任何在线转码服务。"
+        },
+        {
+          "name": "NDNU_LOCATIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。课程地点名称到坐标的映射；未设置时使用内置校园地点（求是楼、操场、讲堂群、第一食堂、图书馆、体育馆、求真楼、逸夫实训楼）。若课程返回地点不在列表中，请按实际坐标补充。",
+          "format": "JSON 对象，如 {\"求是楼\":[26.661232,119.58768]}，值为 [纬度,经度]。"
+        },
+        {
+          "name": "NDNU_TASK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。控制本轮执行签到、签退或两者。",
+          "format": "all（默认，签到+签退）/ sign（仅签到）/ signout（仅签退）。"
+        },
+        {
+          "name": "NDNU_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。单次 HTTP 超时秒数。",
+          "format": "3–120 之间的数字，默认 20。"
+        },
+        {
+          "name": "NDNU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证配置时设置为 1。",
+          "format": "1、true、yes、on 启用完全断网预演；0、false、no、off 或空值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中将本任务加入通知名单；存在该变量时替换默认名单。",
+          "format": "逗号、分号或空白分隔；支持 1b92bf9b58ea5e07、scripts/ndnu_checkin.py、ndnu_checkin.py、文件名通配符及 *；空值关闭全部名单通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定本人青龙 notify.py 或 sendNotify.js 所在目录；也自动查找青龙标准目录。",
+          "format": "目录路径；优先 Python 通知，兼容 JavaScript 通知。通知缺失、超时或失败保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号。规范变量 NDNU_ACCOUNTS 填写 SESSION，或 SESSION|照片Base64（仅按首个竖线分割）。未设置时兼容 NDNU_SESSION。共用照片可放 NDNU_IMG_BASE64。账号独立处理，任一失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询待签到课程列表",
+        "查询待签退课程列表",
+        "按课程时间窗口自动签到",
+        "按课程时间窗口自动签退",
+        "上传签到照片并提交坐标",
+        "可配置校园地点坐标",
+        "识别已签到/已签退业务码 000121"
+      ],
+      "sideEffects": [
+        "上传签到照片",
+        "提交课程签到",
+        "提交课程签退"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1b92bf9b58ea5e07",
+        "candidateSha256": "35340d1664ddda7ccb38cf0d82fdf2f699fdb2775074359492e6d45b517d2d64"
+      }
+    },
+    {
       "catalogId": "a8a311f3f5aaa2e6",
       "applicationKey": "netease-music",
       "checkProfile": {
