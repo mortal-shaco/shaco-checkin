@@ -21248,6 +21248,196 @@
       }
     },
     {
+      "catalogId": "b4130175dc0a855e",
+      "applicationKey": "longhu",
+      "checkProfile": {
+        "requiredEnv": [
+          "LONGHU_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "LONGHU_APP_CHECKIN",
+          "LONGHU_BU_CODE",
+          "LONGHU_CHANNEL",
+          "LONGHU_UA",
+          "LONGHU_TIMEOUT",
+          "LONGHU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "LONGHU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LONGHU_APP_CHECKIN": "auto",
+          "LONGHU_TIMEOUT": "20",
+          "LONGHU_BU_CODE": "C20400",
+          "LONGHU_CHANNEL": "C2"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "TASK_SUMMARY=",
+          "最终状态：SUCCESS"
+        ],
+        "features": [
+          "龙湖天街/珑珠：token 滚动续期、小程序日日签、APP 专享签到入口与会员资料查询",
+          "官方返回昵称、等级等非秘密身份时直接展示以便核对账号",
+          "多账号按行处理；规范变量 LONGHU_ACCOUNTS（token|dx_token）；APP 入口模式可切换",
+          "同批账号设备指纹冲突检测；完全断网预演 LONGHU_DRY_RUN、HTTPS 超时与业务成功/已签判定",
+          "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "调用 token2key/key2token 滚动延长会员登录态有效期",
+          "提交小程序日日签与（可选）APP 专享签到，改变当日签到状态并可能发放积分/成长值",
+          "通知已启用且非断网预演时向青龙通知通道发送脱敏任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "龙湖天街签到",
+      "path": "scripts/longhu.py",
+      "sha256": "d865fa14bdb342bee6df624b1301f6e274703a403d89e0352e43ef23c72987ed",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "ken861222/longhu-checkin",
+        "branch": "main",
+        "commit": "4fc54bbbd98d624aaa4d30d994289d5e83541df9",
+        "originalPath": "app/longhu.py",
+        "related": [
+          {
+            "catalogId": "33d30859b8254909",
+            "sha256": "18d5fdb7f79cd04236e547321afe2174e0d8afcd4de2352db090c217f53bc1be",
+            "repository": "ken861222/longhu-checkin",
+            "url": "https://github.com/ken861222/longhu-checkin.git",
+            "branch": "main",
+            "commit": "4fc54bbbd98d624aaa4d30d994289d5e83541df9",
+            "originalPath": "app/parser.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "deef6b54ca19d6c2",
+            "sha256": "1c248855c9e8018a70c0da4f9de1a4f79440fdeba47e603191c25e838472a9f5",
+            "repository": "ken861222/longhu-checkin",
+            "url": "https://github.com/ken861222/longhu-checkin.git",
+            "branch": "main",
+            "commit": "4fc54bbbd98d624aaa4d30d994289d5e83541df9",
+            "originalPath": "app/main.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "5 8 * * *",
+      "command": "python3 scripts/longhu.py",
+      "environment": [
+        {
+          "name": "LONGHU_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在龙湖天街 App 或微信小程序抓取会员/签到相关请求头中的 X-LF-UserToken（或 token/lmToken）。设备指纹须使用 App 内真实顶象 token（抓包请求头 X-LF-DXRisk-Token），不要用网页现造指纹。每个账号一行写入青龙环境变量；不要把真实凭据写入公开仓库。",
+          "format": "每行一个账号：token|dx_token；仅按第一个竖线分割，竖线后整段作为设备指纹；账号之间只用换行分隔，不使用 & 或 @"
+        },
+        {
+          "name": "LONGHU_APP_CHECKIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "控制 APP 专享签到入口：与小程序日日签同一天可各签一次。未配置设备指纹时 auto 不会硬打 APP 入口。",
+          "format": "auto（默认，自动签到）/ manual（只查状态并提示）/ off（跳过）"
+        },
+        {
+          "name": "LONGHU_BU_CODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：业务线代码，一般保持默认即可；抓包可见 X-LF-Bucode / X-LF-Bu-Code。",
+          "format": "默认 C20400"
+        },
+        {
+          "name": "LONGHU_CHANNEL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：渠道代码，一般保持默认即可；抓包可见 X-LF-Channel。",
+          "format": "默认 C2"
+        },
+        {
+          "name": "LONGHU_UA",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：自定义 User-Agent；不填则使用维护版默认小程序 UA。",
+          "format": "完整 UA 字符串"
+        },
+        {
+          "name": "LONGHU_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次 HTTPS 请求超时秒数。",
+          "format": "3 到 120 的数字；默认 20"
+        },
+        {
+          "name": "LONGHU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置；只校验账号配置并模拟阶段日志，不续期、不签到、不查资料、不真实发送通知。",
+          "format": "1、true、yes、on 开启完全断网预演；默认关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录；失败不改变业务退出码。",
+          "format": "目录路径；还会尝试 /ql/data/scripts 与 /ql/scripts"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个账号，行内格式为 token|dx_token（仅按第一个竖线分割）；账号独立处理；同批账号共用同一设备指纹时较小序号保留、其余暂停签到；任一账号失败时整体以非零退出码结束"
+      },
+      "dependencies": [],
+      "features": [
+        "龙湖天街/珑珠：token 滚动续期、小程序日日签、APP 专享签到入口与会员资料查询",
+        "官方返回昵称、等级等非秘密身份时直接展示以便核对账号",
+        "多账号按行处理；规范变量 LONGHU_ACCOUNTS（token|dx_token）；APP 入口模式可切换",
+        "同批账号设备指纹冲突检测；完全断网预演 LONGHU_DRY_RUN、HTTPS 超时与业务成功/已签判定",
+        "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "调用 token2key/key2token 滚动延长会员登录态有效期",
+        "提交小程序日日签与（可选）APP 专享签到，改变当日签到状态并可能发放积分/成长值",
+        "通知已启用且非断网预演时向青龙通知通道发送脱敏任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/b4130175dc0a855e",
+        "candidateSha256": "d865fa14bdb342bee6df624b1301f6e274703a403d89e0352e43ef23c72987ed"
+      }
+    },
+    {
       "catalogId": "5e0e668122f2807b",
       "applicationKey": "loomy",
       "checkProfile": {
