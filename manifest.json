@@ -5579,6 +5579,169 @@
       }
     },
     {
+      "catalogId": "5d8ba0f271781047",
+      "applicationKey": "bohe",
+      "checkProfile": {
+        "requiredEnv": [
+          "BOHE_COOKIE"
+        ],
+        "optionalEnv": [
+          "BOHE_DRY_RUN",
+          "BOHE_TIMEOUT_MS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BOHE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用薄荷公益站 Cookie 调用用户信息与签到状态接口，校验登录并展示官方用户名或公开 linux_do_id。",
+          "在可签到时提交每日抽奖签到，展示奖项标签、获得额度、余额与今日排名；识别今日已签。",
+          "读取签到历史并展示连续签到天数与累计额度（只读），奖项等级文案与上游一致。",
+          "支持每行一个账号及可选备注前缀，账号失败隔离并汇总退出状态。",
+          "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+          "完全断网预演：校验 Cookie 格式、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时提交每日签到抽奖，可能增加账号额度余额。",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "薄荷公益站每日签到",
+      "path": "scripts/background.js",
+      "sha256": "922a897dd4a3f750f0cbb47a29bee74609c537a5289a6a870324113714eb9d89",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "484198xx/bohe-auto-signin",
+        "branch": "main",
+        "commit": "14ebac3bdc338d6cf261477324df8fa556f1798f",
+        "originalPath": "background.js",
+        "related": [
+          {
+            "catalogId": "5f86eb93c059193a",
+            "sha256": "b23b2600ea6394bfb507731133b9e4498e795f00aa8f6fa99bee839868dd0367",
+            "repository": "484198xx/bohe-auto-signin",
+            "url": "https://github.com/484198xx/bohe-auto-signin.git",
+            "branch": "main",
+            "commit": "14ebac3bdc338d6cf261477324df8fa556f1798f",
+            "originalPath": "popup.js",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "4 8 * * *",
+      "command": "node scripts/background.js",
+      "environment": [
+        {
+          "name": "BOHE_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人账号登录 https://up.x666.me ，在浏览器开发者工具→应用/网络中复制发往本站请求的 Cookie（至少包含 server_session_58ffd1cb；可附带 auth_token）。勿使用他人 Cookie 或日志中的敏感信息。",
+          "format": "每个非空行一个账号的完整 Cookie 字符串。可选备注前缀「备注|Cookie」，只在首个竖线处拆分。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "BOHE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不访问站点、不签到、不投递真实通知。"
+        },
+        {
+          "name": "BOHE_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP 超时时间时手动设置。",
+          "format": "1000 至 60000 的整数毫秒；缺省或非法值使用 20000。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 5d8ba0f271781047、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "BOHE_COOKIE 每个非空行一个账号；可选备注仅按第一个竖线分割。账号逐个独立查询、签到与统计，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用薄荷公益站 Cookie 调用用户信息与签到状态接口，校验登录并展示官方用户名或公开 linux_do_id。",
+        "在可签到时提交每日抽奖签到，展示奖项标签、获得额度、余额与今日排名；识别今日已签。",
+        "读取签到历史并展示连续签到天数与累计额度（只读），奖项等级文案与上游一致。",
+        "支持每行一个账号及可选备注前缀，账号失败隔离并汇总退出状态。",
+        "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+        "完全断网预演：校验 Cookie 格式、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时提交每日签到抽奖，可能增加账号额度余额。",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/5d8ba0f271781047",
+        "candidateSha256": "4905b1ba4d63c7b922ea9d416418e0ddb54601db25a107097b679f0f8dac5689"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "4905b1ba4d63c7b922ea9d416418e0ddb54601db25a107097b679f0f8dac5689",
+        "releaseSha256": "922a897dd4a3f750f0cbb47a29bee74609c537a5289a6a870324113714eb9d89",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T18:56:14.639799+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "4905b1ba4d63c7b922ea9d416418e0ddb54601db25a107097b679f0f8dac5689",
+          "toCandidateSha256": "922a897dd4a3f750f0cbb47a29bee74609c537a5289a6a870324113714eb9d89",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "ed0673d8c02fc410",
       "applicationKey": "sitoi/dailycheckin::baidu",
       "checkProfile": {
