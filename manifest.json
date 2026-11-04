@@ -38046,6 +38046,280 @@
       }
     },
     {
+      "catalogId": "2422813024d0fddc",
+      "applicationKey": "telegram-daily",
+      "checkProfile": {
+        "requiredEnv": [
+          "TELEGRAM_DAILY_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "TELEGRAM_API_ID",
+          "TELEGRAM_API_HASH",
+          "TELEGRAM_DAILY_BOTS",
+          "TELEGRAM_DAILY_DRY_RUN",
+          "TELEGRAM_DAILY_TIMEOUT",
+          "TELEGRAM_DAILY_INITIAL_DELAY_MIN_SECONDS",
+          "TELEGRAM_DAILY_INITIAL_DELAY_MAX_SECONDS",
+          "TELEGRAM_DAILY_BETWEEN_BOT_MIN_SECONDS",
+          "TELEGRAM_DAILY_BETWEEN_BOT_MAX_SECONDS",
+          "TELEGRAM_DAILY_BETWEEN_ACCOUNT_MIN_SECONDS",
+          "TELEGRAM_DAILY_BETWEEN_ACCOUNT_MAX_SECONDS",
+          "TELEGRAM_DAILY_PROXY_ENABLED",
+          "TELEGRAM_DAILY_PROXY_HOST",
+          "TELEGRAM_DAILY_PROXY_PORT",
+          "TELEGRAM_DAILY_PROXY_USERNAME",
+          "TELEGRAM_DAILY_PROXY_PASSWORD",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TELEGRAM_DAILY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TELEGRAM_DAILY_TIMEOUT": "30",
+          "TELEGRAM_DAILY_INITIAL_DELAY_MIN_SECONDS": "0",
+          "TELEGRAM_DAILY_INITIAL_DELAY_MAX_SECONDS": "0",
+          "TELEGRAM_DAILY_BETWEEN_BOT_MIN_SECONDS": "0",
+          "TELEGRAM_DAILY_BETWEEN_BOT_MAX_SECONDS": "0",
+          "TELEGRAM_DAILY_BETWEEN_ACCOUNT_MIN_SECONDS": "0",
+          "TELEGRAM_DAILY_BETWEEN_ACCOUNT_MAX_SECONDS": "0",
+          "TELEGRAM_DAILY_PROXY_ENABLED": "0",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态",
+          "全部成功",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用本人 Telegram MTProto 账号会话，向配置的多个 Bot 执行每日签到类动作",
+          "支持 send_command、send_message、click_button；manual_ui_required 明确失败而不假装成功",
+          "显示官方返回的用户名、显示名称或公开 UID，方便核对账号",
+          "每行一个账号，Bot 失败隔离；可选 SOCKS5 与显式随机间隔",
+          "完全断网预演、时间轴日志、账号与任务统计、单行 TASK_SUMMARY",
+          "青龙脱敏通知及全局开关，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行时向目标 Bot 发送命令或消息，并可能点击聊天内按钮，从而触发该 Bot 的签到或任务状态变化",
+          "正式运行且通知开启、青龙组件可用时发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Telegram每日Bot签到",
+      "path": "scripts/telegram_daily_checkin.py",
+      "sha256": "074b6be1aa62cddb1d328830c365af9ea0287adf3b64b6e8bbc89cb9de2366e6",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "redwan-cse/telegram-daily-checkin",
+        "branch": "main",
+        "commit": "67be15b79b34cdd112208e33cfe7524d90df7e45",
+        "originalPath": "telegram_daily_checkin.py"
+      },
+      "cron": "33 8 * * *",
+      "command": "python3 scripts/telegram_daily_checkin.py",
+      "environment": [
+        {
+          "name": "TELEGRAM_DAILY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://my.telegram.org/apps 登录本人 Telegram 账号创建应用，取得 api_id 与 api_hash；再在可信本机用 Telethon 一次性登录并导出 StringSession。将同一账号的标签、api_id、api_hash、StringSession 与机器人动作写在同一行。不要把会话发给他人，也不要填入示例占位值用于正式运行。",
+          "format": "每个非空行一个账号。推荐：账号标签|api_id|api_hash|string_session|机器人配置。仅按前四个竖线拆分，机器人配置保留原文。机器人简写为 @BotA:/checkin;@BotB:Daily（以 / 开头视为 send_command，否则 send_message）；复杂动作可用 JSON 数组，例如 [{\"username\":\"@BotA\",\"actions\":[{\"type\":\"send_command\",\"value\":\"/start\"},{\"type\":\"click_button\",\"value\":\"Daily\",\"wait_seconds\":5}]}] 。也支持 api_id|api_hash|session|bots，或在已设置 TELEGRAM_API_ID/TELEGRAM_API_HASH 时使用 账号标签|session|bots。不使用 &、@ 分隔多账号。"
+        },
+        {
+          "name": "TELEGRAM_API_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 TELEGRAM_DAILY_ACCOUNTS 相同，来自 https://my.telegram.org/apps；作为各账号行可省略的全局 api_id。",
+          "format": "正整数。"
+        },
+        {
+          "name": "TELEGRAM_API_HASH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 TELEGRAM_API_ID 配套，来自 https://my.telegram.org/apps。",
+          "format": "Telegram 应用 api_hash 字符串。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_BOTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "当账号行未写机器人配置时使用的默认 Bot 动作列表；按需填写。",
+          "format": "与账号行机器人配置相同：简写 @Bot:/command 或多个用分号分隔，或 JSON 动作数组。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设为 1 开启完全断网配置预演。",
+          "format": "1、true、yes、on 开启；默认关闭。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置 Telethon 请求超时秒数。",
+          "format": "正整数秒，默认 30。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_INITIAL_DELAY_MIN_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置正式运行初始随机延迟下限；默认 0，预演不等待。",
+          "format": "非负整数秒。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_INITIAL_DELAY_MAX_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置正式运行初始随机延迟上限；默认 0。",
+          "format": "非负整数秒，且不小于最小值。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_BETWEEN_BOT_MIN_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置同一账号内 Bot 间隔下限；默认 0。",
+          "format": "非负整数秒。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_BETWEEN_BOT_MAX_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置同一账号内 Bot 间隔上限；默认 0。",
+          "format": "非负整数秒。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_BETWEEN_ACCOUNT_MIN_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置账号间隔下限；默认 0。",
+          "format": "非负整数秒。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_BETWEEN_ACCOUNT_MAX_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置账号间隔上限；默认 0。",
+          "format": "非负整数秒。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_PROXY_ENABLED",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要经 SOCKS5 访问 Telegram 时显式开启；默认关闭。兼容 PROXY_ENABLED。",
+          "format": "1、true、yes、on 开启。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_PROXY_HOST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "启用代理后填写 SOCKS5 主机；兼容 PROXY_HOST。",
+          "format": "主机名或 IP，不含凭据。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_PROXY_PORT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "启用代理后填写端口；兼容 PROXY_PORT。",
+          "format": "正整数，默认 1080。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_PROXY_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "代理需要认证时填写；兼容 PROXY_USERNAME。",
+          "format": "代理用户名。"
+        },
+        {
+          "name": "TELEGRAM_DAILY_PROXY_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "代理需要认证时填写；兼容 PROXY_PASSWORD。",
+          "format": "代理密码。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置后仅当选择器匹配本脚本目录 ID、路径或文件名时发送通知；空值禁用全部。",
+          "format": "逗号、分号、空白或换行分隔；支持 * 通配。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "本地目录路径；业务不依赖此文件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；同一账号的 api_id、api_hash、StringSession 与机器人配置写在同一行并用竖线连接；账号独立执行，任一账号失败则进程非零退出。"
+      },
+      "dependencies": [
+        "telethon>=1.42,<2",
+        "PySocks>=1.7,<2"
+      ],
+      "features": [
+        "使用本人 Telegram MTProto 账号会话，向配置的多个 Bot 执行每日签到类动作",
+        "支持 send_command、send_message、click_button；manual_ui_required 明确失败而不假装成功",
+        "显示官方返回的用户名、显示名称或公开 UID，方便核对账号",
+        "每行一个账号，Bot 失败隔离；可选 SOCKS5 与显式随机间隔",
+        "完全断网预演、时间轴日志、账号与任务统计、单行 TASK_SUMMARY",
+        "青龙脱敏通知及全局开关，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行时向目标 Bot 发送命令或消息，并可能点击聊天内按钮，从而触发该 Bot 的签到或任务状态变化",
+        "正式运行且通知开启、青龙组件可用时发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/2422813024d0fddc",
+        "candidateSha256": "55c1da35506b1f91b79a909f7ee30a306af92af9e1698754bddf9b541a89401d"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "55c1da35506b1f91b79a909f7ee30a306af92af9e1698754bddf9b541a89401d",
+        "releaseSha256": "074b6be1aa62cddb1d328830c365af9ea0287adf3b64b6e8bbc89cb9de2366e6",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T12:07:50.445256+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "55c1da35506b1f91b79a909f7ee30a306af92af9e1698754bddf9b541a89401d",
+          "toCandidateSha256": "074b6be1aa62cddb1d328830c365af9ea0287adf3b64b6e8bbc89cb9de2366e6",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "79a75a8c4715aa96",
       "applicationKey": "deeplee/personal-scripts::tencent",
       "checkProfile": {

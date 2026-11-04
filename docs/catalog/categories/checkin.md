@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **189** 个脚本。返回 [`目录首页`](../README.md)。
+共 **190** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -170,6 +170,7 @@
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
+| Telegram每日Bot签到 | `scripts/telegram_daily_checkin.py` | `python3 scripts/telegram_daily_checkin.py` | `33 8 * * *` | 待检查 | [telegram_daily_checkin.py.md](../../scripts/telegram_daily_checkin.py.md)（`docs/scripts/telegram_daily_checkin.py.md`） |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `39 2 * * *` | 待检查 | [tieba_checkin.py.md](../../scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
