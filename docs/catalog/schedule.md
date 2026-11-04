@@ -143,6 +143,7 @@
 | 塔吉多（异环）自动签到 | `scripts/nte.py` | `python3 scripts/nte.py` | `0 1 * * *` | 待检查 | [nte.py.md](../scripts/nte.py.md)（`docs/scripts/nte.py.md`） |
 | OfficeAce 果办每日奖励 | `scripts/officeace_daily.py` | `python3 scripts/officeace_daily.py` | `57 0 * * *` | 待检查 | [officeace_daily.py.md](../scripts/officeace_daily.py.md)（`docs/scripts/officeace_daily.py.md`） |
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `6 1 1 1 1` | 待检查 | [ole.py.md](../scripts/ole.py.md)（`docs/scripts/ole.py.md`） |
+| 欧文 Soul-Mates 每日签到 | `scripts/ouwen.py` | `python3 scripts/ouwen.py` | `0 18 * * *` | 待检查 | [ouwen.py.md](../scripts/ouwen.py.md)（`docs/scripts/ouwen.py.md`） |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `13 1 * * *` | 待检查 | [passnat_checkin.py.md](../scripts/passnat_checkin.py.md)（`docs/scripts/passnat_checkin.py.md`） |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
