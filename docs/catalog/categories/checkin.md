@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **186** 个脚本。返回 [`目录首页`](../README.md)。
+共 **187** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -62,6 +62,7 @@
 | 废文网签到 | `scripts/fwxs_checkin.js` | `node scripts/fwxs_checkin.js` | `57 1 * * *` | 待检查 | [fwxs_checkin.js.md](../../scripts/fwxs_checkin.js.md)（`docs/scripts/fwxs_checkin.js.md`） |
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `18 1 * * *` | 待检查 | [fxh.js.md](../../scripts/fxh.js.md)（`docs/scripts/fxh.js.md`） |
 | GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
+| GLaDOS/Railgun 签到 | `scripts/glados_railgun.py` | `python3 scripts/glados_railgun.py` | `21 1 * * *` | 待检查 | [glados_railgun.py.md](../../scripts/glados_railgun.py.md)（`docs/scripts/glados_railgun.py.md`） |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `14 1 * * *` | 待检查 | [hifiti_checkin.py.md](../../scripts/hifiti_checkin.py.md)（`docs/scripts/hifiti_checkin.py.md`） |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `32 0 * * *` | 待检查 | [hlyl.py.md](../../scripts/hlyl.py.md)（`docs/scripts/hlyl.py.md`） |
 | 沪上阿姨签到 | `scripts/hsay.py` | `python3 scripts/hsay.py` | `21 9,18 * * *` | 待检查 | [hsay.py.md](../../scripts/hsay.py.md)（`docs/scripts/hsay.py.md`） |
