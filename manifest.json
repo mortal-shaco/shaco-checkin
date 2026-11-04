@@ -1753,6 +1753,185 @@
       }
     },
     {
+      "catalogId": "4e628bcec2f5fef6",
+      "applicationKey": "ahut",
+      "checkProfile": {
+        "requiredEnv": [
+          "AHUT_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "STUDENT_IDS",
+          "PASSWORDS",
+          "AHUT_DRY_RUN",
+          "AHUT_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AHUT_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "AHUT_TIMEOUT": "20"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已完成签到",
+          "TASK_SUMMARY=",
+          "最终状态：SUCCESS"
+        ],
+        "features": [
+          "安徽工业大学智慧考勤晚寝签到：OAuth 登录、动态任务、微信环境校验、时间窗口、宿舍定位与签到提交",
+          "官方返回姓名等非秘密身份时直接展示以便核对账号",
+          "多账号按行处理；规范变量 AHUT_ACCOUNTS，兼容 STUDENT_IDS/PASSWORDS",
+          "完全断网预演 AHUT_DRY_RUN、HTTPS 超时、业务成功/已签到判定",
+          "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "登录智慧考勤并获取会话凭证",
+          "开启晚寝签到时间窗口并提交晚寝签到，改变当日签到状态",
+          "通知已启用且非断网预演时向青龙通知通道发送脱敏任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "安徽工业大学晚寝签到",
+      "path": "scripts/ahut.py",
+      "sha256": "65588b1b9a914662fe355cca1f602e7f2f802e1d5e276d21136b4776c35f101d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Sull1se/ahut-auto-checkin",
+        "branch": "main",
+        "commit": "6e03f5f64954b91677598c11e96018f789b7c240",
+        "originalPath": "python/main.py",
+        "related": [
+          {
+            "catalogId": "62911dece9a8aefc",
+            "sha256": "b24cc055d69a0a358e86f2befa0678ed600de753b6272e014c49c35b526c3886",
+            "repository": "Sull1se/ahut-auto-checkin",
+            "url": "https://github.com/Sull1se/ahut-auto-checkin.git",
+            "branch": "main",
+            "commit": "6e03f5f64954b91677598c11e96018f789b7c240",
+            "originalPath": "python/notifier.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "20 21 * * *",
+      "command": "python3 scripts/ahut.py",
+      "environment": [
+        {
+          "name": "AHUT_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用安徽工业大学智慧考勤（xskq.ahut.edu.cn）学号与登录密码。在青龙环境变量中按每行一个账号填写；不要把真实凭据写入公开仓库或分享给他人。",
+          "format": "每行一个账号，格式：学号|密码；仅按第一个竖线分割，密码中可含竖线；账号之间只用换行分隔，不使用 & 或 @"
+        },
+        {
+          "name": "STUDENT_IDS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：未配置 AHUT_ACCOUNTS 时填写学号列表；须与 PASSWORDS 数量对齐。维护版不再提供默认密码。",
+          "format": "学号文本；多个可用换行、分号或逗号分隔"
+        },
+        {
+          "name": "PASSWORDS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：与 STUDENT_IDS 配套填写密码；已配置 AHUT_ACCOUNTS 时忽略。必须显式填写，无默认密码。",
+          "format": "密码文本；多个与 STUDENT_IDS 顺序对齐，可用换行、分号或逗号分隔；若仅填一个密码则复用到全部学号"
+        },
+        {
+          "name": "AHUT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置；只校验配置并模拟六步流程，不登录、不定位、不提交签到、不真实发送通知。",
+          "format": "1、true、yes、on 开启完全断网预演；默认关闭"
+        },
+        {
+          "name": "AHUT_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次 HTTPS 请求超时秒数。",
+          "format": "3 到 120 的数字；默认 20"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录；失败不改变业务退出码。",
+          "format": "目录路径；还会尝试 /ql/data/scripts 与 /ql/scripts"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个账号，行内格式为 学号|密码（仅按第一个竖线分割）；账号独立处理，任一账号失败时整体以非零退出码结束"
+      },
+      "dependencies": [],
+      "features": [
+        "安徽工业大学智慧考勤晚寝签到：OAuth 登录、动态任务、微信环境校验、时间窗口、宿舍定位与签到提交",
+        "官方返回姓名等非秘密身份时直接展示以便核对账号",
+        "多账号按行处理；规范变量 AHUT_ACCOUNTS，兼容 STUDENT_IDS/PASSWORDS",
+        "完全断网预演 AHUT_DRY_RUN、HTTPS 超时、业务成功/已签到判定",
+        "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "登录智慧考勤并获取会话凭证",
+        "开启晚寝签到时间窗口并提交晚寝签到，改变当日签到状态",
+        "通知已启用且非断网预演时向青龙通知通道发送脱敏任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/4e628bcec2f5fef6",
+        "candidateSha256": "2cc6f19ea1a0b98c5c0a5b4ff3a2e22fadb005078892ad8231317015034e01bc"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "2cc6f19ea1a0b98c5c0a5b4ff3a2e22fadb005078892ad8231317015034e01bc",
+        "releaseSha256": "65588b1b9a914662fe355cca1f602e7f2f802e1d5e276d21136b4776c35f101d",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T13:16:57.913953+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "2cc6f19ea1a0b98c5c0a5b4ff3a2e22fadb005078892ad8231317015034e01bc",
+          "toCandidateSha256": "65588b1b9a914662fe355cca1f602e7f2f802e1d5e276d21136b4776c35f101d",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "8cd72e9849a3c893",
       "applicationKey": "cn-grace/qinglongscripts::airport",
       "checkProfile": {
