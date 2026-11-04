@@ -35893,6 +35893,164 @@
       }
     },
     {
+      "catalogId": "845c9306e115e5e7",
+      "applicationKey": "brandelkrefinery/t66y-automatic::checkin",
+      "checkProfile": {
+        "requiredEnv": [
+          "T66Y_COOKIE"
+        ],
+        "optionalEnv": [
+          "T66Y_BASE_URL",
+          "T66Y_PROXY",
+          "T66Y_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "T66Y_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "T66Y_BASE_URL": "https://t66y.com",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到"
+        ],
+        "features": [
+          "使用 Cookie 校验登录状态后定位签到入口并提交每日签到",
+          "支持每行一个账号，可选备注标签，独立汇总结果",
+          "识别签到成功、今日已签到等业务文案，未确认结果失败闭合",
+          "展示页面中可解析的非敏感昵称或公开 UID，隐藏 Cookie 与原始响应",
+          "完全断网预演、超时与响应大小限制、时间轴日志与单行 TASK_SUMMARY",
+          "按青龙通知策略发送脱敏汇总，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式执行时提交签到请求，改变账号当日签到状态并可能发放金钱/金币/贡献等奖励",
+          "通知启用且非预演时向青龙通知渠道投递脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "草榴社区每日签到",
+      "path": "scripts/task_845c9306.js",
+      "sha256": "9672fe8ac55caeff1643da39f0b8c1115221a8f024ab93cd32e83825ca78f097",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "brandelkrefinery/t66y-automatic",
+        "branch": "main",
+        "commit": "0ea0b745a3a8598e3a1ede3ce59f52008fae910f",
+        "originalPath": "src/checkin.js"
+      },
+      "cron": "31 8 * * *",
+      "command": "node scripts/task_845c9306.js",
+      "environment": [
+        {
+          "name": "T66Y_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录草榴社区（t66y）后，打开开发者工具网络面板，选择发往本站的已登录请求，复制请求头 Cookie 的完整值；不要复制响应 Set-Cookie，也不要将凭据发给他人。登录失效后重新获取。",
+          "format": "每个非空行一个账号。整行可为完整 Cookie，或「备注|Cookie」；仅在首个竖线处拆分，后续 Cookie 原文保留。Cookie 内分号与等号原样保留，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "T66Y_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按本人实际可访问的论坛入口填写；不填则使用默认官方域名。",
+          "format": "论坛根地址，默认 https://t66y.com；末尾斜杠可有可无。"
+        },
+        {
+          "name": "T66Y_PROXY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "上游可选代理地址。本独立维护版不加载代理组件；如需代理请在运行环境系统层配置，或忽略本变量。",
+          "format": "可选；设置后仅记录提示并继续直连，不作为业务凭据。"
+        },
+        {
+          "name": "T66Y_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在测试环境自行开启；正式执行时删除或设为 0。",
+          "format": "1/true/yes/on 开启完全断网预演；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 auto 模式下需要替换默认通知名单时自行设置。",
+          "format": "逗号、分号或空白分隔；可匹配 catalogId、scripts/t66y_checkin.js、t66y_checkin.js、当前文件名或通配符；* 全选，空值全关。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "目录路径；失败后继续尝试 /ql/data/scripts 与 /ql/scripts；通知失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 Cookie；可选备注|Cookie，仅拆首个竖线。账号独立执行，任一失败或配置错误则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 Cookie 校验登录状态后定位签到入口并提交每日签到",
+        "支持每行一个账号，可选备注标签，独立汇总结果",
+        "识别签到成功、今日已签到等业务文案，未确认结果失败闭合",
+        "展示页面中可解析的非敏感昵称或公开 UID，隐藏 Cookie 与原始响应",
+        "完全断网预演、超时与响应大小限制、时间轴日志与单行 TASK_SUMMARY",
+        "按青龙通知策略发送脱敏汇总，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式执行时提交签到请求，改变账号当日签到状态并可能发放金钱/金币/贡献等奖励",
+        "通知启用且非预演时向青龙通知渠道投递脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/845c9306e115e5e7",
+        "candidateSha256": "b695e2ed145bf5ec3e355330accedbcace2fb881b952f0f129ef162097af6b60"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "b695e2ed145bf5ec3e355330accedbcace2fb881b952f0f129ef162097af6b60",
+        "releaseSha256": "9672fe8ac55caeff1643da39f0b8c1115221a8f024ab93cd32e83825ca78f097",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T09:59:38.982594+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b695e2ed145bf5ec3e355330accedbcace2fb881b952f0f129ef162097af6b60",
+          "toCandidateSha256": "9672fe8ac55caeff1643da39f0b8c1115221a8f024ab93cd32e83825ca78f097",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "ef2d3863a5184a74",
       "applicationKey": "yunzimo/apchinkin::autosignin",
       "checkProfile": {
@@ -38765,6 +38923,258 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "487368c93ce9621b956e4df0aba44badaf3094070a94d3a6a61c384742915067",
           "toCandidateSha256": "df03754107aba1b17376ca1be247476f534905554567bdfcd622f4e457517c39",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "8484f065335f8ea3",
+      "applicationKey": "weibo",
+      "checkProfile": {
+        "requiredEnv": [
+          "WEIBO_COOKIE",
+          "WEIBO_SUPERTOPICS"
+        ],
+        "optionalEnv": [
+          "WEIBO_WEB_COOKIE",
+          "WEIBO_ENABLE_COMMENT",
+          "WEIBO_COMMENT_COUNT",
+          "WEIBO_REPLY_MODE",
+          "WEIBO_FALLBACK_TEXT",
+          "WEIBO_DELAY_MIN",
+          "WEIBO_DELAY_MAX",
+          "WEIBO_JITTER_MINUTES",
+          "WEIBO_RETRIES",
+          "WEIBO_RETRY_BACKOFF",
+          "WEIBO_TIMEOUT",
+          "WEIBO_WEB_DRY_RUN",
+          "WEIBO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WEIBO_WEB_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WEIBO_ENABLE_COMMENT": "0",
+          "WEIBO_JITTER_MINUTES": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签",
+          "评论成功"
+        ],
+        "features": [
+          "使用网页 Cookie 校验登录态后，按名称解析超话并执行每日签到",
+          "识别签到成功与今日已签到（幂等），未确认结果记失败",
+          "可选开启评论：对超话最新帖发表主楼/楼中楼/混合评论，文案优先取一言并本地回退",
+          "支持每行一个 Cookie 多账号，共享超话列表，独立汇总结果",
+          "官方评论响应中的非敏感昵称或公开 UID 原样展示，隐藏 Cookie 与原始响应",
+          "完全断网预演、请求超时与大小限制、时间轴日志与单行 TASK_SUMMARY",
+          "按青龙通知策略发送脱敏汇总，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式执行时对配置的超话提交签到，改变当日签到状态并可能增加经验",
+          "开启评论时向超话最新帖发表评论或楼中楼回复",
+          "通知启用且非预演时向青龙通知渠道投递脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "微博超话网页签到评论",
+      "path": "scripts/weibo_checkin.py",
+      "sha256": "a3f238d0ff30cd8b2fa869d323009564e73c59a951127848ac2939e382c25c59",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "88lin/weibo-checkin",
+        "branch": "master",
+        "commit": "59cd521ed2bb599ea6606cbb0b4dbf8d58d87e41",
+        "originalPath": "weibo_checkin.py"
+      },
+      "cron": "28 8 * * *",
+      "command": "python3 scripts/weibo_checkin.py",
+      "environment": [
+        {
+          "name": "WEIBO_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 weibo.com 后打开开发者工具网络面板，复制发往 weibo.com 的已登录请求头 Cookie 完整值；需含登录态字段（如 SUB、XSRF-TOKEN），不要复制响应 Set-Cookie，也不要将凭据发给他人。登录失效或 ALF 过期后重新获取。",
+          "format": "每个非空行一个账号。整行可为完整 Cookie，或「备注|Cookie」；仅在首个竖线处拆分，后续 Cookie 原文保留。Cookie 内分号与等号原样保留，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "WEIBO_WEB_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧名兼容输入；优先使用 WEIBO_COOKIE。获取方式相同。",
+          "format": "与 WEIBO_COOKIE 相同，每行一个账号。"
+        },
+        {
+          "name": "WEIBO_SUPERTOPICS",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "填写本人关注并希望每日签到的超话名称（不含“超话”后缀亦可，脚本会按名称搜索解析）。",
+          "format": "多个超话用英文逗号、中文逗号或换行分隔，例如：小米,数码"
+        },
+        {
+          "name": "WEIBO_ENABLE_COMMENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要在签到后对超话最新帖自动评论时自行开启；默认关闭以避免意外发帖。",
+          "format": "1/true/yes/on 开启；默认关闭。"
+        },
+        {
+          "name": "WEIBO_COMMENT_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "开启评论后，设置每个超话发表的评论条数；防风控建议不超过 5。",
+          "format": "整数 1–5，默认 1。"
+        },
+        {
+          "name": "WEIBO_REPLY_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "开启评论后选择主楼或楼中楼策略。",
+          "format": "new=主楼评论；reply=楼中楼；mixed=交替；默认 new。"
+        },
+        {
+          "name": "WEIBO_FALLBACK_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "评论开启时，一言服务失败或 dry-run 使用的本地评论文案；可按需自定义。",
+          "format": "不超过 280 字的纯文本；默认使用内置本地文案。"
+        },
+        {
+          "name": "WEIBO_DELAY_MIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：两次请求间随机间隔下限（秒）。",
+          "format": "非负数字，默认 5。"
+        },
+        {
+          "name": "WEIBO_DELAY_MAX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：两次请求间随机间隔上限（秒）。",
+          "format": "非负数字，默认 15；不得小于下限。"
+        },
+        {
+          "name": "WEIBO_JITTER_MINUTES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：启动前随机延迟分钟数上限，用于错开整点；默认 0 关闭。",
+          "format": "0–60 的数字，默认 0。"
+        },
+        {
+          "name": "WEIBO_RETRIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：网络层失败重试次数。",
+          "format": "整数 1–5，默认 3。"
+        },
+        {
+          "name": "WEIBO_RETRY_BACKOFF",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：重试退避基数（秒），指数退避。",
+          "format": "数字，默认 4。"
+        },
+        {
+          "name": "WEIBO_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次 HTTP 超时秒数。",
+          "format": "数字，默认 25。"
+        },
+        {
+          "name": "WEIBO_WEB_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在测试环境自行开启；正式执行时删除或设为 0。",
+          "format": "1/true/yes/on 开启完全断网预演；默认关闭。兼容 WEIBO_DRY_RUN。"
+        },
+        {
+          "name": "WEIBO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "WEIBO_WEB_DRY_RUN 的兼容别名。",
+          "format": "与 WEIBO_WEB_DRY_RUN 相同。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 auto 模式下需要替换默认通知名单时自行设置。",
+          "format": "逗号、分号或空白分隔；可匹配 catalogId、scripts 相对路径、文件名或通配符；* 全选，空值全关。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 所在目录。",
+          "format": "目录路径；失败后继续尝试 /ql/data/scripts 与 /ql/scripts；通知失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 Cookie；可选备注|Cookie，仅拆首个竖线。超话列表由 WEIBO_SUPERTOPICS 共享。账号独立执行，任一失败或配置错误则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用网页 Cookie 校验登录态后，按名称解析超话并执行每日签到",
+        "识别签到成功与今日已签到（幂等），未确认结果记失败",
+        "可选开启评论：对超话最新帖发表主楼/楼中楼/混合评论，文案优先取一言并本地回退",
+        "支持每行一个 Cookie 多账号，共享超话列表，独立汇总结果",
+        "官方评论响应中的非敏感昵称或公开 UID 原样展示，隐藏 Cookie 与原始响应",
+        "完全断网预演、请求超时与大小限制、时间轴日志与单行 TASK_SUMMARY",
+        "按青龙通知策略发送脱敏汇总，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式执行时对配置的超话提交签到，改变当日签到状态并可能增加经验",
+        "开启评论时向超话最新帖发表评论或楼中楼回复",
+        "通知启用且非预演时向青龙通知渠道投递脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/8484f065335f8ea3",
+        "candidateSha256": "60e4bb230e1cd25d3c5cdbe334e66ac6b7716639bba759dc8ccc862fe0bdd42a"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "60e4bb230e1cd25d3c5cdbe334e66ac6b7716639bba759dc8ccc862fe0bdd42a",
+        "releaseSha256": "a3f238d0ff30cd8b2fa869d323009564e73c59a951127848ac2939e382c25c59",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T10:07:06.006527+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "60e4bb230e1cd25d3c5cdbe334e66ac6b7716639bba759dc8ccc862fe0bdd42a",
+          "toCandidateSha256": "a3f238d0ff30cd8b2fa869d323009564e73c59a951127848ac2939e382c25c59",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
