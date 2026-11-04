@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **200** 个脚本。返回 [`目录首页`](../README.md)。
+共 **201** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -96,6 +96,7 @@
 | 影视飓风会员签到 | `scripts/mediastorm_club.py` | `python3 scripts/mediastorm_club.py` | `3 9 * * *` | 待检查 | [mediastorm_club.py.md](../../scripts/mediastorm_club.py.md)（`docs/scripts/mediastorm_club.py.md`） |
 | 米饭APP日常维护 | `scripts/mifan_optimized.py` | `python3 scripts/mifan_optimized.py` | `59 0 * * *` | 待检查 | [mifan_optimized.py.md](../../scripts/mifan_optimized.py.md)（`docs/scripts/mifan_optimized.py.md`） |
 | Discuz k_misign 每日签到 | `scripts/misign.js` | `node scripts/misign.js` | `19 8 * * *` | 待检查 | [misign.js.md](../../scripts/misign.js.md)（`docs/scripts/misign.js.md`） |
+| 米游社游戏签到 | `scripts/miyoushe_sign.py` | `python3 scripts/miyoushe_sign.py` | `11 8 * * *` | 待检查 | [miyoushe_sign.py.md](../../scripts/miyoushe_sign.py.md)（`docs/scripts/miyoushe_sign.py.md`） |
 | ModelScope 魔搭每日签到 | `scripts/modelscope_daily.py` | `python3 scripts/modelscope_daily.py` | `0 9 * * *` | 待检查 | [modelscope_daily.py.md](../../scripts/modelscope_daily.py.md)（`docs/scripts/modelscope_daily.py.md`） |
 | mybt 每日签到与访问积分 | `scripts/mybt.py` | `python3 scripts/mybt.py` | `2 8 * * *` | 待检查 | [mybt.py.md](../../scripts/mybt.py.md)（`docs/scripts/mybt.py.md`） |
 | NDNU第二课堂签到签退 | `scripts/ndnu.py` | `python3 scripts/ndnu.py` | `*/5 7-22 * * *` | 待检查 | [ndnu.py.md](../../scripts/ndnu.py.md)（`docs/scripts/ndnu.py.md`） |
