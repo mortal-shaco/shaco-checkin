@@ -58,6 +58,11 @@ PushPlus 兼容 PLUSPLUS_TOKEN、PLUSHPLUS_TOKEN、PUSHPLUS_TOKEN，按此顺序
 兼容上游 JWT 的 exp、TokenExpireAt、tokenExpireAt 到期声明，接受数字或字符串及秒/毫秒。
 显式提供 storagePath 时，也读取该设备对应的续期证明；不会探测其他客户端目录。
 仅 code=0、9095 或经过核验的当天完成状态算签到成功；冷却及未开放非成功。
+上游 d289f0d7 新增 TRAE_ROTATE 默认换号、生成设备号兜底、自动扫描客户端、
+回写账号源文件，以及把 9004 当成已签；同应用测试证据表明 9004 为空设备号参数错误，
+故继续拒绝换号/扫描/改源文件，并把 9004 记为设备配置失败而非已签成功。
+状态查询兼容 credits/extra_credits 展示（不相加）；领取成功积分优先 points，其次 credits/extra_credits。
+同设备领取后复查始终执行，不提供可关闭开关。
 
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -774,6 +779,32 @@ def integer_env(name, default, minimum, maximum):
         raise TaskError(name + ' 数值超出允许范围') from None
 
 
+def reward_credits(payload):
+    """状态或领取响应中可展示的积分：credits 优先，否则 extra_credits；两者不相加。"""
+    if not isinstance(payload, dict):
+        return None
+    credits = payload.get('credits')
+    extra = payload.get('extra_credits', payload.get('extraCredits'))
+    credits = credits if isinstance(credits, int) and not isinstance(credits, bool) else 0
+    extra = extra if isinstance(extra, int) and not isinstance(extra, bool) else 0
+    if credits > 0:
+        return credits
+    if extra > 0:
+        return extra
+    return None
+
+
+def claim_points(root):
+    """领取成功时可展示积分：points → credits → extra_credits。"""
+    if not isinstance(root, dict):
+        return None
+    for field in ('points', 'credits', 'extra_credits', 'extraCredits'):
+        value = root.get(field)
+        if numeric(value) and value > 0:
+            return value
+    return None
+
+
 def balance(acc, cache, cache_path):
     for url, body in ((EP_ENTITLE, {'require_usage': True, 'full_data': True}), (EP_USAGE, {})):
         try:
@@ -1024,6 +1055,8 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
                 state['cooldown'][key] = time.time() + options['cooldown'] * 60
                 write_json(state_path, state)
                 raise TaskError('状态接口限流，已记录冷却')
+            if code_of(data) == 9004:
+                raise TaskError('签到状态返回 9004：请核对同账号真实 x-device-id，不是今日已签')
             if not checked_success(status, data):
                 raise TaskError('签到状态查询未确认成功，不发送领取请求')
             root = root_of(data)
@@ -1031,7 +1064,10 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
             enabled = root.get('enable')
             if not isinstance(checked, bool) or not isinstance(enabled, bool):
                 raise TaskError('签到状态缺少明确 checked_in 和 enable 布尔字段')
-            log('签到状态：今日已签=%s，开放=%s' % ('是' if checked else '否', '是' if enabled else '否'))
+            shown = reward_credits(root) or reward_credits(data)
+            log('签到状态：今日已签=%s，开放=%s%s' % (
+                '是' if checked else '否', '是' if enabled else '否',
+                ('，状态积分 %s' % shown) if shown is not None else ''))
             return checked, enabled
         checked, enabled = run.stage('查询签到状态', query_status)
         identify_duplicate(acc, options['seen'])
@@ -1050,12 +1086,15 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
                             run.counts['alreadyComplete'] += 1
                             log('☑️ 官方领取接口确认今日已签（9095）')
                         else:
-                            points = root_of(data).get('points', root_of(data).get('credits'))
-                            log('签到成功（code=0）' + ('；领取积分 %s' % points if numeric(points) else ''))
+                            points = claim_points(root_of(data))
+                            log('签到成功（code=0）' + ('；领取积分 %s' % points if points is not None else ''))
                         return
+                    if code == 9004:
+                        # 同应用实测：空设备号→9004；不得按上游误标为已签。
+                        raise TaskError('领取返回 9004：同账号真实设备号缺失或无效，请更新 deviceId')
                     if status in RATE_HTTP_CODES or code == 9074:
                         if attempt + 1 < options['tries']:
-                            log('⚠️ 显式重试设置生效，短暂退避后重试')
+                            log('⚠️ 显式重试设置生效，短暂退避后重试；不轮换其他设备号')
                             time.sleep(random.randint(4, 9))
                             continue
                         state['cooldown'][key] = time.time() + options['cooldown'] * 60

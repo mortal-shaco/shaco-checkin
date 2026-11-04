@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/trae_checkin.py`
 - 青龙命令：`python3 scripts/trae_checkin.py`
 - 建议 Cron：`7,23,37 * * * *`
-- 发布哈希：`f63865bbac4dc41df972bf44f285801dc58a00c111e305211ed756b29f2d3b8e`
+- 发布哈希：`7a09492e8dd740c675b432b7ea0e130bfa1843e79b5c712df55ea88a2e61a9b7`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -612,7 +612,7 @@ TRAE_ACCOUNTS 每个非空行一个账号 JSON 对象，同账号令牌、网页
 
 ## 验证与兼容性
 
-SHA-256 `f63865bbac4dc41df972bf44f285801dc58a00c111e305211ed756b29f2d3b8e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71de90498a3a6ded`。
+SHA-256 `7a09492e8dd740c675b432b7ea0e130bfa1843e79b5c712df55ea88a2e61a9b7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71de90498a3a6ded`。
 
 ## 副作用与风险
 
