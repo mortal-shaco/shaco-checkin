@@ -37459,6 +37459,176 @@
       }
     },
     {
+      "catalogId": "62e6cbbde90ebb5f",
+      "applicationKey": "jasonyang170/oa-sgin::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "OA_SGIN_ACCOUNTS",
+          "OA_SGIN_LONGITUDE",
+          "OA_SGIN_LATITUDE",
+          "OA_SGIN_SIGNADDRESS"
+        ],
+        "optionalEnv": [
+          "OA_SGIN_DATE",
+          "OA_SGIN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "OA_SGIN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "按账号提交学校 OA 实习单日签到（经度、纬度、地址与学生 ID）",
+          "多账号换行配置，学生 ID 与 Token 合并到同一账号行",
+          "完全断网预演、超时请求、业务成功判定与失败闭合退出",
+          "时间轴日志、账号阶段统计、脱敏通知与单行 TASK_SUMMARY"
+        ],
+        "sideEffects": [
+          "向学校 OA 实习签到接口写入当日（或指定单日）打卡记录",
+          "正式执行且通知开启时向已配置渠道发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "OA实习签到",
+      "path": "scripts/task_62e6cbbd.py",
+      "sha256": "ab8e2263266ea5db00aa0bae831fc1a3bc6caf651666c886f498348bb890400d",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "JasonYANG170/OA-Sgin",
+        "branch": "master",
+        "commit": "066417ea3cdd01d25ce3b6882445457f50908e41",
+        "originalPath": "main.py"
+      },
+      "cron": "34 8 * * *",
+      "command": "python3 scripts/task_62e6cbbd.py",
+      "environment": [
+        {
+          "name": "OA_SGIN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在学校 OA 实习微信小程序或网页登录本人账号，打开开发者工具网络面板，找到 internshipSignIn 相关请求，复制请求头 X-Access-Token，并确认本人 probationaryworkplacementstudentid（实习学生 ID）。凭据仅写入青龙环境变量，不要分享抓包。",
+          "format": "每个非空行一个账号：studentId#X-Access-Token；仅在第一个井号处分割，后续 Token 原文保留。空行和以井号开头的注释行忽略。"
+        },
+        {
+          "name": "OA_SGIN_LONGITUDE",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "填写本人真实实习地点经度；可与手机地图或上游 Wiki 获取方式一致，须与现场打卡位置相符。",
+          "format": "十进制度数，范围 -180 到 180"
+        },
+        {
+          "name": "OA_SGIN_LATITUDE",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "填写本人真实实习地点纬度；须与现场打卡位置相符。",
+          "format": "十进制度数，范围 -90 到 90"
+        },
+        {
+          "name": "OA_SGIN_SIGNADDRESS",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "填写本人真实实习签到地址文本，与学校 OA 要求的地址描述一致。",
+          "format": "非空地址字符串，最长 200 字符"
+        },
+        {
+          "name": "OA_SGIN_DATE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选单日覆盖；默认使用运行当天本地日期。维护版已移除上游日期区间批量补签。",
+          "format": "YYYY-MM-DD 单日；不支持区间"
+        },
+        {
+          "name": "OA_SGIN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "完全断网预演时设置为 1；只校验配置与流程，不发起网络请求，不声明真实签到成功。",
+          "format": "布尔值，默认 0；1、true、yes、on 开启"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、分号、空白或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写已有青龙 notify.py 或 sendNotify.js 所在目录；未填写时尝试导入 notify 和青龙标准脚本目录。",
+          "format": "已有通知模块所在目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，格式为 studentId#X-Access-Token；仅在第一个井号处分割。位置参数由共享环境变量提供。逐账号独立执行，任一账号失败时进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "按账号提交学校 OA 实习单日签到（经度、纬度、地址与学生 ID）",
+        "多账号换行配置，学生 ID 与 Token 合并到同一账号行",
+        "完全断网预演、超时请求、业务成功判定与失败闭合退出",
+        "时间轴日志、账号阶段统计、脱敏通知与单行 TASK_SUMMARY"
+      ],
+      "sideEffects": [
+        "向学校 OA 实习签到接口写入当日（或指定单日）打卡记录",
+        "正式执行且通知开启时向已配置渠道发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/62e6cbbde90ebb5f",
+        "candidateSha256": "9a7d3f30f4cbd8a4f7e9ccf6cf17e4afcfeedb94db1e19d159793708b25cee35"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "9a7d3f30f4cbd8a4f7e9ccf6cf17e4afcfeedb94db1e19d159793708b25cee35",
+        "releaseSha256": "ab8e2263266ea5db00aa0bae831fc1a3bc6caf651666c886f498348bb890400d",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T12:25:16.548235+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "9a7d3f30f4cbd8a4f7e9ccf6cf17e4afcfeedb94db1e19d159793708b25cee35",
+          "toCandidateSha256": "ab8e2263266ea5db00aa0bae831fc1a3bc6caf651666c886f498348bb890400d",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "845c9306e115e5e7",
       "applicationKey": "brandelkrefinery/t66y-automatic::checkin",
       "checkProfile": {
