@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 智谱清言每日签到
-# cron: 13 1 * * *
+# cron: 23 1 * * *
 # SPDX-License-Identifier: MIT
 
 """
 智谱清言每日签到 - 青龙维护版
 
 基于 L0NE-6/ChatGLM-Daily（MIT）维护，保留原作者全部用户可见能力：
-每日登录积分、积分活动与季节活动领取、每日任务中心、新手任务中心、
-积分余额与任务进度回读、refresh_token 续期与本地状态记忆。
+每日登录积分、积分活动开启状态查询、会员积分活动与季节活动领取、
+每日任务中心、新手任务中心、积分余额与任务进度回读、
+refresh_token 续期与本地状态记忆。
 
 维护改动：改用 Python 标准库实现带超时与响应大小限制的独立 HTTP 请求；
 账号统一为每行一个（备注|access_token|refresh_token|device_id），不再使用
 & 分隔账号；新增完全断网预演（CHATGLM_DRY_RUN）、脱敏时间轴日志、
 单行 TASK_SUMMARY 汇总与青龙通知策略（notify.py / sendNotify.js）。
+登录态获取可参考同仓库 chatglm_login.py（Windows 客户端 Cookie 读取工具，
+非定时任务，不并入本脚本）。
 """
 # qinglong-notification-policy: begin
 import fnmatch as _ql_notify_fnmatch
@@ -72,6 +75,7 @@ FALSE_VALUES = {"0", "false", "no", "off"}
 
 PATH_REFRESH = "/chatglm/user-api/user/refresh"
 PATH_MEMBER_INFO = "/chatglm/member-api/member/member_info"
+PATH_SCORE_ACTIVITY_OPEN = "/chatglm/member-api/member/score_activity_open"
 PATH_SCORE_ACTIVITY_DRAW = "/chatglm/member-api/member/score_activity_draw"
 PATH_DAILY_LOGIN_SCORE = "/chatglm/member-api/member/daily_login_score"
 PATH_SUMMER_DAY_CLAIM_STATUS = "/chatglm/member-api/member/summer_day_claim_status"
@@ -248,7 +252,7 @@ def request_json(
     timeout: float,
     opener: urllib.request.OpenerDirector,
     body: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+) -> Tuple[int, Dict[str, Any]]:
     url = base_url + path
     headers = build_headers(base_url, token, device_id)
     data = None
@@ -301,6 +305,49 @@ def envelope(payload: Dict[str, Any], what: str) -> Any:
         return payload.get("result")
     message = str(payload.get("message") or payload.get("msg") or "上游返回失败")
     raise ChatGLMError("{}失败（status={}）：{}".format(what, status, message))
+
+
+def parse_activity_open(payload: Dict[str, Any]) -> Optional[bool]:
+    try:
+        result = envelope(payload, "积分活动状态查询")
+    except ChatGLMError:
+        return None
+    if isinstance(result, bool):
+        return result
+    if isinstance(result, dict):
+        for key in ("open", "is_open"):
+            value = result.get(key)
+            if isinstance(value, bool):
+                return value
+    return None
+
+
+def daily_login_result(
+    payload: Dict[str, Any], activity_open: Optional[bool] = None
+) -> Tuple[bool, str]:
+    status = payload.get("status")
+    if str(status) == "10001":
+        return True, "今日登录积分已领取"
+    result = envelope(payload, "每日登录积分领取")
+    if isinstance(result, dict):
+        raw = result.get("score")
+    elif isinstance(result, (int, float)) and not isinstance(result, bool):
+        raw = result
+    else:
+        raw = None
+    if raw is None:
+        return False, "每日登录积分响应缺少积分读数，未确认签到完成"
+    try:
+        score = round(float(raw) / 100.0, 2)
+    except Exception:
+        return False, "每日登录积分响应积分读数无法解析，未确认签到完成"
+    if score > 0:
+        return True, "每日登录积分 +{}".format(score)
+    if activity_open is False:
+        return True, "积分活动未开启，无登录积分可领"
+    if activity_open is True:
+        return True, "今日登录积分已领取"
+    return False, "本次没有登录积分入账，活动状态尚未确认"
 
 
 class ChatGLMClient:
@@ -418,7 +465,15 @@ class ChatGLMClient:
             balance = None
         return balance, member
 
+    def query_activity_open(self) -> Optional[bool]:
+        try:
+            payload = self.get(PATH_SCORE_ACTIVITY_OPEN, "积分活动状态查询")
+        except Exception:
+            return None
+        return parse_activity_open(payload)
+
     def claim_login(self) -> Tuple[bool, str]:
+        activity_open = self.query_activity_open()
         try:
             payload = self.post(PATH_DAILY_LOGIN_SCORE, {}, "每日登录积分领取")
         except ChatGLMError as exc:
@@ -426,23 +481,7 @@ class ChatGLMClient:
             if any(word in message for word in ("10001", "已领", "already")):
                 return True, "今日登录积分已领取"
             raise
-        status = payload.get("status")
-        if str(status) == "10001":
-            return True, "今日登录积分已领取"
-        result = envelope(payload, "每日登录积分领取") or {}
-        if isinstance(result, dict):
-            raw = result.get("score", 0)
-        elif isinstance(result, (int, float)):
-            raw = result
-        else:
-            raw = 0
-        try:
-            score = round(float(raw) / 100.0, 2)
-        except Exception:
-            score = 0.0
-        if score > 0:
-            return True, "每日登录积分 +{}".format(score)
-        return True, "今日登录积分已领取或活动未开启"
+        return daily_login_result(payload, activity_open)
 
     def claim_bonus(self) -> Tuple[bool, str]:
         messages: List[str] = []
@@ -678,13 +717,17 @@ def load_accounts() -> List[Dict[str, Any]]:
             line = line.strip()
             if not line:
                 continue
+            # 仅按第一个字段分隔符拆分账号字段，后续凭据文本完整保留
             parts = [part.strip() for part in line.split("|", 3)]
+            if len(parts) < 2:
+                log("⚠️ 配置：跳过格式不正确的账号条目")
+                continue
             name = parts[0] or "账号{}".format(len(accounts) + 1)
             access = strip_bearer(parts[1]) if len(parts) > 1 else ""
             refresh = strip_bearer(parts[2]) if len(parts) > 2 else ""
             device = parts[3] if len(parts) > 3 else ""
             if not access and not refresh:
-                log("⚠️ 配置：跳过格式不正确的账号条目")
+                log("⚠️ 配置：跳过缺少令牌的账号条目")
                 continue
             accounts.append({
                 "name": name,
@@ -772,9 +815,15 @@ def run_account(client: ChatGLMClient, query_only: bool, skip_newbie: bool, dry_
     else:
         try:
             ok, message = client.claim_login()
-            stats["success"] += 1
             messages.append(message)
-            log("[{}][1/5] {} {}（{:.2f}秒）".format(label, "✅" if ok else "☑️", message, time.monotonic() - stage_started))
+            if ok:
+                stats["success"] += 1
+                icon = "✅" if "已领取" not in message and "未开启" not in message else "☑️"
+                log("[{}][1/5] {} {}（{:.2f}秒）".format(label, icon, message, time.monotonic() - stage_started))
+            else:
+                stats["failed"] += 1
+                errors.append(message)
+                log("[{}][1/5] ❌ {}（{:.2f}秒）".format(label, message, time.monotonic() - stage_started))
         except Exception as exc:
             stats["failed"] += 1
             errors.append(str(exc))
@@ -924,6 +973,7 @@ def main() -> int:
         if not accounts:
             raise ValueError("未配置 CHATGLM_ACCOUNTS 或 CHATGLM_TOKEN")
     except ValueError as exc:
+        log("账号数量：0")
         log("❌ 配置错误：{}".format(exc))
         body = "账号总数：0；成功：0；失败：1；状态：配置错误"
         notify_state = send_notification(TASK_NAME, body, dry_run)
@@ -946,16 +996,48 @@ def main() -> int:
         })
         return 2
 
-    state = load_state()
-    selected = 0
-    account_results = []
+    selected_accounts = []
     for index, account in enumerate(accounts, 1):
         if only and str(index) != str(only):
             continue
-        selected += 1
+        selected_accounts.append(account)
+    log("账号数量：{}".format(len(selected_accounts)))
+    if query_only:
+        log("附加模式：仅查询余额与任务进度（--query）")
+    if skip_newbie:
+        log("附加模式：跳过新手任务（--skip-newbie）")
+
+    if not selected_accounts:
+        log("❌ 没有匹配的账号")
+        body = "账号总数：0；成功：0；失败：1；状态：配置错误"
+        notify_state = send_notification(TASK_NAME, body, dry_run)
+        finished_at = now_text()
+        print("-" * 56)
+        print("账号结果：总数 0，成功 0，失败 1")
+        print("子任务结果：总数 0，成功 0，跳过 0，失败 0")
+        print("总耗时：{:.2f}秒".format(time.monotonic() - overall_started))
+        print("完成时间：{}".format(finished_at))
+        print("通知状态：{}".format(notify_state))
+        print("最终状态：CONFIG_ERROR")
+        print_summary({
+            "status": "configuration-error",
+            "mode": "dry-run" if dry_run else "live",
+            "accounts": {"total": 0, "success": 0, "failed": 1},
+            "tasks": {"total": 0, "success": 0, "skipped": 0, "failed": 0},
+            "notification": notify_state,
+            "startedAt": started_at,
+            "finishedAt": finished_at,
+        })
+        return 1
+
+    state = load_state()
+    account_results = []
+    for index, account in enumerate(selected_accounts, 1):
         client = ChatGLMClient(account, state, timeout)
         try:
-            ok, result = run_account(client, query_only=query_only, skip_newbie=skip_newbie, dry_run=dry_run)
+            _ok, result = run_account(
+                client, query_only=query_only, skip_newbie=skip_newbie, dry_run=dry_run
+            )
             account_results.append(result)
         except Exception as exc:
             log("[账号{}] ❌ 初始化失败：{}".format(account.get("name") or index, safe_business_text(exc)))
@@ -967,12 +1049,8 @@ def main() -> int:
                 "elapsed": 0.0,
                 "messages": [],
             })
-        if index < len(accounts):
+        if index < len(selected_accounts) and not dry_run:
             time.sleep(1.0)
-
-    if selected == 0:
-        log("❌ 没有匹配的账号")
-        return 1
 
     account_success = sum(1 for item in account_results if item["ok"])
     account_failed = len(account_results) - account_success

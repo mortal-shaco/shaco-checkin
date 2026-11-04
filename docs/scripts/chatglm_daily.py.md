@@ -3,13 +3,13 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/chatglm_daily.py`
 - 青龙命令：`python3 scripts/chatglm_daily.py`
-- 建议 Cron：`13 1 * * *`
-- 发布哈希：`6de343030ea7ff7469e347f2f926d76a57df611d071639f289f5ef8cae7f6d1a`
+- 建议 Cron：`23 1 * * *`
+- 发布哈希：`3c346893327c9c2d0b3ab0990003de15350a9987928693a717cc0d902c15dd93`
 - 许可证：`MIT`
 
 ## 脚本功能
 
-- 每日登录积分自动领取，并识别已领取状态避免重复处理
+- 每日登录积分自动领取，并结合积分活动开启状态识别已领取或活动未开启
 - 会员积分活动与季节活动自动领取，活动未开启时跳过
 - 每日任务中心自动登记并结算任务奖励
 - 新手任务中心自动结算，完成后记录状态避免重复处理
@@ -28,8 +28,8 @@
 
 - 必填：是
 - 敏感：是
-- 获取或设置：登录智谱清言后从网页请求头或客户端登录态中提取；可使用来源仓库附带的 chatglm_login.py 工具读取 Windows 客户端登录态并生成环境变量值。
-- 填写格式：每行一个账号，格式：备注|access_token|refresh_token|device_id；refresh_token 与 device_id 可省略，行内字段用竖线分隔，账号之间用换行分隔
+- 获取或设置：登录智谱清言网页或客户端后，从请求头 Authorization 提取 access_token；如有续期需求一并保存 refresh_token。Windows 客户端可用同仓库 chatglm_login.py 读取本地 Cookie 并生成环境变量值。不要把令牌发给他人或写入公开仓库。
+- 填写格式：每行一个账号，格式：备注|access_token|refresh_token|device_id；refresh_token 与 device_id 可省略；账号之间仅用换行分隔，不使用 & 或 @
 
 ### 可选参数
 
@@ -37,21 +37,21 @@
 
 - 必填：否
 - 敏感：是
-- 获取或设置：单账号兼容变量：直接填写 access_token；配置了 CHATGLM_ACCOUNTS 时忽略本变量。
+- 获取或设置：单账号兼容别名：未配置 CHATGLM_ACCOUNTS 时，可直接填写 access_token。已配置 CHATGLM_ACCOUNTS 时忽略本变量。
 - 填写格式：纯文本 access_token，可带 Bearer 前缀
 
 ### `CHATGLM_REFRESH_TOKEN`
 
 - 必填：否
 - 敏感：是
-- 获取或设置：单账号兼容变量：填写 refresh_token，用于登录态自动续期。
+- 获取或设置：单账号兼容别名：与 CHATGLM_TOKEN 配套填写 refresh_token，用于登录态自动续期。
 - 填写格式：纯文本 refresh_token，可带 Bearer 前缀
 
 ### `CHATGLM_DEVICE_ID`
 
 - 必填：否
 - 敏感：是
-- 获取或设置：单账号兼容变量：填写设备标识；留空时脚本自动生成并保存到状态文件。
+- 获取或设置：单账号兼容别名：填写设备标识；留空时脚本自动生成并写入本地状态文件。
 - 填写格式：任意设备标识字符串
 
 ### `CHATGLM_STATE_FILE`
@@ -73,7 +73,7 @@
 - 必填：否
 - 敏感：否
 - 获取或设置：可选：为全部接口请求设置 http(s) 代理；标准库实现不支持 socks 代理。
-- 填写格式：http://host:port 或 https://host:port
+- 填写格式：http://主机:端口 或 https://主机:端口
 
 ### `CHATGLM_TIMEOUT`
 
@@ -94,7 +94,7 @@
 - 必填：否
 - 敏感：否
 - 获取或设置：可选：设为 1 进入完全断网预演，校验配置与请求构造但不发起任何网络请求，用于验证脚本与参数。
-- 填写格式：1 表示开启预演
+- 填写格式：1、true、yes、on 表示开启预演
 
 ### `QINGLONG_NOTIFY`
 
@@ -108,7 +108,14 @@
 - 必填：否
 - 敏感：否
 - 获取或设置：可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。
-- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。
+- 填写格式：用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭
+
+### `QINGLONG_NOTIFY_DIR`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选指定青龙 notify.py 或 sendNotify.js 所在目录。
+- 填写格式：目录路径；失败后继续尝试 /ql/data/scripts 与 /ql/scripts；通知失败不改变业务退出码
 
 ## 参数获取方法
 
@@ -116,11 +123,11 @@
 
 ## 多账号
 
-每行一个账号，行内用竖线分隔字段：备注|access_token|refresh_token|device_id；任一账号失败时整体以非零退出码结束
+每行一个账号，行内用竖线分隔字段：备注|access_token|refresh_token|device_id；账号独立处理，任一账号失败时整体以非零退出码结束
 
 ## 验证与兼容性
 
-SHA-256 `6de343030ea7ff7469e347f2f926d76a57df611d071639f289f5ef8cae7f6d1a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75a199c398e3576c`。
+SHA-256 `3c346893327c9c2d0b3ab0990003de15350a9987928693a717cc0d902c15dd93`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75a199c398e3576c`。
 
 ## 副作用与风险
 

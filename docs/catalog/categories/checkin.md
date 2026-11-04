@@ -31,7 +31,7 @@
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `3 1 * * *` | 待检查 | [cdrail.py.md](../../scripts/cdrail.py.md)（`docs/scripts/cdrail.py.md`） |
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `5 0 * * *` | 上架 | [cfmoto_checkin.py.md](../../scripts/cfmoto_checkin.py.md)（`docs/scripts/cfmoto_checkin.py.md`） |
-| 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `13 1 * * *` | 待检查 | [chatglm_daily.py.md](../../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
+| 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | AcFun每日签到与可选互动 | `scripts/ck_acfun.py` | `python3 scripts/ck_acfun.py` | `20 0 * * *` | 待检查 | [ck_acfun.py.md](../../scripts/ck_acfun.py.md)（`docs/scripts/ck_acfun.py.md`） |
 | 机场签到 | `scripts/ck_airport.py` | `python3 scripts/ck_airport.py` | `16 2 * * *` | 待检查 | [ck_airport.py.md](../../scripts/ck_airport.py.md)（`docs/scripts/ck_airport.py.md`） |

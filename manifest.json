@@ -6852,17 +6852,25 @@
           "CHATGLM_PROXY",
           "CHATGLM_TIMEOUT",
           "CHATGLM_NO_NOTIFY",
-          "CHATGLM_DRY_RUN"
+          "CHATGLM_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "CHATGLM_DRY_RUN": "1"
         },
-        "liveEnv": {},
+        "liveEnv": {
+          "CHATGLM_TIMEOUT": "30",
+          "QINGLONG_NOTIFY": "auto"
+        },
         "successPatterns": [
-          "最终状态：SUCCESS"
+          "每日登录积分",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
         ],
         "features": [
-          "每日登录积分自动领取，并识别已领取状态避免重复处理",
+          "每日登录积分自动领取，并结合积分活动开启状态识别已领取或活动未开启",
           "会员积分活动与季节活动自动领取，活动未开启时跳过",
           "每日任务中心自动登记并结算任务奖励",
           "新手任务中心自动结算，完成后记录状态避免重复处理",
@@ -6883,7 +6891,7 @@
       },
       "displayName": "智谱清言每日签到",
       "path": "scripts/chatglm_daily.py",
-      "sha256": "6de343030ea7ff7469e347f2f926d76a57df611d071639f289f5ef8cae7f6d1a",
+      "sha256": "3c346893327c9c2d0b3ab0990003de15350a9987928693a717cc0d902c15dd93",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -6899,41 +6907,41 @@
             "repository": "L0NE-6/ChatGLM-Daily",
             "url": "https://github.com/L0NE-6/ChatGLM-Daily.git",
             "branch": "main",
-            "commit": "670171ee505aed57318485aa99e1c58c9695169f",
+            "commit": "9d5e80757fe1a78f48bf46dc954d04c94c704bc1",
             "originalPath": "chatglm_login.py",
             "license": "MIT"
           }
         ]
       },
-      "cron": "13 1 * * *",
+      "cron": "23 1 * * *",
       "command": "python3 scripts/chatglm_daily.py",
       "environment": [
         {
           "name": "CHATGLM_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录智谱清言后从网页请求头或客户端登录态中提取；可使用来源仓库附带的 chatglm_login.py 工具读取 Windows 客户端登录态并生成环境变量值。",
-          "format": "每行一个账号，格式：备注|access_token|refresh_token|device_id；refresh_token 与 device_id 可省略，行内字段用竖线分隔，账号之间用换行分隔"
+          "howToGet": "登录智谱清言网页或客户端后，从请求头 Authorization 提取 access_token；如有续期需求一并保存 refresh_token。Windows 客户端可用同仓库 chatglm_login.py 读取本地 Cookie 并生成环境变量值。不要把令牌发给他人或写入公开仓库。",
+          "format": "每行一个账号，格式：备注|access_token|refresh_token|device_id；refresh_token 与 device_id 可省略；账号之间仅用换行分隔，不使用 & 或 @"
         },
         {
           "name": "CHATGLM_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "单账号兼容变量：直接填写 access_token；配置了 CHATGLM_ACCOUNTS 时忽略本变量。",
+          "howToGet": "单账号兼容别名：未配置 CHATGLM_ACCOUNTS 时，可直接填写 access_token。已配置 CHATGLM_ACCOUNTS 时忽略本变量。",
           "format": "纯文本 access_token，可带 Bearer 前缀"
         },
         {
           "name": "CHATGLM_REFRESH_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "单账号兼容变量：填写 refresh_token，用于登录态自动续期。",
+          "howToGet": "单账号兼容别名：与 CHATGLM_TOKEN 配套填写 refresh_token，用于登录态自动续期。",
           "format": "纯文本 refresh_token，可带 Bearer 前缀"
         },
         {
           "name": "CHATGLM_DEVICE_ID",
           "required": false,
           "sensitive": true,
-          "howToGet": "单账号兼容变量：填写设备标识；留空时脚本自动生成并保存到状态文件。",
+          "howToGet": "单账号兼容别名：填写设备标识；留空时脚本自动生成并写入本地状态文件。",
           "format": "任意设备标识字符串"
         },
         {
@@ -6955,7 +6963,7 @@
           "required": false,
           "sensitive": false,
           "howToGet": "可选：为全部接口请求设置 http(s) 代理；标准库实现不支持 socks 代理。",
-          "format": "http://host:port 或 https://host:port"
+          "format": "http://主机:端口 或 https://主机:端口"
         },
         {
           "name": "CHATGLM_TIMEOUT",
@@ -6976,7 +6984,7 @@
           "required": false,
           "sensitive": false,
           "howToGet": "可选：设为 1 进入完全断网预演，校验配置与请求构造但不发起任何网络请求，用于验证脚本与参数。",
-          "format": "1 表示开启预演"
+          "format": "1、true、yes、on 表示开启预演"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -6990,17 +6998,24 @@
           "required": false,
           "sensitive": false,
           "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "目录路径；失败后继续尝试 /ql/data/scripts 与 /ql/scripts；通知失败不改变业务退出码"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每行一个账号，行内用竖线分隔字段：备注|access_token|refresh_token|device_id；任一账号失败时整体以非零退出码结束"
+        "rule": "每行一个账号，行内用竖线分隔字段：备注|access_token|refresh_token|device_id；账号独立处理，任一账号失败时整体以非零退出码结束"
       },
       "dependencies": [],
       "features": [
-        "每日登录积分自动领取，并识别已领取状态避免重复处理",
+        "每日登录积分自动领取，并结合积分活动开启状态识别已领取或活动未开启",
         "会员积分活动与季节活动自动领取，活动未开启时跳过",
         "每日任务中心自动登记并结算任务奖励",
         "新手任务中心自动结算，完成后记录状态避免重复处理",
@@ -7025,20 +7040,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/75a199c398e3576c",
-        "candidateSha256": "694561723076ed4f1f3b3d2e0dcbe52cd198aeefef0290ad22a5528fefc2214a"
+        "candidateSha256": "bb8f73bbcbcfd4c583da08f7b76bc5e605892a17f2364111815eedaf428bf3f9"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "694561723076ed4f1f3b3d2e0dcbe52cd198aeefef0290ad22a5528fefc2214a",
-        "releaseSha256": "6de343030ea7ff7469e347f2f926d76a57df611d071639f289f5ef8cae7f6d1a",
+        "validatedSha256": "bb8f73bbcbcfd4c583da08f7b76bc5e605892a17f2364111815eedaf428bf3f9",
+        "releaseSha256": "3c346893327c9c2d0b3ab0990003de15350a9987928693a717cc0d902c15dd93",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T05:47:17.977532+00:00",
+          "approvedAt": "2026-11-04T11:48:53.596485+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "694561723076ed4f1f3b3d2e0dcbe52cd198aeefef0290ad22a5528fefc2214a",
-          "toCandidateSha256": "6de343030ea7ff7469e347f2f926d76a57df611d071639f289f5ef8cae7f6d1a",
+          "fromCandidateSha256": "bb8f73bbcbcfd4c583da08f7b76bc5e605892a17f2364111815eedaf428bf3f9",
+          "toCandidateSha256": "3c346893327c9c2d0b3ab0990003de15350a9987928693a717cc0d902c15dd93",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

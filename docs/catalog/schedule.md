@@ -43,7 +43,7 @@
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `31 9,18 * * *` | 待检查 | [bwcj.py.md](../scripts/bwcj.py.md)（`docs/scripts/bwcj.py.md`） |
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `3 1 * * *` | 待检查 | [cdrail.py.md](../scripts/cdrail.py.md)（`docs/scripts/cdrail.py.md`） |
-| 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `13 1 * * *` | 待检查 | [chatglm_daily.py.md](../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
+| 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | 词霸每日一句 | `scripts/ciba.js` | `node scripts/ciba.js` | `0 25 11 * * *` | 待检查 | [ciba.js.md](../scripts/ciba.js.md)（`docs/scripts/ciba.js.md`） |
 | AcFun每日签到与可选互动 | `scripts/ck_acfun.py` | `python3 scripts/ck_acfun.py` | `20 0 * * *` | 待检查 | [ck_acfun.py.md](../scripts/ck_acfun.py.md)（`docs/scripts/ck_acfun.py.md`） |
