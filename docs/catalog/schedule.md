@@ -76,6 +76,7 @@
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `32 2 * * *` | 待检查 | [ddnsto.py.md](../scripts/ddnsto.py.md)（`docs/scripts/ddnsto.py.md`） |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |
+| 神经研究所每日任务 | `scripts/easonfans_daily.py` | `python3 scripts/easonfans_daily.py` | `0 20 * * *` | 待检查 | [easonfans_daily.py.md](../scripts/easonfans_daily.py.md)（`docs/scripts/easonfans_daily.py.md`） |
 | EMOS 每日签到 | `scripts/emos_sign.py` | `python3 scripts/emos_sign.py` | `30 8 * * *` | 待检查 | [emos_sign.py.md](../scripts/emos_sign.py.md)（`docs/scripts/emos_sign.py.md`） |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
 | Epic免费游戏 | `scripts/epicfreegames.py` | `python3 scripts/epicfreegames.py` | `11 8 * * 6` | 待检查 | [epicfreegames.py.md](../scripts/epicfreegames.py.md)（`docs/scripts/epicfreegames.py.md`） |

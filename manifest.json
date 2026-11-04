@@ -12862,6 +12862,192 @@
       }
     },
     {
+      "catalogId": "99686155ae0324e2",
+      "applicationKey": "oneguozexin/easonfans-daily-automation::easonfans",
+      "checkProfile": {
+        "requiredEnv": [
+          "EASONFANS_COOKIE"
+        ],
+        "optionalEnv": [
+          "EASONFANS_BASE_URL",
+          "EASONFANS_QUIZ_BANK",
+          "EASONFANS_MESSAGE_COUNT",
+          "EASONFANS_MESSAGE_DELAY",
+          "EASONFANS_EMOJI_INDEX",
+          "EASONFANS_LOCAL_TEXT",
+          "EASONFANS_TIMEOUT",
+          "EASONFANS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "EASONFANS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "EASONFANS_MESSAGE_COUNT": "0",
+          "EASONFANS_MESSAGE_DELAY": "25",
+          "EASONFANS_EMOJI_INDEX": "0",
+          "EASONFANS_TIMEOUT": "20"
+        },
+        "successPatterns": [
+          "EASONFANS_TASK_OK",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "校验登录状态并显示官方昵称或公开 UID",
+          "每日 dsu_paulsign 签到（含已签到判断）",
+          "幸运转盘免费次数检测与抽奖",
+          "本地题库保守匹配每日答题（最多三题，无法唯一匹配则不提交）",
+          "可选留言墙表情/文本留言（默认关闭）",
+          "多账号逐行处理与断网预演"
+        ],
+        "sideEffects": [
+          "提交每日签到",
+          "消耗转盘免费次数并抽奖",
+          "提交每日答题答案",
+          "向其他用户留言墙发送留言（仅在显式开启时）"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "神经研究所每日任务",
+      "path": "scripts/easonfans_daily.py",
+      "sha256": "0e7bb12c6e4a6ac01e8c8ff4ba19d469e59c443829772d4967eaebec4f642145",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "OneGuoZexin/easonfans-daily-automation",
+        "branch": "main",
+        "commit": "75c0e63af5dbad6e886e9c69fa9e16600775c07b",
+        "originalPath": "easonfans_daily.py"
+      },
+      "cron": "0 20 * * *",
+      "command": "python3 scripts/easonfans_daily.py",
+      "environment": [
+        {
+          "name": "EASONFANS_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.easonfans.com/forum/ 后，打开开发者工具网络面板，从本站任意请求的请求头复制完整 Cookie 值。",
+          "format": "每个非空行一个账号的完整 Cookie 字符串，不含 Cookie: 前缀；不要用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "EASONFANS_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "一般无需修改；仅当论坛根路径变更时填写。",
+          "format": "HTTPS 论坛根地址，默认 https://www.easonfans.com/forum/ ，仅允许 easonfans.com 域名。"
+        },
+        {
+          "name": "EASONFANS_QUIZ_BANK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行准备有权使用的题库；可为 JSON 数组或题库纯文本。未配置时跳过答题，不影响签到与转盘。",
+          "format": "JSON 形如 [{\"question\":\"题干\",\"answer\":\"答案\"}] ，或“题干—答案”纯文本；勿放入凭据。"
+        },
+        {
+          "name": "EASONFANS_MESSAGE_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要自动留言时设为正整数；公开默认关闭，避免骚扰其他用户。",
+          "format": "0 至 50 的整数；默认 0 表示关闭留言。"
+        },
+        {
+          "name": "EASONFANS_MESSAGE_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "开启留言后用于控制两次留言间隔，降低操作过快风险。",
+          "format": "1 至 600 的秒数；默认 25。"
+        },
+        {
+          "name": "EASONFANS_EMOJI_INDEX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "选择签到心情表情序号，对应上游心情列表。",
+          "format": "0 至 8 的整数；默认 0。"
+        },
+        {
+          "name": "EASONFANS_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "留言正文在一言不可用或断网预演时使用；勿填写 Cookie 或其他凭据。",
+          "format": "不超过 280 字的纯文本；默认 [em:1:]。"
+        },
+        {
+          "name": "EASONFANS_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况调整单次业务请求超时。",
+          "format": "3 至 60 的秒数；默认 20。"
+        },
+        {
+          "name": "EASONFANS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要验证配置与执行路径但禁止联网时启用。",
+          "format": "设为 1、true、yes 或 on 时启用完全断网预演。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅向名单内脚本发送通知；可写目录标识、文件名或通配符。",
+          "format": "逗号、分号、空白或换行分隔；* 表示全部；显式空值表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "绝对目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "EASONFANS_COOKIE 每个非空行一个账号的完整 Cookie；账号之间只用换行分隔。"
+      },
+      "dependencies": [],
+      "features": [
+        "校验登录状态并显示官方昵称或公开 UID",
+        "每日 dsu_paulsign 签到（含已签到判断）",
+        "幸运转盘免费次数检测与抽奖",
+        "本地题库保守匹配每日答题（最多三题，无法唯一匹配则不提交）",
+        "可选留言墙表情/文本留言（默认关闭）",
+        "多账号逐行处理与断网预演"
+      ],
+      "sideEffects": [
+        "提交每日签到",
+        "消耗转盘免费次数并抽奖",
+        "提交每日答题答案",
+        "向其他用户留言墙发送留言（仅在显式开启时）"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/99686155ae0324e2",
+        "candidateSha256": "0e7bb12c6e4a6ac01e8c8ff4ba19d469e59c443829772d4967eaebec4f642145"
+      }
+    },
+    {
       "catalogId": "8aba65e222e7eb74",
       "applicationKey": "xlzs001/emos-loon-sign::python",
       "checkProfile": {
