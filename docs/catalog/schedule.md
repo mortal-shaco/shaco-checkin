@@ -71,6 +71,7 @@
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `22 10,14,18 * * *` | 待检查 | [dachao.py.md](../scripts/dachao.py.md)（`docs/scripts/dachao.py.md`） |
 | 大海资源站每日签到 | `scripts/dahai.js` | `node scripts/dahai.js` | `0 30 11 * * *` | 待检查 | [dahai.js.md](../scripts/dahai.js.md)（`docs/scripts/dahai.js.md`） |
 | WPS天天领福利（可选任务中心） | `scripts/daily_benefits.py` | `python3 scripts/daily_benefits.py` | `47 1 1 1 1` | 待检查 | [daily_benefits.py.md](../scripts/daily_benefits.py.md)（`docs/scripts/daily_benefits.py.md`） |
+| 二重螺旋皎皎角每日任务 | `scripts/daily_tasks.py` | `python3 scripts/daily_tasks.py` | `3 8 * * *` | 待检查 | [daily_tasks.py.md](../scripts/daily_tasks.py.md)（`docs/scripts/daily_tasks.py.md`） |
 | 中国日报 | `scripts/dailynewscn.js` | `node scripts/dailynewscn.js` | `0 15 9 * * *` | 待检查 | [dailynewscn.js.md](../scripts/dailynewscn.js.md)（`docs/scripts/dailynewscn.js.md`） |
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `32 2 * * *` | 待检查 | [ddnsto.py.md](../scripts/ddnsto.py.md)（`docs/scripts/ddnsto.py.md`） |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
@@ -208,6 +209,7 @@
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
 | OA实习签到 | `scripts/task_62e6cbbd.py` | `python3 scripts/task_62e6cbbd.py` | `34 8 * * *` | 待检查 | [task_62e6cbbd.py.md](../scripts/task_62e6cbbd.py.md)（`docs/scripts/task_62e6cbbd.py.md`） |
+| 班级魔法自动签到 | `scripts/task_7be4b090.py` | `python3 scripts/task_7be4b090.py` | `44 8 * * 1-5` | 待检查 | [task_7be4b090.py.md](../scripts/task_7be4b090.py.md)（`docs/scripts/task_7be4b090.py.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
 | 阿里云盘签到 | `scripts/task_ef2d3863.js` | `node scripts/task_ef2d3863.js` | `7 9,22 * * *` | 待检查 | [task_ef2d3863.js.md](../scripts/task_ef2d3863.js.md)（`docs/scripts/task_ef2d3863.js.md`） |

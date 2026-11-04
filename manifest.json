@@ -11695,6 +11695,212 @@
       }
     },
     {
+      "catalogId": "3b82fe4eb92e84d2",
+      "applicationKey": "abyss-stars/dna-sign::daily_tasks",
+      "checkProfile": {
+        "requiredEnv": [
+          "DNA_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "DNA_TOKEN",
+          "DNA_DEVICE_CODE",
+          "DNA_REFRESH_TOKEN",
+          "DNA_SIGN_MODE",
+          "DNA_LOCAL_TEXT",
+          "DNA_HTTP_TIMEOUT",
+          "DNA_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DNA_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "DNA_SIGN_MODE": "app",
+          "DNA_HTTP_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "1"
+        },
+        "successPatterns": [
+          "最终状态",
+          "全部成功",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "完成皎皎角社区每日浏览、点赞、分享、回复与社区签到",
+          "正式回复优先使用一言 HTTPS 随机文案并保留署名，失败或断网预演回退本地文案",
+          "支持 App 签名模式与设备码；access token 失效且配置了 refreshToken 时可自动续期",
+          "显示官方返回的昵称或公开 UID，方便核对账号",
+          "每行一个账号；完全断网预演、时间轴日志、账号与任务统计、单行 TASK_SUMMARY",
+          "青龙脱敏通知及全局开关，通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行时浏览社区帖子并增加浏览计数",
+          "正式运行时对推荐帖子点赞",
+          "正式运行时上报分享任务完成",
+          "正式运行时在帖子评论区发布回复文案",
+          "正式运行时执行社区签到并可能领取经验/金币类奖励",
+          "正式运行且配置 refreshToken、access token 失效时会续期并使用新 token",
+          "正式运行且通知开启、青龙组件可用时发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "二重螺旋皎皎角每日任务",
+      "path": "scripts/daily_tasks.py",
+      "sha256": "cc651542958d6e7959ff62cbd144851a65eef7632a3e534f9f1e57c18f3664e8",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "abyss-stars/dna-sign",
+        "branch": "main",
+        "commit": "9c33ca7dd0bb92b177563e0d6c1274f9ff0d61b5",
+        "originalPath": "src/daily_tasks.py"
+      },
+      "cron": "3 8 * * *",
+      "command": "python3 scripts/daily_tasks.py",
+      "environment": [
+        {
+          "name": "DNA_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 Android 模拟器安装并登录「皎皎角」App（勿用网页 token）。从 App 数据提取 token（user_data.xml 登录会话）与设备码 devCode（如 g_hu_sp.xml 的 dv_id），可选长期 refreshToken（login_data.refreshToken）。将同一账号的 token、设备码与可选 refreshToken 写在同一行。",
+          "format": "每个非空行一个账号：token|devCode 或 token|devCode|refreshToken。仅按竖线拆分字段；不要用 &、@ 分隔多账号。"
+        },
+        {
+          "name": "DNA_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：未设置 DNA_ACCOUNTS 时使用。来源同 App token，可多行对应多账号。",
+          "format": "每行一个 access token；须与 DNA_DEVICE_CODE 按行对应（或设备码仅一行共用）。"
+        },
+        {
+          "name": "DNA_DEVICE_CODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：与 DNA_TOKEN 配套的 App 设备码（devCode）。",
+          "format": "每行一个设备码；行数为 1 或与 DNA_TOKEN 相同。"
+        },
+        {
+          "name": "DNA_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选长期 refreshToken；access token 返回 220 时自动续期。可在 DNA_ACCOUNTS 第三字段或本变量中配置。",
+          "format": "每行一个 refreshToken；行数为 1 或与账号数相同。"
+        },
+        {
+          "name": "DNA_SIGN_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需强制签名模式；默认有设备码时使用 app。",
+          "format": "h5 或 app。"
+        },
+        {
+          "name": "DNA_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "评论失败回退或断网预演使用的本地文案；正式运行优先请求一言，且不会向一言发送账号凭据。",
+          "format": "多行或逗号分隔短文本，单条不超过 280 字。"
+        },
+        {
+          "name": "DNA_HTTP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置业务请求超时秒数。",
+          "format": "正数秒，默认 15。"
+        },
+        {
+          "name": "DNA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设为 1 开启完全断网配置预演。",
+          "format": "1、true、yes、on 开启；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置后仅当选择器匹配本脚本目录 ID、路径或文件名时发送通知；空值禁用全部。",
+          "format": "逗号、分号、空白或换行分隔；支持 * 通配。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "本地目录路径；业务不依赖此文件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；同一账号的 token、设备码与可选 refreshToken 写在同一行并用竖线连接；账号独立执行，任一账号失败则进程非零退出。"
+      },
+      "dependencies": [
+        "requests",
+        "cryptography"
+      ],
+      "features": [
+        "完成皎皎角社区每日浏览、点赞、分享、回复与社区签到",
+        "正式回复优先使用一言 HTTPS 随机文案并保留署名，失败或断网预演回退本地文案",
+        "支持 App 签名模式与设备码；access token 失效且配置了 refreshToken 时可自动续期",
+        "显示官方返回的昵称或公开 UID，方便核对账号",
+        "每行一个账号；完全断网预演、时间轴日志、账号与任务统计、单行 TASK_SUMMARY",
+        "青龙脱敏通知及全局开关，通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行时浏览社区帖子并增加浏览计数",
+        "正式运行时对推荐帖子点赞",
+        "正式运行时上报分享任务完成",
+        "正式运行时在帖子评论区发布回复文案",
+        "正式运行时执行社区签到并可能领取经验/金币类奖励",
+        "正式运行且配置 refreshToken、access token 失效时会续期并使用新 token",
+        "正式运行且通知开启、青龙组件可用时发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3b82fe4eb92e84d2",
+        "candidateSha256": "70a9941b8635be29f738f121c4aa33aaa6d75cd9ff1b46a3b71a226559d75901"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "70a9941b8635be29f738f121c4aa33aaa6d75cd9ff1b46a3b71a226559d75901",
+        "releaseSha256": "cc651542958d6e7959ff62cbd144851a65eef7632a3e534f9f1e57c18f3664e8",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T12:26:02.661224+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "70a9941b8635be29f738f121c4aa33aaa6d75cd9ff1b46a3b71a226559d75901",
+          "toCandidateSha256": "cc651542958d6e7959ff62cbd144851a65eef7632a3e534f9f1e57c18f3664e8",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "f3d5ae90c3c979bf",
       "applicationKey": "unitaryhighs/ql_sign_script::hot",
       "checkProfile": {
@@ -37621,6 +37827,261 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "9a7d3f30f4cbd8a4f7e9ccf6cf17e4afcfeedb94db1e19d159793708b25cee35",
           "toCandidateSha256": "ab8e2263266ea5db00aa0bae831fc1a3bc6caf651666c886f498348bb890400d",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "7be4b090d277382e",
+      "applicationKey": "jasonyang170/autocheckbjmf::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "BJMF_COOKIE",
+          "BJMF_CLASS_ID",
+          "BJMF_LAT",
+          "BJMF_LNG"
+        ],
+        "optionalEnv": [
+          "BJMF_COOKIES",
+          "BJMF_ACC",
+          "BJMF_DRY_RUN",
+          "BJMF_TIMEOUT",
+          "BJMF_GPS_OFFSET",
+          "BJMF_RETRY",
+          "BJMF_RETRY_DELAY",
+          "ClassID",
+          "Cookies",
+          "X",
+          "Y",
+          "ACC",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BJMF_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BJMF_TIMEOUT": "20",
+          "BJMF_GPS_OFFSET": "1",
+          "BJMF_RETRY": "1",
+          "BJMF_RETRY_DELAY": "3"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "当前无进行中的签到",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用班级魔法学生端 Cookie 查询指定班级进行中的签到任务",
+          "自动识别 GPS 定位签到与扫码签到入口并提交打卡",
+          "支持经纬度微偏移、多账号分行配置与短重试",
+          "展示可选用户备注或页面公开身份，输出脱敏时间轴日志与 TASK_SUMMARY",
+          "支持完全断网预演并通过青龙 notify 发送脱敏汇总"
+        ],
+        "sideEffects": [
+          "向班级魔法提交课堂签到（存在进行中的签到任务时）"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "班级魔法自动签到",
+      "path": "scripts/task_7be4b090.py",
+      "sha256": "72dd637dc269d7e7ae88ce5b5943f33870825ba650a23c6520803bc46d8766b3",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "JasonYANG170/AutoCheckBJMF",
+        "branch": "main",
+        "commit": "51db1e7fab5d41411cb089cf62f9ef62899bf90e",
+        "originalPath": "main.py"
+      },
+      "cron": "44 8 * * 1-5",
+      "command": "python3 scripts/task_7be4b090.py",
+      "environment": [
+        {
+          "name": "BJMF_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "打开 https://k8n.cn/student/login 登录班级魔法学生端，按教程 https://github.com/JasonYANG170/AutoCheckBJMF/wiki/ 抓包任意已登录请求的 Cookie。需要 remember_student_59ba36addc2b2f9401580f014c7f58ea4e30989d 字段；可在同行加入 username=备注 便于区分账号。Cookie 变更是最常见失败原因。",
+          "format": "每个非空行一个账号。推荐：username=<备注>;remember_student_59ba36addc2b2f9401580f014c7f58ea4e30989d=<令牌>。也可只填 remember_student 键值对或纯令牌值。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "BJMF_COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名。未设置 BJMF_COOKIE 时读取本变量。",
+          "format": "与 BJMF_COOKIE 相同：每行一个账号 Cookie。"
+        },
+        {
+          "name": "BJMF_CLASS_ID",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "按上游教程抓包获取班级 ID（课程/班级标识），填写到本变量；全班账号通常共用。",
+          "format": "字母数字、下划线或短横线，长度 1..64。"
+        },
+        {
+          "name": "BJMF_LAT",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "课堂签到定位纬度。可用腾讯坐标拾取 https://lbs.qq.com/getPoint/ ，建议至少 8 位小数以便微偏移。",
+          "format": "十进制度数，例如 39.12345678。"
+        },
+        {
+          "name": "BJMF_LNG",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "课堂签到定位经度。可用腾讯坐标拾取工具获取。",
+          "format": "十进制度数，例如 116.12345678。"
+        },
+        {
+          "name": "BJMF_ACC",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "海拔/精度字段，对应上游 acc；没有可留空。",
+          "format": "字符串或数字，可空。"
+        },
+        {
+          "name": "BJMF_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证配置时设为 1，不发起任何网络请求或签到提交。",
+          "format": "1/true/yes/on 开启断网预演；0/false/no/off 真实执行。默认 0。"
+        },
+        {
+          "name": "BJMF_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "网络较慢时可适当增大。",
+          "format": "整数秒，默认 20，范围 5..120。"
+        },
+        {
+          "name": "BJMF_GPS_OFFSET",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认开启与上游一致的经纬度微偏移，降低多人同坐标冲突；设为 0 可关闭。",
+          "format": "1/true/yes/on 或 0/false/no/off。默认 1。"
+        },
+        {
+          "name": "BJMF_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "列表页或签到失败时的额外短重试次数。青龙环境不使用上游 5/15 分钟长等待。",
+          "format": "整数，默认 1，范围 0..3。"
+        },
+        {
+          "name": "BJMF_RETRY_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "短重试间隔秒数。",
+          "format": "整数秒，默认 3，范围 0..30。"
+        },
+        {
+          "name": "ClassID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游/注释中的 ClassID 别名；优先使用 BJMF_CLASS_ID。",
+          "format": "与 BJMF_CLASS_ID 相同。"
+        },
+        {
+          "name": "Cookies",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游注释中的 Cookies 别名；优先使用 BJMF_COOKIE。",
+          "format": "与 BJMF_COOKIE 相同。"
+        },
+        {
+          "name": "X",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游纬度别名；优先使用 BJMF_LAT。",
+          "format": "与 BJMF_LAT 相同。"
+        },
+        {
+          "name": "Y",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游经度别名；优先使用 BJMF_LNG。",
+          "format": "与 BJMF_LNG 相同。"
+        },
+        {
+          "name": "ACC",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游海拔别名；优先使用 BJMF_ACC。",
+          "format": "与 BJMF_ACC 相同。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "QINGLONG_NOTIFY=auto 时，用目录 ID、文件名或通配符选择需要通知的脚本；空值表示全部关闭。",
+          "format": "逗号/分号/空白/换行分隔；* 表示全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义 notify.py / sendNotify.js 所在目录；默认搜索 /ql/data/scripts 与 /ql/scripts。",
+          "format": "本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 Cookie；可选 username=备注 与 remember_student 令牌写在同一行。班级 ID 与经纬度为共用配置。不使用 & 或 @ 分隔账号。任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用班级魔法学生端 Cookie 查询指定班级进行中的签到任务",
+        "自动识别 GPS 定位签到与扫码签到入口并提交打卡",
+        "支持经纬度微偏移、多账号分行配置与短重试",
+        "展示可选用户备注或页面公开身份，输出脱敏时间轴日志与 TASK_SUMMARY",
+        "支持完全断网预演并通过青龙 notify 发送脱敏汇总"
+      ],
+      "sideEffects": [
+        "向班级魔法提交课堂签到（存在进行中的签到任务时）"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/7be4b090d277382e",
+        "candidateSha256": "9522c982abce03216ec43b64f54e6aeb248da6c347a0a87fdb1b94d8dd26fd78"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "9522c982abce03216ec43b64f54e6aeb248da6c347a0a87fdb1b94d8dd26fd78",
+        "releaseSha256": "72dd637dc269d7e7ae88ce5b5943f33870825ba650a23c6520803bc46d8766b3",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-04T12:26:08.833135+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "9522c982abce03216ec43b64f54e6aeb248da6c347a0a87fdb1b94d8dd26fd78",
+          "toCandidateSha256": "72dd637dc269d7e7ae88ce5b5943f33870825ba650a23c6520803bc46d8766b3",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

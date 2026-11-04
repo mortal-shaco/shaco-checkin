@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **191** 个脚本。返回 [`目录首页`](../README.md)。
+共 **193** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -51,6 +51,7 @@
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `22 10,14,18 * * *` | 待检查 | [dachao.py.md](../../scripts/dachao.py.md)（`docs/scripts/dachao.py.md`） |
 | 大海资源站每日签到 | `scripts/dahai.js` | `node scripts/dahai.js` | `0 30 11 * * *` | 待检查 | [dahai.js.md](../../scripts/dahai.js.md)（`docs/scripts/dahai.js.md`） |
 | WPS天天领福利（可选任务中心） | `scripts/daily_benefits.py` | `python3 scripts/daily_benefits.py` | `47 1 1 1 1` | 待检查 | [daily_benefits.py.md](../../scripts/daily_benefits.py.md)（`docs/scripts/daily_benefits.py.md`） |
+| 二重螺旋皎皎角每日任务 | `scripts/daily_tasks.py` | `python3 scripts/daily_tasks.py` | `3 8 * * *` | 待检查 | [daily_tasks.py.md](../../scripts/daily_tasks.py.md)（`docs/scripts/daily_tasks.py.md`） |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |
 | EMOS 每日签到 | `scripts/emos_sign.py` | `python3 scripts/emos_sign.py` | `30 8 * * *` | 待检查 | [emos_sign.py.md](../../scripts/emos_sign.py.md)（`docs/scripts/emos_sign.py.md`） |
@@ -169,6 +170,7 @@
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
 | OA实习签到 | `scripts/task_62e6cbbd.py` | `python3 scripts/task_62e6cbbd.py` | `34 8 * * *` | 待检查 | [task_62e6cbbd.py.md](../../scripts/task_62e6cbbd.py.md)（`docs/scripts/task_62e6cbbd.py.md`） |
+| 班级魔法自动签到 | `scripts/task_7be4b090.py` | `python3 scripts/task_7be4b090.py` | `44 8 * * 1-5` | 待检查 | [task_7be4b090.py.md](../../scripts/task_7be4b090.py.md)（`docs/scripts/task_7be4b090.py.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
 | Telegram每日Bot签到 | `scripts/telegram_daily_checkin.py` | `python3 scripts/telegram_daily_checkin.py` | `33 8 * * *` | 待检查 | [telegram_daily_checkin.py.md](../../scripts/telegram_daily_checkin.py.md)（`docs/scripts/telegram_daily_checkin.py.md`） |
