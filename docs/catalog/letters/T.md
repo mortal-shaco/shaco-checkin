@@ -1,9 +1,10 @@
 # 字母索引 · T
 
-共 **43** 个脚本。返回 [`目录首页`](../README.md)。
+共 **44** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
+| T00ls每日签到 | `scripts/t00ls_sign.py` | `python3 scripts/t00ls_sign.py` | `21 1 * * *` | 待检查 | [t00ls_sign.py.md](../../scripts/t00ls_sign.py.md)（`docs/scripts/t00ls_sign.py.md`） |
 | Tabbit 国内版每日签到 | `scripts/tabbit_cn_daily.py` | `python3 scripts/tabbit_cn_daily.py` | `18 9 * * *` | 待检查 | [tabbit_cn_daily.py.md](../../scripts/tabbit_cn_daily.py.md)（`docs/scripts/tabbit_cn_daily.py.md`） |
 | Taker每日挖矿 | `scripts/taker.js` | `node scripts/taker.js` | `26 8 * * *` | 待检查 | [taker.js.md](../../scripts/taker.js.md)（`docs/scripts/taker.js.md`） |
 | 掘金好好生活计划打卡 | `scripts/task_0e52328d.py` | `python3 scripts/task_0e52328d.py` | `2 1 * * *` | 待检查 | [task_0e52328d.py.md](../../scripts/task_0e52328d.py.md)（`docs/scripts/task_0e52328d.py.md`） |
