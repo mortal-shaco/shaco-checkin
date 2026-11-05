@@ -1,10 +1,11 @@
 # 字母索引 · W
 
-共 **11** 个脚本。返回 [`目录首页`](../README.md)。
+共 **12** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `11 2 * * *` | 待检查 | [wangchao.py.md](../../scripts/wangchao.py.md)（`docs/scripts/wangchao.py.md`） |
+| 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
 | CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |
 | 华润通文体未来荟签到 | `scripts/wentiweilaihui.py` | `python3 scripts/wentiweilaihui.py` | `31 1 1 1 1` | 待检查 | [wentiweilaihui.py.md](../../scripts/wentiweilaihui.py.md)（`docs/scripts/wentiweilaihui.py.md`） |
