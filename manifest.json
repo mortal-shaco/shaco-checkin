@@ -9694,6 +9694,156 @@
       }
     },
     {
+      "catalogId": "0fd26bb9b65bd35b",
+      "applicationKey": "bndou/auto_check_in::latex",
+      "checkProfile": {
+        "requiredEnv": [
+          "COOKIE_LATEX_TOKEN"
+        ],
+        "optionalEnv": [
+          "LATEX_TIMEOUT",
+          "LATEX_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "LATEX_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LATEX_TIMEOUT": "20"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "使用 latexstudio.net Token 读取账号资料（昵称、会员套餐、余额、积分、累计签到天数、上次登录）",
+          "调用每日签到接口并核验业务成功或今日已签到",
+          "展示官方返回的昵称等公开身份信息，隐藏 Token 与原始响应",
+          "多账号逐行配置、独立执行及任一失败非零退出",
+          "完全断网预演、编号阶段与耗时、账号及子任务统计、单行 TASK_SUMMARY",
+          "按青龙通知策略发送脱敏汇总，通知不可用不改变业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行时向 latexstudio.net 提交每日签到，改变账号当日签到状态并可能发放积分或余额相关奖励",
+          "启用通知且匹配策略时，通过青龙 notify 发送脱敏账号统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "LaTeX工作室签到",
+      "path": "scripts/checkin_latex.py",
+      "sha256": "8cefcf59aea239b9f46242064af95ad62c627668077b6ff19c280ce1d70ced02",
+      "stage": "released",
+      "license": "GPL-3.0-only",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "BNDou/Auto_Check_In",
+        "branch": "main",
+        "commit": "3355d65c62a1d09643092de61d0e6d5175b2323f",
+        "originalPath": "checkIn_LaTeX.py"
+      },
+      "cron": "10 1 * * *",
+      "command": "python3 scripts/checkin_latex.py",
+      "environment": [
+        {
+          "name": "COOKIE_LATEX_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 latexstudio.net（LaTeX 工作室）后，在个人中心或浏览器开发者工具网络请求中获取接口使用的 token，写入青龙环境变量。不要把 Token 发给他人或写入公开仓库、日志、通知。",
+          "format": "每个非空行一个账号 Token。账号之间只用换行分隔，不使用 &、@ 或 &&。"
+        },
+        {
+          "name": "LATEX_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况调整单次 HTTP 超时秒数。",
+          "format": "5 至 90 的整数秒；默认 20。"
+        },
+        {
+          "name": "LATEX_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要验证配置与执行路径但禁止联网时启用。",
+          "format": "设为 1、true、yes 或 on 时启用完全断网预演。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或通配符；* 表示全部，空值表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定本地青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准目录。",
+          "format": "已存在的本地通知组件目录，不会下载或安装组件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "COOKIE_LATEX_TOKEN 每个非空行一个账号 Token。账号逐个独立读取资料并签到；任一账号失败则整体非零退出。不使用 &、@ 或 && 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 latexstudio.net Token 读取账号资料（昵称、会员套餐、余额、积分、累计签到天数、上次登录）",
+        "调用每日签到接口并核验业务成功或今日已签到",
+        "展示官方返回的昵称等公开身份信息，隐藏 Token 与原始响应",
+        "多账号逐行配置、独立执行及任一失败非零退出",
+        "完全断网预演、编号阶段与耗时、账号及子任务统计、单行 TASK_SUMMARY",
+        "按青龙通知策略发送脱敏汇总，通知不可用不改变业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行时向 latexstudio.net 提交每日签到，改变账号当日签到状态并可能发放积分或余额相关奖励",
+        "启用通知且匹配策略时，通过青龙 notify 发送脱敏账号统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0fd26bb9b65bd35b",
+        "candidateSha256": "fd1d35ff162c7644f6a696e5f14adfcfb32e07b727d5da8f551758b79a294046"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "fd1d35ff162c7644f6a696e5f14adfcfb32e07b727d5da8f551758b79a294046",
+        "releaseSha256": "8cefcf59aea239b9f46242064af95ad62c627668077b6ff19c280ce1d70ced02",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T09:35:01.276404+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "fd1d35ff162c7644f6a696e5f14adfcfb32e07b727d5da8f551758b79a294046",
+          "toCandidateSha256": "8cefcf59aea239b9f46242064af95ad62c627668077b6ff19c280ce1d70ced02",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "5e7302e54a0be513",
       "applicationKey": "naroiscool/naro-scripts::chevrolet",
       "checkProfile": {
