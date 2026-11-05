@@ -55489,6 +55489,197 @@
       }
     },
     {
+      "catalogId": "ea3ec6764f1fef21",
+      "applicationKey": "a1007479270/aidaka::wps-airscript",
+      "checkProfile": {
+        "requiredEnv": [
+          "AIDAKA_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WPS_AIRSCRIPT_ACCOUNTS",
+          "AIDAKA_CHECKIN_ACCOUNTS",
+          "AIDAKA_ACCOUNTS_FILE",
+          "AIDAKA_DRY_RUN",
+          "AIDAKA_TIMEOUT_MS",
+          "AIDAKA_ACCOUNT_GAP_MS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AIDAKA_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "ima（腾讯 AI 工作台）使用 refresh_token 刷新登录后执行每日签到，并在可领时顺带领取满签奖励。",
+          "WorkBuddy / CodeBuddy CN 使用 Bearer token 提交每日签到，识别已签到幂等结果。",
+          "Qoder CN 个人版按设备头查询活动并领取 Credits；支持 access/refresh 续期；可选账号文件写回新 token。",
+          "TraeWork 国内个人版查询签到状态并领取 Credits，服务端繁忙码 9074 自动重试。",
+          "支持每行一个账号的多平台混排；兼容「platform|{json}」与整行 JSON。",
+          "按青龙全局开关与脚本名单发送脱敏通知；账号 JSON 内可选 Server酱 / PushPlus / 企业微信 Webhook 兼容推送。",
+          "完全断网预演：校验平台与必填字段、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时向 ima.qq.com 提交每日签到与满签奖励领取，可能更新积分或签到状态。",
+          "正式运行时向 www.codebuddy.cn 提交 WorkBuddy 每日签到。",
+          "正式运行时向 openapi.qoder.com.cn 领取活动 Credits，并可能刷新 accessToken/refreshToken。",
+          "正式运行时向 api.trae.cn 提交 TraeWork 签到积分领取。",
+          "启用通知且非预演时，通过青龙 notify 及可选兼容推送渠道发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AI打卡机四平台签到",
+      "path": "scripts/wps_airscript.js",
+      "sha256": "8c707d371cd86550687952d057f8485cb0d2eb7c16490d312c5a502d58c6df60",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "a1007479270/aidaka",
+        "branch": "main",
+        "commit": "7bf15f9330e7ce7114aa519880b4bc71b11c4275",
+        "originalPath": "wps-airscript/checkin.js"
+      },
+      "cron": "31 10 * * *",
+      "command": "node scripts/wps_airscript.js",
+      "environment": [
+        {
+          "name": "AIDAKA_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "规范账号变量。每个非空行填写一个平台账号。字段与上游金山文档 B 列 JSON 一致：ima 需 ima_uid、ima_guid、refresh_token（及可选 uid_type、name）；workbuddy 需 token（及可选 uid、name）；qoder 需 accessToken 或 refreshToken，且 device.machineToken 等 Cosy 设备头来自本人已登录 Qoder 客户端请求头；traework 需 token 与 device_id。platform 写在 JSON 的 platform 字段，或使用「platform|{json}」行首平台名。勿将令牌写入公开仓库或日志。相关 build.py 仅为部署页生成器，不作为凭据来源。",
+          "format": "每个非空行一个账号；推荐整行 JSON 且含 platform（ima/workbuddy/qoder/traework）。也支持 platform|{json}，只在首个竖线处拆分。以 # 开头的行忽略。不使用 & 或 @ 分隔账号。可选 serverchan/pushplus/qywx 对应原表格推送列。"
+        },
+        {
+          "name": "WPS_AIRSCRIPT_ACCOUNTS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：仅当未设置 AIDAKA_ACCOUNTS 且未使用账号文件时读取；获取方式与 AIDAKA_ACCOUNTS 相同。",
+          "format": "与 AIDAKA_ACCOUNTS 相同。"
+        },
+        {
+          "name": "AIDAKA_CHECKIN_ACCOUNTS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：仅当 AIDAKA_ACCOUNTS 与 WPS_AIRSCRIPT_ACCOUNTS 皆为空且未使用账号文件时读取。",
+          "format": "与 AIDAKA_ACCOUNTS 相同。"
+        },
+        {
+          "name": "AIDAKA_ACCOUNTS_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选私有 JSONL 账号文件绝对路径；设置后优先于环境变量。适合 Qoder 刷新后需要写回 accessToken/refreshToken 的场景；文件权限建议 0600。",
+          "format": "本地私有文件路径；每行一个账号 JSON（含 platform）或 platform|{json}。"
+        },
+        {
+          "name": "AIDAKA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不访问业务接口、不写回账号文件、不投递真实通知。"
+        },
+        {
+          "name": "AIDAKA_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP 超时时间时手动设置。",
+          "format": "1000 至 120000 的整数毫秒；缺省或非法值使用 30000。"
+        },
+        {
+          "name": "AIDAKA_ACCOUNT_GAP_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整账号间间隔时手动设置；对应上游账号间隔以降低风控。",
+          "format": "0 至 60000 的整数毫秒；缺省 1500。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 ea3ec6764f1fef21、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "AIDAKA_ACCOUNTS（或兼容别名 / AIDAKA_ACCOUNTS_FILE）每个非空行一个账号；同一账号的平台凭据合并在一行 JSON 内。账号逐个独立签到，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "ima（腾讯 AI 工作台）使用 refresh_token 刷新登录后执行每日签到，并在可领时顺带领取满签奖励。",
+        "WorkBuddy / CodeBuddy CN 使用 Bearer token 提交每日签到，识别已签到幂等结果。",
+        "Qoder CN 个人版按设备头查询活动并领取 Credits；支持 access/refresh 续期；可选账号文件写回新 token。",
+        "TraeWork 国内个人版查询签到状态并领取 Credits，服务端繁忙码 9074 自动重试。",
+        "支持每行一个账号的多平台混排；兼容「platform|{json}」与整行 JSON。",
+        "按青龙全局开关与脚本名单发送脱敏通知；账号 JSON 内可选 Server酱 / PushPlus / 企业微信 Webhook 兼容推送。",
+        "完全断网预演：校验平台与必填字段、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时向 ima.qq.com 提交每日签到与满签奖励领取，可能更新积分或签到状态。",
+        "正式运行时向 www.codebuddy.cn 提交 WorkBuddy 每日签到。",
+        "正式运行时向 openapi.qoder.com.cn 领取活动 Credits，并可能刷新 accessToken/refreshToken。",
+        "正式运行时向 api.trae.cn 提交 TraeWork 签到积分领取。",
+        "启用通知且非预演时，通过青龙 notify 及可选兼容推送渠道发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ea3ec6764f1fef21",
+        "candidateSha256": "37a5e8dd17a73af0098d703c82802ac2211b225f339bb4905d12282974db2ee0"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "37a5e8dd17a73af0098d703c82802ac2211b225f339bb4905d12282974db2ee0",
+        "releaseSha256": "8c707d371cd86550687952d057f8485cb0d2eb7c16490d312c5a502d58c6df60",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T10:11:29.680254+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "37a5e8dd17a73af0098d703c82802ac2211b225f339bb4905d12282974db2ee0",
+          "toCandidateSha256": "8c707d371cd86550687952d057f8485cb0d2eb7c16490d312c5a502d58c6df60",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "aa7303325b9bca16",
       "applicationKey": "wps",
       "checkProfile": {
