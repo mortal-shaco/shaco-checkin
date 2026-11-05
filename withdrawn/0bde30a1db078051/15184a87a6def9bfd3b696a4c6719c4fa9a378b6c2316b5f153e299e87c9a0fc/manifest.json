@@ -1,0 +1,162 @@
+{
+  "catalogId": "0bde30a1db078051",
+  "applicationKey": "cn-grace/qinglongscripts::skyland",
+  "checkProfile": {
+    "requiredEnv": [
+      "SKYLAND_TOKEN"
+    ],
+    "optionalEnv": [
+      "SKYLAND_DRY_RUN",
+      "QINGLONG_NOTIFY",
+      "QINGLONG_NOTIFY_DIR",
+      "QINGLONG_NOTIFY_SCRIPTS"
+    ],
+    "dryRunEnv": {
+      "SKYLAND_DRY_RUN": "1"
+    },
+    "liveEnv": {
+      "SKYLAND_DRY_RUN": "0",
+      "QINGLONG_NOTIFY": "1"
+    },
+    "successPatterns": [
+      "签到成功，获得",
+      "\"status\":\"success\"",
+      "\"exitCode\":0"
+    ],
+    "features": [
+      "保留数美设备指纹协议及进程内设备凭据缓存",
+      "服务器时间校准，失败时使用本地时间",
+      "鹰角 Token 授权并登录森空岛",
+      "查询账号绑定的明日方舟与终末地角色并显示官方昵称或公开角色标识",
+      "遍历全部明日方舟绑定角色每日签到并显示奖励",
+      "遍历全部终末地角色每日签到并显示奖励",
+      "每行一个账号，独立处理账号与角色，汇总失败并非零退出",
+      "完全断网预演、分阶段耗时日志与唯一 TASK_SUMMARY 结构化汇总",
+      "通过青龙通知模块发送脱敏统计，支持全局关闭及通知失败保持业务退出码"
+    ],
+    "sideEffects": [
+      "向数美服务提交模拟浏览器指纹并生成设备凭据",
+      "通过鹰角授权接口生成登录授权并取得森空岛会话凭据",
+      "为明日方舟绑定角色每日签到并领取签到奖励",
+      "为终末地绑定角色每日签到并领取签到奖励",
+      "正式运行时通过青龙通知渠道发送脱敏任务统计"
+    ]
+  },
+  "postReview": {
+    "catalogId": "0bde30a1db078051",
+    "releaseSha256": "15184a87a6def9bfd3b696a4c6719c4fa9a378b6c2316b5f153e299e87c9a0fc",
+    "decision": "withdrawn",
+    "decidedAt": "2026-11-05T03:49:12.033242+00:00",
+    "approvedBy": "mortal-shaco",
+    "applicationKey": "cn-grace/qinglongscripts::skyland"
+  },
+  "displayName": "森空岛签到",
+  "path": "scripts/skyland.py",
+  "sha256": "15184a87a6def9bfd3b696a4c6719c4fa9a378b6c2316b5f153e299e87c9a0fc",
+  "stage": "withdrawn",
+  "license": "MIT",
+  "licenseGate": "allowed-permissive",
+  "source": {
+    "repository": "CN-Grace/QinglongScripts",
+    "branch": "main",
+    "commit": "a40a2b080e0160bd8e0b0b807081115537b87153",
+    "originalPath": "skyland.py"
+  },
+  "cron": "6 0 * * *",
+  "command": "python3 scripts/skyland.py",
+  "environment": [
+    {
+      "name": "SKYLAND_TOKEN",
+      "required": true,
+      "sensitive": true,
+      "howToGet": "在自己的浏览器登录鹰角网络官方账号页面 https://user.hypergryph.com/ ，再访问 https://web-api.hypergryph.com/account/info/hg 获取响应 content 中的账号 Token。若官方登录流程变化，从本人已登录客户端的授权请求获取 token；不要公开响应、Token 或 Cookie。",
+      "format": "每个非空行一个完整账号 Token；禁止用逗号、& 或 @ 分隔多个账号。"
+    },
+    {
+      "name": "SKYLAND_DRY_RUN",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "在青龙环境变量中设置为 1 开启完全断网预演。",
+      "format": "1、true、yes、on 开启，默认 0。"
+    },
+    {
+      "name": "QINGLONG_NOTIFY",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+      "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+    },
+    {
+      "name": "QINGLONG_NOTIFY_DIR",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "可选，填写青龙已有 notify.py 所在目录；默认发现青龙标准路径或导入 notify.send，无通知模块仍可执行签到。",
+      "format": "本地通知模块目录路径。"
+    },
+    {
+      "name": "QINGLONG_NOTIFY_SCRIPTS",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
+      "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+    }
+  ],
+  "multiAccount": {
+    "supported": true,
+    "separator": "newline",
+    "rule": "SKYLAND_TOKEN 每个非空行一个账号，忽略空行；账号与角色独立执行，任一失败整体非零退出。"
+  },
+  "dependencies": [
+    "requests>=2.31.0",
+    "cryptography>=43.0.0"
+  ],
+  "features": [
+    "保留数美设备指纹协议及进程内设备凭据缓存",
+    "服务器时间校准，失败时使用本地时间",
+    "鹰角 Token 授权并登录森空岛",
+    "查询账号绑定的明日方舟与终末地角色并显示官方昵称或公开角色标识",
+    "遍历全部明日方舟绑定角色每日签到并显示奖励",
+    "遍历全部终末地角色每日签到并显示奖励",
+    "每行一个账号，独立处理账号与角色，汇总失败并非零退出",
+    "完全断网预演、分阶段耗时日志与唯一 TASK_SUMMARY 结构化汇总",
+    "通过青龙通知模块发送脱敏统计，支持全局关闭及通知失败保持业务退出码"
+  ],
+  "sideEffects": [
+    "向数美服务提交模拟浏览器指纹并生成设备凭据",
+    "通过鹰角授权接口生成登录授权并取得森空岛会话凭据",
+    "为明日方舟绑定角色每日签到并领取签到奖励",
+    "为终末地绑定角色每日签到并领取签到奖励",
+    "正式运行时通过青龙通知渠道发送脱敏任务统计"
+  ],
+  "review": {
+    "staticPassed": true,
+    "sandboxPassed": false,
+    "humanAccepted": false,
+    "sideEffectsReviewed": true
+  },
+  "validation": {
+    "status": "basic-passed",
+    "businessResult": "not-verified",
+    "mode": "basic",
+    "evidence": "projects/checkin/validation/0bde30a1db078051",
+    "candidateSha256": "4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1"
+  },
+  "packaging": {
+    "type": "qinglong-release-normalization",
+    "validatedSha256": "4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1",
+    "releaseSha256": "15184a87a6def9bfd3b696a4c6719c4fa9a378b6c2316b5f153e299e87c9a0fc",
+    "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+    "reuseAttestation": {
+      "component": "qinglong-notification",
+      "approvedBy": "mortal-shaco",
+      "approvedAt": "2026-10-19T01:19:30.569584+00:00",
+      "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
+      "fromCandidateSha256": "4e83f3d0eda94365bdd5fc3648594f678a381cb513c7d065667be9dfbe8874e1",
+      "toCandidateSha256": "15184a87a6def9bfd3b696a4c6719c4fa9a378b6c2316b5f153e299e87c9a0fc",
+      "businessInterfaceUnchanged": true,
+      "parameterParsingUnchanged": true,
+      "successCriteriaUnchanged": true,
+      "sideEffectsUnchanged": true
+    }
+  }
+}
