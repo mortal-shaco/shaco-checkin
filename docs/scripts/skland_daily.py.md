@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/skland_daily.py`
 - 青龙命令：`python3 scripts/skland_daily.py`
 - 建议 Cron：`33 1 * * *`
-- 发布哈希：`1724fe8e2d6c457334b8174dabbfccee72d8b4be174f22e8276a5d54d43cb0bd`
+- 发布哈希：`410f49414307e7c58363d6fdd2d490211f98cd15a4976c3cedbf89badb285de5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -167,7 +167,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1724fe8e2d6c457334b8174dabbfccee72d8b4be174f22e8276a5d54d43cb0bd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/96b3c22e1eff9659`。
+SHA-256 `410f49414307e7c58363d6fdd2d490211f98cd15a4976c3cedbf89badb285de5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/96b3c22e1eff9659/410f49414307e7c58363d6fdd2d490211f98cd15a4976c3cedbf89badb285de5`。
 
 ## 副作用与风险
 

@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **217** 个脚本。返回 [`目录首页`](../README.md)。
+共 **218** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -101,6 +101,7 @@
 | 龙湖天街签到 | `scripts/longhu.py` | `python3 scripts/longhu.py` | `5 8 * * *` | 待检查 | [longhu.py.md](../../scripts/longhu.py.md)（`docs/scripts/longhu.py.md`） |
 | 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `1 2 * * *` | 待检查 | [lynkco_qinglong_single.py.md](../../scripts/lynkco_qinglong_single.py.md)（`docs/scripts/lynkco_qinglong_single.py.md`） |
 | 影视飓风会员签到 | `scripts/mediastorm_club.py` | `python3 scripts/mediastorm_club.py` | `3 9 * * *` | 待检查 | [mediastorm_club.py.md](../../scripts/mediastorm_club.py.md)（`docs/scripts/mediastorm_club.py.md`） |
+| 喵御宅每日签到 | `scripts/mfuns_sign.py` | `python3 scripts/mfuns_sign.py` | `9 9 * * *` | 待检查 | [mfuns_sign.py.md](../../scripts/mfuns_sign.py.md)（`docs/scripts/mfuns_sign.py.md`） |
 | 米饭APP日常维护 | `scripts/mifan_optimized.py` | `python3 scripts/mifan_optimized.py` | `59 0 * * *` | 待检查 | [mifan_optimized.py.md](../../scripts/mifan_optimized.py.md)（`docs/scripts/mifan_optimized.py.md`） |
 | Discuz k_misign 每日签到 | `scripts/misign.js` | `node scripts/misign.js` | `19 8 * * *` | 待检查 | [misign.js.md](../../scripts/misign.js.md)（`docs/scripts/misign.js.md`） |
 | 米游社游戏签到 | `scripts/miyoushe_sign.py` | `python3 scripts/miyoushe_sign.py` | `11 8 * * *` | 待检查 | [miyoushe_sign.py.md](../../scripts/miyoushe_sign.py.md)（`docs/scripts/miyoushe_sign.py.md`） |

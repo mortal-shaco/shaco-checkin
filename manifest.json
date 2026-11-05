@@ -1878,7 +1878,7 @@
     },
     {
       "catalogId": "81684dd327c48211",
-      "applicationKey": "cat-zaizai/zaizaicat-checkin::agentrouter",
+      "applicationKey": "agentrouter",
       "checkProfile": {
         "requiredEnv": [
           "AGENTROUTER_ACCOUNTS"
@@ -23711,6 +23711,151 @@
       }
     },
     {
+      "catalogId": "bacc70efebb57480",
+      "applicationKey": "kou-junhao/neko_mfuns_login::mfuns",
+      "checkProfile": {
+        "requiredEnv": [
+          "NEKO_MFUNS_COOKIE"
+        ],
+        "optionalEnv": [
+          "NEKO_MFUNS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NEKO_MFUNS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NEKO_MFUNS_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "每日签到：调用喵御宅签到接口，code=1 视为成功，code=0 视为今日已签到",
+          "签到前通过浏览历史接口校验 Authorization 是否有效",
+          "失败时最多额外重试 1 次，保留上游重试行为",
+          "官方响应返回昵称、用户名、显示名称或公开 UID 时原样展示以便核对账号",
+          "支持按行多账号，独立统计并在任一失败时整体非零退出",
+          "完全断网预演、时间轴分阶段日志、账号与任务统计，以及单行 TASK_SUMMARY",
+          "按青龙通知名单与全局开关调用 notify.py 或 sendNotify.js；预演仅生成脱敏摘要"
+        ],
+        "sideEffects": [
+          "正式模式调用喵御宅每日签到接口，可能写入签到状态并发放签到奖励",
+          "正式模式在通知策略选中且工具可用时发送脱敏任务结果通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "喵御宅每日签到",
+      "path": "scripts/mfuns_sign.py",
+      "sha256": "1d60b752e4bac2b15fa4cd55a6d75feeced1509a6c5f01b0f3bff252d97d17d9",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Kou-JunHao/Neko_mfuns_login",
+        "branch": "main",
+        "commit": "69d939349956d6b1da6b28b25a5e54a4bd39330d",
+        "originalPath": "mfuns_sign.py"
+      },
+      "cron": "9 9 * * *",
+      "command": "python3 scripts/mfuns_sign.py",
+      "environment": [
+        {
+          "name": "NEKO_MFUNS_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://www.mfuns.net 后，打开浏览器开发者工具 → Network，刷新页面或发起任意已登录请求，在 Request Headers 中复制 Authorization 字段的完整值（不是 Cookie 请求头整段）。不要公开或上传该值。",
+          "format": "每个非空行一个账号的 Authorization 原值；只按换行分隔账号，不使用 & 或 @；保留令牌内部分隔字符。"
+        },
+        {
+          "name": "NEKO_MFUNS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置；用于完全断网预演参数检查、凭证校验与签到流程。",
+          "format": "1、true、yes 或 on 开启；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置需要通知的脚本名单。",
+          "format": "逗号、分号、空白或换行分隔；支持目录编号 bacc70efebb57480、文件名 mfuns_sign.py / candidate.py、scripts 相对路径及文件名通配符；* 全选，显式空值全关；未设置且 QINGLONG_NOTIFY=auto 时默认不推送。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；指定青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "本机目录路径；优先尝试可导入的 notify.send，再检查此目录及 /ql/data/scripts、/ql/scripts；随后尝试 sendNotify.js。通知失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "NEKO_MFUNS_COOKIE 每个非空行表示一个账号的 Authorization 值；账号逐个独立处理，任一账号失败或配置错误时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到：调用喵御宅签到接口，code=1 视为成功，code=0 视为今日已签到",
+        "签到前通过浏览历史接口校验 Authorization 是否有效",
+        "失败时最多额外重试 1 次，保留上游重试行为",
+        "官方响应返回昵称、用户名、显示名称或公开 UID 时原样展示以便核对账号",
+        "支持按行多账号，独立统计并在任一失败时整体非零退出",
+        "完全断网预演、时间轴分阶段日志、账号与任务统计，以及单行 TASK_SUMMARY",
+        "按青龙通知名单与全局开关调用 notify.py 或 sendNotify.js；预演仅生成脱敏摘要"
+      ],
+      "sideEffects": [
+        "正式模式调用喵御宅每日签到接口，可能写入签到状态并发放签到奖励",
+        "正式模式在通知策略选中且工具可用时发送脱敏任务结果通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/bacc70efebb57480",
+        "candidateSha256": "bc91810eee834adf81b7ad8c58fdfd170d810bd6c9f0e90b83f5dbbbe2f29790"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "bc91810eee834adf81b7ad8c58fdfd170d810bd6c9f0e90b83f5dbbbe2f29790",
+        "releaseSha256": "1d60b752e4bac2b15fa4cd55a6d75feeced1509a6c5f01b0f3bff252d97d17d9",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T05:55:47.275831+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "bc91810eee834adf81b7ad8c58fdfd170d810bd6c9f0e90b83f5dbbbe2f29790",
+          "toCandidateSha256": "1d60b752e4bac2b15fa4cd55a6d75feeced1509a6c5f01b0f3bff252d97d17d9",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "68feda0fb9579305",
       "applicationKey": "meefan-daily",
       "checkProfile": {
@@ -29897,7 +30042,7 @@
       },
       "displayName": "森空岛每日任务",
       "path": "scripts/skland_daily.py",
-      "sha256": "1724fe8e2d6c457334b8174dabbfccee72d8b4be174f22e8276a5d54d43cb0bd",
+      "sha256": "410f49414307e7c58363d6fdd2d490211f98cd15a4976c3cedbf89badb285de5",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -30099,10 +30244,10 @@
       },
       "validation": {
         "status": "basic-passed",
-        "businessResult": "not-verified",
         "mode": "basic",
-        "evidence": "projects/checkin/validation/96b3c22e1eff9659",
-        "candidateSha256": "23bae97efad62a8e36e4ed2b0d82fe9a2d97450fdba6f089cd23c2d9561580b3"
+        "businessResult": "not-verified",
+        "candidateSha256": "410f49414307e7c58363d6fdd2d490211f98cd15a4976c3cedbf89badb285de5",
+        "evidence": "evidence/basic/96b3c22e1eff9659/410f49414307e7c58363d6fdd2d490211f98cd15a4976c3cedbf89badb285de5"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
@@ -40229,7 +40374,7 @@
     },
     {
       "catalogId": "3aae8a254cd15cdd",
-      "applicationKey": "lmtxq/rainyun-qinglong::main",
+      "applicationKey": "rainyun",
       "checkProfile": {
         "requiredEnv": [
           "RAINYUN_ACCOUNT"

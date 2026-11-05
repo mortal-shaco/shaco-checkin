@@ -902,7 +902,14 @@ class DailyTasks:
                 bindings = game.get("bindingList")
                 if not isinstance(bindings, list):
                     raise SklandError("明日方舟角色列表结构无效")
-                characters.extend(bindings)
+                parent_game_id = game.get("gameId")
+                for binding in bindings:
+                    if not isinstance(binding, dict):
+                        raise SklandError("绑定角色结构无效")
+                    item = dict(binding)
+                    if item.get("gameId") in (None, "") and parent_game_id not in (None, ""):
+                        item["gameId"] = parent_game_id
+                    characters.append(item)
         if not characters:
             report.attendance.append({"ok": False, "message": "未绑定明日方舟角色，未执行游戏签到"})
             return
@@ -911,12 +918,18 @@ class DailyTasks:
                 with stage("明日方舟角色 {} 签到".format(index)):
                     if not isinstance(character, dict) or not character.get("uid"):
                         raise SklandError("绑定角色缺少公开 UID")
+                    game_id = character.get("gameId")
+                    if game_id in (None, ""):
+                        raise SklandError("绑定角色缺少 gameId")
                     identity = character.get("nickName")
-                    stamp("官方角色：{}；公开 UID：{}".format(
-                        identity if identity is not None else "未返回昵称", character["uid"]))
+                    channel = character.get("channelName")
+                    stamp("官方角色：{}；渠道：{}；公开 UID：{}".format(
+                        identity if identity is not None else "未返回昵称",
+                        channel if channel not in (None, "") else "未返回渠道",
+                        character["uid"]))
                     result = self.client.post(
                         "/api/v1/game/attendance",
-                        json_body={"gameId": 1, "uid": character["uid"]},
+                        json_body={"gameId": game_id, "uid": character["uid"]},
                         action="明日方舟角色签到")
                     awards = result.get("awards")
                     if not isinstance(awards, list) or not awards:
@@ -930,12 +943,18 @@ class DailyTasks:
                         if not isinstance(name, str) or not name or not isinstance(count, (int, str)):
                             raise SklandError("签到奖励名称或数量无效")
                         rewards.append("{}×{}".format(name, count))
-                    stamp("✅ 明日方舟签到成功，奖励：" + "，".join(rewards))
-                    report.attendance.append({"ok": True, "message": "明日方舟签到成功"})
+                    channel_suffix = "（{}）".format(channel) if channel not in (None, "") else ""
+                    stamp("✅ 明日方舟签到成功{}，奖励：".format(channel_suffix) + "，".join(rewards))
+                    report.attendance.append({
+                        "ok": True,
+                        "message": "明日方舟签到成功{}".format(channel_suffix),
+                    })
             except Exception:
                 # 不显示服务端错误文案、请求值或异常详情；继续处理其余角色。
-                stamp("❌ 角色 {} 签到失败，未确认业务成功或奖励结构".format(index))
-                report.attendance.append({"ok": False, "message": "明日方舟签到未通过核验"})
+                channel = character.get("channelName") if isinstance(character, dict) else None
+                channel_suffix = "（{}）".format(channel) if channel not in (None, "") else ""
+                stamp("❌ 角色 {}{} 签到失败，未确认业务成功或奖励结构".format(index, channel_suffix))
+                report.attendance.append({"ok": False, "message": "明日方舟签到未通过核验{}".format(channel_suffix)})
 
     def _endfield(self, report: AccountReport) -> None:
         """终末地签到：保留上游空请求体、角色路由头和奖励映射契约。"""
