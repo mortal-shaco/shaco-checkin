@@ -253,6 +253,7 @@
 | 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
 | CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |
+| 蔚来APP每日签到 | `scripts/weilai_auto_checkin.js` | `node scripts/weilai_auto_checkin.js` | `8 9 * * *` | 待检查 | [weilai_auto_checkin.js.md](../scripts/weilai_auto_checkin.js.md)（`docs/scripts/weilai_auto_checkin.js.md`） |
 | 华润通文体未来荟签到 | `scripts/wentiweilaihui.py` | `python3 scripts/wentiweilaihui.py` | `31 1 1 1 1` | 待检查 | [wentiweilaihui.py.md](../scripts/wentiweilaihui.py.md)（`docs/scripts/wentiweilaihui.py.md`） |
 | 网际快车每日签到 | `scripts/wjkc.js` | `node scripts/wjkc.js` | `4 9 * * *` | 待检查 | [wjkc.js.md](../scripts/wjkc.js.md)（`docs/scripts/wjkc.js.md`） |
 | 万能福利吧每日签到 | `scripts/wnflb.js` | `node scripts/wnflb.js` | `0 45 11 * * *` | 待检查 | [wnflb.js.md](../scripts/wnflb.js.md)（`docs/scripts/wnflb.js.md`） |
