@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **263** 个脚本。返回 [`目录首页`](../README.md)。
+共 **264** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -23,6 +23,7 @@
 | AnyRouter 每日签到 | `scripts/anyrouter_signin.py` | `python3 scripts/anyrouter_signin.py` | `6 9 * * *` | 待检查 | [anyrouter_signin.py.md](../../scripts/anyrouter_signin.py.md)（`docs/scripts/anyrouter_signin.py.md`） |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `38 0 * * *` | 待检查 | [aolaxing.py.md](../../scripts/aolaxing.py.md)（`docs/scripts/aolaxing.py.md`） |
 | APICloud每日签到 | `scripts/apicloud.js` | `node scripts/apicloud.js` | `12 9 * * *` | 待检查 | [apicloud.js.md](../../scripts/apicloud.js.md)（`docs/scripts/apicloud.js.md`） |
+| apk.tw每日签到 | `scripts/apktw.py` | `python3 scripts/apktw.py` | `19 9 * * *` | 待检查 | [apktw.py.md](../../scripts/apktw.py.md)（`docs/scripts/apktw.py.md`） |
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
 | 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `21 10,23 * * *` | 待检查 | [atxyq.py.md](../../scripts/atxyq.py.md)（`docs/scripts/atxyq.py.md`） |

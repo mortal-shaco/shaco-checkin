@@ -4229,6 +4229,176 @@
       }
     },
     {
+      "catalogId": "22d5d26fa295b1ea",
+      "applicationKey": "ychsieh95/auto-check-in::apktw",
+      "checkProfile": {
+        "requiredEnv": [
+          "APKTW_ACCOUNT"
+        ],
+        "optionalEnv": [
+          "APKTW_COOKIE",
+          "APKTW_2CAPTCHA_KEY",
+          "APKTW_TIMEOUT",
+          "APKTW_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "APKTW_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "APKTW_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "最终状态：成功",
+          "签到成功",
+          "今日已签到",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "用户名密码登录 apk.tw（含图像验证码或 Turnstile，经 2captcha 识别）",
+          "Cookie 会话登录并校验 spacecp 登录态，展示公开昵称/用户名",
+          "每日 dsu_amupper 签到，核验今日已签并展示累计/连续天数",
+          "读取用户组与积分摘要（鑽石/碎鑽/經驗/金豆等，只读）",
+          "换行多账号、完全断网预演、超时与业务成功核验",
+          "时间轴日志、单行 TASK_SUMMARY 与青龙脱敏通知"
+        ],
+        "sideEffects": [
+          "正式执行时对未签到账号触发当日论坛签到（dsu_amupper），可能增加签到次数与积分",
+          "密码登录时可能向 2captcha 提交验证码识别任务（消耗第三方额度）",
+          "启用通知时通过青龙渠道发送脱敏任务汇总；断网预演不访问业务接口与通知服务"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "apk.tw每日签到",
+      "path": "scripts/apktw.py",
+      "sha256": "2a8faa005bde55d2e132512a2d3853118b753cd5bde91d813f5be896cdfade22",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "ychsieh95/auto-check-in",
+        "branch": "main",
+        "commit": "48f49aefc706f91f4b884cf95b21f90d5d5626b8",
+        "originalPath": "apktw/apktw.py"
+      },
+      "cron": "19 9 * * *",
+      "command": "python3 scripts/apktw.py",
+      "environment": [
+        {
+          "name": "APKTW_ACCOUNT",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://apk.tw 注册并登录本人账号。密码登录填写用户名与密码；若登录出现验证码/Turnstile，到 https://2captcha.com 获取 API Key。也可在浏览器开发者工具中复制本站请求头完整 Cookie（须含 auth 或 saltkey）。请勿把凭据写入公开仓库或日志。",
+          "format": "每个非空行一个账号。支持：用户名|密码；用户名|密码|2captcha密钥；备注|用户名|密码[|2captcha密钥]；或完整 Cookie / 备注|Cookie。账号之间只用换行分隔，不以 &、@ 分隔。"
+        },
+        {
+          "name": "APKTW_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名；仅当 APKTW_ACCOUNT 为空时读取。浏览器登录 apk.tw 后，从开发者工具 Network 复制本站请求 Cookie。",
+          "format": "与 APKTW_ACCOUNT 的 Cookie 行格式相同：每行一个 Cookie，可选 备注|Cookie。"
+        },
+        {
+          "name": "APKTW_2CAPTCHA_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "密码登录且站点要求验证码时需要。登录 2captcha.com 后在个人中心复制 API Key；账号行已带密钥时可不设。",
+          "format": "32 位十六进制 API Key；不要写入日志。"
+        },
+        {
+          "name": "APKTW_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义单次 HTTPS 请求超时秒数。",
+          "format": "5 到 60 的数字秒，默认 20。"
+        },
+        {
+          "name": "APKTW_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "首次配置或语法检查时启用完全断网预演；不代表真实签到成功。",
+          "format": "1/true/yes/on 启用；默认实际执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择需要推送的脚本；设置后替代默认通知清单。",
+          "format": "逗号、分号或空白分隔目录编号、脚本相对路径、文件名或通配符；支持 22d5d26fa295b1ea、apktw_checkin.py；* 选择全部，空值禁用全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：指定已安装青龙通知模块所在目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 apk.tw 账号，账号之间只用换行分隔。同一账号的用户名/密码/可选 2captcha 密钥或 Cookie 写在同一行；备注与凭据只在第一个合适分隔处拆分。各账号独立执行，任一账号失败时进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "用户名密码登录 apk.tw（含图像验证码或 Turnstile，经 2captcha 识别）",
+        "Cookie 会话登录并校验 spacecp 登录态，展示公开昵称/用户名",
+        "每日 dsu_amupper 签到，核验今日已签并展示累计/连续天数",
+        "读取用户组与积分摘要（鑽石/碎鑽/經驗/金豆等，只读）",
+        "换行多账号、完全断网预演、超时与业务成功核验",
+        "时间轴日志、单行 TASK_SUMMARY 与青龙脱敏通知"
+      ],
+      "sideEffects": [
+        "正式执行时对未签到账号触发当日论坛签到（dsu_amupper），可能增加签到次数与积分",
+        "密码登录时可能向 2captcha 提交验证码识别任务（消耗第三方额度）",
+        "启用通知时通过青龙渠道发送脱敏任务汇总；断网预演不访问业务接口与通知服务"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/22d5d26fa295b1ea",
+        "candidateSha256": "5b77f265e28741f038a7e7f3fce78f2847b730227d672074408b64e10e329f78"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "5b77f265e28741f038a7e7f3fce78f2847b730227d672074408b64e10e329f78",
+        "releaseSha256": "2a8faa005bde55d2e132512a2d3853118b753cd5bde91d813f5be896cdfade22",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T09:58:19.798967+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "5b77f265e28741f038a7e7f3fce78f2847b730227d672074408b64e10e329f78",
+          "toCandidateSha256": "2a8faa005bde55d2e132512a2d3853118b753cd5bde91d813f5be896cdfade22",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "3c8ee1df1aee7324",
       "applicationKey": "tyhh1323/zdqd::arctime",
       "checkProfile": {
