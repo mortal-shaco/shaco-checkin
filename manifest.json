@@ -50474,6 +50474,218 @@
       }
     },
     {
+      "catalogId": "874a3b5f0c910fff",
+      "applicationKey": "jasonl111/pt_attendance::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "PT_ATTENDANCE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "attendance_url",
+          "c_secure_uid",
+          "c_secure_pass",
+          "c_secure_ssl",
+          "c_secure_tracker_ssl",
+          "c_secure_login",
+          "domain",
+          "PT_ATTENDANCE_TIMEOUT",
+          "PT_ATTENDANCE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "PT_ATTENDANCE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "PT_ATTENDANCE_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功",
+          "已连续签到",
+          "今日已签到",
+          "失败 0",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "使用 NexusPHP 风格 Cookie 访问用户配置的签到页",
+          "识别「已连续签到」并提取连续天数",
+          "兼容常见「今日已签到」等已完成文案",
+          "公开用户名或 UID 展示以便核对账号",
+          "多账号逐行独立处理与失败汇总",
+          "完全断网预演、时间轴日志与单行 TASK_SUMMARY",
+          "青龙脱敏通知及全局通知开关"
+        ],
+        "sideEffects": [
+          "实际执行时向用户配置的签到页发起带 Cookie 的 GET，可能改变当日签到状态并获得站点奖励",
+          "启用青龙通知时会向已配置渠道发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "PT站点每日签到",
+      "path": "scripts/task_874a3b5f.py",
+      "sha256": "0aadf07e14406be9fc28dc3bd8a8684d1fea1ae91717ad5025e9cb5605fe3616",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "JasonL111/PT_attendance",
+        "branch": "main",
+        "commit": "4aeb5915a1de1a1ef9dc94444e8394336d69ea5d",
+        "originalPath": "main.py"
+      },
+      "cron": "35 9 * * *",
+      "command": "python3 scripts/task_874a3b5f.py",
+      "environment": [
+        {
+          "name": "PT_ATTENDANCE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录目标 NexusPHP 风格 PT 站点后，打开开发者工具网络面板，访问签到页（通常为 attendance.php），复制完整 Cookie（须含 c_secure_uid、c_secure_pass 等），并记下签到页完整 URL。在青龙环境变量中配置，切勿写入公开仓库或日志。",
+          "format": "每个非空行一个账号，格式为 attendance_url|Cookie完整值；仅按第一个 | 分割，Cookie 中后续 | 原样保留；支持空行与 # 开头注释；不要用 & 或 @ 分隔账号"
+        },
+        {
+          "name": "attendance_url",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游单账号别名；仅当 PT_ATTENDANCE_ACCOUNTS 为空时与 c_secure_uid、c_secure_pass 成对使用",
+          "format": "HTTPS 签到页完整地址，不得内嵌用户名或密码"
+        },
+        {
+          "name": "c_secure_uid",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号别名；仅当 PT_ATTENDANCE_ACCOUNTS 为空时使用，从浏览器 Cookie 复制同名字段",
+          "format": "NexusPHP Cookie 字段 c_secure_uid 的值"
+        },
+        {
+          "name": "c_secure_pass",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号别名；仅当 PT_ATTENDANCE_ACCOUNTS 为空时使用，从浏览器 Cookie 复制同名字段",
+          "format": "NexusPHP Cookie 字段 c_secure_pass 的值"
+        },
+        {
+          "name": "c_secure_ssl",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选上游别名；单账号兼容模式下若站点 Cookie 含该字段则一并填写",
+          "format": "NexusPHP Cookie 字段 c_secure_ssl 的值"
+        },
+        {
+          "name": "c_secure_tracker_ssl",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选上游别名；单账号兼容模式下若站点 Cookie 含该字段则一并填写",
+          "format": "NexusPHP Cookie 字段 c_secure_tracker_ssl 的值"
+        },
+        {
+          "name": "c_secure_login",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选上游别名；单账号兼容模式下若站点 Cookie 含该字段则一并填写",
+          "format": "NexusPHP Cookie 字段 c_secure_login 的值"
+        },
+        {
+          "name": "domain",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "上游遗留字段；维护版从签到 URL 推导主机名，通常无需填写",
+          "format": "站点主机名，不含协议与路径"
+        },
+        {
+          "name": "PT_ATTENDANCE_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义单次 HTTPS 请求超时秒数",
+          "format": "5 到 60 的数字秒，默认 20"
+        },
+        {
+          "name": "PT_ATTENDANCE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网预演、只校验配置时手动设置为 1",
+          "format": "1/true/yes/on 启用预演；默认实际执行"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要按脚本白名单启用通知时设置；空值表示全部禁用",
+          "format": "catalog-id、脚本路径、文件名或 glob，可用逗号/分号/空白/换行分隔；* 表示全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当青龙通知脚本不在默认路径时，设为 notify.py 或 sendNotify.js 所在目录",
+          "format": "本地目录绝对路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "PT_ATTENDANCE_ACCOUNTS 中每个非空行是一个独立账号，格式 attendance_url|Cookie；仅按第一个 | 分割；逐账号访问签到页，任一账号失败时进程整体非零退出"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 NexusPHP 风格 Cookie 访问用户配置的签到页",
+        "识别「已连续签到」并提取连续天数",
+        "兼容常见「今日已签到」等已完成文案",
+        "公开用户名或 UID 展示以便核对账号",
+        "多账号逐行独立处理与失败汇总",
+        "完全断网预演、时间轴日志与单行 TASK_SUMMARY",
+        "青龙脱敏通知及全局通知开关"
+      ],
+      "sideEffects": [
+        "实际执行时向用户配置的签到页发起带 Cookie 的 GET，可能改变当日签到状态并获得站点奖励",
+        "启用青龙通知时会向已配置渠道发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/874a3b5f0c910fff",
+        "candidateSha256": "1dcf176772d2f239af6751b8c766fde8eef2bd98904d17d67a81cbd6cc2f3e30"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "1dcf176772d2f239af6751b8c766fde8eef2bd98904d17d67a81cbd6cc2f3e30",
+        "releaseSha256": "0aadf07e14406be9fc28dc3bd8a8684d1fea1ae91717ad5025e9cb5605fe3616",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T11:07:33.397627+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "1dcf176772d2f239af6751b8c766fde8eef2bd98904d17d67a81cbd6cc2f3e30",
+          "toCandidateSha256": "0aadf07e14406be9fc28dc3bd8a8684d1fea1ae91717ad5025e9cb5605fe3616",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "8f8ad2c581f7a3a7",
       "applicationKey": "yuanyezhen/epidemic-1::main",
       "checkProfile": {
