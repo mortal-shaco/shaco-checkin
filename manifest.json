@@ -55337,6 +55337,184 @@
       }
     },
     {
+      "catalogId": "a941733da99ecdb7",
+      "applicationKey": "silence9527/ugreen_auto_reply::ugreen",
+      "checkProfile": {
+        "requiredEnv": [
+          "UGREEN_COOKIE"
+        ],
+        "optionalEnv": [
+          "UGREEN_DRY_RUN",
+          "UGREEN_REPLY_COUNT",
+          "UGREEN_ACTION_DELAY_SEC",
+          "UGREEN_TIMEOUT",
+          "UGREEN_LOCAL_TEXT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "UGREEN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "UGREEN_REPLY_COUNT": "3",
+          "UGREEN_ACTION_DELAY_SEC": "2",
+          "UGREEN_TIMEOUT": "30",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "全部账号成功",
+          "回复成功",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用 Cookie 登录绿联社区 club.ugnas.com",
+          "从功能讨论、玩法攻略、用户互助三个板块抓取帖子列表",
+          "提取 formhash 后对随机帖子提交回复",
+          "公开回复文案优先使用一言，失败或 dry-run 时回退本地语料",
+          "支持 UGREEN_COOKIE 每行一个账号的多账号独立处理，任一账号失败时整体非零退出",
+          "提供完全断网预演、时间轴脱敏日志、账号与任务统计及单行 TASK_SUMMARY",
+          "按青龙全局开关发送脱敏通知，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "向绿联社区随机帖子提交公开回复内容"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "绿联社区自动回复",
+      "path": "scripts/ugreen_auto_reply.py",
+      "sha256": "f083d3c155500a0646099f861ffb046ad593406050777ce2b93ccf0eba7a5f2f",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "silence9527/ugreen_auto_reply",
+        "branch": "main",
+        "commit": "b5b3e986f9d11b60c194a8d4ad85b350f75d1b6d",
+        "originalPath": "ugreen_auto_reply.py"
+      },
+      "cron": "2 10 * * *",
+      "command": "python3 scripts/ugreen_auto_reply.py",
+      "environment": [
+        {
+          "name": "UGREEN_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "打开 https://club.ugnas.com/ 并登录绿联社区，按 F12 打开开发者工具，在请求头中复制 Cookie，填入青龙环境变量。多个账号时每行一个 Cookie。",
+          "format": "每行一个完整浏览器 Cookie 字符串；账号之间只用换行分隔，不要用 &、@ 或其他符号分隔账号。"
+        },
+        {
+          "name": "UGREEN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要在完全断网条件下检查配置与流程时设置。",
+          "format": "设为 1、true、yes 或 on 启用预演。"
+        },
+        {
+          "name": "UGREEN_REPLY_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "控制每个账号本轮回复的帖子数量。不填写时默认 3，避免上游默认连发 20 帖的高副作用。",
+          "format": "1 至 20 的整数。"
+        },
+        {
+          "name": "UGREEN_ACTION_DELAY_SEC",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "两次回复之间的等待秒数。不填写时默认 2 秒；已移除上游 30–600 秒随机长等待。",
+          "format": "0 至 60 之间的秒数。"
+        },
+        {
+          "name": "UGREEN_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况设置单次 HTTPS 超时；不填写时为 30 秒。",
+          "format": "5 至 120 之间的秒数。"
+        },
+        {
+          "name": "UGREEN_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。覆盖一言失败或 dry-run 时使用的本地回退文案；不填写则从内置语料随机选取。",
+          "format": "不超过 280 字的纯文本。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 QINGLONG_NOTIFY=auto 时填写要通知的脚本选择器。",
+          "format": "可用逗号、分号、空白或换行分隔；支持 a941733da99ecdb7、candidate.py、ugreen_auto_reply.py、通配符或 *。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙 notify.py 不在默认位置时，填写其所在目录。",
+          "format": "包含 notify.py 的本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个账号的 Cookie 单独占一行；逐账号独立执行自动回复，任一账号失败时进程整体返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 Cookie 登录绿联社区 club.ugnas.com",
+        "从功能讨论、玩法攻略、用户互助三个板块抓取帖子列表",
+        "提取 formhash 后对随机帖子提交回复",
+        "公开回复文案优先使用一言，失败或 dry-run 时回退本地语料",
+        "支持 UGREEN_COOKIE 每行一个账号的多账号独立处理，任一账号失败时整体非零退出",
+        "提供完全断网预演、时间轴脱敏日志、账号与任务统计及单行 TASK_SUMMARY",
+        "按青龙全局开关发送脱敏通知，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "向绿联社区随机帖子提交公开回复内容"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a941733da99ecdb7",
+        "candidateSha256": "d21be7aaf5b2ceeb960933a0f9aa45809f8334f6c28dd7f5af11ff164e01a426"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "d21be7aaf5b2ceeb960933a0f9aa45809f8334f6c28dd7f5af11ff164e01a426",
+        "releaseSha256": "f083d3c155500a0646099f861ffb046ad593406050777ce2b93ccf0eba7a5f2f",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T10:46:30.271963+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "d21be7aaf5b2ceeb960933a0f9aa45809f8334f6c28dd7f5af11ff164e01a426",
+          "toCandidateSha256": "f083d3c155500a0646099f861ffb046ad593406050777ce2b93ccf0eba7a5f2f",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "1153449ac9321744",
       "applicationKey": "cn-grace/qinglongscripts::valorantstore",
       "checkProfile": {
