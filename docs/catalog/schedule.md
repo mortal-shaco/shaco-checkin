@@ -269,7 +269,6 @@
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `27 2 * * *` | 待检查 | [yht.py.md](../scripts/yht.py.md)（`docs/scripts/yht.py.md`） |
 | 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `55 0 * * *` | 待检查 | [youdao.py.md](../scripts/youdao.py.md)（`docs/scripts/youdao.py.md`） |
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `28 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
-| 时光相册每日签到 | `scripts/yuxian158_check_everphoto.py` | `python3 scripts/yuxian158_check_everphoto.py` | `28 1 * * *` | 待检查 | [yuxian158_check_everphoto.py.md](../scripts/yuxian158_check_everphoto.py.md)（`docs/scripts/yuxian158_check_everphoto.py.md`） |
 | 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `39 2 * * *` | 待检查 | [yyshuijuantime.py.md](../scripts/yyshuijuantime.py.md)（`docs/scripts/yyshuijuantime.py.md`） |
 | ZCode 国内版领套餐 | `scripts/zcode_cn_daily.py` | `python3 scripts/zcode_cn_daily.py` | `1 9 * * *` | 待检查 | [zcode_cn_daily.py.md](../scripts/zcode_cn_daily.py.md)（`docs/scripts/zcode_cn_daily.py.md`） |
 | 极核ZEEHO每日签到 | `scripts/zeeho_signin.py` | `python3 scripts/zeeho_signin.py` | `32 8 * * *` | 待检查 | [zeeho_signin.py.md](../scripts/zeeho_signin.py.md)（`docs/scripts/zeeho_signin.py.md`） |
