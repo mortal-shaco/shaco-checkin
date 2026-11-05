@@ -16,19 +16,24 @@ Update: 2023/7/27
 同产品参考：jiang7f/checkin-glados，checkin.py，MIT；原来源未附额外版权声明。
 可选积分兑换参考：snowfry/Gladoscheckin-GPT-Kimi，glados_checkin.py，GPL-3.0；
 上游默认 plan500 自动兑换已改为显式 opt-in（默认 none），避免意外消费积分。
+设备平台自适应参考：ilemon666/GLaDOS-Railgun-CheckIn-Script，GLaDOS_Railgun_Checkin.js，MIT；
+以及同产品相关源在 device-mismatch 时按 loginDevice 切换 User-Agent 的处理。
 合并后本维护文件适用 GPL-3.0，并保留上方原作者署名与各来源声明。
 
-参数获取：在对应 GLaDOS 网站登录，在开发者工具「网络」中查看自己
+参数获取：在对应 GLaDOS / Railgun 网站登录，在开发者工具「网络」中查看自己
 /api/user/status 或 /api/user/checkin 请求的 Cookie 请求头，完整复制到
 GR_COOKIE；每个非空行一个账号，不用 & 或 @ 分隔，也无需账号库或浏览器程序。
 兼容 GLADOS_COOKIE、GLADOS_COOKIES；或成对的 GLADOS_GLD_SESS/GLADOS_GLD_SESS_SIG、
 GLADOS_KOA_SESS/GLADOS_KOA_SESS_SIG（同一账号值来自同一个 Cookie）。
 默认保留 glados.rocks、token=glados.one、每日 00:58、15 秒超时及基础阶段。
-GLADOS_SITE=cloud 显式改用参考来源的 glados.cloud、token=glados.cloud；
-不会自动跨域切换或传递 Cookie。GLADOS_POINTS=1 增加积分和连续天数查询，
-cloud 模式默认开启，rocks 模式默认关闭；GLADOS_POINTS=0 可关闭新增查询。
+GLADOS_SITE=cloud 显式改用 glados.cloud、token=glados.cloud；
+GLADOS_SITE=railgun 显式改用 railgun.info、token=railgun.info；
+不会自动跨域切换、探测多域名或传递 Cookie。GLADOS_POINTS=1 增加积分和连续天数查询，
+cloud/railgun 模式默认开启，rocks 模式默认关闭；GLADOS_POINTS=0 可关闭新增查询。
 GLADOS_EXCHANGE_PLAN=plan100|plan200|plan500 启用可选积分兑换；默认 none 不兑换。
-启用兑换时会查询积分，积分不足则跳过兑换而不计失败。
+启用兑换时会查询积分，积分不足则跳过兑换而不计失败。上游默认自动兑换不会恢复。
+未显式设置 GLADOS_USER_AGENT 时，若签到返回 device-mismatch，会按 loginDevice
+切换平台 UA 重试一次；已手动指定 UA 时不擅自改写。
 GLADOS_RETRIES=0..5 为可选签到重试次数，默认 0，不重试登录失效或拒绝访问。
 GLADOS_USER_AGENT 可覆盖浏览器标识；CHECKIN_PROXY_URL 可配置 HTTP(S) 代理。
 GLADOS_DRY_RUN=1 完全断网，仅检查配置并生成摘要，不执行通知或签到。
@@ -90,10 +95,38 @@ CHECKIN_URL = "https://glados.rocks/api/user/checkin"
 STATUS_URL = "https://glados.rocks/api/user/status"
 REFERER = "https://glados.rocks/console/checkin"
 ORIGIN = "https://glados.rocks"
+SITE_KEY = "rocks"
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 )
+USER_AGENT_OVERRIDE = False
+PLATFORM_UA = {
+    "Windows": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "macOS": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "Linux": (
+        "Mozilla/5.0 (X11; Linux x86_64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "iPhone": (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+    ),
+    "iOS": (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+    ),
+    "Android": (
+        "Mozilla/5.0 (Linux; Android 14; Pixel 8) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+    ),
+}
 MAX_RESPONSE_BYTES = 1024 * 1024
 TRUE_VALUES = {"1", "true", "yes", "on"}
 FALSE_VALUES = {"0", "false", "no", "off"}
@@ -127,19 +160,28 @@ def parse_timeout() -> float:
 
 
 def configure() -> None:
-    global CHECKIN_URL, STATUS_URL, POINTS_URL, EXCHANGE_URL, REFERER, ORIGIN
-    global CHECKIN_TOKEN, USER_AGENT, POINTS_ENABLED, EXCHANGE_PLAN, RETRIES, PROXY_URL
+    global CHECKIN_URL, STATUS_URL, POINTS_URL, EXCHANGE_URL, REFERER, ORIGIN, SITE_KEY
+    global CHECKIN_TOKEN, USER_AGENT, USER_AGENT_OVERRIDE, POINTS_ENABLED, EXCHANGE_PLAN, RETRIES, PROXY_URL
     site = os.getenv("GLADOS_SITE", "rocks").strip().lower()
-    if site not in ("rocks", "cloud"):
-        raise ValueError("GLADOS_SITE 只能是 rocks 或 cloud")
-    ORIGIN = "https://glados." + site
+    if site not in ("rocks", "cloud", "railgun"):
+        raise ValueError("GLADOS_SITE 只能是 rocks、cloud 或 railgun")
+    SITE_KEY = site
+    if site == "railgun":
+        ORIGIN = "https://railgun.info"
+        CHECKIN_TOKEN = "railgun.info"
+    elif site == "cloud":
+        ORIGIN = "https://glados.cloud"
+        CHECKIN_TOKEN = "glados.cloud"
+    else:
+        ORIGIN = "https://glados.rocks"
+        CHECKIN_TOKEN = "glados.one"
     CHECKIN_URL = ORIGIN + "/api/user/checkin"
     STATUS_URL = ORIGIN + "/api/user/status"
     POINTS_URL = ORIGIN + "/api/user/points"
     EXCHANGE_URL = ORIGIN + "/api/user/exchange"
     REFERER = ORIGIN + "/console/checkin"
-    CHECKIN_TOKEN = "glados.cloud" if site == "cloud" else "glados.one"
-    points = os.getenv("GLADOS_POINTS", "1" if site == "cloud" else "0").strip().lower()
+    points_default = "1" if site in ("cloud", "railgun") else "0"
+    points = os.getenv("GLADOS_POINTS", points_default).strip().lower()
     if points not in TRUE_VALUES | FALSE_VALUES:
         raise ValueError("GLADOS_POINTS 必须是开关值 1 或 0")
     POINTS_ENABLED = points in TRUE_VALUES
@@ -159,7 +201,13 @@ def configure() -> None:
         raise ValueError("GLADOS_RETRIES 必须是 0 到 5 的整数") from None
     if not 0 <= RETRIES <= 5:
         raise ValueError("GLADOS_RETRIES 必须是 0 到 5 的整数")
-    USER_AGENT = os.getenv("GLADOS_USER_AGENT", "").strip() or USER_AGENT
+    override = os.getenv("GLADOS_USER_AGENT", "").strip()
+    if override:
+        USER_AGENT = override
+        USER_AGENT_OVERRIDE = True
+    else:
+        USER_AGENT_OVERRIDE = False
+        USER_AGENT = PLATFORM_UA["Windows"]
     if any(ord(c) < 32 or ord(c) == 127 for c in USER_AGENT):
         raise ValueError("GLADOS_USER_AGENT 不能包含控制字符")
     PROXY_URL = os.getenv("CHECKIN_PROXY_URL", "").strip()
@@ -237,11 +285,12 @@ def request_json(
     cookie: str,
     timeout: float,
     payload: Optional[Dict[str, Any]] = None,
+    user_agent: Optional[str] = None,
 ) -> Dict[str, Any]:
     headers = {
         "Referer": REFERER,
         "Origin": ORIGIN,
-        "User-Agent": USER_AGENT,
+        "User-Agent": user_agent or USER_AGENT,
         "Accept": "application/json",
     }
     if cookie:
@@ -281,6 +330,17 @@ def request_json(
     return result
 
 
+def is_device_mismatch(response: Dict[str, Any]) -> bool:
+    code = response.get("code")
+    message = str(response.get("message") or response.get("msg") or response.get("error") or "")
+    reason = str(response.get("reason") or "")
+    return (
+        (type(code) in (int, str) and code in (4, "4"))
+        or reason == "device-mismatch"
+        or "automated check-in detected" in message.casefold()
+    )
+
+
 def classify_checkin(response: Dict[str, Any]) -> Tuple[str, str]:
     code = response.get("code")
     # 仅使用原文判定业务，不将服务器消息或错误原文写入日志。
@@ -289,7 +349,8 @@ def classify_checkin(response: Dict[str, Any]) -> Tuple[str, str]:
     success_markers = ("checkin! got", "check-in! got", "签到成功")
     already_markers = (
         "checkin repeats", "check-in repeats", "already check", "already signed",
-        "try tomorrow", "repeats", "已签到", "重复签到", "明天再来", "today's observation logged",
+        "try tomorrow", "repeats", "已签到", "重复签到", "已经签到", "今日已签",
+        "明天再来", "明天再试", "observation logged", "today's observation logged",
     )
     if type(code) in (int, str) and code in (0, "0"):
         return "success", "签到成功"
@@ -303,8 +364,9 @@ def classify_checkin(response: Dict[str, Any]) -> Tuple[str, str]:
         raise RuntimeError("登录已过期，请在相应网站重新获取 Cookie")
     if code in (403, "403"):
         raise RuntimeError("访问被拒绝，请检查登录状态与网络")
-    if code in (4, "4") and response.get("reason") == "device-mismatch":
-        raise RuntimeError("登录设备不匹配，请在原浏览器重新获取 Cookie")
+    if is_device_mismatch(response):
+        device = str(response.get("loginDevice") or "未知")
+        raise RuntimeError("登录设备不匹配（loginDevice={}），请使用原登录设备的 User-Agent 或重新获取 Cookie".format(device))
     raise RuntimeError("签到业务失败，未取得成功或今日已完成凭证")
 
 
@@ -358,9 +420,30 @@ def parse_points(response: Dict[str, Any]) -> Dict[str, int]:
 
 
 def perform_checkin(cookie: str, timeout: float) -> Tuple[str, str, Dict[str, Any]]:
+    current_ua = USER_AGENT
+    device_retried = False
     for attempt in range(RETRIES + 1):
         try:
-            response = request_json("POST", CHECKIN_URL, cookie, timeout, {"token": CHECKIN_TOKEN})
+            response = request_json(
+                "POST", CHECKIN_URL, cookie, timeout, {"token": CHECKIN_TOKEN}, user_agent=current_ua
+            )
+            if is_device_mismatch(response) and not device_retried:
+                device = str(response.get("loginDevice") or "")
+                if USER_AGENT_OVERRIDE:
+                    raise RuntimeError(
+                        "登录设备不匹配（loginDevice={}）；已使用配置的 GLADOS_USER_AGENT，请改为提取 Cookie 时浏览器的 User-Agent".format(
+                            device or "未知"
+                        )
+                    )
+                recover_ua = PLATFORM_UA.get(device)
+                if recover_ua and recover_ua != current_ua:
+                    log("设备平台不匹配（loginDevice={}），切换 UA 重试一次".format(device or "未知"))
+                    device_retried = True
+                    current_ua = recover_ua
+                    response = request_json(
+                        "POST", CHECKIN_URL, cookie, timeout, {"token": CHECKIN_TOKEN}, user_agent=current_ua
+                    )
+                # 若仍不匹配，交由 classify_checkin 抛出明确错误。
             outcome, message = classify_checkin(response)
             return outcome, message, response
         except Exception as exc:
@@ -639,7 +722,7 @@ def main() -> int:
 
     log("账号数量：{}".format(len(accounts)))
     log("站点：{}；积分查询：{}；兑换计划：{}；超时：{}秒；重试：{}".format(
-        ORIGIN.replace("https://glados.", ""),
+        SITE_KEY,
         "开" if POINTS_ENABLED else "关",
         EXCHANGE_PLAN,
         int(timeout) if timeout == int(timeout) else timeout,

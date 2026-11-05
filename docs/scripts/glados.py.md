@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/glados.py`
 - 青龙命令：`python3 scripts/glados.py`
 - 建议 Cron：`58 0 * * *`
-- 发布哈希：`2519ab94e211e393563492da6e63ee3f5ededfc5ebe87d95338ab7eea38fdf5a`
+- 发布哈希：`7d07316e763ce6285283d9045836c8feeead32be4bce67f4da338bb7367f97c6`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -13,7 +13,8 @@
 - 官方账号身份原样展示与剩余天数查询
 - 可选积分余额与连续签到天数查询，兼容历史余额与签到响应补充统计
 - 可选积分兑换 plan100/plan200/plan500，默认关闭避免自动消费
-- 显式选择 rocks 或 cloud 同产品接口，保留默认配置且不自动跨域
+- 显式选择 rocks、cloud 或 railgun 同产品接口，保留默认配置且不自动跨域
+- 设备平台不匹配时按 loginDevice 切换 User-Agent 重试一次（已手动指定 UA 时不改写）
 - 换行多账号与旧 Cookie、会话签名配对变量及 GLADOS_COOKIES 兼容
 - 请求超时、可选重试、代理及浏览器标识配置
 - 完整断网预演、分阶段脱敏日志、账号与任务统计及单行结构化汇总
@@ -29,7 +30,7 @@
 
 - 必填：是
 - 敏感：是
-- 获取或设置：登录对应 GLaDOS 网站后，在浏览器开发者工具网络面板打开 /api/user/status 或 /api/user/checkin 请求，复制请求头中的完整 Cookie；不要复制响应头 Set-Cookie，也不要把该值发给他人或写入公开仓库。
+- 获取或设置：登录对应 GLaDOS 或 Railgun 网站后，在浏览器开发者工具网络面板打开 /api/user/status 或 /api/user/checkin 请求，复制请求头中的完整 Cookie；不要复制响应头 Set-Cookie，也不要把该值发给他人或写入公开仓库。
 - 填写格式：每个非空行一个完整 Cookie；同一账号 Cookie 内的会话、签名及其他字段原样保留在同一行；不使用 &、@ 分隔账号。
 
 ### 可选参数
@@ -80,21 +81,21 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：按账号实际登录站点自行选择；默认 rocks，不自动跨域。
-- 填写格式：rocks 或 cloud；cloud 使用 glados.cloud 与 token=glados.cloud。
+- 获取或设置：按账号实际登录站点自行选择；默认 rocks，不自动跨域、不探测多域名。
+- 填写格式：rocks、cloud 或 railgun；cloud 使用 glados.cloud 与 token=glados.cloud；railgun 使用 railgun.info 与 token=railgun.info。
 
 ### `GLADOS_POINTS`
 
 - 必填：否
 - 敏感：否
-- 获取或设置：需要查询积分与连续签到天数时自行开启；cloud 默认开启，rocks 默认关闭。
+- 获取或设置：需要查询积分与连续签到天数时自行开启；cloud/railgun 默认开启，rocks 默认关闭。
 - 填写格式：1/true/yes/on 开启；0/false/no/off 关闭。启用兑换时会自动查询积分。
 
 ### `GLADOS_EXCHANGE_PLAN`
 
 - 必填：否
 - 敏感：否
-- 获取或设置：仅在确认需要自动用积分兑换套餐时自行设置；默认不兑换，避免意外消费积分。
+- 获取或设置：仅在确认需要自动用积分兑换套餐时自行设置；默认不兑换，避免意外消费积分。上游默认自动兑换不会恢复。
 - 填写格式：none（默认，不兑换）、plan100、plan200 或 plan500。
 
 ### `GLADOS_TIMEOUT`
@@ -108,14 +109,14 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：网络抖动时可自行增加签到重试次数；登录失效或拒绝访问不会重试。
+- 获取或设置：网络抖动时可自行增加签到重试次数；登录失效、拒绝访问或设备不匹配不会按该次数重试。
 - 填写格式：0 到 5 的整数，默认 0。
 
 ### `GLADOS_USER_AGENT`
 
 - 必填：否
 - 敏感：否
-- 获取或设置：需要覆盖默认浏览器标识时自行设置。
+- 获取或设置：需要固定浏览器标识时自行设置；未设置时若遇 device-mismatch 会按 loginDevice 自动切换平台 UA 重试一次。
 - 填写格式：普通 User-Agent 字符串，不能包含控制字符。
 
 ### `CHECKIN_PROXY_URL`
@@ -177,7 +178,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2519ab94e211e393563492da6e63ee3f5ededfc5ebe87d95338ab7eea38fdf5a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2d633fe3129937b6`。
+SHA-256 `7d07316e763ce6285283d9045836c8feeead32be4bce67f4da338bb7367f97c6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2d633fe3129937b6`。
 
 ## 副作用与风险
 

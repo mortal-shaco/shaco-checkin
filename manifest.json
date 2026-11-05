@@ -20822,11 +20822,12 @@
         "liveEnv": {
           "GLADOS_SITE": "rocks",
           "GLADOS_TIMEOUT": "15",
-          "GLADOS_RETRIES": "0",
           "GLADOS_EXCHANGE_PLAN": "none",
           "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
+          "签到成功",
+          "今日已签到",
           "最终状态：SUCCESS",
           "TASK_SUMMARY={\"status\":\"success\""
         ],
@@ -20835,7 +20836,8 @@
           "官方账号身份原样展示与剩余天数查询",
           "可选积分余额与连续签到天数查询，兼容历史余额与签到响应补充统计",
           "可选积分兑换 plan100/plan200/plan500，默认关闭避免自动消费",
-          "显式选择 rocks 或 cloud 同产品接口，保留默认配置且不自动跨域",
+          "显式选择 rocks、cloud 或 railgun 同产品接口，保留默认配置且不自动跨域",
+          "设备平台不匹配时按 loginDevice 切换 User-Agent 重试一次（已手动指定 UA 时不改写）",
           "换行多账号与旧 Cookie、会话签名配对变量及 GLADOS_COOKIES 兼容",
           "请求超时、可选重试、代理及浏览器标识配置",
           "完整断网预演、分阶段脱敏日志、账号与任务统计及单行结构化汇总",
@@ -20853,7 +20855,7 @@
       },
       "displayName": "GLaDOS每日签到",
       "path": "scripts/glados.py",
-      "sha256": "2519ab94e211e393563492da6e63ee3f5ededfc5ebe87d95338ab7eea38fdf5a",
+      "sha256": "7d07316e763ce6285283d9045836c8feeead32be4bce67f4da338bb7367f97c6",
       "stage": "released",
       "license": "GPL-3.0",
       "licenseGate": "allowed-copyleft",
@@ -20922,6 +20924,16 @@
             "catalogId": "18e948b2415d6560",
             "sha256": "f7ddffd2784f4f7af66cf5efcba5eaf001e0e9f48a4fd24d9e02197652bb8d2d",
             "license": "GPL-3.0"
+          },
+          {
+            "repository": "ilemon666/GLaDOS-Railgun-CheckIn-Script",
+            "url": "https://github.com/ilemon666/GLaDOS-Railgun-CheckIn-Script",
+            "branch": "main",
+            "commit": "a4fb62a04a0a29cee432176831863fcb69f1afd0",
+            "originalPath": "GLaDOS_Railgun_Checkin.js",
+            "catalogId": "0528e217a02a7079",
+            "sha256": "0e59b1ee735d296e72251d19f2257482b50f6dbe3fadfbfb78c3027c6e9f5849",
+            "license": "MIT"
           }
         ]
       },
@@ -20932,7 +20944,7 @@
           "name": "GR_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录对应 GLaDOS 网站后，在浏览器开发者工具网络面板打开 /api/user/status 或 /api/user/checkin 请求，复制请求头中的完整 Cookie；不要复制响应头 Set-Cookie，也不要把该值发给他人或写入公开仓库。",
+          "howToGet": "登录对应 GLaDOS 或 Railgun 网站后，在浏览器开发者工具网络面板打开 /api/user/status 或 /api/user/checkin 请求，复制请求头中的完整 Cookie；不要复制响应头 Set-Cookie，也不要把该值发给他人或写入公开仓库。",
           "format": "每个非空行一个完整 Cookie；同一账号 Cookie 内的会话、签名及其他字段原样保留在同一行；不使用 &、@ 分隔账号。"
         },
         {
@@ -20981,21 +20993,21 @@
           "name": "GLADOS_SITE",
           "required": false,
           "sensitive": false,
-          "howToGet": "按账号实际登录站点自行选择；默认 rocks，不自动跨域。",
-          "format": "rocks 或 cloud；cloud 使用 glados.cloud 与 token=glados.cloud。"
+          "howToGet": "按账号实际登录站点自行选择；默认 rocks，不自动跨域、不探测多域名。",
+          "format": "rocks、cloud 或 railgun；cloud 使用 glados.cloud 与 token=glados.cloud；railgun 使用 railgun.info 与 token=railgun.info。"
         },
         {
           "name": "GLADOS_POINTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要查询积分与连续签到天数时自行开启；cloud 默认开启，rocks 默认关闭。",
+          "howToGet": "需要查询积分与连续签到天数时自行开启；cloud/railgun 默认开启，rocks 默认关闭。",
           "format": "1/true/yes/on 开启；0/false/no/off 关闭。启用兑换时会自动查询积分。"
         },
         {
           "name": "GLADOS_EXCHANGE_PLAN",
           "required": false,
           "sensitive": false,
-          "howToGet": "仅在确认需要自动用积分兑换套餐时自行设置；默认不兑换，避免意外消费积分。",
+          "howToGet": "仅在确认需要自动用积分兑换套餐时自行设置；默认不兑换，避免意外消费积分。上游默认自动兑换不会恢复。",
           "format": "none（默认，不兑换）、plan100、plan200 或 plan500。"
         },
         {
@@ -21009,14 +21021,14 @@
           "name": "GLADOS_RETRIES",
           "required": false,
           "sensitive": false,
-          "howToGet": "网络抖动时可自行增加签到重试次数；登录失效或拒绝访问不会重试。",
+          "howToGet": "网络抖动时可自行增加签到重试次数；登录失效、拒绝访问或设备不匹配不会按该次数重试。",
           "format": "0 到 5 的整数，默认 0。"
         },
         {
           "name": "GLADOS_USER_AGENT",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要覆盖默认浏览器标识时自行设置。",
+          "howToGet": "需要固定浏览器标识时自行设置；未设置时若遇 device-mismatch 会按 loginDevice 自动切换平台 UA 重试一次。",
           "format": "普通 User-Agent 字符串，不能包含控制字符。"
         },
         {
@@ -21080,7 +21092,8 @@
         "官方账号身份原样展示与剩余天数查询",
         "可选积分余额与连续签到天数查询，兼容历史余额与签到响应补充统计",
         "可选积分兑换 plan100/plan200/plan500，默认关闭避免自动消费",
-        "显式选择 rocks 或 cloud 同产品接口，保留默认配置且不自动跨域",
+        "显式选择 rocks、cloud 或 railgun 同产品接口，保留默认配置且不自动跨域",
+        "设备平台不匹配时按 loginDevice 切换 User-Agent 重试一次（已手动指定 UA 时不改写）",
         "换行多账号与旧 Cookie、会话签名配对变量及 GLADOS_COOKIES 兼容",
         "请求超时、可选重试、代理及浏览器标识配置",
         "完整断网预演、分阶段脱敏日志、账号与任务统计及单行结构化汇总",
@@ -21102,20 +21115,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/2d633fe3129937b6",
-        "candidateSha256": "743122ddd48a568648d46d5c6db9c6b7a62292e32b81ee5249c19d988a39bf14"
+        "candidateSha256": "7f41de13b6e9fc6f439e4319c2107bd27019f785df64d55f1b23d8a1d0307fc2"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "743122ddd48a568648d46d5c6db9c6b7a62292e32b81ee5249c19d988a39bf14",
-        "releaseSha256": "2519ab94e211e393563492da6e63ee3f5ededfc5ebe87d95338ab7eea38fdf5a",
+        "validatedSha256": "7f41de13b6e9fc6f439e4319c2107bd27019f785df64d55f1b23d8a1d0307fc2",
+        "releaseSha256": "7d07316e763ce6285283d9045836c8feeead32be4bce67f4da338bb7367f97c6",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-05T01:48:58.896465+00:00",
+          "approvedAt": "2026-11-05T10:50:57.534732+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "743122ddd48a568648d46d5c6db9c6b7a62292e32b81ee5249c19d988a39bf14",
-          "toCandidateSha256": "2519ab94e211e393563492da6e63ee3f5ededfc5ebe87d95338ab7eea38fdf5a",
+          "fromCandidateSha256": "7f41de13b6e9fc6f439e4319c2107bd27019f785df64d55f1b23d8a1d0307fc2",
+          "toCandidateSha256": "7d07316e763ce6285283d9045836c8feeead32be4bce67f4da338bb7367f97c6",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
