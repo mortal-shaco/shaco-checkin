@@ -174,6 +174,7 @@
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `41 0 * * *` | 待检查 | [nodeseek_checkin.py.md](../scripts/nodeseek_checkin.py.md)（`docs/scripts/nodeseek_checkin.py.md`） |
 | NSSCTF 签到 | `scripts/nssctf_checkin.py` | `python3 scripts/nssctf_checkin.py` | `8 8 * * *` | 待检查 | [nssctf_checkin.py.md](../scripts/nssctf_checkin.py.md)（`docs/scripts/nssctf_checkin.py.md`） |
 | 塔吉多（异环）自动签到 | `scripts/nte.py` | `python3 scripts/nte.py` | `0 1 * * *` | 待检查 | [nte.py.md](../scripts/nte.py.md)（`docs/scripts/nte.py.md`） |
+| ODDBA社区签到与任务领取 | `scripts/oddba_looter.py` | `python3 scripts/oddba_looter.py` | `21 0,12 * * *` | 待检查 | [oddba_looter.py.md](../scripts/oddba_looter.py.md)（`docs/scripts/oddba_looter.py.md`） |
 | OfficeAce 果办每日奖励 | `scripts/officeace_daily.py` | `python3 scripts/officeace_daily.py` | `57 0 * * *` | 待检查 | [officeace_daily.py.md](../scripts/officeace_daily.py.md)（`docs/scripts/officeace_daily.py.md`） |
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `6 1 1 1 1` | 待检查 | [ole.py.md](../scripts/ole.py.md)（`docs/scripts/ole.py.md`） |
 | Oopz每日签到与星辉任务 | `scripts/oopz_sign.py` | `python3 scripts/oopz_sign.py` | `25 9 * * *` | 待检查 | [oopz_sign.py.md](../scripts/oopz_sign.py.md)（`docs/scripts/oopz_sign.py.md`） |

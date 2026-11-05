@@ -31476,6 +31476,220 @@
       }
     },
     {
+      "catalogId": "d4d9e489b3cac0c4",
+      "applicationKey": "andywang425/oddba-looter::oddba-looter",
+      "checkProfile": {
+        "requiredEnv": [
+          "ODDBA_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ODDBA_USERNAME",
+          "ODDBA_PASSWORD",
+          "ODDBA_DRY_RUN",
+          "ODDBA_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ODDBA_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ODDBA_TIMEOUT": "30",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "登录 sns.oddba.cn 并校验页头登录态",
+          "执行每日签到；今日已签到视为已完成成功",
+          "领取已解锁的累签宝箱奖励",
+          "领取每日任务中可领取且未领取的奖励",
+          "支持每行一个「用户名|密码」的多账号独立处理，任一账号失败时整体非零退出",
+          "提供完全断网预演、时间轴脱敏日志、账号与任务统计及单行 TASK_SUMMARY",
+          "按青龙全局开关发送脱敏通知，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "向 sns.oddba.cn 提交每日签到",
+          "领取累签宝箱奖励，可能发放金币、经验或道具等到账号",
+          "领取每日任务奖励，可能发放经验、成长值等到账号"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "ODDBA社区签到与任务领取",
+      "path": "scripts/oddba_looter.py",
+      "sha256": "ce50f2629686acc57f9b8877a60ce798e7f6e28afd8b86b07e8679dbec97053e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "andywang425/oddba-looter",
+        "branch": "master",
+        "commit": "f40b923ca7ae06113df70e4c1dcdaa75aee56c65",
+        "originalPath": "src/oddba_looter/client.py",
+        "related": [
+          {
+            "catalogId": "3309e7dfecc2c421",
+            "sha256": "a0ab02a688904925f1e7b0c6b3655f63378ed6e9094317469d5fb6842dc12343",
+            "repository": "andywang425/oddba-looter",
+            "url": "https://github.com/andywang425/oddba-looter",
+            "branch": "master",
+            "commit": "f40b923ca7ae06113df70e4c1dcdaa75aee56c65",
+            "originalPath": "src/oddba_looter/__init__.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "86bc73585c5d54fa",
+            "sha256": "307299fda7b77d22c64cb51430ec75e5f59d78e9c948786afb3b2544fe45e4b7",
+            "repository": "andywang425/oddba-looter",
+            "url": "https://github.com/andywang425/oddba-looter",
+            "branch": "master",
+            "commit": "f40b923ca7ae06113df70e4c1dcdaa75aee56c65",
+            "originalPath": "src/oddba_looter/__main__.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "2d51c2950caea8dd",
+            "sha256": "79f5e71a9225379d9f8981fe8dc33c5bc8218982baf37956950c8da7fe8ae751",
+            "repository": "andywang425/oddba-looter",
+            "url": "https://github.com/andywang425/oddba-looter",
+            "branch": "master",
+            "commit": "f40b923ca7ae06113df70e4c1dcdaa75aee56c65",
+            "originalPath": "src/oddba_looter/cli.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "a89266ab637aabce",
+            "sha256": "2495deb149527d6c305546c67105e31cba4f8ddc6f568e2735113f492506d03f",
+            "repository": "andywang425/oddba-looter",
+            "url": "https://github.com/andywang425/oddba-looter",
+            "branch": "master",
+            "commit": "f40b923ca7ae06113df70e4c1dcdaa75aee56c65",
+            "originalPath": "src/oddba_looter/config.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "21 0,12 * * *",
+      "command": "python3 scripts/oddba_looter.py",
+      "environment": [
+        {
+          "name": "ODDBA_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://sns.oddba.cn/ 注册并确认可登录后，将用户名与密码写入青龙环境变量。每个账号单独占一行。",
+          "format": "每行一个账号，格式为 用户名|密码；仅在首个竖线处分割，密码中可含竖线。不要用 &、@ 或其他符号分隔账号。"
+        },
+        {
+          "name": "ODDBA_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "单账号兼容别名。仅当未设置 ODDBA_ACCOUNTS 时生效，须与 ODDBA_PASSWORD 成对使用。",
+          "format": "sns.oddba.cn 登录用户名。"
+        },
+        {
+          "name": "ODDBA_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "单账号兼容别名。仅当未设置 ODDBA_ACCOUNTS 时生效，须与 ODDBA_USERNAME 成对使用。",
+          "format": "与用户名配套的登录密码。"
+        },
+        {
+          "name": "ODDBA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要在完全断网条件下检查配置与流程时设置。",
+          "format": "设为 1、true、yes 或 on 启用预演。"
+        },
+        {
+          "name": "ODDBA_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况设置单次 HTTPS 超时；不填写时为 30 秒。",
+          "format": "5 至 120 之间的秒数。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 QINGLONG_NOTIFY=auto 时填写要通知的脚本选择器。",
+          "format": "可用逗号、分号、空白或换行分隔；支持 d4d9e489b3cac0c4、candidate.py、output/candidate.py、oddba_looter.py、通配符或 *。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙 notify.py 不在默认位置时，填写其所在目录。",
+          "format": "包含 notify.py 的本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个账号的「用户名|密码」单独占一行；仅在首个竖线处分割以保留密码中的竖线。逐账号独立执行，任一账号失败时进程整体返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "登录 sns.oddba.cn 并校验页头登录态",
+        "执行每日签到；今日已签到视为已完成成功",
+        "领取已解锁的累签宝箱奖励",
+        "领取每日任务中可领取且未领取的奖励",
+        "支持每行一个「用户名|密码」的多账号独立处理，任一账号失败时整体非零退出",
+        "提供完全断网预演、时间轴脱敏日志、账号与任务统计及单行 TASK_SUMMARY",
+        "按青龙全局开关发送脱敏通知，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "向 sns.oddba.cn 提交每日签到",
+        "领取累签宝箱奖励，可能发放金币、经验或道具等到账号",
+        "领取每日任务奖励，可能发放经验、成长值等到账号"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d4d9e489b3cac0c4",
+        "candidateSha256": "a6682ca5cee2c4153abf11ddf08457ae53941094c513fc852abf33538c133bae"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "a6682ca5cee2c4153abf11ddf08457ae53941094c513fc852abf33538c133bae",
+        "releaseSha256": "ce50f2629686acc57f9b8877a60ce798e7f6e28afd8b86b07e8679dbec97053e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T10:41:09.347042+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "a6682ca5cee2c4153abf11ddf08457ae53941094c513fc852abf33538c133bae",
+          "toCandidateSha256": "ce50f2629686acc57f9b8877a60ce798e7f6e28afd8b86b07e8679dbec97053e",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "61204ec3f68839fd",
       "applicationKey": "officeace",
       "checkProfile": {
