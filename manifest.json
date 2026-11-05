@@ -1551,7 +1551,7 @@
     },
     {
       "catalogId": "0f0989a0ef3d7803",
-      "applicationKey": "sitoi/dailycheckin::acfun",
+      "applicationKey": "acfun",
       "checkProfile": {
         "requiredEnv": [
           "ACFUN_ACCOUNTS"
@@ -6397,7 +6397,7 @@
     },
     {
       "catalogId": "2ecd586638b72a85",
-      "applicationKey": "beacherz/dailycheckin-plus::acfun",
+      "applicationKey": "acfun",
       "checkProfile": {
         "requiredEnv": [
           "ACFUN_COOKIE"
@@ -6587,7 +6587,7 @@
     },
     {
       "catalogId": "ca4e1c75a27952c1",
-      "applicationKey": "cn-grace/qinglongscripts::bilibili",
+      "applicationKey": "bilibili",
       "checkProfile": {
         "requiredEnv": [
           "BILIBILI_COOKIE"
@@ -10091,7 +10091,7 @@
     },
     {
       "catalogId": "08575e47b55daffb",
-      "applicationKey": "oreoslab/checkinpanel::everphoto",
+      "applicationKey": "everphoto",
       "checkProfile": {
         "requiredEnv": [
           "EVERPHOTO"
@@ -20371,7 +20371,7 @@
     },
     {
       "catalogId": "ada2bb484eeceac4",
-      "applicationKey": "unitaryhighs/ql_sign_script::kanxue",
+      "applicationKey": "kanxue",
       "checkProfile": {
         "requiredEnv": [
           "KANXUE_COOKIE_LIST"
@@ -40315,7 +40315,7 @@
     },
     {
       "catalogId": "2c89474a11ce9592",
-      "applicationKey": "luckylemonade24/hayfrp-auto-sign::index",
+      "applicationKey": "hayfrp",
       "checkProfile": {
         "requiredEnv": [
           "HAYFRP_ACCOUNTS"
