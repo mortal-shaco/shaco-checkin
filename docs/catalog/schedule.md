@@ -19,6 +19,7 @@
 | 华润通999答题 | `scripts/999.py` | `python3 scripts/999.py` | `49 1 1 1 1` | 待检查 | [999.py.md](../scripts/999.py.md)（`docs/scripts/999.py.md`） |
 | 爱上ASMR每日签到 | `scripts/a3asmr.js` | `node scripts/a3asmr.js` | `15 9 * * *` | 待检查 | [a3asmr.js.md](../scripts/a3asmr.js.md)（`docs/scripts/a3asmr.js.md`） |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](../scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
+| CordCloud 每日签到 | `scripts/action.py` | `python3 scripts/action.py` | `38 8 * * *` | 待检查 | [action.py.md](../scripts/action.py.md)（`docs/scripts/action.py.md`） |
 | NewAPI 活动中心签到 | `scripts/activity_checkin.py` | `python3 scripts/activity_checkin.py` | `22 8 * * *` | 待检查 | [activity_checkin.py.md](../scripts/activity_checkin.py.md)（`docs/scripts/activity_checkin.py.md`） |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `17 1 * * *` | 待检查 | [agentrouter.py.md](../scripts/agentrouter.py.md)（`docs/scripts/agentrouter.py.md`） |
 | 安徽工业大学晚寝签到 | `scripts/ahut.py` | `python3 scripts/ahut.py` | `20 21 * * *` | 待检查 | [ahut.py.md](../scripts/ahut.py.md)（`docs/scripts/ahut.py.md`） |
@@ -38,6 +39,7 @@
 | SakuraFRP每日签到 | `scripts/auto_signin_http.py` | `python3 scripts/auto_signin_http.py` | `7 9 * * *` | 待检查 | [auto_signin_http.py.md](../scripts/auto_signin_http.py.md)（`docs/scripts/auto_signin_http.py.md`） |
 | AutoClaw 国内版每日签到 | `scripts/autoclaw_cn_daily.py` | `python3 scripts/autoclaw_cn_daily.py` | `15 8 * * *` | 待检查 | [autoclaw_cn_daily.py.md](../scripts/autoclaw_cn_daily.py.md)（`docs/scripts/autoclaw_cn_daily.py.md`） |
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `18 */6 * * *` | 待检查 | [autosignin.py.md](../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |
+| 广州信息技术职校微信签到 | `scripts/autosignin_base.py` | `python3 scripts/autosignin_base.py` | `30 7 * * *` | 待检查 | [autosignin_base.py.md](../scripts/autosignin_base.py.md)（`docs/scripts/autosignin_base.py.md`） |
 | 薄荷公益站每日签到 | `scripts/background.js` | `node scripts/background.js` | `4 8 * * *` | 待检查 | [background.js.md](../scripts/background.js.md)（`docs/scripts/background.js.md`） |
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `36 2 * * *` | 待检查 | [baidu.py.md](../scripts/baidu.py.md)（`docs/scripts/baidu.py.md`） |
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `27 2 * * *` | 待检查 | [baiduwangpan_checkin.py.md](../scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |

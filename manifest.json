@@ -1724,6 +1724,195 @@
       }
     },
     {
+      "catalogId": "acd4b880b9d34d61",
+      "applicationKey": "yanglbme/cordcloud-action::action",
+      "checkProfile": {
+        "requiredEnv": [
+          "CORDCLOUD_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "CORDCLOUD_EMAIL",
+          "CORDCLOUD_PASSWD",
+          "CORDCLOUD_SECRET",
+          "CORDCLOUD_HOST",
+          "CORDCLOUD_TIMEOUT",
+          "CORDCLOUD_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CORDCLOUD_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CORDCLOUD_HOST": "cordcloud.us,cordcloud.one,cordcloud.biz,c-cloud.xyz",
+          "CORDCLOUD_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功",
+          "失败 0",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "CordCloud 邮箱密码登录",
+          "可选两步验证 TOTP",
+          "多站点主机名自动回退",
+          "每日签到",
+          "今日已签到状态识别",
+          "查询今日已用、过去已用与剩余流量",
+          "多账号独立处理与脱敏汇总通知",
+          "断网预演配置验证"
+        ],
+        "sideEffects": [
+          "成功请求会完成 CordCloud 当日签到并可能增加账户流量",
+          "启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "CordCloud 每日签到",
+      "path": "scripts/action.py",
+      "sha256": "05710cb947f9264e45260123901de328d941a113dfd2149cce3b311de96774d9",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yanglbme/cordcloud-action",
+        "branch": "main",
+        "commit": "16b0b61483ac99124b6ea1ced39b4b16d7139a8d",
+        "originalPath": "app/action.py"
+      },
+      "cron": "38 8 * * *",
+      "command": "python3 scripts/action.py",
+      "environment": [
+        {
+          "name": "CORDCLOUD_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 CordCloud 官网注册或登录后，使用注册邮箱与登录密码。若开启两步验证，在安全设置中查看 TOTP 密钥（Base32），不要把凭据写入公开仓库或聊天。未设置本变量时，可改用兼容项 CORDCLOUD_EMAIL 与 CORDCLOUD_PASSWD（可选 CORDCLOUD_SECRET），并兼容上游 GitHub Secrets 名 CC_EMAIL/CC_PASSWD/CC_SECRET。",
+          "format": "每个非空行一个账号：邮箱|密码；启用两步验证时为 邮箱|密码||TOTP密钥。仅在首个竖线处分割邮箱与后续字段，密码中后续单个竖线保留；TOTP 以双竖线引入且密钥不得含竖线。不要用 & 或 @ 分隔账号"
+        },
+        {
+          "name": "CORDCLOUD_EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅当未设置 CORDCLOUD_ACCOUNTS 时生效的单账号兼容输入；填写 CordCloud 登录邮箱。亦可使用上游别名 CC_EMAIL。",
+          "format": "单个邮箱地址，不要包含 |"
+        },
+        {
+          "name": "CORDCLOUD_PASSWD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "与 CORDCLOUD_EMAIL 成对使用的登录密码；亦可使用上游别名 CC_PASSWD。",
+          "format": "明文登录密码；可含 |"
+        },
+        {
+          "name": "CORDCLOUD_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选两步验证 TOTP 密钥，仅在兼容单账号模式下与邮箱密码一起使用；亦可使用上游别名 CC_SECRET。",
+          "format": "Base32 密钥，可含空格（脚本会忽略空白）"
+        },
+        {
+          "name": "CORDCLOUD_HOST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当官方站点域名变更时覆盖；默认依次尝试 cordcloud.us,cordcloud.one,cordcloud.biz,c-cloud.xyz",
+          "format": "逗号分隔的主机名，不含协议或路径，例如 cordcloud.us,cordcloud.one"
+        },
+        {
+          "name": "CORDCLOUD_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "网络较慢时可适当增大单次请求超时",
+          "format": "5..60 整数或小数秒，默认 15"
+        },
+        {
+          "name": "CORDCLOUD_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网预演时手动设置为 1",
+          "format": "1/true/yes/on 启用；0/false/no/off 关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要按脚本白名单启用通知时设置；空值表示全部禁用",
+          "format": "catalog-id、脚本路径、文件名或 glob，可用逗号/分号/空白/换行分隔；* 表示全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当青龙通知脚本不在默认路径时，设为 notify.py 或 sendNotify.js 所在目录",
+          "format": "本地目录绝对路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "CORDCLOUD_ACCOUNTS 中每个非空行是一个独立账号（邮箱|密码，或 邮箱|密码||TOTP密钥）；逐账号执行，任一账号失败时进程整体非零退出"
+      },
+      "dependencies": [],
+      "features": [
+        "CordCloud 邮箱密码登录",
+        "可选两步验证 TOTP",
+        "多站点主机名自动回退",
+        "每日签到",
+        "今日已签到状态识别",
+        "查询今日已用、过去已用与剩余流量",
+        "多账号独立处理与脱敏汇总通知",
+        "断网预演配置验证"
+      ],
+      "sideEffects": [
+        "成功请求会完成 CordCloud 当日签到并可能增加账户流量",
+        "启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/acd4b880b9d34d61",
+        "candidateSha256": "b4d2fe0023806e9e6093364d1e01d88bca0430c1eff8ebddb42d6883155d8e4a"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "b4d2fe0023806e9e6093364d1e01d88bca0430c1eff8ebddb42d6883155d8e4a",
+        "releaseSha256": "05710cb947f9264e45260123901de328d941a113dfd2149cce3b311de96774d9",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T06:56:00.475258+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b4d2fe0023806e9e6093364d1e01d88bca0430c1eff8ebddb42d6883155d8e4a",
+          "toCandidateSha256": "05710cb947f9264e45260123901de328d941a113dfd2149cce3b311de96774d9",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "1e2ace06c33b3dec",
       "applicationKey": "yan470777-commits/checkin::activity",
       "checkProfile": {
@@ -5649,6 +5838,230 @@
           "successCriteriaUnchanged": true,
           "sideEffectsUnchanged": true
         }
+      }
+    },
+    {
+      "catalogId": "36caf0959fcbed55",
+      "applicationKey": "app",
+      "checkProfile": {
+        "requiredEnv": [
+          "GZSX_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "GZSX_APITOKEN",
+          "GZSX_USERID",
+          "GZSX_UA",
+          "GZSX_LAT",
+          "GZSX_LNG",
+          "GZSX_ADDRESS",
+          "GZSX_DISTANCE",
+          "GZSX_ACCURACY",
+          "GZSX_TIMEOUT",
+          "GZSX_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "GZSX_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "GZSX_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "调用 gzsx.qidisoft.cn 学生微信平台 ComApi/PostObject 的 gzsxWebApi.DoSignin 完成每日签到",
+          "支持多账号：GZSX_ACCOUNTS 每行 apitoken|userid，兼容 GZSX_APITOKEN 与 GZSX_USERID 单账号别名",
+          "可选提交定位字段（纬度、经度、地址、距离、精度），默认留空不伪造学校坐标",
+          "可选自定义微信 User-Agent；官方响应若含姓名等公开身份则原样打印便于核对",
+          "完全断网预演、请求超时、时间轴日志、青龙通知与单行 TASK_SUMMARY"
+        ],
+        "sideEffects": [
+          "正式运行时向学校微信平台提交每日签到，可能更新账号当日签到状态"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "广州信息技术职校微信签到",
+      "path": "scripts/autosignin_base.py",
+      "sha256": "99c5ad963113497de929d47e1001c3dbfa3192233ff8aabb0d6e692ca2b2e3ed",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "RyrieNorth/AppAutoSignIn",
+        "branch": "main",
+        "commit": "29ec0efbeda57629c5ee1a08eaa869b41046f5b6",
+        "originalPath": "AutoSignIn-Base.py",
+        "related": [
+          {
+            "catalogId": "509a6711a9e56b84",
+            "sha256": "3a51d32e3f4039b48731f2170a84912f93403c89e7cf429ab3ba0750eb866129",
+            "repository": "RyrieNorth/AppAutoSignIn",
+            "url": "https://github.com/RyrieNorth/AppAutoSignIn",
+            "branch": "main",
+            "commit": "29ec0efbeda57629c5ee1a08eaa869b41046f5b6",
+            "originalPath": "AutoSignIn-Server-v2.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "90ca34a9c504e803",
+            "sha256": "1a374ab6f4dddd3340e48d59cfed3bd03953150551fb894221071b9bd7560a75",
+            "repository": "RyrieNorth/AppAutoSignIn",
+            "url": "https://github.com/RyrieNorth/AppAutoSignIn",
+            "branch": "main",
+            "commit": "29ec0efbeda57629c5ee1a08eaa869b41046f5b6",
+            "originalPath": "AutoSignIn-Server.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "d014ab029173b768",
+            "sha256": "c86a7cb5ce024c27dc78cc7cfb64cac7bab382df461d18e64f328e6a32bcd0c3",
+            "repository": "RyrieNorth/AppAutoSignIn",
+            "url": "https://github.com/RyrieNorth/AppAutoSignIn",
+            "branch": "main",
+            "commit": "29ec0efbeda57629c5ee1a08eaa869b41046f5b6",
+            "originalPath": "autoSignIn-v3.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "30 7 * * *",
+      "command": "python3 scripts/autosignin_base.py",
+      "environment": [
+        {
+          "name": "GZSX_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在微信中打开广州信息技术职业学校学生平台小程序或网页并完成绑定登录后，用开发者工具或抓包查看请求头 apitoken，以及签到接口载荷中的 UserID。不要把 Token 发给他人或写入公开仓库。",
+          "format": "每个非空行一个账号，格式 apitoken|userid；仅在第一个竖线处分割。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "GZSX_APITOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号别名；仅当 GZSX_ACCOUNTS 为空时与 GZSX_USERID 一起生效。获取方式同 GZSX_ACCOUNTS。",
+          "format": "apitoken 字符串。"
+        },
+        {
+          "name": "GZSX_USERID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容单账号别名；仅当 GZSX_ACCOUNTS 为空时与 GZSX_APITOKEN 一起生效。取自签到载荷 UserID 或登录响应中的公开 uid。",
+          "format": "用户公开 UserID 字符串。"
+        },
+        {
+          "name": "GZSX_UA",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。需要与微信端一致时，从微信内置浏览器请求头复制 User-Agent；不填使用脚本内置常见微信 UA。",
+          "format": "完整 User-Agent 字符串。"
+        },
+        {
+          "name": "GZSX_LAT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选定位纬度。学校要求定位签到时按本人真实位置填写；默认留空，不伪造坐标。",
+          "format": "纬度数字字符串，例如 23.145182。"
+        },
+        {
+          "name": "GZSX_LNG",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选定位经度。学校要求定位签到时按本人真实位置填写；默认留空，不伪造坐标。",
+          "format": "经度数字字符串，例如 113.273506。"
+        },
+        {
+          "name": "GZSX_ADDRESS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选地址描述。与定位字段一并提交；默认留空。",
+          "format": "地址文本。"
+        },
+        {
+          "name": "GZSX_DISTANCE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选距离字段，对应上游 distance；默认留空。",
+          "format": "距离数字字符串。"
+        },
+        {
+          "name": "GZSX_ACCURACY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选精度字段，对应上游 accuracy；默认留空。",
+          "format": "精度数字字符串。"
+        },
+        {
+          "name": "GZSX_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手工配置单次请求超时秒数；不填默认 20 秒。",
+          "format": "5 到 60 之间的数字。"
+        },
+        {
+          "name": "GZSX_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手工填写 1 启用完全断网预演；只校验配置与流程，不发起网络请求。",
+          "format": "1/true/yes/on 启用；0/false/no/off 或不填关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "当 QINGLONG_NOTIFY=auto 时生效；填写目录编号、文件名、相对路径或通配符；* 表示全部；显式空值关闭全部。",
+          "format": "逗号、分号、空白或换行分隔的选择器列表。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 或 sendNotify.js 所在目录；未设置时查找青龙标准目录。",
+          "format": "本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，格式为 apitoken|userid；仅在第一个竖线处分割以保留后续凭据文本。账号独立处理，任一失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "调用 gzsx.qidisoft.cn 学生微信平台 ComApi/PostObject 的 gzsxWebApi.DoSignin 完成每日签到",
+        "支持多账号：GZSX_ACCOUNTS 每行 apitoken|userid，兼容 GZSX_APITOKEN 与 GZSX_USERID 单账号别名",
+        "可选提交定位字段（纬度、经度、地址、距离、精度），默认留空不伪造学校坐标",
+        "可选自定义微信 User-Agent；官方响应若含姓名等公开身份则原样打印便于核对",
+        "完全断网预演、请求超时、时间轴日志、青龙通知与单行 TASK_SUMMARY"
+      ],
+      "sideEffects": [
+        "正式运行时向学校微信平台提交每日签到，可能更新账号当日签到状态"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/36caf0959fcbed55",
+        "candidateSha256": "99c5ad963113497de929d47e1001c3dbfa3192233ff8aabb0d6e692ca2b2e3ed"
       }
     },
     {
