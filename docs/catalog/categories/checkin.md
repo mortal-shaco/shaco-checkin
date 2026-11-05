@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **270** 个脚本。返回 [`目录首页`](../README.md)。
+共 **271** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -63,6 +63,7 @@
 | 中山大学人脸签到 | `scripts/cli.py` | `python3 scripts/cli.py` | `*/5 7-22 * * *` | 待检查 | [cli.py.md](../../scripts/cli.py.md)（`docs/scripts/cli.py.md`） |
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
+| 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../../scripts/config.py.md)（`docs/scripts/config.py.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `22 10,14,18 * * *` | 待检查 | [dachao.py.md](../../scripts/dachao.py.md)（`docs/scripts/dachao.py.md`） |
 | 大海资源站每日签到 | `scripts/dahai.js` | `node scripts/dahai.js` | `0 30 11 * * *` | 待检查 | [dahai.js.md](../../scripts/dahai.js.md)（`docs/scripts/dahai.js.md`） |

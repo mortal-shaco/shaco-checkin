@@ -1,6 +1,6 @@
 # 字母索引 · C
 
-共 **30** 个脚本。返回 [`目录首页`](../README.md)。
+共 **31** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -33,4 +33,5 @@
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `16 8 * * *` | 待检查 | [codearts_daily.py.md](../../scripts/codearts_daily.py.md)（`docs/scripts/codearts_daily.py.md`） |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
+| 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../../scripts/config.py.md)（`docs/scripts/config.py.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
