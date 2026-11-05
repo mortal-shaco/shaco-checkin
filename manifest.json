@@ -11760,6 +11760,157 @@
       }
     },
     {
+      "catalogId": "0b3d91e14d17bbc2",
+      "applicationKey": "gbxh/automiyoushe::cloud",
+      "checkProfile": {
+        "requiredEnv": [
+          "CLOUD_GENSHIN_TOKEN"
+        ],
+        "optionalEnv": [
+          "CLOUD_GENSHIN_DEVICE_ID",
+          "CLOUD_GENSHIN_TIMEOUT",
+          "CLOUD_GENSHIN_ACCOUNT_GAP",
+          "CLOUD_GENSHIN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CLOUD_GENSHIN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CLOUD_GENSHIN_TIMEOUT": "15",
+          "CLOUD_GENSHIN_ACCOUNT_GAP": "2",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功",
+          "失败 0",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "云原神每日免费时长领取",
+          "识别今日已领取或达免费时长上限",
+          "查询剩余免费时长、畅玩卡状态与米云币数量",
+          "识别 combo_token 失效或防沉迷",
+          "多账号独立处理与脱敏汇总通知",
+          "断网预演配置验证"
+        ],
+        "sideEffects": [
+          "成功请求可能领取当日云原神免费时长并更新钱包状态",
+          "启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "云原神每日签到",
+      "path": "scripts/cloud_genshin.py",
+      "sha256": "096201548995791c9aefabf7d0d21799646ea0119cee2d786aa1a02ec58d2df3",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "gbxh/AutoMiyoushe",
+        "branch": "master",
+        "commit": "c984a9f9e5108b1341cf542b1d4d986a3a335311",
+        "originalPath": "cloud_genshin.py"
+      },
+      "cron": "30 9 * * *",
+      "command": "python3 scripts/cloud_genshin.py",
+      "environment": [
+        {
+          "name": "CLOUD_GENSHIN_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人手机安装并登录云原神 App，使用抓包工具捕获访问 api-cloudgame.mihoyo.com 请求头中的 x-rpc-combo_token 整串；不要把 token 提交到公开仓库或聊天。",
+          "format": "每个非空行一个账号的 combo_token 原文；不要用 &、@ 或其他符号分隔账号"
+        },
+        {
+          "name": "CLOUD_GENSHIN_DEVICE_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。需要固定设备标识时填写；默认按 token 稳定生成 UUID。多账号时可每行对应一个设备 ID，仅一行时全账号共用。",
+          "format": "UUID 或上游设备 ID 字符串；多账号时每行一个"
+        },
+        {
+          "name": "CLOUD_GENSHIN_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "网络较慢时可适当增大单次请求超时",
+          "format": "5..60 整数或小数秒，默认 15"
+        },
+        {
+          "name": "CLOUD_GENSHIN_ACCOUNT_GAP",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "多账号串行执行时的间隔，降低连续请求压力",
+          "format": "0..120 秒，默认 2；断网预演不睡眠"
+        },
+        {
+          "name": "CLOUD_GENSHIN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网预演时手动设置为 1",
+          "format": "1/true/yes/on 启用；0/false/no/off 关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要按脚本白名单启用通知时设置；空值表示全部禁用",
+          "format": "catalog-id、脚本路径、文件名或 glob，可用逗号/分号/空白/换行分隔；* 表示全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当青龙通知脚本不在默认路径时，设为 notify.py 或 sendNotify.js 所在目录",
+          "format": "本地目录绝对路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "CLOUD_GENSHIN_TOKEN 中每个非空行是一个独立账号的 combo_token；逐账号执行，任一账号失败时进程整体非零退出"
+      },
+      "dependencies": [],
+      "features": [
+        "云原神每日免费时长领取",
+        "识别今日已领取或达免费时长上限",
+        "查询剩余免费时长、畅玩卡状态与米云币数量",
+        "识别 combo_token 失效或防沉迷",
+        "多账号独立处理与脱敏汇总通知",
+        "断网预演配置验证"
+      ],
+      "sideEffects": [
+        "成功请求可能领取当日云原神免费时长并更新钱包状态",
+        "启用青龙通知时会向已配置的通知渠道发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0b3d91e14d17bbc2",
+        "candidateSha256": "096201548995791c9aefabf7d0d21799646ea0119cee2d786aa1a02ec58d2df3"
+      }
+    },
+    {
       "catalogId": "b896028c3fdcd52d",
       "applicationKey": "codearts",
       "checkProfile": {
@@ -15158,6 +15309,176 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "1c57027216f85073d8db78b2ea4b9a0c043678a66800b2223609cf6c1a47d4cd",
           "toCandidateSha256": "0b94395999c8f3ffcb588b324b0daa3673cf69ff2636baee2ccf511f847a69ce",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "42ad8ed62f74a64a",
+      "applicationKey": "eop",
+      "checkProfile": {
+        "requiredEnv": [
+          "EOP_COOKIE"
+        ],
+        "optionalEnv": [
+          "EOP_cookie",
+          "EOP_TIMEOUT",
+          "EOP_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "EOP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "EOP_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功（官方响应确认）",
+          "今日已签到（官方响应确认）",
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "向 Everyone Piano（www.everyonepiano.cn）提交每日签到",
+          "识别官方明文响应 success、连续签到天数数字与 already（今日已签到）",
+          "多账号逐行配置、独立执行及任一失败非零退出",
+          "完全断网预演、编号阶段与耗时、账号及子任务统计、单行 TASK_SUMMARY",
+          "正式执行结束后发送脱敏青龙通知，通知不可用不改变业务退出码；预演仅输出通知摘要"
+        ],
+        "sideEffects": [
+          "正式运行时向 www.everyonepiano.cn 提交每日签到，可能更新账号连续签到状态",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "EOP官网签到",
+      "path": "scripts/eop.py",
+      "sha256": "2c46606b6ab09d154bb5f12cb8fb0374e41edf7b03166662fcd454910bccae3c",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "mcAmiya/eop_checkin",
+        "branch": "main",
+        "commit": "8f038848502e6df8fe13144f800282d0a1948dd8",
+        "originalPath": "main.py",
+        "related": [
+          {
+            "catalogId": "96c6577a4821f250",
+            "sha256": "ec69cfea25961512b6b3b2a3c53406d1e01c3c05a9bfc14624bc47304aa31f0e",
+            "repository": "mcAmiya/eop_checkin",
+            "url": "https://github.com/mcAmiya/eop_checkin",
+            "branch": "main",
+            "commit": "8f038848502e6df8fe13144f800282d0a1948dd8",
+            "originalPath": "app_config.py",
+            "license": "GPL-3.0"
+          }
+        ]
+      },
+      "cron": "11 9 * * *",
+      "command": "python3 scripts/eop.py",
+      "environment": [
+        {
+          "name": "EOP_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.everyonepiano.cn 后，打开开发者工具 → 网络面板，选中同站已登录请求，复制完整 Cookie 请求头值（不含 Cookie: 前缀）。不要把 Cookie 写入公开仓库、日志或通知。",
+          "format": "每个非空行一个账号的完整 Cookie；Cookie 字段以分号分隔，保留字段值中的 &、@ 和等号。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "EOP_cookie",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "上游 app_config.py 兼容别名；仅当 EOP_COOKIE 为空时读取。获取方式与字段要求同 EOP_COOKIE。",
+          "format": "与 EOP_COOKIE 相同；每个非空行一个完整 Cookie。"
+        },
+        {
+          "name": "EOP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "网络较慢时可适当增大单次请求超时；正式执行时可选。",
+          "format": "5..60 整数或小数秒，默认 15"
+        },
+        {
+          "name": "EOP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置与执行计划时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；0、false、no、off 或未设置表示正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。可填 42ad8ed62f74a64a、脚本文件名或 scripts 相对路径。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定本地青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准目录。不是业务依赖。",
+          "format": "已存在的本地通知组件目录，不会下载或安装组件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "EOP_COOKIE（或兼容别名 EOP_cookie）每个非空行一个账号的完整 Cookie；账号逐个独立签到与统计，任一账号失败则整体非零退出。不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "向 Everyone Piano（www.everyonepiano.cn）提交每日签到",
+        "识别官方明文响应 success、连续签到天数数字与 already（今日已签到）",
+        "多账号逐行配置、独立执行及任一失败非零退出",
+        "完全断网预演、编号阶段与耗时、账号及子任务统计、单行 TASK_SUMMARY",
+        "正式执行结束后发送脱敏青龙通知，通知不可用不改变业务退出码；预演仅输出通知摘要"
+      ],
+      "sideEffects": [
+        "正式运行时向 www.everyonepiano.cn 提交每日签到，可能更新账号连续签到状态",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/42ad8ed62f74a64a",
+        "candidateSha256": "d03a820e561dc94a11aed2ea6c478bf3186d27cd1c2034f43884c579e38eb715"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "d03a820e561dc94a11aed2ea6c478bf3186d27cd1c2034f43884c579e38eb715",
+        "releaseSha256": "2c46606b6ab09d154bb5f12cb8fb0374e41edf7b03166662fcd454910bccae3c",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T07:04:09.982222+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "d03a820e561dc94a11aed2ea6c478bf3186d27cd1c2034f43884c579e38eb715",
+          "toCandidateSha256": "2c46606b6ab09d154bb5f12cb8fb0374e41edf7b03166662fcd454910bccae3c",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -41099,6 +41420,139 @@
           "successCriteriaUnchanged": true,
           "sideEffectsUnchanged": true
         }
+      }
+    },
+    {
+      "catalogId": "198bae30a009b250",
+      "applicationKey": "kierankihn/auto-checkin::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "LUOGU_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "LUOGU_DRY_RUN",
+          "LUOGU_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "LUOGU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LUOGU_TIMEOUT": "15"
+        },
+        "successPatterns": [
+          "打卡成功",
+          "今日已打卡",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "洛谷（www.luogu.com.cn）使用 Cookie __client_id 与 _uid 每日打卡",
+          "识别业务 code=200 打卡成功、code=201 今日已打卡",
+          "展示公开 UID 以便核对账号",
+          "多账号按行处理；规范变量 LUOGU_ACCOUNTS（__client_id|_uid），兼容 Cookie 文本行",
+          "完全断网预演 LUOGU_DRY_RUN、HTTPS 超时、业务成功/已打卡判定",
+          "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "向洛谷打卡接口提交每日打卡，改变当日签到状态并可能累计连续签到",
+          "通知已启用且适配器可用时向青龙通知通道发送脱敏任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "洛谷签到",
+      "path": "scripts/task_198bae30.py",
+      "sha256": "6d3d7f66d4aa46c701e46ff6ed4dc9666cd2c2c8ceb632057d5282b53184155b",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "kierankihn/auto-checkin",
+        "branch": "main",
+        "commit": "03a84c7abf61d75d85e81e32d1002a72ff9a78a8",
+        "originalPath": "main.py"
+      },
+      "cron": "0 10 * * *",
+      "command": "python3 scripts/task_198bae30.py",
+      "environment": [
+        {
+          "name": "LUOGU_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 https://www.luogu.com.cn/ 后，打开开发者工具 → Application/应用 → Cookie → https://www.luogu.com.cn，复制 __client_id 与 _uid。每个非空行填写一个账号。不要把真实凭据写入公开仓库、日志或通知。",
+          "format": "每行一个账号：__client_id|_uid（仅在第一个 | 处分割）；也可填写同时含 __client_id= 与 _uid= 的 Cookie 文本。账号之间只用换行分隔，不使用 & 或 @"
+        },
+        {
+          "name": "LUOGU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置；只校验配置并模拟打卡阶段，不访问网络、不改动签到状态。",
+          "format": "1、true、yes、on 开启完全断网预演；默认关闭"
+        },
+        {
+          "name": "LUOGU_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次 HTTPS 请求超时秒数。",
+          "format": "5 到 60 的数字；默认 15"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录；失败不改变业务退出码。",
+          "format": "目录路径；还会尝试 /ql/data/scripts 与 /ql/scripts"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个「__client_id|_uid」；账号独立处理，任一账号失败时整体以非零退出码结束"
+      },
+      "dependencies": [],
+      "features": [
+        "洛谷（www.luogu.com.cn）使用 Cookie __client_id 与 _uid 每日打卡",
+        "识别业务 code=200 打卡成功、code=201 今日已打卡",
+        "展示公开 UID 以便核对账号",
+        "多账号按行处理；规范变量 LUOGU_ACCOUNTS（__client_id|_uid），兼容 Cookie 文本行",
+        "完全断网预演 LUOGU_DRY_RUN、HTTPS 超时、业务成功/已打卡判定",
+        "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "向洛谷打卡接口提交每日打卡，改变当日签到状态并可能累计连续签到",
+        "通知已启用且适配器可用时向青龙通知通道发送脱敏任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/198bae30a009b250",
+        "candidateSha256": "6d3d7f66d4aa46c701e46ff6ed4dc9666cd2c2c8ceb632057d5282b53184155b"
       }
     },
     {

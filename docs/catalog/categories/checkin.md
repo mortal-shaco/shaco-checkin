@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **228** 个脚本。返回 [`目录首页`](../README.md)。
+共 **231** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -54,6 +54,7 @@
 | 魅族社区签到 | `scripts/ck_meizu.py` | `python3 scripts/ck_meizu.py` | `30 1 * * *` | 待检查 | [ck_meizu.py.md](../../scripts/ck_meizu.py.md)（`docs/scripts/ck_meizu.py.md`） |
 | 芒果TV每日签到 | `scripts/ck_mgtv.py` | `python3 scripts/ck_mgtv.py` | `36 0 * * *` | 待检查 | [ck_mgtv.py.md](../../scripts/ck_mgtv.py.md)（`docs/scripts/ck_mgtv.py.md`） |
 | 一加手机社区官方论坛 | `scripts/ck_oneplusbbs.py` | `python3 scripts/ck_oneplusbbs.py` | `40 2 * * *` | 待检查 | [ck_oneplusbbs.py.md](../../scripts/ck_oneplusbbs.py.md)（`docs/scripts/ck_oneplusbbs.py.md`） |
+| 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `22 10,14,18 * * *` | 待检查 | [dachao.py.md](../../scripts/dachao.py.md)（`docs/scripts/dachao.py.md`） |
@@ -68,6 +69,7 @@
 | EMOS 每日签到 | `scripts/emos_sign.py` | `python3 scripts/emos_sign.py` | `30 8 * * *` | 待检查 | [emos_sign.py.md](../../scripts/emos_sign.py.md)（`docs/scripts/emos_sign.py.md`） |
 | 终末地签到 | `scripts/endfield_auto_signin.py` | `python3 scripts/endfield_auto_signin.py` | `35 8 * * *` | 待检查 | [endfield_auto_signin.py.md](../../scripts/endfield_auto_signin.py.md)（`docs/scripts/endfield_auto_signin.py.md`） |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
+| EOP官网签到 | `scripts/eop.py` | `python3 scripts/eop.py` | `11 9 * * *` | 待检查 | [eop.py.md](../../scripts/eop.py.md)（`docs/scripts/eop.py.md`） |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `12 1 1 1 1` | 待检查 | [erke.py.md](../../scripts/erke.py.md)（`docs/scripts/erke.py.md`） |
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
@@ -190,6 +192,7 @@
 | 甄稀冰淇淋每日签到 | `scripts/sudojia_zxice.js` | `node scripts/sudojia_zxice.js` | `34 2 * * *` | 待检查 | [sudojia_zxice.js.md](../../scripts/sudojia_zxice.js.md)（`docs/scripts/sudojia_zxice.js.md`） |
 | 微博超话签到 | `scripts/supertopicsign.py` | `python3 scripts/supertopicsign.py` | `41 1 * * *` | 待检查 | [supertopicsign.py.md](../../scripts/supertopicsign.py.md)（`docs/scripts/supertopicsign.py.md`） |
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
+| 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |

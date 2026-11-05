@@ -73,6 +73,7 @@
 | 芒果TV每日签到 | `scripts/ck_mgtv.py` | `python3 scripts/ck_mgtv.py` | `36 0 * * *` | 待检查 | [ck_mgtv.py.md](../scripts/ck_mgtv.py.md)（`docs/scripts/ck_mgtv.py.md`） |
 | 小米运动 | `scripts/ck_mimotion.py` | `python3 scripts/ck_mimotion.py` | `1 0 * * *` | 待检查 | [ck_mimotion.py.md](../scripts/ck_mimotion.py.md)（`docs/scripts/ck_mimotion.py.md`） |
 | 一加手机社区官方论坛 | `scripts/ck_oneplusbbs.py` | `python3 scripts/ck_oneplusbbs.py` | `40 2 * * *` | 待检查 | [ck_oneplusbbs.py.md](../scripts/ck_oneplusbbs.py.md)（`docs/scripts/ck_oneplusbbs.py.md`） |
+| 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `16 8 * * *` | 待检查 | [codearts_daily.py.md](../scripts/codearts_daily.py.md)（`docs/scripts/codearts_daily.py.md`） |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
@@ -90,6 +91,7 @@
 | EMOS 每日签到 | `scripts/emos_sign.py` | `python3 scripts/emos_sign.py` | `30 8 * * *` | 待检查 | [emos_sign.py.md](../scripts/emos_sign.py.md)（`docs/scripts/emos_sign.py.md`） |
 | 终末地签到 | `scripts/endfield_auto_signin.py` | `python3 scripts/endfield_auto_signin.py` | `35 8 * * *` | 待检查 | [endfield_auto_signin.py.md](../scripts/endfield_auto_signin.py.md)（`docs/scripts/endfield_auto_signin.py.md`） |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
+| EOP官网签到 | `scripts/eop.py` | `python3 scripts/eop.py` | `11 9 * * *` | 待检查 | [eop.py.md](../scripts/eop.py.md)（`docs/scripts/eop.py.md`） |
 | Epic免费游戏 | `scripts/epicfreegames.py` | `python3 scripts/epicfreegames.py` | `11 8 * * 6` | 待检查 | [epicfreegames.py.md](../scripts/epicfreegames.py.md)（`docs/scripts/epicfreegames.py.md`） |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `12 1 1 1 1` | 待检查 | [erke.py.md](../scripts/erke.py.md)（`docs/scripts/erke.py.md`） |
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
@@ -229,6 +231,7 @@
 | 微博超话签到 | `scripts/supertopicsign.py` | `python3 scripts/supertopicsign.py` | `41 1 * * *` | 待检查 | [supertopicsign.py.md](../scripts/supertopicsign.py.md)（`docs/scripts/supertopicsign.py.md`） |
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
 | Taker每日挖矿 | `scripts/taker.js` | `node scripts/taker.js` | `26 8 * * *` | 待检查 | [taker.js.md](../scripts/taker.js.md)（`docs/scripts/taker.js.md`） |
+| 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
