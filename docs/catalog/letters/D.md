@@ -1,6 +1,6 @@
 # 字母索引 · D
 
-共 **11** 个脚本。返回 [`目录首页`](../README.md)。
+共 **14** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -10,8 +10,11 @@
 | PSY 每日签到 | `scripts/daily_checkin.py` | `python3 scripts/daily_checkin.py` | `21 8 * * *` | 待检查 | [daily_checkin.py.md](../../scripts/daily_checkin.py.md)（`docs/scripts/daily_checkin.py.md`） |
 | 京东每日签到领京豆 | `scripts/daily_sign.py` | `python3 scripts/daily_sign.py` | `40 8 * * *` | 待检查 | [daily_sign.py.md](../../scripts/daily_sign.py.md)（`docs/scripts/daily_sign.py.md`） |
 | 二重螺旋皎皎角每日任务 | `scripts/daily_tasks.py` | `python3 scripts/daily_tasks.py` | `3 8 * * *` | 待检查 | [daily_tasks.py.md](../../scripts/daily_tasks.py.md)（`docs/scripts/daily_tasks.py.md`） |
+| 今日校园信息收集 | `scripts/dailycp.py` | `python3 scripts/dailycp.py` | `57 8 * * *` | 待检查 | [dailycp.py.md](../../scripts/dailycp.py.md)（`docs/scripts/dailycp.py.md`） |
 | 中国日报 | `scripts/dailynewscn.js` | `node scripts/dailynewscn.js` | `0 15 9 * * *` | 待检查 | [dailynewscn.js.md](../../scripts/dailynewscn.js.md)（`docs/scripts/dailynewscn.js.md`） |
 | 大物是也签到 | `scripts/dawushiye.py` | `python3 scripts/dawushiye.py` | `7 8 * * *` | 待检查 | [dawushiye.py.md](../../scripts/dawushiye.py.md)（`docs/scripts/dawushiye.py.md`） |
+| PHPWind论坛每日任务 | `scripts/day.py` | `python3 scripts/day.py` | `58 8 * * *` | 待检查 | [day.py.md](../../scripts/day.py.md)（`docs/scripts/day.py.md`） |
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `32 2 * * *` | 待检查 | [ddnsto.py.md](../../scripts/ddnsto.py.md)（`docs/scripts/ddnsto.py.md`） |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
+| Doyoudo每日签到发言 | `scripts/doyoudo_auto_sign.py` | `python3 scripts/doyoudo_auto_sign.py` | `59 8 * * *` | 待检查 | [doyoudo_auto_sign.py.md](../../scripts/doyoudo_auto_sign.py.md)（`docs/scripts/doyoudo_auto_sign.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |

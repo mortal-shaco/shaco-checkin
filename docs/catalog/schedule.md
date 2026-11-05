@@ -31,11 +31,14 @@
 | AnyRouter 每日签到 | `scripts/anyrouter_signin.py` | `python3 scripts/anyrouter_signin.py` | `6 9 * * *` | 待检查 | [anyrouter_signin.py.md](../scripts/anyrouter_signin.py.md)（`docs/scripts/anyrouter_signin.py.md`） |
 | 奥拉星每日任务与积分 | `scripts/aolaxing.py` | `python3 scripts/aolaxing.py` | `38 0 * * *` | 待检查 | [aolaxing.py.md](../scripts/aolaxing.py.md)（`docs/scripts/aolaxing.py.md`） |
 | Hax 与 Woiden 可开通区域监控 | `scripts/api_hax.py` | `python3 scripts/api_hax.py` | `44 */6 * * *` | 待检查 | [api_hax.py.md](../scripts/api_hax.py.md)（`docs/scripts/api_hax.py.md`） |
+| APICloud每日签到 | `scripts/apicloud.js` | `node scripts/apicloud.js` | `12 9 * * *` | 待检查 | [apicloud.js.md](../scripts/apicloud.js.md)（`docs/scripts/apicloud.js.md`） |
+| Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
 | 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `21 10,23 * * *` | 待检查 | [atxyq.py.md](../scripts/atxyq.py.md)（`docs/scripts/atxyq.py.md`） |
 | 上海杨浦商城定时抢购 | `scripts/auto_buy.py` | `python3 scripts/auto_buy.py` | `0 0 10 * * *` | 待检查 | [auto_buy.py.md](../scripts/auto_buy.py.md)（`docs/scripts/auto_buy.py.md`） |
 | 厦门大学畅课自动签到 | `scripts/auto_checkin.py` | `python3 scripts/auto_checkin.py` | `*/2 8-18 * * 1-5` | 待检查 | [auto_checkin.py.md](../scripts/auto_checkin.py.md)（`docs/scripts/auto_checkin.py.md`） |
+| 天使动漫签到打工 | `scripts/auto_sign.py` | `python3 scripts/auto_sign.py` | `31 9 * * *` | 待检查 | [auto_sign.py.md](../scripts/auto_sign.py.md)（`docs/scripts/auto_sign.py.md`） |
 | SakuraFRP每日签到 | `scripts/auto_signin_http.py` | `python3 scripts/auto_signin_http.py` | `7 9 * * *` | 待检查 | [auto_signin_http.py.md](../scripts/auto_signin_http.py.md)（`docs/scripts/auto_signin_http.py.md`） |
 | AutoClaw 国内版每日签到 | `scripts/autoclaw_cn_daily.py` | `python3 scripts/autoclaw_cn_daily.py` | `15 8 * * *` | 待检查 | [autoclaw_cn_daily.py.md](../scripts/autoclaw_cn_daily.py.md)（`docs/scripts/autoclaw_cn_daily.py.md`） |
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `18 */6 * * *` | 待检查 | [autosignin.py.md](../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |
@@ -48,6 +51,7 @@
 | B站每日任务 | `scripts/bilibili.py` | `python3 scripts/bilibili.py` | `6 2 * * *` | 待检查 | [bilibili.py.md](../scripts/bilibili.py.md)（`docs/scripts/bilibili.py.md`） |
 | Holmes AI 每日签到 | `scripts/bot.py` | `python3 scripts/bot.py` | `14 8 * * *` | 待检查 | [bot.py.md](../scripts/bot.py.md)（`docs/scripts/bot.py.md`） |
 | 百事乐元抽奖 | `scripts/bsly_draw.py` | `python3 scripts/bsly_draw.py` | `23 0 * * *` | 待检查 | [bsly_draw.py.md](../scripts/bsly_draw.py.md)（`docs/scripts/bsly_draw.py.md`） |
+| BT吧签到 | `scripts/btbar.py` | `python3 scripts/btbar.py` | `46 8 * * *` | 待检查 | [btbar.py.md](../scripts/btbar.py.md)（`docs/scripts/btbar.py.md`） |
 | 布谷TV每日签到 | `scripts/bugutv.py` | `python3 scripts/bugutv.py` | `12 1 * * *` | 待检查 | [bugutv.py.md](../scripts/bugutv.py.md)（`docs/scripts/bugutv.py.md`） |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `31 9,18 * * *` | 待检查 | [bwcj.py.md](../scripts/bwcj.py.md)（`docs/scripts/bwcj.py.md`） |
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
@@ -83,12 +87,16 @@
 | PSY 每日签到 | `scripts/daily_checkin.py` | `python3 scripts/daily_checkin.py` | `21 8 * * *` | 待检查 | [daily_checkin.py.md](../scripts/daily_checkin.py.md)（`docs/scripts/daily_checkin.py.md`） |
 | 京东每日签到领京豆 | `scripts/daily_sign.py` | `python3 scripts/daily_sign.py` | `40 8 * * *` | 待检查 | [daily_sign.py.md](../scripts/daily_sign.py.md)（`docs/scripts/daily_sign.py.md`） |
 | 二重螺旋皎皎角每日任务 | `scripts/daily_tasks.py` | `python3 scripts/daily_tasks.py` | `3 8 * * *` | 待检查 | [daily_tasks.py.md](../scripts/daily_tasks.py.md)（`docs/scripts/daily_tasks.py.md`） |
+| 今日校园信息收集 | `scripts/dailycp.py` | `python3 scripts/dailycp.py` | `57 8 * * *` | 待检查 | [dailycp.py.md](../scripts/dailycp.py.md)（`docs/scripts/dailycp.py.md`） |
 | 中国日报 | `scripts/dailynewscn.js` | `node scripts/dailynewscn.js` | `0 15 9 * * *` | 待检查 | [dailynewscn.js.md](../scripts/dailynewscn.js.md)（`docs/scripts/dailynewscn.js.md`） |
 | 大物是也签到 | `scripts/dawushiye.py` | `python3 scripts/dawushiye.py` | `7 8 * * *` | 待检查 | [dawushiye.py.md](../scripts/dawushiye.py.md)（`docs/scripts/dawushiye.py.md`） |
+| PHPWind论坛每日任务 | `scripts/day.py` | `python3 scripts/day.py` | `58 8 * * *` | 待检查 | [day.py.md](../scripts/day.py.md)（`docs/scripts/day.py.md`） |
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `32 2 * * *` | 待检查 | [ddnsto.py.md](../scripts/ddnsto.py.md)（`docs/scripts/ddnsto.py.md`） |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
+| Doyoudo每日签到发言 | `scripts/doyoudo_auto_sign.py` | `python3 scripts/doyoudo_auto_sign.py` | `59 8 * * *` | 待检查 | [doyoudo_auto_sign.py.md](../scripts/doyoudo_auto_sign.py.md)（`docs/scripts/doyoudo_auto_sign.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |
 | 神经研究所每日任务 | `scripts/easonfans_daily.py` | `python3 scripts/easonfans_daily.py` | `0 20 * * *` | 待检查 | [easonfans_daily.py.md](../scripts/easonfans_daily.py.md)（`docs/scripts/easonfans_daily.py.md`） |
+| 头歌平台课堂签到 | `scripts/educoder.py` | `python3 scripts/educoder.py` | `54 8,10,14,16 * * 1-5` | 待检查 | [educoder.py.md](../scripts/educoder.py.md)（`docs/scripts/educoder.py.md`） |
 | EMOS 每日签到 | `scripts/emos_sign.py` | `python3 scripts/emos_sign.py` | `30 8 * * *` | 待检查 | [emos_sign.py.md](../scripts/emos_sign.py.md)（`docs/scripts/emos_sign.py.md`） |
 | 终末地签到 | `scripts/endfield_auto_signin.py` | `python3 scripts/endfield_auto_signin.py` | `35 8 * * *` | 待检查 | [endfield_auto_signin.py.md](../scripts/endfield_auto_signin.py.md)（`docs/scripts/endfield_auto_signin.py.md`） |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
@@ -105,6 +113,7 @@
 | 阴阳师官网视频与原画 | `scripts/get_yys_cgvideo.py` | `python3 scripts/get_yys_cgvideo.py` | `11 9 * * 0` | 待检查 | [get_yys_cgvideo.py.md](../scripts/get_yys_cgvideo.py.md)（`docs/scripts/get_yys_cgvideo.py.md`） |
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `28 9 * * 0` | 待检查 | [get_yys_imagelinks.py.md](../scripts/get_yys_imagelinks.py.md)（`docs/scripts/get_yys_imagelinks.py.md`） |
 | GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
+| 好豆每日签到 | `scripts/haodou.py` | `python3 scripts/haodou.py` | `14 9 * * *` | 待检查 | [haodou.py.md](../scripts/haodou.py.md)（`docs/scripts/haodou.py.md`） |
 | HelloGitHub月刊提醒 | `scripts/hellogithub.py` | `python3 scripts/hellogithub.py` | `31 8 1 * *` | 待检查 | [hellogithub.py.md](../scripts/hellogithub.py.md)（`docs/scripts/hellogithub.py.md`） |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `14 1 * * *` | 待检查 | [hifiti_checkin.py.md](../scripts/hifiti_checkin.py.md)（`docs/scripts/hifiti_checkin.py.md`） |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `32 0 * * *` | 待检查 | [hlyl.py.md](../scripts/hlyl.py.md)（`docs/scripts/hlyl.py.md`） |
@@ -121,6 +130,7 @@
 | 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `45 2 * * *` | 待检查 | [jc_checkin.py.md](../scripts/jc_checkin.py.md)（`docs/scripts/jc_checkin.py.md`） |
 | jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `5 1 * * *` | 待检查 | [jcqd.py.md](../scripts/jcqd.py.md)（`docs/scripts/jcqd.py.md`） |
 | 精易论坛签到 | `scripts/jingyiluntan_sign.py` | `python3 scripts/jingyiluntan_sign.py` | `2 2 * * *` | 待检查 | [jingyiluntan_sign.py.md](../scripts/jingyiluntan_sign.py.md)（`docs/scripts/jingyiluntan_sign.py.md`） |
+| 技实习自动签到 | `scripts/jishixi.js` | `node scripts/jishixi.js` | `42 8 * * *` | 待检查 | [jishixi.js.md](../scripts/jishixi.js.md)（`docs/scripts/jishixi.js.md`） |
 | 杰士邦安心福利社 | `scripts/jissbon.py` | `python3 scripts/jissbon.py` | `21 2 * * *` | 待检查 | [jissbon.py.md](../scripts/jissbon.py.md)（`docs/scripts/jissbon.py.md`） |
 | 劲友家日常任务 | `scripts/jyj.py` | `python3 scripts/jyj.py` | `12 2 * * *` | 待检查 | [jyj.py.md](../scripts/jyj.py.md)（`docs/scripts/jyj.py.md`） |
 | 看雪论坛签到 | `scripts/kanxue.js` | `node scripts/kanxue.js` | `0 35 11 * * *` | 待检查 | [kanxue.js.md](../scripts/kanxue.js.md)（`docs/scripts/kanxue.js.md`） |
@@ -166,8 +176,10 @@
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `15 0 * * *` | 待检查 | [quark_signin.py.md](../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `2 9 * * *` | 待检查 | [raccoon_daily.py.md](../scripts/raccoon_daily.py.md)（`docs/scripts/raccoon_daily.py.md`） |
+| 一亩三分地每日签到答题 | `scripts/raw_requests.py` | `python3 scripts/raw_requests.py` | `51 8 * * *` | 待检查 | [raw_requests.py.md](../scripts/raw_requests.py.md)（`docs/scripts/raw_requests.py.md`） |
 | Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `42 0 * * *` | 待检查 | [rousi_checkin.js.md](../scripts/rousi_checkin.js.md)（`docs/scripts/rousi_checkin.js.md`） |
 | eatASMR每日签到 | `scripts/scf_eat.py` | `python3 scripts/scf_eat.py` | `37 8 * * *` | 待检查 | [scf_eat.py.md](../scripts/scf_eat.py.md)（`docs/scripts/scf_eat.py.md`） |
+| 成都大学ISP每日登记 | `scripts/services.js` | `node scripts/services.js` | `1 7 * * *` | 待检查 | [services.js.md](../scripts/services.js.md)（`docs/scripts/services.js.md`） |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |
 | 申工社每日任务 | `scripts/sgs.py` | `python3 scripts/sgs.py` | `43 0 * * *` | 待检查 | [sgs.py.md](../scripts/sgs.py.md)（`docs/scripts/sgs.py.md`） |
@@ -176,6 +188,7 @@
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `15 1 * * *` | 待检查 | [smzdm_checkin.js.md](../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
 | SSL证书检查 | `scripts/ssl_cert_check.py` | `python3 scripts/ssl_cert_check.py` | `10 2 * * *` | 待检查 | [ssl_cert_check.py.md](../scripts/ssl_cert_check.py.md)（`docs/scripts/ssl_cert_check.py.md`） |
+| 长江雨课堂课堂签到 | `scripts/startup.py` | `python3 scripts/startup.py` | `*/5 8-18 * * 1-5` | 待检查 | [startup.py.md](../scripts/startup.py.md)（`docs/scripts/startup.py.md`） |
 | 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `24 0 * * *` | 待检查 | [sudojia_33agilestudio.js.md](../scripts/sudojia_33agilestudio.js.md)（`docs/scripts/sudojia_33agilestudio.js.md`） |
 | 所有女生会员签到 | `scripts/sudojia_allgirls.js` | `node scripts/sudojia_allgirls.js` | `33 2 * * *` | 待检查 | [sudojia_allgirls.js.md](../scripts/sudojia_allgirls.js.md)（`docs/scripts/sudojia_allgirls.js.md`） |
 | 安慕希每日签到 | `scripts/sudojia_amx.js` | `node scripts/sudojia_amx.js` | `25 0 * * *` | 待检查 | [sudojia_amx.js.md](../scripts/sudojia_amx.js.md)（`docs/scripts/sudojia_amx.js.md`） |
@@ -232,22 +245,39 @@
 | 微博超话签到 | `scripts/supertopicsign.py` | `python3 scripts/supertopicsign.py` | `41 1 * * *` | 待检查 | [supertopicsign.py.md](../scripts/supertopicsign.py.md)（`docs/scripts/supertopicsign.py.md`） |
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
 | Taker每日挖矿 | `scripts/taker.js` | `node scripts/taker.js` | `26 8 * * *` | 待检查 | [taker.js.md](../scripts/taker.js.md)（`docs/scripts/taker.js.md`） |
+| 掘金好好生活计划打卡 | `scripts/task_0e52328d.py` | `python3 scripts/task_0e52328d.py` | `2 1 * * *` | 待检查 | [task_0e52328d.py.md](../scripts/task_0e52328d.py.md)（`docs/scripts/task_0e52328d.py.md`） |
 | 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
+| 昆明医科大疫情健康填报 | `scripts/task_4f815667.py` | `python3 scripts/task_4f815667.py` | `43 8 * * *` | 待检查 | [task_4f815667.py.md](../scripts/task_4f815667.py.md)（`docs/scripts/task_4f815667.py.md`） |
+| 百度知道签到 | `scripts/task_51f65d9b.py` | `python3 scripts/task_51f65d9b.py` | `30 10 * * *` | 待检查 | [task_51f65d9b.py.md](../scripts/task_51f65d9b.py.md)（`docs/scripts/task_51f65d9b.py.md`） |
+| 阅次元论坛签到 | `scripts/task_5254d901.py` | `python3 scripts/task_5254d901.py` | `44 8 * * *` | 待检查 | [task_5254d901.py.md](../scripts/task_5254d901.py.md)（`docs/scripts/task_5254d901.py.md`） |
 | OA实习签到 | `scripts/task_62e6cbbd.py` | `python3 scripts/task_62e6cbbd.py` | `34 8 * * *` | 待检查 | [task_62e6cbbd.py.md](../scripts/task_62e6cbbd.py.md)（`docs/scripts/task_62e6cbbd.py.md`） |
+| 工软校园健康填报 | `scripts/task_64f5e3fd.py` | `python3 scripts/task_64f5e3fd.py` | `47 8 * * *` | 待检查 | [task_64f5e3fd.py.md](../scripts/task_64f5e3fd.py.md)（`docs/scripts/task_64f5e3fd.py.md`） |
+| LinkHub 每日签到 | `scripts/task_70123c59.py` | `python3 scripts/task_70123c59.py` | `54 8 * * *` | 待检查 | [task_70123c59.py.md](../scripts/task_70123c59.py.md)（`docs/scripts/task_70123c59.py.md`） |
 | hao4k每日签到 | `scripts/task_7a56bf21.py` | `python3 scripts/task_7a56bf21.py` | `41 8 * * *` | 待检查 | [task_7a56bf21.py.md](../scripts/task_7a56bf21.py.md)（`docs/scripts/task_7a56bf21.py.md`） |
 | 班级魔法自动签到 | `scripts/task_7be4b090.py` | `python3 scripts/task_7be4b090.py` | `44 8 * * 1-5` | 待检查 | [task_7be4b090.py.md](../scripts/task_7be4b090.py.md)（`docs/scripts/task_7be4b090.py.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
+| 昆医大疫情防控填报 | `scripts/task_8f8ad2c5.py` | `python3 scripts/task_8f8ad2c5.py` | `53 7,15 * * *` | 待检查 | [task_8f8ad2c5.py.md](../scripts/task_8f8ad2c5.py.md)（`docs/scripts/task_8f8ad2c5.py.md`） |
 | MT论坛签到 | `scripts/task_9a14e9eb.py` | `python3 scripts/task_9a14e9eb.py` | `39 0 * * *` | 待检查 | [task_9a14e9eb.py.md](../scripts/task_9a14e9eb.py.md)（`docs/scripts/task_9a14e9eb.py.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
 | AbyssWorld每日签到 | `scripts/task_ad4c4f3a.js` | `node scripts/task_ad4c4f3a.js` | `39 8 * * *` | 待检查 | [task_ad4c4f3a.js.md](../scripts/task_ad4c4f3a.js.md)（`docs/scripts/task_ad4c4f3a.js.md`） |
+| TJUPT每日签到 | `scripts/task_b80894cb.py` | `python3 scripts/task_b80894cb.py` | `13 9 * * *` | 待检查 | [task_b80894cb.py.md](../scripts/task_b80894cb.py.md)（`docs/scripts/task_b80894cb.py.md`） |
+| 今日校园辅导员签到 | `scripts/task_c04cea4d.py` | `python3 scripts/task_c04cea4d.py` | `0 21 * * *` | 待检查 | [task_c04cea4d.py.md](../scripts/task_c04cea4d.py.md)（`docs/scripts/task_c04cea4d.py.md`） |
+| 又拍云签到与每日任务 | `scripts/task_d09de588.py` | `python3 scripts/task_d09de588.py` | `45 8 * * *` | 待检查 | [task_d09de588.py.md](../scripts/task_d09de588.py.md)（`docs/scripts/task_d09de588.py.md`） |
+| 爱桌游每日签到 | `scripts/task_d530fa58.py` | `python3 scripts/task_d530fa58.py` | `0 5 * * *` | 待检查 | [task_d530fa58.py.md](../scripts/task_d530fa58.py.md)（`docs/scripts/task_d530fa58.py.md`） |
+| hao4k每日签到 | `scripts/task_e5c5d07b.py` | `python3 scripts/task_e5c5d07b.py` | `55 8 * * *` | 待检查 | [task_e5c5d07b.py.md](../scripts/task_e5c5d07b.py.md)（`docs/scripts/task_e5c5d07b.py.md`） |
+| FZQOJ每日签到 | `scripts/task_ed4d6d4d.py` | `python3 scripts/task_ed4d6d4d.py` | `53 8 * * *` | 待检查 | [task_ed4d6d4d.py.md](../scripts/task_ed4d6d4d.py.md)（`docs/scripts/task_ed4d6d4d.py.md`） |
 | M-SEC 每日签到 | `scripts/task_f37fb5e9.py` | `python3 scripts/task_f37fb5e9.py` | `6 8 * * *` | 待检查 | [task_f37fb5e9.py.md](../scripts/task_f37fb5e9.py.md)（`docs/scripts/task_f37fb5e9.py.md`） |
+| 网易云音乐人签到 | `scripts/task_f7e4fa18.py` | `python3 scripts/task_f7e4fa18.py` | `21 9 * * *` | 待检查 | [task_f7e4fa18.py.md](../scripts/task_f7e4fa18.py.md)（`docs/scripts/task_f7e4fa18.py.md`） |
+| 重庆工程职院顶岗实习 | `scripts/task_f8f6237c.py` | `python3 scripts/task_f8f6237c.py` | `49 8 * * *` | 待检查 | [task_f8f6237c.py.md](../scripts/task_f8f6237c.py.md)（`docs/scripts/task_f8f6237c.py.md`） |
+| 起点阅读 App 签到 | `scripts/task_fbfb17a0.py` | `python3 scripts/task_fbfb17a0.py` | `4 1 * * *` | 待检查 | [task_fbfb17a0.py.md](../scripts/task_fbfb17a0.py.md)（`docs/scripts/task_fbfb17a0.py.md`） |
 | Telegram每日Bot签到 | `scripts/telegram_daily_checkin.py` | `python3 scripts/telegram_daily_checkin.py` | `33 8 * * *` | 待检查 | [telegram_daily_checkin.py.md](../scripts/telegram_daily_checkin.py.md)（`docs/scripts/telegram_daily_checkin.py.md`） |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
+| 东方 Portal 每日签到 | `scripts/touhouhelper.py` | `python3 scripts/touhouhelper.py` | `50 8 * * *` | 待检查 | [touhouhelper.py.md](../scripts/touhouhelper.py.md)（`docs/scripts/touhouhelper.py.md`） |
 | Trae 每日签到与积分查询 | `scripts/trae_checkin.py` | `python3 scripts/trae_checkin.py` | `7,23,37 * * * *` | 待检查 | [trae_checkin.py.md](../scripts/trae_checkin.py.md)（`docs/scripts/trae_checkin.py.md`） |
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `19 1 * * *` | 待检查 | [tsthb_checkin.py.md](../scripts/tsthb_checkin.py.md)（`docs/scripts/tsthb_checkin.py.md`） |
 | ViewTurbo 每日签到 | `scripts/turbo.py` | `python3 scripts/turbo.py` | `10 8 * * *` | 待检查 | [turbo.py.md](../scripts/turbo.py.md)（`docs/scripts/turbo.py.md`） |
@@ -258,6 +288,7 @@
 | Vortexa 免费主机检查与领取 | `scripts/vortexa_free_claim.js` | `node scripts/vortexa_free_claim.js` | `1,11,21,31,41,51 * * * *` | 待检查 | [vortexa_free_claim.js.md](../scripts/vortexa_free_claim.js.md)（`docs/scripts/vortexa_free_claim.js.md`） |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `11 2 * * *` | 待检查 | [wangchao.py.md](../scripts/wangchao.py.md)（`docs/scripts/wangchao.py.md`） |
 | 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
+| Web3Go每日签到 | `scripts/web3go.js` | `node scripts/web3go.js` | `48 8 * * *` | 待检查 | [web3go.js.md](../scripts/web3go.js.md)（`docs/scripts/web3go.js.md`） |
 | CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |
 | 蔚来APP每日签到 | `scripts/weilai_auto_checkin.js` | `node scripts/weilai_auto_checkin.js` | `8 9 * * *` | 待检查 | [weilai_auto_checkin.js.md](../scripts/weilai_auto_checkin.js.md)（`docs/scripts/weilai_auto_checkin.js.md`） |
@@ -274,6 +305,7 @@
 | 新南方职培学院签到 | `scripts/xnfedu_checkin.py` | `python3 scripts/xnfedu_checkin.py` | `13 8 * * *` | 待检查 | [xnfedu_checkin.py.md](../scripts/xnfedu_checkin.py.md)（`docs/scripts/xnfedu_checkin.py.md`） |
 | 学姐吧每日签到 | `scripts/xuejieba.js` | `node scripts/xuejieba.js` | `0 50 11 * * *` | 待检查 | [xuejieba.js.md](../scripts/xuejieba.js.md)（`docs/scripts/xuejieba.js.md`） |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `27 2 * * *` | 待检查 | [yht.py.md](../scripts/yht.py.md)（`docs/scripts/yht.py.md`） |
+| 羿文教育积分签到 | `scripts/yiwenjiaoyu.py` | `python3 scripts/yiwenjiaoyu.py` | `52 8 * * *` | 待检查 | [yiwenjiaoyu.py.md](../scripts/yiwenjiaoyu.py.md)（`docs/scripts/yiwenjiaoyu.py.md`） |
 | 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `55 0 * * *` | 待检查 | [youdao.py.md](../scripts/youdao.py.md)（`docs/scripts/youdao.py.md`） |
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `28 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
 | 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `39 2 * * *` | 待检查 | [yyshuijuantime.py.md](../scripts/yyshuijuantime.py.md)（`docs/scripts/yyshuijuantime.py.md`） |

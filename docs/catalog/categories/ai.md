@@ -1,11 +1,12 @@
 # 分类索引 · AI服务
 
-共 **11** 个脚本。返回 [`目录首页`](../README.md)。
+共 **12** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | EUserv 自动续期 | `scripts/ck_euserv.py` | `python3 scripts/ck_euserv.py` | `56 10 */7 * *` | 待检查 | [ck_euserv.py.md](../../scripts/ck_euserv.py.md)（`docs/scripts/ck_euserv.py.md`） |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `16 8 * * *` | 待检查 | [codearts_daily.py.md](../../scripts/codearts_daily.py.md)（`docs/scripts/codearts_daily.py.md`） |
+| 今日校园信息收集 | `scripts/dailycp.py` | `python3 scripts/dailycp.py` | `57 8 * * *` | 待检查 | [dailycp.py.md](../../scripts/dailycp.py.md)（`docs/scripts/dailycp.py.md`） |
 | 中国日报 | `scripts/dailynewscn.js` | `node scripts/dailynewscn.js` | `0 15 9 * * *` | 待检查 | [dailynewscn.js.md](../../scripts/dailynewscn.js.md)（`docs/scripts/dailynewscn.js.md`） |
 | i茅台申购与耐力 | `scripts/imaotai.py` | `python3 scripts/imaotai.py` | `38 2 * * *` | 待检查 | [imaotai.py.md](../../scripts/imaotai.py.md)（`docs/scripts/imaotai.py.md`） |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `22 8,14,20 * * *` | 上架 | [kuaishou_reward_status.py.md](../../scripts/kuaishou_reward_status.py.md)（`docs/scripts/kuaishou_reward_status.py.md`） |

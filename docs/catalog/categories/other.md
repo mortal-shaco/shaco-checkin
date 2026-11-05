@@ -1,6 +1,6 @@
 # 分类索引 · 其他
 
-共 **20** 个脚本。返回 [`目录首页`](../README.md)。
+共 **24** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -17,9 +17,13 @@
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `48 1 * * *` | 待检查 | [index.js.md](../../scripts/index.js.md)（`docs/scripts/index.js.md`） |
 | LINUX DO 登录与浏览统计 | `scripts/l.py` | `python3 scripts/l.py` | `37 */5 * * *` | 待检查 | [l.py.md](../../scripts/l.py.md)（`docs/scripts/l.py.md`） |
 | 小米运动账号验证与步数上传 | `scripts/mimotion.py` | `python3 scripts/mimotion.py` | `46 0 * * *` | 待检查 | [mimotion.py.md](../../scripts/mimotion.py.md)（`docs/scripts/mimotion.py.md`） |
+| 成都大学ISP每日登记 | `scripts/services.js` | `node scripts/services.js` | `1 7 * * *` | 待检查 | [services.js.md](../../scripts/services.js.md)（`docs/scripts/services.js.md`） |
 | SSL证书检查 | `scripts/ssl_cert_check.py` | `python3 scripts/ssl_cert_check.py` | `10 2 * * *` | 待检查 | [ssl_cert_check.py.md](../../scripts/ssl_cert_check.py.md)（`docs/scripts/ssl_cert_check.py.md`） |
 | 雀巢会员 | `scripts/sudojia_nestle.js` | `node scripts/sudojia_nestle.js` | `30 2 * * *` | 待检查 | [sudojia_nestle.js.md](../../scripts/sudojia_nestle.js.md)（`docs/scripts/sudojia_nestle.js.md`） |
 | Taker每日挖矿 | `scripts/taker.js` | `node scripts/taker.js` | `26 8 * * *` | 待检查 | [taker.js.md](../../scripts/taker.js.md)（`docs/scripts/taker.js.md`） |
+| 昆明医科大疫情健康填报 | `scripts/task_4f815667.py` | `python3 scripts/task_4f815667.py` | `43 8 * * *` | 待检查 | [task_4f815667.py.md](../../scripts/task_4f815667.py.md)（`docs/scripts/task_4f815667.py.md`） |
+| 工软校园健康填报 | `scripts/task_64f5e3fd.py` | `python3 scripts/task_64f5e3fd.py` | `47 8 * * *` | 待检查 | [task_64f5e3fd.py.md](../../scripts/task_64f5e3fd.py.md)（`docs/scripts/task_64f5e3fd.py.md`） |
+| 昆医大疫情防控填报 | `scripts/task_8f8ad2c5.py` | `python3 scripts/task_8f8ad2c5.py` | `53 7,15 * * *` | 待检查 | [task_8f8ad2c5.py.md](../../scripts/task_8f8ad2c5.py.md)（`docs/scripts/task_8f8ad2c5.py.md`） |
 | 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` | 待检查 | [tyqhdraw.py.md](../../scripts/tyqhdraw.py.md)（`docs/scripts/tyqhdraw.py.md`） |
 | 掌瓦每日商店推送 | `scripts/valorantstore.py` | `python3 scripts/valorantstore.py` | `10 0 * * *` | 待检查 | [valorantstore.py.md](../../scripts/valorantstore.py.md)（`docs/scripts/valorantstore.py.md`） |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `11 2 * * *` | 待检查 | [wangchao.py.md](../../scripts/wangchao.py.md)（`docs/scripts/wangchao.py.md`） |

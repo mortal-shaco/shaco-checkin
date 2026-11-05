@@ -1,10 +1,11 @@
 # 字母索引 · S
 
-共 **65** 个脚本。返回 [`目录首页`](../README.md)。
+共 **67** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | eatASMR每日签到 | `scripts/scf_eat.py` | `python3 scripts/scf_eat.py` | `37 8 * * *` | 待检查 | [scf_eat.py.md](../../scripts/scf_eat.py.md)（`docs/scripts/scf_eat.py.md`） |
+| 成都大学ISP每日登记 | `scripts/services.js` | `node scripts/services.js` | `1 7 * * *` | 待检查 | [services.js.md](../../scripts/services.js.md)（`docs/scripts/services.js.md`） |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |
 | 申工社每日任务 | `scripts/sgs.py` | `python3 scripts/sgs.py` | `43 0 * * *` | 待检查 | [sgs.py.md](../../scripts/sgs.py.md)（`docs/scripts/sgs.py.md`） |
@@ -13,6 +14,7 @@
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `15 1 * * *` | 待检查 | [smzdm_checkin.js.md](../../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
 | SSL证书检查 | `scripts/ssl_cert_check.py` | `python3 scripts/ssl_cert_check.py` | `10 2 * * *` | 待检查 | [ssl_cert_check.py.md](../../scripts/ssl_cert_check.py.md)（`docs/scripts/ssl_cert_check.py.md`） |
+| 长江雨课堂课堂签到 | `scripts/startup.py` | `python3 scripts/startup.py` | `*/5 8-18 * * 1-5` | 待检查 | [startup.py.md](../../scripts/startup.py.md)（`docs/scripts/startup.py.md`） |
 | 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `24 0 * * *` | 待检查 | [sudojia_33agilestudio.js.md](../../scripts/sudojia_33agilestudio.js.md)（`docs/scripts/sudojia_33agilestudio.js.md`） |
 | 所有女生会员签到 | `scripts/sudojia_allgirls.js` | `node scripts/sudojia_allgirls.js` | `33 2 * * *` | 待检查 | [sudojia_allgirls.js.md](../../scripts/sudojia_allgirls.js.md)（`docs/scripts/sudojia_allgirls.js.md`） |
 | 安慕希每日签到 | `scripts/sudojia_amx.js` | `node scripts/sudojia_amx.js` | `25 0 * * *` | 待检查 | [sudojia_amx.js.md](../../scripts/sudojia_amx.js.md)（`docs/scripts/sudojia_amx.js.md`） |
