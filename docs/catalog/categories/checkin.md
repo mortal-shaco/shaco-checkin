@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **282** 个脚本。返回 [`目录首页`](../README.md)。
+共 **283** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -152,6 +152,7 @@
 | 哔咔漫画每日打卡 | `scripts/pica_punch.py` | `python3 scripts/pica_punch.py` | `45 5 * * *` | 待检查 | [pica_punch.py.md](../../scripts/pica_punch.py.md)（`docs/scripts/pica_punch.py.md`） |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
+| 佛山职院企微学工签到 | `scripts/python.py` | `python3 scripts/python.py` | `*/5 7-22 * * *` | 待检查 | [python.py.md](../../scripts/python.py.md)（`docs/scripts/python.py.md`） |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
 | QQ音乐超级会员福利站签到 | `scripts/qqmusic_checkin.py` | `python3 scripts/qqmusic_checkin.py` | `22 9 * * *` | 待检查 | [qqmusic_checkin.py.md](../../scripts/qqmusic_checkin.py.md)（`docs/scripts/qqmusic_checkin.py.md`） |
 | 一亩三分地每日签到答题 | `scripts/raw_requests.py` | `python3 scripts/raw_requests.py` | `51 8 * * *` | 待检查 | [raw_requests.py.md](../../scripts/raw_requests.py.md)（`docs/scripts/raw_requests.py.md`） |

@@ -187,6 +187,7 @@
 | 哔咔漫画每日打卡 | `scripts/pica_punch.py` | `python3 scripts/pica_punch.py` | `45 5 * * *` | 待检查 | [pica_punch.py.md](../scripts/pica_punch.py.md)（`docs/scripts/pica_punch.py.md`） |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
+| 佛山职院企微学工签到 | `scripts/python.py` | `python3 scripts/python.py` | `*/5 7-22 * * *` | 待检查 | [python.py.md](../scripts/python.py.md)（`docs/scripts/python.py.md`） |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
 | QQ音乐超级会员福利站签到 | `scripts/qqmusic_checkin.py` | `python3 scripts/qqmusic_checkin.py` | `22 9 * * *` | 待检查 | [qqmusic_checkin.py.md](../scripts/qqmusic_checkin.py.md)（`docs/scripts/qqmusic_checkin.py.md`） |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `15 0 * * *` | 待检查 | [quark_signin.py.md](../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
