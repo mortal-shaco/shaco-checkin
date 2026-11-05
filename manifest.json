@@ -27579,8 +27579,8 @@
           "MAX_RANDOM_DELAY",
           "NS_STATS_DAYS",
           "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "NODESEEK_DRY_RUN": "1"
@@ -27590,11 +27590,13 @@
           "RANDOM_SIGNIN": "false",
           "MAX_RANDOM_DELAY": "3600",
           "NS_STATS_DAYS": "30",
-          "QINGLONG_NOTIFY": "1"
+          "QINGLONG_NOTIFY": "0"
         },
         "successPatterns": [
           "状态: 成功",
-          "失败: 0"
+          "失败: 0",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
         ],
         "features": [
           "NodeSeek 每日签到",
@@ -27615,7 +27617,7 @@
       },
       "displayName": "NodeSeek 论坛签到",
       "path": "scripts/nodeseek_checkin.py",
-      "sha256": "7d8101e1f88c13334a3dea45da26d20fa72a4b685f5229283469c7869e0038b2",
+      "sha256": "c889eb4ffff6b3ffcf4656b23919843e7eaf51103b5df3291d8ff76d1a2f503f",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -27623,7 +27625,19 @@
         "repository": "agluo/ql-script-hub",
         "branch": "master",
         "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-        "originalPath": "nodeseek_checkin.py"
+        "originalPath": "nodeseek_checkin.py",
+        "related": [
+          {
+            "repository": "xinycai/nodeseek_signin",
+            "url": "https://github.com/xinycai/nodeseek_signin",
+            "branch": "main",
+            "commit": "fa01142b1868910c2e04b72b0474e76eefa4d81c",
+            "originalPath": "nodeseek_signin.py",
+            "catalogId": "b1e960be4d85f4e6",
+            "sha256": "3ebb410bae21c0e1b3948dc95c79c60feab6c751d71e6eb8672b76d231e38aff",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "41 0 * * *",
       "command": "python3 scripts/nodeseek_checkin.py",
@@ -27632,15 +27646,15 @@
           "name": "NODESEEK_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录 nodeseek.com，打开浏览器开发者工具的 Network，刷新页面，选择同站请求，复制 Request Headers 中完整的 cookie 值。请妥善保存，不要发送给他人。",
-          "format": "每个账号一个非空行，每行为完整 Cookie 请求头值；Cookie 内的 & 和 @ 保持原样"
+          "howToGet": "登录 https://www.nodeseek.com 后打开浏览器开发者工具 → Network，刷新页面，选择同站请求，复制 Request Headers 中完整的 cookie 值（不含 Cookie: 前缀）。请勿分享或写入公开仓库。",
+          "format": "每个非空行一个账号的完整 Cookie；Cookie 内的 &、@、; 保持原样，不用它们分隔账号"
         },
         {
           "name": "NODESEEK_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "手动设置为 1 以执行断网配置预演",
-          "format": "1/true/yes/on 表示启用"
+          "howToGet": "需要完全断网预演时手动设置为 1",
+          "format": "1/true/yes/on 启用"
         },
         {
           "name": "NS_RANDOM",
@@ -27653,21 +27667,21 @@
           "name": "RANDOM_SIGNIN",
           "required": false,
           "sensitive": false,
-          "howToGet": "如需在时间窗口内错峰执行则设为 true",
+          "howToGet": "如需多账号在时间窗口内错峰执行则设为 true；默认关闭，避免强制长等待",
           "format": "布尔值，默认 false"
         },
         {
           "name": "MAX_RANDOM_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "自定义错峰时间窗口",
+          "howToGet": "自定义错峰时间窗口上限",
           "format": "0..86400 整数秒，默认 3600"
         },
         {
           "name": "NS_STATS_DAYS",
           "required": false,
           "sensitive": false,
-          "howToGet": "自定义签到收益统计窗口",
+          "howToGet": "自定义近 N 天签到鸡腿收益统计窗口",
           "format": "1..365 整数天，默认 30"
         },
         {
@@ -27678,24 +27692,24 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要按脚本白名单启用通知时设置；空值表示全部禁用",
+          "format": "catalog-id、脚本路径、文件名或 glob，可用逗号/分号/空白/换行分隔；* 表示全部"
+        },
+        {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
           "howToGet": "仅当青龙通知脚本不在默认路径时，设为 notify.py 或 sendNotify.js 所在目录",
           "format": "本地目录绝对路径"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一失败时进程整体非零退出"
+        "rule": "NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任一账号失败时进程整体非零退出"
       },
       "dependencies": [],
       "features": [
@@ -27721,25 +27735,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/4196e654f2a752f8",
-        "candidateSha256": "8dde0f5d49686dd145732a5b58cab8dc5dd9e0916ef7d53eed095c398aa7f720"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "8dde0f5d49686dd145732a5b58cab8dc5dd9e0916ef7d53eed095c398aa7f720",
-        "releaseSha256": "7d8101e1f88c13334a3dea45da26d20fa72a4b685f5229283469c7869e0038b2",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.159961+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "8dde0f5d49686dd145732a5b58cab8dc5dd9e0916ef7d53eed095c398aa7f720",
-          "toCandidateSha256": "7d8101e1f88c13334a3dea45da26d20fa72a4b685f5229283469c7869e0038b2",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
+        "candidateSha256": "c889eb4ffff6b3ffcf4656b23919843e7eaf51103b5df3291d8ff76d1a2f503f"
       }
     },
     {
