@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **222** 个脚本。返回 [`目录首页`](../README.md)。
+共 **223** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -32,6 +32,7 @@
 | Bailanjo 自动签到 | `scripts/bailanjo_checkin.py` | `python3 scripts/bailanjo_checkin.py` | `31 2 * * *` | 待检查 | [bailanjo_checkin.py.md](../../scripts/bailanjo_checkin.py.md)（`docs/scripts/bailanjo_checkin.py.md`） |
 | AcFun Cookie每日任务 | `scripts/beacherz_dailycheckin_plus_acfun.py` | `python3 scripts/beacherz_dailycheckin_plus_acfun.py` | `21 0 * * *` | 待检查 | [beacherz_dailycheckin_plus_acfun.py.md](../../scripts/beacherz_dailycheckin_plus_acfun.py.md)（`docs/scripts/beacherz_dailycheckin_plus_acfun.py.md`） |
 | B站每日任务 | `scripts/bilibili.py` | `python3 scripts/bilibili.py` | `6 2 * * *` | 待检查 | [bilibili.py.md](../../scripts/bilibili.py.md)（`docs/scripts/bilibili.py.md`） |
+| Holmes AI 每日签到 | `scripts/bot.py` | `python3 scripts/bot.py` | `14 8 * * *` | 待检查 | [bot.py.md](../../scripts/bot.py.md)（`docs/scripts/bot.py.md`） |
 | 布谷TV每日签到 | `scripts/bugutv.py` | `python3 scripts/bugutv.py` | `12 1 * * *` | 待检查 | [bugutv.py.md](../../scripts/bugutv.py.md)（`docs/scripts/bugutv.py.md`） |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `31 9,18 * * *` | 待检查 | [bwcj.py.md](../../scripts/bwcj.py.md)（`docs/scripts/bwcj.py.md`） |
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
