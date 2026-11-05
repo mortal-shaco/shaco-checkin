@@ -1,10 +1,9 @@
 # 字母索引 · F
 
-共 **7** 个脚本。返回 [`目录首页`](../README.md)。
+共 **6** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
-| 森空岛自动签到 | `scripts/f1owkang_qingskyland_skyland.py` | `python3 scripts/f1owkang_qingskyland_skyland.py` | `22 2 * * *` | 待检查 | [f1owkang_qingskyland_skyland.py.md](../../scripts/f1owkang_qingskyland_skyland.py.md)（`docs/scripts/f1owkang_qingskyland_skyland.py.md`） |
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
 | Discuz 论坛日常维护 | `scripts/forum_download.py` | `python3 scripts/forum_download.py` | `29 2 * * *` | 待检查 | [forum_download.py.md](../../scripts/forum_download.py.md)（`docs/scripts/forum_download.py.md`） |

@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **219** 个脚本。返回 [`目录首页`](../README.md)。
+共 **218** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -67,7 +67,6 @@
 | 终末地签到 | `scripts/endfield_auto_signin.py` | `python3 scripts/endfield_auto_signin.py` | `35 8 * * *` | 待检查 | [endfield_auto_signin.py.md](../../scripts/endfield_auto_signin.py.md)（`docs/scripts/endfield_auto_signin.py.md`） |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `12 1 1 1 1` | 待检查 | [erke.py.md](../../scripts/erke.py.md)（`docs/scripts/erke.py.md`） |
-| 森空岛自动签到 | `scripts/f1owkang_qingskyland_skyland.py` | `python3 scripts/f1owkang_qingskyland_skyland.py` | `22 2 * * *` | 待检查 | [f1owkang_qingskyland_skyland.py.md](../../scripts/f1owkang_qingskyland_skyland.py.md)（`docs/scripts/f1owkang_qingskyland_skyland.py.md`） |
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
 | Discuz 论坛日常维护 | `scripts/forum_download.py` | `python3 scripts/forum_download.py` | `29 2 * * *` | 待检查 | [forum_download.py.md](../../scripts/forum_download.py.md)（`docs/scripts/forum_download.py.md`） |
