@@ -269,7 +269,6 @@
 | 学姐吧每日签到 | `scripts/xuejieba.js` | `node scripts/xuejieba.js` | `0 50 11 * * *` | 待检查 | [xuejieba.js.md](../scripts/xuejieba.js.md)（`docs/scripts/xuejieba.js.md`） |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `27 2 * * *` | 待检查 | [yht.py.md](../scripts/yht.py.md)（`docs/scripts/yht.py.md`） |
 | 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `55 0 * * *` | 待检查 | [youdao.py.md](../scripts/youdao.py.md)（`docs/scripts/youdao.py.md`） |
-| 哔哩哔哩每日任务 | `scripts/yuxian158_check_bilibili.py` | `python3 scripts/yuxian158_check_bilibili.py` | `2 0 * * *` | 待检查 | [yuxian158_check_bilibili.py.md](../scripts/yuxian158_check_bilibili.py.md)（`docs/scripts/yuxian158_check_bilibili.py.md`） |
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `28 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
 | 时光相册每日签到 | `scripts/yuxian158_check_everphoto.py` | `python3 scripts/yuxian158_check_everphoto.py` | `28 1 * * *` | 待检查 | [yuxian158_check_everphoto.py.md](../scripts/yuxian158_check_everphoto.py.md)（`docs/scripts/yuxian158_check_everphoto.py.md`） |
 | 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `39 2 * * *` | 待检查 | [yyshuijuantime.py.md](../scripts/yyshuijuantime.py.md)（`docs/scripts/yyshuijuantime.py.md`） |

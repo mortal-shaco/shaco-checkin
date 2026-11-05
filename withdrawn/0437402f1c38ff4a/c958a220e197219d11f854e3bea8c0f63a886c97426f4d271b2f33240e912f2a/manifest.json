@@ -1,0 +1,302 @@
+{
+  "catalogId": "0437402f1c38ff4a",
+  "applicationKey": "yuxian158/check::bilibili",
+  "checkProfile": {
+    "requiredEnv": [
+      "BILIBILI_COOKIE"
+    ],
+    "optionalEnv": [
+      "BILIBILI_DRY_RUN",
+      "BILIBILI_MANGA_SIGN",
+      "BILIBILI_LIVE_SIGN",
+      "BILIBILI_WATCH",
+      "BILIBILI_SHARE",
+      "BILIBILI_COIN_NUM",
+      "BILIBILI_COIN_TYPE",
+      "BILIBILI_SELECT_LIKE",
+      "BILIBILI_VIP_RECEIVE",
+      "BILIBILI_VIP_MANGA",
+      "BILIBILI_ELEC_NUM",
+      "BILIBILI_ELEC_UID",
+      "BILIBILI_AID",
+      "BILIBILI_CID",
+      "BILIBILI_PROGRESS",
+      "BILIBILI_REGION",
+      "BILIBILI_TIMEOUT",
+      "QINGLONG_NOTIFY",
+      "QINGLONG_NOTIFY_SCRIPTS",
+      "QINGLONG_NOTIFY_DIR"
+    ],
+    "dryRunEnv": {
+      "BILIBILI_DRY_RUN": "1"
+    },
+    "liveEnv": {
+      "BILIBILI_MANGA_SIGN": "1",
+      "BILIBILI_LIVE_SIGN": "1",
+      "BILIBILI_WATCH": "0",
+      "BILIBILI_SHARE": "0",
+      "BILIBILI_COIN_NUM": "0",
+      "BILIBILI_COIN_TYPE": "1",
+      "BILIBILI_SELECT_LIKE": "0",
+      "BILIBILI_VIP_RECEIVE": "0",
+      "BILIBILI_VIP_MANGA": "0",
+      "BILIBILI_ELEC_NUM": "0",
+      "BILIBILI_ELEC_UID": "0",
+      "BILIBILI_AID": "0",
+      "BILIBILI_CID": "0",
+      "BILIBILI_PROGRESS": "300",
+      "BILIBILI_REGION": "1",
+      "BILIBILI_TIMEOUT": "15",
+      "QINGLONG_NOTIFY": "auto"
+    },
+    "successPatterns": [
+      "最终状态：success",
+      "\"status\":\"success\"",
+      "每日经验及已启用动作验证通过"
+    ],
+    "features": [
+      "验证登录状态，并显示官方接口返回的昵称和公开 UID",
+      "执行哔哩哔哩漫画每日签到和直播每日签到",
+      "查询每日经验完成情况、当前经验、硬币余额以及直播金银瓜子余额",
+      "按显式开关上报视频观看进度和登记视频分享计数",
+      "按每日目标为分区视频或关注用户投稿投币，并可选择同时点赞",
+      "按显式开关领取大会员 B 币券、优惠券和漫画大会员福利",
+      "按显式数量和公开 UID 为指定 UP 主充电",
+      "支持每行一个 Cookie 的多账号独立执行、断网预演、脱敏统计和青龙通知"
+    ],
+    "sideEffects": [
+      "默认执行漫画签到和直播签到",
+      "开启观看任务后写入视频观看进度",
+      "开启分享任务后增加视频分享计数，但不发布文字内容",
+      "设置投币数量后消耗硬币，并可在显式开启时同时点赞视频",
+      "开启大会员任务后领取 B 币券、优惠券或漫画福利",
+      "设置充电数量及目标 UID 后消耗 B 币为指定 UP 主充电"
+    ]
+  },
+  "postReview": {
+    "catalogId": "0437402f1c38ff4a",
+    "releaseSha256": "c958a220e197219d11f854e3bea8c0f63a886c97426f4d271b2f33240e912f2a",
+    "decision": "withdrawn",
+    "decidedAt": "2026-11-05T03:45:36.767309+00:00",
+    "approvedBy": "mortal-shaco",
+    "applicationKey": "yuxian158/check::bilibili"
+  },
+  "displayName": "哔哩哔哩每日任务",
+  "path": "scripts/yuxian158_check_bilibili.py",
+  "sha256": "c958a220e197219d11f854e3bea8c0f63a886c97426f4d271b2f33240e912f2a",
+  "stage": "withdrawn",
+  "license": "MIT",
+  "licenseGate": "allowed-permissive",
+  "source": {
+    "repository": "yuxian158/check",
+    "branch": "master",
+    "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
+    "originalPath": "dailycheckin_scripts/ck_bilibili.py"
+  },
+  "cron": "2 0 * * *",
+  "command": "python3 scripts/yuxian158_check_bilibili.py",
+  "environment": [
+    {
+      "name": "BILIBILI_COOKIE",
+      "required": true,
+      "sensitive": true,
+      "howToGet": "登录哔哩哔哩网页后，打开浏览器开发者工具的网络面板，从本人发往 api.bilibili.com 的请求中复制完整 Cookie 值，不要包含 Cookie: 请求头名称。",
+      "format": "每行一个账号；每行是以分号分隔的名称=值字段，且必须包含 SESSDATA 和 bili_jct。字段按首个等号切分，值中的后续等号会保留。"
+    },
+    {
+      "name": "BILIBILI_DRY_RUN",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；需要完全断网预演时自行设置。",
+      "format": "布尔值，1、true、yes、on 表示开启；默认 0。"
+    },
+    {
+      "name": "BILIBILI_MANGA_SIGN",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；用于控制漫画签到。",
+      "format": "布尔值；默认 1，关闭后不执行漫画签到。"
+    },
+    {
+      "name": "BILIBILI_LIVE_SIGN",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；用于控制直播签到。",
+      "format": "布尔值；默认 1，关闭后不执行直播签到。"
+    },
+    {
+      "name": "BILIBILI_WATCH",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；确认接受写入观看进度后自行开启。",
+      "format": "布尔值；默认 0。"
+    },
+    {
+      "name": "BILIBILI_SHARE",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；确认接受增加视频分享计数后自行开启。",
+      "format": "布尔值；默认 0。此动作不发布文字内容。"
+    },
+    {
+      "name": "BILIBILI_COIN_NUM",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；按希望完成的每日投币数量设置。",
+      "format": "0 至 5 的整数；默认 0，表示不投币。"
+    },
+    {
+      "name": "BILIBILI_COIN_TYPE",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；选择投币候选视频范围。",
+      "format": "0 或 1；默认 1，优先加入关注用户投稿，0 仅使用分区视频。"
+    },
+    {
+      "name": "BILIBILI_SELECT_LIKE",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；需要投币时同时点赞才开启。",
+      "format": "布尔值；默认 0，仅在投币动作中生效。"
+    },
+    {
+      "name": "BILIBILI_VIP_RECEIVE",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；大会员账号需要领取 B 币券和优惠券时自行开启。",
+      "format": "布尔值；默认 0。"
+    },
+    {
+      "name": "BILIBILI_VIP_MANGA",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；需要领取漫画大会员福利时自行开启。",
+      "format": "布尔值；默认 0。"
+    },
+    {
+      "name": "BILIBILI_ELEC_NUM",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；确认接受消耗 B 币充电后设置电池数量。",
+      "format": "0 至 10000 的整数；默认 0，表示不充电。非零时必须同时设置 BILIBILI_ELEC_UID。"
+    },
+    {
+      "name": "BILIBILI_ELEC_UID",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "从拟充电 UP 主的公开个人空间地址或公开资料中取得 UID。",
+      "format": "非负整数 UID；默认 0。"
+    },
+    {
+      "name": "BILIBILI_AID",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "从拟操作视频的公开页面或接口资料中取得 AV 号；不设置时自动选择分区视频。",
+      "format": "非负整数；默认 0。"
+    },
+    {
+      "name": "BILIBILI_CID",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "从拟操作视频的公开页面数据中取得 CID；不设置时由视频详情接口查询。",
+      "format": "非负整数；默认 0。"
+    },
+    {
+      "name": "BILIBILI_PROGRESS",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；按需要设置观看进度秒数。",
+      "format": "1 至 86400 的整数；默认 300，仅在观看上报开启时生效。"
+    },
+    {
+      "name": "BILIBILI_REGION",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "从哔哩哔哩公开分区资料中选择分区编号。",
+      "format": "1 至 10000 的整数；默认 1。"
+    },
+    {
+      "name": "BILIBILI_TIMEOUT",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "无需获取；按网络状况设置单次请求超时。",
+      "format": "1 至 60 的整数秒；默认 15。"
+    },
+    {
+      "name": "QINGLONG_NOTIFY",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+      "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+    },
+    {
+      "name": "QINGLONG_NOTIFY_SCRIPTS",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "青龙通知脚本选择器，无需从哔哩哔哩获取。",
+      "format": "以逗号、分号、空白或换行分隔选择器；支持目录路径、文件名、通配符、catalogId 和 *；设置为空表示全部关闭。"
+    },
+    {
+      "name": "QINGLONG_NOTIFY_DIR",
+      "required": false,
+      "sensitive": false,
+      "howToGet": "填写青龙 notify.py 所在目录；通常无需设置，脚本会检查青龙标准位置。",
+      "format": "本机目录路径，不要填写脚本文件名。"
+    }
+  ],
+  "multiAccount": {
+    "supported": true,
+    "separator": "newline",
+    "rule": "BILIBILI_COOKIE 中每个非空行表示一个账号；各账号独立处理，任一账号失败时进程整体返回非零状态。"
+  },
+  "dependencies": [],
+  "features": [
+    "验证登录状态，并显示官方接口返回的昵称和公开 UID",
+    "执行哔哩哔哩漫画每日签到和直播每日签到",
+    "查询每日经验完成情况、当前经验、硬币余额以及直播金银瓜子余额",
+    "按显式开关上报视频观看进度和登记视频分享计数",
+    "按每日目标为分区视频或关注用户投稿投币，并可选择同时点赞",
+    "按显式开关领取大会员 B 币券、优惠券和漫画大会员福利",
+    "按显式数量和公开 UID 为指定 UP 主充电",
+    "支持每行一个 Cookie 的多账号独立执行、断网预演、脱敏统计和青龙通知"
+  ],
+  "sideEffects": [
+    "默认执行漫画签到和直播签到",
+    "开启观看任务后写入视频观看进度",
+    "开启分享任务后增加视频分享计数，但不发布文字内容",
+    "设置投币数量后消耗硬币，并可在显式开启时同时点赞视频",
+    "开启大会员任务后领取 B 币券、优惠券或漫画福利",
+    "设置充电数量及目标 UID 后消耗 B 币为指定 UP 主充电"
+  ],
+  "review": {
+    "staticPassed": true,
+    "sandboxPassed": false,
+    "humanAccepted": false,
+    "sideEffectsReviewed": true
+  },
+  "validation": {
+    "status": "basic-passed",
+    "businessResult": "not-verified",
+    "mode": "basic",
+    "evidence": "projects/checkin/validation/0437402f1c38ff4a",
+    "candidateSha256": "57a86f3a704171affc47f60bbb8e60485259cc81f29a78508bc787c3a491d95d"
+  },
+  "packaging": {
+    "type": "qinglong-release-normalization",
+    "validatedSha256": "57a86f3a704171affc47f60bbb8e60485259cc81f29a78508bc787c3a491d95d",
+    "releaseSha256": "c958a220e197219d11f854e3bea8c0f63a886c97426f4d271b2f33240e912f2a",
+    "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+    "reuseAttestation": {
+      "component": "qinglong-notification",
+      "approvedBy": "mortal-shaco",
+      "approvedAt": "2026-10-19T01:39:26.259714+00:00",
+      "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+      "fromCandidateSha256": "57a86f3a704171affc47f60bbb8e60485259cc81f29a78508bc787c3a491d95d",
+      "toCandidateSha256": "c958a220e197219d11f854e3bea8c0f63a886c97426f4d271b2f33240e912f2a",
+      "businessInterfaceUnchanged": true,
+      "parameterParsingUnchanged": true,
+      "successCriteriaUnchanged": true,
+      "sideEffectsUnchanged": true
+    }
+  }
+}
