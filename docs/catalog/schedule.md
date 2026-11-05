@@ -52,6 +52,7 @@
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `3 1 * * *` | 待检查 | [cdrail.py.md](../scripts/cdrail.py.md)（`docs/scripts/cdrail.py.md`） |
 | 超星学习通巡课签到 | `scripts/chaoxing_assistant.js` | `node scripts/chaoxing_assistant.js` | `*/10 7-22 * * *` | 待检查 | [chaoxing_assistant.js.md](../scripts/chaoxing_assistant.js.md)（`docs/scripts/chaoxing_assistant.js.md`） |
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
+| VManAPI 每日签到 | `scripts/check_in.py` | `python3 scripts/check_in.py` | `23 8 * * *` | 待检查 | [check_in.py.md](../scripts/check_in.py.md)（`docs/scripts/check_in.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | 词霸每日一句 | `scripts/ciba.js` | `node scripts/ciba.js` | `0 25 11 * * *` | 待检查 | [ciba.js.md](../scripts/ciba.js.md)（`docs/scripts/ciba.js.md`） |
 | AcFun每日签到与可选互动 | `scripts/ck_acfun.py` | `python3 scripts/ck_acfun.py` | `20 0 * * *` | 待检查 | [ck_acfun.py.md](../scripts/ck_acfun.py.md)（`docs/scripts/ck_acfun.py.md`） |
@@ -78,6 +79,7 @@
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `22 10,14,18 * * *` | 待检查 | [dachao.py.md](../scripts/dachao.py.md)（`docs/scripts/dachao.py.md`） |
 | 大海资源站每日签到 | `scripts/dahai.js` | `node scripts/dahai.js` | `0 30 11 * * *` | 待检查 | [dahai.js.md](../scripts/dahai.js.md)（`docs/scripts/dahai.js.md`） |
 | WPS天天领福利（可选任务中心） | `scripts/daily_benefits.py` | `python3 scripts/daily_benefits.py` | `47 1 1 1 1` | 待检查 | [daily_benefits.py.md](../scripts/daily_benefits.py.md)（`docs/scripts/daily_benefits.py.md`） |
+| PSY 每日签到 | `scripts/daily_checkin.py` | `python3 scripts/daily_checkin.py` | `21 8 * * *` | 待检查 | [daily_checkin.py.md](../scripts/daily_checkin.py.md)（`docs/scripts/daily_checkin.py.md`） |
 | 二重螺旋皎皎角每日任务 | `scripts/daily_tasks.py` | `python3 scripts/daily_tasks.py` | `3 8 * * *` | 待检查 | [daily_tasks.py.md](../scripts/daily_tasks.py.md)（`docs/scripts/daily_tasks.py.md`） |
 | 中国日报 | `scripts/dailynewscn.js` | `node scripts/dailynewscn.js` | `0 15 9 * * *` | 待检查 | [dailynewscn.js.md](../scripts/dailynewscn.js.md)（`docs/scripts/dailynewscn.js.md`） |
 | 大物是也签到 | `scripts/dawushiye.py` | `python3 scripts/dawushiye.py` | `7 8 * * *` | 待检查 | [dawushiye.py.md](../scripts/dawushiye.py.md)（`docs/scripts/dawushiye.py.md`） |
