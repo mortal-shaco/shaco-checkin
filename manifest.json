@@ -42633,6 +42633,176 @@
       }
     },
     {
+      "catalogId": "7a56bf211c074a00",
+      "applicationKey": "cy920820/hao4k-signin-action::signin",
+      "checkProfile": {
+        "requiredEnv": [
+          "HAO4K_ACCOUNT"
+        ],
+        "optionalEnv": [
+          "HAO4K_USERNAME",
+          "HAO4K_PASSWORD",
+          "HAO4K_TIMEOUT",
+          "HAO4K_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HAO4K_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "HAO4K_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用账号密码登录 www.hao4k.cn Discuz 论坛",
+          "打开 k_misign 签到页并识别今日已签到（您的签到排名）",
+          "提取 formhash 执行 k_misign 签到，再回读确认页验证成功",
+          "展示可解析的非敏感用户显示名，隐藏密码与原始响应",
+          "多账号逐行配置、独立执行及任一失败非零退出",
+          "完全断网预演、编号阶段与耗时、账号及子任务统计、单行 TASK_SUMMARY",
+          "按青龙通知策略发送脱敏汇总，通知不可用不改变业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行时向 www.hao4k.cn 提交登录会话并执行 k_misign 每日签到，改变账号当日签到状态并可能发放积分或插件奖励",
+          "启用通知且匹配策略时，通过青龙 notify 发送脱敏账号统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "hao4k每日签到",
+      "path": "scripts/task_7a56bf21.py",
+      "sha256": "914b1e29b87f734f8f0035a4ae1ffe78c5b45c2f9a1ee910f89f7160bb8ee1f7",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cy920820/hao4k-signin-action",
+        "branch": "main",
+        "commit": "687e628f799d53f8db8d8e6e225013e1904c0f25",
+        "originalPath": "signin.py"
+      },
+      "cron": "41 8 * * *",
+      "command": "python3 scripts/task_7a56bf21.py",
+      "environment": [
+        {
+          "name": "HAO4K_ACCOUNT",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://www.hao4k.cn 注册并确认可登录。将论坛用户名与密码写入青龙环境变量；不要把凭据发给他人或写入公开仓库、日志、通知。",
+          "format": "每个非空行一个账号，写成「用户名&密码」，仅在首个 & 处拆分，密码中后续 & 原样保留。不使用换行以外的符号分隔账号。"
+        },
+        {
+          "name": "HAO4K_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游旧变量：未设置 HAO4K_ACCOUNT 时，与 HAO4K_PASSWORD 组合为单账号。新部署请优先使用 HAO4K_ACCOUNT。",
+          "format": "单个论坛用户名；须与 HAO4K_PASSWORD 同时提供。"
+        },
+        {
+          "name": "HAO4K_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游旧变量：未设置 HAO4K_ACCOUNT 时，与 HAO4K_USERNAME 组合为单账号。新部署请优先使用 HAO4K_ACCOUNT。",
+          "format": "对应账号的登录密码；勿写入日志或通知。"
+        },
+        {
+          "name": "HAO4K_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况调整单次 HTTP 超时秒数。",
+          "format": "5 至 90 的整数秒；默认 20。"
+        },
+        {
+          "name": "HAO4K_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要验证配置与执行路径但禁止联网时启用。",
+          "format": "设为 1、true、yes 或 on 时启用完全断网预演。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。可填 7a56bf211c074a00、脚本文件名或 scripts 相对路径。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定本地青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准目录。不是业务依赖。",
+          "format": "已存在的本地通知组件目录，不会下载或安装组件。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "HAO4K_ACCOUNT 每个非空行一个账号，格式为用户名&密码，仅拆首个 &。账号逐个独立登录与签到；任一账号失败则整体非零退出。不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用账号密码登录 www.hao4k.cn Discuz 论坛",
+        "打开 k_misign 签到页并识别今日已签到（您的签到排名）",
+        "提取 formhash 执行 k_misign 签到，再回读确认页验证成功",
+        "展示可解析的非敏感用户显示名，隐藏密码与原始响应",
+        "多账号逐行配置、独立执行及任一失败非零退出",
+        "完全断网预演、编号阶段与耗时、账号及子任务统计、单行 TASK_SUMMARY",
+        "按青龙通知策略发送脱敏汇总，通知不可用不改变业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行时向 www.hao4k.cn 提交登录会话并执行 k_misign 每日签到，改变账号当日签到状态并可能发放积分或插件奖励",
+        "启用通知且匹配策略时，通过青龙 notify 发送脱敏账号统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/7a56bf211c074a00",
+        "candidateSha256": "10d914029f0a522f1cebfbfeb4eb9271d0f2010f3eb5cfe5cc4ab07e19df829f"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "10d914029f0a522f1cebfbfeb4eb9271d0f2010f3eb5cfe5cc4ab07e19df829f",
+        "releaseSha256": "914b1e29b87f734f8f0035a4ae1ffe78c5b45c2f9a1ee910f89f7160bb8ee1f7",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T07:15:34.192743+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "10d914029f0a522f1cebfbfeb4eb9271d0f2010f3eb5cfe5cc4ab07e19df829f",
+          "toCandidateSha256": "914b1e29b87f734f8f0035a4ae1ffe78c5b45c2f9a1ee910f89f7160bb8ee1f7",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "7be4b090d277382e",
       "applicationKey": "jasonyang170/autocheckbjmf::main",
       "checkProfile": {
