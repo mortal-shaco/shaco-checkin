@@ -4922,6 +4922,199 @@
       }
     },
     {
+      "catalogId": "6e492a5f641ac92d",
+      "applicationKey": "gaomengkai/weizhujiaoqiandao::asynccheckin",
+      "checkProfile": {
+        "requiredEnv": [
+          "TEACHERMATE_OPENID"
+        ],
+        "optionalEnv": [
+          "WZJ_OPENID",
+          "TEACHERMATE_LAT",
+          "TEACHERMATE_LON",
+          "TEACHERMATE_DELAY_SECONDS",
+          "TEACHERMATE_WAIT_SECONDS",
+          "TEACHERMATE_POLL_INTERVAL",
+          "TEACHERMATE_TIMEOUT",
+          "TEACHERMATE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TEACHERMATE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TEACHERMATE_TIMEOUT": "15",
+          "TEACHERMATE_DELAY_SECONDS": "6",
+          "TEACHERMATE_WAIT_SECONDS": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "课堂签到成功",
+          "该课堂已签到",
+          "当前没有进行中的课堂签到",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY={\"status\":\"success\""
+        ],
+        "features": [
+          "查询进行中的微助教课堂签到并提交普通签到",
+          "按响应中的 Rank / repeat 识别签到成功或已签到",
+          "读取并展示官方返回的公开姓名",
+          "可选地理位置签到（须同时配置经纬度，无硬编码默认坐标）",
+          "可选短时轮询等待进行中签到，替代上游长驻守护循环",
+          "二维码签到在无头定时环境明确跳过并提示需人工扫码",
+          "换行多账号与 WZJ_OPENID 兼容别名",
+          "请求超时、签到前延时、断网预演、脱敏时间轴日志与单行 TASK_SUMMARY",
+          "青龙通知开关、脚本选择与 Python/JavaScript 通知发现链"
+        ],
+        "sideEffects": [
+          "对进行中的普通课堂签到提交签到，可能写入学生考勤记录与签到排名",
+          "当同时配置经纬度时，签到请求会附带位置信息",
+          "非预演模式下按通知配置向青龙通知渠道发送脱敏摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "微助教课堂签到",
+      "path": "scripts/asynccheckin.py",
+      "sha256": "bfd3d2091bf67676330d493adc96fe636b69184d3ac0f55815e82ece6d0288e9",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "Gaomengkai/weizhujiaoqiandao",
+        "branch": "main",
+        "commit": "c552e0194fce274d2dd2910d056d08a5c3818543",
+        "originalPath": "AsyncCheckIn.py"
+      },
+      "cron": "*/3 7-22 * * 1-5",
+      "command": "python3 scripts/asynccheckin.py",
+      "environment": [
+        {
+          "name": "TEACHERMATE_OPENID",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "用微信打开微助教学生端，在浏览器开发者工具或抓包结果中复制带 openid= 的链接，或只保留纯 openid 字符串；参考上游 README 与 yun-mu/wzj-sign-in-weixin 的获取说明。不要把该值发给他人或写入公开仓库。",
+          "format": "每个非空行一个账号；可为纯 openid、含 openid= 的链接，或 备注#openid（仅在第一个 # 处分割）。不使用 &、@ 分隔账号。"
+        },
+        {
+          "name": "WZJ_OPENID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名；未设置 TEACHERMATE_OPENID 时按相同方式获取并填写。",
+          "format": "与 TEACHERMATE_OPENID 相同，每行一个账号。"
+        },
+        {
+          "name": "TEACHERMATE_LAT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在课堂要求地理位置签到且确认需要传坐标时自行填写；须与 TEACHERMATE_LON 同时配置。上游硬编码西十二默认坐标已移除。",
+          "format": "纬度数字，范围 -90 到 90；提交时会加微小随机抖动。"
+        },
+        {
+          "name": "TEACHERMATE_LON",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在课堂要求地理位置签到且确认需要传坐标时自行填写；须与 TEACHERMATE_LAT 同时配置。",
+          "format": "经度数字，范围 -180 到 180；提交时会加微小随机抖动。"
+        },
+        {
+          "name": "TEACHERMATE_DELAY_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "发现进行中普通签到后、提交前的延时；对应上游 DELAY_TO_CHECKIN，默认 6 秒。",
+          "format": "0 到 120 的数字秒，默认 6。"
+        },
+        {
+          "name": "TEACHERMATE_WAIT_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "当前无进行中签到时最多短时轮询等待秒数；用于替代上游长驻守护，默认 0 只查一次。",
+          "format": "0 到 600 的整数秒，默认 0。"
+        },
+        {
+          "name": "TEACHERMATE_POLL_INTERVAL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "启用短时等待时的轮询间隔；对应上游约 30 秒检测节奏。",
+          "format": "5 到 300 的数字秒，默认 30。"
+        },
+        {
+          "name": "TEACHERMATE_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况自行调整单次 HTTPS 请求超时；不填使用默认 15 秒。",
+          "format": "5 到 60 之间的数字秒，默认 15。"
+        },
+        {
+          "name": "TEACHERMATE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在测试环境自行开启；正式执行时删除或设为 0。",
+          "format": "1/true/yes/on 开启完全断网预演；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 auto 模式下需要替换默认通知名单时自行设置。",
+          "format": "逗号、分号或空白分隔；可匹配 catalogId、脚本路径、文件名或通配符；* 全选，空值全关。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "目录路径；失败后继续尝试 /ql/data/scripts 与 /ql/scripts；通知失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 openid 账号；可用 备注#openid，仅在第一个 # 处分割。账号独立处理，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询进行中的微助教课堂签到并提交普通签到",
+        "按响应中的 Rank / repeat 识别签到成功或已签到",
+        "读取并展示官方返回的公开姓名",
+        "可选地理位置签到（须同时配置经纬度，无硬编码默认坐标）",
+        "可选短时轮询等待进行中签到，替代上游长驻守护循环",
+        "二维码签到在无头定时环境明确跳过并提示需人工扫码",
+        "换行多账号与 WZJ_OPENID 兼容别名",
+        "请求超时、签到前延时、断网预演、脱敏时间轴日志与单行 TASK_SUMMARY",
+        "青龙通知开关、脚本选择与 Python/JavaScript 通知发现链"
+      ],
+      "sideEffects": [
+        "对进行中的普通课堂签到提交签到，可能写入学生考勤记录与签到排名",
+        "当同时配置经纬度时，签到请求会附带位置信息",
+        "非预演模式下按通知配置向青龙通知渠道发送脱敏摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/6e492a5f641ac92d",
+        "candidateSha256": "bfd3d2091bf67676330d493adc96fe636b69184d3ac0f55815e82ece6d0288e9"
+      }
+    },
+    {
       "catalogId": "6b6ae91490051bce",
       "applicationKey": "atxyq",
       "checkProfile": {

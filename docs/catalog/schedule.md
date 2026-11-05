@@ -36,6 +36,7 @@
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
+| 微助教课堂签到 | `scripts/asynccheckin.py` | `python3 scripts/asynccheckin.py` | `*/3 7-22 * * 1-5` | 待检查 | [asynccheckin.py.md](../scripts/asynccheckin.py.md)（`docs/scripts/asynccheckin.py.md`） |
 | 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `21 10,23 * * *` | 待检查 | [atxyq.py.md](../scripts/atxyq.py.md)（`docs/scripts/atxyq.py.md`） |
 | 上海杨浦商城定时抢购 | `scripts/auto_buy.py` | `python3 scripts/auto_buy.py` | `0 0 10 * * *` | 待检查 | [auto_buy.py.md](../scripts/auto_buy.py.md)（`docs/scripts/auto_buy.py.md`） |
 | 厦门大学畅课自动签到 | `scripts/auto_checkin.py` | `python3 scripts/auto_checkin.py` | `*/2 8-18 * * 1-5` | 待检查 | [auto_checkin.py.md](../scripts/auto_checkin.py.md)（`docs/scripts/auto_checkin.py.md`） |
