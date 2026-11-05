@@ -3333,7 +3333,7 @@
       },
       "displayName": "阿里云盘签到",
       "path": "scripts/aliyunpan_checkin.py",
-      "sha256": "d297589ed30069bb2aff77a3127190145100976a2910581999049105b54cb939",
+      "sha256": "ea48b58a482f24bf324ff49b0c8f80ef5b9a18bef69aace1eeaa8a3ae804ea1d",
       "stage": "released",
       "license": "GPL-3.0",
       "licenseGate": "allowed-copyleft",
@@ -3392,6 +3392,28 @@
             "catalogId": "bd7e90cbb255e115",
             "sha256": "b0f9f66e8b3366f4c7e088b957471a12c3bb776c4e57c8724178ba7a4a844383",
             "license": "GPL-3.0"
+          },
+          {
+            "catalogId": "ee45e24a6845dbc0",
+            "repository": "wang-st/aliyunSignIn",
+            "path": "autoSignin.js",
+            "note": "aggregated-duplicate",
+            "url": "https://github.com/wang-st/aliyunSignIn.git",
+            "branch": "main",
+            "commit": "e81b2732652aadea5ee9920eb0d0adfe07dffa91",
+            "originalPath": "autoSignin.js",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "ef2d3863a5184a74",
+            "repository": "yunzimo/APChinkin",
+            "path": "autoSignin.js",
+            "note": "aggregated-duplicate",
+            "url": "https://github.com/yunzimo/APChinkin.git",
+            "branch": "main",
+            "commit": "017f5685f1b59a8695bbb3a0a35a80cf5f7f5e79",
+            "originalPath": "autoSignin.js",
+            "license": "Apache-2.0"
           }
         ]
       },
@@ -3509,6 +3531,27 @@
           "sensitive": true,
           "howToGet": "从 PushPlus 官网账户获取推送令牌，存入青龙私密环境变量；不设置时只使用青龙通知。",
           "format": "单个推送令牌；仅正式执行且通知策略允许时发送脱敏总结。"
+        },
+        {
+          "name": "ALIYUN_CLAIM_TASK_REWARD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 领取当日已完成的每日任务奖励；0 关闭。默认 1。",
+          "format": "1/true/yes/on 或 0/false/no/off"
+        },
+        {
+          "name": "ALIYUN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧预演开关别名，等价于 ALIYUN_DRIVE_DRY_RUN。",
+          "format": "1/true/yes/on 或 0/false/no/off"
+        },
+        {
+          "name": "ALIYUNDRIVE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧预演开关别名，等价于 ALIYUN_DRIVE_DRY_RUN。",
+          "format": "1/true/yes/on 或 0/false/no/off"
         }
       ],
       "multiAccount": {
@@ -3530,7 +3573,10 @@
         "支持规范变量及 refreshToken、ALI_REFRESH_TOKEN 旧变量别名，并按换行独立处理多账号。",
         "支持正式执行前随机延迟、新旧延迟参数兼容和轮换令牌的显式安全文件持久化。",
         "支持完全断网预演、青龙脱敏总结通知、分账号分阶段时间轴日志、原机器汇总和唯一 TASK_SUMMARY 记录。",
-        "支持可选 HTTPS PushPlus 推送；青龙通知不可用时仍可独立推送，通知失败不改变业务退出码。"
+        "支持可选 HTTPS PushPlus 推送；青龙通知不可用时仍可独立推送，通知失败不改变业务退出码。",
+        "领取当日已完成的每日任务奖励（sign_in_task_reward），可用 ALIYUN_CLAIM_TASK_REWARD 关闭",
+        "兼容 ALIYUN_DRY_RUN、ALIYUNDRIVE_DRY_RUN 预演别名与 refreshToken 凭据别名",
+        "聚合 wang-st/aliyunSignIn 与 yunzimo/APChinkin 的签到领奖能力，单一规范入口"
       ],
       "sideEffects": [
         "执行账号每日签到。",
@@ -3551,25 +3597,7 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/9c6fa7a75879fa8b",
-        "candidateSha256": "523f76bde817c24570d2ae999380c72136b7fddf5806e44f952527e4549c449a"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "523f76bde817c24570d2ae999380c72136b7fddf5806e44f952527e4549c449a",
-        "releaseSha256": "d297589ed30069bb2aff77a3127190145100976a2910581999049105b54cb939",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-23T16:46:31.659387+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "523f76bde817c24570d2ae999380c72136b7fddf5806e44f952527e4549c449a",
-          "toCandidateSha256": "d297589ed30069bb2aff77a3127190145100976a2910581999049105b54cb939",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
+        "candidateSha256": "ea48b58a482f24bf324ff49b0c8f80ef5b9a18bef69aace1eeaa8a3ae804ea1d"
       }
     },
     {
@@ -5657,163 +5685,6 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "6233dc8a16f4d57aa5d59ce5171ced418379acb714ae8487c20baec907fd6e9a",
           "toCandidateSha256": "497df1c163561ea9fd933bdaca5cf661cae8a8f39536cfd7bff7413968a9c3e8",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
-      "catalogId": "ee45e24a6845dbc0",
-      "applicationKey": "aliyun",
-      "checkProfile": {
-        "requiredEnv": [
-          "ALIYUN_REFRESH_TOKEN"
-        ],
-        "optionalEnv": [
-          "refreshToken",
-          "ALIYUN_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
-        ],
-        "dryRunEnv": {
-          "ALIYUN_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "ALIYUN_DRY_RUN": "0",
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "签到成功；本月累计签到",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
-        ],
-        "features": [
-          "刷新并验证登录令牌，显示官方返回的非凭据账号身份。",
-          "每天 9 点执行签到并显示当月累计签到天数。",
-          "领取当天已完成的每日签到奖励和每日任务奖励，展示领取结果；未完成及已结束奖励明确跳过。",
-          "保留维护候选的业务状态及结构核验；未知奖励结构、状态和类型按失败处理。",
-          "逐行多账号及旧变量兼容，账号独立执行，任一失败整体非零退出。",
-          "完全断网预演、请求超时、响应大小限制、脱敏时间轴日志、每账号及任务统计和唯一 TASK_SUMMARY 汇总。",
-          "所有运行结果生成脱敏通知总结；正式运行使用青龙 sendNotify.js 投递，预演仅生成不联网投递。"
-        ],
-        "sideEffects": [
-          "正式运行刷新阿里云盘会话令牌，新凭据仅在内存使用。",
-          "正式运行执行每日签到。",
-          "正式运行领取当天已完成的签到及任务奖励。",
-          "正式运行在通知开启且模块可用时发送脱敏总结。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "阿里云盘签到与奖励领取",
-      "path": "scripts/autosignin.js",
-      "sha256": "a95601c070be8bb9599d55656685a2f1501cf5c400921f9006fd3104af132767",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "wang-st/aliyunSignIn",
-        "branch": "main",
-        "commit": "e81b2732652aadea5ee9920eb0d0adfe07dffa91",
-        "originalPath": "autoSignin.js"
-      },
-      "cron": "37 2 * * *",
-      "command": "node scripts/autosignin.js",
-      "environment": [
-        {
-          "name": "ALIYUN_REFRESH_TOKEN",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录自己的阿里云盘网页版，在浏览器开发者工具的应用（Application）→本地存储（Local Storage）中查找登录信息里的 refresh_token，仅复制该字段值并保存到青龙环境变量。失效后重新登录获取，不要复制完整登录对象。",
-          "format": "每个非空行一个刷新令牌；空行忽略，不使用 & 或 @ 分隔账号。"
-        },
-        {
-          "name": "refreshToken",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "旧变量兼容输入，获取方式与 ALIYUN_REFRESH_TOKEN 相同，仅在规范变量未设置时使用。",
-          "format": "每个非空行一个刷新令牌，旧版 & 分隔格式需改为换行。"
-        },
-        {
-          "name": "ALIYUN_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "断网验证时设置为 1；正式运行设为 0 或不设置。",
-          "format": "1 为断网预演，不调用业务接口及外部通知。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，填写已配置的青龙 sendNotify.js 所在目录；默认依次查找 /ql/data/scripts、/ql/scripts。",
-          "format": "本机目录路径；模块不可用或失败不改变业务退出码。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "每个非空行一个账号的刷新令牌，规范变量优先于旧变量。账号独立执行；账号或奖励失败继续处理其他账号及奖励，但整体非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "刷新并验证登录令牌，显示官方返回的非凭据账号身份。",
-        "每天 9 点执行签到并显示当月累计签到天数。",
-        "领取当天已完成的每日签到奖励和每日任务奖励，展示领取结果；未完成及已结束奖励明确跳过。",
-        "保留维护候选的业务状态及结构核验；未知奖励结构、状态和类型按失败处理。",
-        "逐行多账号及旧变量兼容，账号独立执行，任一失败整体非零退出。",
-        "完全断网预演、请求超时、响应大小限制、脱敏时间轴日志、每账号及任务统计和唯一 TASK_SUMMARY 汇总。",
-        "所有运行结果生成脱敏通知总结；正式运行使用青龙 sendNotify.js 投递，预演仅生成不联网投递。"
-      ],
-      "sideEffects": [
-        "正式运行刷新阿里云盘会话令牌，新凭据仅在内存使用。",
-        "正式运行执行每日签到。",
-        "正式运行领取当天已完成的签到及任务奖励。",
-        "正式运行在通知开启且模块可用时发送脱敏总结。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/ee45e24a6845dbc0",
-        "candidateSha256": "dddfdaeb357ea7d7fbdabeefffc2edd460812d8ba89685ef3bda43cd0860134b"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "dddfdaeb357ea7d7fbdabeefffc2edd460812d8ba89685ef3bda43cd0860134b",
-        "releaseSha256": "a95601c070be8bb9599d55656685a2f1501cf5c400921f9006fd3104af132767",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:18:30.151573+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "dddfdaeb357ea7d7fbdabeefffc2edd460812d8ba89685ef3bda43cd0860134b",
-          "toCandidateSha256": "a95601c070be8bb9599d55656685a2f1501cf5c400921f9006fd3104af132767",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -43942,155 +43813,6 @@
       }
     },
     {
-      "catalogId": "ef2d3863a5184a74",
-      "applicationKey": "yunzimo/apchinkin::autosignin",
-      "checkProfile": {
-        "requiredEnv": [
-          "refreshToken"
-        ],
-        "optionalEnv": [
-          "ALIYUNDRIVE_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
-        ],
-        "dryRunEnv": {
-          "ALIYUNDRIVE_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "QINGLONG_NOTIFY": "1"
-        },
-        "successPatterns": [
-          "最终状态：success",
-          "TASK_SUMMARY=.*\"status\":\"success\""
-        ],
-        "features": [
-          "使用刷新令牌获取访问令牌，显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。",
-          "每日签到，核验业务成功字段与当天签到状态，显示本月累计签到天数。",
-          "依次补领全部正常且未领取的签到奖励，显示公开奖励名称与说明；今日已领取时显示今日奖励。",
-          "多账号独立处理，单次领奖失败继续后续奖励，任一失败影响整体退出码。",
-          "保留每天 9 点、22 点定时以及 refreshToken 凭据变量；提供完全断网预演。",
-          "固定 HTTPS 接口、15 秒总请求超时、响应大小限制及明确业务成功核验。",
-          "按阶段输出脱敏日志、每账号统计及唯一单行 TASK_SUMMARY 汇总。",
-          "成功、部分失败、失败或配置错误时尝试通过青龙 sendNotify.js 发送脱敏总结；遵循全局开关，断网预演仅预演通知。"
-        ],
-        "sideEffects": [
-          "正式运行刷新账号访问会话，服务端可能轮换刷新令牌。",
-          "正式运行提交阿里云盘每日签到。",
-          "正式运行领取正常且尚未领取的签到奖励。",
-          "通知启用且模块可用时发送任务总结。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "阿里云盘签到",
-      "path": "scripts/task_ef2d3863.js",
-      "sha256": "8fbdc0a88cc1506a562411427d234b695b641bd2d057b032869589837554d025",
-      "stage": "released",
-      "license": "Apache-2.0",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "yunzimo/APChinkin",
-        "branch": "main",
-        "commit": "017f5685f1b59a8695bbb3a0a35a80cf5f7f5e79",
-        "originalPath": "autoSignin.js"
-      },
-      "cron": "7 9,22 * * *",
-      "command": "node scripts/task_ef2d3863.js",
-      "environment": [
-        {
-          "name": "refreshToken",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录本人阿里云盘网页版，在浏览器开发者工具的本地存储 token 对象或本人登录刷新请求中提取 refresh_token；不要使用 access_token，不要公开存储内容。服务端轮换或凭据失效后，重新通过官方登录流程获取并更新。沿用上游变量名，不读取青龙管理接口。",
-          "format": "每个非空行一个账号的 refresh_token，支持换行及 Windows 换行；不支持 &、@、空格分隔账号。"
-        },
-        {
-          "name": "ALIYUNDRIVE_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "手动设置为 1 开启完全断网预演；正式执行时移除或设置为 0。",
-          "format": "1 表示断网预演，其他值表示正式运行。预演不证明真实签到成功。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，填写已配置的青龙公开通知模块 sendNotify.js 所在目录；未设置时检查 /ql/data/scripts 和 /ql/scripts。",
-          "format": "本地目录路径，仅用于可选通知；缺失、失败或超时不会改变业务退出码。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "refreshToken 每个非空行对应一个账号，顺序独立执行；一个账号失败仍继续其他账号，任何账号或领奖失败均非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "使用刷新令牌获取访问令牌，显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号。",
-        "每日签到，核验业务成功字段与当天签到状态，显示本月累计签到天数。",
-        "依次补领全部正常且未领取的签到奖励，显示公开奖励名称与说明；今日已领取时显示今日奖励。",
-        "多账号独立处理，单次领奖失败继续后续奖励，任一失败影响整体退出码。",
-        "保留每天 9 点、22 点定时以及 refreshToken 凭据变量；提供完全断网预演。",
-        "固定 HTTPS 接口、15 秒总请求超时、响应大小限制及明确业务成功核验。",
-        "按阶段输出脱敏日志、每账号统计及唯一单行 TASK_SUMMARY 汇总。",
-        "成功、部分失败、失败或配置错误时尝试通过青龙 sendNotify.js 发送脱敏总结；遵循全局开关，断网预演仅预演通知。"
-      ],
-      "sideEffects": [
-        "正式运行刷新账号访问会话，服务端可能轮换刷新令牌。",
-        "正式运行提交阿里云盘每日签到。",
-        "正式运行领取正常且尚未领取的签到奖励。",
-        "通知启用且模块可用时发送任务总结。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/ef2d3863a5184a74",
-        "candidateSha256": "3c27c4a5d4c2c61ec6d2198398f56b6c164d3fddc5ec9d97c2c12aa2b89d344f"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "3c27c4a5d4c2c61ec6d2198398f56b6c164d3fddc5ec9d97c2c12aa2b89d344f",
-        "releaseSha256": "8fbdc0a88cc1506a562411427d234b695b641bd2d057b032869589837554d025",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:19:30.584085+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "3c27c4a5d4c2c61ec6d2198398f56b6c164d3fddc5ec9d97c2c12aa2b89d344f",
-          "toCandidateSha256": "8fbdc0a88cc1506a562411427d234b695b641bd2d057b032869589837554d025",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
       "catalogId": "f37fb5e9e5ff6414",
       "applicationKey": "pip-in-head/ez-chicken-ocr::main",
       "checkProfile": {
@@ -50663,212 +50385,6 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "02c6641837ec5bc2f3c41f5969aeedc08d0684e933ca3ec6e3f1ed5a4a814f61",
           "toCandidateSha256": "15903aa6f22a3142f994f573106b7bac7e9198615bf4f2a03515d0a29ed8602e",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
-      "catalogId": "f3d4c9cbaf4b9ce7",
-      "applicationKey": "yuxian158/check::acfun",
-      "checkProfile": {
-        "requiredEnv": [
-          "ACFUN_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "ACF",
-          "ACFUN_ACTIONS",
-          "ACFUN_CONTENT_ID",
-          "ACFUN_VIDEO_ID",
-          "ACFUN_SUBCHANNEL_ID",
-          "ACFUN_SUBCHANNEL_NAME",
-          "ACFUN_LOCAL_TEXT",
-          "ACFUN_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "ACFUN_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "ACFUN_ACTIONS": "sign",
-          "ACFUN_LOCAL_TEXT": "今天也要开心呀！",
-          "QINGLONG_NOTIFY": "auto"
-        },
-        "successPatterns": [
-          "成功（明确业务响应）",
-          "最终状态：success",
-          "TASK_SUMMARY="
-        ],
-        "features": [
-          "使用 AcFun 手机号和密码登录，并在官方响应提供时显示非敏感昵称、用户名或公开 UID。",
-          "默认执行每日签到；点赞、取消点赞、分享任务上报、投香蕉和发布弹幕均需显式选择。",
-          "点赞、取消点赞和投香蕉可使用指定稿件，也可选择每日榜单首个稿件；弹幕仅允许使用明确指定的稿件、视频和分区。",
-          "发布弹幕时优先从一言 HTTPS 接口获取文案并保留作者及来源，所有声明的远端失败情形都会回退到本地文案。",
-          "支持规范逐行多账号，并兼容旧版 ACF 逐行或 JSON 参数。",
-          "提供完全断网预演、分账号分阶段时间轴日志、脱敏统计、单行 TASK_SUMMARY JSON 和青龙通知。"
-        ],
-        "sideEffects": [
-          "执行 AcFun 每日签到。",
-          "按显式动作点赞或取消点赞目标稿件。",
-          "按显式动作上报分享任务。",
-          "按显式动作向目标稿件投出一个香蕉。",
-          "按显式动作向目标视频发布一条弹幕。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "AcFun每日签到与可选互动",
-      "path": "scripts/yuxian158_check_acfun.py",
-      "sha256": "0d1091647c5f29e627578fa0826e48fa7eabbb3e87e61aabe59f77c69f0a4095",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "yuxian158/check",
-        "branch": "master",
-        "commit": "723c834f121ff4eef2dec7afe521071a7efff1a9",
-        "originalPath": "dailycheckin_scripts/ck_AcFun.py"
-      },
-      "cron": "44 2 * * *",
-      "command": "python3 scripts/yuxian158_check_acfun.py",
-      "environment": [
-        {
-          "name": "ACFUN_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "填写 AcFun 登录手机号和对应密码；每个账号独占一行，请仅保存在青龙环境变量中。旧版 ACF 变量可作为可选兼容输入。",
-          "format": "每行 手机号|密码；只按第一个竖线分割，因此密码中的后续竖线会被保留。"
-        },
-        {
-          "name": "ACF",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "仅供旧版任务迁移；内容仍来自本人 AcFun 登录手机号和密码。设置 ACFUN_ACCOUNTS 后会优先使用新变量。",
-          "format": "可使用每行 手机号|密码，或由 phone 和 password 字段组成的 JSON 对象或对象数组。"
-        },
-        {
-          "name": "ACFUN_ACTIONS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需要显式选择动作；为避免默认修改内容互动状态，默认只签到。",
-          "format": "逗号分隔，可选 sign,like,unlike,share,banana,danmu；默认 sign。"
-        },
-        {
-          "name": "ACFUN_CONTENT_ID",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "从目标 AcFun 视频页面地址取得稿件编号；点赞、取消点赞、投香蕉或弹幕时必填。点赞、取消点赞和投香蕉也可填写 rank 以选取每日榜单首项。",
-          "format": "十进制稿件编号；部分互动也支持固定值 rank。"
-        },
-        {
-          "name": "ACFUN_VIDEO_ID",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "从目标稿件的具体视频分集信息取得；仅发布弹幕时必填。",
-          "format": "十进制视频编号。"
-        },
-        {
-          "name": "ACFUN_SUBCHANNEL_ID",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "从目标稿件所属分区信息取得；仅发布弹幕时必填。",
-          "format": "十进制分区编号。"
-        },
-        {
-          "name": "ACFUN_SUBCHANNEL_NAME",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "填写目标稿件页面显示的分区名称；仅发布弹幕时必填。",
-          "format": "非空中文或文本分区名称。"
-        },
-        {
-          "name": "ACFUN_LOCAL_TEXT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置随机文案服务不可用时发布的本地弹幕文本。",
-          "format": "去除多余空白后不超过 280 个字符。"
-        },
-        {
-          "name": "ACFUN_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "测试配置时设为 1；预演不会发起任何网络请求，也不会修改账号状态。",
-          "format": "1 表示完全断网预演，0 表示正式执行。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要限制通知脚本时填写目录编号、产品专属发布路径、文件名或通配符；设置为空值会关闭全部脚本通知。",
-          "format": "逗号、分号、空白或换行分隔；本任务可用 f3d4c9cbaf4b9ce7、scripts/ck_acfun_daily.py 或 ck_acfun_daily.py。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知脚本不在标准目录时，填写包含 notify.py 或 sendNotify.js 的目录。",
-          "format": "青龙容器内的绝对目录路径。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "ACFUN_ACCOUNTS 每个非空行表示一个账号，按第一个竖线拆分手机号和密码；账号独立执行，任一账号失败时进程整体返回非零状态。"
-      },
-      "dependencies": [],
-      "features": [
-        "使用 AcFun 手机号和密码登录，并在官方响应提供时显示非敏感昵称、用户名或公开 UID。",
-        "默认执行每日签到；点赞、取消点赞、分享任务上报、投香蕉和发布弹幕均需显式选择。",
-        "点赞、取消点赞和投香蕉可使用指定稿件，也可选择每日榜单首个稿件；弹幕仅允许使用明确指定的稿件、视频和分区。",
-        "发布弹幕时优先从一言 HTTPS 接口获取文案并保留作者及来源，所有声明的远端失败情形都会回退到本地文案。",
-        "支持规范逐行多账号，并兼容旧版 ACF 逐行或 JSON 参数。",
-        "提供完全断网预演、分账号分阶段时间轴日志、脱敏统计、单行 TASK_SUMMARY JSON 和青龙通知。"
-      ],
-      "sideEffects": [
-        "执行 AcFun 每日签到。",
-        "按显式动作点赞或取消点赞目标稿件。",
-        "按显式动作上报分享任务。",
-        "按显式动作向目标稿件投出一个香蕉。",
-        "按显式动作向目标视频发布一条弹幕。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/f3d4c9cbaf4b9ce7",
-        "candidateSha256": "67941999e53a82765caebdcf0b984331ca4fee9d5ed1151ff585fa9b3f534d86"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "67941999e53a82765caebdcf0b984331ca4fee9d5ed1151ff585fa9b3f534d86",
-        "releaseSha256": "0d1091647c5f29e627578fa0826e48fa7eabbb3e87e61aabe59f77c69f0a4095",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-19T01:36:55.396610+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "67941999e53a82765caebdcf0b984331ca4fee9d5ed1151ff585fa9b3f534d86",
-          "toCandidateSha256": "0d1091647c5f29e627578fa0826e48fa7eabbb3e87e61aabe59f77c69f0a4095",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

@@ -17,11 +17,13 @@ Required environment:
   ALIYUN_REFRESH_TOKEN  One non-empty refresh token per line.
 
 Optional environment:
-  ALIYUN_CLAIM_REWARD=1             Claim today's reward; 0 means check-in only.
+  ALIYUN_CLAIM_REWARD=1             Claim today's sign-in reward; 0 means check-in only.
   ALIYUN_CLAIM_ALL_REWARDS=1         Opt in to all unclaimed signed-day rewards.
+  ALIYUN_CLAIM_TASK_REWARD=1         Claim finished dailyTask rewards; 0 disables.
   refreshToken                     Legacy alias; one account per non-empty line.
   ALI_REFRESH_TOKEN                Legacy upstream alias; one account per line.
   ALIYUN_DRIVE_DRY_RUN=1             Simulate all HTTP operations.
+  ALIYUN_DRY_RUN / ALIYUNDRIVE_DRY_RUN  Legacy dry-run aliases.
   ALIYUN_MAX_DELAY_SECONDS=0          Random delay before live execution.
   ALIYUN_PERSIST_ROTATED_TOKENS=1     Opt in to the file adapter below.
   ALIYUN_TOKEN_OUTPUT_FILE=/path      Destination for rotated tokens.
@@ -30,15 +32,20 @@ Optional environment:
 获取参数：登录阿里云盘网页版，打开开发者工具 Application → Local Storage，
 查看当前站点的 token 项，复制 refresh_token 字段（不要复制整段 JSON）。
 ALIYUN_REFRESH_TOKEN 每个非空行放一个账号，不使用 & 或 @ 分隔。
-默认签到后领取当日奖励；ALIYUN_CLAIM_REWARD=0 只签到。
+默认签到后领取当日签到奖励；ALIYUN_CLAIM_REWARD=0 只签到。
 ALIYUN_CLAIM_ALL_REWARDS=1 显式补领本月所有已签到且未领奖的奖励；
 仅在 ALIYUN_CLAIM_REWARD=1 时生效，默认 0 保留当日领奖语义。
+ALIYUN_CLAIM_TASK_REWARD 默认 1，领取当日已完成的每日任务奖励
+（sign_in_task_reward）；设为 0 可关闭。
 refreshToken 与 ALI_REFRESH_TOKEN 为旧变量别名；ALIYUN_REFRESH_TOKEN 设置时
 优先，所有变量都仅按非空行分账号，不接受 &、@ 等账号分隔符。
 每天输出签到明细及已领、待领奖天数；不会自动改写青龙环境变量。
 合并 TangTang0812/aliyun autoSignin.js（MIT），提交
 fb6c6aa9c49c315f2e5c32949eef06689aa2ea7e；保留该来源署名。
-原来源定时为 0 9 * * *，与每日签到兼容；规范脚本保留 35 1 * * *。
+聚合 wang-st/aliyunSignIn autoSignin.js 与 yunzimo/APChinkin autoSignin.js
+的每日任务奖励领取与 refreshToken 兼容；原定时 37 2 / 7 9,22 与每日签到兼容，
+青龙旧任务请改命令为规范脚本 scripts/aliyunpan_checkin.py。
+规范脚本保留 47 1 * * *。
 预演模拟 HTTP、通知及领奖，不联网、不等待、不写入凭据文件。
 QINGLONG_NOTIFY 默认 auto；设为 0/false/no/off 可关闭。设置
 QINGLONG_NOTIFY_SCRIPTS 后，仅当其匹配目录 ID、规范路径或文件名时通知；
@@ -105,7 +112,11 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
         _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('9c6fa7a75879fa8b', 'scripts/aliyunpan_checkin.py', 'aliyunpan_checkin.py', 'aliyunpan_checkin')
+        _ql_notify_identities = (
+            '9c6fa7a75879fa8b', 'ee45e24a6845dbc0', 'ef2d3863a5184a74',
+            'scripts/aliyunpan_checkin.py', 'scripts/autosignin.js', 'scripts/task_ef2d3863.js',
+            'aliyunpan_checkin.py', 'autosignin.js', 'task_ef2d3863.js', 'aliyunpan_checkin',
+        )
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors
@@ -135,7 +146,9 @@ from urllib.request import Request, build_opener, HTTPRedirectHandler
 
 TOKEN_URL = "https://auth.aliyundrive.com/v2/account/token"
 REWARD_URL = "https://member.aliyundrive.com/v1/activity/sign_in_reward"
+TASK_REWARD_URL = "https://member.aliyundrive.com/v2/activity/sign_in_task_reward"
 SIGN_URL = "https://member.aliyundrive.com/v1/activity/sign_in_list"
+SIGN_LIST_V2_URL = "https://member.aliyundrive.com/v2/activity/sign_in_list"
 USER_INFO_URL = "https://user.aliyundrive.com/v2/user/get"
 STORAGE_URL = "https://api.aliyundrive.com/v2/user/get"
 SESSION_URL = "https://api.aliyundrive.com/users/v1/users/device/create_session"
@@ -149,10 +162,20 @@ CATALOG_ID = "9c6fa7a75879fa8b"
 NOTIFY_IDENTIFIERS = (
     CATALOG_ID,
     "e9a52b129c643315",
+    "ee45e24a6845dbc0",
+    "ef2d3863a5184a74",
     "scripts/aliyunpan_checkin.py",
+    "scripts/autosignin.js",
+    "scripts/task_ef2d3863.js",
     "aliyunpan_checkin.py",
+    "autosignin.js",
+    "task_ef2d3863.js",
     "candidate.py",
 )
+
+
+def dry_run_enabled() -> bool:
+    return any(enabled(name) for name in ("ALIYUN_DRIVE_DRY_RUN", "ALIYUN_DRY_RUN", "ALIYUNDRIVE_DRY_RUN"))
 
 
 class NoRedirect(HTTPRedirectHandler):
@@ -631,15 +654,100 @@ class AliyunDriveClient:
             info = self.log_reward_description(today)
         return "success", "领奖成功" + ("：" + info if info else "")
 
-    def run(self, index=1, claim=True, claim_all=False) -> AccountResult:
+    def claim_task_rewards(self, access_token, sign_days):
+        """Claim finished dailyTask rewards discovered via the v2 sign-in list."""
+        if sign_days < 1:
+            return "skipped", "签到累计为零，无任务奖励可领取"
+        if self.dry_run:
+            return "success", "每日任务奖励领取成功（预演）"
+        status, payload = post_json(
+            f"{SIGN_LIST_V2_URL}?_rx-s=mobile",
+            {"isReward": False},
+            "查询当日任务奖励",
+            access_token,
+            self.device_headers,
+        )
+        if status != 200 or payload.get("success") is not True:
+            raise CheckinError(f"任务奖励查询未获接口确认（HTTP {status}）")
+        result = payload.get("result")
+        if not isinstance(result, dict) or not isinstance(result.get("signInInfos"), list):
+            raise CheckinError("任务奖励查询缺少签到明细")
+        today = next(
+            (
+                info for info in result["signInInfos"]
+                if isinstance(info, dict) and str(info.get("day")) == str(sign_days)
+            ),
+            None,
+        )
+        if not today or not isinstance(today.get("rewards"), list):
+            return "skipped", "当日无任务奖励记录"
+        claimed, skipped, failures = 0, 0, 0
+        details = []
+        for reward in today["rewards"]:
+            if not isinstance(reward, dict):
+                failures += 1
+                details.append("奖励结构无效")
+                continue
+            reward_type = reward.get("type")
+            reward_status = reward.get("status")
+            if reward_type == "dailySignIn":
+                skipped += 1
+                continue
+            if reward_type != "dailyTask":
+                failures += 1
+                details.append("未识别的奖励类型")
+                continue
+            if reward_status in {"unfinished", "end"}:
+                skipped += 1
+                details.append("奖励任务尚未完成" if reward_status == "unfinished" else "奖励活动已结束")
+                continue
+            if reward_status != "finished":
+                failures += 1
+                details.append("未识别的奖励状态")
+                continue
+            claim_status, claim_payload = post_json(
+                f"{TASK_REWARD_URL}?_rx-s=mobile",
+                {"signInDay": sign_days},
+                f"领取第 {sign_days} 天任务奖励",
+                access_token,
+                self.device_headers,
+            )
+            if claim_status != 200 or claim_payload.get("success") is not True:
+                failures += 1
+                details.append(f"任务奖励领取未确认（HTTP {claim_status}）")
+                continue
+            claimed += 1
+            info = self.reward_description(claim_payload.get("result"))
+            details.append("任务奖励领取成功" + ("：" + info if info else ""))
+        if failures:
+            raise CheckinError(
+                f"每日任务奖励：成功 {claimed}，跳过 {skipped}，失败 {failures}"
+                + ("；" + "；".join(details[:3]) if details else "")
+            )
+        if claimed:
+            return "success", f"每日任务奖励领取成功 {claimed} 项" + (
+                "；" + "；".join(details[:3]) if details else ""
+            )
+        return "skipped", "当日无可领取的每日任务奖励" + (
+            "；" + "；".join(details[:3]) if details else ""
+        )
+
+    def run(self, index=1, claim=True, claim_all=False, claim_task=True) -> AccountResult:
         next_token, rotated, days = self.refresh_token, False, None
         self.stats = {"success": 0, "already": 0, "skipped": 0, "failed": 0}
-        operations = [("刷新登录凭据", None), ("查询身份与容量", None), ("执行签到", None), ("显示签到明细", None), ("领取全部未领奖励" if claim_all else "领取当日奖励", None)]
+        operations = [
+            ("刷新登录凭据", None),
+            ("查询身份与容量", None),
+            ("执行签到", None),
+            ("显示签到明细", None),
+            ("领取全部未领奖励" if claim_all else "领取当日奖励", None),
+            ("领取每日任务奖励", None),
+        ]
         access_token = ""
         error = ""
         for number, (name, _) in enumerate(operations, 1):
             began = time.monotonic()
-            timeline(f"账号 {index:02d}：[{number}/5] {name}")
+            timeline(f"账号 {index:02d}：[{number}/6] {name}")
             outcome, detail = "success", ""
             try:
                 if error:
@@ -656,12 +764,17 @@ class AliyunDriveClient:
                     detail = f"签到成功，累计 {days} 天"
                 elif number == 4:
                     _, detail = self.sign_details()
-                elif not claim:
-                    outcome, detail = "skipped", "已明确关闭领奖"
-                elif claim_all:
-                    outcome, detail = self.claim_all_rewards(access_token)
+                elif number == 5:
+                    if not claim:
+                        outcome, detail = "skipped", "已明确关闭领奖"
+                    elif claim_all:
+                        outcome, detail = self.claim_all_rewards(access_token)
+                    else:
+                        outcome, detail = self.claim_reward(access_token, days)
+                elif not claim or not claim_task:
+                    outcome, detail = "skipped", "已明确关闭任务奖励领取"
                 else:
-                    outcome, detail = self.claim_reward(access_token, days)
+                    outcome, detail = self.claim_task_rewards(access_token, days)
             except Exception as exc:
                 outcome = "failed"
                 detail = str(exc) if isinstance(exc, CheckinError) else "处理异常，详情已隐藏"
@@ -711,7 +824,7 @@ def persist_tokens(tokens: list[str], destination: str) -> None:
 
 def main() -> int:
     started = time.monotonic()
-    dry_run = enabled("ALIYUN_DRIVE_DRY_RUN")
+    dry_run = dry_run_enabled()
     tokens = []
     results = []
     task_stats = {"success": 0, "already": 0, "skipped": 0, "failed": 0}
@@ -742,6 +855,10 @@ def main() -> int:
         if raw_all not in TRUE_VALUES | FALSE_VALUES:
             raise CheckinError("ALIYUN_CLAIM_ALL_REWARDS 必须为 1 或 0")
         claim_all = raw_all in TRUE_VALUES
+        raw_task = os.getenv("ALIYUN_CLAIM_TASK_REWARD", "1").strip().lower()
+        if raw_task not in TRUE_VALUES | FALSE_VALUES:
+            raise CheckinError("ALIYUN_CLAIM_TASK_REWARD 必须为 1 或 0")
+        claim_task = raw_task in TRUE_VALUES
     except CheckinError as exc:
         log_banner("预演" if dry_run else "正式执行", len(tokens))
         timeline(f"❌ 配置失败：{exc}")
@@ -760,13 +877,13 @@ def main() -> int:
     for index, token in enumerate(tokens, 1):
         account_started = time.monotonic()
         client = AliyunDriveClient(token, dry_run)
-        result = client.run(index, claim, claim_all)
+        result = client.run(index, claim, claim_all, claim_task)
         results.append(result)
         stats = client.stats
         for key in task_stats:
             task_stats[key] += stats[key]
         timeline(f"账号 {index:02d}：{'✅ 成功' if result.success else '❌ 失败'}")
-        timeline(f"总任务 5 │ 成功 {stats['success']} │ 已完成 {stats['already']} │ 跳过 {stats['skipped']} │ 失败 {stats['failed']} │ 用时 {time.monotonic() - account_started:.1f} 秒", "└─")
+        timeline(f"总任务 6 │ 成功 {stats['success']} │ 已完成 {stats['already']} │ 跳过 {stats['skipped']} │ 失败 {stats['failed']} │ 用时 {time.monotonic() - account_started:.1f} 秒", "└─")
 
     rotated_count = sum(result.rotated for result in results)
     if persistence_enabled and rotated_count and not dry_run:

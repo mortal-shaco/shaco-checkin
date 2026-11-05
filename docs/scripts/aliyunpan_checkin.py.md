@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/aliyunpan_checkin.py`
 - 青龙命令：`python3 scripts/aliyunpan_checkin.py`
 - 建议 Cron：`47 1 * * *`
-- 发布哈希：`d297589ed30069bb2aff77a3127190145100976a2910581999049105b54cb939`
+- 发布哈希：`ea48b58a482f24bf324ff49b0c8f80ef5b9a18bef69aace1eeaa8a3ae804ea1d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -20,6 +20,9 @@
 - 支持正式执行前随机延迟、新旧延迟参数兼容和轮换令牌的显式安全文件持久化。
 - 支持完全断网预演、青龙脱敏总结通知、分账号分阶段时间轴日志、原机器汇总和唯一 TASK_SUMMARY 记录。
 - 支持可选 HTTPS PushPlus 推送；青龙通知不可用时仍可独立推送，通知失败不改变业务退出码。
+- 领取当日已完成的每日任务奖励（sign_in_task_reward），可用 ALIYUN_CLAIM_TASK_REWARD 关闭
+- 兼容 ALIYUN_DRY_RUN、ALIYUNDRIVE_DRY_RUN 预演别名与 refreshToken 凭据别名
+- 聚合 wang-st/aliyunSignIn 与 yunzimo/APChinkin 的签到领奖能力，单一规范入口
 
 ## 环境变量与参数
 
@@ -141,6 +144,27 @@
 - 获取或设置：从 PushPlus 官网账户获取推送令牌，存入青龙私密环境变量；不设置时只使用青龙通知。
 - 填写格式：单个推送令牌；仅正式执行且通知策略允许时发送脱敏总结。
 
+### `ALIYUN_CLAIM_TASK_REWARD`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：设为 1 领取当日已完成的每日任务奖励；0 关闭。默认 1。
+- 填写格式：1/true/yes/on 或 0/false/no/off
+
+### `ALIYUN_DRY_RUN`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：旧预演开关别名，等价于 ALIYUN_DRIVE_DRY_RUN。
+- 填写格式：1/true/yes/on 或 0/false/no/off
+
+### `ALIYUNDRIVE_DRY_RUN`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：旧预演开关别名，等价于 ALIYUN_DRIVE_DRY_RUN。
+- 填写格式：1/true/yes/on 或 0/false/no/off
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -151,7 +175,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d297589ed30069bb2aff77a3127190145100976a2910581999049105b54cb939`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
+SHA-256 `ea48b58a482f24bf324ff49b0c8f80ef5b9a18bef69aace1eeaa8a3ae804ea1d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
 
 ## 副作用与风险
 
