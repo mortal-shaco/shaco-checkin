@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **45** 个脚本。返回 [`目录首页`](../README.md)。
+共 **46** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -32,6 +32,7 @@
 | 今日校园辅导员签到 | `scripts/task_c04cea4d.py` | `python3 scripts/task_c04cea4d.py` | `0 21 * * *` | 待检查 | [task_c04cea4d.py.md](../../scripts/task_c04cea4d.py.md)（`docs/scripts/task_c04cea4d.py.md`） |
 | 又拍云签到与每日任务 | `scripts/task_d09de588.py` | `python3 scripts/task_d09de588.py` | `45 8 * * *` | 待检查 | [task_d09de588.py.md](../../scripts/task_d09de588.py.md)（`docs/scripts/task_d09de588.py.md`） |
 | 爱桌游每日签到 | `scripts/task_d530fa58.py` | `python3 scripts/task_d530fa58.py` | `0 5 * * *` | 待检查 | [task_d530fa58.py.md](../../scripts/task_d530fa58.py.md)（`docs/scripts/task_d530fa58.py.md`） |
+| 93海山云论坛签到 | `scripts/task_df720629.py` | `python3 scripts/task_df720629.py` | `34 9 * * *` | 待检查 | [task_df720629.py.md](../../scripts/task_df720629.py.md)（`docs/scripts/task_df720629.py.md`） |
 | hao4k每日签到 | `scripts/task_e5c5d07b.py` | `python3 scripts/task_e5c5d07b.py` | `55 8 * * *` | 待检查 | [task_e5c5d07b.py.md](../../scripts/task_e5c5d07b.py.md)（`docs/scripts/task_e5c5d07b.py.md`） |
 | FZQOJ每日签到 | `scripts/task_ed4d6d4d.py` | `python3 scripts/task_ed4d6d4d.py` | `53 8 * * *` | 待检查 | [task_ed4d6d4d.py.md](../../scripts/task_ed4d6d4d.py.md)（`docs/scripts/task_ed4d6d4d.py.md`） |
 | M-SEC 每日签到 | `scripts/task_f37fb5e9.py` | `python3 scripts/task_f37fb5e9.py` | `6 8 * * *` | 待检查 | [task_f37fb5e9.py.md](../../scripts/task_f37fb5e9.py.md)（`docs/scripts/task_f37fb5e9.py.md`） |
