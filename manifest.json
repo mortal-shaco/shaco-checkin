@@ -15956,6 +15956,307 @@
       }
     },
     {
+      "catalogId": "4ac225148a2befcd",
+      "applicationKey": "doubao-daily",
+      "checkProfile": {
+        "requiredEnv": [
+          "DOUBAO_COOKIE",
+          "DOUBAO_CHECKIN_URL"
+        ],
+        "optionalEnv": [
+          "COOKIE",
+          "CHECKIN_URL",
+          "DOUBAO_CHECKIN_METHOD",
+          "DOUBAO_CHECKIN_BODY",
+          "DOUBAO_EXTRA_HEADERS",
+          "DOUBAO_USER_AGENT",
+          "DOUBAO_TIMEOUT",
+          "DOUBAO_RETRY",
+          "DOUBAO_RETRY_BACKOFF",
+          "DOUBAO_SUCCESS_KEYWORDS",
+          "DOUBAO_ALREADY_KEYWORDS",
+          "DOUBAO_AUTH_KEYWORDS",
+          "DOUBAO_RISK_KEYWORDS",
+          "DOUBAO_SUCCESS_JSON_PATH",
+          "DOUBAO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DOUBAO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "DOUBAO_CHECKIN_METHOD": "POST",
+          "DOUBAO_TIMEOUT": "20",
+          "DOUBAO_RETRY": "3"
+        },
+        "successPatterns": [
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "豆包「天天领额度」可配置接口每日签到",
+          "成功/已签到/鉴权失败/风控关键词与可选 JSON 路径成功判定",
+          "响应额度数字提取与公开账号身份展示",
+          "多账号换行配置、超时重试与完全断网预演",
+          "时间轴日志、TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "向用户配置的豆包签到接口提交签到/领额度请求，可能写入当日签到状态并发放活动额度"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "豆包天天领额度签到",
+      "path": "scripts/doubao_daily.py",
+      "sha256": "f808884a85ddaeaa8b357331407a3964653e457e8a1bdbc9efd140da6336e0fe",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "meliissy/doubao-daily-checkin",
+        "branch": "main",
+        "commit": "cb28058d325e2bf355860bf09d984f83862bb4e4",
+        "originalPath": "main.py",
+        "related": [
+          {
+            "catalogId": "eea507f2271442b5",
+            "sha256": "633c61cf3bf8ea257a0ae2544aa325c8428840104967456e53600d3e845a847b",
+            "repository": "meliissy/doubao-daily-checkin",
+            "url": "https://github.com/meliissy/doubao-daily-checkin",
+            "branch": "main",
+            "commit": "cb28058d325e2bf355860bf09d984f83862bb4e4",
+            "originalPath": "src/__init__.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "92ada9f08f84f4e8",
+            "sha256": "759c44bab14f19dbf4cd61c3e30178e304fc30c47f6e72578c32d9ca64cedce9",
+            "repository": "meliissy/doubao-daily-checkin",
+            "url": "https://github.com/meliissy/doubao-daily-checkin",
+            "branch": "main",
+            "commit": "cb28058d325e2bf355860bf09d984f83862bb4e4",
+            "originalPath": "src/client.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "9ed2fb82dc44593d",
+            "sha256": "bb633d987eca1ff5e36b88a13bd39c73467bbcdb9549e4f3631fdf6bc8a7791c",
+            "repository": "meliissy/doubao-daily-checkin",
+            "url": "https://github.com/meliissy/doubao-daily-checkin",
+            "branch": "main",
+            "commit": "cb28058d325e2bf355860bf09d984f83862bb4e4",
+            "originalPath": "src/config.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "194327a4aef793c8",
+            "sha256": "6fde3a67089895ca417de0f3396cff3751d648c70f13b17397b1997d76bf9f45",
+            "repository": "meliissy/doubao-daily-checkin",
+            "url": "https://github.com/meliissy/doubao-daily-checkin",
+            "branch": "main",
+            "commit": "cb28058d325e2bf355860bf09d984f83862bb4e4",
+            "originalPath": "src/http.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "23 9 * * *",
+      "command": "python3 scripts/doubao_daily.py",
+      "environment": [
+        {
+          "name": "DOUBAO_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录豆包官网或 App 后，打开开发者工具复制请求 Cookie。多账号仅用换行分隔，每行一个完整 Cookie；禁止用 &、@ 分账号。",
+          "format": "每行：name1=value1; name2=value2; ..."
+        },
+        {
+          "name": "COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容别名。仅当 DOUBAO_COOKIE 为空时生效，格式相同。",
+          "format": "每行一个完整 Cookie"
+        },
+        {
+          "name": "DOUBAO_CHECKIN_URL",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "在豆包「天天领额度」签到时抓包，复制完整签到接口 URL（须含 http/https）。各账号共用同一接口地址。",
+          "format": "https://..."
+        },
+        {
+          "name": "CHECKIN_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选兼容别名。仅当 DOUBAO_CHECKIN_URL 为空时生效。",
+          "format": "https://..."
+        },
+        {
+          "name": "DOUBAO_CHECKIN_METHOD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。签到请求方法，默认 POST。",
+          "format": "GET|POST|PUT"
+        },
+        {
+          "name": "DOUBAO_CHECKIN_BODY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。抓包得到的 JSON 请求体字符串；留空则不发送 body。",
+          "format": "合法 JSON 对象字符串"
+        },
+        {
+          "name": "DOUBAO_EXTRA_HEADERS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。额外请求头 JSON 对象，会与默认头合并；Cookie 仍以账号行为准。",
+          "format": "{\"Header-Name\":\"value\"}"
+        },
+        {
+          "name": "DOUBAO_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。自定义 User-Agent；缺省使用内置桌面 Chrome UA。",
+          "format": "UA 字符串"
+        },
+        {
+          "name": "DOUBAO_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "单次 HTTP 超时秒数，默认 20。",
+          "format": "数字 3~120"
+        },
+        {
+          "name": "DOUBAO_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "失败重试次数，默认 3。",
+          "format": "正整数"
+        },
+        {
+          "name": "DOUBAO_RETRY_BACKOFF",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "重试退避基数秒，默认 3。",
+          "format": "数字 0~60"
+        },
+        {
+          "name": "DOUBAO_SUCCESS_KEYWORDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。逗号分隔成功关键词；缺省含签到成功/领取成功等。",
+          "format": "关键词1,关键词2"
+        },
+        {
+          "name": "DOUBAO_ALREADY_KEYWORDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。逗号分隔已签到关键词。",
+          "format": "关键词1,关键词2"
+        },
+        {
+          "name": "DOUBAO_AUTH_KEYWORDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。逗号分隔鉴权失败关键词。",
+          "format": "关键词1,关键词2"
+        },
+        {
+          "name": "DOUBAO_RISK_KEYWORDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。逗号分隔风控关键词。",
+          "format": "关键词1,关键词2"
+        },
+        {
+          "name": "DOUBAO_SUCCESS_JSON_PATH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。逗号分隔 JSON 路径成功规则，格式 path=value，例如 data.code=0。",
+          "format": "path=value,path2=value2"
+        },
+        {
+          "name": "DOUBAO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1/true/yes/on 开启完全断网预演，不发起业务请求。",
+          "format": "1/true/yes/on"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "限定通知脚本列表；空值关闭全部；* 匹配全部。可选 catalog-id、相对路径、文件名或 glob。",
+          "format": "逗号/分号/空白/换行分隔的选择器"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义 notify.py / sendNotify.js 所在目录。",
+          "format": "绝对路径目录"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "DOUBAO_COOKIE 按换行分隔，每个非空行一个账号 Cookie；兼容别名 COOKIE 仅在 DOUBAO_COOKIE 为空时生效。签到 URL 与请求参数各账号共用。任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "豆包「天天领额度」可配置接口每日签到",
+        "成功/已签到/鉴权失败/风控关键词与可选 JSON 路径成功判定",
+        "响应额度数字提取与公开账号身份展示",
+        "多账号换行配置、超时重试与完全断网预演",
+        "时间轴日志、TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "向用户配置的豆包签到接口提交签到/领额度请求，可能写入当日签到状态并发放活动额度"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/4ac225148a2befcd",
+        "candidateSha256": "c268f070fa26c080f213b2c4f38c6b4fd6722ca02215be296884670909491023"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "c268f070fa26c080f213b2c4f38c6b4fd6722ca02215be296884670909491023",
+        "releaseSha256": "f808884a85ddaeaa8b357331407a3964653e457e8a1bdbc9efd140da6336e0fe",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T10:19:53.497211+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "c268f070fa26c080f213b2c4f38c6b4fd6722ca02215be296884670909491023",
+          "toCandidateSha256": "f808884a85ddaeaa8b357331407a3964653e457e8a1bdbc9efd140da6336e0fe",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "aa8ce405ac3abf85",
       "applicationKey": "xueshanlinghu/doyoudo-auto-sign::doyoudo",
       "checkProfile": {

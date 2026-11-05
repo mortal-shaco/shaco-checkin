@@ -1,6 +1,6 @@
 # 字母索引 · D
 
-共 **14** 个脚本。返回 [`目录首页`](../README.md)。
+共 **15** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -16,5 +16,6 @@
 | PHPWind论坛每日任务 | `scripts/day.py` | `python3 scripts/day.py` | `58 8 * * *` | 待检查 | [day.py.md](../../scripts/day.py.md)（`docs/scripts/day.py.md`） |
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `32 2 * * *` | 待检查 | [ddnsto.py.md](../../scripts/ddnsto.py.md)（`docs/scripts/ddnsto.py.md`） |
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
+| 豆包天天领额度签到 | `scripts/doubao_daily.py` | `python3 scripts/doubao_daily.py` | `23 9 * * *` | 待检查 | [doubao_daily.py.md](../../scripts/doubao_daily.py.md)（`docs/scripts/doubao_daily.py.md`） |
 | Doyoudo每日签到发言 | `scripts/doyoudo_auto_sign.py` | `python3 scripts/doyoudo_auto_sign.py` | `59 8 * * *` | 待检查 | [doyoudo_auto_sign.py.md](../../scripts/doyoudo_auto_sign.py.md)（`docs/scripts/doyoudo_auto_sign.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |
