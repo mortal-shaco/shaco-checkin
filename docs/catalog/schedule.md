@@ -167,7 +167,6 @@
 | 书亦烧仙草签到 | `scripts/shuyi.py` | `python3 scripts/shuyi.py` | `51 0 * * *` | 待检查 | [shuyi.py.md](../scripts/shuyi.py.md)（`docs/scripts/shuyi.py.md`） |
 | 上马官网每日签到 | `scripts/sign_in.js` | `node scripts/sign_in.js` | `24 8 * * *` | 待检查 | [sign_in.js.md](../scripts/sign_in.js.md)（`docs/scripts/sign_in.js.md`） |
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
-| 森空岛双游戏签到 | `scripts/skland_demo.py` | `python3 scripts/skland_demo.py` | `18 2 * * *` | 待检查 | [skland_demo.py.md](../scripts/skland_demo.py.md)（`docs/scripts/skland_demo.py.md`） |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `15 1 * * *` | 待检查 | [smzdm_checkin.js.md](../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
 | SSL证书检查 | `scripts/ssl_cert_check.py` | `python3 scripts/ssl_cert_check.py` | `10 2 * * *` | 待检查 | [ssl_cert_check.py.md](../scripts/ssl_cert_check.py.md)（`docs/scripts/ssl_cert_check.py.md`） |
 | 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `24 0 * * *` | 待检查 | [sudojia_33agilestudio.js.md](../scripts/sudojia_33agilestudio.js.md)（`docs/scripts/sudojia_33agilestudio.js.md`） |
