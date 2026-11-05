@@ -1,12 +1,13 @@
 # 字母索引 · C
 
-共 **27** 个脚本。返回 [`目录首页`](../README.md)。
+共 **28** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `3 1 * * *` | 待检查 | [cdrail.py.md](../../scripts/cdrail.py.md)（`docs/scripts/cdrail.py.md`） |
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `5 0 * * *` | 上架 | [cfmoto_checkin.py.md](../../scripts/cfmoto_checkin.py.md)（`docs/scripts/cfmoto_checkin.py.md`） |
+| 超星学习通巡课签到 | `scripts/chaoxing_assistant.js` | `node scripts/chaoxing_assistant.js` | `*/10 7-22 * * *` | 待检查 | [chaoxing_assistant.js.md](../../scripts/chaoxing_assistant.js.md)（`docs/scripts/chaoxing_assistant.js.md`） |
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | 词霸每日一句 | `scripts/ciba.js` | `node scripts/ciba.js` | `0 25 11 * * *` | 待检查 | [ciba.js.md](../../scripts/ciba.js.md)（`docs/scripts/ciba.js.md`） |

@@ -7935,6 +7935,159 @@
       }
     },
     {
+      "catalogId": "413b9423260e2104",
+      "applicationKey": "snomiao/chaoxing-assistant.js::chaoxing",
+      "checkProfile": {
+        "requiredEnv": [
+          "CHAOXING_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "CHAOXING_SCHOOLID",
+          "CHAOXING_REPORT_URL",
+          "CHAOXING_DRY_RUN",
+          "CHAOXING_TIMEOUT_MS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CHAOXING_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用超星账号密码登录并校验 Cookie 含 UID，展示官方 realname 或公开 uid。",
+          "刷新课程表，轮询各课程进行中签到活动并执行普通/手势签到，识别签到成功与已签到。",
+          "只读检查待完成任务点与未完成作业状态并写入巡视摘要，不自动提交作业。",
+          "可选 HTTPS 报告地址推送巡视摘要；默认关闭，不写本地缓存文件。",
+          "支持每行一个账号及可选备注前缀，账号失败隔离并汇总退出状态。",
+          "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+          "完全断网预演：校验账号格式与报告地址协议、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时对进行中的课堂签到活动提交签到，可能改变账号签到状态。",
+          "配置了 CHAOXING_REPORT_URL 时，向该 HTTPS 地址发送巡视摘要请求。",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "超星学习通巡课签到",
+      "path": "scripts/chaoxing_assistant.js",
+      "sha256": "142d50c90887b2c669741b26cf42f16c971c0000040918b09ff6e1778e5c8449",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "snomiao/chaoxing-assistant.js",
+        "branch": "master",
+        "commit": "ad5a1cde2a3805cbb9bfe6cad6caf6d9c1d791e8",
+        "originalPath": "chaoxing-assistant.js"
+      },
+      "cron": "*/10 7-22 * * *",
+      "command": "node scripts/chaoxing_assistant.js",
+      "environment": [
+        {
+          "name": "CHAOXING_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人超星学习通 / 超星尔雅账号密码。在手机 App 或 https://passport2.chaoxing.com 可登录验证的同一组凭据；勿填写他人账号或日志中的敏感信息。",
+          "format": "每个非空行一个账号，格式「账号,密码」，只在第一个逗号处拆分（密码可含逗号）。可选备注前缀「备注|账号,密码」，只在首个竖线处拆分。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "CHAOXING_SCHOOLID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "单位/学校统一认证账号才需要填写；个人手机号或学号登录通常留空。",
+          "format": "学校 ID 字符串；应用于本任务全部账号的登录 schoolid 参数，默认空。"
+        },
+        {
+          "name": "CHAOXING_REPORT_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要把巡视摘要推到自建 Webhook / Server 酱类 HTTPS 地址时手动配置；不需要可不填。地址中可用 %s 占位摘要文本。",
+          "format": "必须以 https:// 开头的完整 URL；未设置则跳过报告推送。预演不会请求该地址。"
+        },
+        {
+          "name": "CHAOXING_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不访问超星、不签到、不投递真实通知。"
+        },
+        {
+          "name": "CHAOXING_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP 超时时间时手动设置。",
+          "format": "1000 至 60000 的整数毫秒；缺省或非法值使用 20000。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 413b9423260e2104、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "CHAOXING_ACCOUNTS 每个非空行一个账号；可选备注仅按第一个竖线分割，账号与密码仅按第一个逗号分割。账号逐个独立登录、巡课、签到与统计，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用超星账号密码登录并校验 Cookie 含 UID，展示官方 realname 或公开 uid。",
+        "刷新课程表，轮询各课程进行中签到活动并执行普通/手势签到，识别签到成功与已签到。",
+        "只读检查待完成任务点与未完成作业状态并写入巡视摘要，不自动提交作业。",
+        "可选 HTTPS 报告地址推送巡视摘要；默认关闭，不写本地缓存文件。",
+        "支持每行一个账号及可选备注前缀，账号失败隔离并汇总退出状态。",
+        "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+        "完全断网预演：校验账号格式与报告地址协议、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时对进行中的课堂签到活动提交签到，可能改变账号签到状态。",
+        "配置了 CHAOXING_REPORT_URL 时，向该 HTTPS 地址发送巡视摘要请求。",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/413b9423260e2104",
+        "candidateSha256": "142d50c90887b2c669741b26cf42f16c971c0000040918b09ff6e1778e5c8449"
+      }
+    },
+    {
       "catalogId": "75a199c398e3576c",
       "applicationKey": "chatglm",
       "checkProfile": {
@@ -16555,12 +16708,14 @@
         ],
         "optionalEnv": [
           "GLADOS_COOKIE",
+          "GLADOS_COOKIES",
           "GLADOS_GLD_SESS",
           "GLADOS_GLD_SESS_SIG",
           "GLADOS_KOA_SESS",
           "GLADOS_KOA_SESS_SIG",
           "GLADOS_SITE",
           "GLADOS_POINTS",
+          "GLADOS_EXCHANGE_PLAN",
           "GLADOS_TIMEOUT",
           "GLADOS_RETRIES",
           "GLADOS_USER_AGENT",
@@ -16578,24 +16733,28 @@
         "liveEnv": {
           "GLADOS_SITE": "rocks",
           "GLADOS_TIMEOUT": "15",
-          "GLADOS_RETRIES": "0"
+          "GLADOS_RETRIES": "0",
+          "GLADOS_EXCHANGE_PLAN": "none",
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
           "最终状态：SUCCESS",
           "TASK_SUMMARY={\"status\":\"success\""
         ],
         "features": [
-          "每日签到与重复签到业务识别",
+          "每日签到与重复签到业务识别，兼容上游消息判定",
           "官方账号身份原样展示与剩余天数查询",
           "可选积分余额与连续签到天数查询，兼容历史余额与签到响应补充统计",
+          "可选积分兑换 plan100/plan200/plan500，默认关闭避免自动消费",
           "显式选择 rocks 或 cloud 同产品接口，保留默认配置且不自动跨域",
-          "换行多账号与旧 Cookie、会话签名配对变量兼容",
+          "换行多账号与旧 Cookie、会话签名配对变量及 GLADOS_COOKIES 兼容",
           "请求超时、可选重试、代理及浏览器标识配置",
           "完整断网预演、分阶段脱敏日志、账号与任务统计及单行结构化汇总",
           "青龙通知开关、任务选择、Python 到 JavaScript 通知发现链及可选飞书签名通知"
         ],
         "sideEffects": [
           "执行 GLaDOS 签到，可能按平台规则增加积分或账户可用天数",
+          "当 GLADOS_EXCHANGE_PLAN 设为有效套餐时提交积分兑换，可能消费积分并变更套餐",
           "非预演模式下按通知配置向青龙通知渠道和已配置的飞书机器人发送脱敏摘要"
         ]
       },
@@ -16605,10 +16764,10 @@
       },
       "displayName": "GLaDOS每日签到",
       "path": "scripts/glados.py",
-      "sha256": "b20e8538714d8bf3adde3900c3938ead36d25aee8cebc9071262c076bb344533",
+      "sha256": "2519ab94e211e393563492da6e63ee3f5ededfc5ebe87d95338ab7eea38fdf5a",
       "stage": "released",
-      "license": "Apache-2.0",
-      "licenseGate": "allowed-permissive",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
       "source": {
         "repository": "hennessey-v/GlaDOS_Checkin_ql",
         "branch": "main",
@@ -16664,6 +16823,16 @@
             "catalogId": "5775c5bf30a67a88",
             "sha256": "f6b0012af7b46d0dae4b444b7b0849866e4c05942e3f2c4cef79b6314d4bf5d7",
             "license": "MIT"
+          },
+          {
+            "repository": "snowfry/Gladoscheckin-GPT-Kimi",
+            "url": "https://github.com/snowfry/Gladoscheckin-GPT-Kimi.git",
+            "branch": "main",
+            "commit": "78b656fdd1f280a2f7c03220c6fe9905dad0a4fb",
+            "originalPath": "glados_checkin.py",
+            "catalogId": "18e948b2415d6560",
+            "sha256": "f7ddffd2784f4f7af66cf5efcba5eaf001e0e9f48a4fd24d9e02197652bb8d2d",
+            "license": "GPL-3.0"
           }
         ]
       },
@@ -16674,92 +16843,106 @@
           "name": "GR_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "在对应 GLaDOS 网站登录，打开浏览器开发者工具的网络面板，查看自己的 /api/user/status 或 /api/user/checkin 请求，复制完整 Cookie 请求头；不要复制响应正文，不要分享给他人。",
-          "format": "每个非空行一个账号的完整 Cookie，保留分号、等号、& 和 @；同一账号的会话与签名在同一行，不使用其他字符分割账号。"
+          "howToGet": "登录对应 GLaDOS 网站后，在浏览器开发者工具网络面板打开 /api/user/status 或 /api/user/checkin 请求，复制请求头中的完整 Cookie；不要复制响应头 Set-Cookie，也不要把该值发给他人或写入公开仓库。",
+          "format": "每个非空行一个完整 Cookie；同一账号 Cookie 内的会话、签名及其他字段原样保留在同一行；不使用 &、@ 分隔账号。"
         },
         {
           "name": "GLADOS_COOKIE",
           "required": false,
           "sensitive": true,
-          "howToGet": "在对应 GLaDOS 网站登录，打开浏览器开发者工具的网络面板，查看自己的 /api/user/status 或 /api/user/checkin 请求，复制完整 Cookie 请求头；不要复制响应正文，不要分享给他人。这是兼容变量，优先使用 GR_COOKIE。",
-          "format": "与 GR_COOKIE 相同；仅 GR_COOKIE 没有非空行时读取。"
+          "howToGet": "兼容旧变量名；未设置 GR_COOKIE 时按相同方式获取并填写。",
+          "format": "与 GR_COOKIE 相同，每行一个完整 Cookie。"
+        },
+        {
+          "name": "GLADOS_COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游复数变量名；未设置 GR_COOKIE 与 GLADOS_COOKIE 时按相同方式获取并填写。",
+          "format": "与 GR_COOKIE 相同，必须换行分隔账号，不再使用上游的 & 分隔。"
         },
         {
           "name": "GLADOS_GLD_SESS",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容输入：从同一账号 Cookie 中取得 gld:sess，建议与签名合并到 GR_COOKIE。",
-          "format": "每行一个会话值，保留后续等号；与 GLADOS_GLD_SESS_SIG 非空行逐行配对。"
+          "howToGet": "仅当无法提供完整 Cookie 时，从同一账号 Cookie 中拆出 gld:sess 值；建议优先合并为 GR_COOKIE。",
+          "format": "每行一个会话值，必须与 GLADOS_GLD_SESS_SIG 逐行配对。"
         },
         {
           "name": "GLADOS_GLD_SESS_SIG",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容输入：从同一账号 Cookie 中取得 gld:sess.sig，必须与对应会话来自同次登录。",
-          "format": "每行一个签名；仅完整 Cookie 未配置时启用配对输入。"
+          "howToGet": "与 GLADOS_GLD_SESS 来自同一账号 Cookie 的 gld:sess.sig。",
+          "format": "每行一个签名，必须与 GLADOS_GLD_SESS 逐行配对。"
         },
         {
           "name": "GLADOS_KOA_SESS",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容输入：从同一账号 Cookie 中取得 koa:sess，建议与签名合并到 GR_COOKIE。",
-          "format": "每行一个会话值；与 GLADOS_KOA_SESS_SIG 非空行逐行配对；优先读取 gld 配对变量。"
+          "howToGet": "仅当无法提供完整 Cookie 时，从同一账号 Cookie 中拆出 koa:sess 值；建议优先合并为 GR_COOKIE。",
+          "format": "每行一个会话值，必须与 GLADOS_KOA_SESS_SIG 逐行配对。"
         },
         {
           "name": "GLADOS_KOA_SESS_SIG",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容输入：从同一账号 Cookie 中取得 koa:sess.sig，必须与对应会话来自同次登录。",
-          "format": "每行一个签名；不得用 & 或 @ 分割账号。"
+          "howToGet": "与 GLADOS_KOA_SESS 来自同一账号 Cookie 的 koa:sess.sig。",
+          "format": "每行一个签名，必须与 GLADOS_KOA_SESS 逐行配对。"
         },
         {
           "name": "GLADOS_SITE",
           "required": false,
           "sensitive": false,
-          "howToGet": "根据取得 Cookie 的网站显式选择；没有线上验证证明需要更换规范脚本默认域名，不自动跨域回退。",
-          "format": "rocks 或 cloud；默认 rocks 对应 https://glados.rocks 和请求体 token=glados.one；cloud 对应 https://glados.cloud 和 token=glados.cloud。"
+          "howToGet": "按账号实际登录站点自行选择；默认 rocks，不自动跨域。",
+          "format": "rocks 或 cloud；cloud 使用 glados.cloud 与 token=glados.cloud。"
         },
         {
           "name": "GLADOS_POINTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要额外查询积分和连续签到天数时开启；cloud 来源有同功能接口证据，rocks 接口尚未联网验证。",
-          "format": "1 开启、0 关闭；cloud 默认 1，rocks 默认 0；开启后查询失败将使该账号失败，不能以签到统计冒充查询成功。"
+          "howToGet": "需要查询积分与连续签到天数时自行开启；cloud 默认开启，rocks 默认关闭。",
+          "format": "1/true/yes/on 开启；0/false/no/off 关闭。启用兑换时会自动查询积分。"
+        },
+        {
+          "name": "GLADOS_EXCHANGE_PLAN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在确认需要自动用积分兑换套餐时自行设置；默认不兑换，避免意外消费积分。",
+          "format": "none（默认，不兑换）、plan100、plan200 或 plan500。"
         },
         {
           "name": "GLADOS_TIMEOUT",
           "required": false,
           "sensitive": false,
-          "howToGet": "按网络情况设置，无需获取凭据。",
-          "format": "1 至 60 的有限数字，单位秒，默认 15。"
+          "howToGet": "按网络情况自行调整单次请求超时；不填使用默认 15 秒。",
+          "format": "1 到 60 之间的数字秒，默认 15。"
         },
         {
           "name": "GLADOS_RETRIES",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需启用参考来源的签到重试；默认不增加规范脚本的请求次数。",
-          "format": "0 至 5 的整数，默认 0；登录失效、设备不匹配、拒绝访问和重定向不重试。"
+          "howToGet": "网络抖动时可自行增加签到重试次数；登录失效或拒绝访问不会重试。",
+          "format": "0 到 5 的整数，默认 0。"
         },
         {
           "name": "GLADOS_USER_AGENT",
           "required": false,
           "sensitive": false,
-          "howToGet": "可从同一次浏览器请求头复制 User-Agent；无需配置即可使用内置值。",
-          "format": "单行浏览器标识，不得包含控制字符。"
+          "howToGet": "需要覆盖默认浏览器标识时自行设置。",
+          "format": "普通 User-Agent 字符串，不能包含控制字符。"
         },
         {
           "name": "CHECKIN_PROXY_URL",
           "required": false,
           "sensitive": true,
-          "howToGet": "需要代理时从自己的代理服务取得地址，禁止写入脚本或日志。",
-          "format": "带端口的 http:// 或 https:// 代理地址，支持代理认证；不配置时沿用标准运行环境代理。"
+          "howToGet": "需要经代理访问时自行配置；不填则直连。",
+          "format": "带端口的 http 或 https 代理地址，例如 http://127.0.0.1:7890。"
         },
         {
           "name": "GLADOS_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "本地测试时设为 1，不调用业务接口、随机文本服务或通知器。",
-          "format": "1、true、yes、on 开启；默认关闭。"
+          "howToGet": "在测试环境自行开启；正式执行时删除或设为 0。",
+          "format": "1/true/yes/on 开启完全断网预演；默认关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -16772,49 +16955,51 @@
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "按青龙希望接收通知的任务设置；未设置时本规范任务默认入选。",
-          "format": "逗号、分号或空白分隔的目录编号、脚本相对路径、文件名或文件名通配符；支持 2d633fe3129937b6、scripts/glados.py、glados.py；* 表示全部，空值表示全部关闭。"
+          "howToGet": "在 auto 模式下需要替换默认通知名单时自行设置。",
+          "format": "逗号、分号或空白分隔；可匹配 catalogId、脚本路径、文件名或通配符；* 全选，空值全关。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "使用青龙已有的 notify.py 或 sendNotify.js 目录；不需要安装其他应用，未配置时自动发现。",
-          "format": "可选通知目录；顺序为 import notify.send、此目录及 /ql/data/scripts、/ql/scripts 的 notify.py，再尝试这些目录的 sendNotify.js；每次发送限时 30 秒。"
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录。",
+          "format": "目录路径；失败后继续尝试 /ql/data/scripts 与 /ql/scripts；通知失败不改变业务退出码。"
         },
         {
           "name": "FEISHU_WEBHOOK",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选：在飞书或 Lark 群添加自定义机器人，从机器人配置复制 webhook；不配置则只使用青龙通知。",
-          "format": "官方 https://open.feishu.cn/open-apis/bot/v2/hook/ 或 https://open.larksuite.com/open-apis/bot/v2/hook/ 地址；遵守 QINGLONG_NOTIFY 和任务选择规则。"
+          "howToGet": "需要额外飞书通知时，在飞书开放平台创建自定义机器人并复制 webhook。",
+          "format": "仅允许 https://open.feishu.cn 或 https://open.larksuite.com 的官方 bot/v2/hook 地址。"
         },
         {
           "name": "FEISHU_SECRET",
           "required": false,
           "sensitive": true,
-          "howToGet": "可选：从同一个飞书自定义机器人的签名校验配置取得；机器人未开启签名时留空。",
-          "format": "单行签名密钥，仅用于飞书请求签名，绝不写入通知内容或日志。"
+          "howToGet": "飞书机器人启用签名校验时填写对应密钥。",
+          "format": "飞书自定义机器人签名密钥；未启用签名可留空。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，优先读取 GR_COOKIE，其次 GLADOS_COOKIE，最后兼容成对会话变量；同一账号 Cookie 中的会话、签名及其他值完整放在同一行；按首个等号识别字段，后续等号及 &、@ 均保留。每个账号独立处理，任一账号失败则整体非零退出。"
+        "rule": "每个非空行一个账号 Cookie；同一账号的会话与签名放在同一行。账号独立处理，任一账号失败则整体非零退出。"
       },
       "dependencies": [],
       "features": [
-        "每日签到与重复签到业务识别",
+        "每日签到与重复签到业务识别，兼容上游消息判定",
         "官方账号身份原样展示与剩余天数查询",
         "可选积分余额与连续签到天数查询，兼容历史余额与签到响应补充统计",
+        "可选积分兑换 plan100/plan200/plan500，默认关闭避免自动消费",
         "显式选择 rocks 或 cloud 同产品接口，保留默认配置且不自动跨域",
-        "换行多账号与旧 Cookie、会话签名配对变量兼容",
+        "换行多账号与旧 Cookie、会话签名配对变量及 GLADOS_COOKIES 兼容",
         "请求超时、可选重试、代理及浏览器标识配置",
         "完整断网预演、分阶段脱敏日志、账号与任务统计及单行结构化汇总",
         "青龙通知开关、任务选择、Python 到 JavaScript 通知发现链及可选飞书签名通知"
       ],
       "sideEffects": [
         "执行 GLaDOS 签到，可能按平台规则增加积分或账户可用天数",
+        "当 GLADOS_EXCHANGE_PLAN 设为有效套餐时提交积分兑换，可能消费积分并变更套餐",
         "非预演模式下按通知配置向青龙通知渠道和已配置的飞书机器人发送脱敏摘要"
       ],
       "review": {
@@ -16828,20 +17013,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/2d633fe3129937b6",
-        "candidateSha256": "c7bad158a0c2628d402f65488268432a6a399ef96f382fcb7ea39a90bc0abdcd"
+        "candidateSha256": "743122ddd48a568648d46d5c6db9c6b7a62292e32b81ee5249c19d988a39bf14"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "c7bad158a0c2628d402f65488268432a6a399ef96f382fcb7ea39a90bc0abdcd",
-        "releaseSha256": "b20e8538714d8bf3adde3900c3938ead36d25aee8cebc9071262c076bb344533",
+        "validatedSha256": "743122ddd48a568648d46d5c6db9c6b7a62292e32b81ee5249c19d988a39bf14",
+        "releaseSha256": "2519ab94e211e393563492da6e63ee3f5ededfc5ebe87d95338ab7eea38fdf5a",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-10-27T09:29:44.369474+00:00",
+          "approvedAt": "2026-11-05T01:48:58.896465+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "c7bad158a0c2628d402f65488268432a6a399ef96f382fcb7ea39a90bc0abdcd",
-          "toCandidateSha256": "b20e8538714d8bf3adde3900c3938ead36d25aee8cebc9071262c076bb344533",
+          "fromCandidateSha256": "743122ddd48a568648d46d5c6db9c6b7a62292e32b81ee5249c19d988a39bf14",
+          "toCandidateSha256": "2519ab94e211e393563492da6e63ee3f5ededfc5ebe87d95338ab7eea38fdf5a",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

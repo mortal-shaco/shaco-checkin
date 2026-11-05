@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # name: GLaDOS每日签到
 # cron: 58 0 * * *
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 """
 File: checkin.py(GLaDOS签到)
@@ -14,17 +14,21 @@ Update: 2023/7/27
 维护说明：本文件在保留原作者署名、签到和状态查询能力的基础上，增加了
 多账号、超时、业务成功校验、完全断网预演、脱敏日志和青龙通知集成。
 同产品参考：jiang7f/checkin-glados，checkin.py，MIT；原来源未附额外版权声明。
-本维护文件适用 Apache-2.0，保留上方原作者署名。
+可选积分兑换参考：snowfry/Gladoscheckin-GPT-Kimi，glados_checkin.py，GPL-3.0；
+上游默认 plan500 自动兑换已改为显式 opt-in（默认 none），避免意外消费积分。
+合并后本维护文件适用 GPL-3.0，并保留上方原作者署名与各来源声明。
 
 参数获取：在对应 GLaDOS 网站登录，在开发者工具「网络」中查看自己
 /api/user/status 或 /api/user/checkin 请求的 Cookie 请求头，完整复制到
 GR_COOKIE；每个非空行一个账号，不用 & 或 @ 分隔，也无需账号库或浏览器程序。
-兼容 GLADOS_COOKIE；或成对的 GLADOS_GLD_SESS/GLADOS_GLD_SESS_SIG、
+兼容 GLADOS_COOKIE、GLADOS_COOKIES；或成对的 GLADOS_GLD_SESS/GLADOS_GLD_SESS_SIG、
 GLADOS_KOA_SESS/GLADOS_KOA_SESS_SIG（同一账号值来自同一个 Cookie）。
-默认保留 glados.rocks、token=glados.one、每日 00:40、15 秒超时及两个阶段。
+默认保留 glados.rocks、token=glados.one、每日 00:58、15 秒超时及基础阶段。
 GLADOS_SITE=cloud 显式改用参考来源的 glados.cloud、token=glados.cloud；
 不会自动跨域切换或传递 Cookie。GLADOS_POINTS=1 增加积分和连续天数查询，
 cloud 模式默认开启，rocks 模式默认关闭；GLADOS_POINTS=0 可关闭新增查询。
+GLADOS_EXCHANGE_PLAN=plan100|plan200|plan500 启用可选积分兑换；默认 none 不兑换。
+启用兑换时会查询积分，积分不足则跳过兑换而不计失败。
 GLADOS_RETRIES=0..5 为可选签到重试次数，默认 0，不重试登录失效或拒绝访问。
 GLADOS_USER_AGENT 可覆盖浏览器标识；CHECKIN_PROXY_URL 可配置 HTTP(S) 代理。
 GLADOS_DRY_RUN=1 完全断网，仅检查配置并生成摘要，不执行通知或签到。
@@ -75,7 +79,10 @@ CATALOG_ID = "2d633fe3129937b6"
 TASK_NAME = "GLaDOS每日签到"
 CHECKIN_TOKEN = "glados.one"
 POINTS_URL = "https://glados.rocks/api/user/points"
+EXCHANGE_URL = "https://glados.rocks/api/user/exchange"
 POINTS_ENABLED = False
+EXCHANGE_PLAN = "none"
+EXCHANGE_PLANS = {"plan100": 100, "plan200": 200, "plan500": 500}
 RETRIES = 0
 PROXY_URL = ""
 SECRETS: List[str] = []
@@ -120,8 +127,8 @@ def parse_timeout() -> float:
 
 
 def configure() -> None:
-    global CHECKIN_URL, STATUS_URL, POINTS_URL, REFERER, ORIGIN
-    global CHECKIN_TOKEN, USER_AGENT, POINTS_ENABLED, RETRIES, PROXY_URL
+    global CHECKIN_URL, STATUS_URL, POINTS_URL, EXCHANGE_URL, REFERER, ORIGIN
+    global CHECKIN_TOKEN, USER_AGENT, POINTS_ENABLED, EXCHANGE_PLAN, RETRIES, PROXY_URL
     site = os.getenv("GLADOS_SITE", "rocks").strip().lower()
     if site not in ("rocks", "cloud"):
         raise ValueError("GLADOS_SITE 只能是 rocks 或 cloud")
@@ -129,12 +136,23 @@ def configure() -> None:
     CHECKIN_URL = ORIGIN + "/api/user/checkin"
     STATUS_URL = ORIGIN + "/api/user/status"
     POINTS_URL = ORIGIN + "/api/user/points"
+    EXCHANGE_URL = ORIGIN + "/api/user/exchange"
     REFERER = ORIGIN + "/console/checkin"
     CHECKIN_TOKEN = "glados.cloud" if site == "cloud" else "glados.one"
     points = os.getenv("GLADOS_POINTS", "1" if site == "cloud" else "0").strip().lower()
     if points not in TRUE_VALUES | FALSE_VALUES:
         raise ValueError("GLADOS_POINTS 必须是开关值 1 或 0")
     POINTS_ENABLED = points in TRUE_VALUES
+    plan = os.getenv("GLADOS_EXCHANGE_PLAN", "none").strip().lower() or "none"
+    if plan in FALSE_VALUES | {"none", ""}:
+        EXCHANGE_PLAN = "none"
+    elif plan in EXCHANGE_PLANS:
+        EXCHANGE_PLAN = plan
+    else:
+        raise ValueError("GLADOS_EXCHANGE_PLAN 只能是 none、plan100、plan200 或 plan500")
+    if EXCHANGE_PLAN != "none":
+        # 兑换需要积分余额；显式开启兑换时自动查询积分，不削弱原 GLADOS_POINTS=0 的非兑换路径。
+        POINTS_ENABLED = True
     try:
         RETRIES = int(os.getenv("GLADOS_RETRIES", "0"))
     except ValueError:
@@ -164,7 +182,11 @@ def credential_lines(name: str) -> List[str]:
 
 def load_accounts() -> List[str]:
     """每行一个完整 Cookie；Cookie 内的 &、@、=、; 均不会分割账号。"""
-    accounts = credential_lines("GR_COOKIE") or credential_lines("GLADOS_COOKIE")
+    accounts = (
+        credential_lines("GR_COOKIE")
+        or credential_lines("GLADOS_COOKIE")
+        or credential_lines("GLADOS_COOKIES")
+    )
     if not accounts:
         for prefix, cookie_name in (("GLADOS_GLD", "gld:sess"), ("GLADOS_KOA", "koa:sess")):
             sessions = credential_lines(prefix + "_SESS")
@@ -176,7 +198,7 @@ def load_accounts() -> List[str]:
                             for value, signature in zip(sessions, signatures)]
                 break
     if not accounts:
-        raise ValueError("未配置 GR_COOKIE；请按每行一个完整 Cookie 填写；兼容 GLADOS_COOKIE 或成对会话变量")
+        raise ValueError("未配置 GR_COOKIE；请按每行一个完整 Cookie 填写；兼容 GLADOS_COOKIE、GLADOS_COOKIES 或成对会话变量")
     for cookie in accounts:
         SECRETS.append(cookie)
         for item in cookie.split(";"):
@@ -263,13 +285,19 @@ def classify_checkin(response: Dict[str, Any]) -> Tuple[str, str]:
     code = response.get("code")
     # 仅使用原文判定业务，不将服务器消息或错误原文写入日志。
     message = str(response.get("message") or response.get("msg") or response.get("error") or "")
-    if type(code) in (int, str) and code in (0, "0"):
-        return "success", "签到成功"
+    folded = message.casefold()
+    success_markers = ("checkin! got", "check-in! got", "签到成功")
     already_markers = (
         "checkin repeats", "check-in repeats", "already check", "already signed",
-        "try tomorrow", "已签到", "重复签到", "明天再来", "today's observation logged",
+        "try tomorrow", "repeats", "已签到", "重复签到", "明天再来", "today's observation logged",
     )
-    if type(code) in (int, str) and code in (1, "1") and any(marker in message.casefold() for marker in already_markers):
+    if type(code) in (int, str) and code in (0, "0"):
+        return "success", "签到成功"
+    if any(marker in folded for marker in success_markers):
+        return "success", "签到成功"
+    if any(marker in folded for marker in already_markers) and (
+        code is None or (type(code) in (int, str) and code in (1, "1"))
+    ):
         return "already", "今日已签到"
     if code in (-2, "-2", 401, "401"):
         raise RuntimeError("登录已过期，请在相应网站重新获取 Cookie")
@@ -344,9 +372,27 @@ def perform_checkin(cookie: str, timeout: float) -> Tuple[str, str, Dict[str, An
     raise RuntimeError("签到未取得结果")
 
 
+def perform_exchange(cookie: str, timeout: float, points_balance: Optional[int]) -> Tuple[str, str]:
+    need = EXCHANGE_PLANS[EXCHANGE_PLAN]
+    if points_balance is None:
+        raise RuntimeError("积分兑换缺少积分余额，无法判定")
+    if points_balance < need:
+        return "skipped", "积分不足（当前 {}，需要 {}），跳过兑换 {}".format(points_balance, need, EXCHANGE_PLAN)
+    response = request_json("POST", EXCHANGE_URL, cookie, timeout, {"planType": EXCHANGE_PLAN})
+    code = response.get("code")
+    if type(code) in (int, str) and code in (0, "0"):
+        return "success", "兑换成功 {}".format(EXCHANGE_PLAN)
+    raise RuntimeError("积分兑换业务失败，未取得成功凭证")
+
+
 def run_account(index: int, cookie: str, timeout: float, dry_run: bool) -> Dict[str, Any]:
     started = time.monotonic()
-    total = 3 if POINTS_ENABLED else 2
+    stages = ["签到请求", "账号状态查询"]
+    if POINTS_ENABLED:
+        stages.append("积分与连续签到天数查询")
+    if EXCHANGE_PLAN != "none":
+        stages.append("积分兑换 {}".format(EXCHANGE_PLAN))
+    total = len(stages)
     stats = {"total": total, "success": 0, "already": 0, "skipped": 0, "failed": 0}
     label = "账号{}".format(index)
     errors: List[str] = []
@@ -359,9 +405,6 @@ def run_account(index: int, cookie: str, timeout: float, dry_run: bool) -> Dict[
     except ValueError as exc:
         cookie_valid = False
         log("[{}] ❌ {}".format(label, safe_business_text(exc)))
-    stages = ["签到请求", "账号状态查询"]
-    if POINTS_ENABLED:
-        stages.append("积分与连续签到天数查询")
     for stage, name in enumerate(stages, 1):
         stage_started = time.monotonic()
         prefix = "[账号{}][{}/{}]".format(index, stage, total)
@@ -374,7 +417,7 @@ def run_account(index: int, cookie: str, timeout: float, dry_run: bool) -> Dict[
                 log("{} ⏭️ 断网预演：已校验{}配置，未发起网络请求（{:.2f}秒）".format(prefix, name, time.monotonic() - stage_started))
                 continue
             outcome = "success"
-            if stage == 1:
+            if name == "签到请求":
                 outcome, message, response = perform_checkin(cookie, timeout)
                 for key in ("points", "streak"):
                     if response.get(key) is not None:
@@ -382,23 +425,29 @@ def run_account(index: int, cookie: str, timeout: float, dry_run: bool) -> Dict[
                             checkin_metrics[key] = numeric(response[key], key)
                         except RuntimeError:
                             pass
-            elif stage == 2:
+            elif name == "账号状态查询":
                 identity, left_days = parse_status(request_json("GET", STATUS_URL, cookie, timeout))
                 label = identity
                 message = "身份：{}；剩余天数：{}".format(identity, left_days)
-            else:
+            elif name.startswith("积分与连续签到天数查询"):
                 metrics = parse_points(request_json("GET", POINTS_URL, cookie, timeout))
                 metrics = dict(checkin_metrics, **metrics)
                 message = "；".join(("积分" if key == "points" else "连续天数") + "：" + str(value) for key, value in metrics.items())
-            stats["already" if outcome == "already" else "success"] += 1
-            log("{} {} {}（{:.2f}秒）".format(prefix, "☑️" if outcome == "already" else "✅", message, time.monotonic() - stage_started))
+            else:
+                outcome, message = perform_exchange(cookie, timeout, metrics.get("points", checkin_metrics.get("points")))
+            if outcome == "skipped":
+                stats["skipped"] += 1
+                log("{} ⏭️ {}（{:.2f}秒）".format(prefix, message, time.monotonic() - stage_started))
+            else:
+                stats["already" if outcome == "already" else "success"] += 1
+                log("{} {} {}（{:.2f}秒）".format(prefix, "☑️" if outcome == "already" else "✅", message, time.monotonic() - stage_started))
         except Exception as exc:
             stats["failed"] += 1
             # 所有内部异常仅打印已知错误，未知异常不输出原文。
             message = safe_business_text(exc) if isinstance(exc, (RuntimeError, ValueError)) else "处理失败（{}）".format(type(exc).__name__)
             errors.append(message)
             log("{} ❌ {}（{:.2f}秒）".format(prefix, message, time.monotonic() - stage_started))
-            if stage == 3 and checkin_metrics:
+            if name.startswith("积分与连续签到天数查询") and checkin_metrics:
                 metrics = checkin_metrics
                 log("{} 签到响应补充统计：{}".format(prefix, json.dumps(metrics, ensure_ascii=False)))
     elapsed = time.monotonic() - started
@@ -418,7 +467,10 @@ def notification_selected() -> bool:
         return False
     selectors = [part for part in re.split(r"[,;\s]+", raw.strip()) if part]
     script_path = str(Path(__file__).as_posix())
-    names = {CATALOG_ID, Path(__file__).name, "candidate.py", "checkin.py", "glados.py", "scripts/glados.py", script_path}
+    names = {
+        CATALOG_ID, Path(__file__).name, "candidate.py", "checkin.py",
+        "glados.py", "glados_checkin.py", "scripts/glados.py", script_path,
+    }
     for selector in selectors:
         if selector == "*":
             return True
@@ -586,6 +638,13 @@ def main() -> int:
         return 2
 
     log("账号数量：{}".format(len(accounts)))
+    log("站点：{}；积分查询：{}；兑换计划：{}；超时：{}秒；重试：{}".format(
+        ORIGIN.replace("https://glados.", ""),
+        "开" if POINTS_ENABLED else "关",
+        EXCHANGE_PLAN,
+        int(timeout) if timeout == int(timeout) else timeout,
+        RETRIES,
+    ))
     results = [run_account(i, cookie, timeout, dry_run) for i, cookie in enumerate(accounts, 1)]
     account_success = sum(1 for item in results if item["ok"])
     account_failed = len(results) - account_success
