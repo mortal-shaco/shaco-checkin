@@ -1,10 +1,11 @@
 # 字母索引 · T
 
-共 **18** 个脚本。返回 [`目录首页`](../README.md)。
+共 **19** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | Taker每日挖矿 | `scripts/taker.js` | `node scripts/taker.js` | `26 8 * * *` | 待检查 | [taker.js.md](../../scripts/taker.js.md)（`docs/scripts/taker.js.md`） |
+| OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |

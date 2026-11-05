@@ -40369,6 +40369,181 @@
       }
     },
     {
+      "catalogId": "1d90366e2210d9c6",
+      "applicationKey": "dante4rt/openlayer-airdrop-bot::checkin",
+      "checkProfile": {
+        "requiredEnv": [
+          "OPENLAYER_BEARER"
+        ],
+        "optionalEnv": [
+          "OPENLAYER_TOKEN",
+          "BEARERS",
+          "OPENLAYER_DRY_RUN",
+          "OPENLAYER_TIMEOUT_MS",
+          "OPENLAYER_BASE_URL",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "OPENLAYER_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用 OpenLayer Bearer Token 查询用户信息并完成每日签到。",
+          "展示官方返回的 X 名称、X 用户名、钱包地址、积分、倍数、连续签到次数与宠物信息等非敏感字段。",
+          "识别签到成功与今日已签到；支持每行一个 Token 多账号，兼容 OPENLAYER_TOKEN 与上游 BEARERS/JSON 数组。",
+          "可选自定义 API 根地址与请求超时。",
+          "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+          "完全断网预演：校验 Token 格式、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时向 OpenLayer checkIn 接口提交每日签到，可能增加账号积分或连续签到次数。",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "OpenLayer每日签到",
+      "path": "scripts/task_1d90366e.js",
+      "sha256": "e345bdd2d24b50acb4fad0ca8194e02b2904cd997cade3a8d1d5938789da21f0",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "dante4rt/openlayer-airdrop-bot",
+        "branch": "main",
+        "commit": "2615961c4baff07dd8e4e60fa7995a297b3a3ea9",
+        "originalPath": "src/checkIn.js"
+      },
+      "cron": "23 8,20 * * *",
+      "command": "node scripts/task_1d90366e.js",
+      "environment": [
+        {
+          "name": "OPENLAYER_BEARER",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "打开 OpenLayer 浏览器扩展并登录本人账号，右键页面选择检查，在 Console 执行 console.log(localStorage.getItem('_open_layer_token_'))，复制返回的 Bearer Token。勿使用他人 Token，勿写入公开仓库、日志或通知。",
+          "format": "每个非空行一个账号 Token。可不含 Bearer 前缀（脚本会自动补全）。可选「备注|token」，只在首个竖线处拆分。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "OPENLAYER_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：仅当未设置 OPENLAYER_BEARER 时读取；获取方式与 OPENLAYER_BEARER 相同。",
+          "format": "与 OPENLAYER_BEARER 相同；每行一个 Token。"
+        },
+        {
+          "name": "BEARERS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游 bearers.json：仅当 OPENLAYER_BEARER 与 OPENLAYER_TOKEN 皆为空时读取；可为换行多 Token，或 JSON 字符串数组。",
+          "format": "每行一个 Token，或形如 [\"token1\",\"token2\"] 的 JSON 数组文本。"
+        },
+        {
+          "name": "OPENLAYER_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不访问 OpenLayer、不签到、不投递真实通知。"
+        },
+        {
+          "name": "OPENLAYER_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP 超时时间时手动设置。",
+          "format": "1000 至 60000 的整数毫秒；缺省或非法值使用 15000。"
+        },
+        {
+          "name": "OPENLAYER_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "官方 API 根地址变更时手动覆盖；一般可留空。",
+          "format": "HTTPS 根地址，不要末尾斜杠；缺省为 https://us-central1-openoracle-de73b.cloudfunctions.net"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 1d90366e2210d9c6、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "OPENLAYER_BEARER（或兼容 OPENLAYER_TOKEN / BEARERS）每个非空行一个账号 Token；可选备注仅按第一个竖线分割。账号逐个独立查询用户信息与签到统计，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 OpenLayer Bearer Token 查询用户信息并完成每日签到。",
+        "展示官方返回的 X 名称、X 用户名、钱包地址、积分、倍数、连续签到次数与宠物信息等非敏感字段。",
+        "识别签到成功与今日已签到；支持每行一个 Token 多账号，兼容 OPENLAYER_TOKEN 与上游 BEARERS/JSON 数组。",
+        "可选自定义 API 根地址与请求超时。",
+        "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+        "完全断网预演：校验 Token 格式、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时向 OpenLayer checkIn 接口提交每日签到，可能增加账号积分或连续签到次数。",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1d90366e2210d9c6",
+        "candidateSha256": "6e64d5cbcd3ee6e3ae4fb962ddd50db5d8805db6447328f99fd1524a9d34f5b8"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "6e64d5cbcd3ee6e3ae4fb962ddd50db5d8805db6447328f99fd1524a9d34f5b8",
+        "releaseSha256": "e345bdd2d24b50acb4fad0ca8194e02b2904cd997cade3a8d1d5938789da21f0",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T06:53:37.747164+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "6e64d5cbcd3ee6e3ae4fb962ddd50db5d8805db6447328f99fd1524a9d34f5b8",
+          "toCandidateSha256": "e345bdd2d24b50acb4fad0ca8194e02b2904cd997cade3a8d1d5938789da21f0",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "2c89474a11ce9592",
       "applicationKey": "hayfrp",
       "checkProfile": {
