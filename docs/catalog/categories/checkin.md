@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **217** 个脚本。返回 [`目录首页`](../README.md)。
+共 **218** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -96,6 +96,7 @@
 | 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `16 1 * * *` | 待检查 | [kurobbs_sign.py.md](../../scripts/kurobbs_sign.py.md)（`docs/scripts/kurobbs_sign.py.md`） |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `14 0 * * *` | 待检查 | [leaflow_checkin_pyleaflow_checkin.py.md](../../scripts/leaflow_checkin_pyleaflow_checkin.py.md)（`docs/scripts/leaflow_checkin_pyleaflow_checkin.py.md`） |
 | LeetCode 中文站每日一题自动打卡 | `scripts/leetcode_daily.py` | `python3 scripts/leetcode_daily.py` | `30 0 * * *` | 待检查 | [leetcode_daily.py.md](../../scripts/leetcode_daily.py.md)（`docs/scripts/leetcode_daily.py.md`） |
+| 量界智算签到 | `scripts/liangjie.py` | `python3 scripts/liangjie.py` | `10 9 * * *` | 待检查 | [liangjie.py.md](../../scripts/liangjie.py.md)（`docs/scripts/liangjie.py.md`） |
 | linux.sb 每日签到 | `scripts/linuxsb_daily.py` | `python3 scripts/linuxsb_daily.py` | `10 8 * * *` | 待检查 | [linuxsb_daily.py.md](../../scripts/linuxsb_daily.py.md)（`docs/scripts/linuxsb_daily.py.md`） |
 | 咔叽网单每日签到 | `scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `16 2 * * *` | 待检查 | [littlewuh_qinglongbox_dailycheckin_scripts.py.md](../../scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md)（`docs/scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md`） |
 | NodeSeek 签到与收益统计 | `scripts/lizhixu_ql_script_hub_nodeseek.py` | `python3 scripts/lizhixu_ql_script_hub_nodeseek.py` | `10 1 * * *` | 待检查 | [lizhixu_ql_script_hub_nodeseek.py.md](../../scripts/lizhixu_ql_script_hub_nodeseek.py.md)（`docs/scripts/lizhixu_ql_script_hub_nodeseek.py.md`） |

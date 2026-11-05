@@ -22514,6 +22514,141 @@
       }
     },
     {
+      "catalogId": "62fd8997988ca1e4",
+      "applicationKey": "liangjie",
+      "checkProfile": {
+        "requiredEnv": [
+          "LIANGJIE_COOKIE"
+        ],
+        "optionalEnv": [
+          "LIANGJIE_DRY_RUN",
+          "LIANGJIE_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "LIANGJIE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LIANGJIE_TIMEOUT": "15"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "量界智算（liangjiewis.com）每日签到",
+          "签到前查询 /api/user/self 获取公开身份与 New-API-User",
+          "识别业务 success 与「已签到」文案",
+          "官方接口返回昵称、用户名或公开 UID 时直接展示以便核对账号",
+          "多账号按行处理；规范变量 LIANGJIE_COOKIE（可选用户ID|Cookie）",
+          "完全断网预演 LIANGJIE_DRY_RUN、HTTPS 超时、业务成功/已签到判定",
+          "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "向量界智算签到接口提交每日签到，改变当日签到状态并可能发放站点奖励",
+          "通知已启用且适配器可用时向青龙通知通道发送脱敏任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "量界智算签到",
+      "path": "scripts/liangjie.py",
+      "sha256": "0f05fb80010535f1fe48b1ae3bbbf3bec87c13ac7515bb36a04d2abb35910696",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "MDLZCOOL/liangjie-auto-checkin",
+        "branch": "main",
+        "commit": "5a65be226e4b6e7a5a689c1256d759f151144c64",
+        "originalPath": "checkin.py"
+      },
+      "cron": "10 9 * * *",
+      "command": "python3 scripts/liangjie.py",
+      "environment": [
+        {
+          "name": "LIANGJIE_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 https://liangjiewis.com/ 后，打开开发者工具「网络」面板，找到个人中心或签到相关请求，完整复制 Cookie 请求头（通常含 session=…）。可选在同一行前置本人数字用户 ID，格式为「用户ID|Cookie」。不要把真实 Cookie 写入公开仓库、日志或通知。",
+          "format": "每行一个账号：Cookie 原文，或「数字用户ID|Cookie」（仅在第一个 | 处分割）；账号之间只用换行分隔，不使用 & 或 @"
+        },
+        {
+          "name": "LIANGJIE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置；只校验配置并模拟查询/签到阶段，不访问网络、不改动签到状态、不真实发送通知。",
+          "format": "1、true、yes、on 开启完全断网预演；默认关闭"
+        },
+        {
+          "name": "LIANGJIE_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次 HTTPS 请求超时秒数。",
+          "format": "5 到 60 的数字；默认 15"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录；失败不改变业务退出码。",
+          "format": "目录路径；还会尝试 /ql/data/scripts 与 /ql/scripts"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个 Cookie（可选「用户ID|Cookie」）；账号独立处理，任一账号失败时整体以非零退出码结束"
+      },
+      "dependencies": [],
+      "features": [
+        "量界智算（liangjiewis.com）每日签到",
+        "签到前查询 /api/user/self 获取公开身份与 New-API-User",
+        "识别业务 success 与「已签到」文案",
+        "官方接口返回昵称、用户名或公开 UID 时直接展示以便核对账号",
+        "多账号按行处理；规范变量 LIANGJIE_COOKIE（可选用户ID|Cookie）",
+        "完全断网预演 LIANGJIE_DRY_RUN、HTTPS 超时、业务成功/已签到判定",
+        "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "向量界智算签到接口提交每日签到，改变当日签到状态并可能发放站点奖励",
+        "通知已启用且适配器可用时向青龙通知通道发送脱敏任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/62fd8997988ca1e4",
+        "candidateSha256": "0f05fb80010535f1fe48b1ae3bbbf3bec87c13ac7515bb36a04d2abb35910696"
+      }
+    },
+    {
       "catalogId": "b60e5edc4107a20d",
       "applicationKey": "nodeseek-deepflood-linuxsb",
       "checkProfile": {
