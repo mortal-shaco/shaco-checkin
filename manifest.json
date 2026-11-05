@@ -13359,6 +13359,157 @@
       }
     },
     {
+      "catalogId": "e787b4b7d6d30c4b",
+      "applicationKey": "dawushiye",
+      "checkProfile": {
+        "requiredEnv": [
+          "DAWU_TOKEN"
+        ],
+        "optionalEnv": [
+          "DAWU_DRY_RUN",
+          "DAWU_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DAWU_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "DAWU_TIMEOUT": "15"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "大物是也微信小程序每日签到",
+          "签到前查询 GetMiniUserSignData 状态，并识别今日已签到",
+          "官方接口返回昵称等非秘密身份时直接展示以便核对账号",
+          "多账号按行处理；规范变量 DAWU_TOKEN（每行一个 Authorization）",
+          "完全断网预演 DAWU_DRY_RUN、HTTPS 超时、业务成功/已签到判定",
+          "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "向大物是也营销签到接口提交小程序签到，改变当日签到状态并可能增加积分",
+          "通知已启用且适配器可用时向青龙通知通道发送脱敏任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "大物是也签到",
+      "path": "scripts/dawushiye.py",
+      "sha256": "06b48e86f80674cce9dfaa8f39c3d4a04ce4438836ae6a98735d74abeb7a1bbe",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Transmigration-zhou/dawushiye-checkin",
+        "branch": "main",
+        "commit": "c3b44d4b77f8e22fb0e16ec2fdea7407de14eda6",
+        "originalPath": "sign.py"
+      },
+      "cron": "7 8 * * *",
+      "command": "python3 scripts/dawushiye.py",
+      "environment": [
+        {
+          "name": "DAWU_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "打开微信「大物是也」小程序，在开发者工具或抓包中找到 api.dawushiye.com 的签到请求，完整复制请求头 Authorization 的值（通常含 Bearer 前缀的 JWT）。在青龙环境变量中按每行一个账号填写；不要把真实令牌写入公开仓库、日志或通知。",
+          "format": "每行一个账号的 Authorization 原文；账号之间只用换行分隔，不使用 & 或 @"
+        },
+        {
+          "name": "DAWU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置；只校验配置并模拟查询/签到阶段，不访问网络、不改动签到状态、不真实发送通知。",
+          "format": "1、true、yes、on 开启完全断网预演；默认关闭"
+        },
+        {
+          "name": "DAWU_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次 HTTPS 请求超时秒数。",
+          "format": "5 到 60 的数字；默认 15"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录；失败不改变业务退出码。",
+          "format": "目录路径；还会尝试 /ql/data/scripts 与 /ql/scripts"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个 Authorization 令牌；账号独立处理，任一账号失败时整体以非零退出码结束"
+      },
+      "dependencies": [],
+      "features": [
+        "大物是也微信小程序每日签到",
+        "签到前查询 GetMiniUserSignData 状态，并识别今日已签到",
+        "官方接口返回昵称等非秘密身份时直接展示以便核对账号",
+        "多账号按行处理；规范变量 DAWU_TOKEN（每行一个 Authorization）",
+        "完全断网预演 DAWU_DRY_RUN、HTTPS 超时、业务成功/已签到判定",
+        "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "向大物是也营销签到接口提交小程序签到，改变当日签到状态并可能增加积分",
+        "通知已启用且适配器可用时向青龙通知通道发送脱敏任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e787b4b7d6d30c4b",
+        "candidateSha256": "ee185f667f107816eed523ccf536bd6fc2e3934c40a37c0b228f8bdfb0070e2a"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "ee185f667f107816eed523ccf536bd6fc2e3934c40a37c0b228f8bdfb0070e2a",
+        "releaseSha256": "06b48e86f80674cce9dfaa8f39c3d4a04ce4438836ae6a98735d74abeb7a1bbe",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T01:52:24.674194+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "ee185f667f107816eed523ccf536bd6fc2e3934c40a37c0b228f8bdfb0070e2a",
+          "toCandidateSha256": "06b48e86f80674cce9dfaa8f39c3d4a04ce4438836ae6a98735d74abeb7a1bbe",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "e7b851436459bf8f",
       "applicationKey": "ddnsto",
       "checkProfile": {
