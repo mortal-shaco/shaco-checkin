@@ -84,6 +84,15 @@
 // 原调度 45 0 15 * * *（每日 15:00:45），保留独立活动运行时机；不加入 lottery 或 all。
 // 兼容 SMZDM_COOKIE_LIST，每个非空行一个完整 Cookie；优先使用 SMZDM_ACCOUNT 的 |Cookie 格式。
 // 固定活动可能已结束：HTTP 200 不代表成功，须同时验证 error_code=0 和非空 error_msg。
+// Additional source: xuess/smzdm-sign, smzdm.js (MIT).
+// Catalog 7777d05e3180a3fc, upstream commit 75e95f3fd1c44784047b101a394ca565b87b3ae5.
+// Copyright (c) xuess <wuniu2010@126.com>
+// 上游默认启动即签到并连发三条评论；本维护版移除该不安全默认副作用。
+// SMZDM_COMMENT=1 显式启用发现频道公开评论；默认关闭，与每日签到同一任务时机可选合并。
+// SMZDM_COMMENT_COUNT 为每次账号评论条数，默认 3，范围 1-10；不自动重试写入。
+// 评论文案遵循一言 HTTPS 随机文本策略：先取 hitokoto/from_who/from 并署名，失败回退本地文案。
+// SMZDM_COMMENT_TEXT 可覆盖本地回退文案；离线预演不调用一言或评论接口。
+// 不迁入上游私有 ./lib、./config、cheerio、ejs、node-schedule 或邮件依赖。
 // Maintained standalone derivative; no private repository or external executable required.
 
 const crypto = require('crypto');
@@ -96,6 +105,10 @@ const APP_VERSION = '11.1.90';
 const APP_REV = '1190';
 const SIGN_KEY = 'apr1$AwP!wRRT$gJ/q.X24poeBInlUJC';
 const TIMEOUT_MS = 15000;
+const TEXT_PROVIDER_URL = 'https://v1.hitokoto.cn/?encode=json';
+const TEXT_PROVIDER_TIMEOUT_MS = 8000;
+const TEXT_PROVIDER_MAX_BYTES = 16384;
+const LOCAL_COMMENT_FALLBACK = '感谢分享这则值得买的内容。';
 
 const truthy = (v) => /^(1|true|yes|on)$/i.test(String(v || '').trim());
 const now = () => new Date().toLocaleString('zh-CN', {hour12: false}).replaceAll('/', '-');
@@ -130,10 +143,25 @@ function tokenMode(env = process.env) {
   return mode;
 }
 
+function commentEnabled(env = process.env) {
+  return truthy(env.SMZDM_COMMENT);
+}
+
+function commentCount(env = process.env) {
+  const raw = String(env.SMZDM_COMMENT_COUNT ?? '3').trim();
+  if (!/^\d+$/.test(raw)) throw new Error('SMZDM_COMMENT_COUNT 必须为 1 到 10 的整数');
+  const value = Number(raw);
+  if (!Number.isSafeInteger(value) || value < 1 || value > 10) {
+    throw new Error('SMZDM_COMMENT_COUNT 必须为 1 到 10 的整数');
+  }
+  return value;
+}
+
 function parseAccounts(env = process.env) {
   const action = taskAction(env);
   const needsSk = !['lottery', 'upstream-lottery'].includes(action) && tokenMode(env) !== 'web';
   interactionMode(env);
+  if (commentEnabled(env)) commentCount(env);
   const canonical = accountLines(env.SMZDM_ACCOUNT);
   if (!canonical.length) {
     // 抽奖保留维护目标原有 SMZDM_COOKIE 优先级；签到兼容上游复数变量优先级。
@@ -197,9 +225,9 @@ function requestKey() {
   return Array.from(crypto.randomBytes(18), (b) => String(b % 10)).join('');
 }
 
-async function fetchLimited(url, options = {}, maxBytes = 1024 * 1024) {
+async function fetchLimited(url, options = {}, maxBytes = 1024 * 1024, timeoutMs = TIMEOUT_MS) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(url, {...options, redirect: 'error', signal: controller.signal});
     const size = Number(response.headers?.get?.('content-length') || 0);
@@ -805,6 +833,128 @@ async function runInteraction(account, env, report = () => {}) {
   return {ok: counts.failed === 0, state: counts.failed ? '部分互动任务失败' : '互动任务已验证', counts};
 }
 
+function normalizePublicText(value) {
+  return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function formatPublicText(text, author, source) {
+  if (text && author && source) return `${text} —— ${author}《${source}》`;
+  if (text && source) return `${text} ——《${source}》`;
+  if (text && author) return `${text} —— ${author}`;
+  return text || '';
+}
+
+async function fetchCommentText(env = process.env, report = () => {}) {
+  const fallback = normalizePublicText(env.SMZDM_COMMENT_TEXT) || LOCAL_COMMENT_FALLBACK;
+  try {
+    const response = await fetchLimited(
+      TEXT_PROVIDER_URL,
+      {method: 'GET', headers: {Accept: 'application/json'}},
+      TEXT_PROVIDER_MAX_BYTES,
+      TEXT_PROVIDER_TIMEOUT_MS,
+    );
+    if (response.status !== 200) throw new Error('http-error');
+    let data;
+    try { data = JSON.parse(response.text); } catch { throw new Error('invalid-json'); }
+    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('invalid-json');
+    const text = normalizePublicText(data.hitokoto);
+    if (!text) throw new Error('missing-text');
+    const content = formatPublicText(text, normalizePublicText(data.from_who), normalizePublicText(data.from));
+    if ([...content].length > 280) throw new Error('overlong-text');
+    report('评论文案：已从一言取得并按署名格式整理', '└─');
+    return content;
+  } catch (error) {
+    const reason = error?.name === 'AbortError' ? 'timeout'
+      : /oversized|response_too_large/i.test(String(error?.message || '')) ? 'oversized-response'
+        : (error?.message || 'network-error');
+    report(`评论文案：一言不可用（${reason}），使用本地回退文案`, '⚠️');
+    return fallback.slice(0, 280);
+  }
+}
+
+async function discoverCommentArticles(count) {
+  const page = 30 + crypto.randomInt(71);
+  const response = await fetchLimited(`https://faxian.smzdm.com/h1s0t0f37c0p${page}/`, {
+    headers: {
+      Accept: 'text/html',
+      Referer: 'https://www.smzdm.com/jingxuan/',
+      'User-Agent': 'Mozilla/5.0',
+    },
+  });
+  if (response.status !== 200) throw new Error('评论列表 HTTP 失败');
+  const ids = [...new Set([...response.text.matchAll(/\/p\/(\d{5,})\/?/g)].map((match) => match[1]))];
+  if (!ids.length) throw new Error('评论列表为空或结构改变');
+  return ids.slice(0, count);
+}
+
+async function postComment(account, articleId, content) {
+  const callback = `jQuery111006551744323225079_${Date.now()}`;
+  const url = new URL('https://zhiyou.smzdm.com/user/comment/ajax_set_comment');
+  url.search = new URLSearchParams({
+    callback,
+    type: '3',
+    pid: String(articleId),
+    parentid: '0',
+    vote_id: '0',
+    vote_type: '',
+    vote_group: '',
+    content,
+    _: String(Date.now()),
+  }).toString();
+  const response = await fetchLimited(url, {
+    method: 'GET',
+    headers: {
+      Cookie: account.cookie,
+      Accept: '*/*',
+      Referer: 'https://zhiyou.smzdm.com/user/submit/',
+      'User-Agent': profile(account.cookie).userAgent,
+    },
+  });
+  if (response.status !== 200) throw new Error('评论 HTTP 失败');
+  let data;
+  try {
+    data = lotteryPayload(response.text, callback);
+  } catch {
+    if (/"error_code"\s*:\s*0/.test(response.text)) return {ok: true};
+    throw new Error('评论响应无效');
+  }
+  if (String(data.error_code) !== '0') throw new Error('评论业务失败');
+  return {ok: true};
+}
+
+async function runComments(account, env, report = () => {}) {
+  const count = commentCount(env);
+  const counts = {total: 0, success: 0, already: 0, skipped: 0, failed: 0};
+  async function stage(name, action) {
+    const started = Date.now();
+    counts.total++;
+    report(`[${counts.total}] ${name}`);
+    try {
+      const value = await action();
+      counts.success++;
+      report(`${name}：已验证，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '✅');
+      return value;
+    } catch {
+      counts.failed++;
+      report(`${name}：HTTP、业务或响应字段校验失败，未计为成功，用时 ${((Date.now() - started) / 1000).toFixed(1)} 秒`, '❌');
+      return null;
+    }
+  }
+  const ids = await stage('发现频道评论列表', () => discoverCommentArticles(count));
+  if (!ids) return {ok: false, state: '评论列表未取得', counts};
+  report(`取得 ${ids.length} 篇待评论文章，不输出原始页面`, '└─');
+  for (let i = 0; i < ids.length; i += 1) {
+    await stage(`公开评论 ${i + 1}/${ids.length}`, async () => {
+      const content = await fetchCommentText(env, report);
+      report(`评论目标文章编号已选定，文案长度 ${[...content].length}`, '└─');
+      await postComment(account, ids[i], content);
+      return {ok: true};
+    });
+    if (i < ids.length - 1) await new Promise((resolve) => setTimeout(resolve, 4000 + crypto.randomInt(6001)));
+  }
+  return {ok: counts.failed === 0, state: counts.failed ? '部分公开评论失败' : '公开评论已验证', counts};
+}
+
 function notifier(env = process.env) {
   const roots = [env.QINGLONG_NOTIFY_DIR, '/ql/data/scripts', '/ql/scripts'].filter(Boolean);
   for (const root of roots) {
@@ -831,7 +981,7 @@ function notificationSelected(env = process.env) {
   const invoked = path.resolve(process.argv[1] || 'candidate.js');
   const basename = path.basename(invoked);
   const normalized = invoked.replaceAll('\\', '/');
-  const identities = ['ac10a6e47692bf1f', '621df252c315f2d1', '4f26bcb78ce19f2c', 'scripts/smzdm_checkin.js', 'smzdm_checkin.js', basename, normalized];
+  const identities = ['ac10a6e47692bf1f', '621df252c315f2d1', '4f26bcb78ce19f2c', '7777d05e3180a3fc', 'scripts/smzdm_checkin.js', 'smzdm_checkin.js', basename, normalized];
   return selectors.some((selector) => selector === '*' || identities.some((identity) => globMatch(identity, selector)));
 }
 
@@ -930,12 +1080,14 @@ async function run(env = process.env) {
       log(`${label}：[2/4] 规划签到请求`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       log(`${label}：[3/4] 规划奖励、概览与经验查询`); log(`${label}：离线预演，未发出网络请求，用时 0.0 秒`, '⏭️');
       const interactionPlan = interactionMode(env) === 'none' ? 0 : (interactionMode(env) === 'both' ? 20 : 12);
+      const commentPlan = commentEnabled(env) ? commentCount(env) + 1 : 0;
       const mode = tokenMode(env);
       const checkinPlan = mode === 'web' ? 3 : (mode === 'robot' ? 8 : (mode === 'dual' ? 10 : 7));
-      const planned = action === 'upstream-lottery' ? interactionPlan + 1 : interactionPlan + (action === 'lottery' ? 0 : checkinPlan) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4));
+      const planned = (action === 'upstream-lottery' ? interactionPlan + 1 : interactionPlan + (action === 'lottery' ? 0 : checkinPlan) + (action === 'checkin' ? 0 : (truthy(env.SMZDM_LOTTERY_LIFE) ? 6 : 4))) + commentPlan;
       log(`${label}：互动开关 ${interactionMode(env)}（离线预演不查询列表、不提交互动）`, '└─');
+      log(`${label}：评论开关 ${commentEnabled(env) ? `开启，计划 ${commentCount(env)} 条（离线预演不访问一言或评论接口）` : '关闭（默认）'}`, '└─');
       if (action === 'upstream-lottery') log(`${label}：固定活动仅规划一次 POST，不访问网络、不执行签到或会员转盘`, '⏭️');
-      log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤上限（互动按实际列表长度执行）；抽奖仅在显式选择后执行`, '└─');
+      log(`${label}：任务开关 ${action}，计划 ${planned} 个步骤上限（互动按实际列表长度执行）；抽奖与评论仅在显式选择后执行`, '└─');
       result = {ok: true, state: '预演通过', planned_requests: planned,
         counts: {total: planned + 1, success: 1, already: 0, skipped: planned, failed: 0}};
     } else {
@@ -968,6 +1120,12 @@ async function run(env = process.env) {
           result.ok = result.ok && interaction.ok;
           if (!result.ok) result.state = '部分任务失败';
           for (const key of Object.keys(result.counts)) result.counts[key] += interaction.counts[key];
+        }
+        if (commentEnabled(env)) {
+          const comments = await runComments(accounts[i], env, report);
+          result.ok = result.ok && comments.ok;
+          if (!result.ok) result.state = '部分任务失败';
+          for (const key of Object.keys(result.counts)) result.counts[key] += comments.counts[key];
         }
       } catch (error) {
         result = {ok: false, state: error?.name === 'AbortError' ? '请求超时' : '网络或处理异常'};
@@ -1006,5 +1164,5 @@ if (require.main === module) run().catch(async () => {
   await finish({execution: 'failed', mode: 'live', accounts_total: 0, accounts_success: 0, accounts_failed: 1, tasks_total: 1, tasks_success: 0, tasks_already: 0, tasks_skipped: 0, tasks_failed: 1}, 1, started, process.env);
 });
 
-module.exports = {runUpstreamLottery, webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, randomDelayPlan, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, notificationSelected, sendNotification};
+module.exports = {runUpstreamLottery, webCurrent, runWeb, interactionMode, webAssets, recentExperience, runInteraction, commentEnabled, commentCount, fetchCommentText, runComments, tokenMode, robotRequest, fetchLimited, runLive, display, activityId, lotteryPayload, taskAction, runLottery, accountLines, randomDelayPlan, apiFailure, cookieValue, parseAccounts, profile, queryFailure, requestProfile, run, runAccount, signedForm, signResult, notificationSelected, sendNotification};
 

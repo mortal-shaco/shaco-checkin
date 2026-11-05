@@ -36728,6 +36728,9 @@
           "SMZDM_ACTION",
           "SMZDM_TOKEN_MODE",
           "SMZDM_INTERACTION",
+          "SMZDM_COMMENT",
+          "SMZDM_COMMENT_COUNT",
+          "SMZDM_COMMENT_TEXT",
           "SMZDM_LOTTERY_LIFE",
           "RANDOM_SIGNIN",
           "MAX_RANDOM_DELAY",
@@ -36750,6 +36753,8 @@
           "SMZDM_ACTION": "checkin",
           "SMZDM_TOKEN_MODE": "sess",
           "SMZDM_INTERACTION": "none",
+          "SMZDM_COMMENT": "0",
+          "SMZDM_COMMENT_COUNT": "3",
           "SMZDM_LOTTERY_LIFE": "0",
           "RANDOM_SIGNIN": "false",
           "MAX_RANDOM_DELAY": "3600",
@@ -36773,6 +36778,7 @@
           "显式 upstream-lottery 模式保留固定活动的独立单次 POST 抽奖和原调度说明",
           "显式 value、article 或 both 模式执行好价点值或好文点赞，每类最多七条",
           "互动前后查询账号资产、未读消息、总经验和最近二十条经验记录",
+          "显式 SMZDM_COMMENT 后对发现频道文章发表公开评论，默认关闭；评论文案优先一言并本地回退",
           "可显式启用最长等待时间受限的随机启动延迟，默认关闭且预演不等待",
           "支持逐行多账号独立处理，并在任一账号失败时返回非零退出码",
           "提供完全断网的离线预演，不访问业务接口、文本接口或通知接口",
@@ -36784,7 +36790,8 @@
           "满足条件时领取连续签到额外奖励并改变账号奖励状态",
           "显式选择 lottery、all 或 upstream-lottery 后提交抽奖，可能消耗抽奖机会或活动资产并获得奖励",
           "显式选择 value 或 both 后对好价提交点值并改变账号投票状态",
-          "显式选择 article 或 both 后对好文提交点赞并改变账号点赞状态"
+          "显式选择 article 或 both 后对好文提交点赞并改变账号点赞状态",
+          "显式启用 SMZDM_COMMENT 后对发现频道文章发表公开评论并改变账号评论状态"
         ]
       },
       "postReview": {
@@ -36793,7 +36800,7 @@
       },
       "displayName": "什么值得买签到",
       "path": "scripts/smzdm_checkin.js",
-      "sha256": "6c6dacd53a9817e8b401deb32c4c0783b42aecf9a33685a29f73305247ed645a",
+      "sha256": "36030ee542d5da7f7527b0b2cb34cbbb80b2441782611bc433ae3efcb480f1af",
       "stage": "released",
       "license": "GPL-3.0-only",
       "licenseGate": "allowed-copyleft",
@@ -36892,6 +36899,16 @@
             "catalogId": "8b3582e3669fa17a",
             "sha256": "c761cb820f940a7294a32a6bbbd38c62c5bbb1d1d750251b50cf6fc2db60fe42",
             "license": "MIT"
+          },
+          {
+            "repository": "xuess/smzdm-sign",
+            "url": "https://github.com/xuess/smzdm-sign",
+            "branch": "master",
+            "commit": "75e95f3fd1c44784047b101a394ca565b87b3ae5",
+            "originalPath": "smzdm.js",
+            "catalogId": "7777d05e3180a3fc",
+            "sha256": "bfc3f698963f18182496c4831fe717646f525916d8505b42bf0d39213456caeb",
+            "license": "MIT"
           }
         ]
       },
@@ -36925,6 +36942,27 @@
           "sensitive": false,
           "howToGet": "仅在明确希望改变好价点值或好文点赞状态时设置。",
           "format": "可填 none、value、article 或 both，默认 none；每类最多处理七条。"
+        },
+        {
+          "name": "SMZDM_COMMENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在明确希望对发现频道文章发表公开评论时启用；上游默认可自动评论的行为已关闭。",
+          "format": "填 1、true、yes 或 on 表示启用，默认关闭。"
+        },
+        {
+          "name": "SMZDM_COMMENT_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在启用 SMZDM_COMMENT 时按需要调整每账号评论条数。",
+          "format": "填写 1 到 10 的整数，默认 3。"
+        },
+        {
+          "name": "SMZDM_COMMENT_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选覆盖本地回退评论文案；正式执行时仍优先请求一言，失败才使用该文案。",
+          "format": "填写不超过 280 字的纯文本；不要填入 Cookie、Token 或其他凭据。"
         },
         {
           "name": "SMZDM_LOTTERY_LIFE",
@@ -37045,6 +37083,7 @@
         "显式 upstream-lottery 模式保留固定活动的独立单次 POST 抽奖和原调度说明",
         "显式 value、article 或 both 模式执行好价点值或好文点赞，每类最多七条",
         "互动前后查询账号资产、未读消息、总经验和最近二十条经验记录",
+        "显式 SMZDM_COMMENT 后对发现频道文章发表公开评论，默认关闭；评论文案优先一言并本地回退",
         "可显式启用最长等待时间受限的随机启动延迟，默认关闭且预演不等待",
         "支持逐行多账号独立处理，并在任一账号失败时返回非零退出码",
         "提供完全断网的离线预演，不访问业务接口、文本接口或通知接口",
@@ -37056,7 +37095,8 @@
         "满足条件时领取连续签到额外奖励并改变账号奖励状态",
         "显式选择 lottery、all 或 upstream-lottery 后提交抽奖，可能消耗抽奖机会或活动资产并获得奖励",
         "显式选择 value 或 both 后对好价提交点值并改变账号投票状态",
-        "显式选择 article 或 both 后对好文提交点赞并改变账号点赞状态"
+        "显式选择 article 或 both 后对好文提交点赞并改变账号点赞状态",
+        "显式启用 SMZDM_COMMENT 后对发现频道文章发表公开评论并改变账号评论状态"
       ],
       "review": {
         "staticPassed": true,
@@ -37069,20 +37109,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/621df252c315f2d1",
-        "candidateSha256": "ac41b20b7d62b6935ea6844c249a46bd6cf52c5571473f2c5c6fccb59cb36260"
+        "candidateSha256": "9294bd792edce1723242104bda0988e099850b135d9848f1955ff4e728e2188c"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "ac41b20b7d62b6935ea6844c249a46bd6cf52c5571473f2c5c6fccb59cb36260",
-        "releaseSha256": "6c6dacd53a9817e8b401deb32c4c0783b42aecf9a33685a29f73305247ed645a",
+        "validatedSha256": "9294bd792edce1723242104bda0988e099850b135d9848f1955ff4e728e2188c",
+        "releaseSha256": "36030ee542d5da7f7527b0b2cb34cbbb80b2441782611bc433ae3efcb480f1af",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-04T13:10:49.600629+00:00",
+          "approvedAt": "2026-11-05T10:56:36.722191+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "ac41b20b7d62b6935ea6844c249a46bd6cf52c5571473f2c5c6fccb59cb36260",
-          "toCandidateSha256": "6c6dacd53a9817e8b401deb32c4c0783b42aecf9a33685a29f73305247ed645a",
+          "fromCandidateSha256": "9294bd792edce1723242104bda0988e099850b135d9848f1955ff4e728e2188c",
+          "toCandidateSha256": "36030ee542d5da7f7527b0b2cb34cbbb80b2441782611bc433ae3efcb480f1af",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
