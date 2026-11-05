@@ -6,7 +6,7 @@
 | --- | --- |
 | 上架 | 4 |
 | 已检查 | 0 |
-| 待检查 | 330 |
+| 待检查 | 331 |
 
 ## 字母索引
 
@@ -19,7 +19,7 @@
 - [社区](categories/community.md)（2）
 - [AI服务](categories/ai.md)（12）
 - [影音](categories/video.md)（3）
-- [其他](categories/other.md)（24）
+- [其他](categories/other.md)（25）
 
 ## 其他入口
 

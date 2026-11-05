@@ -1,6 +1,6 @@
 # 分类索引 · 其他
 
-共 **24** 个脚本。返回 [`目录首页`](../README.md)。
+共 **25** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -23,6 +23,7 @@
 | Taker每日挖矿 | `scripts/taker.js` | `node scripts/taker.js` | `26 8 * * *` | 待检查 | [taker.js.md](../../scripts/taker.js.md)（`docs/scripts/taker.js.md`） |
 | 昆明医科大疫情健康填报 | `scripts/task_4f815667.py` | `python3 scripts/task_4f815667.py` | `43 8 * * *` | 待检查 | [task_4f815667.py.md](../../scripts/task_4f815667.py.md)（`docs/scripts/task_4f815667.py.md`） |
 | 工软校园健康填报 | `scripts/task_64f5e3fd.py` | `python3 scripts/task_64f5e3fd.py` | `47 8 * * *` | 待检查 | [task_64f5e3fd.py.md](../../scripts/task_64f5e3fd.py.md)（`docs/scripts/task_64f5e3fd.py.md`） |
+| 奥波莱大学Moodle作业监控 | `scripts/task_6bed5fef.py` | `python3 scripts/task_6bed5fef.py` | `*/5 * * * *` | 待检查 | [task_6bed5fef.py.md](../../scripts/task_6bed5fef.py.md)（`docs/scripts/task_6bed5fef.py.md`） |
 | 昆医大疫情防控填报 | `scripts/task_8f8ad2c5.py` | `python3 scripts/task_8f8ad2c5.py` | `53 7,15 * * *` | 待检查 | [task_8f8ad2c5.py.md](../../scripts/task_8f8ad2c5.py.md)（`docs/scripts/task_8f8ad2c5.py.md`） |
 | 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` | 待检查 | [tyqhdraw.py.md](../../scripts/tyqhdraw.py.md)（`docs/scripts/tyqhdraw.py.md`） |
 | 掌瓦每日商店推送 | `scripts/valorantstore.py` | `python3 scripts/valorantstore.py` | `10 0 * * *` | 待检查 | [valorantstore.py.md](../../scripts/valorantstore.py.md)（`docs/scripts/valorantstore.py.md`） |

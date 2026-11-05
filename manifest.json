@@ -49506,6 +49506,188 @@
       }
     },
     {
+      "catalogId": "6bed5fef3c9bac1c",
+      "applicationKey": "gitlab.com/anav0/uo-moodle-notifier::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "UO_MOODLE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "UO_MOODLE_USERNAME",
+          "UO_MOODLE_PASSWORD",
+          "UO_MOODLE_COURSE_ID",
+          "UO_MOODLE_BASE_URL",
+          "UO_MOODLE_STATE_DIR",
+          "UO_MOODLE_TIMEOUT",
+          "UO_MOODLE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "UO_MOODLE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "UO_MOODLE_TIMEOUT": "20",
+          "UO_MOODLE_BASE_URL": "https://moodle.math.uni.opole.pl",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "登录流程完成",
+          "无新作业",
+          "作业列表已变更",
+          "首次缓存",
+          "失败 0",
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "使用 Moodle 用户名密码登录指定站点",
+          "读取课程页作业（assign）活动列表",
+          "与本地缓存比对检测作业新增或移除",
+          "展示课程名称与公开身份（若页面返回）",
+          "多账号逐行独立处理与失败汇总",
+          "完全断网预演、时间轴日志与单行 TASK_SUMMARY",
+          "青龙脱敏通知及全局通知开关"
+        ],
+        "sideEffects": [
+          "实际执行时登录 Moodle 并创建会话 Cookie",
+          "作业列表相对缓存发生变化或首次运行时写入本地作业 ID 状态文件",
+          "启用青龙通知时会向已配置渠道发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "奥波莱大学Moodle作业监控",
+      "path": "scripts/task_6bed5fef.py",
+      "sha256": "53c1dc2d94f39fcb9791eb23b262a09d1643622e8c041e6bbc9a24b3f074d9b1",
+      "stage": "released",
+      "license": "GPL-3.0-only",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "gitlab.com/Anav0/uo-moodle-notifier",
+        "branch": "master",
+        "commit": "d5fd430e7515f13157eb034ee7ea097439fb7dd9",
+        "originalPath": "main.py"
+      },
+      "cron": "*/5 * * * *",
+      "command": "python3 scripts/task_6bed5fef.py",
+      "environment": [
+        {
+          "name": "UO_MOODLE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用奥波莱大学数学 Moodle（默认 moodle.math.uni.opole.pl）的学号/用户名与密码，并在课程页地址中确认 course id（view.php?id=数字）。在青龙环境变量中按行配置，切勿写入公开仓库或日志。",
+          "format": "每个非空行一个账号，格式 username|password|course_id；先按最后一个 | 取出课程 ID，再按第一个 | 分割用户名与密码，密码中后续 | 原样保留；支持空行与 # 开头注释；不要用 & 或 @ 分隔账号"
+        },
+        {
+          "name": "UO_MOODLE_USERNAME",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游单账号别名；仅当 UO_MOODLE_ACCOUNTS 为空时与密码、课程 ID 成对使用",
+          "format": "Moodle 登录用户名"
+        },
+        {
+          "name": "UO_MOODLE_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号别名；仅当 UO_MOODLE_ACCOUNTS 为空时使用，填写 Moodle 登录密码",
+          "format": "Moodle 登录密码明文，勿写入公开位置"
+        },
+        {
+          "name": "UO_MOODLE_COURSE_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游单账号别名；仅当 UO_MOODLE_ACCOUNTS 为空时使用，从课程页 URL 的 id 参数获取",
+          "format": "正整数字符串，例如 123"
+        },
+        {
+          "name": "UO_MOODLE_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当 Moodle 根地址与默认站点不同时覆盖",
+          "format": "https:// 开头的 Moodle 根地址，默认 https://moodle.math.uni.opole.pl"
+        },
+        {
+          "name": "UO_MOODLE_STATE_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要持久化作业 ID 缓存到指定目录时设置；青龙容器建议指向可写数据目录",
+          "format": "本地目录路径；默认脚本旁 uo_moodle_state"
+        },
+        {
+          "name": "UO_MOODLE_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义单次 HTTPS 请求超时秒数",
+          "format": "5 到 60 的数字秒，默认 20"
+        },
+        {
+          "name": "UO_MOODLE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网预演、只校验配置时手动设置为 1",
+          "format": "1/true/yes/on 启用预演；默认实际执行"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要按脚本白名单启用通知时设置；空值表示全部禁用",
+          "format": "catalog-id、脚本路径、文件名或 glob，可用逗号/分号/空白/换行分隔；* 表示全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅当青龙通知脚本不在默认路径时，设为 notify.py 或 sendNotify.js 所在目录",
+          "format": "本地目录绝对路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "UO_MOODLE_ACCOUNTS 中每个非空行是一个独立账号，格式 username|password|course_id；先取末段课程 ID，再按第一个 | 分割用户名与密码；逐账号登录并检查对应课程，任一账号失败时进程整体非零退出"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 Moodle 用户名密码登录指定站点",
+        "读取课程页作业（assign）活动列表",
+        "与本地缓存比对检测作业新增或移除",
+        "展示课程名称与公开身份（若页面返回）",
+        "多账号逐行独立处理与失败汇总",
+        "完全断网预演、时间轴日志与单行 TASK_SUMMARY",
+        "青龙脱敏通知及全局通知开关"
+      ],
+      "sideEffects": [
+        "实际执行时登录 Moodle 并创建会话 Cookie",
+        "作业列表相对缓存发生变化或首次运行时写入本地作业 ID 状态文件",
+        "启用青龙通知时会向已配置渠道发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/6bed5fef3c9bac1c",
+        "candidateSha256": "53c1dc2d94f39fcb9791eb23b262a09d1643622e8c041e6bbc9a24b3f074d9b1"
+      }
+    },
+    {
       "catalogId": "70123c591c5d6f37",
       "applicationKey": "mitsuha/linkhub-check-in::app",
       "checkProfile": {

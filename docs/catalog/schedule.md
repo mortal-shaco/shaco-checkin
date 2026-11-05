@@ -274,6 +274,7 @@
 | 阅次元论坛签到 | `scripts/task_5254d901.py` | `python3 scripts/task_5254d901.py` | `44 8 * * *` | 待检查 | [task_5254d901.py.md](../scripts/task_5254d901.py.md)（`docs/scripts/task_5254d901.py.md`） |
 | OA实习签到 | `scripts/task_62e6cbbd.py` | `python3 scripts/task_62e6cbbd.py` | `34 8 * * *` | 待检查 | [task_62e6cbbd.py.md](../scripts/task_62e6cbbd.py.md)（`docs/scripts/task_62e6cbbd.py.md`） |
 | 工软校园健康填报 | `scripts/task_64f5e3fd.py` | `python3 scripts/task_64f5e3fd.py` | `47 8 * * *` | 待检查 | [task_64f5e3fd.py.md](../scripts/task_64f5e3fd.py.md)（`docs/scripts/task_64f5e3fd.py.md`） |
+| 奥波莱大学Moodle作业监控 | `scripts/task_6bed5fef.py` | `python3 scripts/task_6bed5fef.py` | `*/5 * * * *` | 待检查 | [task_6bed5fef.py.md](../scripts/task_6bed5fef.py.md)（`docs/scripts/task_6bed5fef.py.md`） |
 | LinkHub 每日签到 | `scripts/task_70123c59.py` | `python3 scripts/task_70123c59.py` | `54 8 * * *` | 待检查 | [task_70123c59.py.md](../scripts/task_70123c59.py.md)（`docs/scripts/task_70123c59.py.md`） |
 | hao4k每日签到 | `scripts/task_7a56bf21.py` | `python3 scripts/task_7a56bf21.py` | `41 8 * * *` | 待检查 | [task_7a56bf21.py.md](../scripts/task_7a56bf21.py.md)（`docs/scripts/task_7a56bf21.py.md`） |
 | MiniMax Code每日签到 | `scripts/task_7b47bad6.js` | `node scripts/task_7b47bad6.js` | `27 9 * * *` | 待检查 | [task_7b47bad6.js.md](../scripts/task_7b47bad6.js.md)（`docs/scripts/task_7b47bad6.js.md`） |
