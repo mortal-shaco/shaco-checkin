@@ -1,6 +1,6 @@
 # 字母索引 · D
 
-共 **15** 个脚本。返回 [`目录首页`](../README.md)。
+共 **16** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -18,4 +18,5 @@
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
 | 豆包天天领额度签到 | `scripts/doubao_daily.py` | `python3 scripts/doubao_daily.py` | `23 9 * * *` | 待检查 | [doubao_daily.py.md](../../scripts/doubao_daily.py.md)（`docs/scripts/doubao_daily.py.md`） |
 | Doyoudo每日签到发言 | `scripts/doyoudo_auto_sign.py` | `python3 scripts/doyoudo_auto_sign.py` | `59 8 * * *` | 待检查 | [doyoudo_auto_sign.py.md](../../scripts/doyoudo_auto_sign.py.md)（`docs/scripts/doyoudo_auto_sign.py.md`） |
+| 百度搭子每日签到 | `scripts/dumate_signin.py` | `python3 scripts/dumate_signin.py` | `24 9 * * *` | 待检查 | [dumate_signin.py.md](../../scripts/dumate_signin.py.md)（`docs/scripts/dumate_signin.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |

@@ -98,6 +98,7 @@
 | DeepFlood 签到 | `scripts/deepflood_checkin.py` | `python3 scripts/deepflood_checkin.py` | `0 0 * * *` | 待检查 | [deepflood_checkin.py.md](../scripts/deepflood_checkin.py.md)（`docs/scripts/deepflood_checkin.py.md`） |
 | 豆包天天领额度签到 | `scripts/doubao_daily.py` | `python3 scripts/doubao_daily.py` | `23 9 * * *` | 待检查 | [doubao_daily.py.md](../scripts/doubao_daily.py.md)（`docs/scripts/doubao_daily.py.md`） |
 | Doyoudo每日签到发言 | `scripts/doyoudo_auto_sign.py` | `python3 scripts/doyoudo_auto_sign.py` | `59 8 * * *` | 待检查 | [doyoudo_auto_sign.py.md](../scripts/doyoudo_auto_sign.py.md)（`docs/scripts/doyoudo_auto_sign.py.md`） |
+| 百度搭子每日签到 | `scripts/dumate_signin.py` | `python3 scripts/dumate_signin.py` | `24 9 * * *` | 待检查 | [dumate_signin.py.md](../scripts/dumate_signin.py.md)（`docs/scripts/dumate_signin.py.md`） |
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |
 | 神经研究所每日任务 | `scripts/easonfans_daily.py` | `python3 scripts/easonfans_daily.py` | `0 20 * * *` | 待检查 | [easonfans_daily.py.md](../scripts/easonfans_daily.py.md)（`docs/scripts/easonfans_daily.py.md`） |
 | 头歌平台课堂签到 | `scripts/educoder.py` | `python3 scripts/educoder.py` | `54 8,10,14,16 * * 1-5` | 待检查 | [educoder.py.md](../scripts/educoder.py.md)（`docs/scripts/educoder.py.md`） |
