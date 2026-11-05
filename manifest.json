@@ -21281,6 +21281,171 @@
       }
     },
     {
+      "catalogId": "11d080ed77bec3d2",
+      "applicationKey": "sf",
+      "checkProfile": {
+        "requiredEnv": [
+          "SFACG_COOKIE"
+        ],
+        "optionalEnv": [
+          "SFACG_AUTHORIZATION",
+          "SFACG_SFSECURITY",
+          "SFACG_DRY_RUN",
+          "SFACG_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "SFACG_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "SFACG_TIMEOUT": "20"
+        },
+        "successPatterns": [
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "校验 SFACG Cookie 会话并显示昵称、火券余额与 VIP 等级",
+          "每日签到（newSignInfo；今日已签视为成功）",
+          "上报听书/阅读时长并领取、完成日常任务 4/5/17",
+          "多账号换行配置与完全断网预演",
+          "时间轴日志、TASK_SUMMARY 与青龙脱敏通知"
+        ],
+        "sideEffects": [
+          "写入每日签到状态",
+          "上报阅读/听书时长",
+          "领取并完成日常任务（任务 4/5/17）"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "SF轻小说签到",
+      "path": "scripts/illustar0_sf_autocheckin.py",
+      "sha256": "7e61f1fc578e14ec632bc669e6a1c83023bf56a6a88f21ac008cb8cc58aaf76d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Illustar0/SF_AutoCheckIn",
+        "branch": "main",
+        "commit": "0a4af5015e664060003f7ce6f332c884221b9e14",
+        "originalPath": "CheckIn.py"
+      },
+      "cron": "16 9 * * *",
+      "command": "python3 scripts/illustar0_sf_autocheckin.py",
+      "environment": [
+        {
+          "name": "SFACG_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 SF轻小说（菠萝包）App，抓包访问 api.sfacg.com 的请求，复制完整 Cookie（至少包含 session_APP 与 .SFCommunity）。多账号时每行一个账号；同一账号若需单独 sfsecurity，写成 Cookie值|sfsecurity完整值（仅按第一个 | 分割）。",
+          "format": "每行一个账号 Cookie；可选 Cookie|sfsecurity"
+        },
+        {
+          "name": "SFACG_AUTHORIZATION",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选。来自 App 客户端请求头 authorization（Basic …）。未配置时使用上游公开客户端默认值。",
+          "format": "Basic <base64> 或纯 base64（脚本会自动补 Basic 前缀）"
+        },
+        {
+          "name": "SFACG_SFSECURITY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选。全局 sfsecurity 请求头；账号行未附带时使用。均未配置时按上游固定 nonce/device/sign 并刷新 timestamp。",
+          "format": "nonce=...&timestamp=...&devicetoken=...&sign=..."
+        },
+        {
+          "name": "SFACG_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1/true/yes/on 开启完全断网预演，不发起任何业务网络请求。",
+          "format": "1/true/yes/on 或 0/false/no/off"
+        },
+        {
+          "name": "SFACG_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。单次 HTTP 请求超时秒数，默认 20。",
+          "format": "5 到 60 的整数"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。限定参与通知的脚本选择器（catalog-id、路径、文件名或通配）。空值表示全部禁用。",
+          "format": "逗号/分号/空白/换行分隔；* 表示全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。自定义 notify.py / sendNotify.js 所在目录。",
+          "format": "绝对或相对目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "SFACG_COOKIE 每个非空行一个账号；同一账号配套 Cookie 与可选 sfsecurity 写在同一行，仅按第一个 | 分割，后续文本保留。"
+      },
+      "dependencies": [],
+      "features": [
+        "校验 SFACG Cookie 会话并显示昵称、火券余额与 VIP 等级",
+        "每日签到（newSignInfo；今日已签视为成功）",
+        "上报听书/阅读时长并领取、完成日常任务 4/5/17",
+        "多账号换行配置与完全断网预演",
+        "时间轴日志、TASK_SUMMARY 与青龙脱敏通知"
+      ],
+      "sideEffects": [
+        "写入每日签到状态",
+        "上报阅读/听书时长",
+        "领取并完成日常任务（任务 4/5/17）"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/11d080ed77bec3d2",
+        "candidateSha256": "1c5ba7793f925ad4fba61da4d85b3dfd13293ec0ba7d9437d35ab9c0e6230ba0"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "1c5ba7793f925ad4fba61da4d85b3dfd13293ec0ba7d9437d35ab9c0e6230ba0",
+        "releaseSha256": "7e61f1fc578e14ec632bc669e6a1c83023bf56a6a88f21ac008cb8cc58aaf76d",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T08:30:40.081997+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "1c5ba7793f925ad4fba61da4d85b3dfd13293ec0ba7d9437d35ab9c0e6230ba0",
+          "toCandidateSha256": "7e61f1fc578e14ec632bc669e6a1c83023bf56a6a88f21ac008cb8cc58aaf76d",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "ef664085f75113bd",
       "applicationKey": "sitoi/dailycheckin::imaotai",
       "checkProfile": {
