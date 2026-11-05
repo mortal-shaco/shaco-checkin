@@ -27092,6 +27092,173 @@
       }
     },
     {
+      "catalogId": "c604755589e5c490",
+      "applicationKey": "nssctf",
+      "checkProfile": {
+        "requiredEnv": [
+          "NSSCTF_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "NSSCTF_USER",
+          "NSSCTF_PASS",
+          "NSSCTF_DRY_RUN",
+          "NSSCTF_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NSSCTF_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NSSCTF_TIMEOUT": "15"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "NSSCTF（www.nssctf.cn）账号密码登录后每日签到",
+          "识别业务 code=200 签到成功、HTTP 404 与「已签到」文案",
+          "官方接口返回用户名等公开身份时直接展示以便核对账号",
+          "多账号按行处理；规范变量 NSSCTF_ACCOUNTS（邮箱|密码），兼容上游 NSSCTF_USER/NSSCTF_PASS",
+          "完全断网预演 NSSCTF_DRY_RUN、HTTPS 超时、业务成功/已签到判定",
+          "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "向 NSSCTF 签到接口提交每日签到，改变当日签到状态并可能累计连续签到天数或站点奖励",
+          "通知已启用且适配器可用时向青龙通知通道发送脱敏任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "NSSCTF 签到",
+      "path": "scripts/nssctf_checkin.py",
+      "sha256": "49c1ccca856e14e5566a3d996e2a408b9291e386257aabe8afea9301cbfb8fa0",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "wenject/nssctf_checkin",
+        "branch": "main",
+        "commit": "71a7b7d5b6ccf1d9902e70d6308ded3e0bbc93d8",
+        "originalPath": "nssctf_checkin.py"
+      },
+      "cron": "8 8 * * *",
+      "command": "python3 scripts/nssctf_checkin.py",
+      "environment": [
+        {
+          "name": "NSSCTF_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://www.nssctf.cn/ 注册并登录后，使用注册邮箱与登录密码。每个非空行填写一个账号，格式为「邮箱|密码」。不要把真实密码写入公开仓库、日志或通知。",
+          "format": "每行一个账号：邮箱|密码（仅在第一个 | 处分割，密码可含 |）；账号之间只用换行分隔，不使用 & 或 @"
+        },
+        {
+          "name": "NSSCTF_USER",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号别名：与 NSSCTF_PASS 同时设置时可代替 NSSCTF_ACCOUNTS；仅当规范变量为空时生效。",
+          "format": "单个邮箱或用户名字符串"
+        },
+        {
+          "name": "NSSCTF_PASS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号别名：与 NSSCTF_USER 同时设置时可代替 NSSCTF_ACCOUNTS；仅当规范变量为空时生效。",
+          "format": "单个密码字符串"
+        },
+        {
+          "name": "NSSCTF_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置；只校验配置并模拟登录/签到阶段，不访问网络、不改动签到状态、不真实发送通知。",
+          "format": "1、true、yes、on 开启完全断网预演；默认关闭"
+        },
+        {
+          "name": "NSSCTF_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：单次 HTTPS 请求超时秒数。",
+          "format": "5 到 60 的数字；默认 15"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、空格、分号或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙 notify.py 或 sendNotify.js 所在目录；失败不改变业务退出码。",
+          "format": "目录路径；还会尝试 /ql/data/scripts 与 /ql/scripts"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每行一个「邮箱|密码」；账号独立处理，任一账号失败时整体以非零退出码结束"
+      },
+      "dependencies": [],
+      "features": [
+        "NSSCTF（www.nssctf.cn）账号密码登录后每日签到",
+        "识别业务 code=200 签到成功、HTTP 404 与「已签到」文案",
+        "官方接口返回用户名等公开身份时直接展示以便核对账号",
+        "多账号按行处理；规范变量 NSSCTF_ACCOUNTS（邮箱|密码），兼容上游 NSSCTF_USER/NSSCTF_PASS",
+        "完全断网预演 NSSCTF_DRY_RUN、HTTPS 超时、业务成功/已签到判定",
+        "脱敏时间轴日志、账号与任务统计、单行 TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "向 NSSCTF 签到接口提交每日签到，改变当日签到状态并可能累计连续签到天数或站点奖励",
+        "通知已启用且适配器可用时向青龙通知通道发送脱敏任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c604755589e5c490",
+        "candidateSha256": "ade2b9bdb5731aca25e2f9b107efa38d6f02d6a5f88ce37302f363c86dd5d1b0"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "ade2b9bdb5731aca25e2f9b107efa38d6f02d6a5f88ce37302f363c86dd5d1b0",
+        "releaseSha256": "49c1ccca856e14e5566a3d996e2a408b9291e386257aabe8afea9301cbfb8fa0",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T02:00:00.358651+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "ade2b9bdb5731aca25e2f9b107efa38d6f02d6a5f88ce37302f363c86dd5d1b0",
+          "toCandidateSha256": "49c1ccca856e14e5566a3d996e2a408b9291e386257aabe8afea9301cbfb8fa0",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "6919295133257387",
       "applicationKey": "nte",
       "checkProfile": {

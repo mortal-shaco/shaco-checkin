@@ -150,6 +150,7 @@
 | 九号出行每日签到 | `scripts/nine_bot_checkin.py` | `python3 scripts/nine_bot_checkin.py` | `0 7 * * *` | 待检查 | [nine_bot_checkin.py.md](../scripts/nine_bot_checkin.py.md)（`docs/scripts/nine_bot_checkin.py.md`） |
 | NodeSeek签到 | `scripts/nodeseek.py` | `python3 scripts/nodeseek.py` | `3 2 * * *` | 待检查 | [nodeseek.py.md](../scripts/nodeseek.py.md)（`docs/scripts/nodeseek.py.md`） |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `41 0 * * *` | 待检查 | [nodeseek_checkin.py.md](../scripts/nodeseek_checkin.py.md)（`docs/scripts/nodeseek_checkin.py.md`） |
+| NSSCTF 签到 | `scripts/nssctf_checkin.py` | `python3 scripts/nssctf_checkin.py` | `8 8 * * *` | 待检查 | [nssctf_checkin.py.md](../scripts/nssctf_checkin.py.md)（`docs/scripts/nssctf_checkin.py.md`） |
 | 塔吉多（异环）自动签到 | `scripts/nte.py` | `python3 scripts/nte.py` | `0 1 * * *` | 待检查 | [nte.py.md](../scripts/nte.py.md)（`docs/scripts/nte.py.md`） |
 | OfficeAce 果办每日奖励 | `scripts/officeace_daily.py` | `python3 scripts/officeace_daily.py` | `57 0 * * *` | 待检查 | [officeace_daily.py.md](../scripts/officeace_daily.py.md)（`docs/scripts/officeace_daily.py.md`） |
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `6 1 1 1 1` | 待检查 | [ole.py.md](../scripts/ole.py.md)（`docs/scripts/ole.py.md`） |
