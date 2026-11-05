@@ -40538,6 +40538,218 @@
       }
     },
     {
+      "catalogId": "3827d2e03a385b9d",
+      "applicationKey": "yingxiaqwq/auto-moguding::index",
+      "checkProfile": {
+        "requiredEnv": [
+          "MOGUDING_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "MOGUDING_USER",
+          "MOGUDING_SIGN_IN",
+          "MOGUDING_MULTIPLE",
+          "MOGUDING_RANDOM_LOCATION",
+          "MOGUDING_TYPE",
+          "MOGUDING_DESC",
+          "MOGUDING_UA",
+          "MOGUDING_DRY_RUN",
+          "MOGUDING_TIMEOUT_MS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MOGUDING_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto",
+          "MOGUDING_SIGN_IN": "1"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用手机号与密码登录蘑菇钉/工学云 API，获取 token、userId 与实习计划 planId。",
+          "查询考勤同步列表，按今日上班/下班状态自动提交 START 或 END 打卡。",
+          "支持多次交替打卡、关闭打卡、坐标末三位抖动、自定义 UA/设备类型/备注。",
+          "可选行内 token/userId/planId 跳过首次登录；失效后自动重新登录。",
+          "官方返回昵称或公开 userId 时直接打印以便核对；手机号、密码、Token 永不输出。",
+          "支持每行一个账号；兼容 MOGUDING_USER；账号失败隔离并汇总非零退出。",
+          "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+          "完全断网预演：校验账号字段、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时向 api.moguding.net 提交登录与上班/下班打卡，可能更新账号考勤记录。",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "蘑菇钉工学云打卡",
+      "path": "scripts/task_3827d2e0.js",
+      "sha256": "f31c1590688302d2c110bceffa7ac6c33ab8203eca41a2b7232ccd5234f257b3",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "YingxiaQwQ/Auto-Moguding",
+        "branch": "main",
+        "commit": "4e99ceb2fbd24d749b773bf2a3c2c8cd4b5e2927",
+        "originalPath": "index.js"
+      },
+      "cron": "3 8,18 * * *",
+      "command": "node scripts/task_3827d2e0.js",
+      "environment": [
+        {
+          "name": "MOGUDING_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人蘑菇钉/工学云 App 注册手机号与登录密码；国家、省市区、详细地址与经纬度需与实习打卡点一致，经纬度可用公开地图坐标查询工具获取。勿将手机号、密码、Token 写入公开仓库、日志或通知。",
+          "format": "每个非空行一个账号。推荐单行 JSON：{\"phone\":\"手机号\",\"password\":\"密码\",\"country\":\"中国\",\"province\":\"省\",\"city\":\"市\",\"area\":\"区\",\"address\":\"详细地址\",\"longitude\":\"经度\",\"latitude\":\"纬度\"}，可选 signIn/multiple/randomLocation/type/desc/UA/token/userId/planId。也可「手机号|密码|经度|纬度|地址|省|市|区|国家」或「手机号|密码|{位置JSON}」，只在首个竖线处拆分手机号。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "MOGUDING_USER",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：仅当未设置 MOGUDING_ACCOUNTS 时读取；获取方式与字段要求同 MOGUDING_ACCOUNTS。",
+          "format": "与 MOGUDING_ACCOUNTS 相同；每行一个账号 JSON 或竖线格式。"
+        },
+        {
+          "name": "MOGUDING_SIGN_IN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要全局关闭实际上班/下班提交时手动设置；账号 JSON 的 signIn 优先。",
+          "format": "1、true、yes、on 开启打卡（默认）；0、false、no、off 仅登录查询并跳过提交。"
+        },
+        {
+          "name": "MOGUDING_MULTIPLE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要按上次类型交替多次打卡时手动开启；账号 multiple 优先。默认每天上班+下班各一次判定。",
+          "format": "1/true 开启多次交替；其他或未设置表示关闭。"
+        },
+        {
+          "name": "MOGUDING_RANDOM_LOCATION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要轻微抖动经纬度末三位时手动开启；默认关闭（已移除上游示例中的默认开启）。账号 randomLocation 优先。",
+          "format": "1/true 开启抖动；其他或未设置表示关闭。"
+        },
+        {
+          "name": "MOGUDING_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要覆盖默认设备类型时手动设置；账号 type 优先。",
+          "format": "通常为 android；缺省 android。"
+        },
+        {
+          "name": "MOGUDING_DESC",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要统一签到备注时填写；账号 description/desc 优先。",
+          "format": "任意短文本；可留空。"
+        },
+        {
+          "name": "MOGUDING_UA",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要自定义 User-Agent 时填写；账号 UA 优先。未设置使用内置安卓 UA，不再读取 uaList.json。",
+          "format": "完整 User-Agent 字符串。"
+        },
+        {
+          "name": "MOGUDING_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不请求 API、不写本地文件、不投递真实通知。"
+        },
+        {
+          "name": "MOGUDING_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP 超时时间时手动设置。",
+          "format": "1000 至 120000 的整数毫秒；缺省或非法值使用 20000。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 3827d2e03a385b9d、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "MOGUDING_ACCOUNTS（或兼容别名 MOGUDING_USER）每个非空行一个账号；同一账号的手机号、密码与打卡位置组合在同一行。账号逐个独立登录与打卡统计，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用手机号与密码登录蘑菇钉/工学云 API，获取 token、userId 与实习计划 planId。",
+        "查询考勤同步列表，按今日上班/下班状态自动提交 START 或 END 打卡。",
+        "支持多次交替打卡、关闭打卡、坐标末三位抖动、自定义 UA/设备类型/备注。",
+        "可选行内 token/userId/planId 跳过首次登录；失效后自动重新登录。",
+        "官方返回昵称或公开 userId 时直接打印以便核对；手机号、密码、Token 永不输出。",
+        "支持每行一个账号；兼容 MOGUDING_USER；账号失败隔离并汇总非零退出。",
+        "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+        "完全断网预演：校验账号字段、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时向 api.moguding.net 提交登录与上班/下班打卡，可能更新账号考勤记录。",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3827d2e03a385b9d",
+        "candidateSha256": "03796b945519844de1adf13a83ba66f649a892626085899462310b551b6c7dcd"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "03796b945519844de1adf13a83ba66f649a892626085899462310b551b6c7dcd",
+        "releaseSha256": "f31c1590688302d2c110bceffa7ac6c33ab8203eca41a2b7232ccd5234f257b3",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T06:45:21.746592+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "03796b945519844de1adf13a83ba66f649a892626085899462310b551b6c7dcd",
+          "toCandidateSha256": "f31c1590688302d2c110bceffa7ac6c33ab8203eca41a2b7232ccd5234f257b3",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "3aae8a254cd15cdd",
       "applicationKey": "rainyun",
       "checkProfile": {
