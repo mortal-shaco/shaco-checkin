@@ -91,6 +91,7 @@
 | PSY 每日签到 | `scripts/daily_checkin.py` | `python3 scripts/daily_checkin.py` | `21 8 * * *` | 待检查 | [daily_checkin.py.md](../scripts/daily_checkin.py.md)（`docs/scripts/daily_checkin.py.md`） |
 | 京东每日签到领京豆 | `scripts/daily_sign.py` | `python3 scripts/daily_sign.py` | `40 8 * * *` | 待检查 | [daily_sign.py.md](../scripts/daily_sign.py.md)（`docs/scripts/daily_sign.py.md`） |
 | 二重螺旋皎皎角每日任务 | `scripts/daily_tasks.py` | `python3 scripts/daily_tasks.py` | `3 8 * * *` | 待检查 | [daily_tasks.py.md](../scripts/daily_tasks.py.md)（`docs/scripts/daily_tasks.py.md`） |
+| 电子科大返校疫情健康打卡 | `scripts/dailycheck.py` | `python3 scripts/dailycheck.py` | `33 9 * * *` | 待检查 | [dailycheck.py.md](../scripts/dailycheck.py.md)（`docs/scripts/dailycheck.py.md`） |
 | 今日校园信息收集 | `scripts/dailycp.py` | `python3 scripts/dailycp.py` | `57 8 * * *` | 待检查 | [dailycp.py.md](../scripts/dailycp.py.md)（`docs/scripts/dailycp.py.md`） |
 | 中国日报 | `scripts/dailynewscn.js` | `node scripts/dailynewscn.js` | `0 15 9 * * *` | 待检查 | [dailynewscn.js.md](../scripts/dailynewscn.js.md)（`docs/scripts/dailynewscn.js.md`） |
 | 大物是也签到 | `scripts/dawushiye.py` | `python3 scripts/dawushiye.py` | `7 8 * * *` | 待检查 | [dawushiye.py.md](../scripts/dawushiye.py.md)（`docs/scripts/dawushiye.py.md`） |
