@@ -41261,6 +41261,175 @@
       }
     },
     {
+      "catalogId": "2c89474a11ce9592",
+      "applicationKey": "luckylemonade24/hayfrp-auto-sign::index",
+      "checkProfile": {
+        "requiredEnv": [
+          "HAYFRP_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "HAYFRP_API_URL",
+          "HAYFRP_WEBHOOK_URL",
+          "HAYFRP_DRY_RUN",
+          "HAYFRP_TIMEOUT_MS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HAYFRP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用 HayFrp 用户名密码登录官方 API，并以 csrf token 完成每日签到领流量。",
+          "识别当日已签到（业务 status=403）为已完成，展示签到增量流量与总流量。",
+          "可选 Discord Webhook 推送脱敏签到摘要；默认关闭。",
+          "支持每行一个账号及可选备注前缀，账号失败隔离并汇总退出状态。",
+          "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+          "完全断网预演：校验账号格式与 API/Webhook 协议、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时对 HayFrp 账号执行每日签到，可能增加账号可用流量。",
+          "配置了 HAYFRP_WEBHOOK_URL 时，向该 Discord Webhook 发送签到摘要。",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "HayFrp每日签到",
+      "path": "scripts/task_2c89474a.js",
+      "sha256": "01d8bda0eb2bc9e981794cf4daf34df2953a5e01359c8402234d917071a83f31",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "luckylemonade24/hayfrp-auto-sign",
+        "branch": "main",
+        "commit": "7742926094b8655170d4e2186b268f29deb52051",
+        "originalPath": "src/index.ts"
+      },
+      "cron": "35 1 * * *",
+      "command": "node scripts/task_2c89474a.js",
+      "environment": [
+        {
+          "name": "HAYFRP_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人 HayFrp 控制台账号密码（https://console.hayfrp.com 可登录验证的同一组凭据）。勿填写他人账号或日志中的敏感信息。",
+          "format": "每个非空行一个账号，格式「用户名,密码」，只在第一个逗号处拆分（密码可含逗号）。可选备注前缀「备注|用户名,密码」，只在首个竖线处拆分。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "HAYFRP_API_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "一般无需更改；仅当官方更换 API 根地址时手动设置。可参考 HayFrp-Team/Learn 文档。",
+          "format": "必须以 https:// 开头的 API 根地址；缺省为 https://api.hayfrp.com。"
+        },
+        {
+          "name": "HAYFRP_WEBHOOK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选。Discord 频道设置 → 整合 → 创建 Webhook → 复制 URL。不需要 Discord 推送时留空或填 disabled。",
+          "format": "必须以 https:// 开头的 Discord Webhook URL；disabled 或空值表示关闭。预演不会请求该地址。"
+        },
+        {
+          "name": "HAYFRP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不访问 HayFrp、不签到、不投递真实通知或 Webhook。"
+        },
+        {
+          "name": "HAYFRP_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP 超时时间时手动设置。",
+          "format": "1000 至 60000 的整数毫秒；缺省或非法值使用 20000。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 2c89474a11ce9592、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "HAYFRP_ACCOUNTS 每个非空行一个账号；可选备注仅按第一个竖线分割，用户名与密码仅按第一个逗号分割。账号逐个独立登录、签到与统计，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 HayFrp 用户名密码登录官方 API，并以 csrf token 完成每日签到领流量。",
+        "识别当日已签到（业务 status=403）为已完成，展示签到增量流量与总流量。",
+        "可选 Discord Webhook 推送脱敏签到摘要；默认关闭。",
+        "支持每行一个账号及可选备注前缀，账号失败隔离并汇总退出状态。",
+        "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+        "完全断网预演：校验账号格式与 API/Webhook 协议、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时对 HayFrp 账号执行每日签到，可能增加账号可用流量。",
+        "配置了 HAYFRP_WEBHOOK_URL 时，向该 Discord Webhook 发送签到摘要。",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/2c89474a11ce9592",
+        "candidateSha256": "ef43d48f2fed3296d9a175942c9a6ec537fd5a0a5810f6b787a80dc305844723"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "ef43d48f2fed3296d9a175942c9a6ec537fd5a0a5810f6b787a80dc305844723",
+        "releaseSha256": "01d8bda0eb2bc9e981794cf4daf34df2953a5e01359c8402234d917071a83f31",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T02:00:50.571999+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "ef43d48f2fed3296d9a175942c9a6ec537fd5a0a5810f6b787a80dc305844723",
+          "toCandidateSha256": "01d8bda0eb2bc9e981794cf4daf34df2953a5e01359c8402234d917071a83f31",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "3aae8a254cd15cdd",
       "applicationKey": "lmtxq/rainyun-qinglong::main",
       "checkProfile": {
@@ -41890,6 +42059,165 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "9522c982abce03216ec43b64f54e6aeb248da6c347a0a87fdb1b94d8dd26fd78",
           "toCandidateSha256": "72dd637dc269d7e7ae88ce5b5943f33870825ba650a23c6520803bc46d8766b3",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "81b701d12d5b39f2",
+      "applicationKey": "wyf9/hayfrp-auto-sign::index",
+      "checkProfile": {
+        "requiredEnv": [
+          "HAYFRP_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "HAYFRP_API_URL",
+          "HAYFRP_DRY_RUN",
+          "HAYFRP_TIMEOUT_MS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HAYFRP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用 HayFrp 用户名密码登录官方 API，并展示官方返回或配置中的用户名身份。",
+          "登录后携带 csrf/token 执行每日签到领取流量，识别签到成功与今日已签到。",
+          "支持每行一个账号及可选备注前缀，账号失败隔离并汇总退出状态。",
+          "可选自定义 API 根地址；默认 https://api.hayfrp.com。",
+          "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+          "完全断网预演：校验账号格式与 API 地址协议、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时向 HayFrp 提交每日签到，可能增加账号可用流量。",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "HayFrp 每日签到",
+      "path": "scripts/task_81b701d1.js",
+      "sha256": "4b7525b0309aa005017edf9988a104d94662c8a2aea6bebd97bdc3514b08336b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "wyf9/hayfrp-auto-sign",
+        "branch": "main",
+        "commit": "f9b99a6c6465b276772ab7d4621ed49fde0aa4f5",
+        "originalPath": "src/index.ts"
+      },
+      "cron": "34 1 * * *",
+      "command": "node scripts/task_81b701d1.js",
+      "environment": [
+        {
+          "name": "HAYFRP_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人 HayFrp 控制台账号密码（https://console.hayfrp.com 可登录验证的同一组凭据）。勿填写他人账号或日志中的敏感信息。",
+          "format": "每个非空行一个账号，格式「用户名,密码」，只在第一个逗号处拆分（密码可含逗号）。可选备注前缀「备注|用户名,密码」，只在首个竖线处拆分。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "HAYFRP_API_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "一般无需修改；仅当官方更换 API 根地址时手动设置。",
+          "format": "完整 HTTP(S) API 根地址，默认 https://api.hayfrp.com；脚本会向 {根地址}/user 发起 POST。"
+        },
+        {
+          "name": "HAYFRP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不访问 HayFrp、不签到、不投递真实通知。"
+        },
+        {
+          "name": "HAYFRP_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP 超时时间时手动设置。",
+          "format": "1000 至 60000 的整数毫秒；缺省或非法值使用 20000。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 81b701d12d5b39f2、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "HAYFRP_ACCOUNTS 每个非空行一个账号；可选备注仅按第一个竖线分割，用户名与密码仅按第一个逗号分割。账号逐个独立登录、签到与统计，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 HayFrp 用户名密码登录官方 API，并展示官方返回或配置中的用户名身份。",
+        "登录后携带 csrf/token 执行每日签到领取流量，识别签到成功与今日已签到。",
+        "支持每行一个账号及可选备注前缀，账号失败隔离并汇总退出状态。",
+        "可选自定义 API 根地址；默认 https://api.hayfrp.com。",
+        "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+        "完全断网预演：校验账号格式与 API 地址协议、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时向 HayFrp 提交每日签到，可能增加账号可用流量。",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/81b701d12d5b39f2",
+        "candidateSha256": "d8d6900f1cb30c2509ffb0ddfe9830851d158fac354c0492964106be2718160b"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "d8d6900f1cb30c2509ffb0ddfe9830851d158fac354c0492964106be2718160b",
+        "releaseSha256": "4b7525b0309aa005017edf9988a104d94662c8a2aea6bebd97bdc3514b08336b",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T02:00:41.838425+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "d8d6900f1cb30c2509ffb0ddfe9830851d158fac354c0492964106be2718160b",
+          "toCandidateSha256": "4b7525b0309aa005017edf9988a104d94662c8a2aea6bebd97bdc3514b08336b",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
