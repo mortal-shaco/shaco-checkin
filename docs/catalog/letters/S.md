@@ -1,6 +1,6 @@
 # 字母索引 · S
 
-共 **67** 个脚本。返回 [`目录首页`](../README.md)。
+共 **66** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -9,7 +9,6 @@
 | 申工社每日任务 | `scripts/sgs.py` | `python3 scripts/sgs.py` | `43 0 * * *` | 待检查 | [sgs.py.md](../../scripts/sgs.py.md)（`docs/scripts/sgs.py.md`） |
 | 书亦烧仙草签到 | `scripts/shuyi.py` | `python3 scripts/shuyi.py` | `51 0 * * *` | 待检查 | [shuyi.py.md](../../scripts/shuyi.py.md)（`docs/scripts/shuyi.py.md`） |
 | 上马官网每日签到 | `scripts/sign_in.js` | `node scripts/sign_in.js` | `24 8 * * *` | 待检查 | [sign_in.js.md](../../scripts/sign_in.js.md)（`docs/scripts/sign_in.js.md`） |
-| 看雪论坛签到 | `scripts/sign_in.py` | `python3 scripts/sign_in.py` | `11 1 1 1 1` | 待检查 | [sign_in.py.md](../../scripts/sign_in.py.md)（`docs/scripts/sign_in.py.md`） |
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
 | 森空岛双游戏签到 | `scripts/skland_demo.py` | `python3 scripts/skland_demo.py` | `18 2 * * *` | 待检查 | [skland_demo.py.md](../../scripts/skland_demo.py.md)（`docs/scripts/skland_demo.py.md`） |
 | 森空岛签到 | `scripts/skyland.py` | `python3 scripts/skyland.py` | `6 0 * * *` | 待检查 | [skyland.py.md](../../scripts/skyland.py.md)（`docs/scripts/skyland.py.md`） |
