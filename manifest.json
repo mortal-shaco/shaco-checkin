@@ -20625,6 +20625,170 @@
       }
     },
     {
+      "catalogId": "fadf97b9ea306b1b",
+      "applicationKey": "mirroro3",
+      "checkProfile": {
+        "requiredEnv": [
+          "MIRRORO3_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "MIRRORO3_TIMEOUT",
+          "MIRRORO3_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MIRRORO3_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MIRRORO3_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "0"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "最终状态 success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "使用邮箱密码登录 Mirror O3 Pro 并获取会话 Token",
+          "校验用户信息并展示官方返回的非凭据公开身份（用户名、邮箱或 UID）",
+          "提交每日签到，并区分签到成功、今日已签到与业务失败",
+          "查询签到前后积分余额（可用/已用）",
+          "支持每行一个账号的多账号独立处理，任一账号失败时非零退出",
+          "支持完全断网预演、请求超时、时间轴日志、脱敏通知与单行 TASK_SUMMARY"
+        ],
+        "sideEffects": [
+          "登录后在 Mirror O3 Pro 账号上写入每日签到记录并可能增加积分",
+          "正式执行且通知开启时向青龙通知组件发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Mirror O3 Pro 每日签到",
+      "path": "scripts/github_actions_checkin.py",
+      "sha256": "230ea7e20eca993a25012058ae2585e00f72e7adbe6ce91c29b691ab8ed3a409",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "fengyunzaidushi/mirroro3_autocheckin",
+        "branch": "master",
+        "commit": "619d6933f0da84e187274011fed27a42ff762501",
+        "originalPath": "github_actions_checkin.py",
+        "related": [
+          {
+            "catalogId": "ff646fcd1626de61",
+            "sha256": "951f8f34191c0a27063fe7c1cc4b94cdf8f12c11c4f4d8d6cba599b31f97b311",
+            "repository": "fengyunzaidushi/mirroro3_autocheckin",
+            "url": "https://github.com/fengyunzaidushi/mirroro3_autocheckin",
+            "branch": "master",
+            "commit": "619d6933f0da84e187274011fed27a42ff762501",
+            "originalPath": "pve_checkin_cron.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "32 9 * * *",
+      "command": "python3 scripts/github_actions_checkin.py",
+      "environment": [
+        {
+          "name": "MIRRORO3_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用在 Mirror O3 Pro（https://mirror.o3pro.pro）注册或登录时的邮箱与明文密码。仅写入青龙环境变量，不要分享或提交到公开仓库。",
+          "format": "每个非空行一个账号：邮箱|密码；仅在第一个竖线处分割，密码中后续竖线保留。空行和以 # 开头的注释行忽略。"
+        },
+        {
+          "name": "MIRRORO3_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况设置单次 HTTPS 请求超时；留空使用 20 秒。",
+          "format": "5 至 60 之间的秒数"
+        },
+        {
+          "name": "MIRRORO3_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要验证配置与执行路径但禁止联网时启用；预演不访问业务接口，也不声明真实签到成功。",
+          "format": "布尔值，默认 0；1、true、yes、on 开启完全断网预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选脚本选择列表；设置后替代默认名单，只为匹配的脚本开启通知。",
+          "format": "用逗号、分号、空白或换行分隔 catalog ID、相对路径、文件名或通配符；* 表示全部，空值表示全部关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写已有青龙 notify.py 或 sendNotify.js 所在目录；未填写时尝试导入 notify 和青龙标准脚本目录。",
+          "format": "已有通知模块所在目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "MIRRORO3_ACCOUNTS 中每个非空行代表一个账号，格式为邮箱|密码；仅在第一个竖线处分割。脚本逐账号独立处理，任一账号失败时进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用邮箱密码登录 Mirror O3 Pro 并获取会话 Token",
+        "校验用户信息并展示官方返回的非凭据公开身份（用户名、邮箱或 UID）",
+        "提交每日签到，并区分签到成功、今日已签到与业务失败",
+        "查询签到前后积分余额（可用/已用）",
+        "支持每行一个账号的多账号独立处理，任一账号失败时非零退出",
+        "支持完全断网预演、请求超时、时间轴日志、脱敏通知与单行 TASK_SUMMARY"
+      ],
+      "sideEffects": [
+        "登录后在 Mirror O3 Pro 账号上写入每日签到记录并可能增加积分",
+        "正式执行且通知开启时向青龙通知组件发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/fadf97b9ea306b1b",
+        "candidateSha256": "f252e47ab7df0759ec871dbd6693d443d97037f58ca0a59010415f56d8a08fec"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "f252e47ab7df0759ec871dbd6693d443d97037f58ca0a59010415f56d8a08fec",
+        "releaseSha256": "230ea7e20eca993a25012058ae2585e00f72e7adbe6ce91c29b691ab8ed3a409",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T10:45:36.020461+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "f252e47ab7df0759ec871dbd6693d443d97037f58ca0a59010415f56d8a08fec",
+          "toCandidateSha256": "230ea7e20eca993a25012058ae2585e00f72e7adbe6ce91c29b691ab8ed3a409",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "2d633fe3129937b6",
       "applicationKey": "glados",
       "checkProfile": {
@@ -30918,6 +31082,170 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "84dee357eef72e0ead3d6ad4d5c3597bc833ee8a1691f14f6a95709d5bd08f54",
           "toCandidateSha256": "d33350a812fe8300f6cc894a8beb02d64c88f6bcfe36fef4617f0b1be4345bc7",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "046c5c66d83d3094",
+      "applicationKey": "nodeoj",
+      "checkProfile": {
+        "requiredEnv": [
+          "NODEOJ_SSID"
+        ],
+        "optionalEnv": [
+          "NODEOJ_COOKIES",
+          "COOKIES",
+          "NODEOJ_DRY_RUN",
+          "NODEOJ_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NODEOJ_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NODEOJ_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用 NodeOJ ssid Cookie 调用欧皇签到接口完成每日签到",
+          "识别今日已签到为已完成成功，HTML/登录失败与业务失败分别判定",
+          "支持每行一个 ssid 的多账号独立处理，任一账号失败时整体非零退出",
+          "提供完全断网预演、时间轴脱敏日志、账号与任务统计及单行 TASK_SUMMARY",
+          "按青龙全局开关发送脱敏通知，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行时向 nodeoj.com 提交欧皇签到，改变账号当日签到状态并可能发放相关奖励"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "NodeOJ每日签到",
+      "path": "scripts/nodeoj.py",
+      "sha256": "79bcdaa2983ed52a2f16c53748fad9287a3c724377b7cbf0733483121b90c37d",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "No-World/NodeOJ_SignIn",
+        "branch": "master",
+        "commit": "ebf17cb2792897883ba768bdd4e4873ebe802835",
+        "originalPath": "index.py"
+      },
+      "cron": "1 10 * * *",
+      "command": "python3 scripts/nodeoj.py",
+      "environment": [
+        {
+          "name": "NODEOJ_SSID",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://nodeoj.com/ 后，在浏览器开发者工具中复制 Cookie 里的 ssid 值写入青龙环境变量。若不想频繁失效，可同时延长浏览器中该 Cookie 的有效期。不要把 ssid 发给他人或写入公开仓库、日志、通知。",
+          "format": "每个非空行一个账号的 ssid 值。也可粘贴含 ssid= 的完整 Cookie 头，脚本会自动提取。账号之间只用换行分隔，不使用 &、@ 或其他符号。"
+        },
+        {
+          "name": "NODEOJ_COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名。仅当未设置 NODEOJ_SSID 时生效，取值与 NODEOJ_SSID 相同。",
+          "format": "与 NODEOJ_SSID 相同：每行一个 ssid。"
+        },
+        {
+          "name": "COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "上游云函数兼容别名。仅当未设置 NODEOJ_SSID 与 NODEOJ_COOKIES 时生效。",
+          "format": "与 NODEOJ_SSID 相同：每行一个 ssid。"
+        },
+        {
+          "name": "NODEOJ_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要在完全断网条件下检查配置与流程时设置。",
+          "format": "设为 1、true、yes 或 on 启用预演。"
+        },
+        {
+          "name": "NODEOJ_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况设置单次 HTTPS 超时；不填写时为 20 秒。",
+          "format": "5 至 120 之间的整数秒。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 QINGLONG_NOTIFY=auto 时填写要通知的脚本选择器。",
+          "format": "可用逗号、分号、空白或换行分隔；支持 046c5c66d83d3094、candidate.py、nodeoj_signin.py、通配符或 *。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙 notify.py 不在默认位置时，填写其所在目录。",
+          "format": "包含 notify.py 的本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "NODEOJ_SSID 每个非空行一个账号 ssid；也可粘贴含 ssid= 的 Cookie 头由脚本提取。逐账号独立签到，任一账号失败时进程整体返回非零退出码。不使用 &、@ 或其他符号分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 NodeOJ ssid Cookie 调用欧皇签到接口完成每日签到",
+        "识别今日已签到为已完成成功，HTML/登录失败与业务失败分别判定",
+        "支持每行一个 ssid 的多账号独立处理，任一账号失败时整体非零退出",
+        "提供完全断网预演、时间轴脱敏日志、账号与任务统计及单行 TASK_SUMMARY",
+        "按青龙全局开关发送脱敏通知，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行时向 nodeoj.com 提交欧皇签到，改变账号当日签到状态并可能发放相关奖励"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/046c5c66d83d3094",
+        "candidateSha256": "5c053c2f1956d36e8f50d3af6e632857935bea908feb26331d89d9f94bf3c6ca"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "5c053c2f1956d36e8f50d3af6e632857935bea908feb26331d89d9f94bf3c6ca",
+        "releaseSha256": "79bcdaa2983ed52a2f16c53748fad9287a3c724377b7cbf0733483121b90c37d",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T10:45:42.555937+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "5c053c2f1956d36e8f50d3af6e632857935bea908feb26331d89d9f94bf3c6ca",
+          "toCandidateSha256": "79bcdaa2983ed52a2f16c53748fad9287a3c724377b7cbf0733483121b90c37d",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

@@ -119,6 +119,7 @@
 | 吉利汽车签到 | `scripts/geely.js` | `node scripts/geely.js` | `37 0 * * *` | 待检查 | [geely.js.md](../scripts/geely.js.md)（`docs/scripts/geely.js.md`） |
 | 阴阳师官网视频与原画 | `scripts/get_yys_cgvideo.py` | `python3 scripts/get_yys_cgvideo.py` | `11 9 * * 0` | 待检查 | [get_yys_cgvideo.py.md](../scripts/get_yys_cgvideo.py.md)（`docs/scripts/get_yys_cgvideo.py.md`） |
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `28 9 * * 0` | 待检查 | [get_yys_imagelinks.py.md](../scripts/get_yys_imagelinks.py.md)（`docs/scripts/get_yys_imagelinks.py.md`） |
+| Mirror O3 Pro 每日签到 | `scripts/github_actions_checkin.py` | `python3 scripts/github_actions_checkin.py` | `32 9 * * *` | 待检查 | [github_actions_checkin.py.md](../scripts/github_actions_checkin.py.md)（`docs/scripts/github_actions_checkin.py.md`） |
 | GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
 | 好豆每日签到 | `scripts/haodou.py` | `python3 scripts/haodou.py` | `14 9 * * *` | 待检查 | [haodou.py.md](../scripts/haodou.py.md)（`docs/scripts/haodou.py.md`） |
 | HelloGitHub月刊提醒 | `scripts/hellogithub.py` | `python3 scripts/hellogithub.py` | `31 8 1 * *` | 待检查 | [hellogithub.py.md](../scripts/hellogithub.py.md)（`docs/scripts/hellogithub.py.md`） |
@@ -171,6 +172,7 @@
 | NewAPI 自动签到 | `scripts/newapi.py` | `python3 scripts/newapi.py` | `18 8 * * *` | 待检查 | [newapi.py.md](../scripts/newapi.py.md)（`docs/scripts/newapi.py.md`） |
 | NGA 论坛签到 | `scripts/nga_checkin.py` | `python3 scripts/nga_checkin.py` | `49 0 * * *` | 待检查 | [nga_checkin.py.md](../scripts/nga_checkin.py.md)（`docs/scripts/nga_checkin.py.md`） |
 | 九号出行每日签到 | `scripts/nine_bot_checkin.py` | `python3 scripts/nine_bot_checkin.py` | `0 7 * * *` | 待检查 | [nine_bot_checkin.py.md](../scripts/nine_bot_checkin.py.md)（`docs/scripts/nine_bot_checkin.py.md`） |
+| NodeOJ每日签到 | `scripts/nodeoj.py` | `python3 scripts/nodeoj.py` | `1 10 * * *` | 待检查 | [nodeoj.py.md](../scripts/nodeoj.py.md)（`docs/scripts/nodeoj.py.md`） |
 | NodeSeek 论坛签到 | `scripts/nodeseek_checkin.py` | `python3 scripts/nodeseek_checkin.py` | `41 0 * * *` | 待检查 | [nodeseek_checkin.py.md](../scripts/nodeseek_checkin.py.md)（`docs/scripts/nodeseek_checkin.py.md`） |
 | NSSCTF 签到 | `scripts/nssctf_checkin.py` | `python3 scripts/nssctf_checkin.py` | `8 8 * * *` | 待检查 | [nssctf_checkin.py.md](../scripts/nssctf_checkin.py.md)（`docs/scripts/nssctf_checkin.py.md`） |
 | 塔吉多（异环）自动签到 | `scripts/nte.py` | `python3 scripts/nte.py` | `0 1 * * *` | 待检查 | [nte.py.md](../scripts/nte.py.md)（`docs/scripts/nte.py.md`） |
