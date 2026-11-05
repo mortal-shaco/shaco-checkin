@@ -31444,6 +31444,212 @@
       }
     },
     {
+      "catalogId": "2d0eeee40adf7820",
+      "applicationKey": "nth2miss/oopz-auto-task::oopz",
+      "checkProfile": {
+        "requiredEnv": [
+          "OOPZ_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "OOPZ_TOKEN",
+          "OOPZ_UID",
+          "OOPZ_PHONE",
+          "OOPZ_PASSWORD",
+          "OOPZ_ACTIONS",
+          "OOPZ_LOCAL_TEXT",
+          "OOPZ_TIMEOUT",
+          "OOPZ_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "OOPZ_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "OOPZ_ACTIONS": "sign,tasks",
+          "OOPZ_TIMEOUT": "25",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "每日星辉任务",
+          "最终状态：成功",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用 Oopz Web 端签名算法完成每日星辉签到，并核对连续签到天数。",
+          "一站式完成社区星辉任务：浏览、点赞、评论、分享、发布笔记并尝试领取奖励。",
+          "评论与发布正文优先使用一言随机文本并按策略署名，失败或断网预演回落本地短句；发布配图优先必应每日一图。",
+          "支持 token|uid 会话，或手机号|密码自动登录并在失效时重登；展示官方返回的昵称或公开 uid。",
+          "支持逐行多账号、动作开关、完全断网预演、超时控制、时间轴日志与单行 TASK_SUMMARY。",
+          "通过青龙 notify.py 或 sendNotify.js 发送脱敏任务汇总，遵守全局开关与脚本清单。"
+        ],
+        "sideEffects": [
+          "正式执行时提交每日签到，可能增加星辉与连续签到天数。",
+          "启用 tasks 时会浏览、点赞、评论、分享社区内容，并可能发布一篇笔记、上传配图与领取任务奖励。",
+          "密码登录账号会向官方登录接口提交加密后的密码以换取会话；脚本不把凭据写入本地文件。",
+          "通知启用且助手可用时发送脱敏任务汇总；无网络预演不投递外部通知，也不请求一言或必应。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Oopz每日签到与星辉任务",
+      "path": "scripts/oopz_sign.py",
+      "sha256": "40947ee131de9743e676369efdb9ca388517ffb85853cc641275d5a6c9a03985",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Nth2Miss/oopz-auto-task",
+        "branch": "main",
+        "commit": "c6e76876ee4cd5ae9d479f7060777c4a9f1e43f7",
+        "originalPath": "oopz_sign.py"
+      },
+      "cron": "25 9 * * *",
+      "command": "python3 scripts/oopz_sign.py",
+      "environment": [
+        {
+          "name": "OOPZ_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 Oopz App 或 https://web.oopz.cn 使用本人账号。推荐密码登录行：用手机号与登录密码；或从已登录客户端/抓包取得 token 与 uid。勿把真实凭据写入仓库、日志或示例。",
+          "format": "每个非空行一个账号。token|uid，或 11 位手机号|密码；仅在首个竖线处分割，后续字符完整保留。"
+        },
+        {
+          "name": "OOPZ_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号别名：填写登录后的 oopz-signature/token；仅当 OOPZ_ACCOUNTS 为空且同时提供 OOPZ_UID 时生效。",
+          "format": "单个 token 字符串。"
+        },
+        {
+          "name": "OOPZ_UID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容单账号别名：填写公开用户 uid；仅当 OOPZ_ACCOUNTS 为空且同时提供 OOPZ_TOKEN 时生效。",
+          "format": "单个 uid 字符串。"
+        },
+        {
+          "name": "OOPZ_PHONE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号别名：填写注册手机号；仅当 OOPZ_ACCOUNTS 为空且同时提供 OOPZ_PASSWORD 时生效。",
+          "format": "11 位数字手机号。"
+        },
+        {
+          "name": "OOPZ_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号别名：填写登录密码；仅当 OOPZ_ACCOUNTS 为空且同时提供 OOPZ_PHONE 时生效。密码会按客户端 RSA-OAEP 加密后提交，脚本不落盘。",
+          "format": "单个密码字符串。"
+        },
+        {
+          "name": "OOPZ_ACTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：选择本轮执行的动作；默认与上游定时任务一致为签到加全部每日星辉任务。",
+          "format": "逗号、分号或空白分隔：sign、tasks；默认 sign,tasks。"
+        },
+        {
+          "name": "OOPZ_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：评论或发布在一言不可用或断网预演时使用的本地正文；不设置则使用内置短句。",
+          "format": "不超过 280 字的公开文本；不会发送给一言接口。"
+        },
+        {
+          "name": "OOPZ_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置单次 HTTPS 请求超时；默认 25 秒。",
+          "format": "数字秒，范围 5 到 120。"
+        },
+        {
+          "name": "OOPZ_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "用于首次配置检查与完全断网预演；不代表真实业务成功。",
+          "format": "1、true、yes 或 on 启用；不访问业务接口、一言与必应。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择需要推送的脚本；设置后替代默认通知清单。",
+          "format": "逗号、分号或空白分隔目录编号、脚本相对路径、文件名或文件名通配符；支持 2d0eeee40adf7820、scripts/oopz_sign.py；* 选择全部，空值禁用全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：指定已安装青龙通知模块所在目录，否则依次发现可导入的 notify、/ql/data/scripts、/ql/scripts。",
+          "format": "目录路径，包含 notify.py 或 sendNotify.js。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，格式为 token|uid 或 11位手机号|密码；仅在首个竖线处分割。各账号独立执行，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用 Oopz Web 端签名算法完成每日星辉签到，并核对连续签到天数。",
+        "一站式完成社区星辉任务：浏览、点赞、评论、分享、发布笔记并尝试领取奖励。",
+        "评论与发布正文优先使用一言随机文本并按策略署名，失败或断网预演回落本地短句；发布配图优先必应每日一图。",
+        "支持 token|uid 会话，或手机号|密码自动登录并在失效时重登；展示官方返回的昵称或公开 uid。",
+        "支持逐行多账号、动作开关、完全断网预演、超时控制、时间轴日志与单行 TASK_SUMMARY。",
+        "通过青龙 notify.py 或 sendNotify.js 发送脱敏任务汇总，遵守全局开关与脚本清单。"
+      ],
+      "sideEffects": [
+        "正式执行时提交每日签到，可能增加星辉与连续签到天数。",
+        "启用 tasks 时会浏览、点赞、评论、分享社区内容，并可能发布一篇笔记、上传配图与领取任务奖励。",
+        "密码登录账号会向官方登录接口提交加密后的密码以换取会话；脚本不把凭据写入本地文件。",
+        "通知启用且助手可用时发送脱敏任务汇总；无网络预演不投递外部通知，也不请求一言或必应。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/2d0eeee40adf7820",
+        "candidateSha256": "74d263d0edefc09d6d1e12fb1b80b6a4287e219ef2108d1077e63279ef243a7c"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "74d263d0edefc09d6d1e12fb1b80b6a4287e219ef2108d1077e63279ef243a7c",
+        "releaseSha256": "40947ee131de9743e676369efdb9ca388517ffb85853cc641275d5a6c9a03985",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T10:32:59.871654+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "74d263d0edefc09d6d1e12fb1b80b6a4287e219ef2108d1077e63279ef243a7c",
+          "toCandidateSha256": "40947ee131de9743e676369efdb9ca388517ffb85853cc641275d5a6c9a03985",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "51cc62b8a3878ec3",
       "applicationKey": "ouwen",
       "checkProfile": {
