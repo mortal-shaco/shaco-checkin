@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **214** 个脚本。返回 [`目录首页`](../README.md)。
+共 **215** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -208,6 +208,7 @@
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `43 1 * * *` | 待检查 | [wps_clock_in.py.md](../../scripts/wps_clock_in.py.md)（`docs/scripts/wps_clock_in.py.md`） |
 | 网易云游戏自动签到 | `scripts/wyycg.py` | `python3 scripts/wyycg.py` | `42 1 * * *` | 待检查 | [wyycg.py.md](../../scripts/wyycg.py.md)（`docs/scripts/wyycg.py.md`） |
 | 喜马拉雅每日签到 | `scripts/xmly.js` | `node scripts/xmly.js` | `10 0 12 * * *` | 待检查 | [xmly.js.md](../../scripts/xmly.js.md)（`docs/scripts/xmly.js.md`） |
+| 新南方职培学院签到 | `scripts/xnfedu_checkin.py` | `python3 scripts/xnfedu_checkin.py` | `13 8 * * *` | 待检查 | [xnfedu_checkin.py.md](../../scripts/xnfedu_checkin.py.md)（`docs/scripts/xnfedu_checkin.py.md`） |
 | 学姐吧每日签到 | `scripts/xuejieba.js` | `node scripts/xuejieba.js` | `0 50 11 * * *` | 待检查 | [xuejieba.js.md](../../scripts/xuejieba.js.md)（`docs/scripts/xuejieba.js.md`） |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `27 2 * * *` | 待检查 | [yht.py.md](../../scripts/yht.py.md)（`docs/scripts/yht.py.md`） |
 | 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `55 0 * * *` | 待检查 | [youdao.py.md](../../scripts/youdao.py.md)（`docs/scripts/youdao.py.md`） |
