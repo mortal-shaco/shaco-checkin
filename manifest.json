@@ -32062,6 +32062,222 @@
       }
     },
     {
+      "catalogId": "1560f1e922d139e6",
+      "applicationKey": "ha-qqmusic",
+      "checkProfile": {
+        "requiredEnv": [
+          "QM_ACCOUNT"
+        ],
+        "optionalEnv": [
+          "QM_KEY",
+          "QM_UIN",
+          "QM_FEATURES",
+          "QM_CHECK_ONLY",
+          "QM_CACHE_DIR",
+          "QM_TIMEOUT",
+          "QM_RETRY",
+          "QM_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "QM_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QM_TIMEOUT": "20",
+          "QM_RETRY": "2"
+        },
+        "successPatterns": [
+          "最终状态：SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "任务中心每日签到（成长值）",
+          "福利站每日签到及周/月里程碑提示",
+          "星愿礼券探池并领取当日可领券",
+          "星愿赛季旅程激励领取",
+          "月度里程碑达标领取",
+          "月度好礼池有库存时领取",
+          "会员臻享抽奖（有券抽至清零，单轮上限 50）",
+          "多账号换行配置、凭证可选续期缓存与完全断网预演",
+          "时间轴日志、TASK_SUMMARY 与青龙通知"
+        ],
+        "sideEffects": [
+          "任务中心签到写入成长值",
+          "福利站签到写入当日签到状态并可能发放成长值/里程碑奖励",
+          "领取星愿礼券并可能增加心愿值",
+          "领取旅程激励档位奖励",
+          "领取月度里程碑奖励",
+          "领取月度好礼",
+          "消耗臻享抽奖券并开奖",
+          "可选 QM_CACHE_DIR 时将续期后的 musickey 写入本地缓存文件"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "QQ音乐超级会员福利站签到",
+      "path": "scripts/qqmusic_checkin.py",
+      "sha256": "a899c310354b74da8daa8b3d39f2b8880b89657a1ada338c24e58e93414f4421",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "cbywyz/ha-qqmusic-checkin",
+        "branch": "main",
+        "commit": "84511ec5a8b82a453cea8ec28492dfe8a68b0b29",
+        "originalPath": "qqmusic_checkin.py"
+      },
+      "cron": "22 9 * * *",
+      "command": "python3 scripts/qqmusic_checkin.py",
+      "environment": [
+        {
+          "name": "QM_ACCOUNT",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 QQ音乐 Web/App 后抓包 u6.y.qq.com 请求，复制 Cookie 中的 qm_keyst（Q_H_L_ 开头）与 QQ 号（uin/musicid）。多账号仅用换行分隔，每行格式：uin|qm_keyst；只按第一个 | 分割，禁止用 &、@ 分账号。",
+          "format": "每行：123456789|Q_H_L_..."
+        },
+        {
+          "name": "QM_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容别名。多行 qm_keyst，需同时配置 QM_UIN。仅当 QM_ACCOUNT 为空时生效。",
+          "format": "每行一个 Q_H_L_... 令牌"
+        },
+        {
+          "name": "QM_UIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选兼容别名。单行共用 QQ 号，或多行与 QM_KEY 一一对应。仅当 QM_ACCOUNT 为空时生效。",
+          "format": "纯数字 QQ 号；多账号时每行一个"
+        },
+        {
+          "name": "QM_FEATURES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。逗号分隔启用模块；缺省全部启用。",
+          "format": "task_center_sign,vip_station_sign,coupon,incentives,month_milestone,monthly_gift,lottery"
+        },
+        {
+          "name": "QM_CHECK_ONLY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1/true/yes/on 只查询状态，不执行签到/领取/抽奖。",
+          "format": "1/true/yes/on"
+        },
+        {
+          "name": "QM_CACHE_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选。设置后缓存续期后的 musickey（文件权限 0600）；未设置则不落盘。",
+          "format": "可写目录绝对路径"
+        },
+        {
+          "name": "QM_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "单次 HTTP 超时秒数，默认 20。",
+          "format": "整数 5~60"
+        },
+        {
+          "name": "QM_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "单次请求失败重试次数，默认 2。",
+          "format": "整数 0~5"
+        },
+        {
+          "name": "QM_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1/true/yes/on 开启完全断网预演，不发起业务请求。",
+          "format": "1/true/yes/on"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "限定通知脚本列表；空值关闭全部；* 匹配全部。可选 catalog-id、相对路径、文件名或 glob。",
+          "format": "逗号/分号/空白/换行分隔的选择器"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自定义 notify.py / sendNotify.js 所在目录。",
+          "format": "绝对路径目录"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "QM_ACCOUNT 按换行分隔，每个非空行一个账号，格式 uin|qm_keyst（只按首个 | 分割）。兼容别名 QM_KEY+QM_UIN 仅在 QM_ACCOUNT 为空时生效。任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "任务中心每日签到（成长值）",
+        "福利站每日签到及周/月里程碑提示",
+        "星愿礼券探池并领取当日可领券",
+        "星愿赛季旅程激励领取",
+        "月度里程碑达标领取",
+        "月度好礼池有库存时领取",
+        "会员臻享抽奖（有券抽至清零，单轮上限 50）",
+        "多账号换行配置、凭证可选续期缓存与完全断网预演",
+        "时间轴日志、TASK_SUMMARY 与青龙通知"
+      ],
+      "sideEffects": [
+        "任务中心签到写入成长值",
+        "福利站签到写入当日签到状态并可能发放成长值/里程碑奖励",
+        "领取星愿礼券并可能增加心愿值",
+        "领取旅程激励档位奖励",
+        "领取月度里程碑奖励",
+        "领取月度好礼",
+        "消耗臻享抽奖券并开奖",
+        "可选 QM_CACHE_DIR 时将续期后的 musickey 写入本地缓存文件"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1560f1e922d139e6",
+        "candidateSha256": "e0e249fa6be494de610e58f5fa699a2fec296724bae9e6b915635bf555a3360d"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "e0e249fa6be494de610e58f5fa699a2fec296724bae9e6b915635bf555a3360d",
+        "releaseSha256": "a899c310354b74da8daa8b3d39f2b8880b89657a1ada338c24e58e93414f4421",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T10:14:13.628040+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "e0e249fa6be494de610e58f5fa699a2fec296724bae9e6b915635bf555a3360d",
+          "toCandidateSha256": "a899c310354b74da8daa8b3d39f2b8880b89657a1ada338c24e58e93414f4421",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "18c47e12eda9864c",
       "applicationKey": "quark",
       "checkProfile": {
