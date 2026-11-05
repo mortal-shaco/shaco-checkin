@@ -885,6 +885,162 @@
       }
     },
     {
+      "catalogId": "3c4dc751670d036f",
+      "applicationKey": "lonerfyr/55188autosgin::55188auto",
+      "checkProfile": {
+        "requiredEnv": [
+          "COOKIE_55188"
+        ],
+        "optionalEnv": [
+          "AUTO55188_COOKIE",
+          "AUTO55188_DRY_RUN",
+          "AUTO55188_TIMEOUT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AUTO55188_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "AUTO55188_TIMEOUT": "15",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "按每日计划为 55188 论坛账号访问 Discuz 签到插件并完成签到",
+          "支持每行一个 Cookie 的多账号独立处理，并在任一账号失败时整体返回非零退出码",
+          "读取签到页公开昵称便于核对账号；无 addsign 按钮时按今日已签到处理",
+          "提供完全断网的预演模式、分阶段脱敏日志、逐账号统计及单行结构化任务汇总",
+          "按青龙全局开关和脚本选择列表发送脱敏通知，通知故障不改变业务退出码"
+        ],
+        "sideEffects": [
+          "向 55188 论坛签到插件提交每日签到，可能更新账号签到状态与论坛奖励"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "55188论坛签到",
+      "path": "scripts/55188auto.py",
+      "sha256": "61c53fe3b9c616e838ddf706b81650e3440f0e0cd35a978bc88247fd9f91078e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "LonerFYR/55188AutoSgin",
+        "branch": "master",
+        "commit": "ce9d103984f5eb40ae80c1b7fa1677b3fa59df15",
+        "originalPath": "55188Auto.py"
+      },
+      "cron": "27 8 * * *",
+      "command": "python3 scripts/55188auto.py",
+      "environment": [
+        {
+          "name": "COOKIE_55188",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人浏览器登录 https://www.55188.com/，打开开发者工具→网络面板，刷新签到页 plugin.php?id=sign，从发往 www.55188.com 的请求头中复制完整 Cookie 值。每个账号单独占一行。",
+          "format": "每行一个账号的完整 Cookie 请求头值；Cookie 内部可保留分号，不得用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "AUTO55188_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容别名，获取方式与 COOKIE_55188 相同；仅当 COOKIE_55188 为空时生效。新配置应优先使用 COOKIE_55188。",
+          "format": "每行一个账号的完整 Cookie 请求头值。"
+        },
+        {
+          "name": "AUTO55188_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要在完全断网条件下检查配置和流程时设置。",
+          "format": "设为 1、true、yes 或 on 启用预演；0、false、no、off 或留空为正式执行。"
+        },
+        {
+          "name": "AUTO55188_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络状况设置单次 HTTPS 请求超时；不填写时为 15 秒。",
+          "format": "5 至 60 之间的秒数。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 QINGLONG_NOTIFY=auto 时填写要通知的脚本选择器。",
+          "format": "可用逗号、分号、空白或换行分隔；支持 3c4dc751670d036f、candidate.py、55188Auto.py、通配符或 *。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙 notify.py 不在默认位置时，填写其所在目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的本地目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "COOKIE_55188 每个非空行一个账号的完整 Cookie；逐账号独立执行，任一账号失败时进程整体返回非零退出码。"
+      },
+      "dependencies": [],
+      "features": [
+        "按每日计划为 55188 论坛账号访问 Discuz 签到插件并完成签到",
+        "支持每行一个 Cookie 的多账号独立处理，并在任一账号失败时整体返回非零退出码",
+        "读取签到页公开昵称便于核对账号；无 addsign 按钮时按今日已签到处理",
+        "提供完全断网的预演模式、分阶段脱敏日志、逐账号统计及单行结构化任务汇总",
+        "按青龙全局开关和脚本选择列表发送脱敏通知，通知故障不改变业务退出码"
+      ],
+      "sideEffects": [
+        "向 55188 论坛签到插件提交每日签到，可能更新账号签到状态与论坛奖励"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3c4dc751670d036f",
+        "candidateSha256": "164f9625be115c39f2c725eb7b800e46db7952f51d47673c4bb7d5f6435efb5d"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "164f9625be115c39f2c725eb7b800e46db7952f51d47673c4bb7d5f6435efb5d",
+        "releaseSha256": "61c53fe3b9c616e838ddf706b81650e3440f0e0cd35a978bc88247fd9f91078e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T03:15:44.580411+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "164f9625be115c39f2c725eb7b800e46db7952f51d47673c4bb7d5f6435efb5d",
+          "toCandidateSha256": "61c53fe3b9c616e838ddf706b81650e3440f0e0cd35a978bc88247fd9f91078e",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "1e0938cba7889cb3",
       "applicationKey": "wq26888/wq268-ql-scripts::69yun",
       "checkProfile": {
@@ -41917,6 +42073,195 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "f343af6c80ac9ca40e51f0fb72a81d41acb2af51233623d6fa2f1fca4e636f7f",
           "toCandidateSha256": "5210bc8cca5d905a18ca8b774c8cd998ca16644a069f199f23be8f14d020de59",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "e6b938e23e5d9750",
+      "applicationKey": "jessdy/taker-bot-jad::taker",
+      "checkProfile": {
+        "requiredEnv": [
+          "TAKER_PRIVATE_KEY"
+        ],
+        "optionalEnv": [
+          "TAKER_WALLETS",
+          "TAKER_INVITE_CODE",
+          "TAKER_RPC_URL",
+          "TAKER_DRY_RUN",
+          "TAKER_TIMEOUT_MS",
+          "TAKER_MAX_RETRIES",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TAKER_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用钱包私钥本地签名，完成 Taker lightmining API 的 nonce 获取、登录与用户信息查询。",
+          "展示官方返回的 Twitter/X 绑定名（twName）、userId、累计奖励与钱包地址，便于核对账号。",
+          "查询挖矿冷却窗口；已在 24 小时内挖过则记为已完成，可挖时调用 startMining 并链上合约 active() 激活。",
+          "支持每行一个私钥及可选地址核对；兼容 TAKER_WALLETS；可选邀请码与自定义 RPC。",
+          "网络或业务失败可按配置重试；账号失败隔离并汇总退出状态。",
+          "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+          "完全断网预演：校验私钥格式、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时向 lightmining-api.taker.xyz 提交登录与 startMining，可能更新账号挖矿状态与积分。",
+          "正式运行时向 Taker 主网合约 0xB3eFE5105b835E5Dd9D206445Dbd66DF24b912AB 发送 active() 交易，消耗 gas 并激活挖矿。",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Taker每日挖矿",
+      "path": "scripts/taker.js",
+      "sha256": "43e3a77b61381781e224618fa19d0bdcafb4d09f8be27ac183a38d9afd7593fd",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "jessdy/Taker-Bot-Jad",
+        "branch": "main",
+        "commit": "a79c046964e6168d7a6dbd1115b2c4f3bc09eb3c",
+        "originalPath": "taker.js"
+      },
+      "cron": "26 8 * * *",
+      "command": "node scripts/taker.js",
+      "environment": [
+        {
+          "name": "TAKER_PRIVATE_KEY",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人在 https://earn.taker.xyz/ 注册并已绑定 X/Twitter 的钱包私钥；确保钱包有足够 TAKER 余额支付链上 active()。勿使用他人私钥，勿将私钥写入公开仓库、日志或通知。",
+          "format": "每个非空行一个账号私钥，64 位十六进制，可带或不带 0x。可选「地址|私钥」，只在首个竖线处拆分并核对地址。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "TAKER_WALLETS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容别名：仅当未设置 TAKER_PRIVATE_KEY 时读取；获取方式与 TAKER_PRIVATE_KEY 相同（对应上游 wallets.json 多钱包配置）。",
+          "format": "与 TAKER_PRIVATE_KEY 相同；每行一个私钥，或「地址|私钥」。"
+        },
+        {
+          "name": "TAKER_INVITE_CODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如需在登录时附带邀请码，填写本人邀请码；未设置时不发送邀请码（已移除上游硬编码邀请码）。",
+          "format": "非空字符串；留空或不设置表示不附带 invitationCode。"
+        },
+        {
+          "name": "TAKER_RPC_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要更换 Taker 主网 RPC 时手动设置。",
+          "format": "HTTPS RPC URL；缺省为 https://rpc-mainnet.taker.xyz/"
+        },
+        {
+          "name": "TAKER_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不请求 API/RPC、不投递真实通知。"
+        },
+        {
+          "name": "TAKER_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP/RPC 超时时间时手动设置。",
+          "format": "1000 至 120000 的整数毫秒；缺省或非法值使用 20000。"
+        },
+        {
+          "name": "TAKER_MAX_RETRIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整网络或业务失败重试次数时手动设置。",
+          "format": "0 至 5 的整数；缺省或非法值使用 3。重试间隔约 3 秒。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 e6b938e23e5d9750、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "TAKER_PRIVATE_KEY（或兼容别名 TAKER_WALLETS）每个非空行一个钱包；可选地址前缀仅按第一个竖线分割。账号逐个独立登录与挖矿统计，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [
+        "ethers"
+      ],
+      "features": [
+        "使用钱包私钥本地签名，完成 Taker lightmining API 的 nonce 获取、登录与用户信息查询。",
+        "展示官方返回的 Twitter/X 绑定名（twName）、userId、累计奖励与钱包地址，便于核对账号。",
+        "查询挖矿冷却窗口；已在 24 小时内挖过则记为已完成，可挖时调用 startMining 并链上合约 active() 激活。",
+        "支持每行一个私钥及可选地址核对；兼容 TAKER_WALLETS；可选邀请码与自定义 RPC。",
+        "网络或业务失败可按配置重试；账号失败隔离并汇总退出状态。",
+        "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+        "完全断网预演：校验私钥格式、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时向 lightmining-api.taker.xyz 提交登录与 startMining，可能更新账号挖矿状态与积分。",
+        "正式运行时向 Taker 主网合约 0xB3eFE5105b835E5Dd9D206445Dbd66DF24b912AB 发送 active() 交易，消耗 gas 并激活挖矿。",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e6b938e23e5d9750",
+        "candidateSha256": "695433620737bf170fd98d3b44ee5902a7bb8f38bbe34c8b35d7488758d2928c"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "695433620737bf170fd98d3b44ee5902a7bb8f38bbe34c8b35d7488758d2928c",
+        "releaseSha256": "43e3a77b61381781e224618fa19d0bdcafb4d09f8be27ac183a38d9afd7593fd",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T03:15:22.679861+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "695433620737bf170fd98d3b44ee5902a7bb8f38bbe34c8b35d7488758d2928c",
+          "toCandidateSha256": "43e3a77b61381781e224618fa19d0bdcafb4d09f8be27ac183a38d9afd7593fd",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

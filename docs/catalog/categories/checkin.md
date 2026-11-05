@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **229** 个脚本。返回 [`目录首页`](../README.md)。
+共 **230** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -8,6 +8,7 @@
 | 2cycdx自动签到 | `scripts/2cycdx.py` | `python3 scripts/2cycdx.py` | `45 0 * * *` | 待检查 | [2cycdx.py.md](../../scripts/2cycdx.py.md)（`docs/scripts/2cycdx.py.md`） |
 | 51CTO博客每日签到 | `scripts/51cto_sign.js` | `node scripts/51cto_sign.js` | `17 2 * * *` | 待检查 | [51cto_sign.js.md](../../scripts/51cto_sign.js.md)（`docs/scripts/51cto_sign.js.md`） |
 | 吾爱破解每日签到 | `scripts/52pojie.js` | `node scripts/52pojie.js` | `8 0 * * *` | 待检查 | [52pojie.js.md](../../scripts/52pojie.js.md)（`docs/scripts/52pojie.js.md`） |
+| 55188论坛签到 | `scripts/55188auto.py` | `python3 scripts/55188auto.py` | `27 8 * * *` | 待检查 | [55188auto.py.md](../../scripts/55188auto.py.md)（`docs/scripts/55188auto.py.md`） |
 | 69云签到 | `scripts/69yun_checkin.py` | `python3 scripts/69yun_checkin.py` | `20 0 * * *` | 待检查 | [69yun_checkin.py.md](../../scripts/69yun_checkin.py.md)（`docs/scripts/69yun_checkin.py.md`） |
 | 爱上ASMR每日签到 | `scripts/a3asmr.js` | `node scripts/a3asmr.js` | `15 9 * * *` | 待检查 | [a3asmr.js.md](../../scripts/a3asmr.js.md)（`docs/scripts/a3asmr.js.md`） |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](../../scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |

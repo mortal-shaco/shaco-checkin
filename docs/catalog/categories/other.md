@@ -1,6 +1,6 @@
 # 分类索引 · 其他
 
-共 **19** 个脚本。返回 [`目录首页`](../README.md)。
+共 **20** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -19,6 +19,7 @@
 | 小米运动账号验证与步数上传 | `scripts/mimotion.py` | `python3 scripts/mimotion.py` | `46 0 * * *` | 待检查 | [mimotion.py.md](../../scripts/mimotion.py.md)（`docs/scripts/mimotion.py.md`） |
 | SSL证书检查 | `scripts/ssl_cert_check.py` | `python3 scripts/ssl_cert_check.py` | `10 2 * * *` | 待检查 | [ssl_cert_check.py.md](../../scripts/ssl_cert_check.py.md)（`docs/scripts/ssl_cert_check.py.md`） |
 | 雀巢会员 | `scripts/sudojia_nestle.js` | `node scripts/sudojia_nestle.js` | `30 2 * * *` | 待检查 | [sudojia_nestle.js.md](../../scripts/sudojia_nestle.js.md)（`docs/scripts/sudojia_nestle.js.md`） |
+| Taker每日挖矿 | `scripts/taker.js` | `node scripts/taker.js` | `26 8 * * *` | 待检查 | [taker.js.md](../../scripts/taker.js.md)（`docs/scripts/taker.js.md`） |
 | 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` | 待检查 | [tyqhdraw.py.md](../../scripts/tyqhdraw.py.md)（`docs/scripts/tyqhdraw.py.md`） |
 | 掌瓦每日商店推送 | `scripts/valorantstore.py` | `python3 scripts/valorantstore.py` | `10 0 * * *` | 待检查 | [valorantstore.py.md](../../scripts/valorantstore.py.md)（`docs/scripts/valorantstore.py.md`） |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `11 2 * * *` | 待检查 | [wangchao.py.md](../../scripts/wangchao.py.md)（`docs/scripts/wangchao.py.md`） |
