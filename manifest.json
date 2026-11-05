@@ -47378,6 +47378,173 @@
       }
     },
     {
+      "catalogId": "ac5bf2222e757d4e",
+      "applicationKey": "youkq95/ablesci::worker",
+      "checkProfile": {
+        "requiredEnv": [
+          "ABLESCI_COOKIE"
+        ],
+        "optionalEnv": [
+          "COOKIE",
+          "ABLESCI_USER_AGENT",
+          "ABLESCI_DRY_RUN",
+          "ABLESCI_TIMEOUT_MS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ABLESCI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用科研通登录 Cookie 调用官方签到接口，识别签到成功与今日已签到。",
+          "展示接口返回的积分奖励、当前积分、连续签到天数，以及昵称/用户名/公开 UID 等非敏感身份（若返回）。",
+          "支持每行一个 Cookie 多账号；兼容上游 COOKIE 变量名；账号失败隔离并汇总退出状态。",
+          "可选自定义 User-Agent 与请求超时。",
+          "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+          "完全断网预演：校验 Cookie 格式、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+          "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+        ],
+        "sideEffects": [
+          "正式运行时向科研通提交每日签到，可能增加账号积分或连续签到天数。",
+          "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "科研通 AbleSci 每日签到",
+      "path": "scripts/worker.js",
+      "sha256": "9f692fb59a8e2f1702c18a34407b96cae02d216c9959feeed086ba5e66b48bd9",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "youkq95/ablesci",
+        "branch": "main",
+        "commit": "c580f5092b31b97093d6fe70f40de4f5588068be",
+        "originalPath": "worker.js"
+      },
+      "cron": "9 8 * * *",
+      "command": "node scripts/worker.js",
+      "environment": [
+        {
+          "name": "ABLESCI_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人浏览器登录 https://www.ablesci.com 后，打开开发者工具网络面板，复制对本站请求的完整 Cookie 请求头（通常含 _identity-frontend 等会话字段）。勿填写他人 Cookie 或日志中的敏感信息。",
+          "format": "每个非空行一个账号的完整 Cookie 字符串。不使用 & 或 @ 分隔账号。行内保留 Cookie 原文，不做字段拆分。"
+        },
+        {
+          "name": "COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "上游 Cloudflare Worker 兼容变量；仅当未设置 ABLESCI_COOKIE 时作为备用输入，获取方式与 ABLESCI_COOKIE 相同。",
+          "format": "与 ABLESCI_COOKIE 相同：每行一个 Cookie。正式配置请优先使用 ABLESCI_COOKIE。"
+        },
+        {
+          "name": "ABLESCI_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要自定义浏览器标识时手动设置；一般可留空。",
+          "format": "完整 User-Agent 字符串；缺省使用内置桌面 Chrome UA。"
+        },
+        {
+          "name": "ABLESCI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网验证配置时手动设置；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示完全断网预演；其他值或未设置表示正式执行。预演不访问科研通、不签到、不投递真实通知。"
+        },
+        {
+          "name": "ABLESCI_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要调整单次 HTTP 超时时间时手动设置。",
+          "format": "1000 至 60000 的整数毫秒；缺省或非法值使用 15000。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙通知名单中填入 ac5bf2222e757d4e、实际脚本文件名或 scripts 相对路径；未设置时默认对本任务发送通知。",
+          "format": "逗号、分号、空白或换行分隔的选择器；支持 * 与 ? 通配；* 表示全部；显式空值关闭全部青龙通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知工具不在默认目录时，填写本机 sendNotify.js 或 notify.py 所在目录。",
+          "format": "本地目录路径。依次尝试指定目录与 /ql/data/scripts、/ql/scripts 下的 sendNotify.js，再尝试 notify.py；通知失败只记录脱敏状态。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "ABLESCI_COOKIE（或兼容 COOKIE）每个非空行一个账号的完整 Cookie。账号逐个独立签到与统计，任一账号失败则整体非零退出，其余账号继续执行。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用科研通登录 Cookie 调用官方签到接口，识别签到成功与今日已签到。",
+        "展示接口返回的积分奖励、当前积分、连续签到天数，以及昵称/用户名/公开 UID 等非敏感身份（若返回）。",
+        "支持每行一个 Cookie 多账号；兼容上游 COOKIE 变量名；账号失败隔离并汇总退出状态。",
+        "可选自定义 User-Agent 与请求超时。",
+        "按青龙全局开关与脚本名单发送脱敏通知，通知失败保留业务退出码。",
+        "完全断网预演：校验 Cookie 格式、模拟阶段与通知摘要，不发起业务或通知网络请求。",
+        "提供中文时间轴日志、编号阶段、耗时、逐账号与全局统计，以及唯一单行 TASK_SUMMARY JSON。"
+      ],
+      "sideEffects": [
+        "正式运行时向科研通提交每日签到，可能增加账号积分或连续签到天数。",
+        "启用通知且非预演时，通过青龙 notify 发送脱敏账号统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ac5bf2222e757d4e",
+        "candidateSha256": "552c71285c0b3f38da2d06c35e8e3c2e97903242988316dbd188c1b4214197be"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "552c71285c0b3f38da2d06c35e8e3c2e97903242988316dbd188c1b4214197be",
+        "releaseSha256": "9f692fb59a8e2f1702c18a34407b96cae02d216c9959feeed086ba5e66b48bd9",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-05T02:11:23.914859+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "552c71285c0b3f38da2d06c35e8e3c2e97903242988316dbd188c1b4214197be",
+          "toCandidateSha256": "9f692fb59a8e2f1702c18a34407b96cae02d216c9959feeed086ba5e66b48bd9",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "aa7303325b9bca16",
       "applicationKey": "wps",
       "checkProfile": {
