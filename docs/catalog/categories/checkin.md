@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **218** 个脚本。返回 [`目录首页`](../README.md)。
+共 **217** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -188,7 +188,6 @@
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
 | OA实习签到 | `scripts/task_62e6cbbd.py` | `python3 scripts/task_62e6cbbd.py` | `34 8 * * *` | 待检查 | [task_62e6cbbd.py.md](../../scripts/task_62e6cbbd.py.md)（`docs/scripts/task_62e6cbbd.py.md`） |
 | 班级魔法自动签到 | `scripts/task_7be4b090.py` | `python3 scripts/task_7be4b090.py` | `44 8 * * 1-5` | 待检查 | [task_7be4b090.py.md](../../scripts/task_7be4b090.py.md)（`docs/scripts/task_7be4b090.py.md`） |
-| HayFrp 每日签到 | `scripts/task_81b701d1.js` | `node scripts/task_81b701d1.js` | `34 1 * * *` | 待检查 | [task_81b701d1.js.md](../../scripts/task_81b701d1.js.md)（`docs/scripts/task_81b701d1.js.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
 | M-SEC 每日签到 | `scripts/task_f37fb5e9.py` | `python3 scripts/task_f37fb5e9.py` | `6 8 * * *` | 待检查 | [task_f37fb5e9.py.md](../../scripts/task_f37fb5e9.py.md)（`docs/scripts/task_f37fb5e9.py.md`） |
