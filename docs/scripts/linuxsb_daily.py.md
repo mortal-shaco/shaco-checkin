@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/linuxsb_daily.py`
 - 青龙命令：`python3 scripts/linuxsb_daily.py`
 - 建议 Cron：`10 8 * * *`
-- 发布哈希：`7997bae09b4cac95bbe010e28b8d17c8fb4cdbf85995cc80e992607bff9c71ab`
+- 发布哈希：`e9c32b5b2daf8ccf8fadb1b5bcb139597ebce12e1880adc9baff2f150f793f03`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7997bae09b4cac95bbe010e28b8d17c8fb4cdbf85995cc80e992607bff9c71ab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b60e5edc4107a20d`。
+SHA-256 `e9c32b5b2daf8ccf8fadb1b5bcb139597ebce12e1880adc9baff2f150f793f03`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b60e5edc4107a20d`。
 
 ## 副作用与风险
 

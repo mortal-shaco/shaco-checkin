@@ -55,20 +55,11 @@
   let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      'ac5bf2222e757d4e',
-      'scripts/ablesci_checkin.js',
-      'ablesci_checkin.js',
-      'ablesci',
-      'candidate.js',
-    ];
+    const identities = ["ac5bf2222e757d4e", "scripts/worker.js", "worker.js", "worker"];
     enabled = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
-  } else {
-    enabled = true;
   }
   process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
 })();

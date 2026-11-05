@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_a4b5c493.py`
 - 青龙命令：`python3 scripts/task_a4b5c493.py`
 - 建议 Cron：`47 2 * * *`
-- 发布哈希：`e7398bbf946dcd5677cfae05fe892a4fa34e66900d905bb1d98efa69fcf30d93`
+- 发布哈希：`ef029a7de49f1f92af2e949bf1bf4920eb3f9feb7d12ac2ace82c9c7ebca5fb2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -177,7 +177,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e7398bbf946dcd5677cfae05fe892a4fa34e66900d905bb1d98efa69fcf30d93`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a4b5c4930f657b54`。
+SHA-256 `ef029a7de49f1f92af2e949bf1bf4920eb3f9feb7d12ac2ace82c9c7ebca5fb2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a4b5c4930f657b54`。
 
 ## 副作用与风险
 

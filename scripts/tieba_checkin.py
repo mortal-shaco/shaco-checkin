@@ -42,7 +42,7 @@ import re as _ql_notify_re
 if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
     _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
     if _ql_notify_selection is None:
-        _ql_notify_enabled = False
+        _ql_notify_enabled = True
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
         _ql_notify_identities = ('e608052390d250da', 'scripts/tieba_checkin.py', 'tieba_checkin.py', 'tieba_checkin')

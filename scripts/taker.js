@@ -60,22 +60,10 @@
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {
-    const selectors = selection
-      .trim()
-      .toLowerCase()
-      .split(/[,;\s]+/)
-      .filter(Boolean);
-    const identities = [
-      'e6b938e23e5d9750',
-      'scripts/taker_mining.js',
-      'taker_mining.js',
-      'taker.js',
-      'taker',
-      'candidate.js',
-    ];
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["e6b938e23e5d9750", "scripts/taker.js", "taker.js", "taker"];
     enabled = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
   }

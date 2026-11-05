@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/zqlj_sign.py`
 - 青龙命令：`python3 scripts/zqlj_sign.py`
 - 建议 Cron：`36 8 * * *`
-- 发布哈希：`be5796dcaa5fad47d008217e08c7d2d7a2e7125327ac7d8698e327503178b1c0`
+- 发布哈希：`75f08aebe09c94b3846cb7bf00138d8414c59d79ba411deb76f85999e43c8adb`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `be5796dcaa5fad47d008217e08c7d2d7a2e7125327ac7d8698e327503178b1c0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aeb184ef4b033ac4`。
+SHA-256 `75f08aebe09c94b3846cb7bf00138d8414c59d79ba411deb76f85999e43c8adb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aeb184ef4b033ac4`。
 
 ## 副作用与风险
 

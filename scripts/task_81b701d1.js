@@ -55,17 +55,9 @@
   let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      '81b701d12d5b39f2',
-      'scripts/hayfrp_auto_sign.js',
-      'hayfrp_auto_sign.js',
-      'hayfrp-auto-sign',
-      'hayfrp',
-      'candidate.js',
-    ];
+    const identities = ["81b701d12d5b39f2", "scripts/task_81b701d1.js", "task_81b701d1.js", "task_81b701d1"];
     enabled = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
   }

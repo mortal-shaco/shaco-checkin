@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/longhu.py`
 - 青龙命令：`python3 scripts/longhu.py`
 - 建议 Cron：`5 8 * * *`
-- 发布哈希：`d865fa14bdb342bee6df624b1301f6e274703a403d89e0352e43ef23c72987ed`
+- 发布哈希：`9d2c7496b393ee0db8dddbfdb6b4695a741216949d0c7ce481fc2aa67d4e1cd2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -103,7 +103,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d865fa14bdb342bee6df624b1301f6e274703a403d89e0352e43ef23c72987ed`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4130175dc0a855e`。
+SHA-256 `9d2c7496b393ee0db8dddbfdb6b4695a741216949d0c7ce481fc2aa67d4e1cd2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4130175dc0a855e`。
 
 ## 副作用与风险
 

@@ -63,14 +63,7 @@
   let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      '276c7c90b90de432',
-      'scripts/weilai_checkin.js',
-      'weilai_checkin.js',
-      'weilai-auto-checkin.js',
-      'weilai',
-      'candidate.js',
-    ];
+    const identities = ["276c7c90b90de432", "scripts/weilai_auto_checkin.js", "weilai_auto_checkin.js", "weilai_auto_checkin"];
     enabled = selectors.some((selector) => {
       const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));

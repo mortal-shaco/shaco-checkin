@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sign_in.js`
 - 青龙命令：`node scripts/sign_in.js`
 - 建议 Cron：`24 8 * * *`
-- 发布哈希：`ca6a6e85d04d53fca4cd7aad15ebece9ea28f944dbc46ddc4c1a83fdf2c2a772`
+- 发布哈希：`b6a109f86b6461fd73976a0d8f964ed320c21d0ed40c805fc5f55ad8a70752fa`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ SHANGMA_ACCOUNT 每个非空行一个账号，格式为「用户名|密码」，
 
 ## 验证与兼容性
 
-SHA-256 `ca6a6e85d04d53fca4cd7aad15ebece9ea28f944dbc46ddc4c1a83fdf2c2a772`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/398c67c56c038d25`。
+SHA-256 `b6a109f86b6461fd73976a0d8f964ed320c21d0ed40c805fc5f55ad8a70752fa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/398c67c56c038d25`。
 
 ## 副作用与风险
 

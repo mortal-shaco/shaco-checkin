@@ -38,22 +38,10 @@
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {
-    const selectors = selection
-      .trim()
-      .toLowerCase()
-      .split(/[,;\s]+/)
-      .filter(Boolean);
-    const identities = [
-      '2c89474a11ce9592',
-      'scripts/hayfrp_auto_sign.js',
-      'hayfrp_auto_sign.js',
-      'hayfrp-auto-sign.js',
-      'hayfrp',
-      'candidate.js',
-    ];
+    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
+    const identities = ["2c89474a11ce9592", "scripts/task_2c89474a.js", "task_2c89474a.js", "task_2c89474a"];
     enabled = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
   }

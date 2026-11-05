@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/fzu.py`
 - 青龙命令：`python3 scripts/fzu.py`
 - 建议 Cron：`35 21 * * *`
-- 发布哈希：`31e0389ca110e559ec25fe58c827353631cfdf151dc2597ede6f37bc6b2ced4c`
+- 发布哈希：`80c3e8b4d5546c4d406415562848a24dde9480baa34945fbfcd750ffdd7cd8d2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -111,7 +111,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `31e0389ca110e559ec25fe58c827353631cfdf151dc2597ede6f37bc6b2ced4c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0a782191e8bccbe2`。
+SHA-256 `80c3e8b4d5546c4d406415562848a24dde9480baa34945fbfcd750ffdd7cd8d2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0a782191e8bccbe2`。
 
 ## 副作用与风险
 

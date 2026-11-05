@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/dawushiye.py`
 - 青龙命令：`python3 scripts/dawushiye.py`
 - 建议 Cron：`7 8 * * *`
-- 发布哈希：`06b48e86f80674cce9dfaa8f39c3d4a04ce4438836ae6a98735d74abeb7a1bbe`
+- 发布哈希：`6d61da02e2b4b6539923c995a9fd2a165d9ac2303db668ae5984f3ac4dea79e5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `06b48e86f80674cce9dfaa8f39c3d4a04ce4438836ae6a98735d74abeb7a1bbe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e787b4b7d6d30c4b`。
+SHA-256 `6d61da02e2b4b6539923c995a9fd2a165d9ac2303db668ae5984f3ac4dea79e5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e787b4b7d6d30c4b`。
 
 ## 副作用与风险
 

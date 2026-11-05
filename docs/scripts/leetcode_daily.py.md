@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/leetcode_daily.py`
 - 青龙命令：`python3 scripts/leetcode_daily.py`
 - 建议 Cron：`30 0 * * *`
-- 发布哈希：`38e908322dd1cbb64a69d051b7443d9c7868740a7e5d0e3c18c7befd3252d0d4`
+- 发布哈希：`f6222d2c9b1f1316c3463f693f11da0f858ef18624266178d9298e146f723f96`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -120,7 +120,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `38e908322dd1cbb64a69d051b7443d9c7868740a7e5d0e3c18c7befd3252d0d4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afb968077b55cdf8`。
+SHA-256 `f6222d2c9b1f1316c3463f693f11da0f858ef18624266178d9298e146f723f96`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afb968077b55cdf8`。
 
 ## 副作用与风险
 

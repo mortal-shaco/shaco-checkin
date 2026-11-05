@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/huazhu.py`
 - 青龙命令：`python3 scripts/huazhu.py`
 - 建议 Cron：`5 9 * * *`
-- 发布哈希：`64bc897d283f46ff810a20be564f9e897e40a59d374f89c2e6254bc9d55fccf9`
+- 发布哈希：`c2a7cb58ea7b99de85695b6ae9268584115731a84980ff48341f79411ce48f9b`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -95,7 +95,7 @@ HZ_TOKEN 中每个非空行代表一个账号；各账号独立执行，任一�
 
 ## 验证与兼容性
 
-SHA-256 `64bc897d283f46ff810a20be564f9e897e40a59d374f89c2e6254bc9d55fccf9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e2926d00ddd5ce46`。
+SHA-256 `c2a7cb58ea7b99de85695b6ae9268584115731a84980ff48341f79411ce48f9b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e2926d00ddd5ce46`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/webvpn_fixed_api.py`
 - 青龙命令：`python3 scripts/webvpn_fixed_api.py`
 - 建议 Cron：`12 8 * * *`
-- 发布哈希：`700964ea5d9bc1026ef63f56e677e55a58e0d091e43dde291c315b1cebd2b9e2`
+- 发布哈希：`abbb84f1b03a6d02e54e5acbe0eee4cebcc5f5b8924c9666486cf79ca23af290`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -125,7 +125,7 @@ CC98_ACCOUNTS 中每个非空行代表一个 CC98 账号，格式为用户名|�
 
 ## 验证与兼容性
 
-SHA-256 `700964ea5d9bc1026ef63f56e677e55a58e0d091e43dde291c315b1cebd2b9e2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/862ebb51276428df`。
+SHA-256 `abbb84f1b03a6d02e54e5acbe0eee4cebcc5f5b8924c9666486cf79ca23af290`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/862ebb51276428df`。
 
 ## 副作用与风险
 

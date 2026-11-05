@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_f37fb5e9.py`
 - 青龙命令：`python3 scripts/task_f37fb5e9.py`
 - 建议 Cron：`6 8 * * *`
-- 发布哈希：`bab5ab940f21b624efeecef9f2eacbc2225aa78838f46a849c31783c80459984`
+- 发布哈希：`6b50ac8cdd0dab5a68ef52baea344553dcf3177fa034bfdbc8172afcfd03133c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@ MSEC_ACCOUNTS 中每个非空行代表一个账号，格式为令牌、用户名
 
 ## 验证与兼容性
 
-SHA-256 `bab5ab940f21b624efeecef9f2eacbc2225aa78838f46a849c31783c80459984`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f37fb5e9e5ff6414`。
+SHA-256 `6b50ac8cdd0dab5a68ef52baea344553dcf3177fa034bfdbc8172afcfd03133c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f37fb5e9e5ff6414`。
 
 ## 副作用与风险
 

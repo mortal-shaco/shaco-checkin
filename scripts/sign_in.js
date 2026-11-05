@@ -56,14 +56,7 @@
   let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      '398c67c56c038d25',
-      'scripts/shangma_sign.js',
-      'shangma_sign.js',
-      'shangma_auto_sign',
-      'sign_in.js',
-      'candidate.js',
-    ];
+    const identities = ["398c67c56c038d25", "scripts/sign_in.js", "sign_in.js", "sign_in"];
     enabled = selectors.some((selector) => {
       const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nodeseek_checkin.py`
 - 青龙命令：`python3 scripts/nodeseek_checkin.py`
 - 建议 Cron：`41 0 * * *`
-- 发布哈希：`c889eb4ffff6b3ffcf4656b23919843e7eaf51103b5df3291d8ff76d1a2f503f`
+- 发布哈希：`a0a307e99caa930b292aea8fd4cb3fc8f838f9281c3657c5b9538da862f2862e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -97,7 +97,7 @@ NODESEEK_COOKIE 中每个非空行是一个独立账号；逐账号执行，任�
 
 ## 验证与兼容性
 
-SHA-256 `c889eb4ffff6b3ffcf4656b23919843e7eaf51103b5df3291d8ff76d1a2f503f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
+SHA-256 `a0a307e99caa930b292aea8fd4cb3fc8f838f9281c3657c5b9538da862f2862e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4196e654f2a752f8`。
 
 ## 副作用与风险
 

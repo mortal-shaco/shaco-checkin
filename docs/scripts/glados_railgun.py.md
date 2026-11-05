@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/glados_railgun.py`
 - 青龙命令：`python3 scripts/glados_railgun.py`
 - 建议 Cron：`21 1 * * *`
-- 发布哈希：`8eb470430d8c7c3afd497b2912ed549535d96431a7d7cdd1e92429fdebcc246d`
+- 发布哈希：`76df7af05655efc85ca2e74d2a62ff6047429d56f3d7a155a045b3dde401e125`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -92,7 +92,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8eb470430d8c7c3afd497b2912ed549535d96431a7d7cdd1e92429fdebcc246d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6c2dc52b4d88710b`。
+SHA-256 `76df7af05655efc85ca2e74d2a62ff6047429d56f3d7a155a045b3dde401e125`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6c2dc52b4d88710b`。
 
 ## 副作用与风险
 

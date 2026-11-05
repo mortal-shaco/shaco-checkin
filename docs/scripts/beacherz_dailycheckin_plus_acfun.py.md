@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/beacherz_dailycheckin_plus_acfun.py`
 - 青龙命令：`python3 scripts/beacherz_dailycheckin_plus_acfun.py`
 - 建议 Cron：`21 0 * * *`
-- 发布哈希：`3fe44bfa0a21d422795178d855d00d867f2cce6bc0337a3b4317b21ef4d6c7a8`
+- 发布哈希：`74826b948d894f6b70fda4733660fa299d77dc48628b278e791afe5b2d2546a0`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ ACFUN_COOKIE 每个非空行表示一个账号的完整 Cookie；账号独立执
 
 ## 验证与兼容性
 
-SHA-256 `3fe44bfa0a21d422795178d855d00d867f2cce6bc0337a3b4317b21ef4d6c7a8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2ecd586638b72a85`。
+SHA-256 `74826b948d894f6b70fda4733660fa299d77dc48628b278e791afe5b2d2546a0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2ecd586638b72a85`。
 
 ## 副作用与风险
 

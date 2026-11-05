@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/anyrouter_signin.py`
 - 青龙命令：`python3 scripts/anyrouter_signin.py`
 - 建议 Cron：`6 9 * * *`
-- 发布哈希：`158f988d22a7f7ef5555cdafb7ee3f3a3415df26cf4d942ea394919c0f7dab1b`
+- 发布哈希：`5d0050a82204204d86f7dd79d339219db034a4593482bb6fca8c46b4ee369974`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@ ANYROUTER_ACCOUNTS 中每个非空行代表一个账号，格式为用户名|密
 
 ## 验证与兼容性
 
-SHA-256 `158f988d22a7f7ef5555cdafb7ee3f3a3415df26cf4d942ea394919c0f7dab1b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71b8e4efd81a4495`。
+SHA-256 `5d0050a82204204d86f7dd79d339219db034a4593482bb6fca8c46b4ee369974`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71b8e4efd81a4495`。
 
 ## 副作用与风险
 

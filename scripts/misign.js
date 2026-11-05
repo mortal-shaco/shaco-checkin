@@ -53,21 +53,11 @@
   let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      'a4947a6ba0940e49',
-      'scripts/misign.js',
-      'misign.js',
-      'candidate.js',
-    ];
+    const identities = ["a4947a6ba0940e49", "scripts/misign.js", "misign.js", "misign"];
     enabled = selectors.some((selector) => {
-      const pattern =
-        '^' +
-        selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') +
-        '$';
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
-  } else {
-    enabled = true;
   }
   process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
 })();

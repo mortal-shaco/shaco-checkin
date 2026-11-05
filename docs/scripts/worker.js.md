@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/worker.js`
 - 青龙命令：`node scripts/worker.js`
 - 建议 Cron：`9 8 * * *`
-- 发布哈希：`9f692fb59a8e2f1702c18a34407b96cae02d216c9959feeed086ba5e66b48bd9`
+- 发布哈希：`e37805da91387bb8b35f156234bcc8bfd27ac877d9475c91de06b401fbb22bb2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ ABLESCI_COOKIE（或兼容 COOKIE）每个非空行一个账号的完整 Cookie�
 
 ## 验证与兼容性
 
-SHA-256 `9f692fb59a8e2f1702c18a34407b96cae02d216c9959feeed086ba5e66b48bd9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ac5bf2222e757d4e`。
+SHA-256 `e37805da91387bb8b35f156234bcc8bfd27ac877d9475c91de06b401fbb22bb2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ac5bf2222e757d4e`。
 
 ## 副作用与风险
 

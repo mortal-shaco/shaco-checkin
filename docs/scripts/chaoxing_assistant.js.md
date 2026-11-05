@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/chaoxing_assistant.js`
 - 青龙命令：`node scripts/chaoxing_assistant.js`
 - 建议 Cron：`*/10 7-22 * * *`
-- 发布哈希：`142d50c90887b2c669741b26cf42f16c971c0000040918b09ff6e1778e5c8449`
+- 发布哈希：`b7316880844bbc02d474056a583b004d03155c76dcb577c0b0a05c3d0fc9e55c`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -92,7 +92,7 @@ CHAOXING_ACCOUNTS 每个非空行一个账号；可选备注仅按第一个竖�
 
 ## 验证与兼容性
 
-SHA-256 `142d50c90887b2c669741b26cf42f16c971c0000040918b09ff6e1778e5c8449`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/413b9423260e2104`。
+SHA-256 `b7316880844bbc02d474056a583b004d03155c76dcb577c0b0a05c3d0fc9e55c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/413b9423260e2104`。
 
 ## 副作用与风险
 

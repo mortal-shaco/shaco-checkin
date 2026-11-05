@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bot.py`
 - 青龙命令：`python3 scripts/bot.py`
 - 建议 Cron：`14 8 * * *`
-- 发布哈希：`30439bdfaf93c34ff6f4d0bc0ff6f292df6c46cd609d710ff25c34c367a05125`
+- 发布哈希：`5016d5acfd74b83960980326eed5fa20b65e37c08032b3fdafa9ac6bc970542c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `30439bdfaf93c34ff6f4d0bc0ff6f292df6c46cd609d710ff25c34c367a05125`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bb7859665960364`。
+SHA-256 `5016d5acfd74b83960980326eed5fa20b65e37c08032b3fdafa9ac6bc970542c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bb7859665960364`。
 
 ## 副作用与风险
 

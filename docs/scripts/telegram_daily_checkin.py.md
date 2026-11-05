@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/telegram_daily_checkin.py`
 - 青龙命令：`python3 scripts/telegram_daily_checkin.py`
 - 建议 Cron：`33 8 * * *`
-- 发布哈希：`074b6be1aa62cddb1d328830c365af9ea0287adf3b64b6e8bbc89cb9de2366e6`
+- 发布哈希：`461a876b22c0bc70291e480f870ccc657b66a80dd46e4aca69b9d87d47672128`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -174,7 +174,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `074b6be1aa62cddb1d328830c365af9ea0287adf3b64b6e8bbc89cb9de2366e6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2422813024d0fddc`。
+SHA-256 `461a876b22c0bc70291e480f870ccc657b66a80dd46e4aca69b9d87d47672128`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2422813024d0fddc`。
 
 ## 副作用与风险
 

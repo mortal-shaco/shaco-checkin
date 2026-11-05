@@ -55,16 +55,9 @@
   let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      '5d8ba0f271781047',
-      'scripts/bohe_checkin.js',
-      'bohe_checkin.js',
-      'bohe',
-      'candidate.js',
-    ];
+    const identities = ["5d8ba0f271781047", "scripts/background.js", "background.js", "background"];
     enabled = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
   }

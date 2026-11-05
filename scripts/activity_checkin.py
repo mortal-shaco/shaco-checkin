@@ -55,18 +55,8 @@ if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
     if _ql_notify_selection is None:
         _ql_notify_enabled = False
     else:
-        _ql_notify_selectors = [
-            item.lower()
-            for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip())
-            if item
-        ]
-        _ql_notify_identities = (
-            "1e2ace06c33b3dec",
-            "scripts/activity_checkin.py",
-            "activity_checkin.py",
-            "candidate.py",
-            "activity_checkin",
-        )
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('1e2ace06c33b3dec', 'scripts/activity_checkin.py', 'activity_checkin.py', 'activity_checkin')
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors

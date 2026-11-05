@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ndnu.py`
 - 青龙命令：`python3 scripts/ndnu.py`
 - 建议 Cron：`*/5 7-22 * * *`
-- 发布哈希：`35340d1664ddda7ccb38cf0d82fdf2f699fdb2775074359492e6d45b517d2d64`
+- 发布哈希：`fe48265a8d528fa24bbdcf95aa683963a87bd811b8501942034bbd074951a942`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -105,7 +105,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `35340d1664ddda7ccb38cf0d82fdf2f699fdb2775074359492e6d45b517d2d64`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1b92bf9b58ea5e07`。
+SHA-256 `fe48265a8d528fa24bbdcf95aa683963a87bd811b8501942034bbd074951a942`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1b92bf9b58ea5e07`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nssctf_checkin.py`
 - 青龙命令：`python3 scripts/nssctf_checkin.py`
 - 建议 Cron：`8 8 * * *`
-- 发布哈希：`49c1ccca856e14e5566a3d996e2a408b9291e386257aabe8afea9301cbfb8fa0`
+- 发布哈希：`d7e66dd6ed21c72ee2bad43e010730f42eb26f02e6367477934e8f89c3af8829`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `49c1ccca856e14e5566a3d996e2a408b9291e386257aabe8afea9301cbfb8fa0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c604755589e5c490`。
+SHA-256 `d7e66dd6ed21c72ee2bad43e010730f42eb26f02e6367477934e8f89c3af8829`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c604755589e5c490`。
 
 ## 副作用与风险
 

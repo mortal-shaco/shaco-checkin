@@ -1,10 +1,10 @@
 # 百度贴吧签到
 
-- 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
+- 管理状态：`上架`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/tieba_checkin.py`
 - 青龙命令：`python3 scripts/tieba_checkin.py`
 - 建议 Cron：`39 2 * * *`
-- 发布哈希：`33af7386fbc75e4a16817200fa5d0f16077440198fbf7713f74ada9bf355191c`
+- 发布哈希：`c159f906c2e6b0dd5e51bedc6aa91d5694012f4daef2244dc9f6c5de5db1d45a`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -99,7 +99,7 @@ TIEBA_COOKIE 中每个非空行对应一个账号，各账号独立校验和执�
 
 ## 验证与兼容性
 
-SHA-256 `33af7386fbc75e4a16817200fa5d0f16077440198fbf7713f74ada9bf355191c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
+SHA-256 `c159f906c2e6b0dd5e51bedc6aa91d5694012f4daef2244dc9f6c5de5db1d45a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
 
 ## 副作用与风险
 
