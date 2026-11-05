@@ -103,6 +103,7 @@
 | 杜蕾斯会员中心 | `scripts/durex.py` | `python3 scripts/durex.py` | `52 0 * * *` | 待检查 | [durex.py.md](../scripts/durex.py.md)（`docs/scripts/durex.py.md`） |
 | 神经研究所每日任务 | `scripts/easonfans_daily.py` | `python3 scripts/easonfans_daily.py` | `0 20 * * *` | 待检查 | [easonfans_daily.py.md](../scripts/easonfans_daily.py.md)（`docs/scripts/easonfans_daily.py.md`） |
 | 头歌平台课堂签到 | `scripts/educoder.py` | `python3 scripts/educoder.py` | `54 8,10,14,16 * * 1-5` | 待检查 | [educoder.py.md](../scripts/educoder.py.md)（`docs/scripts/educoder.py.md`） |
+| Elantran社区签到 | `scripts/elantran_checkin.py` | `python3 scripts/elantran_checkin.py` | `28 9 * * *` | 待检查 | [elantran_checkin.py.md](../scripts/elantran_checkin.py.md)（`docs/scripts/elantran_checkin.py.md`） |
 | EMOS 每日签到 | `scripts/emos_sign.py` | `python3 scripts/emos_sign.py` | `30 8 * * *` | 待检查 | [emos_sign.py.md](../scripts/emos_sign.py.md)（`docs/scripts/emos_sign.py.md`） |
 | 终末地签到 | `scripts/endfield_auto_signin.py` | `python3 scripts/endfield_auto_signin.py` | `35 8 * * *` | 待检查 | [endfield_auto_signin.py.md](../scripts/endfield_auto_signin.py.md)（`docs/scripts/endfield_auto_signin.py.md`） |
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
@@ -268,6 +269,7 @@
 | 工软校园健康填报 | `scripts/task_64f5e3fd.py` | `python3 scripts/task_64f5e3fd.py` | `47 8 * * *` | 待检查 | [task_64f5e3fd.py.md](../scripts/task_64f5e3fd.py.md)（`docs/scripts/task_64f5e3fd.py.md`） |
 | LinkHub 每日签到 | `scripts/task_70123c59.py` | `python3 scripts/task_70123c59.py` | `54 8 * * *` | 待检查 | [task_70123c59.py.md](../scripts/task_70123c59.py.md)（`docs/scripts/task_70123c59.py.md`） |
 | hao4k每日签到 | `scripts/task_7a56bf21.py` | `python3 scripts/task_7a56bf21.py` | `41 8 * * *` | 待检查 | [task_7a56bf21.py.md](../scripts/task_7a56bf21.py.md)（`docs/scripts/task_7a56bf21.py.md`） |
+| MiniMax Code每日签到 | `scripts/task_7b47bad6.js` | `node scripts/task_7b47bad6.js` | `27 9 * * *` | 待检查 | [task_7b47bad6.js.md](../scripts/task_7b47bad6.js.md)（`docs/scripts/task_7b47bad6.js.md`） |
 | 班级魔法自动签到 | `scripts/task_7be4b090.py` | `python3 scripts/task_7be4b090.py` | `44 8 * * 1-5` | 待检查 | [task_7be4b090.py.md](../scripts/task_7be4b090.py.md)（`docs/scripts/task_7be4b090.py.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
 | 昆医大疫情防控填报 | `scripts/task_8f8ad2c5.py` | `python3 scripts/task_8f8ad2c5.py` | `53 7,15 * * *` | 待检查 | [task_8f8ad2c5.py.md](../scripts/task_8f8ad2c5.py.md)（`docs/scripts/task_8f8ad2c5.py.md`） |
