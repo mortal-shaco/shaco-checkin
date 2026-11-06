@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **283** 个脚本。返回 [`目录首页`](../README.md)。
+共 **284** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -95,6 +95,7 @@
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `18 1 * * *` | 待检查 | [fxh.js.md](../../scripts/fxh.js.md)（`docs/scripts/fxh.js.md`） |
 | 智汇福大晚点名签到 | `scripts/fzu.py` | `python3 scripts/fzu.py` | `35 21 * * *` | 待检查 | [fzu.py.md](../../scripts/fzu.py.md)（`docs/scripts/fzu.py.md`） |
 | 吉利汽车签到 | `scripts/geely.js` | `node scripts/geely.js` | `37 0 * * *` | 待检查 | [geely.js.md](../../scripts/geely.js.md)（`docs/scripts/geely.js.md`） |
+| WorkBuddy 每日签到与成长中心 | `scripts/get_token.py` | `python3 scripts/get_token.py` | `51 0,4,8,12,16,20 * * *` | 待检查 | [get_token.py.md](../../scripts/get_token.py.md)（`docs/scripts/get_token.py.md`） |
 | Mirror O3 Pro 每日签到 | `scripts/github_actions_checkin.py` | `python3 scripts/github_actions_checkin.py` | `32 9 * * *` | 待检查 | [github_actions_checkin.py.md](../../scripts/github_actions_checkin.py.md)（`docs/scripts/github_actions_checkin.py.md`） |
 | GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
 | 好豆每日签到 | `scripts/haodou.py` | `python3 scripts/haodou.py` | `14 9 * * *` | 待检查 | [haodou.py.md](../../scripts/haodou.py.md)（`docs/scripts/haodou.py.md`） |
