@@ -4,9 +4,9 @@
 
 | 管理状态 | 数量 |
 | --- | --- |
-| 上架 | 4 |
+| 上架 | 3 |
 | 已检查 | 0 |
-| 待检查 | 349 |
+| 待检查 | 354 |
 
 ## 字母索引
 
@@ -15,7 +15,7 @@
 ## 分类索引
 
 - [云盘](categories/cloud.md)（11）
-- [签到](categories/checkin.md)（298）
+- [签到](categories/checkin.md)（302）
 - [社区](categories/community.md)（2）
 - [AI服务](categories/ai.md)（13）
 - [影音](categories/video.md)（3）

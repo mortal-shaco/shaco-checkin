@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 百度贴吧签到
-# cron: 39 2 * * *
+# cron: 52 9 * * *
 """百度贴吧每日签到（青龙维护版）。
 
 SPDX-License-Identifier: GPL-3.0-only
@@ -26,7 +26,38 @@ TIEBA_COOKIE 优先，兼容 TIE_BA_COOKIE，每个非空行一个账号；不�
 TIEBA_GROWTH_TASKS=1 显式开启成长任务，默认关闭，不增加既有账号默认副作用。
 TIEBA_DRY_RUN=1 完全断网预演；QINGLONG_NOTIFY=0 关闭通知。
 TIEBA_VERBOSE=1 显示逐吧详情；TIEBA_DELAY_MS 默认 1200 毫秒，范围 500—10000。
-无发帖、评论、分享、兑换、关注或资料修改。
+不执行发帖、评论、分享、兑换或资料修改。
+TIEBA_FOLLOW_HOT=1 显式开启热门吧关注，默认关闭；先关注，再签到。
+沿用上游推荐列表第 8 页、每页 20 项、逆序关注；会改变关注列表。
+TIEBA_LARK_WEBHOOK / TIEBA_WECHAT_KEY 为可选机器人通知配置，默认不发送。
+飞书：在本人管理群添加自定义机器人并复制 HTTPS webhook；企业微信：复制群机器人 key。
+两者均只接收脱敏任务汇总，受 QINGLONG_NOTIFY 和脚本选择规则控制，预演不发送。
+
+Merged x1ah/tieba tieba.py (MIT), commit dd954934448d9afa87c09d970d04bb7806373e75,
+catalog 5ec0413403a16987, SHA256
+ead7c29c1c6ccbd0806ef33e5ca51ad73e97f732a461f6665b4da1158aec599b.
+Retains hot-forum following only with explicit opt-in and optional Lark/WeCom
+notifications; no embedded credentials, HTTP transport or raw-response logging.
+Upstream MIT permission notice (x1ah/tieba; no copyright line in supplied file):
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+Related reference: catalog 0d0cbd933e6f1226, app/sites/tieba.py (MIT),
+SHA256 d70c5badbccf1a87ebcd6d14aabd61f235256b6b256b8f7e0f76250713ef403f:
+confirmed that the signature covers every submitted field; no private imports reused.
+Combined maintained script: GPL-3.0-only; existing attributions retained.
 Also incorporates compatible behavior from agluo/ql-script-hub
 tieba_checkin.py (MIT), catalog 38ff8ca6c57173b4.
 Reviewed and merged compatible behavior from trw131/TiebaCheckIn tieba.py
@@ -43,7 +74,7 @@ _ql_notify_raw = _ql_notify_os.environ.get("QINGLONG_NOTIFY")
 if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}:
     _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
     if _ql_notify_selection is None:
-        _ql_notify_enabled = True
+        _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
         _ql_notify_identities = ('e608052390d250da', 'scripts/tieba_checkin.py', 'tieba_checkin.py', 'tieba_checkin')
@@ -56,6 +87,7 @@ if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}
 # qinglong-notification-policy: end
 
 import fnmatch
+import hashlib
 import json
 import os
 import re
@@ -77,6 +109,7 @@ NOTIFY_IDENTITIES = (
     CATALOG_ID,
     "16ec99fa9903b808",
     "378c7b1ee9522adb",
+    "5ec0413403a16987",
     "scripts/tieba_checkin.py",
     "tieba_checkin.py",
     "output/candidate.py",
@@ -137,7 +170,7 @@ def notification_enabled() -> bool:
     )
 
 
-def notify(summary: str) -> str:
+def qinglong_notify(summary: str) -> str:
     """发送脱敏汇总；通知失败绝不覆盖业务退出码。"""
     if not notification_enabled():
         return "⏭️ 已关闭"
@@ -213,6 +246,44 @@ raise SystemExit(2)
                 continue
     print(f"[{NAME}] 未找到可用通知组件或通知发送失败，已保留业务退出码。", file=sys.stderr)
     return "⚠️ 通知不可用或推送失败"
+
+
+def notify(summary: str) -> str:
+    status = qinglong_notify(summary)
+    if not notification_enabled() or enabled("TIEBA_DRY_RUN"):
+        return status
+    channels = []
+    webhook = os.environ.get("TIEBA_LARK_WEBHOOK", "").strip()
+    key = os.environ.get("TIEBA_WECHAT_KEY", "").strip()
+    if webhook:
+        try:
+            parsed = urllib.parse.urlsplit(webhook)
+        except ValueError:
+            parsed = urllib.parse.urlsplit("")
+        if (parsed.scheme == "https" and parsed.hostname in {"open.feishu.cn", "open.larksuite.com"}
+                and parsed.path.startswith("/open-apis/bot/v2/hook/")
+                and not parsed.username and not parsed.password and parsed.netloc in {"open.feishu.cn", "open.larksuite.com", "open.feishu.cn:443", "open.larksuite.com:443"}):
+            channels.append(("飞书", webhook, {"msg_type": "text", "content": {"text": summary}}))
+        else:
+            status += "；⚠️ 飞书地址配置无效，未发送"
+    if key:
+        if re.fullmatch(r"[A-Za-z0-9_-]+", key):
+            channels.append(("企业微信", "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?" +
+                             urllib.parse.urlencode({"key": key}),
+                             {"msgtype": "text", "text": {"content": summary}}))
+        else:
+            status += "；⚠️ 企业微信 key 格式无效，未发送"
+    for label, url, payload in channels:
+        try:
+            response = request_json(url, {"Content-Type": "application/json"},
+                                    json.dumps(payload, ensure_ascii=False).encode("utf-8"))
+            code = response.get("code", response.get("StatusCode")) if label == "飞书" else response.get("errcode")
+            if str(code) != "0":
+                raise RuntimeError("机器人未确认成功")
+            status += f"；✅ {label}已发送"
+        except Exception:
+            status += f"；⚠️ {label}通知失败，已保留业务退出码"
+    return status
 
 
 def log_banner(mode: str, total: int) -> None:
@@ -540,8 +611,85 @@ def run_growth(cookie: str, dry_run: bool) -> dict[str, int]:
     return result
 
 
+def client_signature(data: dict[str, Any]) -> str:
+    value = "".join(f"{key}={data[key]}" for key in sorted(data))
+    return hashlib.md5((value + "tiebaclient!!!").encode("utf-8")).hexdigest().upper()
+
+
+def run_hot_forums(cookie: str, dry_run: bool, verbose: bool, delay_seconds: float) -> dict[str, int]:
+    result = empty_result()
+    if not enabled("TIEBA_FOLLOW_HOT"):
+        timeline("⏭️ 热门吧关注默认关闭，未改变关注列表", "└─")
+        return result
+    started = time.monotonic()
+    timeline("热门吧关注 [1/3] 参数与登录校验")
+    validate_cookie(cookie)
+    if dry_run:
+        for number, title in ((1, "登录验证"), (2, "获取热门吧"), (3, "逆序关注热门吧")):
+            timeline(f"热门吧关注 [{number}/3] {title}：⏭️ 断网预演，跳过请求和副作用，用时 0.0 秒", "└─")
+        result.update(total=1, skipped=1)
+        return result
+    headers = account_headers(cookie)
+    try:
+        session = request_json("https://tieba.baidu.com/dc/common/tbs", headers)
+        if str(session.get("is_login")) != "1" or not isinstance(session.get("tbs"), str) or not session["tbs"].strip():
+            raise RuntimeError("登录状态未确认或缺少 TBS")
+        timeline(f"热门吧关注 [1/3] 登录校验成功，用时 {time.monotonic()-started:.1f} 秒", "└─")
+        # 返回非敏感官方身份时保持原值显示；绝不输出其他会话字段。
+        for field in ("nickname", "username", "name_show", "user_name", "uid"):
+            if session.get(field):
+                timeline("账号身份：" + str(session[field]), "└─")
+                break
+        started = time.monotonic()
+        timeline("热门吧关注 [2/3] 获取推荐列表（第 8 页，每页 20 项）")
+        response = request_json("https://tieba.baidu.com/f/index/rcmdForum?pn=8&rn=20", headers)
+        code = response.get("no", response.get("errno", response.get("error_code")))
+        data = response.get("data")
+        if str(code) != "0" or not isinstance(data, dict) or not isinstance(data.get("forum_info"), list):
+            raise RuntimeError("热门推荐未确认业务成功或结构异常")
+        forums = data["forum_info"]
+        normalized = []
+        for forum in forums:
+            if (not isinstance(forum, dict) or not str(forum.get("forum_id", "")).isdigit()
+                    or int(forum["forum_id"]) <= 0 or not isinstance(forum.get("forum_name"), str)
+                    or not forum["forum_name"].strip()):
+                raise RuntimeError("推荐贴吧字段异常，未提交关注")
+            normalized.append(forum)
+        timeline(f"热门吧关注 [2/3] 获取 {len(normalized)} 项，用时 {time.monotonic()-started:.1f} 秒", "└─")
+    except Exception as error:
+        timeline(f"❌ 热门吧关注前置步骤失败：{type(error).__name__}，未提交关注", "└─")
+        result.update(total=1, failed=1)
+        return result
+    started = time.monotonic()
+    timeline("热门吧关注 [3/3] 逆序逐项提交关注")
+    # 推荐查询自身是一项可验证的任务；空列表也不会伪造关注成功。
+    result.update(total=1 + len(normalized), success=1)
+    for position, forum in enumerate(reversed(normalized), 1):
+        try:
+            data = {"fid": forum["forum_id"], "kw": forum["forum_name"],
+                    "tbs": session["tbs"], "BDUSS": cookie_field(cookie, "BDUSS")}
+            data["sign"] = client_signature(data)
+            response = request_json("https://c.tieba.baidu.com/c/c/forum/like", {
+                **headers, "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }, urllib.parse.urlencode(data).encode("utf-8"))
+            error = response.get("error")
+            if not isinstance(error, dict) or str(error.get("errno")) != "0":
+                raise RuntimeError("关注接口未明确返回 error.errno=0")
+            result["success"] += 1
+            timeline(f"✅ 热门吧第 {position}/{len(normalized)} 项关注成功" +
+                     (f"：{forum['forum_name']}" if verbose else ""), "├─")
+        except Exception as error:
+            result["failed"] += 1
+            timeline(f"❌ 热门吧第 {position}/{len(normalized)} 项关注未确认成功：{type(error).__name__}", "├─")
+        if position < len(normalized):
+            time.sleep(delay_seconds)
+    timeline(f"热门吧关注 [3/3] 结束，用时 {time.monotonic()-started:.1f} 秒", "└─")
+    return result
+
+
 def run_account(cookie: str, index: int, dry_run: bool, verbose: bool, delay_seconds: float) -> dict[str, int]:
     validate_cookie(cookie)
+    hot = run_hot_forums(cookie, dry_run, verbose, delay_seconds)
     try:
         result = run_forums(cookie, index, dry_run, verbose, delay_seconds)
     except Exception as error:
@@ -549,7 +697,7 @@ def run_account(cookie: str, index: int, dry_run: bool, verbose: bool, delay_sec
         result = empty_result()
         result.update(total=1, failed=1)
     growth = run_growth(cookie, dry_run)
-    return {key: result[key] + growth[key] for key in result}
+    return {key: result[key] + growth[key] + hot[key] for key in result}
 
 
 def account_failed(result: dict[str, int]) -> bool:

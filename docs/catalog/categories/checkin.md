@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **298** 个脚本。返回 [`目录首页`](../README.md)。
+共 **302** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -66,6 +66,9 @@
 | 中山大学人脸签到 | `scripts/cli.py` | `python3 scripts/cli.py` | `*/5 7-22 * * *` | 待检查 | [cli.py.md](../../scripts/cli.py.md)（`docs/scripts/cli.py.md`） |
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
 | 鸿星尔克签到与积分查询 | `scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `48 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_erke.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_erke.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_erke.py.md`） |
+| 华润通微信签到 | `scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py` | `54 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md`） |
+| Ole精品超市签到 | `scripts/comeonbabyy1_qiandao_jiaob_ole.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_ole.py` | `53 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_ole.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_ole.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_ole.py.md`） |
+| 顺丰快递积分任务 | `scripts/comeonbabyy1_qiandao_jiaob_sf.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_sf.py` | `56 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_sf.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_sf.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_sf.py.md`） |
 | 文体未来荟签到与积分查询 | `scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py` | `47 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md`） |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
 | 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../../scripts/config.py.md)（`docs/scripts/config.py.md`） |
@@ -127,6 +130,7 @@
 | 全民K歌签到与奖励 | `scripts/kgqq.py` | `python3 scripts/kgqq.py` | `13 2 * * *` | 待检查 | [kgqq.py.md](../../scripts/kgqq.py.md)（`docs/scripts/kgqq.py.md`） |
 | 科技玩家签到 | `scripts/kjwj.py` | `python3 scripts/kjwj.py` | `41 2 * * *` | 待检查 | [kjwj.py.md](../../scripts/kjwj.py.md)（`docs/scripts/kjwj.py.md`） |
 | 库街区社区与游戏签到 | `scripts/kurobbs.py` | `python3 scripts/kurobbs.py` | `43 9 * * *` | 待检查 | [kurobbs.py.md](../../scripts/kurobbs.py.md)（`docs/scripts/kurobbs.py.md`） |
+| 库街区自动签到 | `scripts/kurobbs_c0f8e834c99a.py` | `python3 scripts/kurobbs_c0f8e834c99a.py` | `55 9 * * *` | 待检查 | [kurobbs_c0f8e834c99a.py.md](../../scripts/kurobbs_c0f8e834c99a.py.md)（`docs/scripts/kurobbs_c0f8e834c99a.py.md`） |
 | 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `16 1 * * *` | 待检查 | [kurobbs_sign.py.md](../../scripts/kurobbs_sign.py.md)（`docs/scripts/kurobbs_sign.py.md`） |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `14 0 * * *` | 待检查 | [leaflow_checkin_pyleaflow_checkin.py.md](../../scripts/leaflow_checkin_pyleaflow_checkin.py.md)（`docs/scripts/leaflow_checkin_pyleaflow_checkin.py.md`） |
 | LeetCode 中文站每日一题自动打卡 | `scripts/leetcode_daily.py` | `python3 scripts/leetcode_daily.py` | `30 0 * * *` | 待检查 | [leetcode_daily.py.md](../../scripts/leetcode_daily.py.md)（`docs/scripts/leetcode_daily.py.md`） |
@@ -265,7 +269,7 @@
 | 塔斯汀每日签到 | `scripts/tastin_sign.py` | `python3 scripts/tastin_sign.py` | `40 9 * * *` | 待检查 | [tastin_sign.py.md](../../scripts/tastin_sign.py.md)（`docs/scripts/tastin_sign.py.md`） |
 | Telegram每日Bot签到 | `scripts/telegram_daily_checkin.py` | `python3 scripts/telegram_daily_checkin.py` | `33 8 * * *` | 待检查 | [telegram_daily_checkin.py.md](../../scripts/telegram_daily_checkin.py.md)（`docs/scripts/telegram_daily_checkin.py.md`） |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
-| 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `39 2 * * *` | 上架 | [tieba_checkin.py.md](../../scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
+| 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `52 9 * * *` | 待检查 | [tieba_checkin.py.md](../../scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
 | 东方 Portal 每日签到 | `scripts/touhouhelper.py` | `python3 scripts/touhouhelper.py` | `50 8 * * *` | 待检查 | [touhouhelper.py.md](../../scripts/touhouhelper.py.md)（`docs/scripts/touhouhelper.py.md`） |
 | Trae 每日签到与积分查询 | `scripts/trae_checkin.py` | `python3 scripts/trae_checkin.py` | `7,23,37 * * * *` | 待检查 | [trae_checkin.py.md](../../scripts/trae_checkin.py.md)（`docs/scripts/trae_checkin.py.md`） |
