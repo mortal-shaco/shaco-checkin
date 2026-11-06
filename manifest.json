@@ -34417,6 +34417,196 @@
       }
     },
     {
+      "catalogId": "356ce64d45cd5e6e",
+      "applicationKey": "poboll/wps_script::polymerization",
+      "checkProfile": {
+        "requiredEnv": [
+          "DAILY_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "DAILY_OPTIONS",
+          "DAILY_DRY_RUN",
+          "DAILY_LOCAL_TEXT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "DAILY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "有道云笔记刷新会话、同步、签到、查询本次空间奖励；广告奖励通过 ad_count 显式开启",
+          "阿里云盘刷新访问凭据、每日签到、领取当日奖励并显示累计天数",
+          "百度网盘会员签到、每日答题、会员等级及成长值查询",
+          "Bilibili 登录验证、直播和漫画签到、当天经验及钱包查询；保留关注用户视频到分区视频的选取回退链；投币、观看上报、分享、会员权益领取及银瓜子兑换均显式开启",
+          "V2EX 每日登录奖励、当日账目、余额与连续签到天数查询",
+          "AcFun 支持 Cookie 或手机号密码登录、签到、等级和香蕉查询；显式选择点赞并撤销、投香蕉、发布弹幕",
+          "恩山论坛签到及恩山币、积分、连续天数查询",
+          "飞牛社区打卡并解析我的打卡动态",
+          "百度贴吧分页获取关注列表、逐吧签名签到，保留分页与数量保护及分类统计",
+          "什么值得买签名签到及奖励查询；仅显式提供活动编号时执行活动抽奖",
+          "爱奇艺会员等级、今日成长、总成长、升级差值及到期查询；显式开启赠送抽奖次数、白金抽奖、等级权益、每日摇奖和聚合抽奖",
+          "全民 K 歌六入口核心签到奖励及鲜花增量查询；显式开启四路抽奖、音乐卡择优领奖和 VIP 每日奖励",
+          "百度搜索资源平台从公开 HTTPS 纯文本列表读取站点 URL 并限次提交官方 API",
+          "每行独立任务账号、完全断网预演、失败非零退出、超时与业务核验、脱敏分阶段日志、单条结构化总结、青龙通知",
+          "弹幕文案优先请求 HTTPS 一言，保留作者与来源署名；网络错误、HTTP 错误、超时、响应超限、无效 JSON、缺少正文或长度超限均回退本地文案；预演不请求文案服务"
+        ],
+        "sideEffects": [
+          "所选任务的每日签到、打卡、同步、领取奖励或登录刷新会话",
+          "显式开启有道广告奖励",
+          "显式开启 Bilibili 投币并点赞、观看历史上报、分享、领取权益、消耗银瓜子兑换硬币",
+          "显式开启 AcFun 点赞后撤销、消耗香蕉、公开发布弹幕",
+          "贴吧逐吧签到",
+          "显式开启什么值得买活动抽奖",
+          "显式开启爱奇艺抽奖、赠次数及权益领取",
+          "全民 K 歌领取核心奖励；显式开启抽奖、音乐卡及 VIP 领奖",
+          "选择 BAIDU 时提交站点 URL",
+          "正式执行通知开启时调用青龙通知渠道发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "每日任务聚合",
+      "path": "scripts/polymerization.js",
+      "sha256": "e0dea1d0cf3efb6059b80521197d274c875e4ffa81f3060ce696257de67fde23",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "poboll/wps_script",
+        "branch": "main",
+        "commit": "609153c199ba3ca661f02dd943d74f1dea6863b4",
+        "originalPath": "polymerization/daily.js"
+      },
+      "cron": "41 9 * * *",
+      "command": "node scripts/polymerization.js",
+      "environment": [
+        {
+          "name": "DAILY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人账号登录后，通过浏览器开发者工具的网络面板或本人设备的 HTTPS 抓包读取对应请求；不要将凭据发给他人。从原 daily 表迁移 A 列任务标识及 B 列凭据；每行只放一个任务账号。YOUDAO：note.youdao.com 登录请求 Cookie；ALIYUN：阿里云盘 auth.aliyundrive.com 刷新请求中的 refresh_token；BAIDUWP：pan.baidu.com 会员请求 Cookie；BILIBILI：www.bilibili.com 登录 Cookie，可选写操作需要 bili_jct；V2EX：www.v2ex.com 登录 Cookie；ACFUN：www.acfun.cn 登录 Cookie，或本人手机号 phone 与密码 password；ENSHAN：www.right.com.cn/forum 登录 Cookie；FNNASCLUB：club.fnnas.com 登录 Cookie；TIEBA：tieba.baidu.com 登录 Cookie，必须含 BDUSS；SMZDM：本人 App user-api.smzdm.com 请求 Cookie；IQIYI：本人爱奇艺登录 Cookie，必须含 P00001，聚合抽奖需 P00003；KGQQ：本人全民 K 歌 node.kg.qq.com 请求 Cookie，必须含 uid；BAIDU：百度搜索资源平台普通收录 API 页面取得含 site、token 的官方 HTTPS 提交地址，另自行提供公开 HTTPS 纯文本 URL 列表地址。",
+          "format": "每个非空行格式为 任务标识|凭据；只在第一个 | 分割，后续内容完整保留，不按 & 或 @ 分账号。任务标识为 YOUDAO、ALIYUN、BAIDUWP、BILIBILI、V2EX、ACFUN、ENSHAN、FNNASCLUB、TIEBA、SMZDM、IQIYI、KGQQ、BAIDU。除 ALIYUN 裸 refresh_token 外其余账号接受裸 Cookie；BAIDU 必须为 JSON 对象 {\"data_url\":\"公开 HTTPS 列表地址\",\"submit_url\":\"官方 HTTPS 提交地址\"}。各任务兼容原 JSON 凭据对象，Cookie 字段为 cookie；ACFUN 兼容 {\"phone\":\"本人手机号\",\"password\":\"本人密码\"}；ALIYUN 兼容 refresh_token 字段。不要输入说明文字作为真实凭据。"
+        },
+        {
+          "name": "DAILY_OPTIONS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择；可选行为和凭据分开配置。保留原凭据 JSON 内同名选项作为兼容输入，优先于此变量。",
+          "format": "JSON 对象，键为任务标识，值为选项对象；不得包含凭据。YOUDAO：ad_count 默认 0，范围 0–3；BILIBILI：watch/share/vip_reward/silver2coin 默认 false，coin_num 默认 0、范围 0–5，coin_type=1 优先关注用户视频，否则分区视频；ACFUN：like/banana 默认 false，danmu_text 非空时开启弹幕；TIEBA：max_pages 默认 3、范围 1–5，max_forums 默认 20、范围 1–50；SMZDM：activity_id 非空才抽指定活动；IQIYI：rewards 默认 false，shake_limit 默认 10、范围 1–10；KGQQ：extended 默认 false，music_rounds 默认 4、范围 0–16；BAIDU：max_retries 或 times，总请求限制 1–5 次。V2EX 原 proxy 未实现，设置时报告配置错误，不静默忽略。"
+        },
+        {
+          "name": "DAILY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置为 1；预演仅验证配置，不证明业务成功。",
+          "format": "1 开启完全断网预演，其余值正式执行"
+        },
+        {
+          "name": "DAILY_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行填写公开弹幕的本地备用文本；未设置时使用兼容 danmu_text 或内置中文文本。",
+          "format": "可公开的纯文本，不含凭据；压缩空白后最多 280 字，超限使用内置文本"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置通知脚本选择；显式开启总开关优先。",
+          "format": "逗号、分号或空白分隔；支持目录路径、文件名、* 通配符和目录编号 356ce64d45cd5e6e；空值关闭全部，未设置采用本任务默认名单"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写青龙 sendNotify.js 所在目录；未设置时自动检查 /ql/data/scripts 与 /ql/scripts。",
+          "format": "本机通知模块目录；通知不可用或超时不改变业务退出码"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个任务账号，任务标识与配套凭据只在首个 | 分隔；按行独立执行，同一服务可重复多行，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "有道云笔记刷新会话、同步、签到、查询本次空间奖励；广告奖励通过 ad_count 显式开启",
+        "阿里云盘刷新访问凭据、每日签到、领取当日奖励并显示累计天数",
+        "百度网盘会员签到、每日答题、会员等级及成长值查询",
+        "Bilibili 登录验证、直播和漫画签到、当天经验及钱包查询；保留关注用户视频到分区视频的选取回退链；投币、观看上报、分享、会员权益领取及银瓜子兑换均显式开启",
+        "V2EX 每日登录奖励、当日账目、余额与连续签到天数查询",
+        "AcFun 支持 Cookie 或手机号密码登录、签到、等级和香蕉查询；显式选择点赞并撤销、投香蕉、发布弹幕",
+        "恩山论坛签到及恩山币、积分、连续天数查询",
+        "飞牛社区打卡并解析我的打卡动态",
+        "百度贴吧分页获取关注列表、逐吧签名签到，保留分页与数量保护及分类统计",
+        "什么值得买签名签到及奖励查询；仅显式提供活动编号时执行活动抽奖",
+        "爱奇艺会员等级、今日成长、总成长、升级差值及到期查询；显式开启赠送抽奖次数、白金抽奖、等级权益、每日摇奖和聚合抽奖",
+        "全民 K 歌六入口核心签到奖励及鲜花增量查询；显式开启四路抽奖、音乐卡择优领奖和 VIP 每日奖励",
+        "百度搜索资源平台从公开 HTTPS 纯文本列表读取站点 URL 并限次提交官方 API",
+        "每行独立任务账号、完全断网预演、失败非零退出、超时与业务核验、脱敏分阶段日志、单条结构化总结、青龙通知",
+        "弹幕文案优先请求 HTTPS 一言，保留作者与来源署名；网络错误、HTTP 错误、超时、响应超限、无效 JSON、缺少正文或长度超限均回退本地文案；预演不请求文案服务"
+      ],
+      "sideEffects": [
+        "所选任务的每日签到、打卡、同步、领取奖励或登录刷新会话",
+        "显式开启有道广告奖励",
+        "显式开启 Bilibili 投币并点赞、观看历史上报、分享、领取权益、消耗银瓜子兑换硬币",
+        "显式开启 AcFun 点赞后撤销、消耗香蕉、公开发布弹幕",
+        "贴吧逐吧签到",
+        "显式开启什么值得买活动抽奖",
+        "显式开启爱奇艺抽奖、赠次数及权益领取",
+        "全民 K 歌领取核心奖励；显式开启抽奖、音乐卡及 VIP 领奖",
+        "选择 BAIDU 时提交站点 URL",
+        "正式执行通知开启时调用青龙通知渠道发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/356ce64d45cd5e6e",
+        "candidateSha256": "24ed34a0250d62fd4fe1b2ff0618a95198732644754b43a0d302cbc3a1641d57"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "24ed34a0250d62fd4fe1b2ff0618a95198732644754b43a0d302cbc3a1641d57",
+        "releaseSha256": "e0dea1d0cf3efb6059b80521197d274c875e4ffa81f3060ce696257de67fde23",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:14:20.064101+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "24ed34a0250d62fd4fe1b2ff0618a95198732644754b43a0d302cbc3a1641d57",
+          "toCandidateSha256": "e0dea1d0cf3efb6059b80521197d274c875e4ffa81f3060ce696257de67fde23",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "190d89a73fbfe28e",
       "applicationKey": "nuthx/auto-sign::special",
       "checkProfile": {
@@ -54952,6 +55142,258 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "0291bb26444ce88ee81deef701f1d2b85b5faee5561ede89d4b03b6a1414ad14",
           "toCandidateSha256": "e88e9d3b651c4dc6151e2bdb5ce5acebb7119a088fe6fca17af4c490a44017b9",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "b2b2643c2ae50051",
+      "applicationKey": "leapya/tastin-sign::tastin",
+      "checkProfile": {
+        "requiredEnv": [
+          "TASTIN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "TASTIN_USER_TOKEN",
+          "TASTIN_MEMBER_PHONE",
+          "TASTIN_SHOP_ID",
+          "TASTIN_VERSION",
+          "TASTIN_ACTIVITY_ID",
+          "TASTIN_PROXY",
+          "TASTIN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "SMTP_HOST",
+          "SMTP_PORT",
+          "SMTP_USER",
+          "SMTP_PASS",
+          "SMTP_TO",
+          "SMTP_NOTIFY_SIGN"
+        ],
+        "dryRunEnv": {
+          "TASTIN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TASTIN_SHOP_ID": "28416",
+          "TASTIN_VERSION": "3.78.0",
+          "TASTIN_ACTIVITY_ID": "74"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今天已经签过了",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "验证账号认证并查询当前积分",
+          "从积分商城签到入口发现活动，失败时按配置起点只读探测当期活动并核验开放状态",
+          "执行每日签到并识别明确的今日已签提示",
+          "展示连续签到天数、奖励名称、积分奖励及优惠券内容和有效期",
+          "查询签到后最终积分",
+          "对可恢复的只读网络请求最多尝试五次，指数退避，单账号限定十五分钟",
+          "兼容原单账号认证参数、门店、版本、活动起点及 SMTP 设置，支持逐行多账号",
+          "支持显式可信代理与 TLS 校验，阻止认证请求重定向",
+          "可选安全 SMTP 邮件，认证失效提醒及签到结果通知",
+          "青龙名单通知和全局开关，通知失败保留业务退出码",
+          "完全断网预演、时间轴日志、账号与子任务统计以及单行 TASK_SUMMARY 汇总",
+          "展示官方非机密账号身份，隐藏凭据和手机号"
+        ],
+        "sideEffects": [
+          "在已核验开放的签到活动中执行每日签到，可能增加积分、连续签到记录或发放优惠券",
+          "正式执行时按通知配置发送青龙通知及可选邮件"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "塔斯汀每日签到",
+      "path": "scripts/tastin_sign.py",
+      "sha256": "07e4d3986b364b941f551ec1c2279a61c8ee7da8688e8ca197e8f51af5159a7a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "LeapYa/tastin-sign",
+        "branch": "main",
+        "commit": "d85c3c9e4979c709996e1c5660ed4129b577e98d",
+        "originalPath": "tastin_sign.py"
+      },
+      "cron": "40 9 * * *",
+      "command": "python3 scripts/tastin_sign.py",
+      "environment": [
+        {
+          "name": "TASTIN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人塔斯汀微信小程序，通过本人授权的 HTTPS 调试记录获取 sss-web.tastientech.com 请求头 user-token 与同账号签到请求体 memberPhone 加密手机号令牌。仅在青龙环境变量保存，勿上传抓包。",
+          "format": "每个非空行一个账号：token|memberPhone；仅在第一个竖线处分割，后续内容原样保留；禁止明文手机号，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "TASTIN_USER_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人小程序请求头 user-token 获取。",
+          "format": "旧单账号兼容入口；未配置 TASTIN_ACCOUNTS 时与 TASTIN_MEMBER_PHONE 配套使用。"
+        },
+        {
+          "name": "TASTIN_MEMBER_PHONE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从同账号签到请求体 memberPhone 获取加密手机号令牌。",
+          "format": "旧单账号配套凭据，不能填明文手机号；TASTIN_ACCOUNTS 优先。"
+        },
+        {
+          "name": "TASTIN_SHOP_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人小程序请求头 gray-shop-id 获取。",
+          "format": "正整数，默认 28416；所有账号共用。"
+        },
+        {
+          "name": "TASTIN_VERSION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人小程序请求头 version 获取。",
+          "format": "小程序版本号，默认 3.78.0。"
+        },
+        {
+          "name": "TASTIN_ACTIVITY_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人小程序签到请求体 activityId 获取。",
+          "format": "正整数，默认 74；入口发现失败时从此起点只读探测连续 30 个编号，仅对核验有效且开放的活动签到。"
+        },
+        {
+          "name": "TASTIN_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "确需代理时由本人配置可信代理服务，不会下载免费代理或自动使用系统代理。",
+          "format": "可选 HTTP 或 HTTPS 代理地址，可能含代理凭据须保密；始终校验证书。"
+        },
+        {
+          "name": "TASTIN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验收设为 1；正式任务不设置或设为 0。",
+          "format": "1、true、yes、on 开启完全断网预演；业务请求、邮件、青龙通知均不联网。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置任务通知选择器，未设置时默认名单包含本任务目录编号。",
+          "format": "auto 模式下以逗号、分号或空白分隔目录编号、脚本路径、文件名或文件名通配符；* 匹配全部，显式空值禁用全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写青龙自有 notify.py 或 sendNotify.js 所在目录，无需私有工作流仓库。",
+          "format": "可选本地目录；另支持 import notify.send、/ql/data/scripts、/ql/scripts；通知缺失或失败不改变业务退出码。"
+        },
+        {
+          "name": "SMTP_HOST",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人邮件服务商获取 SMTP 设置。",
+          "format": "可选服务器主机名，需配套 SMTP_USER 与 SMTP_PASS。"
+        },
+        {
+          "name": "SMTP_PORT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人邮件服务商获取 SMTP 设置。",
+          "format": "默认 465 使用 TLS，其他端口必须成功 STARTTLS 才认证。"
+        },
+        {
+          "name": "SMTP_USER",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人邮件服务商获取 SMTP 登录账号。",
+          "format": "单个邮件登录账号，不输出到日志。"
+        },
+        {
+          "name": "SMTP_PASS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人邮件服务商申请 SMTP 授权码。",
+          "format": "SMTP 密码或授权码，不输出到日志。"
+        },
+        {
+          "name": "SMTP_TO",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "填写本人接收通知的邮箱地址。",
+          "format": "可选单个邮箱，默认 SMTP_USER，不输出到日志。"
+        },
+        {
+          "name": "SMTP_NOTIFY_SIGN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要所有签到结果邮件时设置为 1。",
+          "format": "1、true、yes 开启；默认仅在明确认证失效时提醒；遵守全局通知开关，预演不发送。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，token 与同账号加密手机号令牌用第一个竖线分隔，后续竖线保留。账号独立处理，任一账号失败则整体非零退出；新变量优先，旧参数仅兼容单账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "验证账号认证并查询当前积分",
+        "从积分商城签到入口发现活动，失败时按配置起点只读探测当期活动并核验开放状态",
+        "执行每日签到并识别明确的今日已签提示",
+        "展示连续签到天数、奖励名称、积分奖励及优惠券内容和有效期",
+        "查询签到后最终积分",
+        "对可恢复的只读网络请求最多尝试五次，指数退避，单账号限定十五分钟",
+        "兼容原单账号认证参数、门店、版本、活动起点及 SMTP 设置，支持逐行多账号",
+        "支持显式可信代理与 TLS 校验，阻止认证请求重定向",
+        "可选安全 SMTP 邮件，认证失效提醒及签到结果通知",
+        "青龙名单通知和全局开关，通知失败保留业务退出码",
+        "完全断网预演、时间轴日志、账号与子任务统计以及单行 TASK_SUMMARY 汇总",
+        "展示官方非机密账号身份，隐藏凭据和手机号"
+      ],
+      "sideEffects": [
+        "在已核验开放的签到活动中执行每日签到，可能增加积分、连续签到记录或发放优惠券",
+        "正式执行时按通知配置发送青龙通知及可选邮件"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/b2b2643c2ae50051",
+        "candidateSha256": "7ec57504309ce983199212e702f4fa88f55624f0bfbdbe07d7cc72a9f0a8191f"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "7ec57504309ce983199212e702f4fa88f55624f0bfbdbe07d7cc72a9f0a8191f",
+        "releaseSha256": "07e4d3986b364b941f551ec1c2279a61c8ee7da8688e8ca197e8f51af5159a7a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:13:24.189393+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "7ec57504309ce983199212e702f4fa88f55624f0bfbdbe07d7cc72a9f0a8191f",
+          "toCandidateSha256": "07e4d3986b364b941f551ec1c2279a61c8ee7da8688e8ca197e8f51af5159a7a",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

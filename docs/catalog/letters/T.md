@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **49** 个脚本。返回 [`目录首页`](../README.md)。
+共 **50** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -42,6 +42,7 @@
 | 网易云音乐人签到 | `scripts/task_f7e4fa18.py` | `python3 scripts/task_f7e4fa18.py` | `21 9 * * *` | 待检查 | [task_f7e4fa18.py.md](../../scripts/task_f7e4fa18.py.md)（`docs/scripts/task_f7e4fa18.py.md`） |
 | 重庆工程职院顶岗实习 | `scripts/task_f8f6237c.py` | `python3 scripts/task_f8f6237c.py` | `49 8 * * *` | 待检查 | [task_f8f6237c.py.md](../../scripts/task_f8f6237c.py.md)（`docs/scripts/task_f8f6237c.py.md`） |
 | 起点阅读 App 签到 | `scripts/task_fbfb17a0.py` | `python3 scripts/task_fbfb17a0.py` | `4 1 * * *` | 待检查 | [task_fbfb17a0.py.md](../../scripts/task_fbfb17a0.py.md)（`docs/scripts/task_fbfb17a0.py.md`） |
+| 塔斯汀每日签到 | `scripts/tastin_sign.py` | `python3 scripts/tastin_sign.py` | `40 9 * * *` | 待检查 | [tastin_sign.py.md](../../scripts/tastin_sign.py.md)（`docs/scripts/tastin_sign.py.md`） |
 | Telegram每日Bot签到 | `scripts/telegram_daily_checkin.py` | `python3 scripts/telegram_daily_checkin.py` | `33 8 * * *` | 待检查 | [telegram_daily_checkin.py.md](../../scripts/telegram_daily_checkin.py.md)（`docs/scripts/telegram_daily_checkin.py.md`） |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `39 2 * * *` | 上架 | [tieba_checkin.py.md](../../scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |

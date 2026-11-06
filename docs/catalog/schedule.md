@@ -189,6 +189,7 @@
 | 欧文 Soul-Mates 每日签到 | `scripts/ouwen.py` | `python3 scripts/ouwen.py` | `0 18 * * *` | 待检查 | [ouwen.py.md](../scripts/ouwen.py.md)（`docs/scripts/ouwen.py.md`） |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `13 1 * * *` | 待检查 | [passnat_checkin.py.md](../scripts/passnat_checkin.py.md)（`docs/scripts/passnat_checkin.py.md`） |
 | 哔咔漫画每日打卡 | `scripts/pica_punch.py` | `python3 scripts/pica_punch.py` | `45 5 * * *` | 待检查 | [pica_punch.py.md](../scripts/pica_punch.py.md)（`docs/scripts/pica_punch.py.md`） |
+| 每日任务聚合 | `scripts/polymerization.js` | `node scripts/polymerization.js` | `41 9 * * *` | 待检查 | [polymerization.js.md](../scripts/polymerization.js.md)（`docs/scripts/polymerization.js.md`） |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
 | 佛山职院企微学工签到 | `scripts/python.py` | `python3 scripts/python.py` | `*/5 7-22 * * *` | 待检查 | [python.py.md](../scripts/python.py.md)（`docs/scripts/python.py.md`） |
@@ -302,6 +303,7 @@
 | 网易云音乐人签到 | `scripts/task_f7e4fa18.py` | `python3 scripts/task_f7e4fa18.py` | `21 9 * * *` | 待检查 | [task_f7e4fa18.py.md](../scripts/task_f7e4fa18.py.md)（`docs/scripts/task_f7e4fa18.py.md`） |
 | 重庆工程职院顶岗实习 | `scripts/task_f8f6237c.py` | `python3 scripts/task_f8f6237c.py` | `49 8 * * *` | 待检查 | [task_f8f6237c.py.md](../scripts/task_f8f6237c.py.md)（`docs/scripts/task_f8f6237c.py.md`） |
 | 起点阅读 App 签到 | `scripts/task_fbfb17a0.py` | `python3 scripts/task_fbfb17a0.py` | `4 1 * * *` | 待检查 | [task_fbfb17a0.py.md](../scripts/task_fbfb17a0.py.md)（`docs/scripts/task_fbfb17a0.py.md`） |
+| 塔斯汀每日签到 | `scripts/tastin_sign.py` | `python3 scripts/tastin_sign.py` | `40 9 * * *` | 待检查 | [tastin_sign.py.md](../scripts/tastin_sign.py.md)（`docs/scripts/tastin_sign.py.md`） |
 | Telegram每日Bot签到 | `scripts/telegram_daily_checkin.py` | `python3 scripts/telegram_daily_checkin.py` | `33 8 * * *` | 待检查 | [telegram_daily_checkin.py.md](../scripts/telegram_daily_checkin.py.md)（`docs/scripts/telegram_daily_checkin.py.md`） |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
