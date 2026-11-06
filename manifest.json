@@ -38751,6 +38751,197 @@
       }
     },
     {
+      "catalogId": "c8112572b797324b",
+      "applicationKey": "comeonbabyy1/qiandao-jiaob::shyp",
+      "checkProfile": {
+        "requiredEnv": [
+          "SHYP_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "SHYP_TASKS",
+          "SHYP_UNFAVOR",
+          "SHYP_LOCAL_TEXT",
+          "SHYP_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "SHYP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "SHYP_TASKS": "read,video",
+          "SHYP_UNFAVOR": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "校验账号凭据并查询总积分、今日积分、签到记录及任务进度",
+          "按服务端进度执行阅读与视频积分任务并刷新核验完成状态",
+          "显式启用收藏任务，可选择收藏后取消收藏",
+          "显式启用评论任务，从两页文章去重后选择目标",
+          "评论优先获取一言并保留作者与出处，异常使用本地文本",
+          "显式启用分享积分任务，保留打开文章与提交积分的顺序",
+          "按行配置多账号并独立处理，任一账号失败返回非零退出码",
+          "断网预演、分阶段脱敏日志、逐账号统计与单行结构化汇总",
+          "支持青龙通知开关、名单及通知模块降级发现"
+        ],
+        "sideEffects": [
+          "阅读与分享任务增加文章阅读计数并提交积分",
+          "视频任务读取详情并提交视频积分",
+          "显式启用时收藏文章；另行授权时取消本次收藏的文章",
+          "显式启用时公开发表评论并可能获得评论积分",
+          "显式启用时提交分享积分",
+          "符合通知开关与名单时发送青龙汇总通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "上海云媒体积分任务",
+      "path": "scripts/shyp.py",
+      "sha256": "844c9bfcfcde0851fc30ef516280cb48cac08cebcbc55bd6ffc24a56edbefa5a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "comeonbabyy1/qiandao-jiaob",
+        "branch": "main",
+        "commit": "ce494881ab17ef23b5b9de9df30ea60567b3865c",
+        "originalPath": "script/shyp/main.py",
+        "related": [
+          {
+            "catalogId": "4895693c4257106f",
+            "sha256": "1d02f5ef6fe36c3c5d3e41b012c254ff407c92df0638c733b852400f59808715",
+            "repository": "comeonbabyy1/qiandao-jiaob",
+            "url": "https://github.com/comeonbabyy1/qiandao-jiaob",
+            "branch": "main",
+            "commit": "ce494881ab17ef23b5b9de9df30ea60567b3865c",
+            "originalPath": "script/shyp/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "49 9 * * *",
+      "command": "python3 scripts/shyp.py",
+      "environment": [
+        {
+          "name": "SHYP_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人上海云媒体客户端，在本人授权的网络调试中读取 https://app.ypmedia.cn/media-basic-port/api/app/personal/score/info 的请求头 token、deviceid、siteid 和 User-Agent。将原 config/token.json 的 shyp.accounts 对象逐个转换成一行；不读取私有配置文件，不使用商城 Authorization。凭据过期后重新登录获取。",
+          "format": "每个非空行一个 JSON 对象：必填 token 和 device_id；可选 site_id（默认 310110）、user_agent（默认 okhttp/4.10.0）、account_name（仅兼容保留，不作为官方身份输出）。字段值原样保留，账号以换行分隔，禁止使用 & 或 @ 分隔。"
+        },
+        {
+          "name": "SHYP_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中选择所需任务。收藏、评论和分享会改变账号或公开内容，必须主动启用。",
+          "format": "逗号分隔 read、video、favor、comment、share；默认 read,video。query 单独使用时仅查询积分、签到状态与任务。"
+        },
+        {
+          "name": "SHYP_UNFAVOR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在明确需要收藏后取消收藏时设置；可能影响已有收藏状态。",
+          "format": "默认 0；1 启用；必须同时选择 favor。支持 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "SHYP_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行填写公开评论备用文本；一言请求失败、超时、超长、非 JSON 或缺少文本时使用。",
+          "format": "可选，空白合并后最长 280 字；空值或超长时采用内置本地短句。"
+        },
+        {
+          "name": "SHYP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设为 1 执行断网预演；不会调用业务、一言或通知网络。",
+          "format": "默认 0；1 启用；支持 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "配置自动通知名单；设置后替换默认名单，本脚本未配置名单时不发送。",
+          "format": "逗号、分号、空白或换行分隔；支持目录相对路径、文件名、文件名通配符、目录编号 c8112572b797324b 或 *；显式空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定现有青龙 notify.py 或 sendNotify.js 所在目录；也会检查标准青龙目录及可导入的 notify。",
+          "format": "本地通知模块目录路径；仅用于通知，不是业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON；同一对象组合 token 和 device_id，账号独立执行；任一账号配置错误或业务失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "校验账号凭据并查询总积分、今日积分、签到记录及任务进度",
+        "按服务端进度执行阅读与视频积分任务并刷新核验完成状态",
+        "显式启用收藏任务，可选择收藏后取消收藏",
+        "显式启用评论任务，从两页文章去重后选择目标",
+        "评论优先获取一言并保留作者与出处，异常使用本地文本",
+        "显式启用分享积分任务，保留打开文章与提交积分的顺序",
+        "按行配置多账号并独立处理，任一账号失败返回非零退出码",
+        "断网预演、分阶段脱敏日志、逐账号统计与单行结构化汇总",
+        "支持青龙通知开关、名单及通知模块降级发现"
+      ],
+      "sideEffects": [
+        "阅读与分享任务增加文章阅读计数并提交积分",
+        "视频任务读取详情并提交视频积分",
+        "显式启用时收藏文章；另行授权时取消本次收藏的文章",
+        "显式启用时公开发表评论并可能获得评论积分",
+        "显式启用时提交分享积分",
+        "符合通知开关与名单时发送青龙汇总通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c8112572b797324b",
+        "candidateSha256": "8bfa61b0c5b5120cc700cc2f7366c27d3819ad25f7674c3699f6bd55f9df22b0"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "8bfa61b0c5b5120cc700cc2f7366c27d3819ad25f7674c3699f6bd55f9df22b0",
+        "releaseSha256": "844c9bfcfcde0851fc30ef516280cb48cac08cebcbc55bd6ffc24a56edbefa5a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:20:34.495596+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "8bfa61b0c5b5120cc700cc2f7366c27d3819ad25f7674c3699f6bd55f9df22b0",
+          "toCandidateSha256": "844c9bfcfcde0851fc30ef516280cb48cac08cebcbc55bd6ffc24a56edbefa5a",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "398c67c56c038d25",
       "applicationKey": "zhaohongxuan/shangma_auto_sign::in",
       "checkProfile": {

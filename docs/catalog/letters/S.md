@@ -1,6 +1,6 @@
 # 字母索引 · S
 
-共 **67** 个脚本。返回 [`目录首页`](../README.md)。
+共 **68** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -10,6 +10,7 @@
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |
 | 申工社每日任务 | `scripts/sgs.py` | `python3 scripts/sgs.py` | `43 0 * * *` | 待检查 | [sgs.py.md](../../scripts/sgs.py.md)（`docs/scripts/sgs.py.md`） |
 | 书亦烧仙草签到 | `scripts/shuyi.py` | `python3 scripts/shuyi.py` | `51 0 * * *` | 待检查 | [shuyi.py.md](../../scripts/shuyi.py.md)（`docs/scripts/shuyi.py.md`） |
+| 上海云媒体积分任务 | `scripts/shyp.py` | `python3 scripts/shyp.py` | `49 9 * * *` | 待检查 | [shyp.py.md](../../scripts/shyp.py.md)（`docs/scripts/shyp.py.md`） |
 | 上马官网每日签到 | `scripts/sign_in.js` | `node scripts/sign_in.js` | `24 8 * * *` | 待检查 | [sign_in.js.md](../../scripts/sign_in.js.md)（`docs/scripts/sign_in.js.md`） |
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `15 1 * * *` | 待检查 | [smzdm_checkin.js.md](../../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
