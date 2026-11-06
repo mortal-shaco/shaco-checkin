@@ -311,6 +311,7 @@
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
+| 三国杀社区签到 | `scripts/task_4c362933.js` | `node scripts/task_4c362933.js` | `4 * * * *` | 待检查 | [task_4c362933.js.md](../scripts/task_4c362933.js.md)（`docs/scripts/task_4c362933.js.md`） |
 | 昆明医科大疫情健康填报 | `scripts/task_4f815667.py` | `python3 scripts/task_4f815667.py` | `43 8 * * *` | 待检查 | [task_4f815667.py.md](../scripts/task_4f815667.py.md)（`docs/scripts/task_4f815667.py.md`） |
 | 百度知道签到 | `scripts/task_51f65d9b.py` | `python3 scripts/task_51f65d9b.py` | `30 10 * * *` | 待检查 | [task_51f65d9b.py.md](../scripts/task_51f65d9b.py.md)（`docs/scripts/task_51f65d9b.py.md`） |
 | 阅次元论坛签到 | `scripts/task_5254d901.py` | `python3 scripts/task_5254d901.py` | `44 8 * * *` | 待检查 | [task_5254d901.py.md](../scripts/task_5254d901.py.md)（`docs/scripts/task_5254d901.py.md`） |
@@ -322,6 +323,7 @@
 | MiniMax Code每日签到 | `scripts/task_7b47bad6.js` | `node scripts/task_7b47bad6.js` | `27 9 * * *` | 待检查 | [task_7b47bad6.js.md](../scripts/task_7b47bad6.js.md)（`docs/scripts/task_7b47bad6.js.md`） |
 | 班级魔法自动签到 | `scripts/task_7be4b090.py` | `python3 scripts/task_7be4b090.py` | `44 8 * * 1-5` | 待检查 | [task_7be4b090.py.md](../scripts/task_7be4b090.py.md)（`docs/scripts/task_7be4b090.py.md`） |
 | AnyRouter 自动签到 | `scripts/task_7d0a3609.py` | `python3 scripts/task_7d0a3609.py` | `42 9 * * *` | 待检查 | [task_7d0a3609.py.md](../scripts/task_7d0a3609.py.md)（`docs/scripts/task_7d0a3609.py.md`） |
+| 云闪付签到 | `scripts/task_7d46e6b1.js` | `node scripts/task_7d46e6b1.js` | `59 15 8 * * *` | 待检查 | [task_7d46e6b1.js.md](../scripts/task_7d46e6b1.js.md)（`docs/scripts/task_7d46e6b1.js.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
 | 棕色尘埃2网页商店签到 | `scripts/task_8591af9a.py` | `python3 scripts/task_8591af9a.py` | `29 9 * * *` | 待检查 | [task_8591af9a.py.md](../scripts/task_8591af9a.py.md)（`docs/scripts/task_8591af9a.py.md`） |
 | PT站点每日签到 | `scripts/task_874a3b5f.py` | `python3 scripts/task_874a3b5f.py` | `35 9 * * *` | 待检查 | [task_874a3b5f.py.md](../scripts/task_874a3b5f.py.md)（`docs/scripts/task_874a3b5f.py.md`） |
@@ -399,3 +401,4 @@
 | 知末签到 | `scripts/znzmo.js` | `node scripts/znzmo.js` | `0 55 11 * * *` | 待检查 | [znzmo.js.md](../scripts/znzmo.js.md)（`docs/scripts/znzmo.js.md`） |
 | Zodgame签到与广告任务 | `scripts/zodgame_test.py` | `python3 scripts/zodgame_test.py` | `35 2 * * *` | 待检查 | [zodgame_test.py.md](../scripts/zodgame_test.py.md)（`docs/scripts/zodgame_test.py.md`） |
 | STC国芯论坛签到 | `scripts/zqlj_sign.py` | `python3 scripts/zqlj_sign.py` | `36 8 * * *` | 待检查 | [zqlj_sign.py.md](../scripts/zqlj_sign.py.md)（`docs/scripts/zqlj_sign.py.md`） |
+| 智行火车每日签到与积分查询 | `scripts/zxhc.js` | `node scripts/zxhc.js` | `24 10 * * *` | 待检查 | [zxhc.js.md](../scripts/zxhc.js.md)（`docs/scripts/zxhc.js.md`） |
