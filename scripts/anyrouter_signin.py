@@ -3,10 +3,32 @@
 # name: AnyRouter 每日签到
 # cron: 6 9 * * *
 from __future__ import annotations
+# qinglong-notification-policy: begin
+import fnmatch as _ql_notify_fnmatch
+import os as _ql_notify_os
+import re as _ql_notify_re
+_ql_notify_raw = _ql_notify_os.environ.get("QINGLONG_NOTIFY")
+if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}:
+    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
+    if _ql_notify_selection is None:
+        _ql_notify_enabled = False
+    else:
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('71b8e4efd81a4495', 'scripts/anyrouter_signin.py', 'anyrouter_signin.py', 'anyrouter_signin')
+        _ql_notify_enabled = any(
+            _ql_notify_fnmatch.fnmatch(identity, selector)
+            for selector in _ql_notify_selectors
+            for identity in _ql_notify_identities
+        )
+    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
+# qinglong-notification-policy: end
 #
 # 来源：FallingMY/anyrouter-signin anyrouter_signin.py（MIT）
 # https://github.com/FallingMY/anyrouter-signin
 # 提交：7aef47ae689834e10940a73fdd39f52deb463031
+# 合并来源：TerrySiu98/anyrouter-signin signin.py（MIT）
+# https://github.com/TerrySiu98/anyrouter-signin
+# 提交：8ddb707cc960cf5f18ff1e3b44f0d5430dbb6c1c
 #
 # MIT License
 #
@@ -31,42 +53,36 @@ from __future__ import annotations
 # SOFTWARE.
 """AnyRouter（https://anyrouter.top）每日签到 - 青龙维护版。
 
-功能清点（相对上游 anyrouter_signin.py）：
-- 账号密码登录 /api/user/login，再调用 /api/user/sign_in 领取每日奖励
-- 保留 acw_sc__v2 WAF 挑战求解；会话仅保存在本次进程内存，不再写入用户主目录
-- 移除 config.json、本地 session/日志落盘、原始响应打印与无超时请求
-- 青龙改为环境变量多账号与 cron 调度；上游建议每天 09:00
+功能与兼容性清点：
+- 原始 signin.py：COOKIES 会话签到，BASE_URL 中转，可选 Telegram；未声明 cron。
+- 相关源码：密码登录、WAF、会话缓存、网络重试；原建议每日 09:00。
+- 现有维护版：密码登录、WAF、官方身份、多账号、日志、通知、断网预演。
+- 本次将缺少的 Cookie 方式合入同一个维护脚本，不建立并行产品任务。
+- 保留现有维护版全部能力、默认官方地址和 09:00 元数据；既有青龙 09:06 任务无需改动。
+- 原始第三方默认中转会泄露 Cookie，移除该默认地址；BASE_URL 仅接受官方 HTTPS 地址。
+- 会话仅在内存，不读写 config.json、缓存或用户目录；不下载或调用外部应用完成业务。
 
-ANYROUTER_ACCOUNTS：每个非空行一个账号，格式 用户名|密码；仅在第一个竖线处分割，
-密码中后续竖线保留。不要用 & 或 @ 分隔账号。在 https://anyrouter.top 注册或登录的用户名与明文密码。
-ANYROUTER_TIMEOUT：单次 HTTPS 请求超时秒数，默认 20，范围 5..60。
-ANYROUTER_DRY_RUN=1：完全断网预演，只校验配置，不发起网络请求，不声明业务成功。
+参数与获取：
+ANYROUTER_ACCOUNTS：每个非空行一个账号；用户名|密码（仅分割首个竖线），
+或一行 JSON 对象 {"cookie":"完整 Cookie 或 session 值","uid":"可选公开用户编号"}。
+密码在 https://anyrouter.top 注册时设置；Cookie 在本人登录后浏览器开发者工具的
+网络面板中，从官方 /api/user/sign_in 请求头 Cookie 获取；若请求含 new-api-user，
+将该公开编号填入 uid。同一行不得混用两种认证方式。Cookie 会过期，切勿分享。
+COOKIES：旧版 Cookie 变量兼容入口，仅当规范变量未设置时使用；也必须每行一个账号，
+不再支持 ||| 分隔账号。不要用 & 或 @ 分隔账号。
+ANYROUTER_TIMEOUT：HTTPS 请求超时秒数，默认 20，范围 5..60。
+ANYROUTER_DRY_RUN=1：完全断网预演，不验证凭据或真实业务，不调用 Telegram。
 QINGLONG_NOTIFY / QINGLONG_NOTIFY_SCRIPTS / QINGLONG_NOTIFY_DIR：青龙通知策略。
-建议 Cron：每天 09:00（与上游 README 一致）。不打印密码、Cookie、Token 或原始响应。
+TG_BOT_TOKEN / TG_CHAT_ID：旧版可选 Telegram 通知；从 BotFather 与本人聊天获取；
+仅显式配置两项且青龙全局通知允许时附加发送，断网预演不投递远程通知。
+副作用仅为登录会话、每日签到领奖及启用的通知；无公开发帖或自动安装。
 """
-# qinglong-notification-policy: begin
-import fnmatch as _ql_notify_fnmatch
-import os as _ql_notify_os
-import re as _ql_notify_re
-_ql_notify_raw = _ql_notify_os.environ.get("QINGLONG_NOTIFY")
-if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}:
-    _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
-    if _ql_notify_selection is None:
-        _ql_notify_enabled = False
-    else:
-        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('71b8e4efd81a4495', 'scripts/anyrouter_signin.py', 'anyrouter_signin.py', 'anyrouter_signin')
-        _ql_notify_enabled = any(
-            _ql_notify_fnmatch.fnmatch(identity, selector)
-            for selector in _ql_notify_selectors
-            for identity in _ql_notify_identities
-        )
-    _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
-# qinglong-notification-policy: end
+
 
 import fnmatch
 import http.cookiejar
 import json
+import math
 import os
 import re
 import shutil
@@ -75,6 +91,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+import urllib.parse
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -172,7 +189,7 @@ def resolve_timeout() -> float:
         value = float(raw)
     except ValueError as exc:
         raise SafeError("ANYROUTER_TIMEOUT 须为数字秒数") from exc
-    if value < 5 or value > 60:
+    if not math.isfinite(value) or value < 5 or value > 60:
         raise SafeError("ANYROUTER_TIMEOUT 须在 5 到 60 秒之间")
     return value
 
@@ -182,22 +199,61 @@ def compact(value: Any, limit: int = 160) -> str:
     return text[:limit]
 
 
-def parse_accounts(raw: str) -> List[Dict[str, str]]:
+def normalize_cookie(value: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise SafeError("Cookie 为空或类型错误")
+    value = value.strip()
+    if any(ord(ch) < 32 or ord(ch) > 126 for ch in value):
+        raise SafeError("Cookie 含不支持的字符")
+    value = value if "=" in value else "session=" + value
+    # 完整请求 Cookie；不接受 Set-Cookie 属性或跨账号分隔符。
+    if "|||" in value:
+        raise SafeError("Cookie 账号必须使用换行分隔")
+    for pair in value.split(";"):
+        if not pair.strip():
+            continue
+        if "=" not in pair or not pair.split("=", 1)[0].strip():
+            raise SafeError("Cookie 格式错误")
+    return value
+
+
+def parse_accounts(raw: str, cookie_alias: bool = False) -> List[Dict[str, str]]:
     accounts: List[Dict[str, str]] = []
     for line in raw.splitlines():
         text = line.strip()
         if not text or text.startswith("#"):
             continue
-        if "|" not in text:
-            raise SafeError("账号行缺少分隔符；格式为 用户名|密码")
-        username, password = text.split("|", 1)
-        username = username.strip()
-        password = password.strip()
-        if not username or not password:
-            raise SafeError("用户名或密码为空")
-        if any(ord(ch) < 32 for ch in username) or any(ord(ch) < 32 for ch in password):
-            raise SafeError("账号行含控制字符")
-        accounts.append({"username": username, "password": password})
+        try:
+            if cookie_alias or text.startswith("{"):
+                if cookie_alias:
+                    item = {"cookie": text}
+                else:
+                    try:
+                        item = json.loads(text)
+                    except ValueError:
+                        raise SafeError("账号 JSON 格式错误") from None
+                    if not isinstance(item, dict) or set(item) - {"cookie", "uid"}:
+                        raise SafeError("Cookie 账号仅接受 cookie 与可选 uid 字段")
+                cookie = normalize_cookie(item.get("cookie", ""))
+                uid = item.get("uid", "")
+                if isinstance(uid, bool) or not isinstance(uid, (str, int)):
+                    raise SafeError("uid 应为公开用户编号")
+                uid = str(uid).strip()
+                if uid and not re.fullmatch(r"[0-9]{1,20}", uid):
+                    raise SafeError("uid 应为十进制公开用户编号")
+                accounts.append({"cookie": cookie, "uid": uid})
+            else:
+                if "|" not in text:
+                    raise SafeError("账号行缺少分隔符；格式为 用户名|密码")
+                username, password = text.split("|", 1)
+                username, password = username.strip(), password.strip()
+                if not username or not password:
+                    raise SafeError("用户名或密码为空")
+                if any(ord(ch) < 32 for ch in username + password):
+                    raise SafeError("账号行含控制字符")
+                accounts.append({"username": username, "password": password})
+        except SafeError as error:
+            accounts.append({"error": str(error)})
     return accounts
 
 
@@ -218,12 +274,12 @@ def extract_identity(payload: Any) -> str:
         for key in IDENTITY_KEYS:
             value = mapping.get(key)
             if isinstance(value, (str, int, float)) and not isinstance(value, bool):
-                text = compact(value, 64)
+                text = str(value).strip()
                 if not text:
                     continue
                 if key.lower() in {"token", "password"}:
                     continue
-                if len(text) > 48 and re.fullmatch(r"[A-Za-z0-9._\-]+", text):
+                if any(ord(ch) < 32 or ord(ch) == 127 for ch in text):
                     continue
                 if re.search(r"(?<!\d)1[3-9]\d{9}(?!\d)", text):
                     continue
@@ -258,8 +314,6 @@ def classify_sign(payload: Any) -> Tuple[str, str]:
         return "alreadyComplete", "今日已签到（业务提示）"
     if payload.get("success") is True:
         detail = "签到成功（业务字段已核实）"
-        if message and len(message) <= 64:
-            detail = "签到成功；{}".format(message)
         return "success", detail
     if message:
         return "failure", "签到业务失败"
@@ -322,6 +376,8 @@ class AccountRunner:
 
 
 def _solve_acw_sc_v2(arg1: str) -> str:
+    if not re.fullmatch(r"[0-9A-Fa-f]{40}", arg1):
+        raise SafeError("WAF 挑战格式不支持")
     unshuffled = [""] * len(arg1)
     for index, char in enumerate(arg1):
         unshuffled[_UNSBOX_TABLE[index] - 1] = char
@@ -332,6 +388,14 @@ def _solve_acw_sc_v2(arg1: str) -> str:
     )
 
 
+class OfficialRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        parsed = urllib.parse.urlsplit(newurl)
+        if parsed.scheme != "https" or parsed.netloc != "anyrouter.top":
+            raise SafeError("阻止向非官方地址重定向凭据")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 class AnyRouterClient:
     def __init__(self, timeout: float) -> None:
         self.timeout = timeout
@@ -339,6 +403,7 @@ class AnyRouterClient:
         self.opener = urllib.request.build_opener(
             urllib.request.HTTPCookieProcessor(self.cookies),
             urllib.request.ProxyHandler({}),
+            OfficialRedirectHandler(),
         )
 
     def _set_cookie(self, name: str, value: str) -> None:
@@ -349,7 +414,7 @@ class AnyRouterClient:
             port=None,
             port_specified=False,
             domain="anyrouter.top",
-            domain_specified=True,
+            domain_specified=False,
             domain_initial_dot=False,
             path="/",
             path_specified=True,
@@ -465,11 +530,13 @@ def do_login(client: AnyRouterClient, username: str, password: str) -> Tuple[str
     return str(user_id), identity
 
 
-def do_sign(client: AnyRouterClient, user_id: str) -> Tuple[str, str]:
+def do_sign(client: AnyRouterClient, user_id: str = "") -> Tuple[str, str]:
     headers = {
-        "new-api-user": str(user_id),
         "referer": BASE_URL + "/console",
+        "content-type": "application/json",
     }
+    if user_id:
+        headers["new-api-user"] = str(user_id)
     status, result = client.request_json(
         SIGN_PATH, method="POST", headers=headers, payload=None
     )
@@ -477,60 +544,59 @@ def do_sign(client: AnyRouterClient, user_id: str) -> Tuple[str, str]:
         raise SafeError("签到凭据无效或会话已过期")
     if status != 200:
         raise SafeError("签到请求失败（HTTP {}）".format(status))
+    identity = extract_identity(result)
+    if identity and callable(getattr(client, "identity_callback", None)):
+        client.identity_callback(identity)
+        log("官方公开账号身份：{}".format(identity))
     state, detail = classify_sign(result)
     if state == "failure":
         raise SafeError(detail)
     return state, detail
 
 
-def run_account(
-    runner: AccountRunner,
-    username: str,
-    password: str,
-    timeout: float,
-    dry_run: bool,
-) -> None:
+def run_account(runner: AccountRunner, item: Dict[str, str], timeout: float,
+                dry_run: bool) -> None:
     def parameter_check():
+        if "error" in item:
+            raise SafeError(item["error"])
         return "success", "凭据本地格式检查通过，内容不输出", None
 
     runner.stage(1, "参数检查", parameter_check)
-
     if dry_run:
-        runner.skip(2, "登录获取会话", "断网预演：不请求登录接口")
+        runner.skip(2, "登录获取会话", "断网预演：不请求登录接口或发送 Cookie")
         runner.skip(3, "公开身份", "断网预演：无官方身份返回")
         runner.skip(4, "提交每日签到", "断网预演：不请求签到接口")
         runner.status = "dry-run"
-        log(
-            "账号 {}：断网预演通过；未验证真实凭据或业务结果".format(runner.display())
-        )
+        log("账号 {}：断网预演通过；未验证真实凭据或业务结果".format(runner.display()))
         return
 
     client = AnyRouterClient(timeout)
     user_box: Dict[str, str] = {}
-
-    def login_stage():
-        user_id, identity = do_login(client, username, password)
-        user_box["user_id"] = user_id
-        runner.identity = identity
-        return "success", "登录成功；公开身份：{}".format(identity), user_id
-
-    runner.stage(2, "登录获取会话", login_stage)
-
-    def identity_stage():
-        if runner.identity:
-            return "success", "公开账号身份：{}".format(runner.identity), None
-        return "success", "公开账号身份：账号{}".format(runner.number), None
-
-    runner.stage(3, "公开身份", identity_stage)
+    if "cookie" in item:
+        for pair in item["cookie"].split(";"):
+            if pair.strip():
+                name, value = pair.strip().split("=", 1)
+                client._set_cookie(name.strip(), value.strip())
+        user_box["user_id"] = item["uid"]
+        runner.skip(2, "登录获取会话", "使用显式提供的 Cookie，不请求密码登录")
+        runner.skip(3, "公开身份", "等待签到响应中的官方公开身份")
+    else:
+        def login_stage():
+            user_id, identity = do_login(client, item["username"], item["password"])
+            user_box["user_id"] = user_id
+            runner.identity = identity
+            return "success", "登录成功；公开身份：{}".format(identity), user_id
+        runner.stage(2, "登录获取会话", login_stage)
+        runner.stage(3, "公开身份", lambda: (
+            "success", "公开账号身份：{}".format(runner.display()), None))
 
     def sign_stage():
         state, detail = do_sign(client, user_box["user_id"])
         return state, detail, None
-
+    # 在接口解析处保留官方身份，不输出原始响应。
+    client.identity_callback = lambda identity: setattr(runner, "identity", identity)
     runner.stage(4, "提交每日签到", sign_stage)
-    runner.status = (
-        "alreadyComplete" if runner.stats["alreadyComplete"] else "success"
-    )
+    runner.status = "alreadyComplete" if runner.stats["alreadyComplete"] else "success"
 
 
 PY_NOTIFY_RUNNER = r'''
@@ -687,6 +753,32 @@ def notify(body: str, dry_run: bool) -> str:
     return "unavailable-or-failed"
 
 
+def notify_telegram(body: str, dry_run: bool) -> None:
+    token, chat = env("TG_BOT_TOKEN"), env("TG_CHAT_ID")
+    if not token and not chat:
+        return
+    if not notification_enabled()[0]:
+        log("Telegram 通知：⏭️ 全局通知策略未启用")
+        return
+    if dry_run:
+        log("Telegram 通知：⏭️ 断网预演，未发送网络请求")
+        return
+    if not re.fullmatch(r"[0-9]+:[A-Za-z0-9_-]+", token) or not chat:
+        log("Telegram 通知：⚠️ 参数不完整或格式错误；保留业务退出码")
+        return
+    payload = json.dumps({"chat_id": chat, "text": TITLE + "\n" + body}).encode("utf-8")
+    request = urllib.request.Request("https://api.telegram.org/bot" + token + "/sendMessage",
+        data=payload, headers={"Content-Type": "application/json"}, method="POST")
+    try:
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), OfficialRedirectHandler())
+        with opener.open(request, timeout=15) as response:
+            raw = response.read(MAX_BYTES + 1)
+            ok = len(raw) <= MAX_BYTES and json.loads(raw).get("ok") is True
+        log("Telegram 通知：" + ("✅ 已投递脱敏总结" if ok else "⚠️ 投递失败；保留业务退出码"))
+    except Exception:
+        log("Telegram 通知：⚠️ 投递失败；保留业务退出码")
+
+
 def main() -> int:
     started = time.monotonic()
     started_at = clock()
@@ -707,12 +799,15 @@ def main() -> int:
         if dry_setting not in TRUE_VALUES | FALSE_VALUES | {""}:
             raise SafeError("ANYROUTER_DRY_RUN 配置无效，停止执行")
         timeout = resolve_timeout()
-        raw_accounts = env("ANYROUTER_ACCOUNTS")
+        if env("BASE_URL", BASE_URL).rstrip("/") != BASE_URL:
+            raise SafeError("BASE_URL 仅允许 https://anyrouter.top；停止向第三方发送凭据")
+        canonical_set = "ANYROUTER_ACCOUNTS" in os.environ
+        raw_accounts = env("ANYROUTER_ACCOUNTS") if canonical_set else env("COOKIES")
         if not raw_accounts:
             raise SafeError(
                 "未配置 ANYROUTER_ACCOUNTS；请按每个非空行 用户名|密码 填写"
             )
-        accounts_data = parse_accounts(raw_accounts)
+        accounts_data = parse_accounts(raw_accounts, cookie_alias=not canonical_set)
         if not accounts_data:
             raise SafeError("ANYROUTER_ACCOUNTS 没有有效账号行")
         log(
@@ -734,8 +829,7 @@ def main() -> int:
             try:
                 run_account(
                     runner,
-                    item["username"],
-                    item["password"],
+                    item,
                     timeout,
                     dry_run,
                 )
@@ -782,6 +876,7 @@ def main() -> int:
     notification_started = time.monotonic()
     try:
         notification = notify(body, dry_run)
+        notify_telegram(body, dry_run)
     except Exception:
         notification = "unavailable-or-failed"
         log("通知：⚠️ 适配器发现或调用失败；保留业务退出码")

@@ -2,7 +2,31 @@
 # -*- coding: utf-8 -*-
 # name: Trae 每日签到与积分查询
 # cron: 7,23,37 * * * *
-"""Trae 每日签到（默认）与积分查询（TRAE_TASK=credits）。
+"""合并许可：GPL-3.0（保留下方全部原 MIT 许可及署名）。
+新增来源：ethgan/TraeCN-cloudflare- trae-work-checkin-worker.js（GPL-3.0）。
+本合并版本遵循 GNU General Public License version 3；不提供任何担保。
+许可全文：https://www.gnu.org/licenses/gpl-3.0.html
+
+功能对照与迁移说明：
+原 Worker：签到、已签跳过、只查余额、权益包明细、JWT 到期提示、换行多账号、
+WxPusher、断网预演，以及 Cloudflare KV 和远程账号管理网页。
+维护版已有签到、余额、网页/桌面续期、多账号、交互登录、通知、预演；
+本次补齐权益包明细、旧变量、到期提示和可选 WxPusher，不另建产品任务。
+Worker 原建议定时 0 1 * * *（UTC）等于北京时间 0 9 * * *，可用于同一脚本；
+维护默认 7,23,37 * * * * 及原有 23 0 * * *、7,37 * * * *、
+30 8 * * *、0 8,20 * * * 均保留，不增加默认运行次数。
+TRAE_TOKEN 为可选兼容输入，每行 TOKEN#x-device-id#备注；仅其他账号来源均未配置时使用。
+从本人官方客户端请求头取 Authorization 的 JWT 与同账号 x-device-id；
+支持 Cloud-IDE-JWT 前缀；备注可含 #，不打印令牌、设备号或自由备注。
+推荐迁移到必填规范变量 TRAE_ACCOUNTS，每行 JSON，accessToken 与 deviceId 配套。
+WXPUSHER_APP_TOKEN 与 WXPUSHER_UID 为可选同一通知接收配置，
+从本人 WxPusher 应用后台及本人关注用户信息取得；仅全局通知策略允许才发送。
+不迁移共享默认设备号、force 强制重签、默认开放的远程凭据管理、KV 和 HTTP 触发服务；
+凭据改由青龙环境变量维护，保留显式本地 OAuth 登录；不自动部署 Worker。
+审查同应用参考：related_1_checkin.py、related_2_checkin.py 的官方签到及权益接口一致；
+不引入随机设备轮换、忽略失败、原始响应日志和部署辅助文件。
+
+Trae 每日签到（默认）与积分查询（TRAE_TASK=credits）。
 来源：L0NE-6/Trae-AutoCheckin trae_checkin.py，以及 task.json 中同应用 MIT 参考。
 合并来源：xz0609/trae-work-checkin-ql trae_work_checkin.py（MIT）；
 同应用参考：03_checkin.py、trae_core.py、trae_credit_monitor.py。
@@ -700,6 +724,15 @@ def parse_accounts(session_override=None):
                 raise TaskError('预演不读取 auth 目录，请用 TRAE_ACCOUNTS 提供占位明文凭据')
             directory = Path(os.environ['TRAE_AUTH_DIR'])
             entries = [{'authPath': str(p)} for p in sorted(directory.glob('auth-*.json'))]
+    if not entries and os.getenv('TRAE_TOKEN', '').strip():
+        # 仅作为最后的兼容输入，不改变维护版所有已有来源的优先级。
+        for line in os.environ['TRAE_TOKEN'].splitlines():
+            if not line.strip():
+                continue
+            token, _, rest = line.strip().partition('#')
+            device, _, remark = rest.partition('#')
+            token = re.sub(r'^cloud-ide-jwt\s*', '', token.strip(), flags=re.I)
+            entries.append({'accessToken': token, 'deviceId': device.strip(), 'name': remark.strip()})
     if not entries:
         raise TaskError('请配置 TRAE_ACCOUNTS：每行一个账号 JSON 对象')
     accounts = []
@@ -806,6 +839,40 @@ def claim_points(root):
     return None
 
 
+def pack_details(root):
+    """只展示已通过成功核验的响应中明确有效的权益包，不猜测数值。"""
+    packs = root.get('user_entitlement_pack_list') or root.get('userEntitlementPackList')
+    if not isinstance(packs, list):
+        return []
+    rows = []
+    for pack in packs:
+        if not isinstance(pack, dict):
+            continue
+        base = pack.get('entitlement_base_info') or pack
+        if not isinstance(base, dict):
+            continue
+        quota = base.get('quota') or base
+        consumption = pack.get('usage') or {}
+        if not isinstance(quota, dict) or not isinstance(consumption, dict):
+            continue
+        limit = quota.get('credits_limit', quota.get('creditsLimit'))
+        used = consumption.get('credits_amount', consumption.get('creditsAmount'))
+        if not numeric(limit) or not numeric(used) or limit < 0 or used < 0:
+            continue
+        extra = base.get('product_extra') or {}
+        extra = extra.get('package_extra') if isinstance(extra, dict) else {}
+        label = pack.get('display_desc') or (extra.get('package_name') if isinstance(extra, dict) else '')
+        # 权益名称不是账号身份；防止响应反射秘密、手机号及伪造日志。
+        label = label if isinstance(label, str) else ''
+        for secret in SECRETS:
+            if secret:
+                label = label.replace(secret, '[已隐藏]')
+        label = re.sub(r'(?:\+?86)?1[3-9]\d{9}', '[已隐藏]', label)
+        label = re.sub(r'[\x00-\x1f\x7f]', ' ', label)[:120] or '权益包%d' % (len(rows) + 1)
+        rows.append({'name': label, 'total': limit, 'used': used, 'remain': round(limit - used, 2)})
+    return rows
+
+
 def balance(acc, cache, cache_path):
     for url, body in ((EP_ENTITLE, {'require_usage': True, 'full_data': True}), (EP_USAGE, {})):
         try:
@@ -817,7 +884,7 @@ def balance(acc, cache, cache_path):
             if isinstance(usage, dict):
                 total, used = usage.get('total_amount'), usage.get('consumed_amount')
                 if numeric(total) and numeric(used) and total >= 0 and used >= 0:
-                    return {'total': total, 'used': used, 'remain': round(total - used, 2)}
+                    return {'total': total, 'used': used, 'remain': round(total - used, 2), 'packs': pack_details(root)}
             packs = root.get('user_entitlement_pack_list') or root.get('userEntitlementPackList')
             if isinstance(packs, list) and packs:
                 total = used = 0
@@ -833,7 +900,7 @@ def balance(acc, cache, cache_path):
                         raise ValueError()
                     total += limit
                     used += amount
-                return {'total': total, 'used': used, 'remain': round(total - used, 2)}
+                return {'total': total, 'used': used, 'remain': round(total - used, 2), 'packs': pack_details(root)}
         except (TaskError, ValueError, TypeError, AttributeError):
             log('⚠️ 积分查询未通过核验，尝试同应用备用接口')
     raise TaskError('积分余额查询未获得明确成功及有效数值')
@@ -961,6 +1028,21 @@ def direct_push(body):
             log('企业微信通知：' + ('已发送' if 200 <= status < 300 and data.get('errcode') == 0 else '失败'))
         except Exception:
             log('企业微信通知：失败')
+    app_token = os.getenv('WXPUSHER_APP_TOKEN', '').strip()
+    recipient = os.getenv('WXPUSHER_UID', '').strip()
+    if app_token or recipient:
+        if not app_token or not recipient:
+            log('WxPusher 通知：配置不完整，保留业务退出码')
+        else:
+            try:
+                status, data = http('https://wxpusher.zjiecode.com/api/send/message',
+                                    {'Content-Type': 'application/json'},
+                                    {'appToken': app_token, 'uids': [recipient], 'topicIds': [],
+                                     'summary': 'Trae 每日签到与积分查询', 'content': body,
+                                     'contentType': 1, 'verifyPay': False}, 8)
+                log('WxPusher 通知：' + ('已发送' if 200 <= status < 300 and data.get('code') == 1000 else '失败'))
+            except Exception:
+                log('WxPusher 通知：失败，保留业务退出码')
     token = (os.getenv('PLUSPLUS_TOKEN') or os.getenv('PLUSHPLUS_TOKEN') or os.getenv('PUSHPLUS_TOKEN') or '').strip()
     if token:
         try:
@@ -1025,6 +1107,10 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
                     time.sleep(step)
                     remaining -= step
             run.stage('显式随机错峰', wait_random)
+    expires = jwt_exp(acc.get('accessToken', ''))
+    if expires:
+        days = math.floor((expires - time.time()) / 86400)
+        log('令牌有效期：' + ('已过期，将按原有续期链处理' if days < 0 else '剩余约 %d 天' % days))
     saved = cache.get(acc['_key'], {})
     if isinstance(saved, dict) and isinstance(saved.get('officialUid'), str) and saved['officialUid']:
         # 复用上次官方成功响应的公开 UID，兼容没有身份字段的状态接口。
@@ -1126,6 +1212,8 @@ def run_account(acc, run, task, cache, cache_path, state, state_path, options):
     values = run.stage('查询真实积分余额', lambda: balance(acc, cache, cache_path))
     identify_duplicate(acc, options['seen'])
     log('积分：总额 %s，已用 %s，剩余 %s' % (values['total'], values['used'], values['remain']))
+    for row in values.get('packs', []):
+        log('权益包 %s：总额 %s，已用 %s，剩余 %s' % (row['name'], row['total'], row['used'], row['remain']))
     return 'success'
 
 SALT_A = bytes([82, 9, 106, 213, 48, 54, 165, 56, 191, 64, 163, 158, 129, 243, 215, 251,
@@ -1440,7 +1528,7 @@ def main():
                 raise TaskError('--session 缺少 Cookie Value')
             session_override = args[i + 1].strip()
             SECRETS.append(session_override)
-            if os.getenv('TRAE_ACCOUNTS', '').strip() or os.getenv('TRAE_ACCESS_TOKEN') or os.getenv('TRAE_REFRESH_TOKEN'):
+            if os.getenv('TRAE_ACCOUNTS', '').strip() or os.getenv('TRAE_ACCESS_TOKEN') or os.getenv('TRAE_REFRESH_TOKEN') or os.getenv('TRAE_TOKEN'):
                 raise TaskError('--session 不得与其他账号配置混用；请统一使用 TRAE_ACCOUNTS')
             del args[i:i + 2]
         if len(args) > 1:
