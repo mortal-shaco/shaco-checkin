@@ -61,6 +61,7 @@
 | 布谷TV每日签到 | `scripts/bugutv.py` | `python3 scripts/bugutv.py` | `12 1 * * *` | 待检查 | [bugutv.py.md](../scripts/bugutv.py.md)（`docs/scripts/bugutv.py.md`） |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `31 9,18 * * *` | 待检查 | [bwcj.py.md](../scripts/bwcj.py.md)（`docs/scripts/bwcj.py.md`） |
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
+| 菜鸟图库图币签到 | `scripts/cainiao.py` | `python3 scripts/cainiao.py` | `27 10 * * *` | 待检查 | [cainiao.py.md](../scripts/cainiao.py.md)（`docs/scripts/cainiao.py.md`） |
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `3 1 * * *` | 待检查 | [cdrail.py.md](../scripts/cdrail.py.md)（`docs/scripts/cdrail.py.md`） |
 | 超星学习通巡课签到 | `scripts/chaoxing_assistant.js` | `node scripts/chaoxing_assistant.js` | `*/10 7-22 * * *` | 待检查 | [chaoxing_assistant.js.md](../scripts/chaoxing_assistant.js.md)（`docs/scripts/chaoxing_assistant.js.md`） |
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
@@ -230,6 +231,7 @@
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` | 待检查 | [quark_signin.py.md](../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `2 9 * * *` | 待检查 | [raccoon_daily.py.md](../scripts/raccoon_daily.py.md)（`docs/scripts/raccoon_daily.py.md`） |
 | 一亩三分地每日签到答题 | `scripts/raw_requests.py` | `python3 scripts/raw_requests.py` | `51 8 * * *` | 待检查 | [raw_requests.py.md](../scripts/raw_requests.py.md)（`docs/scripts/raw_requests.py.md`） |
+| Readfree 每日签到 | `scripts/readfree.py` | `python3 scripts/readfree.py` | `26 10 * * *` | 待检查 | [readfree.py.md](../scripts/readfree.py.md)（`docs/scripts/readfree.py.md`） |
 | Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `42 0 * * *` | 待检查 | [rousi_checkin.js.md](../scripts/rousi_checkin.js.md)（`docs/scripts/rousi_checkin.js.md`） |
 | 橙光每日任务 | `scripts/rpg66.js` | `node scripts/rpg66.js` | `20 10 * * *` | 待检查 | [rpg66.js.md](../scripts/rpg66.js.md)（`docs/scripts/rpg66.js.md`） |
 | eatASMR每日签到 | `scripts/scf_eat.py` | `python3 scripts/scf_eat.py` | `37 8 * * *` | 待检查 | [scf_eat.py.md](../scripts/scf_eat.py.md)（`docs/scripts/scf_eat.py.md`） |
@@ -339,6 +341,7 @@
 | 爱桌游每日签到 | `scripts/task_d530fa58.py` | `python3 scripts/task_d530fa58.py` | `0 5 * * *` | 待检查 | [task_d530fa58.py.md](../scripts/task_d530fa58.py.md)（`docs/scripts/task_d530fa58.py.md`） |
 | 93海山云论坛签到 | `scripts/task_df720629.py` | `python3 scripts/task_df720629.py` | `34 9 * * *` | 待检查 | [task_df720629.py.md](../scripts/task_df720629.py.md)（`docs/scripts/task_df720629.py.md`） |
 | hao4k每日签到 | `scripts/task_e5c5d07b.py` | `python3 scripts/task_e5c5d07b.py` | `55 8 * * *` | 待检查 | [task_e5c5d07b.py.md](../scripts/task_e5c5d07b.py.md)（`docs/scripts/task_e5c5d07b.py.md`） |
+| 王者营地每日签到 | `scripts/task_e7937ed1.js` | `node scripts/task_e7937ed1.js` | `59 15 8 * * *` | 待检查 | [task_e7937ed1.js.md](../scripts/task_e7937ed1.js.md)（`docs/scripts/task_e7937ed1.js.md`） |
 | FZQOJ每日签到 | `scripts/task_ed4d6d4d.py` | `python3 scripts/task_ed4d6d4d.py` | `53 8 * * *` | 待检查 | [task_ed4d6d4d.py.md](../scripts/task_ed4d6d4d.py.md)（`docs/scripts/task_ed4d6d4d.py.md`） |
 | M-SEC 每日签到 | `scripts/task_f37fb5e9.py` | `python3 scripts/task_f37fb5e9.py` | `6 8 * * *` | 待检查 | [task_f37fb5e9.py.md](../scripts/task_f37fb5e9.py.md)（`docs/scripts/task_f37fb5e9.py.md`） |
 | 网易云音乐人签到 | `scripts/task_f7e4fa18.py` | `python3 scripts/task_f7e4fa18.py` | `21 9 * * *` | 待检查 | [task_f7e4fa18.py.md](../scripts/task_f7e4fa18.py.md)（`docs/scripts/task_f7e4fa18.py.md`） |

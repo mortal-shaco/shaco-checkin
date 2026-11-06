@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **57** 个脚本。返回 [`目录首页`](../README.md)。
+共 **58** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -41,6 +41,7 @@
 | 爱桌游每日签到 | `scripts/task_d530fa58.py` | `python3 scripts/task_d530fa58.py` | `0 5 * * *` | 待检查 | [task_d530fa58.py.md](../../scripts/task_d530fa58.py.md)（`docs/scripts/task_d530fa58.py.md`） |
 | 93海山云论坛签到 | `scripts/task_df720629.py` | `python3 scripts/task_df720629.py` | `34 9 * * *` | 待检查 | [task_df720629.py.md](../../scripts/task_df720629.py.md)（`docs/scripts/task_df720629.py.md`） |
 | hao4k每日签到 | `scripts/task_e5c5d07b.py` | `python3 scripts/task_e5c5d07b.py` | `55 8 * * *` | 待检查 | [task_e5c5d07b.py.md](../../scripts/task_e5c5d07b.py.md)（`docs/scripts/task_e5c5d07b.py.md`） |
+| 王者营地每日签到 | `scripts/task_e7937ed1.js` | `node scripts/task_e7937ed1.js` | `59 15 8 * * *` | 待检查 | [task_e7937ed1.js.md](../../scripts/task_e7937ed1.js.md)（`docs/scripts/task_e7937ed1.js.md`） |
 | FZQOJ每日签到 | `scripts/task_ed4d6d4d.py` | `python3 scripts/task_ed4d6d4d.py` | `53 8 * * *` | 待检查 | [task_ed4d6d4d.py.md](../../scripts/task_ed4d6d4d.py.md)（`docs/scripts/task_ed4d6d4d.py.md`） |
 | M-SEC 每日签到 | `scripts/task_f37fb5e9.py` | `python3 scripts/task_f37fb5e9.py` | `6 8 * * *` | 待检查 | [task_f37fb5e9.py.md](../../scripts/task_f37fb5e9.py.md)（`docs/scripts/task_f37fb5e9.py.md`） |
 | 网易云音乐人签到 | `scripts/task_f7e4fa18.py` | `python3 scripts/task_f7e4fa18.py` | `21 9 * * *` | 待检查 | [task_f7e4fa18.py.md](../../scripts/task_f7e4fa18.py.md)（`docs/scripts/task_f7e4fa18.py.md`） |

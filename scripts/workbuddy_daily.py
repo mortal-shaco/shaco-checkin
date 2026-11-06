@@ -2,6 +2,23 @@
 # -*- coding: utf-8 -*-
 # name: WorkBuddy 国内版日常维护
 # cron: 15 7,12 * * *
+# =================================================================================
+#  WorkBuddy 积分自动化引擎 (wb_engine.py)  ——  第三方逆向脚本（派生作品 / Derivative Work）
+#
+#  本文件派生自以下开源项目（均基于 MIT 许可证）：
+#    · xz0609/workbuddy-checkin-ql   https://github.com/xz0609/workbuddy-checkin-ql
+#        （该项目本身基于 L0NE-6/WorkBuddy-Daily，
+#          https://github.com/L0NE-6/WorkBuddy-Daily）
+#    · L0NE-6/WorkBuddy-Daily        https://github.com/L0NE-6/WorkBuddy-Daily
+#
+#  本仓库沿用 MIT 许可证，保留原作者版权声明；本仓库的修改与新增部分版权归
+#  HonorC05 (workbuddy-auto-checkin) 所有。完整许可文本见仓库根目录 LICENSE；
+#  第三方来源与版权归属
+#  见 NOTICE。
+#
+#  免责声明：本脚本为第三方逆向实现，与 WorkBuddy / 腾讯官方无关；接口可能随时
+#            失效，仅供个人学习与研究使用，请遵守相关平台规则与当地法律法规。
+# =================================================================================
 # 来源：L0NE-6/WorkBuddy-Daily，workbuddy_daily.py v3.36，MIT
 # 合并参考：xmgzxmgz/workbuddy-checkin-qinglong，workbuddy_checkin.py（MIT）。
 # 合并参考：Maquer/workbuddy-checkin，workbuddy_checkin.py，MIT
@@ -24,7 +41,14 @@ expert_use_shangjia_xuanchuan、expert_use_bowangwang 显式选择，均不加�
 国际版 --refresh 显式轮换，WORKBUDDY_INTL_TOKEN_STORE 指向本人0600缓存，续期前检查可写。
 WORKBUDDY_INTL_DRY_RUN=1 或 WORKBUDDY_DRY_RUN=1 完全断网预演。
 国际版 AT/RT 从本人 www.workbuddy.ai 官方授权登录响应获取，不依赖登录脚本或本地应用执行。
-夜猫子 black_cat 需单独按 30 23 * * * 调度。国际版凭据不通用；已结束开学季与手动登录不合并。
+夜猫子 black_cat 需单独按 30 23 * * * 调度。国际版凭据不通用；手动登录不合并。
+新增 --school 为独立开学季入口，不串联日常任务，默认只查询服务端活动期与任务。
+--school-tasks 可选 query、share、report、growth、claim、lottery，逗号分隔；未选择的动作绝不执行。
+report 与 growth 另需 WORKBUDDY_ALLOW_REPORT=1；growth 仅处理已知 school_season 成长任务并领奖。
+lottery 每轮最多 WORKBUDDY_SCHOOL_MAX_DRAWS 次（默认1，最多20）。
+活动仅服务端 in_period=true 时执行；学生认证、协议确认和未知任务均留给本人。
+开学季按原上游 3 0,8,16 * * * 单独建立 --school 调度；保留日常原定时。
+凭据仍用国内版逐行变量；无桌面程序解密、本机导入或私有 auths 文件依赖。
 WORKBUDDY_DRY_RUN=1：完全断网，不轮换令牌、不写文件、不发送实际通知。
 续期令牌仅保存至本人指定 WORKBUDDY_TOKEN_STORE（0600）；默认不轮换尚有效的 AT。
 --refresh 或只有 RT 时必须配置此路径，以免新 RT 丢失。不要将此文件上传公开仓库。
@@ -2962,7 +2986,7 @@ def notify_summary(body):
     selectors = os.getenv('QINGLONG_NOTIFY_SCRIPTS')
     if selectors is not None:
         patterns = [v for v in re.split(r'[,;\s]+',selectors) if v]
-        names = ('132c582ed57df40f','workbuddy_daily.py','candidate.py',
+        names = ('cdf18dad86c644b6','132c582ed57df40f','workbuddy_daily.py','candidate.py',
                  'checkin/workbuddy_daily.py','scripts/checkin/workbuddy_daily.py',
                  pathlib.Path(__file__).name)
         selected = any(fnmatch.fnmatchcase(name,pattern) for name in names for pattern in patterns)
@@ -3235,6 +3259,230 @@ def t_gift_compensation(s, uid, nick, log):
     return 'alreadyComplete'
 
 
+
+# 开学季隔离入口：HonorC05/workbuddy-auto-checkin wb_engine.py（MIT）。
+# 与日常任务分开选择和调度，禁止自动扩大未知任务的副作用。
+SCHOOL_DOMAIN = 'https://www.codebuddy.cn'
+SCHOOL_BASE = SCHOOL_DOMAIN + '/portal/activity/school'
+SCHOOL_ACTIVITY_ID = 'school_open_day_2026'
+SCHOOL_UA = ('Mozilla/5.0 (Linux; Android 14; MicroMessenger/8.0.49 '
+             'WeChat/0.8.0 MiniProgramEnv/android; wkbrowser xweb)')
+SCHOOL_TASK_MODES = {
+    'task_student_verify': 'manual', 'share_invite': 'share',
+    'chat_3_times': 'mini_chat', 'desktop_chat_1_time': 'desktop_seq',
+    'expert_use': 'expert',
+}
+
+def _school_mini_chat_event(uid, conv_id):
+    """开学季小程序对话事件（带 activityId）。"""
+    rid = str(uuid.uuid4())
+    return [{"eventCode": "chat_request_send", "timestamp": int(time.time() * 1000),
+             "reportDelay": 0, "source": "mini_program", "ideName": "wx_app_cloud",
+             "ideType": "WorkBuddy_MP", "extName": "workbuddy-mp", "extVersion": "2.4.0",
+             "mode": "chat", "activityId": SCHOOL_ACTIVITY_ID,
+             "conversationId": conv_id, "requestId": conv_id, "messageId": "msg-" + rid,
+             "requestModelId": "glm-5.2", "requestModelName": "GLM-5.2",
+             "inputLength": 12, "mentionContexts": [], "mentionContextCount": 0,
+             "isPlan": False, "codebaseEnable": False, "maxToken": 0, "maxSteps": 0,
+             "temperature": 0, "agentName": "default", "agentType": "conversation",
+             "userId": uid}]
+
+def _school_desktop_seq_events(uid, nick, conv_id):
+    """开学季桌面对话：6 连指纹事件 + activityId。"""
+    evs = desktop_chat_sequence(uid, nick, conv_id, conv_id, conv_id)
+    fp = desktop_fingerprint(uid, nick)
+    out = []
+    for e in evs:
+        m = dict(e)
+        m.update(fp)
+        m["activityId"] = SCHOOL_ACTIVITY_ID
+        out.append(m)
+    return out
+
+def _school_expert_events(uid, expert_id, expert_name, conv_id):
+    """开学季专家召唤 + 实际使用事件。"""
+    rid = str(uuid.uuid4())
+    mid_msg = "msg-" + rid
+    now = int(time.time() * 1000)
+    return [
+        {"eventCode": "expert_summoned", "id": expert_id, "name": expert_name,
+         "type": "agent", "expertType": "agent", "source": "builtin",
+         "version": "", "reportDelay": 0, "timestamp": now,
+         "activityId": SCHOOL_ACTIVITY_ID, "userId": uid},
+        {"eventCode": "expert_actual_use", "id": expert_id, "name": expert_name,
+         "expertTitle": expert_name, "type": "agent", "expertType": "agent", "source": "builtin",
+         "version": "", "cost": 0, "characterCount": 12, "reportDelay": 0,
+         "requestId": rid, "messageId": mid_msg, "conversationId": conv_id,
+         "requestModelId": "deepseek-v4-flash", "requestModelName": "DeepSeek V4 Flash",
+         "timestamp": now, "activityId": SCHOOL_ACTIVITY_ID, "userId": uid}]
+
+class SchoolClient:
+    def __init__(self, session, seconds):
+        self.session = session
+        self.deadline = time.monotonic() + seconds
+
+    def request(self, path, body=None, method='GET', desktop=False):
+        remaining = self.deadline - time.monotonic()
+        if remaining <= 0:
+            raise SafeError('开学季账号请求预算已耗尽')
+        domain = 'https://copilot.tencent.com' if desktop else SCHOOL_DOMAIN
+        headers = {'User-Agent': SCHOOL_UA, 'Referer': SCHOOL_DOMAIN+'/',
+                   'Accept': 'application/json'}
+        if desktop:
+            headers = {'X-Product': 'SaaS'}
+        # 基础 HTTP 层保持 TLS 验证、禁止重定向、响应上限；写请求从不重试。
+        response = RealSession.request(self.session, method, domain+path,
+                                       json=body, headers=headers,
+                                       timeout=min(25,remaining), allow_redirects=False)
+        try:
+            envelope = response.json()
+        except Exception:
+            raise SafeError('开学季响应不是有效 JSON') from None
+        if not isinstance(envelope,dict):
+            raise SafeError('开学季响应结构变化')
+        if response.status_code != 200 or type(envelope.get('code')) is not int or envelope['code'] != 0:
+            raise SafeError('开学季 HTTP 或业务码未通过核验')
+        data = envelope.get('data')
+        if isinstance(data,dict):
+            identity(data)
+        timeline('开学季 %s 请求：HTTP 200，业务码0已校验' % method)
+        return data
+
+    def tasks(self):
+        data = self.request('/portal/activity/school/tasks')
+        if not isinstance(data,dict) or type(data.get('in_period')) is not bool or not isinstance(data.get('tasks'),list):
+            raise SafeError('开学季活动期或任务列表字段缺失')
+        for row in data['tasks']:
+            if not isinstance(row,dict) or not re.fullmatch(r'[A-Za-z0-9_.-]+', str(row.get('task_code',''))):
+                raise SafeError('开学季任务结构变化')
+        return data
+
+    def row(self, code):
+        data = self.tasks()
+        if not data['in_period']:
+            raise SafeError('开学季活动期在执行中关闭，停止变更')
+        row = next((x for x in data['tasks'] if x['task_code']==code),None)
+        if row is None:
+            raise SafeError('开学季任务在回读中缺失')
+        return row
+
+
+def school_query(client):
+    data = client.tasks()
+    timeline('开学季活动：%s；下发任务%d项' % ('进行中' if data['in_period'] else '非进行期',len(data['tasks'])))
+    for row in data['tasks']:
+        code = row['task_code']
+        state = row.get('status')
+        timeline('开学季任务%s：%s%s' % (panel_text(code), state if state in ('pending','not_started','in_progress','completed','claimed') else '未知状态',
+                 '；仅人工处理' if SCHOOL_TASK_MODES.get(code) in (None,'manual') else ''))
+    return 'success'
+
+
+def school_report(client, uid, nick, events, desktop=False):
+    if not uid:
+        raise SafeError('开学季事件需要有效公开 UID')
+    common = {'userId':uid,'userNickname':nick,'ideName':'web-Agents',
+              'ideType':'web-Agents','machineId':derive_id(uid,'machine'),
+              'mode':'CLOUD','userAgent':SCHOOL_UA,'os':'Android','timezone':'Asia/Shanghai'}
+    if desktop:
+        common.update(ideName='WorkBuddy',ideType='WorkBuddy',mode='LOCAL',os='win32')
+        common['userAgent'] = WORKBUDDY_UA_CN
+    client.request('/v2/report', {'common':common,'events':events}, 'POST', desktop)
+
+
+def school_action(client, action, uid, nick, draw_limit):
+    data = client.tasks()
+    if not data['in_period']:
+        timeline('⏭️ 开学季非进行期，未执行任何变更')
+        return 'skipped'
+    if action == 'growth':
+        if os.getenv('WORKBUDDY_ALLOW_REPORT','0') != '1':
+            raise SafeError('校园日成长任务需显式 WORKBUDDY_ALLOW_REPORT=1')
+        if not uid:
+            raise SafeError('校园日成长任务需要有效公开 UID')
+        row = _mp_task_row(client.session,'school_season')
+        if row is None or row.get('locked'):
+            return 'skipped'
+        if row.get('accept_status') == 'claimed':
+            return 'alreadyComplete'
+        _mp_do_task(client.session,uid,nick,'school_season',recipe_log,
+                    _mp_chat_evs(uid,nick,'mini-ss',activity_id=SCHOOL_ACTIVITY_ID),
+                    '参与校园日活动',target=1,pace=True)
+        if _mp_prog(client.session,'school_season')[0] != 'claimed':
+            raise SafeError('校园日成长任务领奖未通过服务端回读')
+        timeline('✅ 校园日成长任务：服务端已领奖；不表示真实小程序操作')
+        return 'success'
+    if action == 'lottery':
+        count = 0
+        for _ in range(draw_limit):
+            config = client.request('/portal/activity/school/config')
+            balance = (config.get('chance') or {}).get('balance') if isinstance(config,dict) else None
+            if type(balance) is not int or balance < 0:
+                raise SafeError('开学季抽奖余额字段缺失')
+            if not balance:
+                break
+            receipt = client.request('/portal/activity/school/wheel/draw', {'draw_uuid':str(uuid.uuid4())},'POST')
+            if not isinstance(receipt,dict) or not isinstance(receipt.get('prize_code'),str) or not receipt['prize_code']:
+                raise SafeError('开学季抽奖回执缺少奖品，不自动重试')
+            count += 1
+            timeline('✅ 开学季抽奖%d：已收到官方奖品回执；实物奖请到官方活动页核对' % count)
+            time.sleep(WRITE_GAP)
+        timeline('本轮开学季已验证抽奖%d次' % count)
+        return 'success' if count else 'alreadyComplete'
+    if action == 'report' and os.getenv('WORKBUDDY_ALLOW_REPORT','0') != '1':
+        raise SafeError('开学季事件需显式 WORKBUDDY_ALLOW_REPORT=1，不表示真实桌面业务')
+    changed = 0
+    for original in data['tasks']:
+        code = original['task_code']
+        kind = SCHOOL_TASK_MODES.get(code)
+        if kind in (None,'manual'):
+            continue
+        row = client.row(code)
+        state = row.get('status')
+        if state == 'claimed':
+            continue
+        if action == 'claim':
+            if state != 'completed':
+                continue
+            client.request('/portal/activity/school/tasks/%s/claim' % code, {}, 'POST')
+            if client.row(code).get('status') != 'claimed':
+                raise SafeError('开学季领奖未通过服务端回读')
+            changed += 1
+            timeline('✅ 开学季任务%s：奖励已回读确认' % code)
+            continue
+        if state == 'completed' or (action == 'share') != (kind == 'share'):
+            continue
+        client.request('/portal/activity/school/tasks/%s/viewed' % code, {}, 'POST')
+        time.sleep(WRITE_GAP)
+        conv = 'conv-'+str(uuid.uuid4())
+        if kind == 'share':
+            client.request('/portal/activity/school/tasks/share-complete', {'channel':'wechat'}, 'POST')
+        elif kind == 'mini_chat':
+            for _ in range(3):
+                school_report(client,uid,nick,_school_mini_chat_event(uid,conv))
+                time.sleep(WRITE_GAP)
+        elif kind == 'desktop_seq':
+            school_report(client,uid,nick,_school_desktop_seq_events(uid,nick,conv),True)
+        elif kind == 'expert':
+            market = client.request('/v2/operation-platform/market/expert/list',
+                    {'page':1,'page_size':10,'categories':['16-BackToSchool'],'expert_type':'agent'},'POST')
+            experts = market.get('experts') if isinstance(market,dict) else None
+            if not isinstance(experts,list) or not experts or not isinstance(experts[0],dict) or not experts[0].get('id'):
+                raise SafeError('开学季专家缺失；不伪造专家 ID')
+            expert = experts[0]
+            name = _extract_name(expert.get('displayName',expert.get('name','开学季专家')))
+            school_report(client,uid,nick,_school_expert_events(uid,expert['id'],name,conv))
+        for _ in range(5):
+            time.sleep(2)
+            if client.row(code).get('status') in ('completed','claimed'):
+                break
+        else:
+            raise SafeError('开学季任务未通过服务端终态回读')
+        timeline('✅ 开学季任务%s：服务端已完成；模拟上报不代表真实桌面业务' % code)
+        changed += 1
+    return 'success' if changed else 'alreadyComplete'
+
+
 def main():
     global DRY, TASK_ONLY, TASK_SKIP, WRITE_GAP, MP_CHAT_GAP, ACTIVE_TAG
     DRY = os.getenv('WORKBUDDY_DRY_RUN','0').lower() in ('1','true','yes','on')
@@ -3247,6 +3495,8 @@ def main():
         parser = RedactedArgumentParser()
         parser.add_argument('--credit-report', action='store_true', help='独立只读积分日报')
         parser.add_argument('--json', action='store_true', help='配合 --credit-report 输出脱敏数值数组')
+        parser.add_argument('--school', action='store_true', help='独立开学季入口，默认只读查询')
+        parser.add_argument('--school-tasks', default='', help='独立开学季动作：query,share,report,growth,claim,lottery')
         parser.add_argument('--query', action='store_true')
         parser.add_argument('--status', '-s', action='store_true', help='独立只读签到状态面板')
         parser.add_argument('--refresh', action='store_true')
@@ -3257,6 +3507,17 @@ def main():
         parser.add_argument('--tasks', default=os.getenv('WORKBUDDY_TASKS',os.getenv('WORKBUDDY_ONLY_TASKS','')))
         parser.add_argument('--skip-tasks', default=os.getenv('WORKBUDDY_SKIP_TASKS',''))
         args = parser.parse_args()
+        if args.school_tasks and not args.school:
+            raise SafeError('--school-tasks 只能配合 --school')
+        if args.school and (args.query or args.status or args.credit_report or args.refresh or args.json or args.tasks or args.skip_tasks):
+            raise SafeError('开学季必须独立运行，不能与日常任务、刷新或只读面板混用')
+        school_tasks = _parse_task_filter(args.school_tasks) or {'query'}
+        if school_tasks - {'query','share','report','growth','claim','lottery'}:
+            raise SafeError('未知开学季动作')
+        school_draws = int(os.getenv('WORKBUDDY_SCHOOL_MAX_DRAWS','1')) if args.school else 1
+        school_budget = float(os.getenv('WORKBUDDY_BUDGET_SECONDS','900')) if args.school else 900
+        if not 1 <= school_draws <= 20 or not math.isfinite(school_budget) or not 1 <= school_budget <= 3600:
+            raise SafeError('开学季抽奖上限须1至20，请求预算须1至3600秒')
         if args.json and not (args.credit_report or args.status):
             raise SafeError('--json 仅能配合 --credit-report 或 --status')
         if args.status and (args.credit_report or args.query or args.refresh or args.tasks or args.skip_tasks):
@@ -3338,9 +3599,9 @@ def main():
                     SECRETS.extend([at,rt])
                 exp = _jwt_claims(at).get('exp',0)
                 due = bool(rt and store and (time.time()-cached.get('updated',0)>10*86400 or (exp and exp-time.time()<7*86400)))
-                if (args.credit_report or args.status) and not at:
+                if (args.credit_report or args.status or args.school) and not at:
                     raise SafeError('只读查询需要有效 AT；请先单独 --refresh')
-                if args.refresh or (not (args.credit_report or args.status) and (not at or due)):
+                if args.refresh or (not (args.credit_report or args.status or args.school) and (not at or due)):
                     at, rt = rotate(idx, at, rt, store, cache)
                 elif exp and exp <= time.time():
                     raise SafeError('AT 已过期；配置私有缓存和 RT 后续期')
@@ -3350,7 +3611,14 @@ def main():
                 uid,nick = uid_of(at),nickname_of(at)
                 if legacy and note:
                     s.headers['X-User-Id'] = note
-                if args.status:
+                if args.school:
+                    if legacy and note:
+                        uid = note
+                    client = SchoolClient(s,school_budget)
+                    for number,action in enumerate(('query','share','report','growth','claim','lottery'),2):
+                        if action in school_tasks:
+                            stage(number,'独立开学季 '+action,lambda action=action:school_query(client) if action=='query' else school_action(client,action,uid,nick,school_draws))
+                elif args.status:
                     stage(2,'只读签到状态面板',lambda:status_panel(s,idx,reports,status_retries))
                 elif args.credit_report:
                     stage(2,'只读积分日报',lambda:credit_report(billing_report_headers(at,uid),False,idx,reports))

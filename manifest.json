@@ -10248,6 +10248,161 @@
       }
     },
     {
+      "catalogId": "1abfc0b939e55837",
+      "applicationKey": "jim6699/python_scripts::菜鸟图库图币签到",
+      "checkProfile": {
+        "requiredEnv": [
+          "CAINIAO_COOKIE"
+        ],
+        "optionalEnv": [
+          "CAINIAO_ACCOUNT_NAMES",
+          "CAINIAO_DRY_RUN",
+          "PUSHPLUS_TOKEN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CAINIAO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CAINIAO_DRY_RUN": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用登录 Cookie 执行菜鸟图库每日图币签到，保留上游 HTTPS GET 接口和请求头。",
+          "核验明确的签到成功或今日已签到消息，未知业务码、页面、消息与接口异常均按失败处理。",
+          "支持每行一个账号、可选本地账号标签及官方非敏感身份展示。",
+          "支持原有可选 PushPlus 通知及青龙通知选择列表和全局开关，发送脱敏汇总。",
+          "支持完全断网预演、逐阶段时间轴、账号及任务统计、单行 TASK_SUMMARY 结构化结果和云函数 main_handler 入口。"
+        ],
+        "sideEffects": [
+          "实际运行时向菜鸟图库发起签到，可能增加账号图币或更新当日签到状态。",
+          "通知启用时向青龙配置的通知渠道发送脱敏任务汇总，配置 PUSHPLUS_TOKEN 后追加 HTTPS 推送。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "菜鸟图库图币签到",
+      "path": "scripts/cainiao.py",
+      "sha256": "c782f1704e40e6ae932f2bd2f412252d4017116c405d1bb90a06c337aad2b8cb",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Jim6699/Python_scripts",
+        "branch": "main",
+        "commit": "3b17c42aac3604cc842c6c94821603699f0bd071",
+        "originalPath": "菜鸟图库图币签到/cainiao.py"
+      },
+      "cron": "27 10 * * *",
+      "command": "python3 scripts/cainiao.py",
+      "environment": [
+        {
+          "name": "CAINIAO_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用自己的账号登录 https://www.sucai999.com，在浏览器开发者工具的网络面板查看本站已登录请求的请求头，复制完整 Cookie 值。失效后重新登录获取，不要分享凭据。",
+          "format": "每个非空行对应一个账号的完整 Cookie 值，不含 Cookie: 前缀。保留分号、等号和其他字符，不以 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "CAINIAO_ACCOUNT_NAMES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可自行设置本地账号标签；也会显示官方响应中提供的非敏感昵称、用户名、显示名称或公开 UID。",
+          "format": "可选，每行一个标签，按行号与账号对应，不要使用手机号或凭据作为标签。"
+        },
+        {
+          "name": "CAINIAO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 启用完全断网预演。",
+          "format": "1、true、yes、on 启用，默认 0。预演不执行签到和通知。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可从 PushPlus 官方个人中心获取自己的推送令牌；通知启用时可追加 HTTPS 汇总推送。",
+          "format": "可选单个令牌，仅发送脱敏任务汇总，不向 PushPlus 发送 Cookie。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置通知脚本选择列表。",
+          "format": "使用逗号、分号或空白分隔目录编号、脚本相对路径、文件名或文件名通配符，* 匹配全部，空值在 auto 模式下关闭全部。本任务可用 1abfc0b939e55837 或 cainiao.py。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如青龙通知模块位于自定义目录，可指定该目录；否则自动查找可导入的 notify 模块及青龙标准路径。",
+          "format": "可选本机目录，包含 notify.py 或 sendNotify.js；模块不可用时保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "CAINIAO_COOKIE 每个非空行一个账号，完整保留该行 Cookie。逐账号独立执行，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用登录 Cookie 执行菜鸟图库每日图币签到，保留上游 HTTPS GET 接口和请求头。",
+        "核验明确的签到成功或今日已签到消息，未知业务码、页面、消息与接口异常均按失败处理。",
+        "支持每行一个账号、可选本地账号标签及官方非敏感身份展示。",
+        "支持原有可选 PushPlus 通知及青龙通知选择列表和全局开关，发送脱敏汇总。",
+        "支持完全断网预演、逐阶段时间轴、账号及任务统计、单行 TASK_SUMMARY 结构化结果和云函数 main_handler 入口。"
+      ],
+      "sideEffects": [
+        "实际运行时向菜鸟图库发起签到，可能增加账号图币或更新当日签到状态。",
+        "通知启用时向青龙配置的通知渠道发送脱敏任务汇总，配置 PUSHPLUS_TOKEN 后追加 HTTPS 推送。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1abfc0b939e55837",
+        "candidateSha256": "686ceb649f9410803376b77b8bb65d47bd5015e7f28e8038281199fd466b23e2"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "686ceb649f9410803376b77b8bb65d47bd5015e7f28e8038281199fd466b23e2",
+        "releaseSha256": "c782f1704e40e6ae932f2bd2f412252d4017116c405d1bb90a06c337aad2b8cb",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T06:04:42.839584+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "686ceb649f9410803376b77b8bb65d47bd5015e7f28e8038281199fd466b23e2",
+          "toCandidateSha256": "c782f1704e40e6ae932f2bd2f412252d4017116c405d1bb90a06c337aad2b8cb",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "7389d13167df31b6",
       "applicationKey": "cdrail",
       "checkProfile": {
@@ -42681,6 +42836,154 @@
       }
     },
     {
+      "catalogId": "1aac1845bed1f454",
+      "applicationKey": "gitlab.com/kinsluck/readfree-checkiner::readfree",
+      "checkProfile": {
+        "requiredEnv": [
+          "READFREE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "READFREE_INTERACTIVE_LOGIN",
+          "READFREE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "READFREE_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "签到成功（明确页面标记）",
+          "今日已签到",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用每行一个账号的 JSON 配置，支持 Cookie 签到和显式开启的交互验证码登录。",
+          "检查个人签到主页登录状态；从官方返回的个人主页链接核对并显示公开用户名，不输出凭据。",
+          "在同一 HTTPS 会话中执行每日签到，仅明确成功或今日已签到页面标记判为通过。",
+          "提供完全断网预演、分账号分阶段日志、统计与唯一 TASK_SUMMARY 机器汇总。",
+          "按青龙全局开关和脚本名单发送脱敏通知；通知不可用时保留业务退出码。"
+        ],
+        "sideEffects": [
+          "正式执行会提交每日签到请求，改变本站签到状态及可能的签到奖励。",
+          "显式交互登录会提交邮箱、密码和验证码并创建登录会话；临时保存验证码图片后删除。",
+          "通知启用时调用青龙通知模块发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Readfree 每日签到",
+      "path": "scripts/readfree.py",
+      "sha256": "1e797c93a0120cc3d04de9e3a5ff6df3c2b6f7ee9d87f169754eda16883e0354",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "gitlab.com/kinsluck/Readfree-Checkiner",
+        "branch": "master",
+        "commit": "65e107e7797690c20088600de56d9cdf93b732e8",
+        "originalPath": "Readfree.py"
+      },
+      "cron": "26 10 * * *",
+      "command": "python3 scripts/readfree.py",
+      "environment": [
+        {
+          "name": "READFREE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 https://readfree.me，在个人主页地址获取公开用户名 username；在开发者工具的网络面板复制本站请求的 Cookie 请求头。每行将同一账号的 username 与 cookie 合并为一个 JSON 对象并存入青龙私密环境变量。交互登录可改为 username、email、password 三个字段，邮箱和密码使用自己注册的账号，不要公开分享。",
+          "format": "每个非空行一个 JSON 对象：含 username、cookie；或含 username、email、password。Cookie 内的分号、等号及密码符号由 JSON 字符串完整保留，不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "READFREE_INTERACTIVE_LOGIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅需要验证码密码登录时手动设置为 1，并在交互终端执行；定时任务应使用 Cookie。脚本显示临时验证码图片路径，自行查看并输入答案，不启动图片查看器。",
+          "format": "1 开启；默认关闭。验证码图片在输入结束或异常退出时删除，不持久保存会话。"
+        },
+        {
+          "name": "READFREE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验收时设置为 1。",
+          "format": "1 为完全断网预演；默认正式运行。预演检查配置格式并模拟登录、签到和通知，不代表业务成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要通知时设置本脚本目录编号 1aac1845bed1f454、Readfree.py、实际文件名或文件名通配符；也支持 scripts/Readfree.py 等相对路径。",
+          "format": "逗号、分号、空白或换行分隔；* 匹配全部；空值关闭全部；设置后覆盖默认名单。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙通知模块所在目录；默认自动尝试导入 notify.send，并查找 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本地目录路径，不填写凭据。通知不可用或失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象；同账号的配套凭据放在同一对象内。各账号独立处理，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用每行一个账号的 JSON 配置，支持 Cookie 签到和显式开启的交互验证码登录。",
+        "检查个人签到主页登录状态；从官方返回的个人主页链接核对并显示公开用户名，不输出凭据。",
+        "在同一 HTTPS 会话中执行每日签到，仅明确成功或今日已签到页面标记判为通过。",
+        "提供完全断网预演、分账号分阶段日志、统计与唯一 TASK_SUMMARY 机器汇总。",
+        "按青龙全局开关和脚本名单发送脱敏通知；通知不可用时保留业务退出码。"
+      ],
+      "sideEffects": [
+        "正式执行会提交每日签到请求，改变本站签到状态及可能的签到奖励。",
+        "显式交互登录会提交邮箱、密码和验证码并创建登录会话；临时保存验证码图片后删除。",
+        "通知启用时调用青龙通知模块发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1aac1845bed1f454",
+        "candidateSha256": "1135391387f8f0b539cba83bf4599853aa32bdae6e98f56c910a76843062c77e"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "1135391387f8f0b539cba83bf4599853aa32bdae6e98f56c910a76843062c77e",
+        "releaseSha256": "1e797c93a0120cc3d04de9e3a5ff6df3c2b6f7ee9d87f169754eda16883e0354",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T12:01:22.682342+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "1135391387f8f0b539cba83bf4599853aa32bdae6e98f56c910a76843062c77e",
+          "toCandidateSha256": "1e797c93a0120cc3d04de9e3a5ff6df3c2b6f7ee9d87f169754eda16883e0354",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "3c5c6df4d8a81a7f",
       "applicationKey": "rousi",
       "checkProfile": {
@@ -62167,6 +62470,170 @@
       }
     },
     {
+      "catalogId": "e7937ed1d56e881d",
+      "applicationKey": "naroiscool/naro-scripts::王者营地",
+      "checkProfile": {
+        "requiredEnv": [
+          "WZYD_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WZYD_TOKEN",
+          "WZYD_BODY",
+          "WZYY_BODY",
+          "WZYD_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WZYD_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "✅ 签到成功：业务码已校验",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "按原定时执行王者营地每日签到，保留抓包认证请求头和完整请求体。",
+          "使用规范合并账号变量，兼容原请求头与请求体变量以及原注释中的请求体别名。",
+          "支持多账号独立运行、失败非零退出、超时和响应大小限制、显式业务码校验。",
+          "完全断网预演校验账号配置，不将预演成功标记为真实签到成功。",
+          "展示官方返回的非敏感昵称、用户名、显示名或公开身份，输出脱敏阶段日志、账号统计及单行 TASK_SUMMARY。",
+          "通过青龙通知模块发送脱敏摘要，支持全局开关与脚本选择；离线预演仅展示摘要，通知异常保留业务退出码。"
+        ],
+        "sideEffects": [
+          "正式执行时提交王者营地每日签到，可能更新当日签到记录并领取服务端对应签到奖励。",
+          "启用通知且非预演时，通过青龙 sendNotify.js 发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "王者营地每日签到",
+      "path": "scripts/task_e7937ed1.js",
+      "sha256": "1a7bc073180a23dab7d8383bdcdb8251ea52bc7115c915ad0cf733e824d2291e",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "NaroisCool/naro-scripts",
+        "branch": "master",
+        "commit": "c2ffa8af2089bd98e1ed623c7a25d49b60ca0fdd",
+        "originalPath": "王者营地.js"
+      },
+      "cron": "59 15 8 * * *",
+      "command": "node scripts/task_e7937ed1.js",
+      "environment": [
+        {
+          "name": "WZYD_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人已授权设备登录王者营地，抓取手动每日签到发往 https://kohcamp.qq.com/operation/action/signin 的 POST 请求。将认证请求头与完整请求体分别写入 headers、body。配套字段必须来自同一账号同一请求。签名或会话失效后重新抓取；脚本不生成签名，不输出抓包内容。",
+          "format": "每个非空行一个 JSON 对象，包含 headers 和 body 两个对象；headers 原样保留抓包认证字段 appid、openid、msdkEncodeParam、sig、userId、timestamp、source、encode、algorithm、version；body 保留 cSystem、h5Get、roleId 及原请求其他字段。"
+        },
+        {
+          "name": "WZYD_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧版请求头变量；来源同 WZYD_ACCOUNTS 的 headers。未设置规范变量时，与 WZYD_BODY 或 WZYY_BODY 配套读取。",
+          "format": "每行一个请求头 JSON 对象，与请求体变量逐行对应；仅为历史兼容保留分号分隔。规范变量优先。"
+        },
+        {
+          "name": "WZYD_BODY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从同一签到请求提取完整 JSON 请求体；兼容旧版，与 WZYD_TOKEN 配套。",
+          "format": "每行一个请求体 JSON 对象，包含 cSystem、h5Get、roleId，保留其余字段；数量、顺序与请求头一致。历史分号分隔仍兼容。"
+        },
+        {
+          "name": "WZYY_BODY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容原注释中的旧拼写，内容与 WZYD_BODY 相同；后者存在时优先。",
+          "format": "与 WZYD_BODY 相同。"
+        },
+        {
+          "name": "WZYD_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设为 1，正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 启用；离线检查不会签到、请求公告或发送网络通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙设置需通知的脚本选择器；设置后替换默认选择，本脚本未指定默认名单，auto 默认不发送。",
+          "format": "逗号、分号或空白分隔，支持目录 ID、脚本相对路径、文件名及文件名通配符；本脚本可选 e7937ed1d56e881d、王者营地.js、candidate.js；* 为全部，空值关闭自动选择。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 sendNotify.js 所在目录；否则查找 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本地目录路径；不下载通知依赖；缺失时记录通知不可用并保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "WZYD_ACCOUNTS 每个非空行一个完整账号 JSON，同一账号请求头与请求体合并；不使用 & 或 @ 分隔。兼容旧变量逐行配对及历史分号格式。账号独立执行，任一账号配置或签到失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "按原定时执行王者营地每日签到，保留抓包认证请求头和完整请求体。",
+        "使用规范合并账号变量，兼容原请求头与请求体变量以及原注释中的请求体别名。",
+        "支持多账号独立运行、失败非零退出、超时和响应大小限制、显式业务码校验。",
+        "完全断网预演校验账号配置，不将预演成功标记为真实签到成功。",
+        "展示官方返回的非敏感昵称、用户名、显示名或公开身份，输出脱敏阶段日志、账号统计及单行 TASK_SUMMARY。",
+        "通过青龙通知模块发送脱敏摘要，支持全局开关与脚本选择；离线预演仅展示摘要，通知异常保留业务退出码。"
+      ],
+      "sideEffects": [
+        "正式执行时提交王者营地每日签到，可能更新当日签到记录并领取服务端对应签到奖励。",
+        "启用通知且非预演时，通过青龙 sendNotify.js 发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e7937ed1d56e881d",
+        "candidateSha256": "b6059270851183e43f634a33f6dab3c1764b27868315312cb33be89d420a69de"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "b6059270851183e43f634a33f6dab3c1764b27868315312cb33be89d420a69de",
+        "releaseSha256": "1a7bc073180a23dab7d8383bdcdb8251ea52bc7115c915ad0cf733e824d2291e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T06:04:30.249930+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b6059270851183e43f634a33f6dab3c1764b27868315312cb33be89d420a69de",
+          "toCandidateSha256": "1a7bc073180a23dab7d8383bdcdb8251ea52bc7115c915ad0cf733e824d2291e",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "ed4d6d4d632e033e",
       "applicationKey": "lyxofficial/fzqojautosign::index",
       "checkProfile": {
@@ -69928,16 +70395,16 @@
       "applicationKey": "workbuddy",
       "checkProfile": {
         "requiredEnv": [
-          "WORKBUDDY_REFRESH_TOKEN"
+          "WORKBUDDY_REFRESH_TOKEN",
+          "WORKBUDDY_INTL_TOKENS"
         ],
         "optionalEnv": [
-          "WORKBUDDY_INTL_TOKENS",
-          "WORKBUDDY_TOKEN",
-          "WB_ACCESS_TOKENS",
           "WB_ACCESS_TOKEN",
+          "WB_ACCESS_TOKENS",
           "WB_USER_ID",
-          "WB_PROXY",
-          "WB_RETRY",
+          "WORKBUDDY_TOKEN",
+          "WORKBUDDY_TOKEN_STORE",
+          "WORKBUDDY_INTL_TOKEN_STORE",
           "WORKBUDDY_DRY_RUN",
           "WORKBUDDY_INTL_DRY_RUN",
           "WORKBUDDY_TASKS",
@@ -69947,10 +70414,12 @@
           "WORKBUDDY_ACTIVITY_CHAT_FALLBACK",
           "WORKBUDDY_MP_GAP",
           "WORKBUDDY_MAKEUP_MAX_PER_RUN",
-          "WORKBUDDY_TOKEN_STORE",
-          "WORKBUDDY_INTL_TOKEN_STORE",
           "WORKBUDDY_INTL_KEEPALIVE",
           "WORKBUDDY_INTL_MODELS",
+          "WB_PROXY",
+          "WB_RETRY",
+          "WORKBUDDY_BUDGET_SECONDS",
+          "WORKBUDDY_SCHOOL_MAX_DRAWS",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR"
@@ -69983,7 +70452,12 @@
           "所有终态及配置错误均生成脱敏通知摘要，遵循全局开关与选择清单，支持青龙notify.py或sendNotify.js；预演模拟发送，通知缺失或失败保留业务退出码。",
           "新增独立只读 --status / -s 签到面板，查询官方活动状态；--status --json输出上游账号结果结构，原 --credit-report --json数值数组保持不变。",
           "新增活动周期、每日及今日积分、累计积分、奖励节点及距离、周打卡标记和计数、本期打卡日历最近14条、网页入口提示；仅整理已有官方查询字段，不额外执行网页操作。",
-          "新增逐行WB_ACCESS_TOKEN与WB_ACCESS_TOKENS兼容输入、单账号WB_USER_ID、可选WB_PROXY及只读状态查询WB_RETRY；账号分隔统一为换行。"
+          "新增逐行WB_ACCESS_TOKEN与WB_ACCESS_TOKENS兼容输入、单账号WB_USER_ID、可选WB_PROXY及只读状态查询WB_RETRY；账号分隔统一为换行。",
+          "新增独立 --school 开学季入口，默认只读活动期与任务状态；不串联日常签到、国际任务或刷新，保持不同活动窗口与风险边界。",
+          "开学季显式选择 --school-tasks query,share,report,claim,lottery；已知分享、三次小程序对话事件、桌面对话事件和开学季专家事件保留上游字段，以官方任务终态回读确认；report 另需事件授权，不声称真实桌面操作。",
+          "开学季奖励仅对已完成任务领取并回读 claimed；抽奖先查余额、使用独立请求标识并核验奖品回执，每轮有次数上限且不重试写请求。学生认证、未知任务和协议由本人处理。",
+          "开学季专家从官方 BackToSchool 分类查询，缺失时失败闭合，不伪造专家标识；HTTP、业务码、活动期或字段不明确均非成功。",
+          "开学季显式选择 growth 且授权时处理已知 school_season 小程序成长任务，复用维护版小程序接受、间隔与上报流程，以 claimed 终态核验；未下发或未解锁则跳过，不适配未知任务。"
         ],
         "sideEffects": [
           "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
@@ -69992,7 +70466,11 @@
           "显式选择成长任务且WORKBUDDY_ALLOW_REPORT=1时接受任务、上报事件、创建对话或安装热门技能、改变主题、领取奖励；新建的网页会话在调用结束时发送停止请求，仅操作本次创建的会话；模型对话可能消耗积分。",
           "显式选择daily_activity且授权时发送活跃事件，按配置可能补一次真实模型对话。",
           "国际默认按开放状态领取当日奖励；显式保活可能消耗模型积分，--trial可能领取一次性专家加油包。",
-          "实际执行且通知被策略选中时，通过现有青龙通知模块投递脱敏任务总结。"
+          "实际执行且通知被策略选中时，通过现有青龙通知模块投递脱敏任务总结。",
+          "仅显式选择开学季 share 时激活已知分享任务并提交微信分享完成状态，不向外发布文本。",
+          "仅显式选择开学季 report 且事件授权开启时激活已知任务并发送小程序、桌面或专家遥测，改变活动任务进度。",
+          "仅显式选择开学季 claim 时领取已完成活动奖励；选择 lottery 时消耗至多指定次数的开学季抽奖机会。",
+          "仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。"
         ]
       },
       "postReview": {
@@ -70001,7 +70479,7 @@
       },
       "displayName": "WorkBuddy 国内版日常维护",
       "path": "scripts/workbuddy_daily.py",
-      "sha256": "d0bf56bb6bd6b377d2767312af524b4dc5f61440e7ab483ab6d101c5ceb9e161",
+      "sha256": "07e41b86b9afa9172c7218e158344316a9e77b85b0bc6c73f775f9828d937d2c",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -70040,6 +70518,16 @@
             "catalogId": "b7be1757b89d9cf8",
             "sha256": "5e23733c68fa6d3f51954d868e43e3e185658136b2cb953f992c949e5a352364",
             "license": "MIT"
+          },
+          {
+            "repository": "HonorC05/workbuddy-auto-checkin",
+            "url": "https://github.com/HonorC05/workbuddy-auto-checkin",
+            "branch": "master",
+            "commit": "911562106d8f754e85fbe7bb036e1771ab0ebafc",
+            "originalPath": "wb_engine.py",
+            "catalogId": "cdf18dad86c644b6",
+            "sha256": "901106de0a025089825bb0b000d123a803b0ff21535d93090d3c9ced6b801190",
+            "license": "MIT"
           }
         ]
       },
@@ -70050,148 +70538,162 @@
           "name": "WORKBUDDY_REFRESH_TOKEN",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录本人 WorkBuddy 国内官方网页，在浏览器开发者工具网络面板查看签到请求的 Authorization Bearer 值作为AT；RT仅从本人官方登录或续期响应取得。只复制明文值，加密信封不可用。无需其他仓库或客户端程序。",
-          "format": "国内任务必填规范变量，每个非空行一个账号，支持单个JWT、AT:RT、手机号:AT:RT或手机号:RT；国际独立任务改用WORKBUDDY_INTL_TOKENS。只在首个字段边界拆分配套凭据，RT后续文本保留。"
+          "howToGet": "从本人已登录的官方网页开发者工具网络面板取得请求 Authorization 的 Bearer 值，或本人官方授权登录响应取得明文 accessToken、refreshToken；不复制加密信封，不依赖程序解密，不在日志中公开。",
+          "format": "国内版必填的规范变量。每个非空行一个账号：AT:RT、手机号:AT:RT、手机号:RT 或单个 JWT；仅在首字段与配套字段处各切分一次，后续令牌文本完整保留。国际版 --intl 时改用 WORKBUDDY_INTL_TOKENS。"
         },
         {
           "name": "WORKBUDDY_INTL_TOKENS",
-          "required": false,
+          "required": true,
           "sensitive": true,
-          "howToGet": "登录本人 www.workbuddy.ai 官方网站，从本人官方授权响应取得AT和可选RT，公开uid从本人账号资料或官方响应取得；国内版凭据不可混用。",
-          "format": "运行 --intl 时必填；每行AT或备注|AT|uid|RT，RT后续文本保留。"
-        },
-        {
-          "name": "WORKBUDDY_TOKEN",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "登录本人 www.workbuddy.ai 官方网站，从本人官方授权响应取得AT和可选RT，公开uid从本人账号资料或官方响应取得；国内版凭据不可混用。",
-          "format": "国际版旧单账号AT别名，仅规范国际变量为空时使用。"
-        },
-        {
-          "name": "WB_ACCESS_TOKENS",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "登录本人 WorkBuddy 国内官方网页，在浏览器开发者工具网络面板查看签到请求的 Authorization Bearer 值作为AT；RT仅从本人官方登录或续期响应取得。只复制明文值，加密信封不可用。无需其他仓库或客户端程序。",
-          "format": "国内旧别名，每个非空行AT或uid:AT；规范变量优先，多个账号禁止逗号分隔。"
+          "howToGet": "从本人 www.workbuddy.ai 官方授权登录响应获取明文 AT、可选 RT 和公开 UID；与国内版不通用。",
+          "format": "国际版 --intl 时必填；每个非空行 AT 或 备注|AT|uid|RT；国内版无需设置。"
         },
         {
           "name": "WB_ACCESS_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "登录本人 WorkBuddy 国内官方网页，在浏览器开发者工具网络面板查看签到请求的 Authorization Bearer 值作为AT；RT仅从本人官方登录或续期响应取得。只复制明文值，加密信封不可用。无需其他仓库或客户端程序。",
-          "format": "国内旧别名，每个非空行AT或uid:AT；规范变量优先，与旧多账号变量合并读取。"
+          "howToGet": "从本人已登录的官方网页开发者工具网络面板取得请求 Authorization 的 Bearer 值，或本人官方授权登录响应取得明文 accessToken、refreshToken；不复制加密信封，不依赖程序解密，不在日志中公开。 旧变量仅在规范变量为空时兼容。",
+          "format": "可选旧别名；每行 AT 或 uid:AT；兼容 Bearer 前缀。"
+        },
+        {
+          "name": "WB_ACCESS_TOKENS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人已登录的官方网页开发者工具网络面板取得请求 Authorization 的 Bearer 值，或本人官方授权登录响应取得明文 accessToken、refreshToken；不复制加密信封，不依赖程序解密，不在日志中公开。 旧变量仅在规范变量为空时兼容。",
+          "format": "可选旧别名；每行 AT 或 uid:AT。"
         },
         {
           "name": "WB_USER_ID",
           "required": false,
+          "sensitive": false,
+          "howToGet": "从本人官方账号响应取得公开 UID；配合旧别名使用。",
+          "format": "仅限单账号；多账号必须逐行 uid:AT。"
+        },
+        {
+          "name": "WORKBUDDY_TOKEN",
+          "required": false,
           "sensitive": true,
-          "howToGet": "从本人官方账户响应或JWT的sub字段取得，用于旧变量的X-User-Id请求头。",
-          "format": "仅旧单账号有效；多账号须逐行uid:AT。"
-        },
-        {
-          "name": "WB_PROXY",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "按本人可信代理服务配置，脚本默认直接访问官方HTTPS接口。",
-          "format": "HTTP或HTTPS代理URL，可包含敏感代理认证信息，不输出日志。"
-        },
-        {
-          "name": "WB_RETRY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙环境变量中按需要设置，只影响 --status 的只读请求。",
-          "format": "0至5的整数，默认2；只重试网络错误或HTTP 5xx，不重试签到写入。"
-        },
-        {
-          "name": "WORKBUDDY_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "无凭据联网测试需求时在青龙设置为1。",
-          "format": "1/true/yes/on启用完全断网预演；默认0。"
-        },
-        {
-          "name": "WORKBUDDY_INTL_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "国际版可独立设置为1。",
-          "format": "1/true/yes/on，仅 --intl 有效。"
-        },
-        {
-          "name": "WORKBUDDY_TASKS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "根据脚本帮助和任务代码按需选择；不设置时保持默认日常动作。",
-          "format": "逗号或空格分隔任务名，不用于分隔账号；默认checkin travel claim buddy_info badges。支持lottery blindbox redeem gift makeup daily_activity及原成长任务代码。"
-        },
-        {
-          "name": "WORKBUDDY_ONLY_TASKS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧任务筛选变量，优先使用WORKBUDDY_TASKS。",
-          "format": "逗号或空格分隔任务名，仅规范变量未设置时使用。"
-        },
-        {
-          "name": "WORKBUDDY_SKIP_TASKS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙中设置要排除的原任务代码。",
-          "format": "逗号或空格分隔任务名；--tasks和--skip-tasks命令行参数优先。"
-        },
-        {
-          "name": "WORKBUDDY_ALLOW_REPORT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "本人理解模拟事件、真实对话及积分消耗后显式设置。",
-          "format": "仅1授权已显式选中的成长事件或每日活跃任务；默认未授权。"
-        },
-        {
-          "name": "WORKBUDDY_ACTIVITY_CHAT_FALLBACK",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "本人按每日活跃回退需求设置。",
-          "format": "0关闭事件未计分时的真实对话回退，默认启用；前提为显式选中daily_activity且授权事件。"
-        },
-        {
-          "name": "WORKBUDDY_MP_GAP",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按小程序对话频率需要设置或使用 --mp-gap。",
-          "format": "有限非负秒数，默认45。"
-        },
-        {
-          "name": "WORKBUDDY_MAKEUP_MAX_PER_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "显式选择makeup后按可接受补签卡消耗设置。",
-          "format": "默认1，范围1至10。"
+          "howToGet": "从本人国际版官方授权登录响应取得明文 AT。",
+          "format": "国际版规范变量未设置时兼容的单账号 AT。"
         },
         {
           "name": "WORKBUDDY_TOKEN_STORE",
           "required": false,
           "sensitive": true,
-          "howToGet": "本人指定私有可写缓存文件位置，所在目录须已存在；已有文件须为本人专用普通文件且权限0600。",
-          "format": "可选本机文件路径，仅续期保存时使用；只有RT或显式 --refresh 时必填，不上传公开仓库。"
+          "howToGet": "本人创建私有可写目录并指定缓存文件，不上传仓库；续期前会检查权限与可写性。",
+          "format": "可选绝对路径；已有文件须普通文件、非符号链接且权限0600。只有 RT、--refresh 或按需轮换时必须设置。"
         },
         {
           "name": "WORKBUDDY_INTL_TOKEN_STORE",
           "required": false,
           "sensitive": true,
-          "howToGet": "本人指定国际版私有缓存文件位置，所在目录须存在，已有文件权限0600。",
-          "format": "国际版显式 --refresh 时必填，原子保存轮换令牌。"
+          "howToGet": "本人创建私有可写目录并指定国际版令牌缓存文件，不上传仓库。",
+          "format": "可选绝对路径；仅 --intl --refresh 使用，已有文件须普通文件且权限0600。"
+        },
+        {
+          "name": "WORKBUDDY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中自行设置。",
+          "format": "1、true、yes 或 on 开启完全断网预演；默认0。"
+        },
+        {
+          "name": "WORKBUDDY_INTL_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中自行设置。",
+          "format": "国际版兼容预演开关；1、true、yes 或 on 开启，默认0。"
+        },
+        {
+          "name": "WORKBUDDY_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需自行选择 --tasks 同名任务；默认只选签到、旅行、已完成任务领奖、Buddy信息和徽章。",
+          "format": "逗号或空白分隔任务名：checkin、travel、claim、buddy_info、badges、lottery、blindbox、redeem、gift、makeup、daily_activity，以及现有成长任务名或任务代码。"
+        },
+        {
+          "name": "WORKBUDDY_ONLY_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需自行设置；WORKBUDDY_TASKS 未设置时兼容。",
+          "format": "与 WORKBUDDY_TASKS 相同的可选旧别名。"
+        },
+        {
+          "name": "WORKBUDDY_SKIP_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需自行设置，或用 --skip-tasks。",
+          "format": "逗号或空白分隔需排除的日常任务名；不用于 --school。"
+        },
+        {
+          "name": "WORKBUDDY_ALLOW_REPORT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "理解会发送模拟遥测、创建对话或改变主题等行为后自行设置。",
+          "format": "仅精确值1授权已显式选中的成长任务和开学季 report、growth；默认不授权。"
+        },
+        {
+          "name": "WORKBUDDY_ACTIVITY_CHAT_FALLBACK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需自行设置。",
+          "format": "daily_activity 热力图未计分时的真实对话回退；默认开启，0、false、no 或 off 关闭。"
+        },
+        {
+          "name": "WORKBUDDY_MP_GAP",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需自行设置或用 --mp-gap。",
+          "format": "小程序对话间隔秒数，默认45，有限非负数。"
+        },
+        {
+          "name": "WORKBUDDY_MAKEUP_MAX_PER_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需自行设置。",
+          "format": "每轮最多补签张数，默认1，范围1至10。"
         },
         {
           "name": "WORKBUDDY_INTL_KEEPALIVE",
           "required": false,
           "sensitive": false,
-          "howToGet": "本人允许模型调用和潜在积分消耗后设置，或使用 --keepalive。",
-          "format": "1/true/yes/on启用，默认关闭；--no-keepalive优先关闭。"
+          "howToGet": "理解模型调用可能消耗积分后自行设置；也可用 --keepalive，--no-keepalive 优先关闭。",
+          "format": "1、true、yes 或 on 开启；默认0。"
         },
         {
           "name": "WORKBUDDY_INTL_MODELS",
           "required": false,
           "sensitive": false,
-          "howToGet": "按本人可用官方模型名称选择，留空使用原四模型回退链。",
-          "format": "逗号分隔模型名称，仅保活启用后使用。"
+          "howToGet": "按需从官方当前支持模型中自行选择；未设置时保留维护版四模型回退链。",
+          "format": "可选逗号分隔模型名，依次回退。"
+        },
+        {
+          "name": "WB_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "按需配置本人的可用代理；不会继承其他代理环境变量。",
+          "format": "可选 HTTP 或 HTTPS 代理地址；可能包含敏感认证信息，禁止公开。"
+        },
+        {
+          "name": "WB_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需自行设置，仅独立 --status 使用。",
+          "format": "只读状态重试次数，默认2，整数0至5；不重试领取写请求。"
+        },
+        {
+          "name": "WORKBUDDY_BUDGET_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需自行设置；此变量仅用于独立 --school 入口。",
+          "format": "每账号开学季请求预算秒数，默认900，有限数值1至3600；不改变原日常执行器。"
+        },
+        {
+          "name": "WORKBUDDY_SCHOOL_MAX_DRAWS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "显式选择 --school --school-tasks lottery 时按需设置。",
+          "format": "每轮每账号开学季抽奖上限，默认1，整数1至20；默认日常不抽奖。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -70204,21 +70706,21 @@
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙设置通知选择清单，配置后替代默认选择。",
-          "format": "逗号、分号、空白或换行分隔目录标识、脚本路径、文件名或通配符；*全部，空值禁用。"
+          "howToGet": "在青龙环境变量中自行设置需要通知的脚本选择清单。",
+          "format": "逗号、分号、空白或换行分隔标识、路径、文件名或通配符；*全选，空值禁用所有；设置后替换默认清单。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "填写已有青龙notify.py或sendNotify.js所在目录。",
-          "format": "可选本机目录；同时支持import notify及青龙标准目录。"
+          "howToGet": "本人已有青龙通知模块所在目录；也会自动发现标准目录或 import notify.send。",
+          "format": "可选目录路径，包含 notify.py 或 sendNotify.js；通知模块缺失或失败不改变业务退出码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，国内配套凭据使用同一行，国际版凭据独立；账号按序处理，任一账号失败整体非零退出。旧变量只在国内规范变量为空时读取。"
+        "rule": "每个非空行一个账号；国内配套 AT/RT 放入 WORKBUDDY_REFRESH_TOKEN 同一行，按首字段分隔保留后续令牌；国际凭据独立逐行配置。账号依次独立处理，任一账号或阶段失败整体非零退出；禁止用 &、@ 或逗号分隔账号。"
       },
       "dependencies": [],
       "features": [
@@ -70240,7 +70742,12 @@
         "所有终态及配置错误均生成脱敏通知摘要，遵循全局开关与选择清单，支持青龙notify.py或sendNotify.js；预演模拟发送，通知缺失或失败保留业务退出码。",
         "新增独立只读 --status / -s 签到面板，查询官方活动状态；--status --json输出上游账号结果结构，原 --credit-report --json数值数组保持不变。",
         "新增活动周期、每日及今日积分、累计积分、奖励节点及距离、周打卡标记和计数、本期打卡日历最近14条、网页入口提示；仅整理已有官方查询字段，不额外执行网页操作。",
-        "新增逐行WB_ACCESS_TOKEN与WB_ACCESS_TOKENS兼容输入、单账号WB_USER_ID、可选WB_PROXY及只读状态查询WB_RETRY；账号分隔统一为换行。"
+        "新增逐行WB_ACCESS_TOKEN与WB_ACCESS_TOKENS兼容输入、单账号WB_USER_ID、可选WB_PROXY及只读状态查询WB_RETRY；账号分隔统一为换行。",
+        "新增独立 --school 开学季入口，默认只读活动期与任务状态；不串联日常签到、国际任务或刷新，保持不同活动窗口与风险边界。",
+        "开学季显式选择 --school-tasks query,share,report,claim,lottery；已知分享、三次小程序对话事件、桌面对话事件和开学季专家事件保留上游字段，以官方任务终态回读确认；report 另需事件授权，不声称真实桌面操作。",
+        "开学季奖励仅对已完成任务领取并回读 claimed；抽奖先查余额、使用独立请求标识并核验奖品回执，每轮有次数上限且不重试写请求。学生认证、未知任务和协议由本人处理。",
+        "开学季专家从官方 BackToSchool 分类查询，缺失时失败闭合，不伪造专家标识；HTTP、业务码、活动期或字段不明确均非成功。",
+        "开学季显式选择 growth 且授权时处理已知 school_season 小程序成长任务，复用维护版小程序接受、间隔与上报流程，以 claimed 终态核验；未下发或未解锁则跳过，不适配未知任务。"
       ],
       "sideEffects": [
         "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
@@ -70249,7 +70756,11 @@
         "显式选择成长任务且WORKBUDDY_ALLOW_REPORT=1时接受任务、上报事件、创建对话或安装热门技能、改变主题、领取奖励；新建的网页会话在调用结束时发送停止请求，仅操作本次创建的会话；模型对话可能消耗积分。",
         "显式选择daily_activity且授权时发送活跃事件，按配置可能补一次真实模型对话。",
         "国际默认按开放状态领取当日奖励；显式保活可能消耗模型积分，--trial可能领取一次性专家加油包。",
-        "实际执行且通知被策略选中时，通过现有青龙通知模块投递脱敏任务总结。"
+        "实际执行且通知被策略选中时，通过现有青龙通知模块投递脱敏任务总结。",
+        "仅显式选择开学季 share 时激活已知分享任务并提交微信分享完成状态，不向外发布文本。",
+        "仅显式选择开学季 report 且事件授权开启时激活已知任务并发送小程序、桌面或专家遥测，改变活动任务进度。",
+        "仅显式选择开学季 claim 时领取已完成活动奖励；选择 lottery 时消耗至多指定次数的开学季抽奖机会。",
+        "仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。"
       ],
       "review": {
         "staticPassed": true,
@@ -70262,20 +70773,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/132c582ed57df40f",
-        "candidateSha256": "995a5d624048ec9b55f0c228efdc0fb9556628efa8eb68387cad0cbe2bb611ff"
+        "candidateSha256": "588a4ab1d4ac90117a58568de041fb5e89185307ff0785d63403ea97f5c018c7"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "995a5d624048ec9b55f0c228efdc0fb9556628efa8eb68387cad0cbe2bb611ff",
-        "releaseSha256": "d0bf56bb6bd6b377d2767312af524b4dc5f61440e7ab483ab6d101c5ceb9e161",
+        "validatedSha256": "588a4ab1d4ac90117a58568de041fb5e89185307ff0785d63403ea97f5c018c7",
+        "releaseSha256": "07e41b86b9afa9172c7218e158344316a9e77b85b0bc6c73f775f9828d937d2c",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T04:46:00.911832+00:00",
+          "approvedAt": "2026-11-06T12:01:22.646788+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "995a5d624048ec9b55f0c228efdc0fb9556628efa8eb68387cad0cbe2bb611ff",
-          "toCandidateSha256": "d0bf56bb6bd6b377d2767312af524b4dc5f61440e7ab483ab6d101c5ceb9e161",
+          "fromCandidateSha256": "588a4ab1d4ac90117a58568de041fb5e89185307ff0785d63403ea97f5c018c7",
+          "toCandidateSha256": "07e41b86b9afa9172c7218e158344316a9e77b85b0bc6c73f775f9828d937d2c",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
