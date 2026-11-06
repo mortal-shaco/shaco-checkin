@@ -1,6 +1,6 @@
 # 字母索引 · C
 
-共 **38** 个脚本。返回 [`目录首页`](../README.md)。
+共 **40** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -13,6 +13,7 @@
 | LaTeX工作室签到 | `scripts/checkin_latex.py` | `python3 scripts/checkin_latex.py` | `10 1 * * *` | 待检查 | [checkin_latex.py.md](../../scripts/checkin_latex.py.md)（`docs/scripts/checkin_latex.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | 词霸每日一句 | `scripts/ciba.js` | `node scripts/ciba.js` | `0 25 11 * * *` | 待检查 | [ciba.js.md](../../scripts/ciba.js.md)（`docs/scripts/ciba.js.md`） |
+| 魔盒 CityBox 签到 | `scripts/citybox.js` | `node scripts/citybox.js` | `15 0 * * *` | 待检查 | [citybox.js.md](../../scripts/citybox.js.md)（`docs/scripts/citybox.js.md`） |
 | 机场签到 | `scripts/ck_airport.py` | `python3 scripts/ck_airport.py` | `16 2 * * *` | 待检查 | [ck_airport.py.md](../../scripts/ck_airport.py.md)（`docs/scripts/ck_airport.py.md`） |
 | 爱企查每日任务 | `scripts/ck_aqc.js` | `node scripts/ck_aqc.js` | `9 0-23/8 * * *` | 待检查 | [ck_aqc.js.md](../../scripts/ck_aqc.js.md)（`docs/scripts/ck_aqc.js.md`） |
 | 百度站点提交 | `scripts/ck_baidu.py` | `python3 scripts/ck_baidu.py` | `6 0 * * *` | 待检查 | [ck_baidu.py.md](../../scripts/ck_baidu.py.md)（`docs/scripts/ck_baidu.py.md`） |
@@ -42,3 +43,4 @@
 | 智谱清言每日领分与余额 | `scripts/content.js` | `node scripts/content.js` | `37 9 * * *` | 待检查 | [content.js.md](../../scripts/content.js.md)（`docs/scripts/content.js.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
 | 加密货币 INR 报价监控 | `scripts/cryptocurrency.py` | `python3 scripts/cryptocurrency.py` | `*/5 * * * *` | 待检查 | [cryptocurrency.py.md](../../scripts/cryptocurrency.py.md)（`docs/scripts/cryptocurrency.py.md`） |
+| 携程旅行签到 | `scripts/ctrip.js` | `node scripts/ctrip.js` | `11 10 * * *` | 待检查 | [ctrip.js.md](../../scripts/ctrip.js.md)（`docs/scripts/ctrip.js.md`） |

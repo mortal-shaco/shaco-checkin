@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **318** 个脚本。返回 [`目录首页`](../README.md)。
+共 **321** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -55,6 +55,7 @@
 | VManAPI 每日签到 | `scripts/check_in.py` | `python3 scripts/check_in.py` | `23 8 * * *` | 待检查 | [check_in.py.md](../../scripts/check_in.py.md)（`docs/scripts/check_in.py.md`） |
 | LaTeX工作室签到 | `scripts/checkin_latex.py` | `python3 scripts/checkin_latex.py` | `10 1 * * *` | 待检查 | [checkin_latex.py.md](../../scripts/checkin_latex.py.md)（`docs/scripts/checkin_latex.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
+| 魔盒 CityBox 签到 | `scripts/citybox.js` | `node scripts/citybox.js` | `15 0 * * *` | 待检查 | [citybox.js.md](../../scripts/citybox.js.md)（`docs/scripts/citybox.js.md`） |
 | 机场签到 | `scripts/ck_airport.py` | `python3 scripts/ck_airport.py` | `16 2 * * *` | 待检查 | [ck_airport.py.md](../../scripts/ck_airport.py.md)（`docs/scripts/ck_airport.py.md`） |
 | 爱企查每日任务 | `scripts/ck_aqc.js` | `node scripts/ck_aqc.js` | `9 0-23/8 * * *` | 待检查 | [ck_aqc.js.md](../../scripts/ck_aqc.js.md)（`docs/scripts/ck_aqc.js.md`） |
 | CCAVA每日签到 | `scripts/ck_ccava.py` | `python3 scripts/ck_ccava.py` | `31 1 * * *` | 待检查 | [ck_ccava.py.md](../../scripts/ck_ccava.py.md)（`docs/scripts/ck_ccava.py.md`） |
@@ -75,6 +76,7 @@
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
 | 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../../scripts/config.py.md)（`docs/scripts/config.py.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
+| 携程旅行签到 | `scripts/ctrip.js` | `node scripts/ctrip.js` | `11 10 * * *` | 待检查 | [ctrip.js.md](../../scripts/ctrip.js.md)（`docs/scripts/ctrip.js.md`） |
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `22 10,14,18 * * *` | 待检查 | [dachao.py.md](../../scripts/dachao.py.md)（`docs/scripts/dachao.py.md`） |
 | 大海资源站每日签到 | `scripts/dahai.js` | `node scripts/dahai.js` | `0 30 11 * * *` | 待检查 | [dahai.js.md](../../scripts/dahai.js.md)（`docs/scripts/dahai.js.md`） |
 | WPS天天领福利（可选任务中心） | `scripts/daily_benefits.py` | `python3 scripts/daily_benefits.py` | `47 1 1 1 1` | 待检查 | [daily_benefits.py.md](../../scripts/daily_benefits.py.md)（`docs/scripts/daily_benefits.py.md`） |
@@ -277,6 +279,7 @@
 | 起点阅读 App 签到 | `scripts/task_fbfb17a0.py` | `python3 scripts/task_fbfb17a0.py` | `4 1 * * *` | 待检查 | [task_fbfb17a0.py.md](../../scripts/task_fbfb17a0.py.md)（`docs/scripts/task_fbfb17a0.py.md`） |
 | 安徽工业大学晚寝考勤 | `scripts/task_ffb00b6d.py` | `python3 scripts/task_ffb00b6d.py` | `26 21 * * *` | 待检查 | [task_ffb00b6d.py.md](../../scripts/task_ffb00b6d.py.md)（`docs/scripts/task_ffb00b6d.py.md`） |
 | 塔斯汀每日签到 | `scripts/tastin_sign.py` | `python3 scripts/tastin_sign.py` | `40 9 * * *` | 待检查 | [tastin_sign.py.md](../../scripts/tastin_sign.py.md)（`docs/scripts/tastin_sign.py.md`） |
+| 星辰超级智能体签到 | `scripts/teleagent_checkin.py` | `python3 scripts/teleagent_checkin.py` | `12 10 * * *` | 待检查 | [teleagent_checkin.py.md](../../scripts/teleagent_checkin.py.md)（`docs/scripts/teleagent_checkin.py.md`） |
 | Telegram每日Bot签到 | `scripts/telegram_daily_checkin.py` | `python3 scripts/telegram_daily_checkin.py` | `33 8 * * *` | 待检查 | [telegram_daily_checkin.py.md](../../scripts/telegram_daily_checkin.py.md)（`docs/scripts/telegram_daily_checkin.py.md`） |
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `52 9 * * *` | 待检查 | [tieba_checkin.py.md](../../scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
