@@ -32115,12 +32115,10 @@
         "dryRunEnv": {
           "KUKU_DRY_RUN": "1"
         },
-        "liveEnv": {
-          "QINGLONG_NOTIFY": "auto"
-        },
+        "liveEnv": {},
         "successPatterns": [
-          "TASK_SUMMARY=.*\"status\":\"success\"",
-          "TASK_SUMMARY=.*\"exitCode\":0"
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
         ],
         "features": [
           "查询每日积分面板，并显示官方返回的非敏感昵称、用户名、显示名称或公开 UID；隐藏手机号和凭据。",
@@ -32129,12 +32127,16 @@
           "优先使用手动配置的产品 STOKEN，缺少时使用同账号 BDUSS、PTOKEN，通过官方接口纯算法换发；只在本次运行内存中使用。",
           "支持 HTTP/HTTPS 代理；业务请求具有超时、大小限制、重定向阻断、HTTP 状态和业务状态检查。",
           "提供完全断网预演、带时间戳的编号阶段日志、逐账号统计及兼容的单行 TASK_SUMMARY 结构化汇总。",
-          "成功、部分失败、失败、参数错误及预演均生成脱敏通知摘要，遵守全局开关与通知名单，经青龙 Python 或 JavaScript 通知模块发送；预演仅展示摘要。"
+          "成功、部分失败、失败、参数错误及预演均生成脱敏通知摘要，遵守全局开关与通知名单，经青龙 Python 或 JavaScript 通知模块发送；预演仅展示摘要。",
+          "显式 --thirty-days 执行 30 天活动配置查询、签到面板检查、风控凭证解析及签到；--all-tasks 同时运行积分与活动任务，--legacy-freepoint 选择原积分任务。",
+          "活动面板显示连续与累计签到天数；面板已签到或签到业务码 10152 记为已完成，新增签到仅认业务成功且 signed_today 为布尔 true；风控失败独立记录。",
+          "完整保留活动 Cookie 内网页 STOKEN、PTOKEN 及其他字段，与产品 STOKEN 和换发链路隔离。"
         ],
         "sideEffects": [
           "正式运行领取每日登录 LOGIN 和对话任务 CHAT 奖励，可能增加账号积分；不会实际发送聊天或发布内容。",
           "未提供产品 STOKEN 时向百度官方认证接口换发当前账号的 genflowpro 会话令牌；不保存本地令牌缓存。",
-          "通知被选中且非预演时，向青龙配置的通知渠道发送脱敏统计摘要。"
+          "通知被选中且非预演时，向青龙配置的通知渠道发送脱敏统计摘要。",
+          "仅显式选择 --thirty-days 或 --all-tasks 时提交 30 天活动签到，可能增加活动积分和签到天数。"
         ]
       },
       "postReview": {
@@ -32143,14 +32145,14 @@
       },
       "displayName": "KukuAI 每日积分",
       "path": "scripts/kuku_daily.py",
-      "sha256": "92b1a93f96442c117aa5f895b20670a04a115f71fa4b8d6640f4e8911434dd51",
+      "sha256": "23f3f48ae20d539b2939d2ac6091b499728b6d8eaf3d7800bc792f519c63e7cc",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
       "source": {
         "repository": "L0NE-6/KukuAI-Daily",
         "branch": "main",
-        "commit": "6912419c6b29365bb7b3172cc3c18bf7b763812d",
+        "commit": "1f9bb5682a083879c1698ae3e35b535af96a15bf",
         "originalPath": "kuku_daily.py"
       },
       "cron": "0 8 * * *",
@@ -32160,8 +32162,8 @@
           "name": "KUKU_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录官方库库 AI，在官方业务请求中复制同账号的 BDUSS Cookie 和 genflowpro 产品作用域 STOKEN。也可从已登录百度的浏览器开发者工具「应用/存储→Cookie」或官方请求 Cookie 中取得同账号 BDUSS、PTOKEN，用于脚本通过官方 HTTPS 接口换发。网页通行证 STOKEN 不等于产品 STOKEN；失效时需重新获取。勿使用第三方凭据服务或在日志分享凭据。",
-          "format": "每个非空行一个账号：产品STOKEN|完整Cookie。只在第一个 | 处分割，后续 Cookie 内容保留；Cookie 支持请求头、单行编辑器 JSON、含 cookies/cookie 的对象、键值对象。无产品 STOKEN 时保留开头 |，Cookie 必须含同账号 BDUSS 和 PTOKEN；有 STOKEN 时 Cookie 至少含完整 BDUSS。不用 &、@ 分隔账号。"
+          "howToGet": "登录官方库库 AI，在官方业务请求中复制同账号的 BDUSS Cookie 和 genflowpro 产品作用域 STOKEN。也可从已登录百度的浏览器开发者工具「应用/存储→Cookie」或官方请求 Cookie 中取得同账号 BDUSS、PTOKEN，用于脚本通过官方 HTTPS 接口换发。网页通行证 STOKEN 不等于产品 STOKEN；失效时需重新获取。勿使用第三方凭据服务或在日志分享凭据。 运行 30 天活动时，从官方活动页开发者工具的网络请求中复制含 BDUSS、网页 STOKEN 及原有 PTOKEN、BAIDUID、PANPSC 等字段的完整 Cookie；第一段产品令牌可留空，网页令牌始终保留在 Cookie 内。",
+          "format": "每个非空行一个账号：产品STOKEN|完整Cookie。只在第一个 | 处分割，后续 Cookie 内容保留；Cookie 支持请求头、单行编辑器 JSON、含 cookies/cookie 的对象、键值对象。无产品 STOKEN 时保留开头 |，Cookie 必须含同账号 BDUSS 和 PTOKEN；有 STOKEN 时 Cookie 至少含完整 BDUSS。不用 &、@ 分隔账号。 --thirty-days 只要求 Cookie 含 BDUSS 与网页 STOKEN；--all-tasks 同时满足积分与活动凭据要求。"
         },
         {
           "name": "KUKU_TOKENS",
@@ -32174,7 +32176,7 @@
           "name": "KUKU_COOKIES",
           "required": false,
           "sensitive": true,
-          "howToGet": "兼容单账号输入，在官方库库 AI 登录后从开发者工具复制完整 Cookie 或 Cookie 编辑器导出内容。BDUSS、PTOKEN 与 KUKU_STOKEN 必须属于同一账号。",
+          "howToGet": "兼容单账号输入，在官方库库 AI 登录后从开发者工具复制完整 Cookie 或 Cookie 编辑器导出内容。BDUSS、PTOKEN 与 KUKU_STOKEN 必须属于同一账号。 30 天活动需保留 Cookie 内的网页 STOKEN 以及其余完整登录态字段，KUKU_STOKEN 不替代网页 STOKEN。",
           "format": "仅当 KUKU_ACCOUNTS、KUKU_TOKENS 均为空时使用；一个账号的 Cookie 请求头、编辑器 JSON 或键值对象。至少含 BDUSS；未配置 KUKU_STOKEN 时另需 PTOKEN。"
         },
         {
@@ -32240,12 +32242,16 @@
         "优先使用手动配置的产品 STOKEN，缺少时使用同账号 BDUSS、PTOKEN，通过官方接口纯算法换发；只在本次运行内存中使用。",
         "支持 HTTP/HTTPS 代理；业务请求具有超时、大小限制、重定向阻断、HTTP 状态和业务状态检查。",
         "提供完全断网预演、带时间戳的编号阶段日志、逐账号统计及兼容的单行 TASK_SUMMARY 结构化汇总。",
-        "成功、部分失败、失败、参数错误及预演均生成脱敏通知摘要，遵守全局开关与通知名单，经青龙 Python 或 JavaScript 通知模块发送；预演仅展示摘要。"
+        "成功、部分失败、失败、参数错误及预演均生成脱敏通知摘要，遵守全局开关与通知名单，经青龙 Python 或 JavaScript 通知模块发送；预演仅展示摘要。",
+        "显式 --thirty-days 执行 30 天活动配置查询、签到面板检查、风控凭证解析及签到；--all-tasks 同时运行积分与活动任务，--legacy-freepoint 选择原积分任务。",
+        "活动面板显示连续与累计签到天数；面板已签到或签到业务码 10152 记为已完成，新增签到仅认业务成功且 signed_today 为布尔 true；风控失败独立记录。",
+        "完整保留活动 Cookie 内网页 STOKEN、PTOKEN 及其他字段，与产品 STOKEN 和换发链路隔离。"
       ],
       "sideEffects": [
         "正式运行领取每日登录 LOGIN 和对话任务 CHAT 奖励，可能增加账号积分；不会实际发送聊天或发布内容。",
         "未提供产品 STOKEN 时向百度官方认证接口换发当前账号的 genflowpro 会话令牌；不保存本地令牌缓存。",
-        "通知被选中且非预演时，向青龙配置的通知渠道发送脱敏统计摘要。"
+        "通知被选中且非预演时，向青龙配置的通知渠道发送脱敏统计摘要。",
+        "仅显式选择 --thirty-days 或 --all-tasks 时提交 30 天活动签到，可能增加活动积分和签到天数。"
       ],
       "review": {
         "staticPassed": true,
@@ -32258,20 +32264,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/224698e8fa0ac8f6",
-        "candidateSha256": "ecd5f606bf623d820eef35d1dce1a08ac07df55b59a1ee65a01c27604a9eeeee"
+        "candidateSha256": "ddb77a0ca08784c05075f9c566c5bedc2ade51b056bd6178765ed4acf9f3faad"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "ecd5f606bf623d820eef35d1dce1a08ac07df55b59a1ee65a01c27604a9eeeee",
-        "releaseSha256": "92b1a93f96442c117aa5f895b20670a04a115f71fa4b8d6640f4e8911434dd51",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "ddb77a0ca08784c05075f9c566c5bedc2ade51b056bd6178765ed4acf9f3faad",
+        "releaseSha256": "23f3f48ae20d539b2939d2ac6091b499728b6d8eaf3d7800bc792f519c63e7cc",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T01:39:55.219516+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "ecd5f606bf623d820eef35d1dce1a08ac07df55b59a1ee65a01c27604a9eeeee",
-          "toCandidateSha256": "92b1a93f96442c117aa5f895b20670a04a115f71fa4b8d6640f4e8911434dd51",
+          "approvedAt": "2026-11-06T12:28:52.585133+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "ddb77a0ca08784c05075f9c566c5bedc2ade51b056bd6178765ed4acf9f3faad",
+          "toCandidateSha256": "23f3f48ae20d539b2939d2ac6091b499728b6d8eaf3d7800bc792f519c63e7cc",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

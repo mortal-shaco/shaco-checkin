@@ -15,9 +15,9 @@
 ## 分类索引
 
 - [云盘](categories/cloud.md)（11）
-- [签到](categories/checkin.md)（347）
+- [签到](categories/checkin.md)（348）
 - [社区](categories/community.md)（2）
-- [AI服务](categories/ai.md)（13）
+- [AI服务](categories/ai.md)（12）
 - [影音](categories/video.md)（3）
 - [其他](categories/other.md)（27）
 
