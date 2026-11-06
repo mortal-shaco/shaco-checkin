@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **325** 个脚本。返回 [`目录首页`](../README.md)。
+共 **328** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -105,7 +105,9 @@
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 今日校园广东海洋大学签到 | `scripts/fcpdaily_2_0.py` | `python3 scripts/fcpdaily_2_0.py` | `58 9 * * *` | 待检查 | [fcpdaily_2_0.py.md](../../scripts/fcpdaily_2_0.py.md)（`docs/scripts/fcpdaily_2_0.py.md`） |
 | 威锋网签到 | `scripts/feng.js` | `node scripts/feng.js` | `16 10 * * *` | 待检查 | [feng.js.md](../../scripts/feng.js.md)（`docs/scripts/feng.js.md`） |
+| 飞客茶馆签到 | `scripts/flyertea.js` | `node scripts/flyertea.js` | `18 10 * * *` | 待检查 | [flyertea.js.md](../../scripts/flyertea.js.md)（`docs/scripts/flyertea.js.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
+| Follow 每日签到 | `scripts/follow.js` | `node scripts/follow.js` | `17 10 * * *` | 待检查 | [follow.js.md](../../scripts/follow.js.md)（`docs/scripts/follow.js.md`） |
 | Discuz 论坛日常维护 | `scripts/forum_download.py` | `python3 scripts/forum_download.py` | `29 2 * * *` | 待检查 | [forum_download.py.md](../../scripts/forum_download.py.md)（`docs/scripts/forum_download.py.md`） |
 | 废文网签到 | `scripts/fwxs_checkin.js` | `node scripts/fwxs_checkin.js` | `57 1 * * *` | 待检查 | [fwxs_checkin.js.md](../../scripts/fwxs_checkin.js.md)（`docs/scripts/fwxs_checkin.js.md`） |
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `18 1 * * *` | 待检查 | [fxh.js.md](../../scripts/fxh.js.md)（`docs/scripts/fxh.js.md`） |
@@ -143,6 +145,7 @@
 | 库街区社区与游戏签到 | `scripts/kurobbs.py` | `python3 scripts/kurobbs.py` | `43 9 * * *` | 待检查 | [kurobbs.py.md](../../scripts/kurobbs.py.md)（`docs/scripts/kurobbs.py.md`） |
 | 库街区自动签到 | `scripts/kurobbs_c0f8e834c99a.py` | `python3 scripts/kurobbs_c0f8e834c99a.py` | `55 9 * * *` | 待检查 | [kurobbs_c0f8e834c99a.py.md](../../scripts/kurobbs_c0f8e834c99a.py.md)（`docs/scripts/kurobbs_c0f8e834c99a.py.md`） |
 | 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `16 1 * * *` | 待检查 | [kurobbs_sign.py.md](../../scripts/kurobbs_sign.py.md)（`docs/scripts/kurobbs_sign.py.md`） |
+| 科学刀论坛打卡签到 | `scripts/kxdao.py` | `python3 scripts/kxdao.py` | `55 6 * * *` | 待检查 | [kxdao.py.md](../../scripts/kxdao.py.md)（`docs/scripts/kxdao.py.md`） |
 | 老王FIP签到 | `scripts/laowangfip_checkin.py` | `python3 scripts/laowangfip_checkin.py` | `7 10 * * *` | 待检查 | [laowangfip_checkin.py.md](../../scripts/laowangfip_checkin.py.md)（`docs/scripts/laowangfip_checkin.py.md`） |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` | 待检查 | [leaflow_checkin_pyleaflow_checkin.py.md](../../scripts/leaflow_checkin_pyleaflow_checkin.py.md)（`docs/scripts/leaflow_checkin_pyleaflow_checkin.py.md`） |
 | LeetCode 中文站每日一题自动打卡 | `scripts/leetcode_daily.py` | `python3 scripts/leetcode_daily.py` | `30 0 * * *` | 待检查 | [leetcode_daily.py.md](../../scripts/leetcode_daily.py.md)（`docs/scripts/leetcode_daily.py.md`） |
