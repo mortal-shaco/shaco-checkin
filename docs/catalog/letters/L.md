@@ -1,10 +1,11 @@
 # 字母索引 · L
 
-共 **9** 个脚本。返回 [`目录首页`](../README.md)。
+共 **10** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | LINUX DO 登录与浏览统计 | `scripts/l.py` | `python3 scripts/l.py` | `37 */5 * * *` | 待检查 | [l.py.md](../../scripts/l.py.md)（`docs/scripts/l.py.md`） |
+| 老王FIP签到 | `scripts/laowangfip_checkin.py` | `python3 scripts/laowangfip_checkin.py` | `7 10 * * *` | 待检查 | [laowangfip_checkin.py.md](../../scripts/laowangfip_checkin.py.md)（`docs/scripts/laowangfip_checkin.py.md`） |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` | 待检查 | [leaflow_checkin_pyleaflow_checkin.py.md](../../scripts/leaflow_checkin_pyleaflow_checkin.py.md)（`docs/scripts/leaflow_checkin_pyleaflow_checkin.py.md`） |
 | LeetCode 中文站每日一题自动打卡 | `scripts/leetcode_daily.py` | `python3 scripts/leetcode_daily.py` | `30 0 * * *` | 待检查 | [leetcode_daily.py.md](../../scripts/leetcode_daily.py.md)（`docs/scripts/leetcode_daily.py.md`） |
 | 量界智算签到 | `scripts/liangjie.py` | `python3 scripts/liangjie.py` | `10 9 * * *` | 待检查 | [liangjie.py.md](../../scripts/liangjie.py.md)（`docs/scripts/liangjie.py.md`） |

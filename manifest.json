@@ -26871,6 +26871,195 @@
       }
     },
     {
+      "catalogId": "1459eae4ec890c40",
+      "applicationKey": "ggbondhere/qinglongscripts::isvoro",
+      "checkProfile": {
+        "requiredEnv": [
+          "ISVORO_COOKIE"
+        ],
+        "optionalEnv": [
+          "ISVORO_DRY_RUN",
+          "ISVORO_WRITEBACK",
+          "CLIENT_ID",
+          "CLIENT_SECRET",
+          "DAILY_ALL_CHILD",
+          "DAILY_ALL_DISABLED",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ISVORO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ISVORO_WRITEBACK": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日签到并复查服务端 checked_in，已签到时避免重复提交",
+          "查询连续签到天数、本次奖励、积分余额及累计积分",
+          "只读查询遇到 401 时单次刷新并重试，写请求不自动重放",
+          "显示官方返回的非秘密昵称、用户名或公开 UID",
+          "每行一个账号独立执行，失败闭合并输出逐阶段日志和脱敏统计",
+          "兼容合集停用标识及 __DAILY_ALL_RESULT__= 输出",
+          "完全断网预演、TASK_SUMMARY 汇总及可配置青龙系统通知",
+          "显式启用后精确匹配并合并回写已验证的新 Cookie"
+        ],
+        "sideEffects": [
+          "未签到且服务端允许时提交每日签到，增加签到记录及相应积分",
+          "登录过期时刷新服务端登录会话并更新进程内 Cookie",
+          "仅显式开启回写时更新青龙 ISVORO_COOKIE 环境变量",
+          "按通知开关向已配置的通知渠道发送脱敏总结，断网预演只生成摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "ISVORO 每日签到",
+      "path": "scripts/isvoro_checkin.py",
+      "sha256": "e676a03855eb4a5b4f055d085d67a14777378ef148df22da8f956f7cd8227a8b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "GGBondHere/QingLongScripts",
+        "branch": "main",
+        "commit": "79238495c2489b52a6cc001ba9d6703ae6d57955",
+        "originalPath": "scripts/isvoro_checkin.py"
+      },
+      "cron": "6 10 * * *",
+      "command": "python3 scripts/isvoro_checkin.py",
+      "environment": [
+        {
+          "name": "ISVORO_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://isvoro.com/checkin，打开开发者工具的网络面板，刷新并选择 /api/v1/auth/me 请求，复制请求头 Cookie 完整值。每个账号分别登录获取。",
+          "format": "每个非空行一个完整 Cookie，必须同时含 pmt_access、pmt_refresh、pmt_csrf。字段以分号分隔，仅在首个等号拆分，不用 & 或 @ 分账号。"
+        },
+        {
+          "name": "ISVORO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "断网验证时设置为 1，正式执行时删除或设为 0。",
+          "format": "1/true/yes/on 开启，其余关闭。"
+        },
+        {
+          "name": "ISVORO_WRITEBACK",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要将刷新后的 Cookie 保存到青龙面板时显式设为 1，默认关闭。",
+          "format": "1/true/yes/on 开启，开启时必须同时配置 CLIENT_ID 和 CLIENT_SECRET；按原始多账号完整变量值精确匹配并一次回写。"
+        },
+        {
+          "name": "CLIENT_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅启用回写时必填。青龙系统设置的应用设置中创建应用并授予环境变量权限，复制应用编号。",
+          "format": "与 CLIENT_SECRET 配套使用，为所有账号共用的面板应用凭据。"
+        },
+        {
+          "name": "CLIENT_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅启用回写时必填。从同一青龙应用复制应用密钥。",
+          "format": "与 CLIENT_ID 配套使用，不填入账号 Cookie 行。"
+        },
+        {
+          "name": "DAILY_ALL_CHILD",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "原合集调用时设置为 1，独立运行无需设置。",
+          "format": "1 输出兼容的 __DAILY_ALL_RESULT__= 汇总，同时遵守全局通知开关。"
+        },
+        {
+          "name": "DAILY_ALL_DISABLED",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要显式停用该任务时填写 isvoro 或 isvoro_checkin。",
+          "format": "兼容原合集，以逗号、分号、竖线、& 或换行分隔停用标识，这些分隔符不用于账号。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要自动通知时将 isvoro_checkin.py 或 1459eae4ec890c40 加入列表。显式设置的列表替换默认选择，空列表关闭全部。",
+          "format": "逗号、分号或空白分隔目录编号、脚本相对路径、文件名或文件名通配符，* 选择全部。未提供默认名单时 auto 不发送。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定已有青龙 notify.py 或 sendNotify.js 所在目录，也会发现标准青龙通知模块。",
+          "format": "本地目录路径。断网预演只生成摘要，不执行通知模块。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号的完整 Cookie，保留字段值中的等号；账号独立执行，任一账号失败整体非零退出，回写时保留其他账号行。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到并复查服务端 checked_in，已签到时避免重复提交",
+        "查询连续签到天数、本次奖励、积分余额及累计积分",
+        "只读查询遇到 401 时单次刷新并重试，写请求不自动重放",
+        "显示官方返回的非秘密昵称、用户名或公开 UID",
+        "每行一个账号独立执行，失败闭合并输出逐阶段日志和脱敏统计",
+        "兼容合集停用标识及 __DAILY_ALL_RESULT__= 输出",
+        "完全断网预演、TASK_SUMMARY 汇总及可配置青龙系统通知",
+        "显式启用后精确匹配并合并回写已验证的新 Cookie"
+      ],
+      "sideEffects": [
+        "未签到且服务端允许时提交每日签到，增加签到记录及相应积分",
+        "登录过期时刷新服务端登录会话并更新进程内 Cookie",
+        "仅显式开启回写时更新青龙 ISVORO_COOKIE 环境变量",
+        "按通知开关向已配置的通知渠道发送脱敏总结，断网预演只生成摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1459eae4ec890c40",
+        "candidateSha256": "ebd874b584b93497dd026b4f8a67110959db8c1e5a97fc0f1def20359974bb4e"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "ebd874b584b93497dd026b4f8a67110959db8c1e5a97fc0f1def20359974bb4e",
+        "releaseSha256": "e676a03855eb4a5b4f055d085d67a14777378ef148df22da8f956f7cd8227a8b",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T05:36:30.542618+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "ebd874b584b93497dd026b4f8a67110959db8c1e5a97fc0f1def20359974bb4e",
+          "toCandidateSha256": "e676a03855eb4a5b4f055d085d67a14777378ef148df22da8f956f7cd8227a8b",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "fd9b2a23e39332a5",
       "applicationKey": "jc",
       "checkProfile": {
@@ -30215,6 +30404,255 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "aba0cf5855af880ab672f6f322417b935718dc8e2e81351ebd65791a1b9809dd",
           "toCandidateSha256": "1964426d8eaef343664d674515fa04105ab9fecdd54fabe9e83f7915e884c22f",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "91d3322eb735e2d2",
+      "applicationKey": "zephyr-xiao/qinglong-script::laowangfip-checkin",
+      "checkProfile": {
+        "requiredEnv": [
+          "LWFIP_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "LWFIP_DRY_RUN",
+          "LWFIP_BASE_URL",
+          "LWFIP_PROXY",
+          "LWFIP_PROXY_REQUIRED",
+          "LWFIP_TIMEOUT",
+          "LWFIP_MAX_CAPTCHA_RETRY",
+          "LWFIP_MAX_RETRY",
+          "LWFIP_RETRY_INTERVAL",
+          "LWFIP_DEBUG",
+          "LWFIP_COOKIE_CACHE",
+          "LWFIP_NOTIFY",
+          "LWFIP_NOTIFY_ONLY_FAIL",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "LWFIP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LWFIP_COOKIE_CACHE": "0",
+          "LWFIP_TIMEOUT": "30"
+        },
+        "successPatterns": [
+          "最终状态 success",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "用户名密码登录与每日签到",
+          "tncode 滑块图像求解、轨迹签名、多候选验证与换图重试",
+          "验证登录态，识别今日已签到并跳过重复签到",
+          "查询连续签到、签到等级、积分奖励和总天数",
+          "逐行多账号独立处理，任一失败整体非零退出",
+          "专用代理优先与青龙全局代理回退，支持缺代理即失败",
+          "可恢复错误重试，错误密码不重试",
+          "可选安全会话缓存复用与失效清理",
+          "显示官方返回的公开 UID 和不含联系方式的账号名称",
+          "离线预演、阶段时间轴、账号与任务统计及唯一 TASK_SUMMARY 汇总",
+          "青龙脱敏通知，支持统一开关、任务选择及旧通知参数"
+        ],
+        "sideEffects": [
+          "提交登录与滑块验证，建立服务端登录会话",
+          "执行每日签到并领取签到奖励",
+          "显式开启缓存时写入、替换或删除脚本目录内的会话凭据文件",
+          "启用通知时向青龙配置的通知渠道发送脱敏汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "老王FIP签到",
+      "path": "scripts/laowangfip_checkin.py",
+      "sha256": "2f65c336c4ab546b52d9e21557554a25ae92418aaf223c03dd2fde1d36f1d0b3",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "zephyr-xiao/qinglong-script",
+        "branch": "main",
+        "commit": "faba139086e3fc0c3f86b0cc9281b126947353e3",
+        "originalPath": "laowangfip_checkin/laowangfip_checkin.py"
+      },
+      "cron": "7 10 * * *",
+      "command": "python3 scripts/laowangfip_checkin.py",
+      "environment": [
+        {
+          "name": "LWFIP_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人在老王论坛注册并已确认可登录的用户名和密码，在青龙环境变量中填写，无需抓包。",
+          "format": "每个非空行一个用户名#密码账号，仅按首个 # 切分，密码中的 #、&、@ 及空格保留。禁止使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "LWFIP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "断网预演时设为 1。",
+          "format": "布尔值，默认 false。预演不请求网络、不读写缓存、不导入通知模块。"
+        },
+        {
+          "name": "LWFIP_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认 https://laowangfip372.vip，仅在核实官方站点迁移后修改。",
+          "format": "HTTPS 源站，不含认证、路径、查询参数及片段。"
+        },
+        {
+          "name": "LWFIP_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人使用的代理服务获取；未设置时依次读取 HTTPS_PROXY、https_proxy、HTTP_PROXY、http_proxy、ALL_PROXY、all_proxy。",
+          "format": "代理 URL，可含认证，默认直连。支持 HTTP 及 SOCKS 代理，禁止公开含认证的地址。"
+        },
+        {
+          "name": "LWFIP_PROXY_REQUIRED",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要代理缺失时立即失败则开启。",
+          "format": "布尔值，默认 false。"
+        },
+        {
+          "name": "LWFIP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要在青龙环境变量中设置请求超时秒数。",
+          "format": "整数，最小 1，默认 30。"
+        },
+        {
+          "name": "LWFIP_MAX_CAPTCHA_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要在青龙环境变量中设置单次滑块验证码重试次数。",
+          "format": "整数，最小 1，默认 5。"
+        },
+        {
+          "name": "LWFIP_MAX_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要在青龙环境变量中设置账号最大尝试次数。",
+          "format": "整数，最小 1，默认 5。"
+        },
+        {
+          "name": "LWFIP_RETRY_INTERVAL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要在青龙环境变量中设置账号重试等待秒数。",
+          "format": "整数，最小 0，默认 60。"
+        },
+        {
+          "name": "LWFIP_DEBUG",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要查看滑块候选、步骤和脱敏错误分类时开启。",
+          "format": "布尔值，默认 false，不输出响应、URL、异常堆栈或凭据。"
+        },
+        {
+          "name": "LWFIP_COOKIE_CACHE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要跨次复用登录态时显式开启，脚本所在目录应只由本人访问。",
+          "format": "布尔值，默认 false。开启后写入按站点与账号哈希命名的 cookie_*.json，权限 0600、原子替换。缓存含凭据，禁止入库及共享，失效后删除并重新登录。"
+        },
+        {
+          "name": "LWFIP_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游通知开关，在全局开关为 auto 且未设置选择列表时生效。",
+          "format": "布尔值，默认 true。"
+        },
+        {
+          "name": "LWFIP_NOTIFY_ONLY_FAIL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "只需失败通知时显式开启，在全局开关为 auto 且未设置选择列表时生效。",
+          "format": "布尔值，默认 false。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "全局开关为 auto 时设置选择列表，替换默认任务通知选择。",
+          "format": "逗号、分号或空白分隔，支持 catalogId 91d3322eb735e2d2、脚本相对路径、文件名及通配符。* 选择全部，空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙已有 notify.py 或 sendNotify.js 所在目录，仅用于通知集成。",
+          "format": "目录路径，优先尝试导入 notify.send，随后查找本目录、/ql/data/scripts、/ql/scripts。通知失败保留业务退出码，预演仅模拟投递。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个用户名#密码账号，仅按首个 # 切分并保留完整密码。错误行记为失败，其余账号继续，任一账号失败整体非零退出。"
+      },
+      "dependencies": [
+        "requests",
+        "opencv-python-headless",
+        "numpy",
+        "PySocks"
+      ],
+      "features": [
+        "用户名密码登录与每日签到",
+        "tncode 滑块图像求解、轨迹签名、多候选验证与换图重试",
+        "验证登录态，识别今日已签到并跳过重复签到",
+        "查询连续签到、签到等级、积分奖励和总天数",
+        "逐行多账号独立处理，任一失败整体非零退出",
+        "专用代理优先与青龙全局代理回退，支持缺代理即失败",
+        "可恢复错误重试，错误密码不重试",
+        "可选安全会话缓存复用与失效清理",
+        "显示官方返回的公开 UID 和不含联系方式的账号名称",
+        "离线预演、阶段时间轴、账号与任务统计及唯一 TASK_SUMMARY 汇总",
+        "青龙脱敏通知，支持统一开关、任务选择及旧通知参数"
+      ],
+      "sideEffects": [
+        "提交登录与滑块验证，建立服务端登录会话",
+        "执行每日签到并领取签到奖励",
+        "显式开启缓存时写入、替换或删除脚本目录内的会话凭据文件",
+        "启用通知时向青龙配置的通知渠道发送脱敏汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/91d3322eb735e2d2",
+        "candidateSha256": "03077f6280fdfb7f34750a3e7cb9df82a65ef54df09a5af67601c6a766808cfa"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "03077f6280fdfb7f34750a3e7cb9df82a65ef54df09a5af67601c6a766808cfa",
+        "releaseSha256": "2f65c336c4ab546b52d9e21557554a25ae92418aaf223c03dd2fde1d36f1d0b3",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T05:36:31.694618+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "03077f6280fdfb7f34750a3e7cb9df82a65ef54df09a5af67601c6a766808cfa",
+          "toCandidateSha256": "2f65c336c4ab546b52d9e21557554a25ae92418aaf223c03dd2fde1d36f1d0b3",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -69685,6 +70123,213 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "54e9cb7451c12a3521ddb66a0ba5bd9ccadf75b1b77fe761f335a1117f44dc53",
           "toCandidateSha256": "81e9f4f539ca6cc2b590f77f91367271ebf6a372de7d6953b59cd1b29c306c1c",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "cc47f2a2bfb54455",
+      "applicationKey": "guopenglong/automation-scripts::zhcommerce",
+      "checkProfile": {
+        "requiredEnv": [
+          "ZH_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ZH_ACCESS_TOKEN",
+          "ZH_DEVICE_ID",
+          "ZH_APP_UID",
+          "ZH_SID",
+          "ZH_LAT",
+          "ZH_LON",
+          "ZH_MALL_ID",
+          "ZH_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ZH_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "✅ 签到成功",
+          "☑️ 今天已签到"
+        ],
+        "features": [
+          "每日按原计划执行 zhcommerce 微信小程序签到，保留原请求路径、请求头、正文、签名及版本参数。",
+          "识别 PUB-00000 签到成功和 MBR-00029 今日已签到，展示可用的奖励积分与连续签到天数。",
+          "支持逐行 JSON 多账号与完整旧版单账号变量。",
+          "展示官方返回的非敏感昵称、用户名、显示名称或公开 UID；仅出现敏感内容时抑制。",
+          "提供完全断网预演、按账号和阶段的脱敏日志、统计及单行 TASK_SUMMARY JSON。",
+          "所有运行结果生成脱敏通知摘要，通过青龙内置通知适配器发送；支持通知全局开关及任务选择器。"
+        ],
+        "sideEffects": [
+          "正式模式提交每日签到，可能领取积分并增加连续签到天数。",
+          "通知启用且适配器可用时发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "zhcommerce每日签到",
+      "path": "scripts/zhcommerce_signin.py",
+      "sha256": "07b8971b7b90c7156274d7a009f2ae759d8e015c180b684b0d7c72a318ed8f8e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "guopenglong/automation-scripts",
+        "branch": "main",
+        "commit": "65931dcd9a3c37619b442bea4930df0dc44c57f2",
+        "originalPath": "zhcommerce/zhcommerce_signin.py",
+        "related": [
+          {
+            "catalogId": "8f4936cacc600de3",
+            "sha256": "a7e1527be7835bb51378bb60fa68aec15403da56ad76eef8053d2cd09b101427",
+            "repository": "guopenglong/automation-scripts",
+            "url": "https://github.com/guopenglong/automation-scripts.git",
+            "branch": "main",
+            "commit": "65931dcd9a3c37619b442bea4930df0dc44c57f2",
+            "originalPath": "zhcommerce/notification.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "45 7 * * *",
+      "command": "python3 scripts/zhcommerce_signin.py",
+      "environment": [
+        {
+          "name": "ZH_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 zhcommerce 微信小程序中，通过本地调试代理查看每日签到 POST /api/v3/member/{appUid}/signs 请求。accessToken、deviceId、appUid、sid 取自查询参数，lat、lon、mallId 取自 JSON 请求体；必须属于同一账号和实际使用位置。凭据过期后重新登录获取，切勿分享请求或日志。",
+          "format": "每个非空行一个 JSON 对象，必填 accessToken、deviceId、appUid、sid、lat、lon；可选 mallId，默认 201。lat、lon 为有效经纬度数字，其余凭据为非空字符串；不使用 & 或 @ 分隔账号。配置此变量时优先使用它，不混入旧版变量。旧版单账号完整变量仍兼容。"
+        },
+        {
+          "name": "ZH_ACCESS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 zhcommerce 微信小程序中，通过本地调试代理查看每日签到 POST /api/v3/member/{appUid}/signs 请求。accessToken、deviceId、appUid、sid 取自查询参数，lat、lon、mallId 取自 JSON 请求体；必须属于同一账号和实际使用位置。凭据过期后重新登录获取，切勿分享请求或日志。",
+          "format": "旧版单账号兼容输入，对应 accessToken。仅未设置 ZH_ACCOUNTS 时生效；除 ZH_MALL_ID 默认 201 外，其余旧版字段均须完整配置。"
+        },
+        {
+          "name": "ZH_DEVICE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 zhcommerce 微信小程序中，通过本地调试代理查看每日签到 POST /api/v3/member/{appUid}/signs 请求。accessToken、deviceId、appUid、sid 取自查询参数，lat、lon、mallId 取自 JSON 请求体；必须属于同一账号和实际使用位置。凭据过期后重新登录获取，切勿分享请求或日志。",
+          "format": "旧版单账号兼容输入，对应 deviceId。仅未设置 ZH_ACCOUNTS 时生效；除 ZH_MALL_ID 默认 201 外，其余旧版字段均须完整配置。"
+        },
+        {
+          "name": "ZH_APP_UID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 zhcommerce 微信小程序中，通过本地调试代理查看每日签到 POST /api/v3/member/{appUid}/signs 请求。accessToken、deviceId、appUid、sid 取自查询参数，lat、lon、mallId 取自 JSON 请求体；必须属于同一账号和实际使用位置。凭据过期后重新登录获取，切勿分享请求或日志。",
+          "format": "旧版单账号兼容输入，对应 appUid。仅未设置 ZH_ACCOUNTS 时生效；除 ZH_MALL_ID 默认 201 外，其余旧版字段均须完整配置。"
+        },
+        {
+          "name": "ZH_SID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 zhcommerce 微信小程序中，通过本地调试代理查看每日签到 POST /api/v3/member/{appUid}/signs 请求。accessToken、deviceId、appUid、sid 取自查询参数，lat、lon、mallId 取自 JSON 请求体；必须属于同一账号和实际使用位置。凭据过期后重新登录获取，切勿分享请求或日志。",
+          "format": "旧版单账号兼容输入，对应 sid。仅未设置 ZH_ACCOUNTS 时生效；除 ZH_MALL_ID 默认 201 外，其余旧版字段均须完整配置。"
+        },
+        {
+          "name": "ZH_LAT",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 zhcommerce 微信小程序中，通过本地调试代理查看每日签到 POST /api/v3/member/{appUid}/signs 请求。accessToken、deviceId、appUid、sid 取自查询参数，lat、lon、mallId 取自 JSON 请求体；必须属于同一账号和实际使用位置。凭据过期后重新登录获取，切勿分享请求或日志。",
+          "format": "旧版单账号兼容输入，对应 lat。仅未设置 ZH_ACCOUNTS 时生效；除 ZH_MALL_ID 默认 201 外，其余旧版字段均须完整配置。"
+        },
+        {
+          "name": "ZH_LON",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 zhcommerce 微信小程序中，通过本地调试代理查看每日签到 POST /api/v3/member/{appUid}/signs 请求。accessToken、deviceId、appUid、sid 取自查询参数，lat、lon、mallId 取自 JSON 请求体；必须属于同一账号和实际使用位置。凭据过期后重新登录获取，切勿分享请求或日志。",
+          "format": "旧版单账号兼容输入，对应 lon。仅未设置 ZH_ACCOUNTS 时生效；除 ZH_MALL_ID 默认 201 外，其余旧版字段均须完整配置。"
+        },
+        {
+          "name": "ZH_MALL_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在本人已登录的 zhcommerce 微信小程序中，通过本地调试代理查看每日签到 POST /api/v3/member/{appUid}/signs 请求。accessToken、deviceId、appUid、sid 取自查询参数，lat、lon、mallId 取自 JSON 请求体；必须属于同一账号和实际使用位置。凭据过期后重新登录获取，切勿分享请求或日志。",
+          "format": "旧版单账号兼容输入，对应 mallId。仅未设置 ZH_ACCOUNTS 时生效；除 ZH_MALL_ID 默认 201 外，其余旧版字段均须完整配置。"
+        },
+        {
+          "name": "ZH_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置。",
+          "format": "1、true、yes、on 启用完全断网预演；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置通知任务选择器。",
+          "format": "auto 时生效；逗号、分号、空白或换行分隔，支持目录编号、脚本相对路径、文件名、文件名通配符，* 全选，空值禁用全部；设置后替换默认名单。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写现有青龙通知模块所在目录；不配置则自动查找内置模块及标准目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的目录。发送失败或缺失不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个完整 JSON 账号；配套凭据保存在同一行，逐账号独立执行，任一账号配置或签到失败整体非零退出。旧版变量仅支持单账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日按原计划执行 zhcommerce 微信小程序签到，保留原请求路径、请求头、正文、签名及版本参数。",
+        "识别 PUB-00000 签到成功和 MBR-00029 今日已签到，展示可用的奖励积分与连续签到天数。",
+        "支持逐行 JSON 多账号与完整旧版单账号变量。",
+        "展示官方返回的非敏感昵称、用户名、显示名称或公开 UID；仅出现敏感内容时抑制。",
+        "提供完全断网预演、按账号和阶段的脱敏日志、统计及单行 TASK_SUMMARY JSON。",
+        "所有运行结果生成脱敏通知摘要，通过青龙内置通知适配器发送；支持通知全局开关及任务选择器。"
+      ],
+      "sideEffects": [
+        "正式模式提交每日签到，可能领取积分并增加连续签到天数。",
+        "通知启用且适配器可用时发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/cc47f2a2bfb54455",
+        "candidateSha256": "989f5f7b3344b70f157365228115530f6866829a47d2ae78c40cf736cca3b176"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "989f5f7b3344b70f157365228115530f6866829a47d2ae78c40cf736cca3b176",
+        "releaseSha256": "07b8971b7b90c7156274d7a009f2ae759d8e015c180b684b0d7c72a318ed8f8e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T05:36:33.266963+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "989f5f7b3344b70f157365228115530f6866829a47d2ae78c40cf736cca3b176",
+          "toCandidateSha256": "07b8971b7b90c7156274d7a009f2ae759d8e015c180b684b0d7c72a318ed8f8e",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

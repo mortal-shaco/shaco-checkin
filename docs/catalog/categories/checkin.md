@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **312** 个脚本。返回 [`目录首页`](../README.md)。
+共 **315** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -119,6 +119,7 @@
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `1 21 * * *` | 待检查 | [ikuuu_checkin.py.md](../../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
 | SF轻小说签到 | `scripts/illustar0_sf_autocheckin.py` | `python3 scripts/illustar0_sf_autocheckin.py` | `16 9 * * *` | 待检查 | [illustar0_sf_autocheckin.py.md](../../scripts/illustar0_sf_autocheckin.py.md)（`docs/scripts/illustar0_sf_autocheckin.py.md`） |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `8 1 * * *` | 待检查 | [iqiyi_checkin.py.md](../../scripts/iqiyi_checkin.py.md)（`docs/scripts/iqiyi_checkin.py.md`） |
+| ISVORO 每日签到 | `scripts/isvoro_checkin.py` | `python3 scripts/isvoro_checkin.py` | `6 10 * * *` | 待检查 | [isvoro_checkin.py.md](../../scripts/isvoro_checkin.py.md)（`docs/scripts/isvoro_checkin.py.md`） |
 | 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `45 2 * * *` | 待检查 | [jc_checkin.py.md](../../scripts/jc_checkin.py.md)（`docs/scripts/jc_checkin.py.md`） |
 | jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `5 1 * * *` | 待检查 | [jcqd.py.md](../../scripts/jcqd.py.md)（`docs/scripts/jcqd.py.md`） |
 | ikuuu 每日签到 | `scripts/jihcang_daily.py` | `python3 scripts/jihcang_daily.py` | `45 9 * * *` | 待检查 | [jihcang_daily.py.md](../../scripts/jihcang_daily.py.md)（`docs/scripts/jihcang_daily.py.md`） |
@@ -134,6 +135,7 @@
 | 库街区社区与游戏签到 | `scripts/kurobbs.py` | `python3 scripts/kurobbs.py` | `43 9 * * *` | 待检查 | [kurobbs.py.md](../../scripts/kurobbs.py.md)（`docs/scripts/kurobbs.py.md`） |
 | 库街区自动签到 | `scripts/kurobbs_c0f8e834c99a.py` | `python3 scripts/kurobbs_c0f8e834c99a.py` | `55 9 * * *` | 待检查 | [kurobbs_c0f8e834c99a.py.md](../../scripts/kurobbs_c0f8e834c99a.py.md)（`docs/scripts/kurobbs_c0f8e834c99a.py.md`） |
 | 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `16 1 * * *` | 待检查 | [kurobbs_sign.py.md](../../scripts/kurobbs_sign.py.md)（`docs/scripts/kurobbs_sign.py.md`） |
+| 老王FIP签到 | `scripts/laowangfip_checkin.py` | `python3 scripts/laowangfip_checkin.py` | `7 10 * * *` | 待检查 | [laowangfip_checkin.py.md](../../scripts/laowangfip_checkin.py.md)（`docs/scripts/laowangfip_checkin.py.md`） |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `34 18 * * *` | 待检查 | [leaflow_checkin_pyleaflow_checkin.py.md](../../scripts/leaflow_checkin_pyleaflow_checkin.py.md)（`docs/scripts/leaflow_checkin_pyleaflow_checkin.py.md`） |
 | LeetCode 中文站每日一题自动打卡 | `scripts/leetcode_daily.py` | `python3 scripts/leetcode_daily.py` | `30 0 * * *` | 待检查 | [leetcode_daily.py.md](../../scripts/leetcode_daily.py.md)（`docs/scripts/leetcode_daily.py.md`） |
 | 量界智算签到 | `scripts/liangjie.py` | `python3 scripts/liangjie.py` | `10 9 * * *` | 待检查 | [liangjie.py.md](../../scripts/liangjie.py.md)（`docs/scripts/liangjie.py.md`） |
@@ -312,6 +314,7 @@
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `28 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
 | 极核ZEEHO每日签到 | `scripts/zeeho_signin.py` | `python3 scripts/zeeho_signin.py` | `32 8 * * *` | 待检查 | [zeeho_signin.py.md](../../scripts/zeeho_signin.py.md)（`docs/scripts/zeeho_signin.py.md`） |
 | 极氪每日签到与奖励领取 | `scripts/zeekr_egern.js` | `node scripts/zeekr_egern.js` | `14 0 * * *` | 待检查 | [zeekr_egern.js.md](../../scripts/zeekr_egern.js.md)（`docs/scripts/zeekr_egern.js.md`） |
+| zhcommerce每日签到 | `scripts/zhcommerce_signin.py` | `python3 scripts/zhcommerce_signin.py` | `45 7 * * *` | 待检查 | [zhcommerce_signin.py.md](../../scripts/zhcommerce_signin.py.md)（`docs/scripts/zhcommerce_signin.py.md`） |
 | Zippo会员中心 | `scripts/zippo.py` | `python3 scripts/zippo.py` | `56 0 * * *` | 待检查 | [zippo.py.md](../../scripts/zippo.py.md)（`docs/scripts/zippo.py.md`） |
 | 知末签到 | `scripts/znzmo.js` | `node scripts/znzmo.js` | `0 55 11 * * *` | 待检查 | [znzmo.js.md](../../scripts/znzmo.js.md)（`docs/scripts/znzmo.js.md`） |
 | Zodgame签到与广告任务 | `scripts/zodgame_test.py` | `python3 scripts/zodgame_test.py` | `35 2 * * *` | 待检查 | [zodgame_test.py.md](../../scripts/zodgame_test.py.md)（`docs/scripts/zodgame_test.py.md`） |
