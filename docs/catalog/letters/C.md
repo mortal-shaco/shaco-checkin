@@ -1,6 +1,6 @@
 # 字母索引 · C
 
-共 **32** 个脚本。返回 [`目录首页`](../README.md)。
+共 **34** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -32,6 +32,8 @@
 | 中山大学人脸签到 | `scripts/cli.py` | `python3 scripts/cli.py` | `*/5 7-22 * * *` | 待检查 | [cli.py.md](../../scripts/cli.py.md)（`docs/scripts/cli.py.md`） |
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `16 8 * * *` | 待检查 | [codearts_daily.py.md](../../scripts/codearts_daily.py.md)（`docs/scripts/codearts_daily.py.md`） |
+| 鸿星尔克签到与积分查询 | `scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `48 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_erke.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_erke.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_erke.py.md`） |
+| 文体未来荟签到与积分查询 | `scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py` | `47 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md`） |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
 | 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../../scripts/config.py.md)（`docs/scripts/config.py.md`） |
 | 智谱清言每日领分与余额 | `scripts/content.js` | `node scripts/content.js` | `37 9 * * *` | 待检查 | [content.js.md](../../scripts/content.js.md)（`docs/scripts/content.js.md`） |

@@ -14110,6 +14110,321 @@
       }
     },
     {
+      "catalogId": "8f2a9a5ae3fed5d4",
+      "applicationKey": "comeonbabyy1/qiandao-jiaob::erke",
+      "checkProfile": {
+        "requiredEnv": [
+          "ERKE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "ERKE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ERKE_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询积分明细第一页（每页 5 条），显示累计、冻结、可用积分和接口提供的记录总数",
+          "执行会员签到，业务码 0000 表示成功、1001 表示今日已签到",
+          "保留原请求 URL、方法、签名、企业请求头及五项账号字段，不依赖原仓库模块",
+          "逐行多账号独立处理；查询失败仍尝试签到，任一步失败则账号和整体失败",
+          "官方响应包含昵称、用户名、显示名或公开 UID 时展示公开身份，隐藏凭据和设备标识",
+          "提供完全断网预演、分阶段计时、账号和任务统计以及唯一 TASK_SUMMARY JSON 记录",
+          "按照全局开关和名单使用青龙通知模块发送脱敏统计；通知失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行时执行会员签到，可能增加积分及签到记录",
+          "通知启用时发送脱敏任务结果"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "鸿星尔克签到与积分查询",
+      "path": "scripts/comeonbabyy1_qiandao_jiaob_erke.py",
+      "sha256": "9bb43b95b8f489661910a12a4d4c2848d2747e7086aa16cf3a4c98825c5f9196",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "comeonbabyy1/qiandao-jiaob",
+        "branch": "main",
+        "commit": "ce494881ab17ef23b5b9de9df30ea60567b3865c",
+        "originalPath": "script/erke/main.py",
+        "related": [
+          {
+            "catalogId": "cddf8635fc2da86a",
+            "sha256": "73700b126463c3a30d8699502034806a226b5518dd51503b4f1dcba5b794122f",
+            "repository": "comeonbabyy1/qiandao-jiaob",
+            "url": "https://github.com/comeonbabyy1/qiandao-jiaob",
+            "branch": "main",
+            "commit": "ce494881ab17ef23b5b9de9df30ea60567b3865c",
+            "originalPath": "script/erke/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "48 9 * * *",
+      "command": "python3 scripts/comeonbabyy1_qiandao_jiaob_erke.py",
+      "environment": [
+        {
+          "name": "ERKE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录自己的鸿星尔克微信小程序，在合法授权的网络调试中查看 integral_record.json 或 sign/member_sign.json 请求体。将 memberId、enterpriseId、unionid、openid、wxOpenid 分别填入 member_id、enterprise_id、unionid、openid、wx_openid；值须来自同一账号，不要分享抓包内容。",
+          "format": "每个非空行一个紧凑 JSON 对象；上述五个字段为非空字符串。可选 account_name（仅兼容保存，不作为可信官方身份输出）、user_agent（自定义请求头）。保留上游字段名，替代原私有 config/token.json 的 erke.accounts 配置；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "ERKE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置；开启后不发送业务请求或通知。",
+          "format": "1/true/yes/on 开启；0/false/no/off 关闭，默认 0；其他值按配置错误失败且不联网。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要自动模式发送时加入本脚本目录编号或文件名，或使用 *。",
+          "format": "逗号、分号、空白或换行分隔；支持目录编号 8f2a9a5ae3fed5d4、原路径 script/erke/main.py、文件名及文件名通配符。设置后替换默认名单；空值关闭全部，当前默认不在名单。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙已有 notify.py 所在目录；不要求安装私有项目。",
+          "format": "本地通知模块目录。依次尝试 import notify.send、此目录、/ql/data/scripts、/ql/scripts；通知输出被捕获，最多每次等待 20 秒，失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，配套凭据放在同一对象内；逐账号独立运行，任一账号配置、查询或签到失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询积分明细第一页（每页 5 条），显示累计、冻结、可用积分和接口提供的记录总数",
+        "执行会员签到，业务码 0000 表示成功、1001 表示今日已签到",
+        "保留原请求 URL、方法、签名、企业请求头及五项账号字段，不依赖原仓库模块",
+        "逐行多账号独立处理；查询失败仍尝试签到，任一步失败则账号和整体失败",
+        "官方响应包含昵称、用户名、显示名或公开 UID 时展示公开身份，隐藏凭据和设备标识",
+        "提供完全断网预演、分阶段计时、账号和任务统计以及唯一 TASK_SUMMARY JSON 记录",
+        "按照全局开关和名单使用青龙通知模块发送脱敏统计；通知失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行时执行会员签到，可能增加积分及签到记录",
+        "通知启用时发送脱敏任务结果"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/8f2a9a5ae3fed5d4",
+        "candidateSha256": "93491556024be255da466a659eb23dc19d9a78b6299e6d9ee35c1cc1cf927138"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "93491556024be255da466a659eb23dc19d9a78b6299e6d9ee35c1cc1cf927138",
+        "releaseSha256": "9bb43b95b8f489661910a12a4d4c2848d2747e7086aa16cf3a4c98825c5f9196",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:16:49.658518+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "93491556024be255da466a659eb23dc19d9a78b6299e6d9ee35c1cc1cf927138",
+          "toCandidateSha256": "9bb43b95b8f489661910a12a4d4c2848d2747e7086aa16cf3a4c98825c5f9196",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "34d1495efaa008cc",
+      "applicationKey": "comeonbabyy1/qiandao-jiaob::wentiweilaihui",
+      "checkProfile": {
+        "requiredEnv": [
+          "WTWLH_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WTWLH_USER_AGENT",
+          "WTWLH_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WTWLH_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "TASK_SUCCESS：全部账号签到与积分查询均已核验成功"
+        ],
+        "features": [
+          "每日文体未来荟签到，保留上游请求体、请求头和项目标识",
+          "查询万象星总积分、可用积分和冻结积分",
+          "逐行多账号独立执行，支持原账号字段的逐行 JSON 与账号专属用户代理",
+          "官方返回公开昵称、用户名、显示名或公开 UID 时直接展示，抑制手机号及凭据",
+          "两阶段严格业务核验、请求超时、禁止携带凭据重定向、不自动重试签到",
+          "完全断网预演及参数校验",
+          "按账号和阶段输出带时间戳的日志、耗时与统计，追加唯一 TASK_SUMMARY JSON 汇总",
+          "遵循青龙全局通知开关及脚本名单，通知不可用时保留业务退出码"
+        ],
+        "sideEffects": [
+          "向文体未来荟提交每日签到，可能发放服务端规则决定的积分",
+          "按通知开关和脚本名单调用已有青龙通知模块发送脱敏汇总；断网预演不发送"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "文体未来荟签到与积分查询",
+      "path": "scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py",
+      "sha256": "d4b95831e5878aac09e2e4ac28a2f23050a60155c84f85db2007395867e4c3ad",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "comeonbabyy1/qiandao-jiaob",
+        "branch": "main",
+        "commit": "ce494881ab17ef23b5b9de9df30ea60567b3865c",
+        "originalPath": "script/huaruntong/wentiweilaihui/main.py",
+        "related": [
+          {
+            "catalogId": "9e73ad63029e9ec4",
+            "sha256": "85e8327bdd893d1604872b46a591a1ad75f5c0b082a4aa1109492c50ea6fd0a6",
+            "repository": "comeonbabyy1/qiandao-jiaob",
+            "url": "https://github.com/comeonbabyy1/qiandao-jiaob",
+            "branch": "main",
+            "commit": "ce494881ab17ef23b5b9de9df30ea60567b3865c",
+            "originalPath": "script/huaruntong/wentiweilaihui/api.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "47 9 * * *",
+      "command": "python3 scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py",
+      "environment": [
+        {
+          "name": "WTWLH_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在微信文体未来荟小程序登录本人账号，通过本人授权的网络调试记录获取 wtmp.crland.com.cn 请求中的 token 请求头，以及 /promotion/app/sign/signin 请求体 data.mobile；不要复制整段请求或 Cookie。原 config/token.json 中 accounts 的 token、mobile 可逐行迁移；过期后重新登录获取。",
+          "format": "每个非空行一个账号：手机号|token，仅按第一个竖线分隔，后续 token 原样保留；不使用 & 或 @ 分账号。也支持每行一个 JSON 对象，必填 mobile、token，可选 account_name、user_agent。手机号为中国大陆十一位手机号。"
+        },
+        {
+          "name": "WTWLH_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从同一小程序授权请求的 User-Agent 请求头获取；不设置时沿用上游默认值。JSON 账号内 user_agent 优先。",
+          "format": "单行有效 HTTP 请求头字符串"
+        },
+        {
+          "name": "WTWLH_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 开启断网预演；正式执行设为 0 或不设置。",
+          "format": "1、true、yes、on 开启；预演仅校验配置，不请求业务接口，不调用通知模块，也不验证业务成功"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在自动模式列出需要通知的脚本；显式空值禁用全部。",
+          "format": "逗号、分号、空白或换行分隔；支持目录中的精确编号、来源相对路径、实际文件名及文件名通配符；* 选择全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已有青龙通知模块所在目录，不负责下载或安装。默认尝试 import notify.send、/ql/data/scripts 和 /ql/scripts 下的 notify.py 或 sendNotify.js。",
+          "format": "本地目录路径；仅使用已有模块，模块缺失或通知失败保留业务退出码"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，配套手机号与 token 合并存放，仅按第一个竖线分隔；也支持逐行 JSON 兼容原账号字段。各账号独立执行，任一账号配置或业务失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日文体未来荟签到，保留上游请求体、请求头和项目标识",
+        "查询万象星总积分、可用积分和冻结积分",
+        "逐行多账号独立执行，支持原账号字段的逐行 JSON 与账号专属用户代理",
+        "官方返回公开昵称、用户名、显示名或公开 UID 时直接展示，抑制手机号及凭据",
+        "两阶段严格业务核验、请求超时、禁止携带凭据重定向、不自动重试签到",
+        "完全断网预演及参数校验",
+        "按账号和阶段输出带时间戳的日志、耗时与统计，追加唯一 TASK_SUMMARY JSON 汇总",
+        "遵循青龙全局通知开关及脚本名单，通知不可用时保留业务退出码"
+      ],
+      "sideEffects": [
+        "向文体未来荟提交每日签到，可能发放服务端规则决定的积分",
+        "按通知开关和脚本名单调用已有青龙通知模块发送脱敏汇总；断网预演不发送"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/34d1495efaa008cc",
+        "candidateSha256": "c3ca52130b85d90c7c82c2b88a1b2f6493fbef632ba1b1d4ace149d4eaab790f"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "c3ca52130b85d90c7c82c2b88a1b2f6493fbef632ba1b1d4ace149d4eaab790f",
+        "releaseSha256": "d4b95831e5878aac09e2e4ac28a2f23050a60155c84f85db2007395867e4c3ad",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:17:49.423299+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "c3ca52130b85d90c7c82c2b88a1b2f6493fbef632ba1b1d4ace149d4eaab790f",
+          "toCandidateSha256": "d4b95831e5878aac09e2e4ac28a2f23050a60155c84f85db2007395867e4c3ad",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "b33f4d715d28a216",
       "applicationKey": "csdn2024/qiandaomzh::comicai",
       "checkProfile": {
@@ -22640,6 +22955,169 @@
       }
     },
     {
+      "catalogId": "08bb0c214d8ab765",
+      "applicationKey": "guoxpeng/daily-checkin-panel::sites",
+      "checkProfile": {
+        "requiredEnv": [
+          "MISIGN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "MISIGN_USER_AGENT",
+          "MISIGN_TIMEOUT_MS",
+          "MISIGN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MISIGN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MISIGN_TIMEOUT_MS": "15000",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到，无需重复",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "适配安装 k_misign 插件的 Discuz 论坛，支持论坛安装子目录及可选浏览器标识",
+          "保留 base_url、cookie、user_agent 参数名称，提供每行一个账号的青龙环境变量入口",
+          "检查今日签到排名，已完成时避免重复操作；提取签到按钮链接执行，并重新读取签到页严格复核排名",
+          "显示确认页的奖励；官方登录用户区返回昵称或公开 UID 时显示非敏感身份",
+          "识别登录失效、人机验证、HTTP 错误、空响应、超时、响应超限及异常编码，无法确认成功时非零退出",
+          "HTTPS 同源凭据隔离和有限重定向，拒绝非签到端点及操作，不记录凭据或原始响应",
+          "完全断网预演、逐账号分阶段计时、子任务统计、最终状态和单行 TASK_SUMMARY 结构化汇总",
+          "遵循青龙通知开关与选择列表发送脱敏汇总，模块缺失、通知失败或超时不改变业务退出码"
+        ],
+        "sideEffects": [
+          "对未签到账号执行 k_misign 每日签到，可能增加签到天数并领取论坛设定的奖励",
+          "正式运行且符合通知条件时通过青龙通知模块发送脱敏结果摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Discuz 每日签到",
+      "path": "scripts/guoxpeng_daily_checkin_panel_sites.js",
+      "sha256": "e95c7cffca7c970f7539d4f49fa90103283033cbea7530225c391bfe0d0fddbc",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "guoxpeng/daily-checkin-panel",
+        "branch": "master",
+        "commit": "37584baa09f78577e4782654a3d2c5e6cdef80b6",
+        "originalPath": "src/sites/misign.js"
+      },
+      "cron": "46 9 * * *",
+      "command": "node scripts/guoxpeng_daily_checkin_panel_sites.js",
+      "environment": [
+        {
+          "name": "MISIGN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录目标 Discuz 论坛，必要时先完成人机验证；F12 网络面板访问 plugin.php?id=k_misign:sign，复制请求头 Cookie 的值。论坛地址应为实际安装首页，包含子目录。可选 user_agent 从同一请求头 User-Agent 获取。",
+          "format": "每个非空行一个 JSON 对象，字段为 base_url、cookie 和可选 user_agent；也支持 论坛地址|Cookie，仅在首个竖线分割，后续凭据文本完整保留。不使用 & 或 @ 分隔账号。地址无协议时补 HTTPS，只接受不含凭据、查询和片段的 HTTPS 首页地址。"
+        },
+        {
+          "name": "MISIGN_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：从获取 Cookie 时的浏览器请求头复制 User-Agent；账号 JSON 的 user_agent 优先，未配置使用原脚本默认值。",
+          "format": "单行可打印英文请求头值"
+        },
+        {
+          "name": "MISIGN_TIMEOUT_MS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：按网络情况设置，默认 15000。",
+          "format": "1000～60000 的整数，单位毫秒，覆盖单次请求、重定向及响应读取"
+        },
+        {
+          "name": "MISIGN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 进行完全断网预演，不请求网站或调用通知发送器；不设置执行正式签到。",
+          "format": "1 表示断网预演"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：通知脚本选择列表，设置时替换默认空列表。支持目录编号、脚本相对路径、文件名和星号文件名通配符；* 匹配全部，空值禁用全部自动通知。",
+          "format": "逗号、分号、空白或换行分隔的选择列表"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙 sendNotify.js 所在目录；不配置时探测 /ql/data/scripts 和 /ql/scripts。通知失败只记录提示，保留签到退出码。",
+          "format": "本机青龙通知模块目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行对应独立账号，一行绑定论坛地址和 Cookie，JSON 可覆盖该账号的浏览器标识。简写仅在首个竖线分割。各账号独立处理，任一失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "适配安装 k_misign 插件的 Discuz 论坛，支持论坛安装子目录及可选浏览器标识",
+        "保留 base_url、cookie、user_agent 参数名称，提供每行一个账号的青龙环境变量入口",
+        "检查今日签到排名，已完成时避免重复操作；提取签到按钮链接执行，并重新读取签到页严格复核排名",
+        "显示确认页的奖励；官方登录用户区返回昵称或公开 UID 时显示非敏感身份",
+        "识别登录失效、人机验证、HTTP 错误、空响应、超时、响应超限及异常编码，无法确认成功时非零退出",
+        "HTTPS 同源凭据隔离和有限重定向，拒绝非签到端点及操作，不记录凭据或原始响应",
+        "完全断网预演、逐账号分阶段计时、子任务统计、最终状态和单行 TASK_SUMMARY 结构化汇总",
+        "遵循青龙通知开关与选择列表发送脱敏汇总，模块缺失、通知失败或超时不改变业务退出码"
+      ],
+      "sideEffects": [
+        "对未签到账号执行 k_misign 每日签到，可能增加签到天数并领取论坛设定的奖励",
+        "正式运行且符合通知条件时通过青龙通知模块发送脱敏结果摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/08bb0c214d8ab765",
+        "candidateSha256": "8fed4ec68dc650da14f50ba8db0cd4ff7073ad9001d632c7c4d985c09f868402"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "8fed4ec68dc650da14f50ba8db0cd4ff7073ad9001d632c7c4d985c09f868402",
+        "releaseSha256": "e95c7cffca7c970f7539d4f49fa90103283033cbea7530225c391bfe0d0fddbc",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:01:47.402838+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "8fed4ec68dc650da14f50ba8db0cd4ff7073ad9001d632c7c4d985c09f868402",
+          "toCandidateSha256": "e95c7cffca7c970f7539d4f49fa90103283033cbea7530225c391bfe0d0fddbc",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "bafb80cab6b6c282",
       "applicationKey": "264768502/qiandao::haodou",
       "checkProfile": {
@@ -25824,6 +26302,174 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "ddbc8159cadbfeb3332e7ecfed3200f268bc1950c4fd4a6f6597b461ac7ad731",
           "toCandidateSha256": "906c45ea3e06c308d66a0038adb4652151f7b2ea271a126eda052e6fa4091d38",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "ae5775497353fb56",
+      "applicationKey": "jihcang-daily",
+      "checkProfile": {
+        "requiredEnv": [
+          "IKUUU_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "IKUUU_LOGIN_URL",
+          "IKUUU_CHECKIN_URL",
+          "IKUUU_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "IKUUU_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "签到成功",
+          "官方明确返回已经签到",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用本人邮箱密码登录并保留每账号独立会话",
+          "每日签到与明确已签到结果识别；登录和签到均检查业务标志，未知响应失败闭合",
+          "每行一个账号，多账号独立处理及整体失败退出码",
+          "兼容原 config.json 的账号、登录及签到地址、代理、超时、浏览器标识与可选推送设置",
+          "保留默认直连和可选 HTTP/HTTPS 代理，保护代理凭据",
+          "保留 Server酱优先、PushPlus 次之的旧通知选择，改为 HTTPS 和有超时请求",
+          "输出脱敏的连接、代理、TLS、HTTP 和响应格式错误诊断及排查提示",
+          "显示官方返回的非敏感昵称、用户名、显示名或公开 UID",
+          "完全断网预演、分阶段计时日志、账号与任务统计及单行结构化汇总",
+          "按全局通知开关和脚本名单发送青龙脱敏摘要，推送失败保留业务退出码"
+        ],
+        "sideEffects": [
+          "实跑登录创建服务端登录会话",
+          "实跑执行签到并可能领取服务端当日签到奖励",
+          "启用通知时通过青龙或显式旧推送设置发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "ikuuu 每日签到",
+      "path": "scripts/jihcang_daily.py",
+      "sha256": "ca50ca72616f055b1914a68f64c30cdde7c01837fc1a213d33c4693b15f2f929",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Yun-Xn/jihcang_dailycheckin",
+        "branch": "main",
+        "commit": "5fb092f554b4153116f63678d51facaea5ded112",
+        "originalPath": "main.py"
+      },
+      "cron": "45 9 * * *",
+      "command": "python3 scripts/jihcang_daily.py",
+      "environment": [
+        {
+          "name": "IKUUU_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人 ikuuu 官方站点注册或登录时使用的邮箱和密码；在青龙环境变量中粘贴，每行一个账号。不要将真实值写入订阅脚本或日志。旧 config.json 的 accounts 数组仅作兼容输入。",
+          "format": "每行 邮箱|密码，只在第一个 | 处分隔，密码后续的 | 原样保留；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "IKUUU_LOGIN_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；从本人核实的官方站点登录请求获取。未联网验证默认域名是否仍有效。默认 https://ikuuu.de/auth/login；覆盖旧 urls.login。",
+          "format": "同签到接口同源的 HTTPS 地址，禁止查询参数、片段、用户信息及非标准端口。"
+        },
+        {
+          "name": "IKUUU_CHECKIN_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选；从本人核实的官方站点签到请求获取。默认 https://ikuuu.de/user/checkin；覆盖旧 urls.checkin。",
+          "format": "同登录接口同源的 HTTPS 地址，禁止查询参数、片段、用户信息及非标准端口。"
+        },
+        {
+          "name": "IKUUU_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置为 1 启用断网预演；不访问业务接口及通知服务。",
+          "format": "1、true、yes、on 启用；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "auto 模式下配置需要推送的脚本名单；本脚本无默认入选。支持目录 ID、scripts 相对路径、文件名或文件名通配符。设置为空禁用全部名单推送。",
+          "format": "逗号、分号、空格或换行分隔；* 选择全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙已有 notify.py 或 sendNotify.js 所在目录；也自动寻找脚本目录、Python 搜索路径和标准青龙脚本目录。缺失或推送失败不改变业务退出码。",
+          "format": "本地目录路径，仅通知适配使用，业务请求不依赖此目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，邮箱与密码只在第一个 | 处分隔。账号独立会话，单个账号失败仍继续其他账号，任一账号失败整体非零退出；旧 accounts 数组继续兼容。"
+      },
+      "dependencies": [
+        "requests"
+      ],
+      "features": [
+        "使用本人邮箱密码登录并保留每账号独立会话",
+        "每日签到与明确已签到结果识别；登录和签到均检查业务标志，未知响应失败闭合",
+        "每行一个账号，多账号独立处理及整体失败退出码",
+        "兼容原 config.json 的账号、登录及签到地址、代理、超时、浏览器标识与可选推送设置",
+        "保留默认直连和可选 HTTP/HTTPS 代理，保护代理凭据",
+        "保留 Server酱优先、PushPlus 次之的旧通知选择，改为 HTTPS 和有超时请求",
+        "输出脱敏的连接、代理、TLS、HTTP 和响应格式错误诊断及排查提示",
+        "显示官方返回的非敏感昵称、用户名、显示名或公开 UID",
+        "完全断网预演、分阶段计时日志、账号与任务统计及单行结构化汇总",
+        "按全局通知开关和脚本名单发送青龙脱敏摘要，推送失败保留业务退出码"
+      ],
+      "sideEffects": [
+        "实跑登录创建服务端登录会话",
+        "实跑执行签到并可能领取服务端当日签到奖励",
+        "启用通知时通过青龙或显式旧推送设置发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ae5775497353fb56",
+        "candidateSha256": "976f957be6ef43ceb785ea030b4ece794ee358191b2df7338dceff22739b348a"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "976f957be6ef43ceb785ea030b4ece794ee358191b2df7338dceff22739b348a",
+        "releaseSha256": "ca50ca72616f055b1914a68f64c30cdde7c01837fc1a213d33c4693b15f2f929",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:17:03.953588+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "976f957be6ef43ceb785ea030b4ece794ee358191b2df7338dceff22739b348a",
+          "toCandidateSha256": "ca50ca72616f055b1914a68f64c30cdde7c01837fc1a213d33c4693b15f2f929",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

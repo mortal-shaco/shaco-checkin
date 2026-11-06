@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **292** 个脚本。返回 [`目录首页`](../README.md)。
+共 **296** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -65,6 +65,8 @@
 | 一加手机社区官方论坛 | `scripts/ck_oneplusbbs.py` | `python3 scripts/ck_oneplusbbs.py` | `40 2 * * *` | 待检查 | [ck_oneplusbbs.py.md](../../scripts/ck_oneplusbbs.py.md)（`docs/scripts/ck_oneplusbbs.py.md`） |
 | 中山大学人脸签到 | `scripts/cli.py` | `python3 scripts/cli.py` | `*/5 7-22 * * *` | 待检查 | [cli.py.md](../../scripts/cli.py.md)（`docs/scripts/cli.py.md`） |
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
+| 鸿星尔克签到与积分查询 | `scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `48 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_erke.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_erke.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_erke.py.md`） |
+| 文体未来荟签到与积分查询 | `scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py` | `47 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_wentiweilaihui.py.md`） |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
 | 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../../scripts/config.py.md)（`docs/scripts/config.py.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
@@ -101,6 +103,7 @@
 | WorkBuddy 每日签到与成长中心 | `scripts/get_token.py` | `python3 scripts/get_token.py` | `51 0,4,8,12,16,20 * * *` | 待检查 | [get_token.py.md](../../scripts/get_token.py.md)（`docs/scripts/get_token.py.md`） |
 | Mirror O3 Pro 每日签到 | `scripts/github_actions_checkin.py` | `python3 scripts/github_actions_checkin.py` | `32 9 * * *` | 待检查 | [github_actions_checkin.py.md](../../scripts/github_actions_checkin.py.md)（`docs/scripts/github_actions_checkin.py.md`） |
 | GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
+| Discuz 每日签到 | `scripts/guoxpeng_daily_checkin_panel_sites.js` | `node scripts/guoxpeng_daily_checkin_panel_sites.js` | `46 9 * * *` | 待检查 | [guoxpeng_daily_checkin_panel_sites.js.md](../../scripts/guoxpeng_daily_checkin_panel_sites.js.md)（`docs/scripts/guoxpeng_daily_checkin_panel_sites.js.md`） |
 | 好豆每日签到 | `scripts/haodou.py` | `python3 scripts/haodou.py` | `14 9 * * *` | 待检查 | [haodou.py.md](../../scripts/haodou.py.md)（`docs/scripts/haodou.py.md`） |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `14 1 * * *` | 待检查 | [hifiti_checkin.py.md](../../scripts/hifiti_checkin.py.md)（`docs/scripts/hifiti_checkin.py.md`） |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `32 0 * * *` | 待检查 | [hlyl.py.md](../../scripts/hlyl.py.md)（`docs/scripts/hlyl.py.md`） |
@@ -114,6 +117,7 @@
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `8 1 * * *` | 待检查 | [iqiyi_checkin.py.md](../../scripts/iqiyi_checkin.py.md)（`docs/scripts/iqiyi_checkin.py.md`） |
 | 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `45 2 * * *` | 待检查 | [jc_checkin.py.md](../../scripts/jc_checkin.py.md)（`docs/scripts/jc_checkin.py.md`） |
 | jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `5 1 * * *` | 待检查 | [jcqd.py.md](../../scripts/jcqd.py.md)（`docs/scripts/jcqd.py.md`） |
+| ikuuu 每日签到 | `scripts/jihcang_daily.py` | `python3 scripts/jihcang_daily.py` | `45 9 * * *` | 待检查 | [jihcang_daily.py.md](../../scripts/jihcang_daily.py.md)（`docs/scripts/jihcang_daily.py.md`） |
 | 精易论坛签到 | `scripts/jingyiluntan_sign.py` | `python3 scripts/jingyiluntan_sign.py` | `2 2 * * *` | 待检查 | [jingyiluntan_sign.py.md](../../scripts/jingyiluntan_sign.py.md)（`docs/scripts/jingyiluntan_sign.py.md`） |
 | 技实习自动签到 | `scripts/jishixi.js` | `node scripts/jishixi.js` | `42 8 * * *` | 待检查 | [jishixi.js.md](../../scripts/jishixi.js.md)（`docs/scripts/jishixi.js.md`） |
 | 杰士邦安心福利社 | `scripts/jissbon.py` | `python3 scripts/jissbon.py` | `21 2 * * *` | 待检查 | [jissbon.py.md](../../scripts/jissbon.py.md)（`docs/scripts/jissbon.py.md`） |
