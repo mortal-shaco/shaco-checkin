@@ -3,6 +3,7 @@
 # name: WorkBuddy 国内版日常维护
 # cron: 15 7,12 * * *
 # 来源：L0NE-6/WorkBuddy-Daily，workbuddy_daily.py v3.36，MIT
+# 合并参考：xmgzxmgz/workbuddy-checkin-qinglong，workbuddy_checkin.py（MIT）。
 # 合并参考：Maquer/workbuddy-checkin，workbuddy_checkin.py，MIT
 # 同应用参考：scripts/workbuddy_checkin.py、signin.py（MIT）；不合并 Qoder 或日志转发基础设施
 """独立维护版。凭据：WORKBUDDY_REFRESH_TOKEN，每行 手机号:AT:RT、AT:RT、手机号:RT 或单个 JWT。
@@ -39,6 +40,14 @@ trial 仅依据 HTTP 200 且业务码0确认领取；业务码14051确认此前�
 JSON 日报仅包含账号序号与数值，不输出服务端原始数据或套餐自由文本。
 WORKBUDDY_MAKEUP_MAX_PER_RUN：可选，每轮最多补签几张（默认1，最多10）。
 礼包/补偿先查 active/claimed/credit_num，再按回执 credit 或 already_claimed 确认；不写本地防重文件。
+新增状态面板参考：xmgzxmgz/workbuddy-checkin-qinglong and its contributors（MIT）。
+--status / -s：独立只读签到面板，--status --json 同时保留上游逐账号JSON结果。
+面板显示奖励节点、周进度、最近14次打卡、积分、活动周期和网页操作提示。
+兼容 WB_ACCESS_TOKENS / WB_ACCESS_TOKEN，每行 AT 或 uid:AT，拒绝逗号分隔账号。
+WB_USER_ID 仅用于单账号旧凭据；多个账号请逐行 uid:AT，避免混用身份。
+AT 从本人官方网页开发者工具中签到请求的 Authorization Bearer 头取得，只复制值。
+WB_PROXY 为可选本人代理地址；WB_RETRY 仅用于独立只读状态查询，默认2，范围0至5。
+上游重复重试签到写请求的行为已移除，领取结果继续按维护版服务端回读核验。
 新增参考归属：Maquer/workbuddy-checkin and its contributors（MIT）。
 
 MIT License
@@ -139,7 +148,14 @@ class _Session:
             data = json.dumps(kwargs['json'], ensure_ascii=False).encode('utf-8')
             headers.setdefault('Content-Type','application/json')
         req = urllib.request.Request(url, data=data, headers=headers, method=method.upper())
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+        proxy = os.getenv('WB_PROXY', '').strip()
+        proxy_map = {}
+        if proxy:
+            parsed_proxy = urllib.parse.urlparse(proxy)
+            if parsed_proxy.scheme not in ('http', 'https') or not parsed_proxy.hostname:
+                raise SafeError('WB_PROXY 必须为有效的 HTTP 或 HTTPS 代理地址')
+            proxy_map = {'http': proxy, 'https': proxy}
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler(proxy_map), _NoRedirect())
         try:
             raw = opener.open(req, timeout=kwargs.get('timeout',25))
         except urllib.error.HTTPError as e:
@@ -2650,6 +2666,146 @@ def read_data(s, path, method='GET', body=None, headers=None):
     r = s.request(method, BASE + path, json=body if method != 'GET' else None, headers=headers)
     return r.json()['data']
 
+
+def legacy_accounts():
+    """旧变量只按行读取，首个冒号之后完整保留令牌。"""
+    rows = []
+    for raw in (os.getenv('WB_ACCESS_TOKENS', ''), os.getenv('WB_ACCESS_TOKEN', '')):
+        rows.extend(line.strip() for line in raw.splitlines() if line.strip())
+    shared_uid = os.getenv('WB_USER_ID', '').strip()
+    if shared_uid and len(rows) > 1:
+        raise SafeError('WB_USER_ID 仅支持单账号；多账号请逐行使用 uid:AT')
+    accounts = []
+    for line in rows:
+        line = line.strip('"\'`')
+        uid = shared_uid
+        if line.lower().startswith('bearer '):
+            line = line[7:].strip()
+        elif ':' in line:
+            uid, _, line = line.partition(':')
+        # 旧输入错误在对应账号阶段拦截，不妨碍其余账号。
+        accounts.append((uid.strip(), line.strip(), ''))
+    return accounts
+
+
+def panel_text(value):
+    """展示白名单字段，排除凭据和手机号，禁止控制字符干扰日志。"""
+    if not isinstance(value, str):
+        return ''
+    if any(secret and secret in value for secret in SECRETS):
+        return ''
+    if re.search(r'(?<!\d)1[3-9]\d{9}(?!\d)', value):
+        return ''
+    if re.search(r'(?i)bearer|token|cookie|eyJ[A-Za-z0-9_-]+\.', value):
+        return ''
+    return ' '.join(value.split())[:280]
+
+
+def checkin_panel(data):
+    """只整理官方状态字段，缺失可选展示字段不会推断业务成功。"""
+    lines = []
+    activity = panel_text(data.get('activity_name'))
+    if activity:
+        lines.append('活动 ' + activity)
+    period = []
+    for key in ('start_time', 'end_time'):
+        value = data.get(key)
+        if isinstance(value, str):
+            value = value.strip()[:19]
+            period.append(value if re.fullmatch(r'\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2}:\d{2})?', value) else '?')
+        elif type(value) in (int, float) and math.isfinite(value) and 0 < value < 1e14:
+            try:
+                stamp = value / 1000 if value > 1e11 else value
+                period.append(datetime.datetime.fromtimestamp(stamp, datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%d'))
+            except (OverflowError, OSError, ValueError):
+                period.append('?')
+        else:
+            period.append('?')
+    if period != ['?', '?']:
+        lines.append('活动周期 %s 至 %s' % tuple(period))
+    for key, label in (('streak_days', '连续签到天数'), ('daily_credit', '每日基础积分'),
+                       ('today_credit', '今日积分'), ('total_credits', '累计积分'),
+                       ('streak_bonus_credit', '连签奖励积分')):
+        value = data.get(key)
+        if type(value) in (int, float) and math.isfinite(value):
+            lines.append('%s %s' % (label, value))
+    checked = data.get('today_checked_in')
+    lines.append('今日状态 ' + ('已签到' if checked is True else '未签到' if checked is False else '未知'))
+    bonus = data.get('streak_bonus_days')
+    bonus = bonus if isinstance(bonus, list) else [bonus]
+    nodes = set()
+    for value in bonus:
+        if isinstance(value, str) and value.isascii() and value.isdigit() and len(value) < 6:
+            value = int(value)
+        if type(value) is int and value > 0:
+            nodes.add(value)
+    nodes = sorted(nodes)
+    if nodes:
+        lines.append('连签奖励节点 ' + ' / '.join('%d天' % v for v in nodes))
+    streak = data.get('streak_days')
+    next_day = next((v for v in nodes if type(streak) is int and v > streak), data.get('next_streak_day'))
+    if type(next_day) is int and next_day > 0:
+        lines.append('下一奖励节点 %d天' % next_day)
+        if type(streak) is int:
+            lines.append('距下一节点 %d天' % max(0, next_day - streak))
+    week = data.get('week_progress')
+    if isinstance(week, list) and week and all(type(v) is bool for v in week[:7]):
+        marks = ['●' if v else '○' for v in week[:7]]
+        today_index = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).weekday()
+        if today_index < len(marks):
+            marks[today_index] = '[' + marks[today_index] + ']'
+        lines.append('本周打卡 %s（%d/%d）' % (' '.join(marks), sum(week[:7]), len(marks)))
+    dates = data.get('checkin_dates')
+    if isinstance(dates, list):
+        normalized = []
+        for value in dates:
+            if isinstance(value, dict):
+                value = value.get('date') or value.get('day') or value.get('ds')
+            if isinstance(value, str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}', value):
+                normalized.append(value)
+        if normalized:
+            lines.append('本期打卡%d天；最近记录 %s' % (len(normalized), ' '.join(sorted(normalized)[-14:])))
+    actions = []
+    for key in ('action_button', 'claim_button_text'):
+        value = data.get(key)
+        if isinstance(value, dict):
+            value = '' if value.get('show') is False else next((value.get(k) for k in ('text', 'label', 'title', 'name') if value.get(k)), '')
+        text = panel_text(value)
+        if text:
+            actions.append(text)
+    if actions:
+        lines.append('网页端操作提示 ' + '、'.join(actions) + '（请在官方网页操作）')
+    return lines
+
+
+def show_checkin_panel(data):
+    for line in checkin_panel(data):
+        timeline(line)
+
+
+def status_panel(s, index, reports, retries):
+    if DRY:
+        lines = ['断网预演，仅验证状态查询流程']
+    else:
+        data = None
+        for attempt in range(retries + 1):
+            try:
+                data = read_data(s, '/v2/billing/meter/checkin-activity-status', 'POST', {})
+                break
+            except SafeError as exc:
+                # 仅网络异常及5xx重试只读查询，认证及业务错误立即失败。
+                if attempt == retries or not (str(exc) == '网络或响应解析失败' or re.fullmatch(r'HTTP 5\d\d', str(exc))):
+                    raise
+                time.sleep(2 ** attempt)
+        if type(data.get('active')) is not bool or type(data.get('today_checked_in')) is not bool:
+            raise SafeError('签到状态字段缺失或类型变化')
+        lines = checkin_panel(data)
+    for line in lines:
+        timeline(line)
+    reports.append({'account': '账号%d' % index, 'uid': '', 'ok': True, 'lines': lines})
+    return 'success'
+
+
 def query_all(s):
     p = read_data(s, '/v2/activity/growth/profile')
     identity(p)
@@ -2677,6 +2833,7 @@ def query_all(s):
     timeline('成长：等级%s，能量%s，签到连签%s天，活跃连签%s天' %
              (safe_number(p.get('level')), safe_number(energy.get('balance')),
               safe_number(ck.get('streak_days')), safe_number(streak.get('streak', {}).get('days'))))
+    show_checkin_panel(ck)
     if ck.get('active') is False:
         timeline('⚠️ 签到活动已关闭')
     elif _checkin_activity_warn(ck):
@@ -2710,6 +2867,7 @@ def checkin(s):
     after = read_data(s, '/v2/billing/meter/checkin-activity-status', 'POST', {})
     if after.get('today_checked_in') is not True:
         raise SafeError('签到未通过回读核验')
+    show_checkin_panel(after)
     timeline('签到连签%s天，累计积分%s' % (safe_number(after.get('streak_days')), safe_number(after.get('total_credits'))))
     return 'success'
 
@@ -3090,6 +3248,7 @@ def main():
         parser.add_argument('--credit-report', action='store_true', help='独立只读积分日报')
         parser.add_argument('--json', action='store_true', help='配合 --credit-report 输出脱敏数值数组')
         parser.add_argument('--query', action='store_true')
+        parser.add_argument('--status', '-s', action='store_true', help='独立只读签到状态面板')
         parser.add_argument('--refresh', action='store_true')
         parser.add_argument('--no-desktop', action='store_true', help='兼容旧参数；桌面程序依赖已移除')
         parser.add_argument('--only', type=int)
@@ -3098,8 +3257,13 @@ def main():
         parser.add_argument('--tasks', default=os.getenv('WORKBUDDY_TASKS',os.getenv('WORKBUDDY_ONLY_TASKS','')))
         parser.add_argument('--skip-tasks', default=os.getenv('WORKBUDDY_SKIP_TASKS',''))
         args = parser.parse_args()
-        if args.json and not args.credit_report:
-            raise SafeError('--json 仅能配合 --credit-report')
+        if args.json and not (args.credit_report or args.status):
+            raise SafeError('--json 仅能配合 --credit-report 或 --status')
+        if args.status and (args.credit_report or args.query or args.refresh or args.tasks or args.skip_tasks):
+            raise SafeError('只读签到面板必须独立运行')
+        status_retries = int(os.getenv('WB_RETRY', '2') or '2') if args.status else 0
+        if not 0 <= status_retries <= 5:
+            raise SafeError('WB_RETRY 必须为0至5的整数')
         if args.credit_report and (args.query or args.refresh or args.tasks or args.skip_tasks):
             raise SafeError('积分日报不能与刷新、成长查询或任务筛选同时使用')
         reports = []
@@ -3111,7 +3275,9 @@ def main():
         MP_CHAT_GAP = max(0, args.mp_gap)
         if not all(__import__('math').isfinite(x) for x in (WRITE_GAP,MP_CHAT_GAP)):
             raise SafeError('间隔必须为有限数值')
-        accounts = _parse_env_tokens(os.getenv('WORKBUDDY_REFRESH_TOKEN',''))
+        canonical = os.getenv('WORKBUDDY_REFRESH_TOKEN', '').strip()
+        legacy = not canonical
+        accounts = _parse_env_tokens(canonical) if canonical else legacy_accounts()
         if not accounts:
             raise SafeError('缺少 WORKBUDDY_REFRESH_TOKEN；每行一个账号')
         selected = list(enumerate(accounts,1))
@@ -3122,7 +3288,7 @@ def main():
         stats['accounts'] = len(selected)
         timeline('账号数：%d' % len(selected))
         chosen = (TASK_ONLY or DEFAULT_TASKS) - TASK_SKIP
-        if not chosen and not (args.query or args.refresh or args.credit_report):
+        if not chosen and not (args.query or args.refresh or args.credit_report or args.status):
             raise SafeError('没有选中的任务')
         cache = {}
         store = os.getenv('WORKBUDDY_TOKEN_STORE','')
@@ -3143,7 +3309,7 @@ def main():
                 before = 0
                 timeline('阶段%d：%s' % (number,name))
                 try:
-                    result = 'success' if DRY and number != 1 and not (args.credit_report and number == 2) else (callback() or 'success')
+                    result = 'success' if DRY and number != 1 and not ((args.credit_report or args.status) and number == 2) else (callback() or 'success')
                     if len(ERRORS) != before:
                         raise SafeError('存在未确认请求；本阶段失败闭合')
                     if result not in counts:
@@ -3157,7 +3323,7 @@ def main():
                 return result != 'failed'
             def authenticate():
                 nonlocal at, rt
-                if any(c in (at + rt + note) for c in ('@','&')):
+                if any(c in (at + rt + note) for c in ('@','&',',')):
                     raise SafeError('账号只能按换行分隔；凭据格式错误')
                 if not at and not rt:
                     raise SafeError('凭据为空')
@@ -3172,9 +3338,9 @@ def main():
                     SECRETS.extend([at,rt])
                 exp = _jwt_claims(at).get('exp',0)
                 due = bool(rt and store and (time.time()-cached.get('updated',0)>10*86400 or (exp and exp-time.time()<7*86400)))
-                if args.credit_report and not at:
-                    raise SafeError('只读积分日报需要有效 AT；请先单独 --refresh')
-                if args.refresh or (not args.credit_report and (not at or due)):
+                if (args.credit_report or args.status) and not at:
+                    raise SafeError('只读查询需要有效 AT；请先单独 --refresh')
+                if args.refresh or (not (args.credit_report or args.status) and (not at or due)):
                     at, rt = rotate(idx, at, rt, store, cache)
                 elif exp and exp <= time.time():
                     raise SafeError('AT 已过期；配置私有缓存和 RT 后续期')
@@ -3182,7 +3348,11 @@ def main():
             if stage(1,'凭据检查与按需续期',authenticate) and not args.refresh:
                 s = new_api(at)
                 uid,nick = uid_of(at),nickname_of(at)
-                if args.credit_report:
+                if legacy and note:
+                    s.headers['X-User-Id'] = note
+                if args.status:
+                    stage(2,'只读签到状态面板',lambda:status_panel(s,idx,reports,status_retries))
+                elif args.credit_report:
                     stage(2,'只读积分日报',lambda:credit_report(billing_report_headers(at,uid),False,idx,reports))
                 elif stage(2,'账号身份、积分、用量、成长及任务查询',lambda:query_all(s)) and not args.query:
                     actions = [('checkin',lambda:checkin(s)), ('claim',lambda:claim_ready(s))]
@@ -3208,11 +3378,17 @@ def main():
                         n+=1
                         stage(n,'成长任务最终领奖',lambda:claim_ready(s))
             failed = counts['failed']>0
+            if args.status and failed:
+                reports.append({'account': '账号%d' % idx, 'uid': '', 'ok': False,
+                                'lines': ['状态查询或凭据检查失败，详情见脱敏阶段日志']})
             stats['failed' if failed else 'success'] += 1
             timeline('账号统计：总任务%d，成功%d，已完成%d，跳过%d，失败%d，耗时%.2f秒' %
                      (sum(counts.values()),counts['success'],counts['alreadyComplete'],counts['skipped'],counts['failed'],time.monotonic()-account_start))
         if args.json:
-            print(json.dumps(reports,ensure_ascii=False,separators=(',',':')))
+            payload = reports
+            if args.status:
+                payload = {'ok':stats['success'], 'fail':stats['failed'], 'total':stats['accounts'], 'accounts':reports}
+            print(json.dumps(payload,ensure_ascii=False,separators=(',',':')))
         status = 'failure' if stats['failed']==stats['accounts'] else ('partial-failure' if stats['failed'] else ('dry-run' if DRY else 'success'))
     except (Exception,SystemExit) as e:
         timeline('❌ 配置错误：' + (str(e) if isinstance(e,SafeError) else '参数或缓存无效'))
