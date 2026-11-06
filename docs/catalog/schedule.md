@@ -49,6 +49,7 @@
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `18 */6 * * *` | 待检查 | [autosignin.py.md](../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |
 | 广州信息技术职校微信签到 | `scripts/autosignin_base.py` | `python3 scripts/autosignin_base.py` | `30 7 * * *` | 待检查 | [autosignin_base.py.md](../scripts/autosignin_base.py.md)（`docs/scripts/autosignin_base.py.md`） |
 | 薄荷公益站每日签到 | `scripts/background.js` | `node scripts/background.js` | `4 8 * * *` | 待检查 | [background.js.md](../scripts/background.js.md)（`docs/scripts/background.js.md`） |
+| 巴哈姆特每日签到 | `scripts/bahamutdailybonus.js` | `node scripts/bahamutdailybonus.js` | `15 10 * * *` | 待检查 | [bahamutdailybonus.js.md](../scripts/bahamutdailybonus.js.md)（`docs/scripts/bahamutdailybonus.js.md`） |
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `36 2 * * *` | 待检查 | [baidu.py.md](../scripts/baidu.py.md)（`docs/scripts/baidu.py.md`） |
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `27 2 * * *` | 待检查 | [baiduwangpan_checkin.py.md](../scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |
 | Bailanjo 自动签到 | `scripts/bailanjo_checkin.py` | `python3 scripts/bailanjo_checkin.py` | `31 2 * * *` | 待检查 | [bailanjo_checkin.py.md](../scripts/bailanjo_checkin.py.md)（`docs/scripts/bailanjo_checkin.py.md`） |
@@ -65,6 +66,7 @@
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | VManAPI 每日签到 | `scripts/check_in.py` | `python3 scripts/check_in.py` | `23 8 * * *` | 待检查 | [check_in.py.md](../scripts/check_in.py.md)（`docs/scripts/check_in.py.md`） |
 | LaTeX工作室签到 | `scripts/checkin_latex.py` | `python3 scripts/checkin_latex.py` | `10 1 * * *` | 待检查 | [checkin_latex.py.md](../scripts/checkin_latex.py.md)（`docs/scripts/checkin_latex.py.md`） |
+| 人人视频日常 | `scripts/checkin_rrshipin.py` | `python3 scripts/checkin_rrshipin.py` | `14 10 * * *` | 待检查 | [checkin_rrshipin.py.md](../scripts/checkin_rrshipin.py.md)（`docs/scripts/checkin_rrshipin.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | 词霸每日一句 | `scripts/ciba.js` | `node scripts/ciba.js` | `0 25 11 * * *` | 待检查 | [ciba.js.md](../scripts/ciba.js.md)（`docs/scripts/ciba.js.md`） |
 | 魔盒 CityBox 签到 | `scripts/citybox.js` | `node scripts/citybox.js` | `15 0 * * *` | 待检查 | [citybox.js.md](../scripts/citybox.js.md)（`docs/scripts/citybox.js.md`） |
@@ -138,6 +140,7 @@
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `28 9 * * 0` | 待检查 | [get_yys_imagelinks.py.md](../scripts/get_yys_imagelinks.py.md)（`docs/scripts/get_yys_imagelinks.py.md`） |
 | Mirror O3 Pro 每日签到 | `scripts/github_actions_checkin.py` | `python3 scripts/github_actions_checkin.py` | `32 9 * * *` | 待检查 | [github_actions_checkin.py.md](../scripts/github_actions_checkin.py.md)（`docs/scripts/github_actions_checkin.py.md`） |
 | GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
+| GreatSQL论坛签到 | `scripts/greatsql_checkin.py` | `python3 scripts/greatsql_checkin.py` | `13 10 * * *` | 待检查 | [greatsql_checkin.py.md](../scripts/greatsql_checkin.py.md)（`docs/scripts/greatsql_checkin.py.md`） |
 | Discuz 每日签到 | `scripts/guoxpeng_daily_checkin_panel_sites.js` | `node scripts/guoxpeng_daily_checkin_panel_sites.js` | `46 9 * * *` | 待检查 | [guoxpeng_daily_checkin_panel_sites.js.md](../scripts/guoxpeng_daily_checkin_panel_sites.js.md)（`docs/scripts/guoxpeng_daily_checkin_panel_sites.js.md`） |
 | 好豆每日签到 | `scripts/haodou.py` | `python3 scripts/haodou.py` | `14 9 * * *` | 待检查 | [haodou.py.md](../scripts/haodou.py.md)（`docs/scripts/haodou.py.md`） |
 | HelloGitHub月刊提醒 | `scripts/hellogithub.py` | `python3 scripts/hellogithub.py` | `31 8 1 * *` | 待检查 | [hellogithub.py.md](../scripts/hellogithub.py.md)（`docs/scripts/hellogithub.py.md`） |

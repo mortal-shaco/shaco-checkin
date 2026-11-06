@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **321** 个脚本。返回 [`目录首页`](../README.md)。
+共 **324** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -40,6 +40,7 @@
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `18 */6 * * *` | 待检查 | [autosignin.py.md](../../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |
 | 广州信息技术职校微信签到 | `scripts/autosignin_base.py` | `python3 scripts/autosignin_base.py` | `30 7 * * *` | 待检查 | [autosignin_base.py.md](../../scripts/autosignin_base.py.md)（`docs/scripts/autosignin_base.py.md`） |
 | 薄荷公益站每日签到 | `scripts/background.js` | `node scripts/background.js` | `4 8 * * *` | 待检查 | [background.js.md](../../scripts/background.js.md)（`docs/scripts/background.js.md`） |
+| 巴哈姆特每日签到 | `scripts/bahamutdailybonus.js` | `node scripts/bahamutdailybonus.js` | `15 10 * * *` | 待检查 | [bahamutdailybonus.js.md](../../scripts/bahamutdailybonus.js.md)（`docs/scripts/bahamutdailybonus.js.md`） |
 | Bailanjo 自动签到 | `scripts/bailanjo_checkin.py` | `python3 scripts/bailanjo_checkin.py` | `31 2 * * *` | 待检查 | [bailanjo_checkin.py.md](../../scripts/bailanjo_checkin.py.md)（`docs/scripts/bailanjo_checkin.py.md`） |
 | AcFun Cookie每日任务 | `scripts/beacherz_dailycheckin_plus_acfun.py` | `python3 scripts/beacherz_dailycheckin_plus_acfun.py` | `21 0 * * *` | 待检查 | [beacherz_dailycheckin_plus_acfun.py.md](../../scripts/beacherz_dailycheckin_plus_acfun.py.md)（`docs/scripts/beacherz_dailycheckin_plus_acfun.py.md`） |
 | B站每日任务 | `scripts/bilibili.py` | `python3 scripts/bilibili.py` | `6 2 * * *` | 待检查 | [bilibili.py.md](../../scripts/bilibili.py.md)（`docs/scripts/bilibili.py.md`） |
@@ -54,6 +55,7 @@
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | VManAPI 每日签到 | `scripts/check_in.py` | `python3 scripts/check_in.py` | `23 8 * * *` | 待检查 | [check_in.py.md](../../scripts/check_in.py.md)（`docs/scripts/check_in.py.md`） |
 | LaTeX工作室签到 | `scripts/checkin_latex.py` | `python3 scripts/checkin_latex.py` | `10 1 * * *` | 待检查 | [checkin_latex.py.md](../../scripts/checkin_latex.py.md)（`docs/scripts/checkin_latex.py.md`） |
+| 人人视频日常 | `scripts/checkin_rrshipin.py` | `python3 scripts/checkin_rrshipin.py` | `14 10 * * *` | 待检查 | [checkin_rrshipin.py.md](../../scripts/checkin_rrshipin.py.md)（`docs/scripts/checkin_rrshipin.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | 魔盒 CityBox 签到 | `scripts/citybox.js` | `node scripts/citybox.js` | `15 0 * * *` | 待检查 | [citybox.js.md](../../scripts/citybox.js.md)（`docs/scripts/citybox.js.md`） |
 | 机场签到 | `scripts/ck_airport.py` | `python3 scripts/ck_airport.py` | `16 2 * * *` | 待检查 | [ck_airport.py.md](../../scripts/ck_airport.py.md)（`docs/scripts/ck_airport.py.md`） |
@@ -111,6 +113,7 @@
 | WorkBuddy 每日签到与成长中心 | `scripts/get_token.py` | `python3 scripts/get_token.py` | `51 0,4,8,12,16,20 * * *` | 待检查 | [get_token.py.md](../../scripts/get_token.py.md)（`docs/scripts/get_token.py.md`） |
 | Mirror O3 Pro 每日签到 | `scripts/github_actions_checkin.py` | `python3 scripts/github_actions_checkin.py` | `32 9 * * *` | 待检查 | [github_actions_checkin.py.md](../../scripts/github_actions_checkin.py.md)（`docs/scripts/github_actions_checkin.py.md`） |
 | GLaDOS每日签到 | `scripts/glados.py` | `python3 scripts/glados.py` | `58 0 * * *` | 待检查 | [glados.py.md](../../scripts/glados.py.md)（`docs/scripts/glados.py.md`） |
+| GreatSQL论坛签到 | `scripts/greatsql_checkin.py` | `python3 scripts/greatsql_checkin.py` | `13 10 * * *` | 待检查 | [greatsql_checkin.py.md](../../scripts/greatsql_checkin.py.md)（`docs/scripts/greatsql_checkin.py.md`） |
 | Discuz 每日签到 | `scripts/guoxpeng_daily_checkin_panel_sites.js` | `node scripts/guoxpeng_daily_checkin_panel_sites.js` | `46 9 * * *` | 待检查 | [guoxpeng_daily_checkin_panel_sites.js.md](../../scripts/guoxpeng_daily_checkin_panel_sites.js.md)（`docs/scripts/guoxpeng_daily_checkin_panel_sites.js.md`） |
 | 好豆每日签到 | `scripts/haodou.py` | `python3 scripts/haodou.py` | `14 9 * * *` | 待检查 | [haodou.py.md](../../scripts/haodou.py.md)（`docs/scripts/haodou.py.md`） |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `14 1 * * *` | 待检查 | [hifiti_checkin.py.md](../../scripts/hifiti_checkin.py.md)（`docs/scripts/hifiti_checkin.py.md`） |

@@ -1,6 +1,6 @@
 # 字母索引 · C
 
-共 **40** 个脚本。返回 [`目录首页`](../README.md)。
+共 **41** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -11,6 +11,7 @@
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | VManAPI 每日签到 | `scripts/check_in.py` | `python3 scripts/check_in.py` | `23 8 * * *` | 待检查 | [check_in.py.md](../../scripts/check_in.py.md)（`docs/scripts/check_in.py.md`） |
 | LaTeX工作室签到 | `scripts/checkin_latex.py` | `python3 scripts/checkin_latex.py` | `10 1 * * *` | 待检查 | [checkin_latex.py.md](../../scripts/checkin_latex.py.md)（`docs/scripts/checkin_latex.py.md`） |
+| 人人视频日常 | `scripts/checkin_rrshipin.py` | `python3 scripts/checkin_rrshipin.py` | `14 10 * * *` | 待检查 | [checkin_rrshipin.py.md](../../scripts/checkin_rrshipin.py.md)（`docs/scripts/checkin_rrshipin.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |
 | 词霸每日一句 | `scripts/ciba.js` | `node scripts/ciba.js` | `0 25 11 * * *` | 待检查 | [ciba.js.md](../../scripts/ciba.js.md)（`docs/scripts/ciba.js.md`） |
 | 魔盒 CityBox 签到 | `scripts/citybox.js` | `node scripts/citybox.js` | `15 0 * * *` | 待检查 | [citybox.js.md](../../scripts/citybox.js.md)（`docs/scripts/citybox.js.md`） |
