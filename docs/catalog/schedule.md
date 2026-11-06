@@ -161,6 +161,7 @@
 | 智慧树共享课每日习惯分 | `scripts/internal.py` | `python3 scripts/internal.py` | `20 7 * * *` | 待检查 | [internal.py.md](../scripts/internal.py.md)（`docs/scripts/internal.py.md`） |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `8 1 * * *` | 待检查 | [iqiyi_checkin.py.md](../scripts/iqiyi_checkin.py.md)（`docs/scripts/iqiyi_checkin.py.md`） |
 | ISVORO 每日签到 | `scripts/isvoro_checkin.py` | `python3 scripts/isvoro_checkin.py` | `6 10 * * *` | 待检查 | [isvoro_checkin.py.md](../scripts/isvoro_checkin.py.md)（`docs/scripts/isvoro_checkin.py.md`） |
+| IT之家签到 | `scripts/ithome.js` | `node scripts/ithome.js` | `36 1 * * *` | 待检查 | [ithome.js.md](../scripts/ithome.js.md)（`docs/scripts/ithome.js.md`） |
 | 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `45 2 * * *` | 待检查 | [jc_checkin.py.md](../scripts/jc_checkin.py.md)（`docs/scripts/jc_checkin.py.md`） |
 | jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `5 1 * * *` | 待检查 | [jcqd.py.md](../scripts/jcqd.py.md)（`docs/scripts/jcqd.py.md`） |
 | ikuuu 每日签到 | `scripts/jihcang_daily.py` | `python3 scripts/jihcang_daily.py` | `45 9 * * *` | 待检查 | [jihcang_daily.py.md](../scripts/jihcang_daily.py.md)（`docs/scripts/jihcang_daily.py.md`） |
@@ -173,6 +174,7 @@
 | 酷狗概念版 VIP 签到 | `scripts/kgcheckin_user.js` | `node scripts/kgcheckin_user.js` | `1 1 * * *` | 待检查 | [kgcheckin_user.js.md](../scripts/kgcheckin_user.js.md)（`docs/scripts/kgcheckin_user.js.md`） |
 | 全民K歌签到与奖励 | `scripts/kgqq.py` | `python3 scripts/kgqq.py` | `13 2 * * *` | 待检查 | [kgqq.py.md](../scripts/kgqq.py.md)（`docs/scripts/kgqq.py.md`） |
 | 科技玩家签到 | `scripts/kjwj.py` | `python3 scripts/kjwj.py` | `41 2 * * *` | 待检查 | [kjwj.py.md](../scripts/kjwj.py.md)（`docs/scripts/kjwj.py.md`） |
+| 快看漫画签到 | `scripts/kkmh.js` | `node scripts/kkmh.js` | `19 10 * * *` | 待检查 | [kkmh.js.md](../scripts/kkmh.js.md)（`docs/scripts/kkmh.js.md`） |
 | KukuAI 每日积分 | `scripts/kuku_daily.py` | `python3 scripts/kuku_daily.py` | `0 8 * * *` | 待检查 | [kuku_daily.py.md](../scripts/kuku_daily.py.md)（`docs/scripts/kuku_daily.py.md`） |
 | 库街区社区与游戏签到 | `scripts/kurobbs.py` | `python3 scripts/kurobbs.py` | `43 9 * * *` | 待检查 | [kurobbs.py.md](../scripts/kurobbs.py.md)（`docs/scripts/kurobbs.py.md`） |
 | 库街区自动签到 | `scripts/kurobbs_c0f8e834c99a.py` | `python3 scripts/kurobbs_c0f8e834c99a.py` | `55 9 * * *` | 待检查 | [kurobbs_c0f8e834c99a.py.md](../scripts/kurobbs_c0f8e834c99a.py.md)（`docs/scripts/kurobbs_c0f8e834c99a.py.md`） |
@@ -212,6 +214,7 @@
 | 华润通Ole签到 | `scripts/ole.py` | `python3 scripts/ole.py` | `6 1 1 1 1` | 待检查 | [ole.py.md](../scripts/ole.py.md)（`docs/scripts/ole.py.md`） |
 | Oopz每日签到与星辉任务 | `scripts/oopz_sign.py` | `python3 scripts/oopz_sign.py` | `25 9 * * *` | 待检查 | [oopz_sign.py.md](../scripts/oopz_sign.py.md)（`docs/scripts/oopz_sign.py.md`） |
 | 欧文 Soul-Mates 每日签到 | `scripts/ouwen.py` | `python3 scripts/ouwen.py` | `0 18 * * *` | 待检查 | [ouwen.py.md](../scripts/ouwen.py.md)（`docs/scripts/ouwen.py.md`） |
+| 百果园小程序签到 | `scripts/pagoda.js` | `node scripts/pagoda.js` | `34 1 * * *` | 待检查 | [pagoda.js.md](../scripts/pagoda.js.md)（`docs/scripts/pagoda.js.md`） |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `13 1 * * *` | 待检查 | [passnat_checkin.py.md](../scripts/passnat_checkin.py.md)（`docs/scripts/passnat_checkin.py.md`） |
 | 哔咔漫画每日打卡 | `scripts/pica_punch.py` | `python3 scripts/pica_punch.py` | `45 5 * * *` | 待检查 | [pica_punch.py.md](../scripts/pica_punch.py.md)（`docs/scripts/pica_punch.py.md`） |
 | PingMe签到与可选视频奖励 | `scripts/pingmesignin.js` | `node scripts/pingmesignin.js` | `0 16 * * *` | 待检查 | [pingmesignin.js.md](../scripts/pingmesignin.js.md)（`docs/scripts/pingmesignin.js.md`） |

@@ -1,9 +1,10 @@
 # 字母索引 · P
 
-共 **7** 个脚本。返回 [`目录首页`](../README.md)。
+共 **8** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
+| 百果园小程序签到 | `scripts/pagoda.js` | `node scripts/pagoda.js` | `34 1 * * *` | 待检查 | [pagoda.js.md](../../scripts/pagoda.js.md)（`docs/scripts/pagoda.js.md`） |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `13 1 * * *` | 待检查 | [passnat_checkin.py.md](../../scripts/passnat_checkin.py.md)（`docs/scripts/passnat_checkin.py.md`） |
 | 哔咔漫画每日打卡 | `scripts/pica_punch.py` | `python3 scripts/pica_punch.py` | `45 5 * * *` | 待检查 | [pica_punch.py.md](../../scripts/pica_punch.py.md)（`docs/scripts/pica_punch.py.md`） |
 | PingMe签到与可选视频奖励 | `scripts/pingmesignin.js` | `node scripts/pingmesignin.js` | `0 16 * * *` | 待检查 | [pingmesignin.js.md](../../scripts/pingmesignin.js.md)（`docs/scripts/pingmesignin.js.md`） |

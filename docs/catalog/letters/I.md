@@ -1,6 +1,6 @@
 # 字母索引 · I
 
-共 **7** 个脚本。返回 [`目录首页`](../README.md)。
+共 **8** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -11,3 +11,4 @@
 | 智慧树共享课每日习惯分 | `scripts/internal.py` | `python3 scripts/internal.py` | `20 7 * * *` | 待检查 | [internal.py.md](../../scripts/internal.py.md)（`docs/scripts/internal.py.md`） |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `8 1 * * *` | 待检查 | [iqiyi_checkin.py.md](../../scripts/iqiyi_checkin.py.md)（`docs/scripts/iqiyi_checkin.py.md`） |
 | ISVORO 每日签到 | `scripts/isvoro_checkin.py` | `python3 scripts/isvoro_checkin.py` | `6 10 * * *` | 待检查 | [isvoro_checkin.py.md](../../scripts/isvoro_checkin.py.md)（`docs/scripts/isvoro_checkin.py.md`） |
+| IT之家签到 | `scripts/ithome.js` | `node scripts/ithome.js` | `36 1 * * *` | 待检查 | [ithome.js.md](../../scripts/ithome.js.md)（`docs/scripts/ithome.js.md`） |
