@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nine_bot_checkin.py`
 - 青龙命令：`python3 scripts/nine_bot_checkin.py`
 - 建议 Cron：`0 7 * * *`
-- 发布哈希：`4d856c0e44d6baf50bf932fdf382c92224a0d3011525b95018cae2e4e0b31481`
+- 发布哈希：`d2a002de5b0aed2b5eabf604e92615d6d29d3c9a290c7c7b56d850b748a4cf8a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -14,6 +14,9 @@
 - 合并同日签到里程碑盲盒列表查询与可领取盲盒领取（经验 / N币），可用开关关闭
 - 支持每行一个账号的多账号独立处理，任一账号失败时非零退出
 - 支持完全断网预演、请求超时、时间轴日志、脱敏通知与单行 TASK_SUMMARY
+- 显式选择任务动作及顺序，兼容 DEVICE_ID 单账号别名与 JSON 账号行
+- 可选使用本人抓取的加密请求体上报分享回调，业务成功后三秒领取任务奖励
+- 盲盒缺失 leftDaysToOpen 时仍凭有效 rewardId 尝试领取，保留已签到判断及账号级已完成统计
 
 ## 环境变量与参数
 
@@ -25,8 +28,8 @@
 
 - 必填：是
 - 敏感：是
-- 获取或设置：从九号 App / H5 抓包取得门户接口请求头中的 Authorization（令牌）与 device_id。仅写入青龙环境变量，不要分享或提交到公开仓库。
-- 填写格式：每个非空行一个账号：Authorization令牌|device_id；仅在第一个竖线处分割，后续凭据文本保留。空行和以 # 开头的注释行忽略。
+- 获取或设置：在本人九号 App 签到页抓取 cn-cbu-gateway.ninebot.com 请求，读取 Authorization 与 device_id 原值。分享需另抓取本人完成分享时 /app-api/circle/v1/share-callback 的完整 JSON 请求体，不要公开抓包数据。
+- 填写格式：每个非空行一个账号，令牌|设备标识，仅在第一个竖线分割；也可用含 token、device_id 的 JSON 对象行。分享需在该对象中增加 share_payload，含非空字符串 k、d、h 和整数 p、t。忽略空行与 # 注释行。
 
 ### 可选参数
 
@@ -86,23 +89,45 @@
 - 获取或设置：可选填写已有青龙 notify.py 或 sendNotify.js 所在目录；未填写时尝试导入 notify 和青龙标准脚本目录。
 - 填写格式：已有通知模块所在目录路径
 
+### `DEVICE_ID`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：兼容新来源的单账号设备标识，从同账号请求头取得；NINEBOT_DEVICE_ID 优先，仅在未配置 NINEBOT_ACCOUNTS 时使用。
+- 填写格式：单账号设备标识，不与其他账号混用。
+
+### `NINEBOT_TASKS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选设置动作及顺序；未设置时保持每日签到后盲盒，盲盒受 NINEBOT_ENABLE_BLIND_BOX 控制。显式列表优先；分享仅显式包含 share 时执行。
+- 填写格式：sign、blind_box、share 的非空英文逗号列表，按列表顺序执行并去重。
+
+### `NINEBOT_SHARE_TASK_ID`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可取本人 /portal/self-service/task/reward 请求的 taskId，仅分享任务使用。
+- 填写格式：数字标识字符串，默认沿用上游 1823622692036079618。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
 
 ## 多账号
 
-NINEBOT_ACCOUNTS 中每个非空行代表一个账号，格式为 Authorization令牌|device_id；仅在第一个竖线处分割。脚本逐账号独立处理，任一账号失败时进程非零退出。
+每个非空非注释行一个账号，支持令牌|设备标识或 JSON 对象，竖线仅分割一次。配套凭据放同一行，账号独立处理，任一账号失败则整体非零退出。
 
 ## 验证与兼容性
 
-SHA-256 `4d856c0e44d6baf50bf932fdf382c92224a0d3011525b95018cae2e4e0b31481`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b80e03b90d5b3a1`。
+SHA-256 `d2a002de5b0aed2b5eabf604e92615d6d29d3c9a290c7c7b56d850b748a4cf8a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b80e03b90d5b3a1`。
 
 ## 副作用与风险
 
 - 向九号账号写入每日签到记录
 - 在开启盲盒功能时领取可开启的签到里程碑盲盒奖励（经验或 N币）
 - 正式执行且通知开启时向青龙通知组件发送脱敏任务总结
+- 显式启用 share 后上报本人分享事件并领取任务奖励
 
 ## 许可证与来源
 
