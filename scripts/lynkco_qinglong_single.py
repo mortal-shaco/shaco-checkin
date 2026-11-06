@@ -25,6 +25,11 @@ QINGLONG_NOTIFY默认auto，按清单选择；兼容LYNKCO_QL_NOTIFY。可选Bar
 LYNKCO_TASK_MODE默认daily；status只查状态、积分、任务列表和成长值（配置刷新令牌时仍续期）。
 LYNKCO_QUERY_TASKS、LYNKCO_QUERY_GROWTH默认0，可在daily模式分别启用额外查询。
 LYNKCO_LATEST_ARTICLE_LIMIT默认0，设1至50可在原有五页查找基础上按详情时间选文章。
+LYNKCO_SHARE_DELAY_SECONDS默认0，显式配置时在签到后、分享前等待（0至3600秒）。
+LYNKCO_SHARE_URL可指定本人从App复制的HTTPS分享链接，支持文章、动态、活动、商品、专题。
+LYNKCO_BUSINESS_NO、LYNKCO_FIRST_CLASSIFICATION、LYNKCO_SECOND_CLASSIFICATION可显式覆盖链接字段。
+LYNKCO_SHARE_CODE可提供一次性分享码，仅影响显式目标的简化链；完整链仍重新取码。
+非文章目标必须提供匹配的分享链接；未设置新参数时保留原有文章查询及回退链。
 LYNKCO_FETCH_ACCOUNT_NAME默认0，设1从/auth/user/info查询官方账号身份。
 LYNKCO_APP_CODE、LYNKCO_CA_KEY、LYNKCO_CA_SECRET兼容为对应原生配置别名。
 额外查询接口来自上游源码，尚未做在线核验；启用后查询失败会使账号失败。
@@ -81,7 +86,7 @@ import time
 import uuid
 from pathlib import Path
 from urllib.request import Request, build_opener, HTTPRedirectHandler
-from urllib.parse import urlencode, quote
+from urllib.parse import urlencode, quote, urlsplit, parse_qsl
 
 BASE_URL = "https://app-api-gw-toc.lynkco.com"
 NATIVE_BASE_URL = "https://app-services.lynkco.com.cn"
@@ -340,8 +345,59 @@ def _find_article(value) -> dict:
                 return found
     return {}
 
+def configured_share_target():
+    url = os.getenv("LYNKCO_SHARE_URL", "").strip()
+    business = os.getenv("LYNKCO_BUSINESS_NO", "").strip()
+    first = os.getenv("LYNKCO_FIRST_CLASSIFICATION", "").strip()
+    second = os.getenv("LYNKCO_SECOND_CLASSIFICATION", "").strip()
+    share_code = os.getenv("LYNKCO_SHARE_CODE", "").strip()
+    content_type = 1
+    if url:
+        parsed = urlsplit(url)
+        if (parsed.scheme != "https" or parsed.netloc != "h5.lynkco.com"
+                or parsed.fragment or any(ord(ch) < 32 for ch in url)):
+            raise TaskError("分享链接必须是无片段的领克官方HTTPS链接")
+        query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+        inferred, content_type = "", 0
+        routes = (
+            ("/exploration/article/index", "文章", 1),
+            ("/shop-mall/lynk-shop-page/article/page-web", "文章", 5),
+            ("/dynamic/page-dynamic", "动态", 2),
+            ("/activityDetail/page-activityDetail", "活动", 3),
+            ("/shop-mall/lynk-shop-page/series/page-detail", "活动", 5),
+            ("/shop-mall/goods/page-info", "商品", 5),
+            ("/exploration/activity/page-special-info", "专题", 10),
+        )
+        for route, label, kind in routes:
+            if route in parsed.path:
+                inferred, content_type = label, kind
+                break
+        if not inferred:
+            raise TaskError("分享链接类型不受支持，请使用App内的文章、动态、活动、商品或专题链接")
+        from_url = next((query[key] for key in ("id", "dynamicId", "articleId", "goodId") if query.get(key)), "")
+        if business and from_url and business != from_url:
+            raise TaskError("分享链接编号与LYNKCO_BUSINESS_NO不一致")
+        if first and first != inferred:
+            raise TaskError("分享分类与链接类型不一致")
+        business = business or from_url
+        first = first or inferred
+        second = second or query.get("typeCode", "")
+        share_code = share_code or query.get("shareCode", "")
+        if not business:
+            raise TaskError("分享链接缺少内容编号")
+    first = first or "文章"
+    if first not in ("文章", "动态", "活动", "商品", "专题"):
+        raise TaskError("分享分类必须是文章、动态、活动、商品或专题")
+    if first != "文章" and not url:
+        raise TaskError("非文章分享必须提供匹配的LYNKCO_SHARE_URL")
+    if (second or share_code) and not (business or url):
+        raise TaskError("分类或分享码必须配套明确的分享目标")
+    return {"url": url, "business": business, "first": first, "second": second,
+            "shareCode": share_code, "contentType": content_type}
+
+
 class LynkCoShareClient(ClientBase):
-    def get_share_code(self, article_id: str = None, account_id: str = None) -> dict:
+    def get_share_code(self, article_id: str = None, account_id: str = None, target=None) -> dict:
             """
             获取本次分享专属的一次性 shareCode（GET /app/v1/task/getShareCode，走原生
             AppKey 签名）。请求头 risk_request_info 里携带了被分享文章的 id，之后必须原样
@@ -358,10 +414,12 @@ class LynkCoShareClient(ClientBase):
                 "https://h5.lynkco.com/app-h5/dist/web/pages/exploration/article/index.html"
                 f"?id={article_id}&isShare=lynkco%3A%2F%2Fwx%2F%3FrouteUrl%3D%2Fpages%2Fexploration%2Farticle%2Findex.js%3Fid%3D{article_id}"
             )
+            if target and target["url"]:
+                share_content_url = target["url"]
             risk_request_info = json.dumps(
                 {
                     "openTimeStamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                    "shareContentType": 1,
+                    "shareContentType": target["contentType"] if target else 1,
                     "shareContentURL": share_content_url,
                 },
                 ensure_ascii=False,
@@ -474,17 +532,20 @@ class LynkCoShareClient(ClientBase):
         return {}
 
     def do_share(self, article_id=None, account_id=None, content_id=None, use_simple=True):
+        target = configured_share_target()
+        article_id = target["business"] or article_id
         article = self.get_latest_article() if not article_id else {}
         article_id = article_id or article.get("articleId") or DEFAULT_SHARE_ARTICLE_ID
         def code():
-            info = checked(self.get_share_code(article_id, account_id))
+            info = checked(self.get_share_code(article_id, account_id, target=target))
             value = info.get("data")
             if not isinstance(value, str) or not value:
                 raise TaskError("接口没有返回有效分享码")
             return value
         if use_simple:
             try:
-                checked(self.share_reporting(code(), business_no=article_id))
+                checked(self.share_reporting(target["shareCode"] or code(), business_no=article_id,
+                    first_classification=target["first"], second_classification=target["second"]))
                 return {"ok": True, "via": "simple", "articleId": article_id,
                         "articleTitle": article.get("title", "")}
             except TaskError:
@@ -628,6 +689,13 @@ def read_configuration():
         raise TaskError("LYNKCO_SHARE_MODE必须是simple或full")
     if TASK_MODE == "daily" and enabled("LYNKCO_DO_SHARE") and mode == "full" and not os.getenv("LYNKCO_CONTENT_ID"):
         raise TaskError("完整分享链必须配置 LYNKCO_CONTENT_ID")
+    configured_share_target()
+    try:
+        share_delay = float(os.getenv("LYNKCO_SHARE_DELAY_SECONDS", "0"))
+        if not 0 <= share_delay <= 3600:
+            raise ValueError()
+    except ValueError:
+        raise TaskError("LYNKCO_SHARE_DELAY_SECONDS必须在0至3600秒之间") from None
     return accounts, delay
 
 
@@ -797,6 +865,10 @@ def run_account(index, account, delay):
         if TASK_MODE == "status" or enabled("LYNKCO_QUERY_GROWTH", "0"):
             result["growth"] = stage("查询成长值", lambda: query_growth(client), skip=not token)
         def share():
+            share_delay = float(os.getenv("LYNKCO_SHARE_DELAY_SECONDS", "0"))
+            if share_delay:
+                log(f"签到后等待{share_delay:g}秒再执行分享")
+                time.sleep(share_delay)
             before = energy(client)
             share_client = LynkCoShareClient(token)
             response = share_client.do_share(article_id=os.getenv("LYNKCO_ARTICLE_ID") or None,
@@ -812,7 +884,7 @@ def run_account(index, account, delay):
                 log("分享文章：" + title)
             return {"ok": True, "via": response["via"], "pointsDelta": after-before,
                     "articleId": response["articleId"], "articleTitle": title}
-        result["share_result"] = stage("文章分享上报及积分核验", share, skip=not token or TASK_MODE == "status" or not enabled("LYNKCO_DO_SHARE"))
+        result["share_result"] = stage("内容分享上报及积分核验", share, skip=not token or TASK_MODE == "status" or not enabled("LYNKCO_DO_SHARE"))
         def after():
             time.sleep(delay)
             return energy(client)
@@ -908,7 +980,7 @@ def notification_selected():
     selectors = os.getenv("QINGLONG_NOTIFY_SCRIPTS")
     if selectors is None:
         return True  # 本维护目标属于默认通知清单。
-    names = ("c087eb48daa78349", "dee713165141b125", "candidate.py", Path(__file__).name,
+    names = ("c087eb48daa78349", "dee713165141b125", "c1957a66fa92a317", "candidate.py", Path(__file__).name,
              "lynkco_qinglong_single.py", "scripts/lynkco_qinglong_single.py")
     return any(fnmatch.fnmatchcase(name, pattern) for pattern in re.split(r"[,;\s]+", selectors.strip())
                if pattern for name in names)

@@ -60,7 +60,7 @@
 | 特步会员中心 | `scripts/sudojia_tebu.js` | `node scripts/sudojia_tebu.js` | `37 1 * * *` | 待检查 | [sudojia_tebu.js.md](../../scripts/sudojia_tebu.js.md)（`docs/scripts/sudojia_tebu.js.md`） |
 | TILTA影像城 | `scripts/sudojia_tilta.js` | `node scripts/sudojia_tilta.js` | `24 1 * * *` | 待检查 | [sudojia_tilta.js.md](../../scripts/sudojia_tilta.js.md)（`docs/scripts/sudojia_tilta.js.md`） |
 | 图虫每日签到 | `scripts/sudojia_tuchong.js` | `node scripts/sudojia_tuchong.js` | `2 0 * * *` | 待检查 | [sudojia_tuchong.js.md](../../scripts/sudojia_tuchong.js.md)（`docs/scripts/sudojia_tuchong.js.md`） |
-| V2EX每日签到 | `scripts/sudojia_v2ex.js` | `node scripts/sudojia_v2ex.js` | `1 1 * * *` | 待检查 | [sudojia_v2ex.js.md](../../scripts/sudojia_v2ex.js.md)（`docs/scripts/sudojia_v2ex.js.md`） |
+| V2EX每日签到 | `scripts/sudojia_v2ex.js` | `node scripts/sudojia_v2ex.js` | `57 9 * * *` | 待检查 | [sudojia_v2ex.js.md](../../scripts/sudojia_v2ex.js.md)（`docs/scripts/sudojia_v2ex.js.md`） |
 | 薇诺娜专柜商城 | `scripts/sudojia_wnna.js` | `node scripts/sudojia_wnna.js` | `29 0 * * *` | 待检查 | [sudojia_wnna.js.md](../../scripts/sudojia_wnna.js.md)（`docs/scripts/sudojia_wnna.js.md`） |
 | 新湖南每日签到 | `scripts/sudojia_xhn.js` | `node scripts/sudojia_xhn.js` | `51 1 * * *` | 待检查 | [sudojia_xhn.js.md](../../scripts/sudojia_xhn.js.md)（`docs/scripts/sudojia_xhn.js.md`） |
 | 享玩游戏APP | `scripts/sudojia_xiangwan.js` | `node scripts/sudojia_xiangwan.js` | `15 2 * * *` | 待检查 | [sudojia_xiangwan.js.md](../../scripts/sudojia_xiangwan.js.md)（`docs/scripts/sudojia_xiangwan.js.md`） |

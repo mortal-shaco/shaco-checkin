@@ -29450,6 +29450,8 @@
           "LEAFLOW_COOKIE"
         ],
         "optionalEnv": [
+          "LEAFLOW_ACCOUNTS",
+          "LEAFLOW_COOKIES",
           "LEAFLOW_DRY_RUN",
           "LEAFLOW_BASE",
           "LEAFLOW_TIMEOUT",
@@ -29460,42 +29462,44 @@
           "TIMEOUT",
           "RETRY_TIMES",
           "RETRY_DELAY",
-          "MAX_RANDOM_DELAY",
           "RANDOM_SIGNIN",
+          "MAX_RANDOM_DELAY",
           "NOTIFY_ON_ALREADY",
           "DEBUG_MODE",
           "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR",
           "HTTP_PROXY",
-          "HTTPS_PROXY",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "HTTPS_PROXY"
         ],
         "dryRunEnv": {
           "LEAFLOW_DRY_RUN": "1"
         },
         "liveEnv": {
+          "LEAFLOW_TIMEOUT": "20",
+          "LEAFLOW_RETRIES": "3",
+          "LEAFLOW_RETRY_DELAY": "3",
           "LEAFLOW_MAX_DELAY": "0",
-          "QINGLONG_NOTIFY": "1"
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
           "status=success message=check-in succeeded",
           "status=already message=already checked in today"
         ],
         "features": [
-          "使用 Cookie 执行 Leaflow 每日签到",
-          "自动识别 CSRF 隐藏字段并提交签到表单",
-          "明确识别成功、今日已完成、会话失效和失败结果",
-          "在服务返回时提取当日签到奖励",
-          "支持换行多账号独立处理并生成结构化汇总",
-          "提供有限重试、请求超时和可选随机执行窗口",
-          "提供完全断网的预演配置校验",
-          "在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份",
-          "支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码",
-          "输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY",
-          "兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小"
+          "使用 Cookie 或 Authorization 执行 Leaflow 每日签到，支持同账号组合凭据及上游 token_data 结构",
+          "识别隐藏字段和 CSRF 后提交既有签到表单；识别成功、今日已完成、登录失效和失败，并在必要时回读首页核验",
+          "返回当日奖励并排除历史奖励区域",
+          "保留每行多账号、有限重试、请求超时及可选随机执行窗口，任一账号失败则非零退出",
+          "支持完全断网预演和脱敏配置校验，不调用签到、通知模块或文本供应商",
+          "保留原维护版参数及兼容别名、机器输出和 34 18 * * * 定时配置",
+          "官方页面返回安全的昵称、用户名、显示名称或公开 UID 时原样显示，不输出凭据、手机号或设备标识",
+          "发现青龙通知模块，支持全局开关和脚本选择器；成功、失败、部分失败和配置错误均生成脱敏汇总，预演只生成本地通知摘要，通知不可用时保留业务退出码",
+          "打印阶段时间轴、账号和子任务统计、完成时间、最终状态，保留 START、ACCOUNT、SUMMARY 并仅追加一条 TASK_SUMMARY JSON",
+          "限制跨源重定向及响应大小，保留独立标准库 HTTP 实现，无私有仓库或安装引导依赖"
         ],
         "sideEffects": [
-          "正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励",
+          "正式执行时提交 Leaflow 每日签到表单，记录签到并可能发放当日奖励",
           "正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总"
         ]
       },
@@ -29505,7 +29509,7 @@
       },
       "displayName": "Leaflow 签到",
       "path": "scripts/leaflow_checkin_pyleaflow_checkin.py",
-      "sha256": "80d9c6ec4b232b2337717b07212b6785d1ce25b354f806c976a59b18f8df801e",
+      "sha256": "ef6c04ef5f1c3d00c033e97c66bdb74c1256556ea10f186377893319b5dc9c3d",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -29513,115 +29517,141 @@
         "repository": "agluo/ql-script-hub",
         "branch": "master",
         "commit": "a8d39b97cb22c3ac657089014df754342b456ff6",
-        "originalPath": "archive/leaflow_checkin.pyleaflow_checkin.py"
+        "originalPath": "archive/leaflow_checkin.pyleaflow_checkin.py",
+        "related": [
+          {
+            "repository": "keggin-CHN/leaflow-checkin",
+            "url": "https://github.com/keggin-CHN/leaflow-checkin",
+            "branch": "master",
+            "commit": "976f7f5dea720dbfa3d4388943e3dc01144f880c",
+            "originalPath": "checkin_token.py",
+            "catalogId": "6983eb0bc9388cb4",
+            "sha256": "9095d5b55e2f1866e57ae20edb48af6ef8ec8d09997d607d0be42455e85c25e0",
+            "license": "MIT"
+          }
+        ]
       },
-      "cron": "14 0 * * *",
+      "cron": "34 18 * * *",
       "command": "python3 scripts/leaflow_checkin_pyleaflow_checkin.py",
       "environment": [
         {
           "name": "LEAFLOW_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "浏览器登录 https://checkin.leaflow.net，打开开发者工具的网络面板，刷新页面后选择本站请求，复制请求头 Cookie 的完整值；不要复制响应头 Set-Cookie，不要公开。",
-          "format": "每个非空行一个账号，完整名称=值请求头，多项 Cookie 用分号分隔；值中的等号、& 和 @ 原样保留。"
+          "howToGet": "在本人浏览器登录 https://checkin.leaflow.net，打开开发者工具的网络面板，刷新并选中签到站点请求，复制 Cookie 或 Authorization 请求头的完整值；同一账号的配套凭据置于同一行 JSON，不使用抓取他人凭据或自动下载工具。",
+          "format": "每个非空行一个账号：完整 Cookie 请求头，或 JSON 对象（cookie 字符串及 authorization 字符串，可只提供一个）。也接受 cookies 名值对象及上游 token_data 对象；headers 对象仅接受 Authorization。Cookie 按分号解析且仅在第一个等号处分割，值内的等号、&、@ 保留；账号只用换行分隔。"
+        },
+        {
+          "name": "LEAFLOW_ACCOUNTS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选结构化账号兼容输入，获取方法同 LEAFLOW_COOKIE；仅在未设置 LEAFLOW_COOKIE 时读取。",
+          "format": "与 LEAFLOW_COOKIE 相同，每行一个账号"
+        },
+        {
+          "name": "LEAFLOW_COOKIES",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游 Cookie 提取工具的输入名，获取方法同 LEAFLOW_COOKIE；仅在前两个变量均未设置时读取。",
+          "format": "与 LEAFLOW_COOKIE 相同，每行一个账号"
         },
         {
           "name": "LEAFLOW_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要断网预演时设置为 1。",
-          "format": "1/true/yes/on 开启；默认关闭。"
+          "howToGet": "预演时手动设置为 1，正式运行删除或设置为 0。",
+          "format": "1 启用完全断网预演；不调用任何通知模块，不读取凭据配置文件"
         },
         {
           "name": "LEAFLOW_BASE",
           "required": false,
           "sensitive": false,
-          "howToGet": "默认使用原站点，仅在确认可信部署的情况下修改；兼容旧名 LEAFFLOW_BASE。",
-          "format": "HTTPS 根地址，无用户名、密码、路径、查询或片段；默认 https://checkin.leaflow.net。"
+          "howToGet": "一般无需设置，默认 https://checkin.leaflow.net；仅在确认服务迁移且信任新站点时设置。",
+          "format": "不含路径、查询、片段或内嵌凭据的 HTTPS 源地址"
         },
         {
           "name": "LEAFLOW_TIMEOUT",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要设置单次请求超时，兼容 TIMEOUT。",
-          "format": "1 至 120 的整数秒，默认 20；维护参数优先。"
+          "howToGet": "可选手动设置，默认 20。",
+          "format": "1 至 120 的整数，单位秒"
         },
         {
           "name": "LEAFLOW_RETRIES",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要设置每账号最大尝试次数，兼容 RETRY_TIMES。",
-          "format": "1 至 5 的整数，默认 3；维护参数优先。"
+          "howToGet": "可选手动设置，默认 3。",
+          "format": "1 至 5 的整数，表示每账号最多尝试次数"
         },
         {
           "name": "LEAFLOW_RETRY_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要设置重试间隔，兼容 RETRY_DELAY。",
-          "format": "0 至 60 的整数秒，默认 3；维护参数优先。"
+          "howToGet": "可选手动设置，默认 3。",
+          "format": "0 至 60 的整数，单位秒"
         },
         {
           "name": "LEAFLOW_MAX_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要设置本轮随机执行窗口，兼容 MAX_RANDOM_DELAY 与 RANDOM_SIGNIN。",
-          "format": "0 至 3600 的整数秒，维护版默认 0；维护参数优先。"
+          "howToGet": "可选手动设置，默认 0。",
+          "format": "0 至 3600 的整数，单位秒，为各账号随机窗口"
         },
         {
           "name": "LEAFFLOW_BASE",
           "required": false,
           "sensitive": false,
-          "howToGet": "旧脚本基础地址参数，推荐使用 LEAFLOW_BASE。",
-          "format": "与 LEAFLOW_BASE 相同；新参数未设置时生效。"
+          "howToGet": "兼容上游变量名，仅在未设置 LEAFLOW_BASE 时读取。",
+          "format": "同 LEAFLOW_BASE"
         },
         {
           "name": "TIMEOUT",
           "required": false,
           "sensitive": false,
-          "howToGet": "旧脚本超时参数，推荐使用 LEAFLOW_TIMEOUT。",
-          "format": "1 至 120 的整数秒；新参数未设置时生效。"
+          "howToGet": "兼容上游参数，仅在未设置 LEAFLOW_TIMEOUT 时读取。",
+          "format": "1 至 120 的整数，单位秒"
         },
         {
           "name": "RETRY_TIMES",
           "required": false,
           "sensitive": false,
-          "howToGet": "旧脚本重试次数参数，推荐使用 LEAFLOW_RETRIES。",
-          "format": "1 至 5 的整数；新参数未设置时生效。"
+          "howToGet": "兼容上游参数，仅在未设置 LEAFLOW_RETRIES 时读取。",
+          "format": "1 至 5 的整数"
         },
         {
           "name": "RETRY_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "旧脚本重试间隔参数，推荐使用 LEAFLOW_RETRY_DELAY。",
-          "format": "0 至 60 的整数秒；新参数未设置时生效。"
-        },
-        {
-          "name": "MAX_RANDOM_DELAY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "旧脚本随机窗口参数，推荐使用 LEAFLOW_MAX_DELAY。",
-          "format": "0 至 3600 的整数秒；新参数未设置时生效。"
+          "howToGet": "兼容上游参数，仅在未设置 LEAFLOW_RETRY_DELAY 时读取。",
+          "format": "0 至 60 的整数，单位秒"
         },
         {
           "name": "RANDOM_SIGNIN",
           "required": false,
           "sensitive": false,
-          "howToGet": "沿用旧脚本随机签到开关，推荐直接设置 LEAFLOW_MAX_DELAY。",
-          "format": "显式 true 开启旧随机窗口，窗口未设置时为 3600 秒；显式其他值关闭；新窗口参数优先。"
+          "howToGet": "兼容上游随机签到开关；仅在未设置 LEAFLOW_MAX_DELAY 时生效。",
+          "format": "true 开启随机窗口，其他值关闭"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游随机窗口设置；开启 RANDOM_SIGNIN 且未设置维护版窗口时默认 3600。",
+          "format": "0 至 3600 的整数，单位秒"
         },
         {
           "name": "NOTIFY_ON_ALREADY",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要控制已签到账号是否加入通知明细。",
-          "format": "默认 true；其他值关闭此类明细，仍发送任务总数汇总。"
+          "howToGet": "可选控制已签到账号的通知明细，默认 true；不影响汇总。",
+          "format": "true 显示已签到明细，其他值省略"
         },
         {
           "name": "DEBUG_MODE",
           "required": false,
           "sensitive": false,
-          "howToGet": "兼容旧参数；本维护版始终提供脱敏阶段日志。",
-          "format": "接受旧值但不保存原始响应，也不显示页面片段。"
+          "howToGet": "兼容参数；仅保留脱敏阶段日志，不保存响应或凭据。",
+          "format": "不改变业务行为"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -29631,55 +29661,54 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选替换默认通知清单，填写目录编号、脚本相对路径、文件名或文件名通配符；空值关闭全部。",
+          "format": "逗号、分号或空白分隔选择器；* 选择全部；支持原维护脚本及本次来源编号"
+        },
+        {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "如通知模块不在默认目录，填写青龙 notify.py 的所在目录。",
-          "format": "本机目录，可选；亦支持 import notify.send、/ql/data/scripts/notify.py 和 /ql/scripts/notify.py。"
+          "howToGet": "可选填写本人青龙 notify.py 所在目录；否则发现 notify.send 和青龙标准目录。",
+          "format": "本地目录路径"
         },
         {
           "name": "HTTP_PROXY",
           "required": false,
           "sensitive": true,
-          "howToGet": "需要代理时按运行环境配置，脚本不记录代理值。",
-          "format": "标准库支持的代理地址；兼容 http_proxy。"
+          "howToGet": "如需代理由本人在运行环境配置；通过标准库使用，日志不输出地址。",
+          "format": "代理地址，可包含敏感认证信息"
         },
         {
           "name": "HTTPS_PROXY",
           "required": false,
           "sensitive": true,
-          "howToGet": "需要代理时按运行环境配置，脚本不记录代理值。",
-          "format": "标准库支持的代理地址；兼容 https_proxy。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "如需代理由本人在运行环境配置；通过标准库使用，日志不输出地址。",
+          "format": "代理地址，可包含敏感认证信息"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，整行作为完整 Cookie；不使用 & 或 @ 分隔账号，账号独立执行，任一账号失败则整体非零退出。"
+        "rule": "每个非空行一个账号，不使用 &、@ 或其他字符分隔账号；同一账号 Cookie 与 Authorization 放在同一行 JSON。独立处理各账号，任一账号失败则整体非零退出。"
       },
       "dependencies": [],
       "features": [
-        "使用 Cookie 执行 Leaflow 每日签到",
-        "自动识别 CSRF 隐藏字段并提交签到表单",
-        "明确识别成功、今日已完成、会话失效和失败结果",
-        "在服务返回时提取当日签到奖励",
-        "支持换行多账号独立处理并生成结构化汇总",
-        "提供有限重试、请求超时和可选随机执行窗口",
-        "提供完全断网的预演配置校验",
-        "在官方页面明确返回昵称、用户名、显示名称或公开 UID 时显示可安全核对的账号身份",
-        "支持青龙通知模块发现及全局通知开关，发送脱敏任务汇总，通知失败保留业务退出码",
-        "输出时间轴阶段、账号及子任务统计，并保留 ACCOUNT、SUMMARY 输出及追加单行 TASK_SUMMARY",
-        "兼容上游非敏感配置参数，排除历史奖励区域并限制跨源重定向和响应大小"
+        "使用 Cookie 或 Authorization 执行 Leaflow 每日签到，支持同账号组合凭据及上游 token_data 结构",
+        "识别隐藏字段和 CSRF 后提交既有签到表单；识别成功、今日已完成、登录失效和失败，并在必要时回读首页核验",
+        "返回当日奖励并排除历史奖励区域",
+        "保留每行多账号、有限重试、请求超时及可选随机执行窗口，任一账号失败则非零退出",
+        "支持完全断网预演和脱敏配置校验，不调用签到、通知模块或文本供应商",
+        "保留原维护版参数及兼容别名、机器输出和 34 18 * * * 定时配置",
+        "官方页面返回安全的昵称、用户名、显示名称或公开 UID 时原样显示，不输出凭据、手机号或设备标识",
+        "发现青龙通知模块，支持全局开关和脚本选择器；成功、失败、部分失败和配置错误均生成脱敏汇总，预演只生成本地通知摘要，通知不可用时保留业务退出码",
+        "打印阶段时间轴、账号和子任务统计、完成时间、最终状态，保留 START、ACCOUNT、SUMMARY 并仅追加一条 TASK_SUMMARY JSON",
+        "限制跨源重定向及响应大小，保留独立标准库 HTTP 实现，无私有仓库或安装引导依赖"
       ],
       "sideEffects": [
-        "正式执行时提交 Leaflow 每日签到表单，记录账号签到并可能发放当日奖励",
+        "正式执行时提交 Leaflow 每日签到表单，记录签到并可能发放当日奖励",
         "正式执行且通知启用时调用青龙通知模块发送脱敏任务汇总"
       ],
       "review": {
@@ -29693,20 +29722,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/12e44eccee922041",
-        "candidateSha256": "2bdaf86c5f8021407596e8cbe4d3ee6fc5c18a9625720c6f11e17ce782f02c09"
+        "candidateSha256": "f2d2d354a6cfb35af25e380de531c27ba542196e8218bf16bf909781f56254b7"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "2bdaf86c5f8021407596e8cbe4d3ee6fc5c18a9625720c6f11e17ce782f02c09",
-        "releaseSha256": "80d9c6ec4b232b2337717b07212b6785d1ce25b354f806c976a59b18f8df801e",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "f2d2d354a6cfb35af25e380de531c27ba542196e8218bf16bf909781f56254b7",
+        "releaseSha256": "ef6c04ef5f1c3d00c033e97c66bdb74c1256556ea10f186377893319b5dc9c3d",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T01:39:55.222013+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "2bdaf86c5f8021407596e8cbe4d3ee6fc5c18a9625720c6f11e17ce782f02c09",
-          "toCandidateSha256": "80d9c6ec4b232b2337717b07212b6785d1ce25b354f806c976a59b18f8df801e",
+          "approvedAt": "2026-11-06T04:35:34.139932+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "f2d2d354a6cfb35af25e380de531c27ba542196e8218bf16bf909781f56254b7",
+          "toCandidateSha256": "ef6c04ef5f1c3d00c033e97c66bdb74c1256556ea10f186377893319b5dc9c3d",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -30833,35 +30862,41 @@
           "LYNKCO_APP_SECRETS"
         ],
         "optionalEnv": [
-          "LYNKCO_NATIVE_APP_KEY",
-          "LYNKCO_NATIVE_APP_SECRET",
-          "LYNKCO_NATIVE_APP_CODE",
-          "LYNKCO_NATIVE_GL_DEV_ID",
-          "LYNKCO_LOGIN_APP_CODE",
-          "LYNKCO_CA_KEY",
-          "LYNKCO_CA_SECRET",
-          "LYNKCO_APP_CODE",
           "LYNKCO_TOKEN",
           "LYNKCO_REFRESH_TOKEN",
           "LYNKCO_DEVICE_ID",
           "LYNKCO_ENV_FILE",
+          "LYNKCO_NATIVE_APP_KEY",
+          "LYNKCO_NATIVE_APP_SECRET",
+          "LYNKCO_NATIVE_APP_CODE",
+          "LYNKCO_LOGIN_APP_CODE",
+          "LYNKCO_NATIVE_GL_DEV_ID",
+          "LYNKCO_CA_KEY",
+          "LYNKCO_CA_SECRET",
+          "LYNKCO_APP_CODE",
+          "LYNKCO_SHARE_CODE",
+          "LYNKCO_BARK_KEY",
+          "LYNKCO_DRY_RUN",
+          "LYNKCO_TASK_MODE",
           "LYNKCO_DO_SHARE",
           "LYNKCO_SHARE_MODE",
           "LYNKCO_ARTICLE_ID",
           "LYNKCO_CONTENT_ID",
+          "LYNKCO_SHARE_URL",
+          "LYNKCO_BUSINESS_NO",
+          "LYNKCO_FIRST_CLASSIFICATION",
+          "LYNKCO_SECOND_CLASSIFICATION",
+          "LYNKCO_SHARE_DELAY_SECONDS",
           "LYNKCO_TIMEOUT",
           "LYNKCO_ENERGY_DELAY",
-          "LYNKCO_TASK_MODE",
           "LYNKCO_QUERY_TASKS",
           "LYNKCO_QUERY_GROWTH",
-          "LYNKCO_FETCH_ACCOUNT_NAME",
           "LYNKCO_LATEST_ARTICLE_LIMIT",
-          "LYNKCO_DRY_RUN",
+          "LYNKCO_FETCH_ACCOUNT_NAME",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR",
           "LYNKCO_QL_NOTIFY",
-          "LYNKCO_BARK_KEY",
           "LYNKCO_BARK_ICON"
         ],
         "dryRunEnv": {
@@ -30869,11 +30904,8 @@
         },
         "liveEnv": {
           "LYNKCO_TASK_MODE": "daily",
-          "LYNKCO_TIMEOUT": "30",
-          "LYNKCO_ENERGY_DELAY": "5",
           "LYNKCO_DO_SHARE": "1",
-          "LYNKCO_SHARE_MODE": "simple",
-          "QINGLONG_NOTIFY": "auto"
+          "LYNKCO_SHARE_DELAY_SECONDS": "0"
         },
         "successPatterns": [
           "LYNKCO_TASK_SUCCESS"
@@ -30888,13 +30920,17 @@
           "多账号独立处理、官方非秘密身份展示、任一账号失败非零退出",
           "青龙及可选Bark脱敏摘要通知，支持全局开关与选择清单，通知失败保留业务退出码",
           "完全断网预演、分阶段日志及账号统计，兼容机器输出并追加单行TASK_SUMMARY",
-          "旧账号变量、显式只读JSON配置及签名参数兼容，无私有模块依赖"
+          "旧账号变量、显式只读JSON配置及签名参数兼容，无私有模块依赖",
+          "显式分享链接解析及编号、分类一致性检查，支持文章、动态、活动、商品和专题",
+          "可选签到后分享前等待，保留维护版默认零额外等待",
+          "显式分享目标使用原有签名、简化链与完整链回退，并继续严格核验积分增加"
         ],
         "sideEffects": [
           "每日模式执行签到并领取服务端奖励，已签到时跳过",
           "每日模式默认上报文章分享，服务端可能增加积分，可用LYNKCO_DO_SHARE关闭",
           "配置刷新令牌时续期可能改变服务端登录状态，不写本地凭据文件",
-          "发送脱敏青龙通知及可选Bark推送；全局可关闭，预演禁止联网"
+          "发送脱敏青龙通知及可选Bark推送；全局可关闭，预演禁止联网",
+          "显式配置非文章目标时上报对应内容分享，服务端可能增加积分"
         ]
       },
       "postReview": {
@@ -30903,7 +30939,7 @@
       },
       "displayName": "领克App每日签到分享",
       "path": "scripts/lynkco_qinglong_single.py",
-      "sha256": "850e3773fea0dc4ecfa2d3c166f474ded8f8d12ed8dc8c80ce1488ee83f85c50",
+      "sha256": "08dc0af421d4792223ff88980f6e15ec2239653d6334f0b1986c66820a42e40f",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -30942,6 +30978,16 @@
             "catalogId": "dee713165141b125",
             "sha256": "939ec65486915c34b11b159685ab47d893a97f9878abd9ef6e7160635fc34ed2",
             "license": "MIT"
+          },
+          {
+            "repository": "xbgo/lynkco-daily",
+            "url": "https://github.com/xbgo/lynkco-daily.git",
+            "branch": "main",
+            "commit": "45be1a48cb2835c0e75c21880a36cc22ae90fecf",
+            "originalPath": "lynkco_daily.py",
+            "catalogId": "c1957a66fa92a317",
+            "sha256": "f657c5841b703841306cf2da81f480c941d924a1b7925693affdde3caf597491",
+            "license": "MIT"
           }
         ]
       },
@@ -30952,183 +30998,232 @@
           "name": "LYNKCO_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "从本人领克App登录或刷新请求获取centerTokenDto.token、refreshToken与同账号deviceId。",
-          "format": "每个非空行一个JSON对象；token或refreshToken至少一个，refreshToken必须配套deviceId，可同时提供token回退；凭据内其他分隔字符原样保留。"
+          "howToGet": "从本人领克App登录或续期请求响应获取centerTokenDto.token、refreshToken，从同账号请求获取deviceId。在青龙环境变量中按行填写，勿公开抓包内容。",
+          "format": "每个非空行一个JSON对象，包含token，或同账号refreshToken和deviceId；可同时包含token用于续期失败回退。不使用&或@分账号。"
         },
         {
           "name": "LYNKCO_APP_SECRETS",
           "required": true,
           "sensitive": true,
-          "howToGet": "从本人合法获取的App配置和请求头获取原生签名参数，不提供内置密钥。",
-          "format": "JSON对象；nativeAppKey、nativeAppSecret必需，分享或续期需要glDevId；nativeAppCode可选供优先续期。兼容单项变量。"
-        },
-        {
-          "name": "LYNKCO_NATIVE_APP_KEY",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人合法取得的App配置获取，兼容旧单项配置。",
-          "format": "字符串，覆盖JSON内nativeAppKey。"
-        },
-        {
-          "name": "LYNKCO_NATIVE_APP_SECRET",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人合法取得的App配置获取，兼容旧单项配置。",
-          "format": "字符串，覆盖JSON内nativeAppSecret。"
-        },
-        {
-          "name": "LYNKCO_NATIVE_APP_CODE",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人App请求的Authorization头获取，兼容旧单项配置。",
-          "format": "AppCode字符串，不包含APPCODE前缀，覆盖JSON对应字段。"
-        },
-        {
-          "name": "LYNKCO_NATIVE_GL_DEV_ID",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人App请求头获取设备标识，兼容旧单项配置。",
-          "format": "字符串，覆盖JSON内glDevId。"
-        },
-        {
-          "name": "LYNKCO_LOGIN_APP_CODE",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从旧配置迁移时保留，定时任务不执行交互登录。",
-          "format": "字符串，兼容loginAppCode字段。"
-        },
-        {
-          "name": "LYNKCO_CA_KEY",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人App配置获取，兼容主来源变量。",
-          "format": "字符串，仅未配置nativeAppKey时使用。"
-        },
-        {
-          "name": "LYNKCO_CA_SECRET",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人合法取得的App配置获取，兼容主来源变量。",
-          "format": "字符串，仅未配置nativeAppSecret时使用。"
-        },
-        {
-          "name": "LYNKCO_APP_CODE",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人App请求头获取，兼容主来源变量。",
-          "format": "字符串，仅未配置nativeAppCode时使用，不包含APPCODE前缀。"
+          "howToGet": "从本人有权访问的App配置或原生网关请求中获取签名配置，在青龙环境变量中填写。",
+          "format": "JSON对象，必填nativeAppKey、nativeAppSecret；每日分享或续期需glDevId；AppCode优先续期还需nativeAppCode。兼容独立签名变量与显式只读配置文件。"
         },
         {
           "name": "LYNKCO_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "从本人App请求获取，建议改用规范账号变量。",
-          "format": "旧账号变量，每行一个访问令牌；存在LYNKCO_ACCOUNTS时忽略。"
+          "howToGet": "兼容旧输入，从本人App登录响应获取token，优先使用LYNKCO_ACCOUNTS。",
+          "format": "每行一个令牌，按账号行号配对。"
         },
         {
           "name": "LYNKCO_REFRESH_TOKEN",
           "required": false,
           "sensitive": true,
-          "howToGet": "从本人App登录响应获取，建议改用规范账号变量。",
-          "format": "旧账号变量，每行一个刷新令牌，与设备标识按行配套。"
+          "howToGet": "兼容旧输入，从本人App登录响应获取refreshToken。",
+          "format": "每行一个续期令牌，按行配对deviceId。"
         },
         {
           "name": "LYNKCO_DEVICE_ID",
           "required": false,
           "sensitive": true,
-          "howToGet": "从同账号App登录或刷新请求获取，建议改用规范账号变量。",
-          "format": "旧账号变量，每行一个设备标识，不广播到其他账号。"
+          "howToGet": "兼容旧输入，从本人同账号请求获取deviceId。",
+          "format": "每行一个设备标识，不跨账号广播。"
         },
         {
           "name": "LYNKCO_ENV_FILE",
           "required": false,
           "sensitive": true,
-          "howToGet": "仅迁移已有配置时显式填写；独立运行无需文件。",
-          "format": "只读JSON路径，secrets可提供签名参数；没有账号变量时可使用单个user对象，不执行Python文件，不写盘。"
+          "howToGet": "可选兼容本人已有配置，脚本本身无需配置文件。",
+          "format": "显式只读JSON文件路径，含secrets及可选单账号user。多账号不读取user，不回写。"
+        },
+        {
+          "name": "LYNKCO_NATIVE_APP_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法获取的App签名配置读取。",
+          "format": "非空字符串，对应nativeAppKey。"
+        },
+        {
+          "name": "LYNKCO_NATIVE_APP_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法获取的App签名配置读取。",
+          "format": "非空字符串，对应nativeAppSecret。"
+        },
+        {
+          "name": "LYNKCO_NATIVE_APP_CODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人App原生网关Authorization头获取AppCode。",
+          "format": "非空字符串，对应nativeAppCode。"
+        },
+        {
+          "name": "LYNKCO_LOGIN_APP_CODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人旧配置读取；当前每日任务无需单独配置。",
+          "format": "非空字符串，对应loginAppCode，保留旧配置兼容。"
+        },
+        {
+          "name": "LYNKCO_NATIVE_GL_DEV_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人App原生请求的gl_dev_id获取。",
+          "format": "非空字符串，对应glDevId。"
+        },
+        {
+          "name": "LYNKCO_CA_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法获取的App配置读取。",
+          "format": "非空字符串，原生签名键的兼容别名。"
+        },
+        {
+          "name": "LYNKCO_CA_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人合法获取的App配置读取。",
+          "format": "非空字符串，原生签名密钥的兼容别名。"
+        },
+        {
+          "name": "LYNKCO_APP_CODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人App原生请求获取。",
+          "format": "非空字符串，原生AppCode的兼容别名。"
+        },
+        {
+          "name": "LYNKCO_SHARE_CODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从本人App分享链接或getShareCode响应获取；默认由脚本自动获取。",
+          "format": "一次性分享码，需明确目标；不得跨目标复用。"
+        },
+        {
+          "name": "LYNKCO_BARK_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从本人Bark客户端获取。",
+          "format": "本人Bark推送键，留空关闭。"
+        },
+        {
+          "name": "LYNKCO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中配置，离线测试设为1。",
+          "format": "1启用完全断网预演，默认0。"
+        },
+        {
+          "name": "LYNKCO_TASK_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据本人任务需求选择模式。",
+          "format": "daily或status，默认daily；status仅查询，但配置续期凭据时仍会续期。"
         },
         {
           "name": "LYNKCO_DO_SHARE",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量设置分享开关。",
-          "format": "默认1，0关闭每日分享。只上报文章，不发布文本。"
+          "howToGet": "根据本人是否执行每日分享配置。",
+          "format": "1或0，默认1；0关闭分享，仅签到及查询。"
         },
         {
           "name": "LYNKCO_SHARE_MODE",
           "required": false,
           "sensitive": false,
-          "howToGet": "按本人分享流程选择。",
-          "format": "simple或full，默认simple；full需要内容编号，simple失败且有内容编号时回退完整三步链。"
+          "howToGet": "按分享接口需求配置；full必须配套LYNKCO_CONTENT_ID。",
+          "format": "simple或full，默认simple；简化链失败且提供内容编号时回退完整链。"
         },
         {
           "name": "LYNKCO_ARTICLE_ID",
           "required": false,
           "sensitive": false,
-          "howToGet": "从App文章分享链接的id参数获取。",
-          "format": "可选文章编号；不填先自动查找，失败使用上游备用文章。"
+          "howToGet": "从领克App文章链接的id字段获取。",
+          "format": "可选文章编号，默认分页查询，查询不可用时使用原有备用文章。"
         },
         {
           "name": "LYNKCO_CONTENT_ID",
           "required": false,
           "sensitive": false,
-          "howToGet": "从本人同一分享内容的请求中获取contentId。",
-          "format": "完整链所需内容编号。"
+          "howToGet": "从本人App完整分享请求的contentId获取，不凭空构造。",
+          "format": "可选完整分享链内容编号，full模式必需。"
+        },
+        {
+          "name": "LYNKCO_SHARE_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人App复制分享链接，分享码视为敏感信息。",
+          "format": "可选https://h5.lynkco.com官方分享链接；支持文章、动态、活动、商品、专题；不接受片段或其他域名。"
+        },
+        {
+          "name": "LYNKCO_BUSINESS_NO",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从领克分享链接的id、dynamicId、articleId或goodId获取。",
+          "format": "可选目标编号；与链接编号一致；优先于LYNKCO_ARTICLE_ID。"
+        },
+        {
+          "name": "LYNKCO_FIRST_CLASSIFICATION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，从本人App分享上报的eventData.firstClassification获取；非文章目标需链接。",
+          "format": "文章、动态、活动、商品或专题；默认从链接推断，无链接默认文章。"
+        },
+        {
+          "name": "LYNKCO_SECOND_CLASSIFICATION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人App分享请求eventData.secondClassification或链接typeCode获取。",
+          "format": "可选二级分类，默认链接的typeCode或空字符串。"
+        },
+        {
+          "name": "LYNKCO_SHARE_DELAY_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选设置签到后至分享前的等待时间，保持维护版默认等待行为。",
+          "format": "0至3600秒的有限数值，默认0；仅正式分享前等待。"
         },
         {
           "name": "LYNKCO_TIMEOUT",
           "required": false,
           "sensitive": false,
-          "howToGet": "按网络情况设置。",
+          "howToGet": "可选设置每次HTTP请求超时。",
           "format": "大于0且不超过120秒，默认30。"
         },
         {
           "name": "LYNKCO_ENERGY_DELAY",
           "required": false,
           "sensitive": false,
-          "howToGet": "按积分异步同步需要设置等待时长。",
-          "format": "0至120秒，默认5。"
-        },
-        {
-          "name": "LYNKCO_TASK_MODE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按运行目的设置。",
-          "format": "daily或status，默认daily；status只查询积分、签到状态、连续天数、任务列表及成长值，但配置刷新令牌时仍会续期。"
+          "howToGet": "可选按服务端积分刷新速度调整。",
+          "format": "0至120秒，默认5；用于积分异步刷新等待。"
         },
         {
           "name": "LYNKCO_QUERY_TASKS",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要查看任务列表时启用。",
-          "format": "默认0；1启用每日额外查询；status模式自动查询，不执行列表任务。"
+          "howToGet": "可选启用任务列表查询。",
+          "format": "1或0，默认0；status模式自动查询。"
         },
         {
           "name": "LYNKCO_QUERY_GROWTH",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要查看成长值时启用。",
-          "format": "默认0；1启用每日额外查询；status模式自动查询accountLevelVo.growth。"
-        },
-        {
-          "name": "LYNKCO_FETCH_ACCOUNT_NAME",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要补查官方身份时启用。",
-          "format": "默认0；1启用/auth/user/info查询，失败导致该账号失败。"
+          "howToGet": "可选启用成长值查询。",
+          "format": "1或0，默认0；status模式自动查询。"
         },
         {
           "name": "LYNKCO_LATEST_ARTICLE_LIMIT",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要按详情时间选取文章时设置。",
-          "format": "0至50整数；默认0保留五页首篇查找。正数限制详情查询篇数，详情失败保留信息流及备用链。"
+          "howToGet": "可选限制详情查询数量。",
+          "format": "0至50整数，默认0；正数启用文章详情时间比较。"
         },
         {
-          "name": "LYNKCO_DRY_RUN",
+          "name": "LYNKCO_FETCH_ACCOUNT_NAME",
           "required": false,
           "sensitive": false,
-          "howToGet": "测试时启用，正式任务关闭。",
-          "format": "1完全断网预演，默认0；检查配置、签名及阶段，不代表真实业务成功。"
+          "howToGet": "可选查询官方账号身份。",
+          "format": "1或0，默认0。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -31141,42 +31236,35 @@
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "选择需要通知的任务，设置后替换默认清单。",
-          "format": "逗号、分号、空白或换行分隔目录ID、脚本路径、文件名或通配符；*选全部，空值关闭全部；全局显式开关优先。"
+          "howToGet": "可选替换通知选择清单，未设置时本维护任务属于默认通知清单。",
+          "format": "以逗号、分号或空白分隔的目录编号、文件名、脚本相对路径或通配符；*全选，空值全关闭。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "填写青龙通知模块所在目录。",
-          "format": "可选目录，含notify.py或sendNotify.js；同时探测可导入notify和青龙标准目录。"
+          "howToGet": "指向已有notify.py或sendNotify.js的目录，脚本也会查找标准青龙路径。",
+          "format": "可选青龙通知模块所在目录。"
         },
         {
           "name": "LYNKCO_QL_NOTIFY",
           "required": false,
           "sensitive": false,
-          "howToGet": "兼容原有青龙通知分开关。",
-          "format": "默认1，0关闭青龙通知；仍受全局通知开关约束。"
-        },
-        {
-          "name": "LYNKCO_BARK_KEY",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人Bark客户端获取推送密钥，不用可留空。",
-          "format": "单个密钥，仅发送到固定api.day.app，预演禁止网络推送。"
+          "howToGet": "可选保留旧通知设置。",
+          "format": "1或0，默认1；兼容旧青龙通知开关，仍受全局开关及清单约束。"
         },
         {
           "name": "LYNKCO_BARK_ICON",
           "required": false,
           "sensitive": false,
-          "howToGet": "自行提供非敏感图标地址。",
-          "format": "可选HTTPS图标地址。"
+          "howToGet": "从本人希望使用的图标资源获取，仅发送至Bark。",
+          "format": "可选图标地址。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号JSON对象，同账号token、refreshToken、deviceId合并保存；不以&或@分账号；旧变量按行配对；逐账号独立执行，任一失败整体非零退出。"
+        "rule": "每个非空行填写一个账号JSON对象。同账号续期令牌与设备标识放在同一对象中，账号独立处理，任一账号失败时整体非零退出；兼容旧变量按行配对。"
       },
       "dependencies": [],
       "features": [
@@ -31189,13 +31277,17 @@
         "多账号独立处理、官方非秘密身份展示、任一账号失败非零退出",
         "青龙及可选Bark脱敏摘要通知，支持全局开关与选择清单，通知失败保留业务退出码",
         "完全断网预演、分阶段日志及账号统计，兼容机器输出并追加单行TASK_SUMMARY",
-        "旧账号变量、显式只读JSON配置及签名参数兼容，无私有模块依赖"
+        "旧账号变量、显式只读JSON配置及签名参数兼容，无私有模块依赖",
+        "显式分享链接解析及编号、分类一致性检查，支持文章、动态、活动、商品和专题",
+        "可选签到后分享前等待，保留维护版默认零额外等待",
+        "显式分享目标使用原有签名、简化链与完整链回退，并继续严格核验积分增加"
       ],
       "sideEffects": [
         "每日模式执行签到并领取服务端奖励，已签到时跳过",
         "每日模式默认上报文章分享，服务端可能增加积分，可用LYNKCO_DO_SHARE关闭",
         "配置刷新令牌时续期可能改变服务端登录状态，不写本地凭据文件",
-        "发送脱敏青龙通知及可选Bark推送；全局可关闭，预演禁止联网"
+        "发送脱敏青龙通知及可选Bark推送；全局可关闭，预演禁止联网",
+        "显式配置非文章目标时上报对应内容分享，服务端可能增加积分"
       ],
       "review": {
         "staticPassed": true,
@@ -31208,20 +31300,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/c087eb48daa78349",
-        "candidateSha256": "407bd9bb68ccca063b9cc115695efcaae01c0106b32fceb3efaab99fafb1d495"
+        "candidateSha256": "a9f27cbac49a1b616326b514a8bf3ea57711c56d03960b85554937670264fecb"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "407bd9bb68ccca063b9cc115695efcaae01c0106b32fceb3efaab99fafb1d495",
-        "releaseSha256": "850e3773fea0dc4ecfa2d3c166f474ded8f8d12ed8dc8c80ce1488ee83f85c50",
+        "validatedSha256": "a9f27cbac49a1b616326b514a8bf3ea57711c56d03960b85554937670264fecb",
+        "releaseSha256": "08dc0af421d4792223ff88980f6e15ec2239653d6334f0b1986c66820a42e40f",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T04:25:45.922172+00:00",
+          "approvedAt": "2026-11-06T04:35:29.763269+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "407bd9bb68ccca063b9cc115695efcaae01c0106b32fceb3efaab99fafb1d495",
-          "toCandidateSha256": "850e3773fea0dc4ecfa2d3c166f474ded8f8d12ed8dc8c80ce1488ee83f85c50",
+          "fromCandidateSha256": "a9f27cbac49a1b616326b514a8bf3ea57711c56d03960b85554937670264fecb",
+          "toCandidateSha256": "08dc0af421d4792223ff88980f6e15ec2239653d6334f0b1986c66820a42e40f",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -48300,36 +48392,48 @@
         ],
         "optionalEnv": [
           "V2EX_PROXY",
+          "V2EX_CHECKIN",
+          "V2EX_BROWSE",
+          "V2EX_TOPIC_COUNT",
+          "V2EX_MAX_VISIT_COUNT",
+          "V2EX_STATE_DIR",
           "V2EX_DRY_RUN",
           "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
         ],
         "dryRunEnv": {
           "V2EX_DRY_RUN": "1"
         },
         "liveEnv": {
-          "QINGLONG_NOTIFY": "1"
+          "V2EX_CHECKIN": "1",
+          "V2EX_BROWSE": "0",
+          "V2EX_TOPIC_COUNT": "8",
+          "V2EX_MAX_VISIT_COUNT": "80",
+          "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
-          "✅ 签到成功",
-          "☑️ 已经签到过了",
-          "\"status\":\"success\""
+          "TASK_SUMMARY={\"status\":\"success\""
         ],
         "features": [
-          "Cookie 登录校验及官方公开用户名显示",
-          "每日奖励领取和已领取状态识别",
-          "连续签到天数查询",
-          "账户余额查询，保留金币、银币、铜币展示",
-          "查询最近每日登录奖励账目，展示奖励说明与可识别金额；页面缺失时明确说明",
-          "逐行多账号，完整保留 Cookie 字段值",
-          "可选全局或账号专属 HTTP/HTTPS 代理",
-          "完全断网参数校验与流程预演",
-          "青龙脱敏通知、带时间戳的分阶段日志和单行机器汇总"
+          "保留 Cookie 登录校验、官方公开用户名原样显示和逐行多账号参数兼容",
+          "保留每日奖励领取、已经领取识别及连续签到天数查询",
+          "保留账号余额的金币、银币、铜币展示",
+          "保留最近每日登录奖励账目说明及可识别金额，页面缺失时明确说明",
+          "保留全局及账号专属 HTTP/HTTPS 代理链，账号配置优先并支持显式直连",
+          "增加显式开关控制的最新主题去重浏览，每轮默认八篇，每篇停留五至十秒",
+          "增加官方活跃度检查，达到 half、almost 或 done 即停止，缺少活跃度时失败闭合",
+          "增加 UTC 日期访问计数、每日上限、访问前持久化预留及同账号并发锁",
+          "增加仅浏览及签到和浏览组合模式，保持默认每日签到定时计划",
+          "保留完全断网参数校验和流程预演，不写状态文件",
+          "保留青龙脱敏通知、时间轴分阶段日志、逐账号与总任务统计及唯一单行 TASK_SUMMARY 汇总",
+          "根据同应用参考支持明确领取成功文案，并在响应未确认时只读复查签到页"
         ],
         "sideEffects": [
-          "领取 V2EX 每日登录奖励，增加账号余额",
-          "正式运行且通知开启时发送青龙任务结果通知"
+          "签到开关开启时领取 V2EX 每日登录奖励，增加账号余额并更新签到记录",
+          "显式启用浏览时访问主题，可能增加官方浏览及活跃度记录",
+          "正式浏览时在指定本地目录保存账号摘要计数、停止标记和并发锁",
+          "正式运行且通知开启时通过青龙通知模块发送脱敏任务总结"
         ]
       },
       "postReview": {
@@ -48338,7 +48442,7 @@
       },
       "displayName": "V2EX每日签到",
       "path": "scripts/sudojia_v2ex.js",
-      "sha256": "aa301ec50a2a4dfc81dc56d9da2745861b3f39ba136b150be7b35e4f6fad68ad",
+      "sha256": "337271b5641505fed5dc4555f31a2476cbf899fab2c7906c3622cdc9d3883fda",
       "stage": "released",
       "license": "GPL-3.0",
       "licenseGate": "allowed-copyleft",
@@ -48357,32 +48461,77 @@
             "catalogId": "4868a1b213ec9f7a",
             "sha256": "24b94d2edda9dacaf343bcbd3593a82ad8110f1fb005eadaada6a43c50f47b26",
             "license": "MIT"
+          },
+          {
+            "repository": "evcli/v2ex-daily-bonus",
+            "url": "https://github.com/evcli/v2ex-daily-bonus",
+            "branch": "main",
+            "commit": "9eef44b49fd024da779d8e31469089c174c63378",
+            "originalPath": "background.js",
+            "catalogId": "42ec6f79fddb0214",
+            "sha256": "8389f432e50f8667f6e8e4343c8eb9e3f8350cb6f8b662ee6ac428bdbb257bb5",
+            "license": "MIT"
           }
         ]
       },
-      "cron": "1 1 * * *",
+      "cron": "57 9 * * *",
       "command": "node scripts/sudojia_v2ex.js",
       "environment": [
         {
           "name": "V2EX_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录 https://www.v2ex.com，在浏览器开发者工具网络面板复制该站点已登录请求的完整 Cookie 请求头值。不要复制请求头名称。每个账号独立登录获取；原 Python 配置中的 cookie 值可直接迁移为一行。",
-          "format": "每个非空行一个账号。兼容完整 Cookie 字符串，也可使用 JSON 对象，cookie 字段为完整 Cookie，proxy 字段为该账号可选代理 URL。Cookie 内等号和分号原样保留，不用 & 或 @ 分隔账号。"
+          "howToGet": "浏览器登录 https://www.v2ex.com，在开发者工具网络面板选择本站已登录请求，复制完整 Cookie 请求头值。无需复制请求头名称，保留所有字段。",
+          "format": "每个非空行一个账号，填写完整 Cookie，或单行 JSON 对象，含 cookie 字符串及可选 proxy 字符串。Cookie 内等号、分号及其他文本保持原样，不使用 & 或 @ 分隔账号。"
         },
         {
           "name": "V2EX_PROXY",
           "required": false,
           "sensitive": true,
-          "howToGet": "从自己的代理服务获取 HTTP 或 HTTPS 代理地址。可省略；原 Python 配置中的 proxy 可迁移到账号 JSON 的 proxy 字段。青龙依赖管理安装公开 npm 包 https-proxy-agent 7.x，脚本不自动安装。",
-          "format": "HTTP/HTTPS URL，可含代理认证；账号 JSON 的 proxy 优先于全局值，显式空字符串表示直连。"
+          "howToGet": "可选，使用自己管理的 HTTP 或 HTTPS 代理地址。青龙依赖管理安装公开 npm 包 https-proxy-agent 7.x，仅启用代理时需要。账号 JSON 中的 proxy 优先，空字符串为直连。",
+          "format": "HTTP/HTTPS URL，可含代理认证，默认直连。"
+        },
+        {
+          "name": "V2EX_CHECKIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙任务环境设置。默认开启签到领奖，可在仅浏览的小时任务中关闭。",
+          "format": "1 开启，0 关闭，默认 1。不得与浏览同时关闭。"
+        },
+        {
+          "name": "V2EX_BROWSE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙任务环境显式开启浏览。启用后请求最新主题页及主题页，会产生服务端访问记录；每次访问后等待 5 至 10 秒。默认关闭。",
+          "format": "1 开启，0 关闭，默认 0。"
+        },
+        {
+          "name": "V2EX_TOPIC_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，设置每轮浏览的去重主题数量，对应原扩展 topicCount。",
+          "format": "1 至 80 的整数，默认 8。"
+        },
+        {
+          "name": "V2EX_MAX_VISIT_COUNT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，设置 UTC 日期内的主题访问次数上限，对应原扩展 maxVisitCount。失败请求也预留次数，避免重试越界。",
+          "format": "1 至 80 的整数，默认 80。"
+        },
+        {
+          "name": "V2EX_STATE_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，选择可写的持久目录，所有本脚本的定时任务必须共用此目录。以官方用户名摘要区分账号，仅保存日期、访问计数和停止标记。锁异常遗留时先确认同账号任务全部停止，再删除对应 .lock 目录。",
+          "format": "目录路径，默认脚本目录下 .v2ex-state。仅正式启用浏览时写入。清空目录会重置限额，请勿每日清理。"
         },
         {
           "name": "V2EX_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "在青龙环境变量中设为 1 开启完全断网预演。",
-          "format": "1 为预演，其他值为正式运行。"
+          "howToGet": "在青龙任务环境设置以完全断网预演参数和流程。不会访问本站、写入浏览计数或调用通知模块。",
+          "format": "1 为断网预演，默认正式运行。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -48392,42 +48541,47 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可指定青龙 sendNotify.js 所在目录；未配置时搜索 /ql/data/scripts 和 /ql/scripts。通知模块缺失或发送失败不会改变业务退出码。",
-          "format": "可选目录路径，仅用于通知，不影响独立 HTTP 业务。"
-        },
-        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "可选，替换默认通知选择列表。支持维护目标及来源 catalogId、scripts/sudojia_v2ex.js、sudojia_v2ex.js、当前文件名及文件名通配符。",
+          "format": "逗号、分号、空白或换行分隔；* 选择全部，空字符串全部关闭。全局显式开启优先。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 sendNotify.js 所在目录。未设置时依次发现 /ql/data/scripts/sendNotify.js 和 /ql/scripts/sendNotify.js。",
+          "format": "本地目录路径，不会下载或安装模块。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "一个非空行对应一个账号；逐个独立执行，任一账号参数或业务失败则进程非零退出。同一账号 Cookie 和专属代理可放在同一行 JSON 中。"
+        "rule": "每个非空行一个账号，账号配置集中于 V2EX_COOKIE。完整 Cookie 不再按字段拆分；单行 JSON 可组合该账号 Cookie 和代理。逐账号独立执行，任一账号失败则进程非零退出。"
       },
       "dependencies": [
-        "https-proxy-agent@7"
+        "https-proxy-agent@^7.0.0"
       ],
       "features": [
-        "Cookie 登录校验及官方公开用户名显示",
-        "每日奖励领取和已领取状态识别",
-        "连续签到天数查询",
-        "账户余额查询，保留金币、银币、铜币展示",
-        "查询最近每日登录奖励账目，展示奖励说明与可识别金额；页面缺失时明确说明",
-        "逐行多账号，完整保留 Cookie 字段值",
-        "可选全局或账号专属 HTTP/HTTPS 代理",
-        "完全断网参数校验与流程预演",
-        "青龙脱敏通知、带时间戳的分阶段日志和单行机器汇总"
+        "保留 Cookie 登录校验、官方公开用户名原样显示和逐行多账号参数兼容",
+        "保留每日奖励领取、已经领取识别及连续签到天数查询",
+        "保留账号余额的金币、银币、铜币展示",
+        "保留最近每日登录奖励账目说明及可识别金额，页面缺失时明确说明",
+        "保留全局及账号专属 HTTP/HTTPS 代理链，账号配置优先并支持显式直连",
+        "增加显式开关控制的最新主题去重浏览，每轮默认八篇，每篇停留五至十秒",
+        "增加官方活跃度检查，达到 half、almost 或 done 即停止，缺少活跃度时失败闭合",
+        "增加 UTC 日期访问计数、每日上限、访问前持久化预留及同账号并发锁",
+        "增加仅浏览及签到和浏览组合模式，保持默认每日签到定时计划",
+        "保留完全断网参数校验和流程预演，不写状态文件",
+        "保留青龙脱敏通知、时间轴分阶段日志、逐账号与总任务统计及唯一单行 TASK_SUMMARY 汇总",
+        "根据同应用参考支持明确领取成功文案，并在响应未确认时只读复查签到页"
       ],
       "sideEffects": [
-        "领取 V2EX 每日登录奖励，增加账号余额",
-        "正式运行且通知开启时发送青龙任务结果通知"
+        "签到开关开启时领取 V2EX 每日登录奖励，增加账号余额并更新签到记录",
+        "显式启用浏览时访问主题，可能增加官方浏览及活跃度记录",
+        "正式浏览时在指定本地目录保存账号摘要计数、停止标记和并发锁",
+        "正式运行且通知开启时通过青龙通知模块发送脱敏任务总结"
       ],
       "review": {
         "staticPassed": true,
@@ -48440,20 +48594,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/705cf315f5da6907",
-        "candidateSha256": "d398b562ea2b893d4a9b1d7539bbece59a4a28d7db7e35ff54cea0d056b15d24"
+        "candidateSha256": "6e4ad7cca51cf638c5b21e54940065f5630a082add519c375304e378b63a5804"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "d398b562ea2b893d4a9b1d7539bbece59a4a28d7db7e35ff54cea0d056b15d24",
-        "releaseSha256": "aa301ec50a2a4dfc81dc56d9da2745861b3f39ba136b150be7b35e4f6fad68ad",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "6e4ad7cca51cf638c5b21e54940065f5630a082add519c375304e378b63a5804",
+        "releaseSha256": "337271b5641505fed5dc4555f31a2476cbf899fab2c7906c3622cdc9d3883fda",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T01:39:55.312954+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "d398b562ea2b893d4a9b1d7539bbece59a4a28d7db7e35ff54cea0d056b15d24",
-          "toCandidateSha256": "aa301ec50a2a4dfc81dc56d9da2745861b3f39ba136b150be7b35e4f6fad68ad",
+          "approvedAt": "2026-11-06T04:36:49.565654+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "6e4ad7cca51cf638c5b21e54940065f5630a082add519c375304e378b63a5804",
+          "toCandidateSha256": "337271b5641505fed5dc4555f31a2476cbf899fab2c7906c3622cdc9d3883fda",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

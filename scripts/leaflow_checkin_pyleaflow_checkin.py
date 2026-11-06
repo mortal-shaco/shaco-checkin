@@ -1,15 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: Leaflow 签到
-# cron: 14 0 * * *
+# cron: 34 18 * * *
 # SPDX-License-Identifier: MIT
 # Maintained standalone version derived from agluo/ql-script-hub,
 # archive/leaflow_checkin.pyleaflow_checkin.py (commit a8d39b9), MIT licensed.
+# Authorization support derived from keggin-CHN/leaflow-checkin,
+# checkin_token.py (commit 976f7f5dea720dbfa3d4388943e3dc01144f880c), MIT licensed.
 
 """Leaflow daily check-in with newline-delimited multi-account support.
 
 Required environment:
-  LEAFLOW_COOKIE  One complete browser Cookie header per non-empty line.
+  LEAFLOW_COOKIE  每个非空行一个完整 Cookie，或一个 JSON 账号对象。
+  JSON 对象允许 cookie（字符串）、cookies（名称和值的对象）、authorization，
+  或上游 token_data: {cookies: {...}, headers: {Authorization: "..."}}。
+  同一账号的 Cookie 与 Authorization 必须放在同一行 JSON 中；可只提供其中之一。
+  LEAFLOW_ACCOUNTS、LEAFLOW_COOKIES 为可选兼容别名，优先使用 LEAFLOW_COOKIE。
+  Authorization 从本人登录后签到站点请求头原样复制（包含其认证方案前缀）；
+  不猜测认证前缀，不探测其他站点或 API。只提交既有签到表单。
+  原脚本的配置文件无需落盘，可将各账号 token_data 转为每行一个 JSON。
+  不保存凭据文件、响应或本地日志，不执行提取工具的凭据预览。
+  QINGLONG_NOTIFY_SCRIPTS 可按目录路径、文件名通配符或目录编号选择通知，
+  空值关闭全部；QINGLONG_NOTIFY=1 强制开启，0 强制关闭。
+  保留维护版 cron: 34 18 * * *（覆盖清单另记 14 0 * * *，未改任务时间）。
 
 Obtain it by signing in at https://checkin.leaflow.net in a browser, opening
 Developer Tools -> Network, reloading the page, selecting a request to that
@@ -61,6 +74,7 @@ import html
 import json
 import importlib.util
 import contextlib
+import fnmatch
 import io
 from datetime import datetime
 from pathlib import Path
@@ -131,10 +145,65 @@ def env_int(name: str, default: int, minimum: int, maximum: int) -> int:
     return value
 
 
+def account_lines():
+    for name in ("LEAFLOW_COOKIE", "LEAFLOW_ACCOUNTS", "LEAFLOW_COOKIES"):
+        if name in os.environ:
+            return [line.strip() for line in os.environ[name].splitlines() if line.strip()]
+    return []
+
+
+def parse_account(line):
+    """Keep malformed credentials local to their account; never print input."""
+    cookie, authorization = line, ""
+    if line.startswith("{"):
+        try:
+            obj = json.loads(line)
+            if not isinstance(obj, dict):
+                raise ValueError()
+            obj = obj.get("token_data", obj)
+            if not isinstance(obj, dict):
+                raise ValueError()
+            cookie = obj.get("cookie", "")
+            if "cookies" in obj:
+                if cookie or not isinstance(obj["cookies"], dict):
+                    raise ValueError()
+                fields = []
+                for key, value in obj["cookies"].items():
+                    if (not isinstance(value, str) or not key or
+                            any(ch in key for ch in "=;\r\n") or ";" in value):
+                        raise ValueError()
+                    fields.append(key + "=" + value)
+                cookie = "; ".join(fields)
+            headers = obj.get("headers", {})
+            if not isinstance(headers, dict):
+                raise ValueError()
+            # No arbitrary Host/Origin headers or private config dependencies.
+            if any(key.lower() != "authorization" for key in headers):
+                raise ValueError()
+            authorization = obj.get("authorization", "")
+            for key, value in headers.items():
+                if authorization:
+                    raise ValueError()
+                authorization = value
+        except (ValueError, TypeError, AttributeError):
+            raise ValueError("账号 JSON 格式无效，仅支持 Cookie 和 Authorization 凭据") from None
+    if not isinstance(cookie, str) or not isinstance(authorization, str):
+        raise ValueError("账号凭据必须为字符串")
+    if not cookie.strip() and not authorization.strip():
+        raise ValueError("账号至少需要 Cookie 或 Authorization")
+    if any(ord(ch) < 32 or ord(ch) == 127 for ch in cookie + authorization):
+        raise ValueError("账号凭据不能包含控制字符")
+    if cookie and (not cookie.strip("; ") or not all(
+            "=" in field and field.split("=", 1)[0].strip()
+            for field in cookie.split(";") if field.strip())):
+        raise ValueError("Cookie 格式无效，请使用完整名称=值请求头")
+    return cookie, authorization
+
+
 def load_config() -> Config:
     # Newlines are the only account delimiter. Cookie values may legitimately
     # contain '&' or '@', so splitting on either would corrupt credentials.
-    cookies = [line.strip() for line in os.getenv("LEAFLOW_COOKIE", "").splitlines() if line.strip()]
+    cookies = account_lines()
     if not cookies:
         raise ValueError("LEAFLOW_COOKIE is required (one account per non-empty line)")
 
@@ -252,7 +321,7 @@ class IdentityParser(HTMLParser):
                 self.identity = value
 
 
-def public_identity(document, cookie):
+def public_identity(document, cookie, authorization=""):
     parser = IdentityParser()
     parser.feed(document)
     identity = parser.identity
@@ -262,6 +331,7 @@ def public_identity(document, cookie):
             identity = html.unescape(match.group(1)).strip()
     # Identity is displayed unchanged unless it contains a credential or phone number.
     secrets = [item.split("=", 1)[1].strip() for item in cookie.split(";") if "=" in item]
+    secrets.extend([authorization, authorization.split(" ", 1)[-1] if authorization else ""])
     if any(value and value in identity for value in secrets) or re.search(r"(?<!\d)1[3-9]\d{9}(?!\d)", identity):
         return ""
     if any(ord(char) < 32 or ord(char) == 127 for char in identity):
@@ -280,6 +350,7 @@ def request_text(
     timeout: int,
     data: Optional[bytes] = None,
     referer: Optional[str] = None,
+    authorization: str = "",
 ) -> Tuple[str, str]:
     headers = {
         "User-Agent": USER_AGENT,
@@ -287,6 +358,8 @@ def request_text(
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
         "Cookie": cookie,
     }
+    if authorization:
+        headers["Authorization"] = authorization
     if data is not None:
         headers["Content-Type"] = "application/x-www-form-urlencoded"
         headers["Origin"] = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
@@ -306,15 +379,15 @@ def request_text(
     return final_url, body
 
 
-def check_in_once(config: Config, cookie: str) -> Result:
+def check_in_once(config: Config, cookie: str, authorization: str = "") -> Result:
     opener = build_opener(SameOriginRedirect())
     home_url = f"{config.base}/"
     try:
         request_started = time.monotonic()
         stage("阶段 2.1 获取签到页面")
-        final_url, home = request_text(opener, home_url, cookie, config.timeout)
+        final_url, home = request_text(opener, home_url, cookie, config.timeout, authorization=authorization)
         stage(f"阶段 2.1 页面 HTTP 200，耗时 {time.monotonic() - request_started:.2f} 秒")
-        identity = public_identity(home, cookie)
+        identity = public_identity(home, cookie, authorization)
         if identity:
             stage(f"官方账号身份：{identity}")
         if "login" in urlparse(final_url).path.lower():
@@ -338,24 +411,25 @@ def check_in_once(config: Config, cookie: str) -> Result:
             config.timeout,
             data=urlencode(form).encode("utf-8"),
             referer=home_url,
+            authorization=authorization,
         )
         stage(f"阶段 2.2 表单 HTTP 200，耗时 {time.monotonic() - request_started:.2f} 秒")
         if "login" in urlparse(final_post_url).path.lower():
             return Result("invalid", "登录会话失效，请更新 Cookie", identity=identity)
         result = parse_business_result(posted)
-        result.identity = public_identity(posted, cookie) or identity
+        result.identity = public_identity(posted, cookie, authorization) or identity
         if result.status in {"success", "already", "invalid"}:
             return result
 
         # Some deployments only expose the resulting state on the homepage.
         request_started = time.monotonic()
         stage("阶段 2.3 核验签到状态")
-        final_verify_url, verified = request_text(opener, home_url, cookie, config.timeout)
+        final_verify_url, verified = request_text(opener, home_url, cookie, config.timeout, authorization=authorization)
         stage(f"阶段 2.3 核验 HTTP 200，耗时 {time.monotonic() - request_started:.2f} 秒")
         if "login" in urlparse(final_verify_url).path.lower():
             return Result("invalid", "登录会话失效，请更新 Cookie", identity=identity)
         verification = parse_business_result(verified)
-        verification.identity = public_identity(verified, cookie) or identity
+        verification.identity = public_identity(verified, cookie, authorization) or identity
         if verification.status in {"already", "invalid"}:
             return verification
         return result
@@ -371,16 +445,16 @@ def check_in_once(config: Config, cookie: str) -> Result:
 
 
 def run_account(config: Config, cookie: str, account_number: int) -> Result:
-    if (any(ord(char) < 32 or ord(char) == 127 for char in cookie)
-            or not all("=" in field and field.split("=", 1)[0].strip()
-                       for field in cookie.split(";") if field.strip())):
-        return Result("invalid", "Cookie 格式无效，请使用完整名称=值请求头")
+    try:
+        cookie, authorization = parse_account(cookie)
+    except ValueError as exc:
+        return Result("invalid", str(exc))
     if config.dry_run:
         return Result("success", "DRY-RUN verified: network and check-in mutation skipped")
 
     last = Result("failed", "no attempt made")
     for attempt in range(1, config.retries + 1):
-        last = check_in_once(config, cookie)
+        last = check_in_once(config, cookie, authorization)
         if last.status in {"success", "already", "invalid"}:
             return last
         stage(f"阶段 2 账号 {account_number} 尝试 {attempt}/{config.retries}：{last.message}")
@@ -395,7 +469,16 @@ def run_account(config: Config, cookie: str, account_number: int) -> Result:
 
 
 def send_summary(body, dry_run):
-    if os.getenv("QINGLONG_NOTIFY", "1").strip().lower() in {"0", "false", "no", "off"}:
+    switch = os.getenv("QINGLONG_NOTIFY", "auto").strip().lower()
+    selected = True  # This maintained scheduled task is listed by default.
+    if "QINGLONG_NOTIFY_SCRIPTS" in os.environ:
+        selectors = re.split(r"[,;\s]+", os.environ["QINGLONG_NOTIFY_SCRIPTS"].strip())
+        identities = ("12e44eccee922041", "6983eb0bc9388cb4", Path(__file__).name,
+                      "leaflow_checkin_pyleaflow_checkin.py",
+                      "scripts/leaflow_checkin_pyleaflow_checkin.py")
+        selected = any(fnmatch.fnmatchcase(item, pattern)
+                       for pattern in selectors if pattern for item in identities)
+    if switch in {"0", "false", "no", "off"} or (switch not in TRUTHY and not selected):
         stage("阶段 3 通知：全局开关关闭")
         return "disabled"
     if dry_run:
@@ -467,7 +550,7 @@ def finish(started, mode, total, succeeded, already, failed, skipped, reward, co
 def main() -> int:
     started = time.monotonic()
     mode = "dry-run" if os.getenv("LEAFLOW_DRY_RUN", "").strip().lower() in TRUTHY else "live"
-    count = len([line for line in os.getenv("LEAFLOW_COOKIE", "").splitlines() if line.strip()])
+    count = len(account_lines())
     print("=" * 50)
     stage("Leaflow 每日签到（维护版）")
     stage(f"开始时间 {datetime.now():%Y-%m-%d %H:%M:%S}；模式 {mode}；账号数量 {count}")
