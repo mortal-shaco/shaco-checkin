@@ -348,6 +348,7 @@
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `52 9 * * *` | 待检查 | [tieba_checkin.py.md](../scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
+| 同程旅行签到 | `scripts/tongcheng_trip.js` | `node scripts/tongcheng_trip.js` | `5 12 * * *` | 待检查 | [tongcheng_trip.js.md](../scripts/tongcheng_trip.js.md)（`docs/scripts/tongcheng_trip.js.md`） |
 | 东方 Portal 每日签到 | `scripts/touhouhelper.py` | `python3 scripts/touhouhelper.py` | `50 8 * * *` | 待检查 | [touhouhelper.py.md](../scripts/touhouhelper.py.md)（`docs/scripts/touhouhelper.py.md`） |
 | Trae 每日签到与积分查询 | `scripts/trae_checkin.py` | `python3 scripts/trae_checkin.py` | `7,23,37 * * * *` | 待检查 | [trae_checkin.py.md](../scripts/trae_checkin.py.md)（`docs/scripts/trae_checkin.py.md`） |
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `19 1 * * *` | 待检查 | [tsthb_checkin.py.md](../scripts/tsthb_checkin.py.md)（`docs/scripts/tsthb_checkin.py.md`） |
@@ -360,6 +361,7 @@
 | 掌瓦每日商店推送 | `scripts/valorantstore.py` | `python3 scripts/valorantstore.py` | `10 0 * * *` | 待检查 | [valorantstore.py.md](../scripts/valorantstore.py.md)（`docs/scripts/valorantstore.py.md`） |
 | 维咔VikACG签到 | `scripts/vikacg_checkin.py` | `python3 scripts/vikacg_checkin.py` | `59 9 * * *` | 待检查 | [vikacg_checkin.py.md](../scripts/vikacg_checkin.py.md)（`docs/scripts/vikacg_checkin.py.md`） |
 | Vortexa 免费主机检查与领取 | `scripts/vortexa_free_claim.js` | `node scripts/vortexa_free_claim.js` | `1,11,21,31,41,51 * * * *` | 待检查 | [vortexa_free_claim.js.md](../scripts/vortexa_free_claim.js.md)（`docs/scripts/vortexa_free_claim.js.md`） |
+| 万达电影签到与能量查询 | `scripts/wanda.js` | `node scripts/wanda.js` | `52 1 * * *` | 待检查 | [wanda.js.md](../scripts/wanda.js.md)（`docs/scripts/wanda.js.md`） |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `11 2 * * *` | 待检查 | [wangchao.py.md](../scripts/wangchao.py.md)（`docs/scripts/wangchao.py.md`） |
 | 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
 | WorkBuddy 每日积分签到 | `scripts/wb_daily_checkin.py` | `python3 scripts/wb_daily_checkin.py` | `38 9 * * *` | 待检查 | [wb_daily_checkin.py.md](../scripts/wb_daily_checkin.py.md)（`docs/scripts/wb_daily_checkin.py.md`） |

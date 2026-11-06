@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **54** 个脚本。返回 [`目录首页`](../README.md)。
+共 **55** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -51,6 +51,7 @@
 | 腾讯视频签到 | `scripts/tencent_video_checkin.py` | `python3 scripts/tencent_video_checkin.py` | `11 1 * * *` | 待检查 | [tencent_video_checkin.py.md](../../scripts/tencent_video_checkin.py.md)（`docs/scripts/tencent_video_checkin.py.md`） |
 | 百度贴吧签到 | `scripts/tieba_checkin.py` | `python3 scripts/tieba_checkin.py` | `52 9 * * *` | 待检查 | [tieba_checkin.py.md](../../scripts/tieba_checkin.py.md)（`docs/scripts/tieba_checkin.py.md`） |
 | 塔吉多每日任务 | `scripts/tjd_daily.py` | `python3 scripts/tjd_daily.py` | `24 2 * * *` | 待检查 | [tjd_daily.py.md](../../scripts/tjd_daily.py.md)（`docs/scripts/tjd_daily.py.md`） |
+| 同程旅行签到 | `scripts/tongcheng_trip.js` | `node scripts/tongcheng_trip.js` | `5 12 * * *` | 待检查 | [tongcheng_trip.js.md](../../scripts/tongcheng_trip.js.md)（`docs/scripts/tongcheng_trip.js.md`） |
 | 东方 Portal 每日签到 | `scripts/touhouhelper.py` | `python3 scripts/touhouhelper.py` | `50 8 * * *` | 待检查 | [touhouhelper.py.md](../../scripts/touhouhelper.py.md)（`docs/scripts/touhouhelper.py.md`） |
 | Trae 每日签到与积分查询 | `scripts/trae_checkin.py` | `python3 scripts/trae_checkin.py` | `7,23,37 * * * *` | 待检查 | [trae_checkin.py.md](../../scripts/trae_checkin.py.md)（`docs/scripts/trae_checkin.py.md`） |
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `19 1 * * *` | 待检查 | [tsthb_checkin.py.md](../../scripts/tsthb_checkin.py.md)（`docs/scripts/tsthb_checkin.py.md`） |
