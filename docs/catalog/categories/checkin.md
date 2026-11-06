@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **348** 个脚本。返回 [`目录首页`](../README.md)。
+共 **350** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -12,6 +12,7 @@
 | 55188论坛签到 | `scripts/55188auto.py` | `python3 scripts/55188auto.py` | `27 8 * * *` | 待检查 | [55188auto.py.md](../../scripts/55188auto.py.md)（`docs/scripts/55188auto.py.md`） |
 | 69云签到 | `scripts/69yun_checkin.py` | `python3 scripts/69yun_checkin.py` | `20 0 * * *` | 待检查 | [69yun_checkin.py.md](../../scripts/69yun_checkin.py.md)（`docs/scripts/69yun_checkin.py.md`） |
 | 爱上ASMR每日签到 | `scripts/a3asmr.js` | `node scripts/a3asmr.js` | `15 9 * * *` | 待检查 | [a3asmr.js.md](../../scripts/a3asmr.js.md)（`docs/scripts/a3asmr.js.md`） |
+| 微博黄婷婷超话每日任务 | `scripts/account2_daily.py` | `python3 scripts/account2_daily.py` | `28 10 * * *` | 待检查 | [account2_daily.py.md](../../scripts/account2_daily.py.md)（`docs/scripts/account2_daily.py.md`） |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](../../scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
 | CordCloud 每日签到 | `scripts/action.py` | `python3 scripts/action.py` | `38 8 * * *` | 待检查 | [action.py.md](../../scripts/action.py.md)（`docs/scripts/action.py.md`） |
 | NewAPI 活动中心签到 | `scripts/activity_checkin.py` | `python3 scripts/activity_checkin.py` | `22 8 * * *` | 待检查 | [activity_checkin.py.md](../../scripts/activity_checkin.py.md)（`docs/scripts/activity_checkin.py.md`） |
@@ -71,6 +72,7 @@
 | 一加手机社区官方论坛 | `scripts/ck_oneplusbbs.py` | `python3 scripts/ck_oneplusbbs.py` | `40 2 * * *` | 待检查 | [ck_oneplusbbs.py.md](../../scripts/ck_oneplusbbs.py.md)（`docs/scripts/ck_oneplusbbs.py.md`） |
 | 中山大学人脸签到 | `scripts/cli.py` | `python3 scripts/cli.py` | `*/5 7-22 * * *` | 待检查 | [cli.py.md](../../scripts/cli.py.md)（`docs/scripts/cli.py.md`） |
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
+| 中国移动签到有礼 | `scripts/cmcc_auto.py` | `python3 scripts/cmcc_auto.py` | `29 10 * * *` | 待检查 | [cmcc_auto.py.md](../../scripts/cmcc_auto.py.md)（`docs/scripts/cmcc_auto.py.md`） |
 | 鸿星尔克签到与积分查询 | `scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `48 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_erke.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_erke.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_erke.py.md`） |
 | 华润通微信签到 | `scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py` | `54 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md`） |
 | Ole精品超市签到 | `scripts/comeonbabyy1_qiandao_jiaob_ole.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_ole.py` | `53 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_ole.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_ole.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_ole.py.md`） |

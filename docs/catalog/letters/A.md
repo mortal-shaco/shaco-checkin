@@ -1,10 +1,11 @@
 # 字母索引 · A
 
-共 **31** 个脚本。返回 [`目录首页`](../README.md)。
+共 **32** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | 爱上ASMR每日签到 | `scripts/a3asmr.js` | `node scripts/a3asmr.js` | `15 9 * * *` | 待检查 | [a3asmr.js.md](../../scripts/a3asmr.js.md)（`docs/scripts/a3asmr.js.md`） |
+| 微博黄婷婷超话每日任务 | `scripts/account2_daily.py` | `python3 scripts/account2_daily.py` | `28 10 * * *` | 待检查 | [account2_daily.py.md](../../scripts/account2_daily.py.md)（`docs/scripts/account2_daily.py.md`） |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](../../scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
 | CordCloud 每日签到 | `scripts/action.py` | `python3 scripts/action.py` | `38 8 * * *` | 待检查 | [action.py.md](../../scripts/action.py.md)（`docs/scripts/action.py.md`） |
 | NewAPI 活动中心签到 | `scripts/activity_checkin.py` | `python3 scripts/activity_checkin.py` | `22 8 * * *` | 待检查 | [activity_checkin.py.md](../../scripts/activity_checkin.py.md)（`docs/scripts/activity_checkin.py.md`） |

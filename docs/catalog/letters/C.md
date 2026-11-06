@@ -1,6 +1,6 @@
 # 字母索引 · C
 
-共 **42** 个脚本。返回 [`目录首页`](../README.md)。
+共 **43** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -34,6 +34,7 @@
 | 一加手机社区官方论坛 | `scripts/ck_oneplusbbs.py` | `python3 scripts/ck_oneplusbbs.py` | `40 2 * * *` | 待检查 | [ck_oneplusbbs.py.md](../../scripts/ck_oneplusbbs.py.md)（`docs/scripts/ck_oneplusbbs.py.md`） |
 | 中山大学人脸签到 | `scripts/cli.py` | `python3 scripts/cli.py` | `*/5 7-22 * * *` | 待检查 | [cli.py.md](../../scripts/cli.py.md)（`docs/scripts/cli.py.md`） |
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
+| 中国移动签到有礼 | `scripts/cmcc_auto.py` | `python3 scripts/cmcc_auto.py` | `29 10 * * *` | 待检查 | [cmcc_auto.py.md](../../scripts/cmcc_auto.py.md)（`docs/scripts/cmcc_auto.py.md`） |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `16 8 * * *` | 待检查 | [codearts_daily.py.md](../../scripts/codearts_daily.py.md)（`docs/scripts/codearts_daily.py.md`） |
 | 鸿星尔克签到与积分查询 | `scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_erke.py` | `48 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_erke.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_erke.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_erke.py.md`） |
 | 华润通微信签到 | `scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py` | `python3 scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py` | `54 9 * * *` | 待检查 | [comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md](../../scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md)（`docs/scripts/comeonbabyy1_qiandao_jiaob_huaruntong_wx.py.md`） |

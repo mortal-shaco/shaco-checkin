@@ -1718,6 +1718,188 @@
       }
     },
     {
+      "catalogId": "60bd73f06f55fa82",
+      "applicationKey": "weibo-chaohua",
+      "checkProfile": {
+        "requiredEnv": [
+          "WEIBO_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WEIBO_DRY_RUN",
+          "WEIBO_TASKS",
+          "WEIBO_DATA_DIR",
+          "WEIBO_TAG",
+          "WEIBO_LOCAL_TEXT",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WEIBO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WEIBO_TASKS": "checkin"
+        },
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "验证官方登录态，显示官方公开 UID 或昵称，保护 Cookie 和 st。",
+          "对已关注的黄婷婷超话签到，并回读确认签到状态。",
+          "显式启用每日评论与带超话标签转发，默认每日配额分别为4条和2条，发布后保留，转发回读核验标签。",
+          "分页筛选超话帖子，排除本人、重复和当日已互动帖子，支持配置分页数量、取帖数量与互动配额。",
+          "公开文案优先取 HTTPS 一言接口并按作者、出处署名，所有声明失败模式回落到本地模板或环境文案，提供方不接收微博凭据。",
+          "按北京时间保留最近七天进度，支持 --force 补跑和 --tag 自定义标签，兼容单账号旧版会话及配置格式。",
+          "保存服务器续期 Cookie，按官方 UID 防止跨账号写入，使用账号锁与待确认记录降低重复发布风险。",
+          "逐行多账号与断网预演、分阶段脱敏日志、唯一 TASK_SUMMARY 记录及可选择的青龙摘要通知。"
+        ],
+        "sideEffects": [
+          "签到会更新超话当日签到状态。",
+          "显式选择 comment 时公开发表评论，发布后保留。",
+          "显式选择 repost 时公开发布带超话标签的转发，发布后保留。",
+          "正式执行会在本地保存登录会话续期、每日互动进度及待确认记录。",
+          "通知启用且非预演时通过青龙通知渠道发送脱敏摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "微博黄婷婷超话每日任务",
+      "path": "scripts/account2_daily.py",
+      "sha256": "8bae6cb92d4ec13356f967f85becb4ebcbd7f123523efba25417bdae68cf8892",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "qqqqqqiu0804/weibo-chaohua-checkin",
+        "branch": "main",
+        "commit": "b59b2220eb25a77c0c65f2d106015bfb891b9ddc",
+        "originalPath": "account2_daily.py"
+      },
+      "cron": "28 10 * * *",
+      "command": "python3 scripts/account2_daily.py",
+      "environment": [
+        {
+          "name": "WEIBO_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://m.weibo.cn，在开发者工具网络面板选中该站已登录请求，复制完整 Cookie 请求头值。每行一个账号，不复制到日志或公开仓库。",
+          "format": "每个非空行一个完整 Cookie，字段用原有分号分隔，每字段仅按首个等号拆分，保留后续等号；不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "WEIBO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 启用完全断网预演，也可传 --dry-run。",
+          "format": "1、true、yes、on 启用；默认关闭。"
+        },
+        {
+          "name": "WEIBO_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需选择 checkin（签到）、comment（公开评论）、repost（公开转发）。评论和转发发布后保留，须显式启用。",
+          "format": "默认 checkin；逗号组合，例如 checkin,comment,repost。"
+        },
+        {
+          "name": "WEIBO_DATA_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选设置受保护的持久目录，也可传 --data-dir。单账号兼容原 session.json、config.json、state.json 格式，无需外部程序。显式指定目录且未填账号变量时，可用其中已有 cookies 兼容登录。",
+          "format": "默认脚本旁 data-htt2；多账号用 Cookie 摘要分目录，务必保留目录。config.json 支持 comment_limit（默认4）、repost_limit（默认2）、comment_templates、max_feed_pages（默认8）、max_posts_per_topic（默认80）。"
+        },
+        {
+          "name": "WEIBO_TAG",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需填写转发超话标签，也可用 --tag。",
+          "format": "默认 #黄婷婷[超话]#；非空、单行且不超过200字。"
+        },
+        {
+          "name": "WEIBO_LOCAL_TEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写一言不可用时的本地文案；未填时使用 config.json 的 comment_templates 或“打卡”。",
+          "format": "非空文本；含标签和署名的最终公开文案不得超过280字。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "选择需通知的脚本，显式设置时替换默认清单。本任务未配置默认入选。",
+          "format": "支持目录编号 60bd73f06f55fa82、脚本相对路径、文件名或文件名通配符；逗号、分号、空白或换行分隔；* 代表全部，空值禁用全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 notify.py 所在目录；也会尝试 import notify.send 及 /ql/data/scripts、/ql/scripts。",
+          "format": "本机目录路径；通知不可用保持原业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "WEIBO_ACCOUNTS 每个非空行一个完整 Cookie，账号独立处理；任一账号失败则整体非零退出。单账号可使用显式指定目录的旧版会话兼容输入。"
+      },
+      "dependencies": [],
+      "features": [
+        "验证官方登录态，显示官方公开 UID 或昵称，保护 Cookie 和 st。",
+        "对已关注的黄婷婷超话签到，并回读确认签到状态。",
+        "显式启用每日评论与带超话标签转发，默认每日配额分别为4条和2条，发布后保留，转发回读核验标签。",
+        "分页筛选超话帖子，排除本人、重复和当日已互动帖子，支持配置分页数量、取帖数量与互动配额。",
+        "公开文案优先取 HTTPS 一言接口并按作者、出处署名，所有声明失败模式回落到本地模板或环境文案，提供方不接收微博凭据。",
+        "按北京时间保留最近七天进度，支持 --force 补跑和 --tag 自定义标签，兼容单账号旧版会话及配置格式。",
+        "保存服务器续期 Cookie，按官方 UID 防止跨账号写入，使用账号锁与待确认记录降低重复发布风险。",
+        "逐行多账号与断网预演、分阶段脱敏日志、唯一 TASK_SUMMARY 记录及可选择的青龙摘要通知。"
+      ],
+      "sideEffects": [
+        "签到会更新超话当日签到状态。",
+        "显式选择 comment 时公开发表评论，发布后保留。",
+        "显式选择 repost 时公开发布带超话标签的转发，发布后保留。",
+        "正式执行会在本地保存登录会话续期、每日互动进度及待确认记录。",
+        "通知启用且非预演时通过青龙通知渠道发送脱敏摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/60bd73f06f55fa82",
+        "candidateSha256": "bbf6c4203704484f4017f55d3e7a8b7b80d25b12fd314dd094f7d5210d82185f"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "bbf6c4203704484f4017f55d3e7a8b7b80d25b12fd314dd094f7d5210d82185f",
+        "releaseSha256": "8bae6cb92d4ec13356f967f85becb4ebcbd7f123523efba25417bdae68cf8892",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T12:37:24.509322+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "bbf6c4203704484f4017f55d3e7a8b7b80d25b12fd314dd094f7d5210d82185f",
+          "toCandidateSha256": "8bae6cb92d4ec13356f967f85becb4ebcbd7f123523efba25417bdae68cf8892",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "0f0989a0ef3d7803",
       "applicationKey": "acfun",
       "checkProfile": {
@@ -14968,6 +15150,169 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "096201548995791c9aefabf7d0d21799646ea0119cee2d786aa1a02ec58d2df3",
           "toCandidateSha256": "d2acdf490861f0790b5370bd003f82ba84f187b9c05195a638ddd96742631208",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "c4106d0130339343",
+      "applicationKey": "cmcc",
+      "checkProfile": {
+        "requiredEnv": [
+          "CMCC_COOKIE"
+        ],
+        "optionalEnv": [
+          "CMCC_DRY_RUN",
+          "FEISHU_WEBHOOK",
+          "RESULT_FILE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CMCC_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用原接口及请求头进行中国移动每日签到，严格验证官方成功状态。",
+          "展示官方奖品、本月累计及非敏感账号昵称、用户名或公开 UID。",
+          "识别 TODAY_MARKED 为今日已完成，避免重复签到误报失败。",
+          "支持逐行多账号隔离执行，网络和服务器异常最多三次尝试，设有超时、响应大小限制及证书校验。",
+          "保留可选飞书互动卡片通知和摘要文件写入。",
+          "提供青龙通知选择开关、脱敏时间轴日志、逐账号与全局统计及单行 TASK_SUMMARY 记录。",
+          "支持完全断网演练，不以演练结果冒充真实业务成功。"
+        ],
+        "sideEffects": [
+          "正式执行会向中国移动提交签到并可能领取签到奖励。",
+          "显式配置 FEISHU_WEBHOOK 时发送飞书群卡片。",
+          "青龙通知选中且通知模块可用时发送脱敏任务汇总。",
+          "显式配置 RESULT_FILE 时覆盖写入本地摘要文件。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "中国移动签到有礼",
+      "path": "scripts/cmcc_auto.py",
+      "sha256": "f7e60870bba36ff98b58570f2b6a78d1ffda85c94969aeea3db26571598dee9a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "jian1098/cmcc_auto_checkin",
+        "branch": "master",
+        "commit": "0a568c516ea675fdd928289c5e65d7ef46bb684e",
+        "originalPath": "cmcc_auto.py"
+      },
+      "cron": "29 10 * * *",
+      "command": "python3 scripts/cmcc_auto.py",
+      "environment": [
+        {
+          "name": "CMCC_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在微信进入中国移动官方签到有礼并登录，使用本人授权的开发者工具或 HTTPS 抓包工具，找到 https://wx.10086.cn/qwhdhub/api/mark/do/mark 的请求，复制完整 Cookie 请求头值，不含 Cookie: 前缀；失效时重新登录获取。",
+          "format": "每个非空行一个账号；同一 Cookie 内的分号、&、@ 均原样保留，不作为账号分隔符。"
+        },
+        {
+          "name": "CMCC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要断网演练时设置为 1；演练不发送签到、文本或通知请求，也不写结果文件。",
+          "format": "1、true、yes、on 开启；默认正式执行。"
+        },
+        {
+          "name": "FEISHU_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：在飞书群添加自定义机器人并复制其 HTTPS Webhook，作为秘密变量保存；沿用上游无签名卡片接口，不支持需要签名的机器人。",
+          "format": "https://open.feishu.cn/open-apis/bot/v2/hook/ 后接机器人地址；留空跳过。"
+        },
+        {
+          "name": "RESULT_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：指定本人可写的专用摘要文件；沿用上游覆盖写入，避免指向重要文件。",
+          "format": "本地文件路径；默认不写入，演练不写入。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：设置自动通知选择列表，替换默认选择；QINGLONG_NOTIFY 强制开启或关闭优先。",
+          "format": "目录编号 c4106d0130339343、脚本相对路径、文件名或文件名通配符；逗号、分号、空白或换行分隔，* 选择全部，空字符串禁用全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙通知模块所在目录；自动尝试导入 notify.send、脚本目录以及 /ql/data/scripts、/ql/scripts 下的 notify.py 或 sendNotify.js。",
+          "format": "本地目录路径；通知为可选集成，签到不依赖该模块。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "CMCC_COOKIE 每个非空行一个完整账号 Cookie，忽略空行；账号独立执行，任一账号失败整体非零退出，不使用 & 或 @ 分隔账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用原接口及请求头进行中国移动每日签到，严格验证官方成功状态。",
+        "展示官方奖品、本月累计及非敏感账号昵称、用户名或公开 UID。",
+        "识别 TODAY_MARKED 为今日已完成，避免重复签到误报失败。",
+        "支持逐行多账号隔离执行，网络和服务器异常最多三次尝试，设有超时、响应大小限制及证书校验。",
+        "保留可选飞书互动卡片通知和摘要文件写入。",
+        "提供青龙通知选择开关、脱敏时间轴日志、逐账号与全局统计及单行 TASK_SUMMARY 记录。",
+        "支持完全断网演练，不以演练结果冒充真实业务成功。"
+      ],
+      "sideEffects": [
+        "正式执行会向中国移动提交签到并可能领取签到奖励。",
+        "显式配置 FEISHU_WEBHOOK 时发送飞书群卡片。",
+        "青龙通知选中且通知模块可用时发送脱敏任务汇总。",
+        "显式配置 RESULT_FILE 时覆盖写入本地摘要文件。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c4106d0130339343",
+        "candidateSha256": "9aa8d483cadfb515dc2a84b494288f0939dd71e7fd65f43c579a306134e9bc3f"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "9aa8d483cadfb515dc2a84b494288f0939dd71e7fd65f43c579a306134e9bc3f",
+        "releaseSha256": "f7e60870bba36ff98b58570f2b6a78d1ffda85c94969aeea3db26571598dee9a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T12:37:26.990800+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "9aa8d483cadfb515dc2a84b494288f0939dd71e7fd65f43c579a306134e9bc3f",
+          "toCandidateSha256": "f7e60870bba36ff98b58570f2b6a78d1ffda85c94969aeea3db26571598dee9a",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
