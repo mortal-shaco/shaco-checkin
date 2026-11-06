@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **306** 个脚本。返回 [`目录首页`](../README.md)。
+共 **309** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -165,6 +165,7 @@
 | 欧文 Soul-Mates 每日签到 | `scripts/ouwen.py` | `python3 scripts/ouwen.py` | `0 18 * * *` | 待检查 | [ouwen.py.md](../../scripts/ouwen.py.md)（`docs/scripts/ouwen.py.md`） |
 | PassNAT 签到 | `scripts/passnat_checkin.py` | `python3 scripts/passnat_checkin.py` | `13 1 * * *` | 待检查 | [passnat_checkin.py.md](../../scripts/passnat_checkin.py.md)（`docs/scripts/passnat_checkin.py.md`） |
 | 哔咔漫画每日打卡 | `scripts/pica_punch.py` | `python3 scripts/pica_punch.py` | `45 5 * * *` | 待检查 | [pica_punch.py.md](../../scripts/pica_punch.py.md)（`docs/scripts/pica_punch.py.md`） |
+| PingMe签到与可选视频奖励 | `scripts/pingmesignin.js` | `node scripts/pingmesignin.js` | `0 16 * * *` | 待检查 | [pingmesignin.js.md](../../scripts/pingmesignin.js.md)（`docs/scripts/pingmesignin.js.md`） |
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
 | 佛山职院企微学工签到 | `scripts/python.py` | `python3 scripts/python.py` | `*/5 7-22 * * *` | 待检查 | [python.py.md](../../scripts/python.py.md)（`docs/scripts/python.py.md`） |
@@ -181,6 +182,7 @@
 | 上马官网每日签到 | `scripts/sign_in.js` | `node scripts/sign_in.js` | `24 8 * * *` | 待检查 | [sign_in.js.md](../../scripts/sign_in.js.md)（`docs/scripts/sign_in.js.md`） |
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `15 1 * * *` | 待检查 | [smzdm_checkin.js.md](../../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
+| SophNet 签到 | `scripts/sophnet_checkin.py` | `python3 scripts/sophnet_checkin.py` | `3 10 * * *` | 待检查 | [sophnet_checkin.py.md](../../scripts/sophnet_checkin.py.md)（`docs/scripts/sophnet_checkin.py.md`） |
 | 长江雨课堂课堂签到 | `scripts/startup.py` | `python3 scripts/startup.py` | `*/5 8-18 * * 1-5` | 待检查 | [startup.py.md](../../scripts/startup.py.md)（`docs/scripts/startup.py.md`） |
 | 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `24 0 * * *` | 待检查 | [sudojia_33agilestudio.js.md](../../scripts/sudojia_33agilestudio.js.md)（`docs/scripts/sudojia_33agilestudio.js.md`） |
 | 所有女生会员签到 | `scripts/sudojia_allgirls.js` | `node scripts/sudojia_allgirls.js` | `33 2 * * *` | 待检查 | [sudojia_allgirls.js.md](../../scripts/sudojia_allgirls.js.md)（`docs/scripts/sudojia_allgirls.js.md`） |
@@ -279,6 +281,7 @@
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `19 1 * * *` | 待检查 | [tsthb_checkin.py.md](../../scripts/tsthb_checkin.py.md)（`docs/scripts/tsthb_checkin.py.md`） |
 | ViewTurbo 每日签到 | `scripts/turbo.py` | `python3 scripts/turbo.py` | `10 8 * * *` | 待检查 | [turbo.py.md](../../scripts/turbo.py.md)（`docs/scripts/turbo.py.md`） |
 | V次元论坛签到 | `scripts/tybbs.py` | `python3 scripts/tybbs.py` | `30 6 * * *` | 待检查 | [tybbs.py.md](../../scripts/tybbs.py.md)（`docs/scripts/tybbs.py.md`） |
+| 维咔VikACG签到 | `scripts/vikacg_checkin.py` | `python3 scripts/vikacg_checkin.py` | `59 9 * * *` | 待检查 | [vikacg_checkin.py.md](../../scripts/vikacg_checkin.py.md)（`docs/scripts/vikacg_checkin.py.md`） |
 | 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
 | WorkBuddy 每日积分签到 | `scripts/wb_daily_checkin.py` | `python3 scripts/wb_daily_checkin.py` | `38 9 * * *` | 待检查 | [wb_daily_checkin.py.md](../../scripts/wb_daily_checkin.py.md)（`docs/scripts/wb_daily_checkin.py.md`） |
 | Web3Go每日签到 | `scripts/web3go.js` | `node scripts/web3go.js` | `48 8 * * *` | 待检查 | [web3go.js.md](../../scripts/web3go.js.md)（`docs/scripts/web3go.js.md`） |
