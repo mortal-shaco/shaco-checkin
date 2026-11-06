@@ -37836,23 +37836,31 @@
           "QUARK_COOKIE"
         ],
         "optionalEnv": [
+          "QUARK_KPS",
+          "QUARK_SIGN",
+          "QUARK_VCODE",
           "QUARK_DRY_RUN",
           "QUARK_TIMEOUT_SECONDS",
           "QUARK_RANDOM_DELAY_MAX_SECONDS",
           "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR",
-          "QINGLONG_NOTIFY_SCRIPTS"
+          "SMTP_SERVER",
+          "SMTP_PORT",
+          "EMAIL",
+          "PASSWORD"
         ],
         "dryRunEnv": {
           "QUARK_DRY_RUN": "1"
         },
         "liveEnv": {
           "QUARK_TIMEOUT_SECONDS": "15",
-          "QUARK_RANDOM_DELAY_MAX_SECONDS": "0",
-          "QINGLONG_NOTIFY": "1"
+          "QUARK_RANDOM_DELAY_MAX_SECONDS": "0"
         },
         "successPatterns": [
-          "最终状态: ✅ success"
+          "今日已签到",
+          "签到成功",
+          "TASK_SUMMARY="
         ],
         "features": [
           "验证夸克账号 Cookie 并显示官方返回的昵称或公开身份",
@@ -37864,11 +37872,17 @@
           "失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应",
           "同一账号变量可选择网页 Cookie 或移动端 kps、sign、vcode 组合凭据；移动端按上游明确的请求参数认证和签到，默认网页模式保持不变",
           "有效字段存在时展示官方会员类型、总容量及签到累计获得容量",
-          "移动端凭据缺项、重复项或非法格式在断网预演及实时模式中明确失败，不输出凭据"
+          "移动端凭据缺项、重复项或非法格式在断网预演及实时模式中明确失败，不输出凭据",
+          "展示官方已用容量、使用百分比及会员到期时间，零总容量时安全处理。",
+          "兼容主来源 QUARK_KPS、QUARK_SIGN、QUARK_VCODE 单账号参数，规范变量优先。",
+          "支持可选 SMTP 邮件摘要，使用经过证书校验的 TLS、连接超时和全局通知开关。",
+          "签到后重新查询并核验今日签到状态，移动模式清除查询缓存后复查。",
+          "支持通知清单选择及受断网约束的通知预演，通知失败保留业务退出码。",
+          "移动参数百分号解码后单次请求编码，保留字面加号与等号。"
         ],
         "sideEffects": [
-          "实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励",
-          "实时模式下启用通知时通过青龙发送脱敏任务摘要"
+          "正式执行时为尚未签到账号提交每日签到，领取存储空间奖励并更新连续签到进度。",
+          "通知启用且渠道可用时，通过青龙及已配置的 SMTP 邮件发送脱敏任务摘要。"
         ]
       },
       "postReview": {
@@ -37877,7 +37891,7 @@
       },
       "displayName": "夸克网盘每日签到",
       "path": "scripts/quark_signin.py",
-      "sha256": "d42f6b520d68684a6adcffc63b04bee4df52ad53dea5922678bdc87154974e12",
+      "sha256": "7315dc777e89a94234068968658eb4d3d879265fa426080ac6d60fd318c78763",
       "stage": "released",
       "license": "GPL-3.0-only",
       "licenseGate": "allowed-copyleft",
@@ -37896,39 +37910,70 @@
             "catalogId": "4a2b6bcf73f07b9c",
             "sha256": "5d6d5a713ab6f38d374396b881002eb5bac341377ed38a815a5a41fca90e749c",
             "license": "GPL-3.0-only"
+          },
+          {
+            "repository": "jianping1987/Quark_qiandao",
+            "url": "https://github.com/jianping1987/Quark_qiandao",
+            "branch": "main",
+            "commit": "1e2cb8b57bd771f3ad6e514fd11f9e3222a79f60",
+            "originalPath": "main.py",
+            "catalogId": "532706180798fc1c",
+            "sha256": "10274d819e4ec350e5fc740cf24e1438ee0b5e061901e0fb40dd51f6d29ad708",
+            "license": "MIT"
           }
         ]
       },
-      "cron": "15 0 * * *",
+      "cron": "13 18 * * *",
       "command": "python3 scripts/quark_signin.py",
       "environment": [
         {
           "name": "QUARK_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "网页模式：登录 https://pan.quark.cn/，在浏览器开发者工具网络面板复制本人账号请求头中完整 Cookie 值。移动端模式：登录夸克手机应用，通过本人抓包工具读取容量查询或签到请求中的 kps、sign、vcode 原始编码值，将同账号三项参数以分号组合；不要复制设备标识、手机号或整个 URL。",
-          "format": "每个非空行一个账号。网页模式为完整 Cookie 或 pc|完整 Cookie；移动端模式为 mobile|kps=原始值; sign=原始值; vcode=原始值。仅识别首个模式分隔符，后续文本完整保留；账号不使用 &、@ 分隔。默认网页模式，不自动切换接口。"
+          "howToGet": "网页模式：登录 https://pan.quark.cn/，在浏览器开发者工具网络面板复制自己的请求头 Cookie 完整值。移动模式：登录夸克手机应用，从自己的 capacity/growth/info 或 growth/sign 请求查询参数获取同账号 kps、sign、vcode，保留原始编码。",
+          "format": "每个非空行一个账号；网页为完整 Cookie 或 pc|完整 Cookie；移动为 mobile|kps=值;sign=值;vcode=值。仅按首个 | 切分模式，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "QUARK_KPS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容主来源旧单账号配置，从自己的手机应用容量接口获取对应参数。QUARK_COOKIE 非空时优先，建议迁移到规范变量。",
+          "format": "三项配套填写同一账号的原始编码值，不接受多行。"
+        },
+        {
+          "name": "QUARK_SIGN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容主来源旧单账号配置，从自己的手机应用容量接口获取对应参数。QUARK_COOKIE 非空时优先，建议迁移到规范变量。",
+          "format": "三项配套填写同一账号的原始编码值，不接受多行。"
+        },
+        {
+          "name": "QUARK_VCODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容主来源旧单账号配置，从自己的手机应用容量接口获取对应参数。QUARK_COOKIE 非空时优先，建议迁移到规范变量。",
+          "format": "三项配套填写同一账号的原始编码值，不接受多行。"
         },
         {
           "name": "QUARK_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "自行设置为 1 启用完全断网预演。",
-          "format": "1/true/yes/on 启用，默认关闭；预演只验证配置、展示流程和生成通知摘要。"
+          "howToGet": "自行配置，离线验收时启用。",
+          "format": "1/true/yes/on 启用；默认关闭。"
         },
         {
           "name": "QUARK_TIMEOUT_SECONDS",
           "required": false,
           "sensitive": false,
-          "howToGet": "按网络情况自行设置。",
+          "howToGet": "按网络环境自行配置。",
           "format": "3 至 60 的整数秒，默认 15。"
         },
         {
           "name": "QUARK_RANDOM_DELAY_MAX_SECONDS",
           "required": false,
           "sensitive": false,
-          "howToGet": "按需要自行设置每个实时账号执行前随机等待的上限。",
-          "format": "0 至 3600 的整数秒，默认 0；预演不等待。"
+          "howToGet": "需要错峰时自行配置。",
+          "format": "0 至 3600 的整数秒，默认 0；每个正式账号随机等待，预演不等待。"
         },
         {
           "name": "QINGLONG_NOTIFY",
@@ -37938,24 +37983,52 @@
           "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
         },
         {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选填写青龙 notify.py 所在目录；未填写时自动尝试导入 notify 及青龙标准脚本目录。",
-          "format": "目录路径，无需配置任何业务凭据；预演不加载或调用通知模块。"
-        },
-        {
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选脚本选择列表；设置后替代默认上架列表，只为匹配的脚本开启通知。",
-          "format": "用逗号、空格、分号或换行分隔 catalog ID、scripts/相对路径、文件名或文件名通配符；* 表示全部，空值表示全部关闭。"
+          "howToGet": "填写希望发送通知的脚本选择器。",
+          "format": "逗号、分号、空白或换行分隔；支持来源编号、scripts/quark_signin.py、文件名及通配符；* 全选，空值全关。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写已配置青龙通知渠道的 notify.py 所在目录；也自动尝试 import notify.send、/ql/data/scripts、/ql/scripts。",
+          "format": "可选本机目录路径。"
+        },
+        {
+          "name": "SMTP_SERVER",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从自己的邮箱服务商获取 SMTP 主机名。",
+          "format": "与 EMAIL、PASSWORD 配套填写时启用邮件，受全局通知选择控制。"
+        },
+        {
+          "name": "SMTP_PORT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从自己的邮箱服务商获取端口。",
+          "format": "1 至 65535 的整数，默认 25；465 为隐式 TLS，其他端口强制 STARTTLS。"
+        },
+        {
+          "name": "EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "填写自己的发送及接收邮箱。",
+          "format": "单个邮箱地址，与 SMTP_SERVER、PASSWORD 配套。"
+        },
+        {
+          "name": "PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在自己的邮箱安全设置中启用 SMTP 并获取授权码。",
+          "format": "SMTP 授权码，避免使用邮箱登录密码。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号，网页 Cookie 与移动端三项签名凭据可混用。移动端三项凭据必须属于同一账号并组合在同一行；只按首个模式分隔符切分，不丢弃后续文本。各账号独立处理，任一账号失败时整体退出码为非零。"
+        "rule": "每个非空行一个账号，可混合网页和移动模式。同账号配套参数放在同一行，仅按首个 | 切分模式，字段按首个等号切分。账号独立执行，任一失败整体非零退出。旧分立变量仅兼容单账号。"
       },
       "dependencies": [],
       "features": [
@@ -37968,11 +38041,17 @@
         "失败时输出固定响应字段的类型及有限数字业务码，辅助定位问题且不输出原始响应",
         "同一账号变量可选择网页 Cookie 或移动端 kps、sign、vcode 组合凭据；移动端按上游明确的请求参数认证和签到，默认网页模式保持不变",
         "有效字段存在时展示官方会员类型、总容量及签到累计获得容量",
-        "移动端凭据缺项、重复项或非法格式在断网预演及实时模式中明确失败，不输出凭据"
+        "移动端凭据缺项、重复项或非法格式在断网预演及实时模式中明确失败，不输出凭据",
+        "展示官方已用容量、使用百分比及会员到期时间，零总容量时安全处理。",
+        "兼容主来源 QUARK_KPS、QUARK_SIGN、QUARK_VCODE 单账号参数，规范变量优先。",
+        "支持可选 SMTP 邮件摘要，使用经过证书校验的 TLS、连接超时和全局通知开关。",
+        "签到后重新查询并核验今日签到状态，移动模式清除查询缓存后复查。",
+        "支持通知清单选择及受断网约束的通知预演，通知失败保留业务退出码。",
+        "移动参数百分号解码后单次请求编码，保留字面加号与等号。"
       ],
       "sideEffects": [
-        "实时模式下为尚未签到的账号完成每日签到并领取存储空间奖励",
-        "实时模式下启用通知时通过青龙发送脱敏任务摘要"
+        "正式执行时为尚未签到账号提交每日签到，领取存储空间奖励并更新连续签到进度。",
+        "通知启用且渠道可用时，通过青龙及已配置的 SMTP 邮件发送脱敏任务摘要。"
       ],
       "review": {
         "staticPassed": true,
@@ -37985,20 +38064,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/18c47e12eda9864c",
-        "candidateSha256": "500262df894e109fbe27a2dfafe56d9c395e01d816d6644bc6ff10c46b89d530"
+        "candidateSha256": "407d60bbf9a9e17b89acae7358b84aa58da2e230f125f27482133665f16cd737"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "500262df894e109fbe27a2dfafe56d9c395e01d816d6644bc6ff10c46b89d530",
-        "releaseSha256": "d42f6b520d68684a6adcffc63b04bee4df52ad53dea5922678bdc87154974e12",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "407d60bbf9a9e17b89acae7358b84aa58da2e230f125f27482133665f16cd737",
+        "releaseSha256": "7315dc777e89a94234068968658eb4d3d879265fa426080ac6d60fd318c78763",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T01:39:55.259675+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "500262df894e109fbe27a2dfafe56d9c395e01d816d6644bc6ff10c46b89d530",
-          "toCandidateSha256": "d42f6b520d68684a6adcffc63b04bee4df52ad53dea5922678bdc87154974e12",
+          "approvedAt": "2026-11-06T04:37:32.601261+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "407d60bbf9a9e17b89acae7358b84aa58da2e230f125f27482133665f16cd737",
+          "toCandidateSha256": "7315dc777e89a94234068968658eb4d3d879265fa426080ac6d60fd318c78763",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

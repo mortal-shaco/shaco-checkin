@@ -12,6 +12,6 @@
 | 百度搜索资源平台 | `scripts/ck_baidu_url_submit.py` | `python3 scripts/ck_baidu_url_submit.py` | `8 2 * * *` | 待检查 | [ck_baidu_url_submit.py.md](../../scripts/ck_baidu_url_submit.py.md)（`docs/scripts/ck_baidu_url_submit.py.md`） |
 | 时光相册每日签到 | `scripts/ck_everphoto.py` | `python3 scripts/ck_everphoto.py` | `3 0 * * *` | 待检查 | [ck_everphoto.py.md](../../scripts/ck_everphoto.py.md)（`docs/scripts/ck_everphoto.py.md`） |
 | 每日任务聚合 | `scripts/polymerization.js` | `node scripts/polymerization.js` | `41 9 * * *` | 待检查 | [polymerization.js.md](../../scripts/polymerization.js.md)（`docs/scripts/polymerization.js.md`） |
-| 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `15 0 * * *` | 待检查 | [quark_signin.py.md](../../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
+| 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` | 待检查 | [quark_signin.py.md](../../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
 | 百度知道签到 | `scripts/task_51f65d9b.py` | `python3 scripts/task_51f65d9b.py` | `30 10 * * *` | 待检查 | [task_51f65d9b.py.md](../../scripts/task_51f65d9b.py.md)（`docs/scripts/task_51f65d9b.py.md`） |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `6 1 * * *` | 待检查 | [ty_netdisk_checkin.py.md](../../scripts/ty_netdisk_checkin.py.md)（`docs/scripts/ty_netdisk_checkin.py.md`） |

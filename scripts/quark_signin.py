@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 夸克网盘每日签到
-# cron: 15 0 * * *
+# cron: 13 18 * * *
 # SPDX-License-Identifier: GPL-3.0-only
+# Primary source: jianping1987/Quark_qiandao main.py, MIT.
+# Compatible encoding reference: 7766d42fad0364ab, MIT.
+# Primary commit: 1e2cb8b57bd771f3ad6e514fd11f9e3222a79f60
 # Original maintained source license notice: SPDX-License-Identifier: MIT
 # Maintained standalone adaptation of quark_signin.py from agluo/ql-script-hub.
 # Original source commit: a8d39b97cb22c3ac657089014df754342b456ff6
@@ -23,7 +26,8 @@
   QUARK_DRY_RUN=1                   完全断网预演。
   QUARK_TIMEOUT_SECONDS=15          单次请求超时，范围 3..60 秒。
   QUARK_RANDOM_DELAY_MAX_SECONDS=0  每个实时账号执行前的随机延迟上限，范围 0..3600。
-  QINGLONG_NOTIFY=1                 设为 0/false/no/off 可关闭通知。
+  QINGLONG_NOTIFY=auto              默认按清单通知；1 强制启用，0 关闭。
+  QINGLONG_NOTIFY_SCRIPTS           通知清单，支持目录、文件名、通配符和来源编号。
   QINGLONG_NOTIFY_DIR               可选，青龙 notify.py 所在目录。
 
 账号只使用换行分隔；脚本绝不输出 Cookie 或原始响应。
@@ -41,7 +45,14 @@
 涉及转存、创建目录、重命名、可选删除及插件；其风险和调度不同，未合入。
 不读取 quark_config.json、TASKLIST、PUSH_CONFIG，不安装插件或下载配置。
 QUARK_TEST 的转存测试及删除回收站逻辑不适用于本签到任务。
-青龙通知在实时运行时发送；完全断网预演仅生成通知摘要，不调用通知模块。
+兼容原单账号 QUARK_KPS、QUARK_SIGN、QUARK_VCODE，三项须完整；
+QUARK_COOKIE 非空时优先。建议迁移到同一行 mobile|kps=值;sign=值;vcode=值。
+可选邮件通知：SMTP_SERVER、EMAIL、PASSWORD 均来自自己的邮箱服务商，
+PASSWORD 为 SMTP 授权码；SMTP_PORT 默认 25，465 使用隐式 TLS，其他端口
+强制 STARTTLS。通知同时受 QINGLONG_NOTIFY 和通知清单控制，失败不改变业务退出码。
+会员到期时间、已用容量和使用率在官方字段有效时展示。
+青龙通知在独立限时进程中执行。预演中尝试通知前阻断网络和外部命令，
+邮件仅预演，不建立连接；通知不可用或失败时保留业务退出码。
 """
 
 from __future__ import annotations
@@ -65,7 +76,7 @@ if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}
     _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
 # qinglong-notification-policy: end
 
-import contextlib
+import fnmatch
 import importlib
 import importlib.util
 import json
@@ -73,6 +84,9 @@ import os
 import random
 import re
 import ssl
+import smtplib
+import subprocess
+from email.message import EmailMessage
 import sys
 import time
 from dataclasses import dataclass, field
@@ -80,7 +94,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Optional
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, unquote
 from urllib.request import Request, build_opener, HTTPSHandler, HTTPRedirectHandler
 
 
@@ -135,6 +149,7 @@ class AccountResult:
     ok: bool
     stats: Stats = field(default_factory=Stats)
     outcome: str = "failed"
+    detail: str = ""
 
 
 def iso_time() -> str:
@@ -166,6 +181,14 @@ def bounded_int(name: str, default: int, minimum: int, maximum: int) -> int:
 def load_accounts() -> list[str]:
     raw = os.getenv(COOKIE_ENV, "")
     accounts = [line.strip() for line in raw.splitlines() if line.strip()]
+    if not accounts:
+        legacy = [os.getenv(name, "").strip() for name in
+                  ("QUARK_KPS", "QUARK_SIGN", "QUARK_VCODE")]
+        if any(legacy):
+            if not all(legacy) or any("\n" in value or "\r" in value for value in legacy):
+                raise TaskError("旧移动端变量仅支持完整单账号，请将多账号迁移到 QUARK_COOKIE")
+            accounts = ["mobile|" + ";".join(key + "=" + value for key, value in
+                        zip(("kps", "sign", "vcode"), legacy))]
     if not accounts:
         raise TaskError(f"未配置 {COOKIE_ENV}；每个账号使用一个非空行")
     return accounts
@@ -328,10 +351,14 @@ def mobile_parameters(credential: str) -> dict[str, str]:
     params = {}
     # 上游支持原始编码值，并仅把二次编码的 %25 还原一次。
     for key in ("kps", "sign", "vcode"):
-        matches = re.findall(r"(?:^|[;\s])" + key + r"=([a-zA-Z0-9%+/=]+)(?=;|\s|$)", credential)
+        matches = re.findall(r"(?:^|[;\s])" + key + r"=([^;\s]*)(?=;|\s|$)", credential)
         if len(matches) != 1:
             raise TaskError(f"移动端凭据必须包含且仅包含一个 {key}；请使用分号分隔同账号的三项参数")
-        params[key] = matches[0].replace("%25", "%")
+        value = matches[0]
+        if not re.fullmatch(r"(?:[a-zA-Z0-9+/=]|%[0-9a-fA-F]{2})+", value):
+            raise TaskError(f"移动端 {key} 格式无效，请保留抓包参数的原始编码值")
+        # urlencode 负责单次编码，先还原抓包的百分号编码，保留字面加号。
+        params[key] = unquote(value.replace("%25", "%"))
     return params
 
 
@@ -386,6 +413,17 @@ def capacity_detail(growth: dict[str, Any]) -> str:
         details.append("会员类型：" + memberships[member])
     if valid_number(growth.get("total_capacity")):
         details.append(f"总空间：{reward_mb(growth['total_capacity'])} MB")
+    used, total = growth.get("use_capacity"), growth.get("total_capacity")
+    if valid_number(used):
+        details.append(f"已用空间：{reward_mb(used)} MB")
+        if valid_number(total) and total > 0:
+            details.append(f"使用率：{used / total * 100:.2f}%")
+    expiry = growth.get("super_vip_exp_at")
+    if valid_number(expiry):
+        try:
+            details.append("会员到期时间：" + datetime.fromtimestamp(expiry / 1000).astimezone().isoformat(timespec="seconds"))
+        except (ValueError, OverflowError, OSError):
+            details.append("会员到期时间超出可显示范围")
     composition = growth.get("cap_composition")
     if isinstance(composition, dict) and valid_number(composition.get("sign_reward")):
         details.append(f"签到累计获得：{reward_mb(composition['sign_reward'])} MB")
@@ -411,6 +449,7 @@ def stage(number: int, title: str, status: str, detail: str, stats: Stats, start
 def run_account(index: int, cookie: str, timeout: int, dry_run: bool, delay_max: int) -> AccountResult:
     account_started = time.monotonic()
     stats = Stats()
+    detail = ""
     print(f"\n[{clock_time()}] 账号 {index}")
     if dry_run:
         step_started = time.monotonic()
@@ -454,7 +493,8 @@ def run_account(index: int, cookie: str, timeout: int, dry_run: bool, delay_max:
         cap_sign = growth["cap_sign"]
         if type(cap_sign.get("sign_daily")) is not bool:
             raise TaskError(f"签到状态查询失败（cap_sign.sign_daily 类型={field_shape(cap_sign, 'sign_daily')}；要求布尔值，未执行签到）")
-        stage(2, "签到状态", "success", "已获取签到状态" + capacity_detail(growth), stats, step_started)
+        detail = "已获取签到状态" + capacity_detail(growth)
+        stage(2, "签到状态", "success", detail, stats, step_started)
         step_started = time.monotonic()
         if cap_sign.get("sign_daily") is True:
             reward = reward_mb(cap_sign.get("sign_daily_reward"))
@@ -465,6 +505,12 @@ def run_account(index: int, cookie: str, timeout: int, dry_run: bool, delay_max:
             outcome = "already-complete"
         else:
             signed = client.sign()
+            if isinstance(client, MobileQuarkClient):
+                client.cached_growth = None
+            confirmed = client.growth_info()
+            if confirmed["cap_sign"].get("sign_daily") is not True:
+                raise TaskError("签到提交后未确认今日已签到，请在下次执行时重新查询")
+            detail = "签到后容量" + capacity_detail(confirmed)
             reward = reward_mb(signed["sign_daily_reward"])
             progress, target = cap_sign.get("sign_progress"), cap_sign.get("sign_target")
             suffix = f"，连签进度 {progress + 1}/{target}" if type(progress) is int and type(target) is int else ""
@@ -485,11 +531,20 @@ def run_account(index: int, cookie: str, timeout: int, dry_run: bool, delay_max:
             stage(stats.total + 1, "后续任务", "skipped", "前置步骤失败", stats, time.monotonic())
     elapsed = time.monotonic() - account_started
     print(f"  账号统计: 总任务={stats.total} 成功={stats.success} 已完成={stats.already} 跳过={stats.skipped} 失败={stats.failed} 耗时={elapsed:.2f}s")
-    return AccountResult(ok, stats, outcome)
+    return AccountResult(ok, stats, outcome, detail)
 
 
 def notification_enabled() -> bool:
-    return os.getenv("QINGLONG_NOTIFY", "1").strip().lower() not in DISABLED_VALUES
+    value = os.getenv("QINGLONG_NOTIFY", "auto").strip().lower()
+    if value in DISABLED_VALUES:
+        return False
+    if value in TRUE_VALUES:
+        return True
+    selectors = re.split(r"[,;\s]+", os.getenv("QINGLONG_NOTIFY_SCRIPTS", "").strip())
+    identities = ("18c47e12eda9864c", "532706180798fc1c", "scripts/quark_signin.py",
+                  "quark_signin.py", Path(__file__).name)
+    return any(fnmatch.fnmatchcase(identity, selector) for selector in selectors if selector
+               for identity in identities)
 
 
 def find_notifier() -> Optional[Callable[[str, str], Any]]:
@@ -521,26 +576,79 @@ def find_notifier() -> Optional[Callable[[str, str], Any]]:
     return None
 
 
+# 固定子进程入口；通知模块的输出和异常原文永不进入任务日志。
+NOTIFY_WORKER = r"""
+import os
+import sys
+if sys.argv[1] == "dry-run":
+    def deny_network(event, args):
+        if event.startswith(("socket.", "subprocess.", "os.exec", "os.spawn")) or event in (
+            "os.system", "os.posix_spawn", "ctypes.dlopen", "os.fork", "os.forkpty"):
+            raise RuntimeError("offline notification")
+    sys.addaudithook(deny_network)
+import runpy
+module = runpy.run_path(sys.argv[2], run_name="qinglong_notification_worker")
+try:
+    sender = module["find_notifier"]()
+    if sender is None:
+        sys.exit(3)
+    sender(module["TASK_NAME"], sys.stdin.read())
+except Exception:
+    sys.exit(4)
+"""
+
+
+def email_notice(summary: str, dry_run: bool) -> str:
+    settings = [os.getenv(name, "").strip() for name in ("SMTP_SERVER", "EMAIL", "PASSWORD")]
+    if not any(settings):
+        return "unconfigured"
+    if not all(settings):
+        return "configuration-error"
+    try:
+        port = bounded_int("SMTP_PORT", 25, 1, 65535)
+        message = EmailMessage()
+        message["Subject"] = TASK_NAME
+        message["From"] = settings[1]
+        message["To"] = settings[1]
+        message.set_content(summary)
+        if dry_run:
+            return "dry-run-simulated"
+        context = ssl.create_default_context()
+        if port == 465:
+            connection = smtplib.SMTP_SSL(settings[0], port, timeout=15, context=context)
+        else:
+            connection = smtplib.SMTP(settings[0], port, timeout=15)
+        with connection as server:
+            if port != 465:
+                server.starttls(context=context)
+            server.login(settings[1], settings[2])
+            server.send_message(message)
+        return "sent"
+    except Exception:
+        return "failed"
+
+
 def notify(summary: str, dry_run: bool) -> str:
     if not notification_enabled():
-        print("通知状态: 已关闭（QINGLONG_NOTIFY）")
+        print(f"[{clock_time()}] 通知状态: 已关闭（全局开关或通知清单）")
         return "disabled"
-    if dry_run:
-        print("通知状态: 离线预演已生成通知摘要，未调用通知模块")
-        return "dry-run-simulated"
-    with open(os.devnull, "w") as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
-        sender = find_notifier()
-    if sender is None:
-        print("通知状态: ⚠️ 未找到青龙 notify.py，业务退出码不变")
-        return "unavailable"
+    # 只向青龙通知模块提供通知所需环境，移除本任务及邮件凭据。
+    environment = {key: value for key, value in os.environ.items()
+                   if not key.startswith("QUARK_") and key not in ("EMAIL", "PASSWORD", "SMTP_SERVER", "SMTP_PORT")}
     try:
-        with open(os.devnull, "w") as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
-            sender(TASK_NAME, summary)
-        print("通知状态: ✅ 已发送")
-        return "sent"
-    except Exception as exc:
-        print(f"通知状态: ⚠️ 发送失败（{type(exc).__name__}），业务退出码不变")
-        return "failed"
+        result = subprocess.run(
+            [sys.executable, "-c", NOTIFY_WORKER, "dry-run" if dry_run else "live", str(Path(__file__).resolve())],
+            input=summary, text=True, env=environment, stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL, timeout=20, check=False,
+        )
+        state = {0: "sent", 3: "unavailable", 4: "failed"}.get(result.returncode, "failed")
+    except (OSError, subprocess.TimeoutExpired):
+        state = "failed"
+    if dry_run and state == "failed":
+        state = "dry-run-blocked"
+    mail_state = email_notice(summary, dry_run)
+    print(f"[{clock_time()}] 通知状态: 青龙={state}，邮件={mail_state}，业务退出码不变")
+    return state + ";email=" + mail_state
 
 
 def main() -> int:
@@ -586,6 +694,8 @@ def main() -> int:
         final_status = "failure"
 
     notice_body = f"账号总数: {len(accounts)}，成功: {account_success}，失败: {account_failure}，状态: {final_status}"
+    for index, result in enumerate(results, 1):
+        notice_body += f"\n账号 {index}：{result.outcome} {result.detail}"
     notice_status = notify(notice_body, dry_run)
     elapsed = time.monotonic() - task_started
     finish_time = iso_time()
