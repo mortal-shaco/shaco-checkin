@@ -25846,6 +25846,166 @@
       }
     },
     {
+      "catalogId": "a74ebfb1941959d9",
+      "applicationKey": "martindai/daily-sign-in::site",
+      "checkProfile": {
+        "requiredEnv": [
+          "HEAPDUMP_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "HEAPDUMP_ACCOUNT",
+          "HEAPDUMP_PASSWD",
+          "HEAPDUMP_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HEAPDUMP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "HEAPDUMP_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "HEAPDUMP_SUCCESS：全部账号签到成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用账号密码登录 heapdump，校验登录业务码并提取会话 Cookie。",
+          "使用登录会话执行每日签到，只有官方签到响应 status 为 true 或数字 1 才确认成功。",
+          "官方响应含昵称、用户名、显示名称或公开 UID 时展示安全的原值，凭据和手机号等不输出。",
+          "支持逐行多账号及旧版账号密码变量，账号失败相互隔离，任一失败整体非零退出。",
+          "提供完全断网预演、请求超时、响应大小限制、禁止重定向及脱敏业务校验。",
+          "提供分阶段时间轴、每账号与全局统计、单行 TASK_SUMMARY 汇总和青龙通知开关。"
+        ],
+        "sideEffects": [
+          "正式执行登录可能创建服务端登录会话。",
+          "正式执行向 heapdump 提交签到，可能增加签到天数及对应奖励。",
+          "通知启用且模块可用时通过青龙通知渠道发送脱敏任务摘要；预演不发送。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "heapdump 每日签到",
+      "path": "scripts/heapdump.js",
+      "sha256": "166e8fe79550d62e014a41face23e054be4534e57e01f66df2b182d799ad3643",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "MartinDai/daily-sign-in",
+        "branch": "main",
+        "commit": "6e631d1a15a4a7e58bd999e9995f5eeb0ac10a92",
+        "originalPath": "src/main/site/heapdump.ts"
+      },
+      "cron": "23 10 * * *",
+      "command": "node scripts/heapdump.js",
+      "environment": [
+        {
+          "name": "HEAPDUMP_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人在 https://heapdump.cn 注册的登录账号和密码。新建青龙环境变量，每个账号独占一行。不要把浏览器 Cookie 或登录响应填入此变量。",
+          "format": "每行 账号|密码；仅在第一个 | 分割，密码中的后续 | 原样保留；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "HEAPDUMP_ACCOUNT",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容项，来自本人 heapdump 登录账号；仅在未设置 HEAPDUMP_ACCOUNTS 时生效，须配套 HEAPDUMP_PASSWD。",
+          "format": "单个账号，不含换行。"
+        },
+        {
+          "name": "HEAPDUMP_PASSWD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号兼容项，填写上述账号的登录密码；建议迁移至 HEAPDUMP_ACCOUNTS。",
+          "format": "单个密码，不含换行。"
+        },
+        {
+          "name": "HEAPDUMP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证时设为 1；正式运行时删除或设为 0。",
+          "format": "1、true、yes、on 启用完全离线预演；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，用指定名单替换默认通知名单。使用本脚本目录编号 a74ebfb1941959d9、实际文件名、脚本路径或带 * 的文件名通配模式。",
+          "format": "逗号、分号、空白或换行分隔；* 表示全部；显式空字符串表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙已有 sendNotify.js 所在目录；未设置时查找 /ql/data/scripts 和 /ql/scripts。仅用于可选通知，不影响业务独立运行。",
+          "format": "本地目录路径；不自动下载或安装。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "HEAPDUMP_ACCOUNTS 每个非空行一个账号，格式为 账号|密码，仅分割第一个 |。逐个独立处理，任一账号失败整体非零退出。兼容旧变量仅支持单账号；新变量一旦设置即优先使用。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用账号密码登录 heapdump，校验登录业务码并提取会话 Cookie。",
+        "使用登录会话执行每日签到，只有官方签到响应 status 为 true 或数字 1 才确认成功。",
+        "官方响应含昵称、用户名、显示名称或公开 UID 时展示安全的原值，凭据和手机号等不输出。",
+        "支持逐行多账号及旧版账号密码变量，账号失败相互隔离，任一失败整体非零退出。",
+        "提供完全断网预演、请求超时、响应大小限制、禁止重定向及脱敏业务校验。",
+        "提供分阶段时间轴、每账号与全局统计、单行 TASK_SUMMARY 汇总和青龙通知开关。"
+      ],
+      "sideEffects": [
+        "正式执行登录可能创建服务端登录会话。",
+        "正式执行向 heapdump 提交签到，可能增加签到天数及对应奖励。",
+        "通知启用且模块可用时通过青龙通知渠道发送脱敏任务摘要；预演不发送。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a74ebfb1941959d9",
+        "candidateSha256": "50a45dbc617f8455dfaacb27d954a7f0547d3d0733315c82a56b42835a44ed20"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "50a45dbc617f8455dfaacb27d954a7f0547d3d0733315c82a56b42835a44ed20",
+        "releaseSha256": "166e8fe79550d62e014a41face23e054be4534e57e01f66df2b182d799ad3643",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T05:57:18.254642+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "50a45dbc617f8455dfaacb27d954a7f0547d3d0733315c82a56b42835a44ed20",
+          "toCandidateSha256": "166e8fe79550d62e014a41face23e054be4534e57e01f66df2b182d799ad3643",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "e249d85fcb6de594",
       "applicationKey": "cn-grace/qinglongscripts::hellogithub",
       "checkProfile": {
@@ -27176,6 +27336,163 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "1f304ad9946bff91b6041899c08415b4df5974fbf225312888f09a7629d22bfe",
           "toCandidateSha256": "5f19d023f981dfe3012e70fc2d336971b01c5d52abae468c5a56c86aad16266d",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "e1245908d22b3902",
+      "applicationKey": "iamtxt",
+      "checkProfile": {
+        "requiredEnv": [
+          "IAMTXT_COOKIE"
+        ],
+        "optionalEnv": [
+          "COOKIE",
+          "IAMTXT_DRY_RUN",
+          "SENDKEY",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "IAMTXT_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "IAMTXT_DRY_RUN": "0"
+        },
+        "successPatterns": [
+          "签到成功（已核验官方业务响应）",
+          "今天已签到（已核验官方业务响应）"
+        ],
+        "features": [
+          "通过 Cookie 执行 iamtxt 每日签到，保留原接口、POST 方法及 userid=0 表单参数。",
+          "识别官方成功和今天已签到响应，未知响应、网络故障及无效配置失败退出。",
+          "支持逐行多账号及旧 COOKIE 参数，独立执行并聚合退出码。",
+          "完全断网预演，检查配置、生成脱敏结果及通知摘要，不验证登录或签到。",
+          "输出带时间戳的编号阶段、每账号及最终统计和单行 TASK_SUMMARY JSON。",
+          "支持青龙通知及可选 SENDKEY 微信推送，按开关及选择器发送脱敏统计，通知失败保留业务退出码。"
+        ],
+        "sideEffects": [
+          "正式执行向 iamtxt 提交签到，可能增加当日签到记录及站点奖励。",
+          "通知启用时调用青龙通知；配置 SENDKEY 时额外向 Server酱发送脱敏统计。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "iamtxt 每日签到",
+      "path": "scripts/iamtxtsignin.py",
+      "sha256": "ede4262ae30d63937e20fa8a6d49ca3e62eec2f5e6cd4687a8555cc8131641e1",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "yjnu/iamtxt-signin",
+        "branch": "master",
+        "commit": "5e8909a5689f33bbc6dc17c1bbd031dba98e0773",
+        "originalPath": "iamtxtsignin.py"
+      },
+      "cron": "21 10 * * *",
+      "command": "python3 scripts/iamtxtsignin.py",
+      "environment": [
+        {
+          "name": "IAMTXT_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://www.iamtxt.com/ 后，打开浏览器开发者工具的网络面板，查看本站已登录请求，复制请求头 Cookie 完整值，不含 Cookie: 前缀。仅存入青龙私有环境变量。",
+          "format": "每个非空行一个账号的完整 Cookie，行内分号、&、@ 等字符保留，不用这些字符分隔账号。"
+        },
+        {
+          "name": "COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游变量，获取方式同 IAMTXT_COOKIE；建议迁移到 IAMTXT_COOKIE。",
+          "format": "IAMTXT_COOKIE 为空时读取，每个非空行一个完整 Cookie。"
+        },
+        {
+          "name": "IAMTXT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "断网预演设为 1，正式运行设为 0 或不设置。",
+          "format": "1/true/yes/on 开启；0/false/no/off 关闭。"
+        },
+        {
+          "name": "SENDKEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选，从 Server酱官方控制台获取自己的推送密钥，兼容原微信推送；不设置不影响签到。",
+          "format": "单个密钥，兼容 sctp 数字 t 前缀及传统密钥；仅发送脱敏统计。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，设置后替换默认通知列表；auto 模式按选择器匹配本脚本。",
+          "format": "逗号、分号或空白分隔，支持目录编号 e1245908d22b3902、脚本相对路径、文件名和文件名通配符；* 匹配全部，空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，青龙通知模块不在默认位置时填写可信的 notify.py 或 sendNotify.js 所在目录。",
+          "format": "本地目录；也支持导入 notify.send 及 /ql/data/scripts、/ql/scripts 默认目录。通知不可用不影响业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "IAMTXT_COOKIE 每个非空行一个完整账号 Cookie，兼容 COOKIE；逐个独立执行，不以 & 或 @ 分隔，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "通过 Cookie 执行 iamtxt 每日签到，保留原接口、POST 方法及 userid=0 表单参数。",
+        "识别官方成功和今天已签到响应，未知响应、网络故障及无效配置失败退出。",
+        "支持逐行多账号及旧 COOKIE 参数，独立执行并聚合退出码。",
+        "完全断网预演，检查配置、生成脱敏结果及通知摘要，不验证登录或签到。",
+        "输出带时间戳的编号阶段、每账号及最终统计和单行 TASK_SUMMARY JSON。",
+        "支持青龙通知及可选 SENDKEY 微信推送，按开关及选择器发送脱敏统计，通知失败保留业务退出码。"
+      ],
+      "sideEffects": [
+        "正式执行向 iamtxt 提交签到，可能增加当日签到记录及站点奖励。",
+        "通知启用时调用青龙通知；配置 SENDKEY 时额外向 Server酱发送脱敏统计。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e1245908d22b3902",
+        "candidateSha256": "b5d88c97fc076c87b8730131e16dc1868095e96b20ff9125047536e87ba99fbb"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "b5d88c97fc076c87b8730131e16dc1868095e96b20ff9125047536e87ba99fbb",
+        "releaseSha256": "ede4262ae30d63937e20fa8a6d49ca3e62eec2f5e6cd4687a8555cc8131641e1",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T05:56:03.222355+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b5d88c97fc076c87b8730131e16dc1868095e96b20ff9125047536e87ba99fbb",
+          "toCandidateSha256": "ede4262ae30d63937e20fa8a6d49ca3e62eec2f5e6cd4687a8555cc8131641e1",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -56020,6 +56337,184 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "6e64d5cbcd3ee6e3ae4fb962ddd50db5d8805db6447328f99fd1524a9d34f5b8",
           "toCandidateSha256": "e10b3ac5288218df933caa5bfe8fb890317637505fe6a2e7d1cc7ad0f31e6e5c",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "293255e8d83b79db",
+      "applicationKey": "fukfsa/lenovo_auto_signin_zyc::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "LENOVO_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "USERNAME",
+          "PASSWORD",
+          "LENOVO_TICKET",
+          "LENOVO_DRY_RUN",
+          "PUSH_KEY",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "LENOVO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LENOVO_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "账号密码登录联想官方服务并核验登录会话",
+          "每日签到及明确的今日已签到识别",
+          "查询并展示连续签到天数",
+          "展示官方返回的非敏感昵称、用户名或公开标识",
+          "兼容上游单账号参数及可选 Server 酱签到情况推送",
+          "按行多账号、独立会话与失败非零退出",
+          "完全断网预演、青龙可选统一通知及结构化任务统计"
+        ],
+        "sideEffects": [
+          "正式执行时创建联想登录会话",
+          "正式执行时提交每日签到，可能领取官方乐豆奖励",
+          "启用通知后发送脱敏结果至青龙配置的通知渠道或旧版 Server 酱"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "联想商城每日签到",
+      "path": "scripts/task_293255e8.py",
+      "sha256": "e009abc6c85bb3b4f9274c34e5185b1cd05fb0a169f98d3bf1ce7faa519d13fb",
+      "stage": "released",
+      "license": "Apache-2.0",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "fukfsa/lenovo_auto_signin_zyc",
+        "branch": "main",
+        "commit": "5af95473f836089b51728c68a22f14fa31978ec1",
+        "originalPath": "main.py"
+      },
+      "cron": "22 10 * * *",
+      "command": "python3 scripts/task_293255e8.py",
+      "environment": [
+        {
+          "name": "LENOVO_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人在联想官网注册的账号及登录密码。账号需能通过普通账号密码登录；若要求验证码，请先在官方页面处理，本脚本不绕过验证码。",
+          "format": "每个非空行一个账号，格式为 账号|密码；只在第一个 | 分割，密码后续的 | 和空格保留。账号不能包含 |。"
+        },
+        {
+          "name": "USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游：本人联想账号，仅在未设置 LENOVO_ACCOUNTS 时与 PASSWORD 配套使用。",
+          "format": "单账号用户名，不使用账号分隔符。"
+        },
+        {
+          "name": "PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游：本人联想登录密码。",
+          "format": "完整单账号密码，与 USERNAME 配套。"
+        },
+        {
+          "name": "LENOVO_TICKET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "默认保留上游共享业务参数。如官方接口变更，可在本人官方网页登录请求的 ticket 及签到请求的 sts 字段核对；两者需适用同一流程，不复制 Cookie。没有参考证据时不猜测替换。",
+          "format": "可选的单个业务参数；不设置使用上游值，设置为空则配置失败。"
+        },
+        {
+          "name": "LENOVO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置，用于离线检查。",
+          "format": "1、true、yes、on 开启；默认 0。断网预演不登录、不签到、不发送任何网络通知。"
+        },
+        {
+          "name": "PUSH_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游旧版 Server 酱密钥，可从本人 Server 酱账户获取；推荐迁移到青龙通知。",
+          "format": "单个密钥，只允许字母、数字、下划线和连字符；不设置则不调用旧推送。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙填写需要通知的脚本名单，设置时替换默认名单。",
+          "format": "逗号、分号或空白分隔目录编号、脚本相对路径或文件名通配符；* 选全部，空值禁用青龙通知。未配置名单时 auto 默认不选中本脚本。显式 PUSH_KEY 保留旧推送兼容。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：填写青龙通知模块所在目录；也会查找可导入的 notify 模块和青龙标准目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的本地目录。通知失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，账号与密码只在第一个 | 分割；每个账号独立会话顺序执行。任一账号失败则整体非零退出。兼容变量仅支持单账号，显式设置主变量时不回退。"
+      },
+      "dependencies": [],
+      "features": [
+        "账号密码登录联想官方服务并核验登录会话",
+        "每日签到及明确的今日已签到识别",
+        "查询并展示连续签到天数",
+        "展示官方返回的非敏感昵称、用户名或公开标识",
+        "兼容上游单账号参数及可选 Server 酱签到情况推送",
+        "按行多账号、独立会话与失败非零退出",
+        "完全断网预演、青龙可选统一通知及结构化任务统计"
+      ],
+      "sideEffects": [
+        "正式执行时创建联想登录会话",
+        "正式执行时提交每日签到，可能领取官方乐豆奖励",
+        "启用通知后发送脱敏结果至青龙配置的通知渠道或旧版 Server 酱"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/293255e8d83b79db",
+        "candidateSha256": "52b44debed0dc8caa14b966fd46eef902147449faa4831111436c44c8a527cee"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "52b44debed0dc8caa14b966fd46eef902147449faa4831111436c44c8a527cee",
+        "releaseSha256": "e009abc6c85bb3b4f9274c34e5185b1cd05fb0a169f98d3bf1ce7faa519d13fb",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T05:57:09.802892+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "52b44debed0dc8caa14b966fd46eef902147449faa4831111436c44c8a527cee",
+          "toCandidateSha256": "e009abc6c85bb3b4f9274c34e5185b1cd05fb0a169f98d3bf1ce7faa519d13fb",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

@@ -1,9 +1,10 @@
 # 字母索引 · I
 
-共 **8** 个脚本。返回 [`目录首页`](../README.md)。
+共 **9** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
+| iamtxt 每日签到 | `scripts/iamtxtsignin.py` | `python3 scripts/iamtxtsignin.py` | `21 10 * * *` | 待检查 | [iamtxtsignin.py.md](../../scripts/iamtxtsignin.py.md)（`docs/scripts/iamtxtsignin.py.md`） |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `1 21 * * *` | 待检查 | [ikuuu_checkin.py.md](../../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
 | SF轻小说签到 | `scripts/illustar0_sf_autocheckin.py` | `python3 scripts/illustar0_sf_autocheckin.py` | `16 9 * * *` | 待检查 | [illustar0_sf_autocheckin.py.md](../../scripts/illustar0_sf_autocheckin.py.md)（`docs/scripts/illustar0_sf_autocheckin.py.md`） |
 | i茅台申购与耐力 | `scripts/imaotai.py` | `python3 scripts/imaotai.py` | `38 2 * * *` | 待检查 | [imaotai.py.md](../../scripts/imaotai.py.md)（`docs/scripts/imaotai.py.md`） |

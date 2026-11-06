@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **333** 个脚本。返回 [`目录首页`](../README.md)。
+共 **336** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -119,6 +119,7 @@
 | GreatSQL论坛签到 | `scripts/greatsql_checkin.py` | `python3 scripts/greatsql_checkin.py` | `13 10 * * *` | 待检查 | [greatsql_checkin.py.md](../../scripts/greatsql_checkin.py.md)（`docs/scripts/greatsql_checkin.py.md`） |
 | Discuz 每日签到 | `scripts/guoxpeng_daily_checkin_panel_sites.js` | `node scripts/guoxpeng_daily_checkin_panel_sites.js` | `46 9 * * *` | 待检查 | [guoxpeng_daily_checkin_panel_sites.js.md](../../scripts/guoxpeng_daily_checkin_panel_sites.js.md)（`docs/scripts/guoxpeng_daily_checkin_panel_sites.js.md`） |
 | 好豆每日签到 | `scripts/haodou.py` | `python3 scripts/haodou.py` | `14 9 * * *` | 待检查 | [haodou.py.md](../../scripts/haodou.py.md)（`docs/scripts/haodou.py.md`） |
+| heapdump 每日签到 | `scripts/heapdump.js` | `node scripts/heapdump.js` | `23 10 * * *` | 待检查 | [heapdump.js.md](../../scripts/heapdump.js.md)（`docs/scripts/heapdump.js.md`） |
 | HiFiTi与HiFiHi签到 | `scripts/hifiti_checkin.py` | `python3 scripts/hifiti_checkin.py` | `14 1 * * *` | 待检查 | [hifiti_checkin.py.md](../../scripts/hifiti_checkin.py.md)（`docs/scripts/hifiti_checkin.py.md`） |
 | 活力伊利 | `scripts/hlyl.py` | `python3 scripts/hlyl.py` | `32 0 * * *` | 待检查 | [hlyl.py.md](../../scripts/hlyl.py.md)（`docs/scripts/hlyl.py.md`） |
 | HoYoLAB 多游戏每日签到 | `scripts/hoyolab_checkin.py` | `python3 scripts/hoyolab_checkin.py` | `25 8 * * *` | 待检查 | [hoyolab_checkin.py.md](../../scripts/hoyolab_checkin.py.md)（`docs/scripts/hoyolab_checkin.py.md`） |
@@ -126,6 +127,7 @@
 | 华润通微信版签到 | `scripts/huaruntong_wx.py` | `python3 scripts/huaruntong_wx.py` | `18 1 1 1 1` | 待检查 | [huaruntong_wx.py.md](../../scripts/huaruntong_wx.py.md)（`docs/scripts/huaruntong_wx.py.md`） |
 | 华住会签到 | `scripts/huazhu.py` | `python3 scripts/huazhu.py` | `5 9 * * *` | 待检查 | [huazhu.py.md](../../scripts/huazhu.py.md)（`docs/scripts/huazhu.py.md`） |
 | 好游快爆游戏签到 | `scripts/hykb_gamesign.js` | `node scripts/hykb_gamesign.js` | `50 1 * * *` | 待检查 | [hykb_gamesign.js.md](../../scripts/hykb_gamesign.js.md)（`docs/scripts/hykb_gamesign.js.md`） |
+| iamtxt 每日签到 | `scripts/iamtxtsignin.py` | `python3 scripts/iamtxtsignin.py` | `21 10 * * *` | 待检查 | [iamtxtsignin.py.md](../../scripts/iamtxtsignin.py.md)（`docs/scripts/iamtxtsignin.py.md`） |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `1 21 * * *` | 待检查 | [ikuuu_checkin.py.md](../../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
 | SF轻小说签到 | `scripts/illustar0_sf_autocheckin.py` | `python3 scripts/illustar0_sf_autocheckin.py` | `16 9 * * *` | 待检查 | [illustar0_sf_autocheckin.py.md](../../scripts/illustar0_sf_autocheckin.py.md)（`docs/scripts/illustar0_sf_autocheckin.py.md`） |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `8 1 * * *` | 待检查 | [iqiyi_checkin.py.md](../../scripts/iqiyi_checkin.py.md)（`docs/scripts/iqiyi_checkin.py.md`） |
@@ -262,6 +264,7 @@
 | 掘金好好生活计划打卡 | `scripts/task_0e52328d.py` | `python3 scripts/task_0e52328d.py` | `2 1 * * *` | 待检查 | [task_0e52328d.py.md](../../scripts/task_0e52328d.py.md)（`docs/scripts/task_0e52328d.py.md`） |
 | 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
+| 联想商城每日签到 | `scripts/task_293255e8.py` | `python3 scripts/task_293255e8.py` | `22 10 * * *` | 待检查 | [task_293255e8.py.md](../../scripts/task_293255e8.py.md)（`docs/scripts/task_293255e8.py.md`） |
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
