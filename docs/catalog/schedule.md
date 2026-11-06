@@ -93,6 +93,7 @@
 | 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../scripts/config.py.md)（`docs/scripts/config.py.md`） |
 | 智谱清言每日领分与余额 | `scripts/content.js` | `node scripts/content.js` | `37 9 * * *` | 待检查 | [content.js.md](../scripts/content.js.md)（`docs/scripts/content.js.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
+| 加密货币 INR 报价监控 | `scripts/cryptocurrency.py` | `python3 scripts/cryptocurrency.py` | `*/5 * * * *` | 待检查 | [cryptocurrency.py.md](../scripts/cryptocurrency.py.md)（`docs/scripts/cryptocurrency.py.md`） |
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `22 10,14,18 * * *` | 待检查 | [dachao.py.md](../scripts/dachao.py.md)（`docs/scripts/dachao.py.md`） |
 | 大海资源站每日签到 | `scripts/dahai.js` | `node scripts/dahai.js` | `0 30 11 * * *` | 待检查 | [dahai.js.md](../scripts/dahai.js.md)（`docs/scripts/dahai.js.md`） |
 | WPS天天领福利（可选任务中心） | `scripts/daily_benefits.py` | `python3 scripts/daily_benefits.py` | `47 1 1 1 1` | 待检查 | [daily_benefits.py.md](../scripts/daily_benefits.py.md)（`docs/scripts/daily_benefits.py.md`） |

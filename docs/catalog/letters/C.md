@@ -1,6 +1,6 @@
 # 字母索引 · C
 
-共 **37** 个脚本。返回 [`目录首页`](../README.md)。
+共 **38** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -41,3 +41,4 @@
 | 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../../scripts/config.py.md)（`docs/scripts/config.py.md`） |
 | 智谱清言每日领分与余额 | `scripts/content.js` | `node scripts/content.js` | `37 9 * * *` | 待检查 | [content.js.md](../../scripts/content.js.md)（`docs/scripts/content.js.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
+| 加密货币 INR 报价监控 | `scripts/cryptocurrency.py` | `python3 scripts/cryptocurrency.py` | `*/5 * * * *` | 待检查 | [cryptocurrency.py.md](../../scripts/cryptocurrency.py.md)（`docs/scripts/cryptocurrency.py.md`） |

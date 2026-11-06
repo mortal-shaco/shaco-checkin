@@ -15694,6 +15694,173 @@
       }
     },
     {
+      "catalogId": "321f71ffb2ef28ff",
+      "applicationKey": "gitlab.com/imdineshsingh/cryptocurrency::cryptocurrency",
+      "checkProfile": {
+        "requiredEnv": [
+          "CRYPTO_CURRENCY",
+          "CRYPTO_TARGET_INR"
+        ],
+        "optionalEnv": [
+          "CRYPTO_SAMPLES",
+          "CRYPTO_REFRESH_SECONDS",
+          "CRYPTO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CRYPTO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CRYPTO_SAMPLES": "1",
+          "CRYPTO_REFRESH_SECONDS": "60",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "已验证报价 (INR)",
+          "最终状态 success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "查询并展示 BTC、BCH、LTC、DASH、DGB、ZEC 六种币的 INR 报价，沿用上游 Coinome 页面及价格排列约定。",
+          "选择单币种与目标价，严格高于当前阈值时提醒，同次运行自动提高阈值。",
+          "保留旧版命令行轮询间隔参数，使用环境变量替代交互，支持有限次数连续采样。",
+          "青龙定时运行及汇总通知，含成功、失败、配置错误和断网预演结果；预演仅模拟通知。",
+          "完全断网预演、带阶段耗时的中文日志和单行 TASK_SUMMARY 结构化统计。",
+          "仅在 HTTP 200、HTML 响应和六项有限正数价格校验通过后判定行情采样成功。"
+        ],
+        "sideEffects": [
+          "实测模式按通知开关调用青龙通知模块发送任务汇总及上涨提醒。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "加密货币 INR 报价监控",
+      "path": "scripts/cryptocurrency.py",
+      "sha256": "712f310059dd525a0814119e806f6fe278f38d8a33cc942a104ae441bffeb89e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "gitlab.com/imdineshsingh/Cryptocurrency",
+        "branch": "master",
+        "commit": "d5d3dbf7ddfa711a61739ee9b0df87ecd0eafbcb",
+        "originalPath": "cryptocurrency.py"
+      },
+      "cron": "*/5 * * * *",
+      "command": "python3 scripts/cryptocurrency.py",
+      "environment": [
+        {
+          "name": "CRYPTO_CURRENCY",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "自行选择要监控的币种，替代原脚本交互选择。",
+          "format": "BTC、BCH、LTC、DASH、DGB、ZEC 之一，忽略大小写"
+        },
+        {
+          "name": "CRYPTO_TARGET_INR",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "自行设置希望收到上涨提醒的 INR 价格，替代原脚本交互输入。",
+          "format": "有限正数，每次启动重置为此值"
+        },
+        {
+          "name": "CRYPTO_SAMPLES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置单次任务采样次数，默认 1。",
+          "format": "1 至 120 的整数，同次运行保留上涨后的新阈值"
+        },
+        {
+          "name": "CRYPTO_REFRESH_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置采样间隔，默认 60 秒；旧版单个命令行整数参数仍可使用且优先。",
+          "format": "1 至 3600 的整数，仅多次采样时等待，预演不等待"
+        },
+        {
+          "name": "CRYPTO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验收时设置为 1，固定样例不代表真实行情。",
+          "format": "1、true、yes、on 开启，默认关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行指定需要通知的脚本列表，未设置时默认选中本任务。",
+          "format": "英文逗号、分号或空白分隔目录编号、脚本路径、文件名或通配符；空值关闭全部；* 选择全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可填写已有青龙 notify.py 所在目录，亦自动查找可导入模块及青龙标准目录。",
+          "format": "本地目录路径，可选；通知失败保持业务退出码"
+        }
+      ],
+      "multiAccount": {
+        "supported": false,
+        "separator": null,
+        "rule": "公开行情查询无需登录，不读取或处理账号凭据。",
+        "unsupportedReason": "上游为匿名公开报价任务，没有账号契约。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询并展示 BTC、BCH、LTC、DASH、DGB、ZEC 六种币的 INR 报价，沿用上游 Coinome 页面及价格排列约定。",
+        "选择单币种与目标价，严格高于当前阈值时提醒，同次运行自动提高阈值。",
+        "保留旧版命令行轮询间隔参数，使用环境变量替代交互，支持有限次数连续采样。",
+        "青龙定时运行及汇总通知，含成功、失败、配置错误和断网预演结果；预演仅模拟通知。",
+        "完全断网预演、带阶段耗时的中文日志和单行 TASK_SUMMARY 结构化统计。",
+        "仅在 HTTP 200、HTML 响应和六项有限正数价格校验通过后判定行情采样成功。"
+      ],
+      "sideEffects": [
+        "实测模式按通知开关调用青龙通知模块发送任务汇总及上涨提醒。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/321f71ffb2ef28ff",
+        "candidateSha256": "520f6a5e6fb8d50e0da570086b58a08eb7ceb803241e9476cc164b4569b7424e"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "520f6a5e6fb8d50e0da570086b58a08eb7ceb803241e9476cc164b4569b7424e",
+        "releaseSha256": "712f310059dd525a0814119e806f6fe278f38d8a33cc942a104ae441bffeb89e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T05:27:23.425313+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "520f6a5e6fb8d50e0da570086b58a08eb7ceb803241e9476cc164b4569b7424e",
+          "toCandidateSha256": "712f310059dd525a0814119e806f6fe278f38d8a33cc942a104ae441bffeb89e",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "7b77205efaf0158a",
       "applicationKey": "cat-zaizai/zaizaicat-checkin::dachao",
       "checkProfile": {
