@@ -45393,6 +45393,242 @@
       }
     },
     {
+      "catalogId": "c346af04eb70ab9b",
+      "applicationKey": "anchengxiake/ql-checkin::south",
+      "checkProfile": {
+        "requiredEnv": [
+          "SOUTHPLUS_COOKIE"
+        ],
+        "optionalEnv": [
+          "COOKIE",
+          "SOUTHPLUS_ACCOUNTS",
+          "SOUTHPLUS_USERNAME",
+          "SOUTHPLUS_PASSWORD",
+          "SOUTHPLUS_SITE",
+          "SOUTHPLUS_USER_AGENT",
+          "SOUTHPLUS_DRY_RUN",
+          "SOUTHPLUS_TIMEOUT",
+          "RANDOM_SIGNIN",
+          "MAX_RANDOM_DELAY",
+          "SOUTHPLUS_CAPTCHA_RETRY_LIMIT",
+          "SOUTHPLUS_CAPTCHA_RETRY_BACKOFF",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "SOUTHPLUS_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "RANDOM_SIGNIN": "true",
+          "MAX_RANDOM_DELAY": "3600",
+          "SOUTHPLUS_TIMEOUT": "20",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "通过独立 HTTP 客户端完成 SouthPlus 日常与周常任务申请、完成和奖励结算。",
+          "支持完整 Cookie、浏览器 Cookie 对象 JSON 数组及旧版 COOKIE 入口。",
+          "支持合并用户名密码多账号登录与旧版单账号入口；可选公开 ddddocr 和 Pillow 包，在内存中通过双识别器和多图像预处理识别验证码。",
+          "保留每日 9 点定时和默认一小时内随机延迟；可配置站点、浏览器标识与请求超时。",
+          "校验登录、申请冷却及明确业务成功标记；未知状态失败闭合，不绕过浏览器验证。",
+          "提供断网预演、脱敏分阶段日志、逐账号统计、单行 TASK_SUMMARY 和青龙通知。"
+        ],
+        "sideEffects": [
+          "密码模式提交登录表单并创建服务端登录会话。",
+          "申请日常与周常任务，完成任务并结算站内奖励。",
+          "按通知开关与脚本选择器发送脱敏通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "SouthPlus签到",
+      "path": "scripts/south.py",
+      "sha256": "8b10e0642cf498a53bcc61311f43617fcc6eb4ae16ef20e35128da302cf0cb6b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "anchengxiake/ql-checkin",
+        "branch": "main",
+        "commit": "643d3c51cb793d8d128d50a8a98b7465d40fff14",
+        "originalPath": "south.py"
+      },
+      "cron": "25 10 * * *",
+      "command": "python3 scripts/south.py",
+      "environment": [
+        {
+          "name": "SOUTHPLUS_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在所选 SouthPlus 站点登录并完成浏览器验证，在开发者工具网络面板的站内请求中复制 Cookie 请求头。密码登录可用 SOUTHPLUS_ACCOUNTS 替代此规范入口。",
+          "format": "每个非空行一个账号的完整 Cookie；也接受单行浏览器 Cookie 对象 JSON 数组，数组表示一个账号。不以 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容入口；获取方式与 SOUTHPLUS_COOKIE 相同，仅规范变量为空时使用。",
+          "format": "与 SOUTHPLUS_COOKIE 相同。"
+        },
+        {
+          "name": "SOUTHPLUS_ACCOUNTS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "使用本人注册的用户名和密码；存在 Cookie 时不启用密码模式。",
+          "format": "每个非空行一个用户名|密码，仅在首个 | 分割，保留密码中的后续 |。用户名不能包含 | 或换行。"
+        },
+        {
+          "name": "SOUTHPLUS_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版单账号入口，填写本人用户名，配合 SOUTHPLUS_PASSWORD；优先级低于 Cookie 和合并密码变量。",
+          "format": "单个用户名。"
+        },
+        {
+          "name": "SOUTHPLUS_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "填写与 SOUTHPLUS_USERNAME 属于同一账号的密码；推荐改用合并变量 SOUTHPLUS_ACCOUNTS。",
+          "format": "单账号密码。"
+        },
+        {
+          "name": "SOUTHPLUS_SITE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认 https://www.south-plus.net；仅在确认官方镜像可信后手动设置，Cookie 只发送到此站点，跨站跳转被拒绝。",
+          "format": "HTTPS 站点根地址，不含凭据、路径、查询或片段。"
+        },
+        {
+          "name": "SOUTHPLUS_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从获取 Cookie 的同一个浏览器开发者工具复制 User-Agent 请求头。",
+          "format": "单行浏览器标识；默认沿用上游 Chrome/150 浏览器标识。"
+        },
+        {
+          "name": "SOUTHPLUS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 进行断网预演，包含通知预演，不执行随机等待。",
+          "format": "1/true/yes/on 开启，0/false/no/off 关闭，默认关闭。"
+        },
+        {
+          "name": "SOUTHPLUS_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络情况设置，默认 20 秒。",
+          "format": "1 至 120 的整数，控制每次 HTTP 请求超时。"
+        },
+        {
+          "name": "RANDOM_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "沿用上游随机签到开关，默认 true。",
+          "format": "1/true/yes/on 或 0/false/no/off。"
+        },
+        {
+          "name": "MAX_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "沿用上游随机延迟上限，默认 3600 秒；设为 0 可关闭等待。",
+          "format": "0 至 86400 的整数，单位秒。"
+        },
+        {
+          "name": "SOUTHPLUS_CAPTCHA_RETRY_LIMIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "密码登录需要验证码时使用；可通过公开包管理器手动安装 ddddocr 与 Pillow。脚本不下载或安装任何模型。",
+          "format": "0 至 10 的整数，默认 3；0 关闭识别；不再支持无限重试 -1。"
+        },
+        {
+          "name": "SOUTHPLUS_CAPTCHA_RETRY_BACKOFF",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "调整验证码被拒绝后的等待间隔，默认 2 秒。",
+          "format": "0 至 10 的整数；按尝试次数递增但最多等待 10 秒。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "auto 模式下配置通知脚本选择器；未配置或空值均不发送本脚本通知。",
+          "format": "逗号、分号或空白分隔；支持目录标识 c346af04eb70ab9b、south.py、candidate.py、脚本相对路径和文件名通配符；* 表示全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙已配置通知模块所在目录；也会检查标准青龙路径及可导入的 notify 模块。",
+          "format": "包含 notify.py 或 sendNotify.js 的本地目录；模块缺失或发送失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号。规范入口为 SOUTHPLUS_COOKIE；密码模式使用 SOUTHPLUS_ACCOUNTS，每行用户名|密码，只在首个 | 分割。Cookie、旧版 COOKIE、合并密码、旧版单账号密码依次取首个可用入口。账号独立执行，任一失败整体非零退出。"
+      },
+      "dependencies": [
+        "ddddocr",
+        "Pillow"
+      ],
+      "features": [
+        "通过独立 HTTP 客户端完成 SouthPlus 日常与周常任务申请、完成和奖励结算。",
+        "支持完整 Cookie、浏览器 Cookie 对象 JSON 数组及旧版 COOKIE 入口。",
+        "支持合并用户名密码多账号登录与旧版单账号入口；可选公开 ddddocr 和 Pillow 包，在内存中通过双识别器和多图像预处理识别验证码。",
+        "保留每日 9 点定时和默认一小时内随机延迟；可配置站点、浏览器标识与请求超时。",
+        "校验登录、申请冷却及明确业务成功标记；未知状态失败闭合，不绕过浏览器验证。",
+        "提供断网预演、脱敏分阶段日志、逐账号统计、单行 TASK_SUMMARY 和青龙通知。"
+      ],
+      "sideEffects": [
+        "密码模式提交登录表单并创建服务端登录会话。",
+        "申请日常与周常任务，完成任务并结算站内奖励。",
+        "按通知开关与脚本选择器发送脱敏通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c346af04eb70ab9b",
+        "candidateSha256": "fd86000e1ceb18462d156ccb63013969fc5e6746cc4781a7d8b3d542780db6cd"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "fd86000e1ceb18462d156ccb63013969fc5e6746cc4781a7d8b3d542780db6cd",
+        "releaseSha256": "8b10e0642cf498a53bcc61311f43617fcc6eb4ae16ef20e35128da302cf0cb6b",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T06:01:12.356298+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "fd86000e1ceb18462d156ccb63013969fc5e6746cc4781a7d8b3d542780db6cd",
+          "toCandidateSha256": "8b10e0642cf498a53bcc61311f43617fcc6eb4ae16ef20e35128da302cf0cb6b",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "cf6fb60f0d69e9ed",
       "applicationKey": "cn-grace/qinglongscripts::ssl",
       "checkProfile": {
@@ -75110,6 +75346,244 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "f2f9c07cc80eb030cc3fc845db89dcac88c5ac6900a9bcb7813897dc60e84945",
           "toCandidateSha256": "2b247f1524e31dc48b12b4735c14e2a85ebd0263c75b599b86ec6d4e77893918",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "d0e6679f8cb579d7",
+      "applicationKey": "chavyleung/scripts::zsfc",
+      "checkProfile": {
+        "requiredEnv": [
+          "ZSFC_CONFIG"
+        ],
+        "optionalEnv": [
+          "ZSFC_iFlowdId",
+          "ZSFC_FLOWS",
+          "ZSFC_DRY_RUN",
+          "ZSFC_SHOP",
+          "zsfc_shop",
+          "ZSFC_SHOP_MAX_SPEND",
+          "ZSFC_SHOP_ALLOW_MONEY",
+          "ZSFC_SHOP_NAME",
+          "zsfc_bang_shopname",
+          "ZSFC_SHOP_STATE_FILE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ZSFC_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ZSFC_DRY_RUN": "0",
+          "ZSFC_SHOP": "0"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "每日签到并识别已签到状态",
+          "查询本月累计签到天数，补领已达到门槛的累计奖励",
+          "浏览游戏背包并领取查看动态、浏览背包、游戏活跃的已达标每日奖励",
+          "周六及周日领取进行游戏、花费点券的已达标每周奖励；不自动游戏或花费点券完成任务",
+          "可选查询商城点券和消费券余额、紫钻会员折扣，精确匹配指定商品，按规格计算购买计划",
+          "显式开启的16点后预算内商城购买，支持月底消费券和点券策略、非月底补齐最低档、月份轮换商品以及永久商品防重记录",
+          "逐行多账号、完全断网预演、超时及大小限制、明确业务成功检查、脱敏分阶段日志与结构化汇总",
+          "按青龙通知开关和脚本选择器发送成功、失败、部分失败或配置错误总结；预演仅模拟通知"
+        ],
+        "sideEffects": [
+          "提交每日签到及领取累计、每日、每周已达标奖励",
+          "浏览背包可能更新任务进度",
+          "显式开启购物时消耗授权的消费券及可选点券并获得商品",
+          "显式开启购物时写入本地永久商品防重记录",
+          "被通知策略选中时通过青龙通知通道发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "掌上飞车签到与商城",
+      "path": "scripts/zsfc.js",
+      "sha256": "1dcf297f28101fffe1ab2fbb67748e9bddca422c1cd42ac2befb347fc85f9522",
+      "stage": "released",
+      "license": "GPL-3.0-only",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "chavyleung/scripts",
+        "branch": "master",
+        "commit": "bfab3c906f3d5d126e9094f15730e025f7f32128",
+        "originalPath": "zsfc/zsfc.js",
+        "related": [
+          {
+            "catalogId": "0552e99fb9621700",
+            "sha256": "01ecd2637cb721fdf50417d1c3cfedd437fd5b52742b146b5e15c5fd309b10ab",
+            "repository": "chavyleung/scripts",
+            "url": "https://github.com/chavyleung/scripts.git",
+            "branch": "master",
+            "commit": "bfab3c906f3d5d126e9094f15730e025f7f32128",
+            "originalPath": "zsfc/zsfc.treasure.js",
+            "license": "GPL-3.0-only"
+          }
+        ]
+      },
+      "cron": "51 0,21 * * *",
+      "command": "node scripts/zsfc.js",
+      "environment": [
+        {
+          "name": "ZSFC_CONFIG",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在掌上飞车 APP 进入资讯栏签到（每日福利），从 comm.ams.game.qq.com/ams/ame/amesvr 请求体获取 iActivityId 和查询累签的 iFlowId；从 Cookie 获取 accessToken（或 access_token）、openId（或 openid），解码 tokenParams 获取 roleId、uin、areaId。再进入游戏栏掌飞商城，从 bang.qq.com/app/speed/mall/main2 的查询参数获取 token、userId 及其余同账号字段。将值手动填入账号 JSON；每月重新抓取活动和流水编号；商城登录失效时重新抓取。不要向他人提供抓包或凭据。",
+          "format": "每个非空行一个完整 JSON 对象，禁止用 & 或 @ 分隔账号；必含 accessToken、openid、iActivityId、iFlowId、uin、areaId、userId、token、roleId；每个字段也兼容 zsfc_ 前缀。凭据保留原值，不按字符拆分；活动、流水和区服编号用数字字符串。"
+        },
+        {
+          "name": "ZSFC_iFlowdId",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游签到抓包写入的流水和活动组合；优先使用各账号 JSON 内的独立字段。",
+          "format": "查询流水编号/活动编号；仅在账号对应字段缺失时补足；多账号不同活动时必须写在各自 JSON 内。"
+        },
+        {
+          "name": "ZSFC_FLOWS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "对照当月每日福利页面对应奖励请求的 iFlowId 手动更新；上游硬编码编号可能过期。",
+          "format": "JSON 对象，可覆盖 daily（周日至周六七个编号数组）、accumulative（天数到编号对象）、dailyTask 和 weeklyTask（任务名到编号对象）；各编号必须为数字。只更新实际观察到的流水，不填猜测值。"
+        },
+        {
+          "name": "ZSFC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "断网检查时设置，正式运行时不设置或设为 0。",
+          "format": "1 开启完全断网预演；0 正式运行；预演不加载通知模块，不写购买记录。"
+        },
+        {
+          "name": "ZSFC_SHOP",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要自动购买时显式开启，默认关闭以避免消费。",
+          "format": "1 开启，0 关闭；优先于可选兼容输入 zsfc_shop；每天16点后执行购买。"
+        },
+        {
+          "name": "zsfc_shop",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容原 BoxJS 的商城购买开关，可迁移到 ZSFC_SHOP。",
+          "format": "true 或 false；仅在 ZSFC_SHOP 未设置时生效；默认关闭。"
+        },
+        {
+          "name": "ZSFC_SHOP_MAX_SPEND",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置每账号每轮最多花费的商城金额，开启购买时必须提供。",
+          "format": "正整数；默认无预算，开启购物但未设置将配置失败；默认仅允许消费券，不主动花费点券。"
+        },
+        {
+          "name": "ZSFC_SHOP_ALLOW_MONEY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在明确接受点券消费时开启。",
+          "format": "1 允许点券，默认 0；月底最后两天可搭配点券，非月底仅允许点券补齐最低档，仍受总预算约束。"
+        },
+        {
+          "name": "ZSFC_SHOP_NAME",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从掌飞商城复制在售商品的完整名称。",
+          "format": "完整商品名称；未设置时按月份循环选择进气系统+1、点火装置+1、引擎装置+1；兼容 zsfc_bang_shopname。"
+        },
+        {
+          "name": "zsfc_bang_shopname",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容原 BoxJS 的指定商品名，可迁移到 ZSFC_SHOP_NAME。",
+          "format": "完整商品名称；仅在 ZSFC_SHOP_NAME 未设置时生效。"
+        },
+        {
+          "name": "ZSFC_SHOP_STATE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定可写的本地防重记录文件，不依赖私有仓库；默认候选脚本旁 .zsfc-shop-state.json。",
+          "format": "本地文件路径；仅启用正式购物时使用。永久商品请求前记录待确认状态，成功后记录已购买；待确认也阻止再次购买，请核对库存后手动处理记录。不同账号使用摘要区分，不保存凭据。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中填写要通知的脚本；设置后替换默认名单。",
+          "format": "逗号、分号或空白分隔；支持目录相对路径 zsfc/zsfc.js、文件名 zsfc.js 或 candidate.js、目录编号 d0e6679f8cb579d7，支持 * 通配符；* 选择全部，空值不选任何脚本。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知模块在自定义目录时设置。",
+          "format": "包含 sendNotify.js 的目录；随后依次查找 /ql/data/scripts 和 /ql/scripts；模块不可用只记录通知失败。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "ZSFC_CONFIG 每个非空行一个完整账号 JSON 对象；同账号登录及商城字段合并保存，兼容 zsfc_ 字段前缀。账号依次独立执行，单个账号配置或业务失败不阻止其余账号；任一账号失败则进程非零退出。"
+      },
+      "dependencies": [
+        "json5"
+      ],
+      "features": [
+        "每日签到并识别已签到状态",
+        "查询本月累计签到天数，补领已达到门槛的累计奖励",
+        "浏览游戏背包并领取查看动态、浏览背包、游戏活跃的已达标每日奖励",
+        "周六及周日领取进行游戏、花费点券的已达标每周奖励；不自动游戏或花费点券完成任务",
+        "可选查询商城点券和消费券余额、紫钻会员折扣，精确匹配指定商品，按规格计算购买计划",
+        "显式开启的16点后预算内商城购买，支持月底消费券和点券策略、非月底补齐最低档、月份轮换商品以及永久商品防重记录",
+        "逐行多账号、完全断网预演、超时及大小限制、明确业务成功检查、脱敏分阶段日志与结构化汇总",
+        "按青龙通知开关和脚本选择器发送成功、失败、部分失败或配置错误总结；预演仅模拟通知"
+      ],
+      "sideEffects": [
+        "提交每日签到及领取累计、每日、每周已达标奖励",
+        "浏览背包可能更新任务进度",
+        "显式开启购物时消耗授权的消费券及可选点券并获得商品",
+        "显式开启购物时写入本地永久商品防重记录",
+        "被通知策略选中时通过青龙通知通道发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d0e6679f8cb579d7",
+        "candidateSha256": "dcc0779afb1a4bad93db2b33b5c40b69d36eae18d84cbc4d78864f9c574133b2"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "dcc0779afb1a4bad93db2b33b5c40b69d36eae18d84cbc4d78864f9c574133b2",
+        "releaseSha256": "1dcf297f28101fffe1ab2fbb67748e9bddca422c1cd42ac2befb347fc85f9522",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T06:01:28.531902+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "dcc0779afb1a4bad93db2b33b5c40b69d36eae18d84cbc4d78864f9c574133b2",
+          "toCandidateSha256": "1dcf297f28101fffe1ab2fbb67748e9bddca422c1cd42ac2befb347fc85f9522",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

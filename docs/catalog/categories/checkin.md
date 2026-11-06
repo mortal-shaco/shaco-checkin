@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **341** 个脚本。返回 [`目录首页`](../README.md)。
+共 **343** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -203,6 +203,7 @@
 | 森空岛每日任务 | `scripts/skland_daily.py` | `python3 scripts/skland_daily.py` | `33 1 * * *` | 待检查 | [skland_daily.py.md](../../scripts/skland_daily.py.md)（`docs/scripts/skland_daily.py.md`） |
 | 什么值得买签到 | `scripts/smzdm_checkin.js` | `node scripts/smzdm_checkin.js` | `15 1 * * *` | 待检查 | [smzdm_checkin.js.md](../../scripts/smzdm_checkin.js.md)（`docs/scripts/smzdm_checkin.js.md`） |
 | SophNet 签到 | `scripts/sophnet_checkin.py` | `python3 scripts/sophnet_checkin.py` | `3 10 * * *` | 待检查 | [sophnet_checkin.py.md](../../scripts/sophnet_checkin.py.md)（`docs/scripts/sophnet_checkin.py.md`） |
+| SouthPlus签到 | `scripts/south.py` | `python3 scripts/south.py` | `25 10 * * *` | 待检查 | [south.py.md](../../scripts/south.py.md)（`docs/scripts/south.py.md`） |
 | 长江雨课堂课堂签到 | `scripts/startup.py` | `python3 scripts/startup.py` | `*/5 8-18 * * 1-5` | 待检查 | [startup.py.md](../../scripts/startup.py.md)（`docs/scripts/startup.py.md`） |
 | 33台词每日签到 | `scripts/sudojia_33agilestudio.js` | `node scripts/sudojia_33agilestudio.js` | `24 0 * * *` | 待检查 | [sudojia_33agilestudio.js.md](../../scripts/sudojia_33agilestudio.js.md)（`docs/scripts/sudojia_33agilestudio.js.md`） |
 | 所有女生会员签到 | `scripts/sudojia_allgirls.js` | `node scripts/sudojia_allgirls.js` | `33 2 * * *` | 待检查 | [sudojia_allgirls.js.md](../../scripts/sudojia_allgirls.js.md)（`docs/scripts/sudojia_allgirls.js.md`） |
@@ -344,4 +345,5 @@
 | 知末签到 | `scripts/znzmo.js` | `node scripts/znzmo.js` | `0 55 11 * * *` | 待检查 | [znzmo.js.md](../../scripts/znzmo.js.md)（`docs/scripts/znzmo.js.md`） |
 | Zodgame签到与广告任务 | `scripts/zodgame_test.py` | `python3 scripts/zodgame_test.py` | `35 2 * * *` | 待检查 | [zodgame_test.py.md](../../scripts/zodgame_test.py.md)（`docs/scripts/zodgame_test.py.md`） |
 | STC国芯论坛签到 | `scripts/zqlj_sign.py` | `python3 scripts/zqlj_sign.py` | `36 8 * * *` | 待检查 | [zqlj_sign.py.md](../../scripts/zqlj_sign.py.md)（`docs/scripts/zqlj_sign.py.md`） |
+| 掌上飞车签到与商城 | `scripts/zsfc.js` | `node scripts/zsfc.js` | `51 0,21 * * *` | 待检查 | [zsfc.js.md](../../scripts/zsfc.js.md)（`docs/scripts/zsfc.js.md`） |
 | 智行火车每日签到与积分查询 | `scripts/zxhc.js` | `node scripts/zxhc.js` | `24 10 * * *` | 待检查 | [zxhc.js.md](../../scripts/zxhc.js.md)（`docs/scripts/zxhc.js.md`） |
