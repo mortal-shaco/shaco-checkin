@@ -1,6 +1,6 @@
 # 字母索引 · A
 
-共 **29** 个脚本。返回 [`目录首页`](../README.md)。
+共 **30** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -23,6 +23,7 @@
 | apk.tw每日签到 | `scripts/apktw.py` | `python3 scripts/apktw.py` | `19 9 * * *` | 待检查 | [apktw.py.md](../../scripts/apktw.py.md)（`docs/scripts/apktw.py.md`） |
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |
+| 中转站每日签到 | `scripts/astrbot_plugin_relay.py` | `python3 scripts/astrbot_plugin_relay.py` | `39 9 * * *` | 待检查 | [astrbot_plugin_relay.py.md](../../scripts/astrbot_plugin_relay.py.md)（`docs/scripts/astrbot_plugin_relay.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
 | 微助教课堂签到 | `scripts/asynccheckin.py` | `python3 scripts/asynccheckin.py` | `*/3 7-22 * * 1-5` | 待检查 | [asynccheckin.py.md](../../scripts/asynccheckin.py.md)（`docs/scripts/asynccheckin.py.md`） |
 | 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `21 10,23 * * *` | 待检查 | [atxyq.py.md](../../scripts/atxyq.py.md)（`docs/scripts/atxyq.py.md`） |

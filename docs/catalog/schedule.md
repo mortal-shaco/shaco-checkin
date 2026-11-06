@@ -36,6 +36,7 @@
 | apk.tw每日签到 | `scripts/apktw.py` | `python3 scripts/apktw.py` | `19 9 * * *` | 待检查 | [apktw.py.md](../scripts/apktw.py.md)（`docs/scripts/apktw.py.md`） |
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |
+| 中转站每日签到 | `scripts/astrbot_plugin_relay.py` | `python3 scripts/astrbot_plugin_relay.py` | `39 9 * * *` | 待检查 | [astrbot_plugin_relay.py.md](../scripts/astrbot_plugin_relay.py.md)（`docs/scripts/astrbot_plugin_relay.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
 | 微助教课堂签到 | `scripts/asynccheckin.py` | `python3 scripts/asynccheckin.py` | `*/3 7-22 * * 1-5` | 待检查 | [asynccheckin.py.md](../scripts/asynccheckin.py.md)（`docs/scripts/asynccheckin.py.md`） |
 | 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `21 10,23 * * *` | 待检查 | [atxyq.py.md](../scripts/atxyq.py.md)（`docs/scripts/atxyq.py.md`） |
@@ -316,6 +317,7 @@
 | Vortexa 免费主机检查与领取 | `scripts/vortexa_free_claim.js` | `node scripts/vortexa_free_claim.js` | `1,11,21,31,41,51 * * * *` | 待检查 | [vortexa_free_claim.js.md](../scripts/vortexa_free_claim.js.md)（`docs/scripts/vortexa_free_claim.js.md`） |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `11 2 * * *` | 待检查 | [wangchao.py.md](../scripts/wangchao.py.md)（`docs/scripts/wangchao.py.md`） |
 | 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
+| WorkBuddy 每日积分签到 | `scripts/wb_daily_checkin.py` | `python3 scripts/wb_daily_checkin.py` | `38 9 * * *` | 待检查 | [wb_daily_checkin.py.md](../scripts/wb_daily_checkin.py.md)（`docs/scripts/wb_daily_checkin.py.md`） |
 | Web3Go每日签到 | `scripts/web3go.js` | `node scripts/web3go.js` | `48 8 * * *` | 待检查 | [web3go.js.md](../scripts/web3go.js.md)（`docs/scripts/web3go.js.md`） |
 | CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |

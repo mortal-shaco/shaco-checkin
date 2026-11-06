@@ -4919,6 +4919,253 @@
       }
     },
     {
+      "catalogId": "c7b19578064eea37",
+      "applicationKey": "astrbot-plugin-relay",
+      "checkProfile": {
+        "requiredEnv": [
+          "RELAY_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "RELAY_ACTION",
+          "RELAY_DRY_RUN",
+          "RELAY_SELECT",
+          "RELAY_TIMEOUT",
+          "RELAY_RANDOM_DELAY_MINUTES",
+          "RELAY_RETRY_TIMES",
+          "RELAY_RETRY_INTERVAL_MINUTES",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "RELAY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "RELAY_ACTION": "checkin",
+          "RELAY_TIMEOUT": "20",
+          "RELAY_RANDOM_DELAY_MINUTES": "20",
+          "RELAY_RETRY_TIMES": "3",
+          "RELAY_RETRY_INTERVAL_MINUTES": "30"
+        },
+        "successPatterns": [
+          "✅ 签到成功",
+          "☑️ 今日已签到",
+          "只读验证成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "独立 HTTP 实现 NewAPI、Veloera 及同源站每日签到，无需 AstrBot 或私有仓库",
+          "支持系统访问令牌、账号密码、浏览器 Cookie 三种认证及多站多账号",
+          "保留四条签到路径顺序：check_in、checkin、clock_in、sign_in；仅接口不存在或明确返回前端页面时继续探测，避免不确定请求立即重复变更",
+          "自动补全本站用户 ID 并发送 New-Api-User、Veloera-User、VoApi-User 请求头",
+          "提供只读查询及凭据验证开关，不因绑定或查询触发签到",
+          "查询余额、已用额度、签到奖励；支持多种奖励字段和余额差值，按 quota_per_unit 换算并保留小额精度",
+          "展示官方返回的非秘密账号身份；识别已签到、未启用、鉴权错误及人机验证，不绕过校验",
+          "每日 08:30 青龙调度、确定性延迟、有限失败重试、账号选择及单账号定时开关",
+          "兼容结构化账号字段及上游简单旧行式参数，复杂凭据用每行一个 JSON 对象无歧义保存",
+          "完全断网预演、分阶段时间轴、账号及任务统计、唯一 TASK_SUMMARY 记录和受全局策略控制的青龙通知"
+        ],
+        "sideEffects": [
+          "正式签到调用站点签到接口，可能增加账号额度及签到记录",
+          "密码模式登录会建立服务端登录会话",
+          "启用通知时通过现有青龙通知配置发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "中转站每日签到",
+      "path": "scripts/astrbot_plugin_relay.py",
+      "sha256": "ad26f2acfb102182f52671db904358be482b6c7aa8197f0173b85551801737ee",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "WFCrush/astrbot_plugin_relay_checkin",
+        "branch": "main",
+        "commit": "58b975d00aef1039a8bd9e216b6ddb9f4c960cbe",
+        "originalPath": "main.py",
+        "related": [
+          {
+            "catalogId": "03a726f792f8946d",
+            "sha256": "c24db01f53bcfae3babc902b8e831ed4f542a9b192b600f5a3ea848a055501e0",
+            "repository": "WFCrush/astrbot_plugin_relay_checkin",
+            "url": "https://github.com/WFCrush/astrbot_plugin_relay_checkin.git",
+            "branch": "main",
+            "commit": "58b975d00aef1039a8bd9e216b6ddb9f4c960cbe",
+            "originalPath": "tests/harness.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "b9d0683d50ba1522",
+            "sha256": "36a09023b919743eaf5fc0b51e39085ec03d939f9ae061928729458110182bc0",
+            "repository": "WFCrush/astrbot_plugin_relay_checkin",
+            "url": "https://github.com/WFCrush/astrbot_plugin_relay_checkin.git",
+            "branch": "main",
+            "commit": "58b975d00aef1039a8bd9e216b6ddb9f4c960cbe",
+            "originalPath": "tests/mockserver.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "13a76cada478067f",
+            "sha256": "e09187995b2b6143f220beb0c262798ae0d5a802dc06c47db0844fefbaf0c81a",
+            "repository": "WFCrush/astrbot_plugin_relay_checkin",
+            "url": "https://github.com/WFCrush/astrbot_plugin_relay_checkin.git",
+            "branch": "main",
+            "commit": "58b975d00aef1039a8bd9e216b6ddb9f4c960cbe",
+            "originalPath": "tests/test_run.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "dfc4d98e368ad09e",
+            "sha256": "0e5f66e24e5e9eab7ee5dac091e343bd5f376592d04cf589b95ca69d2979f34e",
+            "repository": "WFCrush/astrbot_plugin_relay_checkin",
+            "url": "https://github.com/WFCrush/astrbot_plugin_relay_checkin.git",
+            "branch": "main",
+            "commit": "58b975d00aef1039a8bd9e216b6ddb9f4c960cbe",
+            "originalPath": "tests/test_schedule.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "39 9 * * *",
+      "command": "python3 scripts/astrbot_plugin_relay.py",
+      "environment": [
+        {
+          "name": "RELAY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "每个站点分别登录；个人设置→安全设置生成系统访问令牌（不能用 sk- API 密钥），个人资料查看本站用户 ID。密码模式使用本站登录用户名及密码。Cookie 模式在浏览器自行完成人机校验后，从本站请求头复制完整 Cookie。全部凭据仅保存在青龙环境变量中。",
+          "format": "每个非空行一个 JSON 对象；url 必填，mode 为 token/password/cookie，分别填写 token、username 和 password、cookie；uid 为本站数字用户 ID，可留空尝试自动补全。可选 name、enabled、sched（后两者为布尔值）。同一行 JSON 保留凭据内所有分隔符，不用 & 或 @ 分账号。兼容上游简单旧行式：名称|HTTPS地址|token=令牌|uid=编号；user/pass、key/id/base 等旧字段仍可用，复杂凭据请用 JSON。"
+        },
+        {
+          "name": "RELAY_ACTION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需在青龙环境变量设置；默认执行签到。",
+          "format": "checkin 为签到并查询余额；query 或 verify 为只读账号验证及余额查询，密码模式仍需登录取得会话。默认 checkin。"
+        },
+        {
+          "name": "RELAY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "无网络预演时设为 1。",
+          "format": "1/true/yes/on 启用，不发送任何请求或通知、不等待；预演成功只代表配置通过。"
+        },
+        {
+          "name": "RELAY_SELECT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置原始账号序号或配置中的 name。",
+          "format": "空值处理全部启用且 sched 不为 false 的账号；非空值精确选择一个序号或名称，并允许手动处理 sched=false 的启用账号。"
+        },
+        {
+          "name": "RELAY_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按网络条件设置。",
+          "format": "5–120 的整数秒，默认 20，所有 HTTP 请求均设置超时并校验 TLS。"
+        },
+        {
+          "name": "RELAY_RANDOM_DELAY_MINUTES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按调度需要设置；0 关闭延迟。",
+          "format": "0–60 的整数分钟，默认 20；每日确定性随机延迟，仅正式签到等待。"
+        },
+        {
+          "name": "RELAY_RETRY_TIMES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按调度需要设置。",
+          "format": "0–3 的整数，默认 3；仅暂时网络错误、HTTP 429 或服务端错误重试，不因鉴权错误、人机验证、未启用而重试。"
+        },
+        {
+          "name": "RELAY_RETRY_INTERVAL_MINUTES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按调度需要设置。",
+          "format": "1–60 的整数分钟，默认 30；跨天停止本轮重试。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需在青龙配置通知脚本选择列表，设置后替代默认列表；本脚本未列入默认列表。",
+          "format": "用逗号、分号、空白或换行分隔；匹配目录编号 c7b19578064eea37、脚本相对路径、文件名或文件名通配符；* 选择全部，空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：已有青龙 notify.py 或 sendNotify.js 所在目录；也会尝试导入 notify.send 及青龙标准脚本目录。",
+          "format": "本地目录路径，仅用于可选通知集成；脚本业务无需该目录或其他仓库。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个独立站点账号，同站多账号也各占一行；同账号配套凭据集中于同一 JSON 对象；账号依次独立执行，任一失败整体非零退出。禁用账号和未选账号明确跳过，无可执行账号按配置错误退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "独立 HTTP 实现 NewAPI、Veloera 及同源站每日签到，无需 AstrBot 或私有仓库",
+        "支持系统访问令牌、账号密码、浏览器 Cookie 三种认证及多站多账号",
+        "保留四条签到路径顺序：check_in、checkin、clock_in、sign_in；仅接口不存在或明确返回前端页面时继续探测，避免不确定请求立即重复变更",
+        "自动补全本站用户 ID 并发送 New-Api-User、Veloera-User、VoApi-User 请求头",
+        "提供只读查询及凭据验证开关，不因绑定或查询触发签到",
+        "查询余额、已用额度、签到奖励；支持多种奖励字段和余额差值，按 quota_per_unit 换算并保留小额精度",
+        "展示官方返回的非秘密账号身份；识别已签到、未启用、鉴权错误及人机验证，不绕过校验",
+        "每日 08:30 青龙调度、确定性延迟、有限失败重试、账号选择及单账号定时开关",
+        "兼容结构化账号字段及上游简单旧行式参数，复杂凭据用每行一个 JSON 对象无歧义保存",
+        "完全断网预演、分阶段时间轴、账号及任务统计、唯一 TASK_SUMMARY 记录和受全局策略控制的青龙通知"
+      ],
+      "sideEffects": [
+        "正式签到调用站点签到接口，可能增加账号额度及签到记录",
+        "密码模式登录会建立服务端登录会话",
+        "启用通知时通过现有青龙通知配置发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c7b19578064eea37",
+        "candidateSha256": "a2f3b5f72a0918b5ebbf76a226a8d5b857d909802f7983a25f7bf9e7f905c280"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "a2f3b5f72a0918b5ebbf76a226a8d5b857d909802f7983a25f7bf9e7f905c280",
+        "releaseSha256": "ad26f2acfb102182f52671db904358be482b6c7aa8197f0173b85551801737ee",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:10:40.423134+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "a2f3b5f72a0918b5ebbf76a226a8d5b857d909802f7983a25f7bf9e7f905c280",
+          "toCandidateSha256": "ad26f2acfb102182f52671db904358be482b6c7aa8197f0173b85551801737ee",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "56e1597cff520f65",
       "applicationKey": "astudio",
       "checkProfile": {
@@ -58549,6 +58796,148 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "3abee6e54222b8af0832e86aa06ca7941bd140160daae10f464a15a93c296af1",
           "toCandidateSha256": "124dd3ddbb633c9f57e3995b3701c124f867964a88a653f2866790d939b8402e",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "437220302cb75855",
+      "applicationKey": "wb-daily",
+      "checkProfile": {
+        "requiredEnv": [
+          "WB_DAILY_CHECKIN_TOKEN"
+        ],
+        "optionalEnv": [
+          "WB_DAILY_CHECKIN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WB_DAILY_CHECKIN_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "TASK_SUMMARY=.*\"status\":\"success\""
+        ],
+        "features": [
+          "每日领取 WorkBuddy 积分；领取请求只发送一次，避免不确定结果下自动重复写入。",
+          "按原顺序使用两个官方状态接口兜底，官方状态显示已签到时跳过领取。",
+          "汇总本次和累计积分、账户真实余额、连续签到天数及活动名称；保留原有逐账号 JSON 结果并正确显示数值零。",
+          "支持令牌环境变量、兼容 --token 参数、可选本人本机登录文件，以及用户、组织和租户请求头。",
+          "支持每行一个账号，账号独立处理，全部账号结束后按业务结果返回退出码。",
+          "增加完全断网预演、超时、禁止重定向、响应大小限制、严格业务核验和敏感信息隐藏。",
+          "展示官方返回的昵称、用户名、显示名及公开用户标识，逐阶段记录结果与耗时，最终输出唯一 TASK_SUMMARY。",
+          "支持青龙通知开关、脚本选择与通知模块发现，通知失败不影响业务退出码。"
+        ],
+        "sideEffects": [
+          "正式运行时对尚未签到或状态暂不可查询的账号尝试领取每日积分。",
+          "启用通知且非预演时通过现有青龙通知模块发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "WorkBuddy 每日积分签到",
+      "path": "scripts/wb_daily_checkin.py",
+      "sha256": "8d131996755db5b032ffeb0be640ef6405f5a82b9313a2e3e05524aebb2450cb",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Keefe-Hu/WB-daily-checkin",
+        "branch": "main",
+        "commit": "740e36c8bcd5d9725eac08ecbd948ea8aa09d042",
+        "originalPath": "scripts/wb_daily_checkin.py"
+      },
+      "cron": "38 9 * * *",
+      "command": "python3 scripts/wb_daily_checkin.py",
+      "environment": [
+        {
+          "name": "WB_DAILY_CHECKIN_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 WorkBuddy 客户端登录信息中读取 auth.accessToken 或 auth.access_token；也可从本人向 https://www.codebuddy.cn 发起的已认证请求中获取 Authorization 的 Bearer 令牌部分。不要分享或公开这些值。macOS 文件位于 ~/Library/Application Support/CodeBuddyExtension/Data/Public/auth/workbuddy-desktop.info；Windows 位于 LOCALAPPDATA 或 APPDATA 下相同相对路径；Linux 位于 XDG_DATA_HOME 或 ~/.local/share 下相同相对路径。可在无客户端的青龙环境直接填写令牌，无需复制客户端或安装额外程序。",
+          "format": "每个非空行一个账号；每行为原始令牌、uid+token（只在第一个 + 处分割），或单行 JSON 对象，字段 token 必填，uid、org、domain 可选。uid 对应 account.uid/id，org 对应 account.enterpriseId/enterprise_id，domain 对应 auth.domain 或根级 domain。不同账号只能换行分隔。兼容 --token 参数优先输入；未配置环境变量时可选读取本人本机登录文件。"
+        },
+        {
+          "name": "WB_DAILY_CHECKIN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置为 1 开启完全断网预演；正式运行取消设置。",
+          "format": "1、true、yes、on 表示启用，默认关闭；预演仍需占位账号参数。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通知设为 auto 时配置选中脚本。未配置时此任务不在默认推送名单中。",
+          "format": "逗号、分号、空白或换行分隔；支持目录路径、文件名、文件名通配符、437220302cb75855；* 表示全部，空值表示关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写本人青龙 notify.py 或 sendNotify.js 所在目录；默认先尝试导入 notify.send，再查找青龙标准脚本目录。",
+          "format": "现有通知模块目录路径；通知失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；配套令牌和用户、组织、域字段放在同一个单行 JSON 对象中；兼容 uid+token 时只在第一个 + 处分割。逐账号执行，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日领取 WorkBuddy 积分；领取请求只发送一次，避免不确定结果下自动重复写入。",
+        "按原顺序使用两个官方状态接口兜底，官方状态显示已签到时跳过领取。",
+        "汇总本次和累计积分、账户真实余额、连续签到天数及活动名称；保留原有逐账号 JSON 结果并正确显示数值零。",
+        "支持令牌环境变量、兼容 --token 参数、可选本人本机登录文件，以及用户、组织和租户请求头。",
+        "支持每行一个账号，账号独立处理，全部账号结束后按业务结果返回退出码。",
+        "增加完全断网预演、超时、禁止重定向、响应大小限制、严格业务核验和敏感信息隐藏。",
+        "展示官方返回的昵称、用户名、显示名及公开用户标识，逐阶段记录结果与耗时，最终输出唯一 TASK_SUMMARY。",
+        "支持青龙通知开关、脚本选择与通知模块发现，通知失败不影响业务退出码。"
+      ],
+      "sideEffects": [
+        "正式运行时对尚未签到或状态暂不可查询的账号尝试领取每日积分。",
+        "启用通知且非预演时通过现有青龙通知模块发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/437220302cb75855",
+        "candidateSha256": "58d4cc6ad767f01044651828b7485bf50ab14c7f947621ec239057a42a4aa0fe"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "58d4cc6ad767f01044651828b7485bf50ab14c7f947621ec239057a42a4aa0fe",
+        "releaseSha256": "8d131996755db5b032ffeb0be640ef6405f5a82b9313a2e3e05524aebb2450cb",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T04:10:11.692424+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "58d4cc6ad767f01044651828b7485bf50ab14c7f947621ec239057a42a4aa0fe",
+          "toCandidateSha256": "8d131996755db5b032ffeb0be640ef6405f5a82b9313a2e3e05524aebb2450cb",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
