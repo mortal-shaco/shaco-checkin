@@ -58,6 +58,28 @@ Related reference: catalog 0d0cbd933e6f1226, app/sites/tieba.py (MIT),
 SHA256 d70c5badbccf1a87ebcd6d14aabd61f235256b6b256b8f7e0f76250713ef403f:
 confirmed that the signature covers every submitted field; no private imports reused.
 Combined maintained script: GPL-3.0-only; existing attributions retained.
+Merged yu-echo/tieba-checkin tieba_checkin.py (MIT), commit
+ de09eb5cafaef4272161929cc2f3f1e2341ea195, catalog 6c3e640c053aa974,
+SHA256 a2c9189df5373e984c043106362a40da3771f7afce0874d37af20b99a8996417.
+The MIT permission and warranty notice above also applies to this MIT source.
+The supplied upstream file contains no separate copyright notice.
+
+功能盘点与合并说明：主来源为 BDUSS 客户端分页签到、排名、短指纹、失败重试、
+PushPlus 通知和认证日期文件；相关来源为同一组客户端接口，另带随机启动等待、
+项目内调度与推送集成。其计划为每日 00:01 或 08:10，主来源没有 cron 声明。
+维护版网页签到、成长任务、热门吧关注、飞书及企业微信通知全部保留。
+保留维护版文件中的每日 08:23 计划；发布契约写作 09:52，需维护者核对调度差异。
+TIEBA_SIGN_MODE=client 显式切换客户端分页签到，默认 web 沿用网页接口。
+客户端模式显示排名和短指纹，失败等待 15 秒后刷新 TBS 重试一次。
+兼容 TIEBA_BDUSS，每行一个账号；优先级低于既有两个 Cookie 变量。
+TIEBA_LOG_NAMES=1 兼容逐吧详情。PUSHPLUS_TOKEN 为可选推送凭据，
+从本人 PushPlus 控制台获取，仅发送脱敏汇总并遵守全局通知开关。
+客户端可选 TIEBA_MIN_DELAY、TIEBA_MAX_DELAY 控制随机间隔，未设置时沿用
+TIEBA_DELAY_MS；TIEBA_REST_EVERY 默认 30、TIEBA_REST_MIN 默认 2、
+TIEBA_REST_MAX 默认 4 控制批次休息。所有时间单位为秒，配置先校验。
+移除主来源默认认证日期文件写入，凭据认证日期不能视作有效期。
+主来源此前失败为准备阶段私有路径缺失，本版本仅使用已提供源码和标准库，
+不依赖原仓库路径、应用程序或引导下载。
 Also incorporates compatible behavior from agluo/ql-script-hub
 tieba_checkin.py (MIT), catalog 38ff8ca6c57173b4.
 Reviewed and merged compatible behavior from trw131/TiebaCheckIn tieba.py
@@ -90,6 +112,8 @@ import fnmatch
 import hashlib
 import json
 import os
+import math
+import random
 import re
 import shutil
 import subprocess
@@ -114,6 +138,7 @@ NOTIFY_IDENTITIES = (
     "tieba_checkin.py",
     "output/candidate.py",
     "candidate.py",
+    "6c3e640c053aa974",
 )
 FORUMS_URL = "https://tieba.baidu.com/mo/q/newmoindex"
 SIGN_URL = "https://tieba.baidu.com/sign/add"
@@ -273,6 +298,18 @@ def notify(summary: str) -> str:
                              {"msgtype": "text", "text": {"content": summary}}))
         else:
             status += "；⚠️ 企业微信 key 格式无效，未发送"
+    pushplus = os.environ.get("PUSHPLUS_TOKEN", "").strip()
+    if pushplus:
+        try:
+            response = request_json("https://www.pushplus.plus/send",
+                                    {"Content-Type": "application/x-www-form-urlencoded"},
+                                    urllib.parse.urlencode({"token": pushplus, "title": NAME,
+                                                            "content": summary, "template": "txt"}).encode("utf-8"))
+            if str(response.get("code")) != "200":
+                raise RuntimeError("PushPlus 未确认成功")
+            status += "；✅ PushPlus已发送"
+        except Exception:
+            status += "；⚠️ PushPlus通知失败，已保留业务退出码"
     for label, url, payload in channels:
         try:
             response = request_json(url, {"Content-Type": "application/json"},
@@ -687,11 +724,169 @@ def run_hot_forums(cookie: str, dry_run: bool, verbose: bool, delay_seconds: flo
     return result
 
 
+CLIENT_LIKE_URL = "https://c.tieba.baidu.com/c/f/forum/like"
+CLIENT_SIGN_URL = "https://c.tieba.baidu.com/c/c/forum/sign"
+TBS_URL = "https://tieba.baidu.com/dc/common/tbs"
+
+
+def client_post(url: str, headers: dict[str, str], fields: dict[str, Any]) -> dict[str, Any]:
+    payload = dict(fields)
+    payload["sign"] = client_signature(payload)
+    return request_json(url, {**headers, "Content-Type": "application/x-www-form-urlencoded"},
+                        urllib.parse.urlencode(payload).encode("utf-8"))
+
+
+def client_tbs(headers: dict[str, str]) -> str:
+    response = request_json(TBS_URL, headers)
+    if str(response.get("is_login")) != "1" or not isinstance(response.get("tbs"), str) or not response["tbs"].strip():
+        raise RuntimeError("客户端登录状态未确认或缺少 TBS")
+    for field in ("nickname", "username", "name_show", "user_name", "uid"):
+        if response.get(field):
+            timeline("账号身份：" + str(response[field]), "└─")
+            break
+    return response["tbs"]
+
+
+def client_forums(headers: dict[str, str], bduss: str) -> list[dict[str, Any]]:
+    forums = []
+    seen = set()
+    # 分页响应不完整、重复或超限时整体失败，避免把部分列表当作完整成功。
+    for page in range(1, 1001):
+        response = client_post(CLIENT_LIKE_URL, headers, {
+            "BDUSS": bduss, "_client_type": "2", "_client_id": "wappc_1534235498291_488",
+            "_client_version": "9.7.8.0", "_phone_imei": "000000000000000",
+            "from": "1008621y", "page_no": str(page), "page_size": "200",
+            "model": "MI+5", "net_type": "1", "timestamp": str(int(time.time())), "vcode_tag": "11",
+        })
+        if str(response.get("error_code")) != "0":
+            raise RuntimeError("客户端关注列表未确认业务码 0")
+        groups = response.get("forum_list")
+        if not isinstance(groups, dict):
+            raise RuntimeError("客户端关注列表结构异常")
+        added = 0
+        for key in ("non-gconforum", "gconforum"):
+            items = groups.get(key, [])
+            if isinstance(items, dict):
+                items = [items]
+            if not isinstance(items, list):
+                raise RuntimeError("客户端分组结构异常")
+            for item in items:
+                if not isinstance(item, dict) or not item.get("name") or not str(item.get("id", "")).isdigit():
+                    raise RuntimeError("客户端贴吧必要字段异常")
+                fid = str(item["id"])
+                if fid not in seen:
+                    seen.add(fid)
+                    forums.append(item)
+                    added += 1
+        more = str(response.get("has_more"))
+        if more == "0":
+            return forums
+        if more != "1" or added == 0:
+            raise RuntimeError("客户端分页标记异常或重复页面")
+        timeline(f"✓ 已读取第 {page} 页，累计 {len(forums)} 项", "└─")
+        time.sleep(1)
+    raise RuntimeError("客户端分页超过安全上限")
+
+
+def client_sign(headers: dict[str, str], bduss: str, tbs: str, forum: dict[str, Any]) -> str:
+    response = client_post(CLIENT_SIGN_URL, headers, {
+        "BDUSS": bduss, "_client_type": "2", "_client_version": "9.7.8.0",
+        "_phone_imei": "000000000000000", "model": "MI+5", "net_type": "1",
+        "fid": str(forum["id"]), "kw": str(forum["name"]), "tbs": tbs,
+        "timestamp": str(int(time.time())),
+    })
+    code = str(response.get("error_code"))
+    if code == "0":
+        info = response.get("user_info")
+        rank = info.get("user_sign_rank") if isinstance(info, dict) else None
+        if str(rank).isdigit():
+            timeline(f"✓ 官方签到排名 {int(rank)}", "└─")
+        return "success"
+    if code == "160002":
+        return "already"
+    # 屏蔽不能证明签到完成，记录失败，不把跳过当作业务成功。
+    if code == "340006":
+        timeline("❌ 贴吧被屏蔽，未完成签到", "└─")
+    return "failed"
+
+
+def client_timing(delay_seconds: float) -> tuple[float, float, int, float, float]:
+    low = float(os.environ.get("TIEBA_MIN_DELAY", str(delay_seconds)))
+    high = float(os.environ.get("TIEBA_MAX_DELAY", str(max(low, delay_seconds))))
+    every = int(os.environ.get("TIEBA_REST_EVERY", "30"))
+    rest_low = float(os.environ.get("TIEBA_REST_MIN", "2"))
+    rest_high = float(os.environ.get("TIEBA_REST_MAX", "4"))
+    if (not all(math.isfinite(value) for value in (low, high, rest_low, rest_high))
+            or not 0 <= low <= high <= 3600 or not 0 <= rest_low <= rest_high <= 3600 or every < 1):
+        raise ValueError("客户端间隔或批次休息配置无效")
+    return low, high, every, rest_low, rest_high
+
+
+def run_client_forums(cookie: str, index: int, dry_run: bool, verbose: bool, delay_seconds: float) -> dict[str, int]:
+    stage(1, "客户端参数校验", lambda: validate_cookie(cookie))
+    low, high, every, rest_low, rest_high = client_timing(delay_seconds)
+    if dry_run:
+        for number, title in ((2, "客户端登录"), (3, "分页关注列表"), (4, "客户端签到与失败重试")):
+            stage(number, title, lambda: timeline("⏭️ 断网预演，跳过请求和副作用", "└─"))
+        result = empty_result()
+        result.update(total=1, skipped=1)
+        return result
+    headers = account_headers(cookie)
+    bduss = cookie_field(cookie, "BDUSS")
+    tbs = stage(2, "客户端登录", lambda: client_tbs(headers))
+    forums = stage(3, "分页读取关注列表", lambda: client_forums(headers, bduss))
+    timeline(f"✓ 完整关注列表 {len(forums)} 项", "└─")
+    result = empty_result()
+    result["total"] = len(forums)
+
+    def sign_batch(batch, active_tbs):
+        failed = []
+        for position, forum in enumerate(batch, 1):
+            name = str(forum["name"])
+            fingerprint = hashlib.sha1(name.encode("utf-8")).hexdigest()[:8]
+            label = name if verbose else f"fp={fingerprint}"
+            time.sleep(random.uniform(low, high))
+            if position % every == 0:
+                time.sleep(random.uniform(rest_low, rest_high))
+            try:
+                state = client_sign(headers, bduss, active_tbs, forum)
+            except Exception:
+                state = "failed"
+            timeline(f"客户端第 {position}/{len(batch)} 项 {label}：" +
+                     {"success": "✅ 签到成功", "already": "☑️ 今日已签到", "failed": "❌ 未确认成功"}[state], "├─")
+            if state == "failed":
+                failed.append(forum)
+            else:
+                result[state] += 1
+        return failed
+
+    def execute():
+        failed = sign_batch(forums, tbs)
+        if failed:
+            timeline(f"⚠️ {len(failed)} 项未完成，等待 15 秒后刷新 TBS 重试一次", "└─")
+            time.sleep(15)
+            try:
+                refreshed = client_tbs(headers)
+            except Exception:
+                timeline("❌ 刷新登录状态失败，保留失败项并结束重试", "└─")
+            else:
+                failed = sign_batch(failed, refreshed)
+        result["failed"] = len(failed)
+    stage(4, "客户端签到及失败重试", execute)
+    return result
+
+
 def run_account(cookie: str, index: int, dry_run: bool, verbose: bool, delay_seconds: float) -> dict[str, int]:
     validate_cookie(cookie)
+    mode = os.environ.get("TIEBA_SIGN_MODE", "web").strip().lower()
+    if mode not in {"web", "client"}:
+        raise ValueError("TIEBA_SIGN_MODE 仅支持 web 或 client")
+    if mode == "client":
+        client_timing(delay_seconds)
     hot = run_hot_forums(cookie, dry_run, verbose, delay_seconds)
     try:
-        result = run_forums(cookie, index, dry_run, verbose, delay_seconds)
+        runner = run_client_forums if mode == "client" else run_forums
+        result = runner(cookie, index, dry_run, verbose, delay_seconds)
     except Exception as error:
         timeline(f"❌ 逐吧签到流程失败：{type(error).__name__}；继续独立处理成长任务", "└─")
         result = empty_result()
@@ -763,7 +958,12 @@ def log_task_summary(
 def main() -> int:
     started = time.monotonic()
     dry_run = enabled("TIEBA_DRY_RUN")
-    accounts = parse_accounts(os.environ.get("TIEBA_COOKIE") or os.environ.get("TIE_BA_COOKIE"))
+    raw = os.environ.get("TIEBA_COOKIE") or os.environ.get("TIE_BA_COOKIE")
+    if not raw:
+        # 单值兼容入口允许凭据自身包含等号，仍然只按换行划分账号。
+        raw = "\n".join(line if re.match(r"BDUSS\s*=", line, re.IGNORECASE) else "BDUSS=" + line
+                        for line in (item.strip() for item in os.environ.get("TIEBA_BDUSS", "").splitlines()) if line)
+    accounts = parse_accounts(raw)
     log_banner("断网预演" if dry_run else "正式签到", len(accounts))
 
     if not accounts:
@@ -774,7 +974,7 @@ def main() -> int:
         log_task_summary([], notification, started, dry_run, "configuration_error")
         return 2
 
-    verbose = enabled("TIEBA_VERBOSE")
+    verbose = enabled("TIEBA_VERBOSE") or enabled("TIEBA_LOG_NAMES")
     try:
         delay_ms = int(os.environ.get("TIEBA_DELAY_MS", "1200"))
     except ValueError:
