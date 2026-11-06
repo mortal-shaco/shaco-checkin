@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/dachao.py`
 - 青龙命令：`python3 scripts/dachao.py`
 - 建议 Cron：`22 10,14,18 * * *`
-- 发布哈希：`9da9bb659d89bf19f968d2a53a42e4c2fff233e16b3aee28ed50c280f0d5c89f`
+- 发布哈希：`a28511b4bb790f8a525d685be748f3776cf16c5ac8f25e3648b4725fc884e1ba`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -100,7 +100,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9da9bb659d89bf19f968d2a53a42e4c2fff233e16b3aee28ed50c280f0d5c89f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7b77205efaf0158a`。
+SHA-256 `a28511b4bb790f8a525d685be748f3776cf16c5ac8f25e3648b4725fc884e1ba`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7b77205efaf0158a`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tsthb_checkin.py`
 - 青龙命令：`python3 scripts/tsthb_checkin.py`
 - 建议 Cron：`19 1 * * *`
-- 发布哈希：`1b1dbd16d097b4946dbfb0c1ce4fdbab78ffa801a323f2f0f78bec56d1d03aed`
+- 发布哈希：`c04f27c294df4e8059eb8de625f0005ebc8eb7f9139eaaa569c79213e3d83bf8`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1b1dbd16d097b4946dbfb0c1ce4fdbab78ffa801a323f2f0f78bec56d1d03aed`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
+SHA-256 `c04f27c294df4e8059eb8de625f0005ebc8eb7f9139eaaa569c79213e3d83bf8`；live 业务成功证据位于 `projects/checkin/validation/82616d06df4e5f53`。
 
 ## 副作用与风险
 

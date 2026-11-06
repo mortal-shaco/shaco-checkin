@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_d530fa58.py`
 - 青龙命令：`python3 scripts/task_d530fa58.py`
 - 建议 Cron：`0 5 * * *`
-- 发布哈希：`9640c39dfaaccb99286e49e3f268fdf389ea8e280cb3271f3c543fac285a75d3`
+- 发布哈希：`77ba9991baebb73a322e7722b0dab365099b23a5c9bc84ee91ac56bc8c5c8084`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -82,7 +82,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9640c39dfaaccb99286e49e3f268fdf389ea8e280cb3271f3c543fac285a75d3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d530fa5843da0143`。
+SHA-256 `77ba9991baebb73a322e7722b0dab365099b23a5c9bc84ee91ac56bc8c5c8084`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d530fa5843da0143`。
 
 ## 副作用与风险
 

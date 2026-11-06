@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_naixue.js`
 - 青龙命令：`node scripts/sudojia_naixue.js`
 - 建议 Cron：`32 1 * * *`
-- 发布哈希：`8d928aa0e09fe500f438ff980f1a622b8aa8b4a9598f167b9208cea9bd7b1b74`
+- 发布哈希：`06131ebf664d27f6d11f2e58408dd02e92412933376cc84e6640846bbf55aedb`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -68,7 +68,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8d928aa0e09fe500f438ff980f1a622b8aa8b4a9598f167b9208cea9bd7b1b74`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9485042a5b621baf`。
+SHA-256 `06131ebf664d27f6d11f2e58408dd02e92412933376cc84e6640846bbf55aedb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9485042a5b621baf`。
 
 ## 副作用与风险
 

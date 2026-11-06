@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bugutv.py`
 - 青龙命令：`python3 scripts/bugutv.py`
 - 建议 Cron：`12 1 * * *`
-- 发布哈希：`7c64cebce709a42dedbf4e7c947b320cd5dd8cb645aae4e80f649b9600ef76d9`
+- 发布哈希：`39008bbf8f445626e387d11613a58b24a8c64f186060d3a08e704fd379031d00`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -92,7 +92,7 @@ BUGUTV_ACCOUNTS每个非空行一个用户名|密码，各账号使用独立Cook
 
 ## 验证与兼容性
 
-SHA-256 `7c64cebce709a42dedbf4e7c947b320cd5dd8cb645aae4e80f649b9600ef76d9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ca80eead6ecc78a`。
+SHA-256 `39008bbf8f445626e387d11613a58b24a8c64f186060d3a08e704fd379031d00`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ca80eead6ecc78a`。
 
 ## 副作用与风险
 

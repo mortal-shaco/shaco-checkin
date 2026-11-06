@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ole.py`
 - 青龙命令：`python3 scripts/ole.py`
 - 建议 Cron：`6 1 1 1 1`
-- 发布哈希：`e64d8bdf932c206d7c02d8296fdd838cf8b7b151b028a2c922addc430f5a79b7`
+- 发布哈希：`8b4f3f96b42eeed4a346baf0d72b1fc51afe49a7ea1195bd73e2859d6c91ba95`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e64d8bdf932c206d7c02d8296fdd838cf8b7b151b028a2c922addc430f5a79b7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
+SHA-256 `8b4f3f96b42eeed4a346baf0d72b1fc51afe49a7ea1195bd73e2859d6c91ba95`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/89d9992e56504271`。
 
 ## 副作用与风险
 

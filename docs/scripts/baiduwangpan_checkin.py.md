@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/baiduwangpan_checkin.py`
 - 青龙命令：`python3 scripts/baiduwangpan_checkin.py`
 - 建议 Cron：`27 2 * * *`
-- 发布哈希：`128baa9c7ada4e9d016ec6d28988f1425646d9edc4f1e48141d72ce2f4f6a55e`
+- 发布哈希：`08e26f8485d3a2f8ebf1d2f4b94518a0243ec8570a4f8f18632d5e62111fe403`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -100,7 +100,7 @@ BAIDU_COOKIE 中每个非空行是一个独立账号；依次处理，任一账�
 
 ## 验证与兼容性
 
-SHA-256 `128baa9c7ada4e9d016ec6d28988f1425646d9edc4f1e48141d72ce2f4f6a55e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
+SHA-256 `08e26f8485d3a2f8ebf1d2f4b94518a0243ec8570a4f8f18632d5e62111fe403`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d9230b69d9462c7c`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_juejin.js`
 - 青龙命令：`node scripts/sudojia_juejin.js`
 - 建议 Cron：`43 2 * * *`
-- 发布哈希：`f03724d743fb53976b158cde4efcee71e0033f7b295cb12dc42875a1220b1d94`
+- 发布哈希：`7a5984e877fa455384524180abb3b3788c56291ee64a68937332d0a6be87ae44`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -279,7 +279,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f03724d743fb53976b158cde4efcee71e0033f7b295cb12dc42875a1220b1d94`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f86741e6210934e9`。
+SHA-256 `7a5984e877fa455384524180abb3b3788c56291ee64a68937332d0a6be87ae44`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f86741e6210934e9`。
 
 ## 副作用与风险
 

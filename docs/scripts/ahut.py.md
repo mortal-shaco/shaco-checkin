@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ahut.py`
 - 青龙命令：`python3 scripts/ahut.py`
 - 建议 Cron：`20 21 * * *`
-- 发布哈希：`65588b1b9a914662fe355cca1f602e7f2f802e1d5e276d21136b4776c35f101d`
+- 发布哈希：`a7629c69d6a51460875144943007c502fddcb2f4087450eea3b933318a663abb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -89,7 +89,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `65588b1b9a914662fe355cca1f602e7f2f802e1d5e276d21136b4776c35f101d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e628bcec2f5fef6`。
+SHA-256 `a7629c69d6a51460875144943007c502fddcb2f4087450eea3b933318a663abb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e628bcec2f5fef6`。
 
 ## 副作用与风险
 

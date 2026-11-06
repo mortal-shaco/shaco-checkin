@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_xiaomi_community.js`
 - 青龙命令：`node scripts/sudojia_xiaomi_community.js`
 - 建议 Cron：`25 1 * * *`
-- 发布哈希：`8615429ce7fdefb1ceae581843e88dcb2ce6e6660b30e989dc73f7a0b390cf52`
+- 发布哈希：`536ff90d36bd18dc670cf7bc87ec656218ea8613dbacfed9360f14ed33567f48`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8615429ce7fdefb1ceae581843e88dcb2ce6e6660b30e989dc73f7a0b390cf52`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b06f8c5b53252cf`。
+SHA-256 `536ff90d36bd18dc670cf7bc87ec656218ea8613dbacfed9360f14ed33567f48`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b06f8c5b53252cf`。
 
 ## 副作用与风险
 

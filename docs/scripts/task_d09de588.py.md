@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_d09de588.py`
 - 青龙命令：`python3 scripts/task_d09de588.py`
 - 建议 Cron：`45 8 * * *`
-- 发布哈希：`06407f23fa35700dea3f080dcc4e6cb35c1a624bb17b0ab2bf12bc3662d437bb`
+- 发布哈希：`3042e7f1b0bdd590e783b0d684ee093cf00286f2e30538999a2e293879a05799`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -106,7 +106,7 @@ UPYUN_ACCOUNTS 每个非空行一个账号，格式为用户名|密码，仅拆�
 
 ## 验证与兼容性
 
-SHA-256 `06407f23fa35700dea3f080dcc4e6cb35c1a624bb17b0ab2bf12bc3662d437bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d09de5880a4e46d8`。
+SHA-256 `3042e7f1b0bdd590e783b0d684ee093cf00286f2e30538999a2e293879a05799`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d09de5880a4e46d8`。
 
 ## 副作用与风险
 

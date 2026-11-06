@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_instax.js`
 - 青龙命令：`node scripts/sudojia_instax.js`
 - 建议 Cron：`26 2 * * *`
-- 发布哈希：`c9ba90151ae4dec25744b54a2235482f56b81dc558768f2be44b29b91938c43b`
+- 发布哈希：`caaca1357992189159090194a38267826c73afc4b556b3d4a09fbcc418472c07`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -75,7 +75,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c9ba90151ae4dec25744b54a2235482f56b81dc558768f2be44b29b91938c43b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e229880f6ad33d6f`。
+SHA-256 `caaca1357992189159090194a38267826c73afc4b556b3d4a09fbcc418472c07`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e229880f6ad33d6f`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/index.js`
 - 青龙命令：`node scripts/index.js`
 - 建议 Cron：`48 1 * * *`
-- 发布哈希：`41d42c6641d0aca35153a660fcbc82d633e7cf8d283848886e321d82bd56a4f3`
+- 发布哈希：`34b82b4bd5e50e3e1fded90743f332a3265c8e07cf641871e6f74d0b4d19d20d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `41d42c6641d0aca35153a660fcbc82d633e7cf8d283848886e321d82bd56a4f3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
+SHA-256 `34b82b4bd5e50e3e1fded90743f332a3265c8e07cf641871e6f74d0b4d19d20d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b4b3175bb52c98a5`。
 
 ## 副作用与风险
 

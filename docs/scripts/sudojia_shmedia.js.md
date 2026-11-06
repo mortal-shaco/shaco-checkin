@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_shmedia.js`
 - 青龙命令：`node scripts/sudojia_shmedia.js`
 - 建议 Cron：`53 1 * * *`
-- 发布哈希：`afdbe05edc45c7a71ac3245030681dfe55836af0a22ac54da248e5863d238f0a`
+- 发布哈希：`315efcb5141b05a7b86a224ac3d6c19f8165d849294c8712972b52f346195e23`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -98,7 +98,7 @@ SHYP_TOKEN 每个非空行一个账号；依次独立处理，任一账号失败
 
 ## 验证与兼容性
 
-SHA-256 `afdbe05edc45c7a71ac3245030681dfe55836af0a22ac54da248e5863d238f0a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b9c2b0f38de689f1`。
+SHA-256 `315efcb5141b05a7b86a224ac3d6c19f8165d849294c8712972b52f346195e23`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b9c2b0f38de689f1`。
 
 ## 副作用与风险
 

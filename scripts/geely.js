@@ -56,21 +56,15 @@
 
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      '02e05daa6ec7b4fc',
-      'scripts/geely.js',
-      'geely.js',
-      'geely',
-      'candidate.js',
-    ];
+    const identities = ["02e05daa6ec7b4fc", "scripts/geely.js", "geely.js", "geely"];
     enabled = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
   }
@@ -148,7 +142,7 @@ function timeoutMs() {
 function notificationSelected() {
   if (disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
-  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
+  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return false; /* listed-only default */
   const raw = process.env.QINGLONG_NOTIFY_SCRIPTS;
   if (String(raw).trim() === '') return false;
   const selectors = String(raw).split(/[,;\s]+/).filter(Boolean);

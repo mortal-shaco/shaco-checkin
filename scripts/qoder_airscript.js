@@ -81,7 +81,8 @@ QINGLONG_NOTIFY_DIR 可指定含 sendNotify.js 的青龙通知目录。
 'use strict';
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {
@@ -106,7 +107,7 @@ const disabled = x => /^(0|false|no|off)$/i.test(x || '');
 function notificationSelected() {
   if (process.argv.includes('--no-notify') || disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
-  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
+  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return false; /* listed-only default */
   const names=['e034e75509550071','7dae37fb02629e65','scripts/qoder_airscript.js','qoder_airscript.js',path.basename(__filename)];
   return process.env.QINGLONG_NOTIFY_SCRIPTS.split(/[,;\s]+/).filter(Boolean).some(s=>{
     const pattern='^'+s.split('*').map(p=>p.split('?').map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('.')).join('.*')+'$';

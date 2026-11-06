@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ssl_cert_check.py`
 - 青龙命令：`python3 scripts/ssl_cert_check.py`
 - 建议 Cron：`10 2 * * *`
-- 发布哈希：`0256063951f1e150c29347fcb889d3eb3d5203dde6adc687bb87da4eed258e6c`
+- 发布哈希：`41e7803f630556f64e51cb84f9dac00d6b4638152f462b1cda1b3acde2086534`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -113,7 +113,7 @@ SSL_ACCOUNTS 每个非空行一个完整 JSON 账号对象，认证与区域配�
 
 ## 验证与兼容性
 
-SHA-256 `0256063951f1e150c29347fcb889d3eb3d5203dde6adc687bb87da4eed258e6c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cf6fb60f0d69e9ed`。
+SHA-256 `41e7803f630556f64e51cb84f9dac00d6b4638152f462b1cda1b3acde2086534`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cf6fb60f0d69e9ed`。
 
 ## 副作用与风险
 

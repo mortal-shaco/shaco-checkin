@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/weibo_checkin.py`
 - 青龙命令：`python3 scripts/weibo_checkin.py`
 - 建议 Cron：`28 8 * * *`
-- 发布哈希：`a3f238d0ff30cd8b2fa869d323009564e73c59a951127848ac2939e382c25c59`
+- 发布哈希：`9459b31730d9632df56af0eee2f2aca657af3c4c00004b081d508db024bfad66`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -161,7 +161,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a3f238d0ff30cd8b2fa869d323009564e73c59a951127848ac2939e382c25c59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8484f065335f8ea3`。
+SHA-256 `9459b31730d9632df56af0eee2f2aca657af3c4c00004b081d508db024bfad66`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8484f065335f8ea3`。
 
 ## 副作用与风险
 

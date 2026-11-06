@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/comicai_ai_cookie.py`
 - 青龙命令：`python3 scripts/comicai_ai_cookie.py`
 - 建议 Cron：`46 1 * * *`
-- 发布哈希：`2b771a12559cfcb29ddf5d6a5bcc30a20a27a4bc30ef3600db6145f3f05fd0ed`
+- 发布哈希：`aecb03ae45b09c1f9f7c09bae7304138e33a90b19c10abddb1e6ce66ed44eca8`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2b771a12559cfcb29ddf5d6a5bcc30a20a27a4bc30ef3600db6145f3f05fd0ed`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
+SHA-256 `aecb03ae45b09c1f9f7c09bae7304138e33a90b19c10abddb1e6ce66ed44eca8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b33f4d715d28a216`。
 
 ## 副作用与风险
 

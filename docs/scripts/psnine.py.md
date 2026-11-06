@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/psnine.py`
 - 青龙命令：`python3 scripts/psnine.py`
 - 建议 Cron：`16 0 * * *`
-- 发布哈希：`6bfd8310a71a9bccac1e3bfdf9f5ac20576d88b5fd4f94587d8e1106117b4a63`
+- 发布哈希：`ca826fb9523698e032f3b93a6689814cf3fa83bfba6373c6e3b63e80c6fefc37`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -84,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6bfd8310a71a9bccac1e3bfdf9f5ac20576d88b5fd4f94587d8e1106117b4a63`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
+SHA-256 `ca826fb9523698e032f3b93a6689814cf3fa83bfba6373c6e3b63e80c6fefc37`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/190d89a73fbfe28e`。
 
 ## 副作用与风险
 

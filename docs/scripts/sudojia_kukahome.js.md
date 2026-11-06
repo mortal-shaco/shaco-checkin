@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_kukahome.js`
 - 青龙命令：`node scripts/sudojia_kukahome.js`
 - 建议 Cron：`9 2 * * *`
-- 发布哈希：`dff6bd437c0ba864d340b25eb01b49535cddc58e879964a9236434a926f34aa3`
+- 发布哈希：`4d8f2684462a72436693bc4d77b9c31c033cbfb6abeced8816f038cfa05e8ffe`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -76,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `dff6bd437c0ba864d340b25eb01b49535cddc58e879964a9236434a926f34aa3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cea8801e001e143d`。
+SHA-256 `4d8f2684462a72436693bc4d77b9c31c033cbfb6abeced8816f038cfa05e8ffe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cea8801e001e143d`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/main.py`
 - 青龙命令：`python3 scripts/main.py`
 - 建议 Cron：`0 2 * * *`
-- 发布哈希：`c9b1c5cfc4330d4d2f84373ca1c113d6b603e6133fe45bac628673099292ce03`
+- 发布哈希：`210976ae452a288e0f108f3cf6802f28385770fa41fde5b1f4d6f3c6cd7c6f10`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c9b1c5cfc4330d4d2f84373ca1c113d6b603e6133fe45bac628673099292ce03`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
+SHA-256 `210976ae452a288e0f108f3cf6802f28385770fa41fde5b1f4d6f3c6cd7c6f10`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c0137ce8eaf72832`。
 
 ## 副作用与风险
 

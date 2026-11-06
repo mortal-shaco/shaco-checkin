@@ -12,7 +12,8 @@
 'use strict';
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {

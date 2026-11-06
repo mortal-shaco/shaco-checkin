@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_kozbs.js`
 - 青龙命令：`node scripts/sudojia_kozbs.js`
 - 建议 Cron：`28 0 * * *`
-- 发布哈希：`322d93cde8f51acc418496baa93e7529df4ad617269a837e08830d6a11143177`
+- 发布哈希：`938144b6e7b782430484b5284add75b5f14c0544b5c8e1faca788da7e0e5e6aa`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `322d93cde8f51acc418496baa93e7529df4ad617269a837e08830d6a11143177`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/34763140840b492a`。
+SHA-256 `938144b6e7b782430484b5284add75b5f14c0544b5c8e1faca788da7e0e5e6aa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/34763140840b492a`。
 
 ## 副作用与风险
 

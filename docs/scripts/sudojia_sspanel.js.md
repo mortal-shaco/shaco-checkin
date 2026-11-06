@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_sspanel.js`
 - 青龙命令：`node scripts/sudojia_sspanel.js`
 - 建议 Cron：`34 0 * * *`
-- 发布哈希：`d3437c923653621449dac792560df5d4f2496e788290a3f7ce29b3ce8c6119d8`
+- 发布哈希：`7a76c2d9a024f722e4436703482e4a91d67e4636157f77fa3757036343a38ca3`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d3437c923653621449dac792560df5d4f2496e788290a3f7ce29b3ce8c6119d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ab685f53b0a5cc0`。
+SHA-256 `7a76c2d9a024f722e4436703482e4a91d67e4636157f77fa3757036343a38ca3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ab685f53b0a5cc0`。
 
 ## 副作用与风险
 

@@ -61,28 +61,19 @@
 
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
-  let enabledFlag = false;
+  let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      '7b47bad620ba7931',
-      'scripts/minimax_code_signin.js',
-      'minimax_code_signin.js',
-      'signin.ts',
-      'signin',
-      'candidate.js',
-    ];
-    enabledFlag = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+    const identities = ["7b47bad620ba7931", "scripts/task_7b47bad6.js", "task_7b47bad6.js", "task_7b47bad6"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
-  } else {
-    enabledFlag = true;
   }
-  process.env.QINGLONG_NOTIFY = enabledFlag ? '1' : '0';
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
 })();
 // qinglong-notification-policy: end
 
@@ -182,7 +173,7 @@ function defaultRegion() {
 function notificationSelected() {
   if (disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
-  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
+  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return false; /* listed-only default */
   const raw = process.env.QINGLONG_NOTIFY_SCRIPTS;
   if (String(raw).trim() === '') return false;
   const selectors = String(raw).split(/[,;\s]+/).filter(Boolean);

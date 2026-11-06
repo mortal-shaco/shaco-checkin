@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/get_yys_cgvideo.py`
 - 青龙命令：`python3 scripts/get_yys_cgvideo.py`
 - 建议 Cron：`11 9 * * 0`
-- 发布哈希：`badd32f138fd252745d4c95aca600583b93c35aaef0222d7d06f697b26f256de`
+- 发布哈希：`f1ad3375312770c5a79762776561a1ffe9c327a2676befc79ca36b5e20244bc3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -93,7 +93,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `badd32f138fd252745d4c95aca600583b93c35aaef0222d7d06f697b26f256de`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8edbbefea99ad1fb`。
+SHA-256 `f1ad3375312770c5a79762776561a1ffe9c327a2676befc79ca36b5e20244bc3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8edbbefea99ad1fb`。
 
 ## 副作用与风险
 

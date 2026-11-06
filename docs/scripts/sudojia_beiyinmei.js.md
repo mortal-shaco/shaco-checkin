@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_beiyinmei.js`
 - 青龙命令：`node scripts/sudojia_beiyinmei.js`
 - 建议 Cron：`25 2 * * *`
-- 发布哈希：`e1940c43c63ed50d18d3e4d9e727ff39f298b2c28f0e05192612c216ebae5d6b`
+- 发布哈希：`4f5ca7292d6e499a8046257c181261dd498b032a0890938a1683f371ee956e1a`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -68,7 +68,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e1940c43c63ed50d18d3e4d9e727ff39f298b2c28f0e05192612c216ebae5d6b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e09c8b13ee16c8db`。
+SHA-256 `4f5ca7292d6e499a8046257c181261dd498b032a0890938a1683f371ee956e1a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e09c8b13ee16c8db`。
 
 ## 副作用与风险
 

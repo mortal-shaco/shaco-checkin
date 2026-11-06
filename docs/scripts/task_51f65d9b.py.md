@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_51f65d9b.py`
 - 青龙命令：`python3 scripts/task_51f65d9b.py`
 - 建议 Cron：`30 10 * * *`
-- 发布哈希：`730d43549cf6efd02f48250947990889205f082bf2b071926ecd497bd14aaa3d`
+- 发布哈希：`aba2b8a7298a0b5732395509df92c145e2ec2cf4155533e15cf1fa4433262c0d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@ BD_ZHIDAO_COOKIE 每个非空行一个账号 Cookie，逐个独立签到；任�
 
 ## 验证与兼容性
 
-SHA-256 `730d43549cf6efd02f48250947990889205f082bf2b071926ecd497bd14aaa3d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/51f65d9bd2e5a68f`。
+SHA-256 `aba2b8a7298a0b5732395509df92c145e2ec2cf4155533e15cf1fa4433262c0d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/51f65d9bd2e5a68f`。
 
 ## 副作用与风险
 

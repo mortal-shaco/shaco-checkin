@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/lynkco_qinglong_single.py`
 - 青龙命令：`python3 scripts/lynkco_qinglong_single.py`
 - 建议 Cron：`1 2 * * *`
-- 发布哈希：`d06be60b2fef8816d2200d614c9e69c6e645cf60eaa74c070b1240aedcf694b8`
+- 发布哈希：`9ba94b8981d2cf7dd4b9ce9e32d53b1d43a03aa06e0ef68d2e6bcfaed90a631a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -206,7 +206,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d06be60b2fef8816d2200d614c9e69c6e645cf60eaa74c070b1240aedcf694b8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
+SHA-256 `9ba94b8981d2cf7dd4b9ce9e32d53b1d43a03aa06e0ef68d2e6bcfaed90a631a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c087eb48daa78349`。
 
 ## 副作用与风险
 

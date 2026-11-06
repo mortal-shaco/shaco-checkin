@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/jishixi.js`
 - 青龙命令：`node scripts/jishixi.js`
 - 建议 Cron：`42 8 * * *`
-- 发布哈希：`7295fbc78681d79e870a4af15058ab9d54147f8c56e66ef36df65d891caa0000`
+- 发布哈希：`b0c03db78520304c7e0a3e6bb524b07f01582f7188a2d722939ab30d3f105527`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -109,7 +109,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7295fbc78681d79e870a4af15058ab9d54147f8c56e66ef36df65d891caa0000`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9ae0664c90671962`。
+SHA-256 `b0c03db78520304c7e0a3e6bb524b07f01582f7188a2d722939ab30d3f105527`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9ae0664c90671962`。
 
 ## 副作用与风险
 

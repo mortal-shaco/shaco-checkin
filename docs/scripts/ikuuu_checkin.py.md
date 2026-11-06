@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ikuuu_checkin.py`
 - 青龙命令：`python3 scripts/ikuuu_checkin.py`
 - 建议 Cron：`20 1 * * *`
-- 发布哈希：`784330c91cbfde15774c9cb09ab477f69bd2b2a5a2a4190b0f4708ef1e5fcdb8`
+- 发布哈希：`c615e4082481d82d0120f57e007225dc43d1cf8e21c8fe98ce55600646297a1c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -143,7 +143,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `784330c91cbfde15774c9cb09ab477f69bd2b2a5a2a4190b0f4708ef1e5fcdb8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
+SHA-256 `c615e4082481d82d0120f57e007225dc43d1cf8e21c8fe98ce55600646297a1c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7ea70c9e9d579efb`。
 
 ## 副作用与风险
 

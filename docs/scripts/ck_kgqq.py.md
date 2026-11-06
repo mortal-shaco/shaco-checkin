@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_kgqq.py`
 - 青龙命令：`python3 scripts/ck_kgqq.py`
 - 建议 Cron：`35 2 * * *`
-- 发布哈希：`0892058a22018bd9ff8232c3e440cef75753adb892a4c2a7fc1aea543cbe1e99`
+- 发布哈希：`e6976472e17f5a8731e2498601f5c7c22aed5a1cfc9ffe2c16e2ca2f3bcaf12e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@ KGQQ_COOKIE 中每个非空行表示一个账号，按行独立处理；任一�
 
 ## 验证与兼容性
 
-SHA-256 `0892058a22018bd9ff8232c3e440cef75753adb892a4c2a7fc1aea543cbe1e99`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e11f1f2a1bfb0af5`。
+SHA-256 `e6976472e17f5a8731e2498601f5c7c22aed5a1cfc9ffe2c16e2ca2f3bcaf12e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e11f1f2a1bfb0af5`。
 
 ## 副作用与风险
 

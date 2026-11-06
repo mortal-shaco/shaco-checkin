@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/enshan_checkin.py`
 - 青龙命令：`python3 scripts/enshan_checkin.py`
 - 建议 Cron：`59 1 * * *`
-- 发布哈希：`0b94395999c8f3ffcb588b324b0daa3673cf69ff2636baee2ccf511f847a69ce`
+- 发布哈希：`e3b3bd5b52d8dfc2b695a353d8abe27b694b1822e22c0b049a06df9fe0b15535`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -140,7 +140,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `0b94395999c8f3ffcb588b324b0daa3673cf69ff2636baee2ccf511f847a69ce`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
+SHA-256 `e3b3bd5b52d8dfc2b695a353d8abe27b694b1822e22c0b049a06df9fe0b15535`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bec8a601d5a51b0a`。
 
 ## 副作用与风险
 

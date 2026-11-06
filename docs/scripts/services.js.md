@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/services.js`
 - 青龙命令：`node scripts/services.js`
 - 建议 Cron：`1 7 * * *`
-- 发布哈希：`3727ba0460ede83ac3e8f1efd060ac6cc75af0ba608c622a5e9cba0dc222b629`
+- 发布哈希：`291ac990009d2ce43c08c8c1c2da96cabcb4c601b9f9fd83721da0ef44597a43`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -118,7 +118,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3727ba0460ede83ac3e8f1efd060ac6cc75af0ba608c622a5e9cba0dc222b629`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9798376670c63280`。
+SHA-256 `291ac990009d2ce43c08c8c1c2da96cabcb4c601b9f9fd83721da0ef44597a43`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9798376670c63280`。
 
 ## 副作用与风险
 

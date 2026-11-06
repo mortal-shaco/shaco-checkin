@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_amx.js`
 - 青龙命令：`node scripts/sudojia_amx.js`
 - 建议 Cron：`25 0 * * *`
-- 发布哈希：`6ee39018b065f6441a5a1f39c574fda0e7607588073599033e9f38bea3b63513`
+- 发布哈希：`c164162cd47f38c92626714ac5855582b83c10564deff063603079cd899194bb`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6ee39018b065f6441a5a1f39c574fda0e7607588073599033e9f38bea3b63513`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2afe8ef7e443b92b`。
+SHA-256 `c164162cd47f38c92626714ac5855582b83c10564deff063603079cd899194bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2afe8ef7e443b92b`。
 
 ## 副作用与风险
 

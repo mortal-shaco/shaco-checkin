@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bilibili.py`
 - 青龙命令：`python3 scripts/bilibili.py`
 - 建议 Cron：`6 2 * * *`
-- 发布哈希：`924145cb14305b06af36f8bb0e0a6cf58acfd4b90f642eb85773d071db67afb6`
+- 发布哈希：`49364a0a1800d9d7ed8ca50659f8155808730bdff5eeeeaf34928a73a0a6999c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -124,7 +124,7 @@ BILIBILI_COOKIE 每个非空行一个账号，同一账号的 SESSDATA、bili_jc
 
 ## 验证与兼容性
 
-SHA-256 `924145cb14305b06af36f8bb0e0a6cf58acfd4b90f642eb85773d071db67afb6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ca4e1c75a27952c1`。
+SHA-256 `49364a0a1800d9d7ed8ca50659f8155808730bdff5eeeeaf34928a73a0a6999c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ca4e1c75a27952c1`。
 
 ## 副作用与风险
 

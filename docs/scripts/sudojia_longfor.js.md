@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_longfor.js`
 - 青龙命令：`node scripts/sudojia_longfor.js`
 - 建议 Cron：`39 1 * * *`
-- 发布哈希：`aca5bccde82f74b8b8192a1338f576a6ae71eea9bd841a42ef2fe100c01fccaf`
+- 发布哈希：`904d73dc2d48ccbad0b52f3e7dece819c2b6e0d1aa906da5ad32744222f4c7b5`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -90,7 +90,7 @@ LONG_FOR_TOKEN 每个非空行一个账号，逐个独立处理；任一账号�
 
 ## 验证与兼容性
 
-SHA-256 `aca5bccde82f74b8b8192a1338f576a6ae71eea9bd841a42ef2fe100c01fccaf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a4edb286cd8742e3`。
+SHA-256 `904d73dc2d48ccbad0b52f3e7dece819c2b6e0d1aa906da5ad32744222f4c7b5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a4edb286cd8742e3`。
 
 ## 副作用与风险
 

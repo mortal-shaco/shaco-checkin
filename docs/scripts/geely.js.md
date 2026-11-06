@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/geely.js`
 - 青龙命令：`node scripts/geely.js`
 - 建议 Cron：`37 0 * * *`
-- 发布哈希：`38c7e9e8882332983601052a3bc9ef8507e51722b6512d979f4c9bc6f47b41d4`
+- 发布哈希：`96e558587b1637d84c58405c5c0ad2ba50fa988759156f186fa120a643682b20`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `38c7e9e8882332983601052a3bc9ef8507e51722b6512d979f4c9bc6f47b41d4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/02e05daa6ec7b4fc`。
+SHA-256 `96e558587b1637d84c58405c5c0ad2ba50fa988759156f186fa120a643682b20`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/02e05daa6ec7b4fc`。
 
 ## 副作用与风险
 

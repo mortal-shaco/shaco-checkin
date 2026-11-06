@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/oopz_sign.py`
 - 青龙命令：`python3 scripts/oopz_sign.py`
 - 建议 Cron：`25 9 * * *`
-- 发布哈希：`40947ee131de9743e676369efdb9ca388517ffb85853cc641275d5a6c9a03985`
+- 发布哈希：`7eec997ce46299eefe873d56ee77677f2964ca66765df483f0c22e5917c89e58`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -118,7 +118,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `40947ee131de9743e676369efdb9ca388517ffb85853cc641275d5a6c9a03985`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2d0eeee40adf7820`。
+SHA-256 `7eec997ce46299eefe873d56ee77677f2964ca66765df483f0c22e5917c89e58`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2d0eeee40adf7820`。
 
 ## 副作用与风险
 

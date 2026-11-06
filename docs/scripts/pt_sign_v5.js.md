@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/pt_sign_v5.js`
 - 青龙命令：`node scripts/pt_sign_v5.js`
 - 建议 Cron：`46 2 * * *`
-- 发布哈希：`b53337aa70ba07a3d97a8a0483bc7c2d9faf5c920ec463c332300545d17807c3`
+- 发布哈希：`e6b7456910f5e3ff6494af8c24d19b146b68755038f636063c7128279960dd0a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -169,7 +169,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b53337aa70ba07a3d97a8a0483bc7c2d9faf5c920ec463c332300545d17807c3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ff443f9fbbdbade5`。
+SHA-256 `e6b7456910f5e3ff6494af8c24d19b146b68755038f636063c7128279960dd0a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ff443f9fbbdbade5`。
 
 ## 副作用与风险
 

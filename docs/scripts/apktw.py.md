@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/apktw.py`
 - 青龙命令：`python3 scripts/apktw.py`
 - 建议 Cron：`19 9 * * *`
-- 发布哈希：`2a8faa005bde55d2e132512a2d3853118b753cd5bde91d813f5be896cdfade22`
+- 发布哈希：`c4c91760876a6171abf5845a48767c2f4cb4389c5c6163b0e1a5a183fffe16cf`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2a8faa005bde55d2e132512a2d3853118b753cd5bde91d813f5be896cdfade22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/22d5d26fa295b1ea`。
+SHA-256 `c4c91760876a6171abf5845a48767c2f4cb4389c5c6163b0e1a5a183fffe16cf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/22d5d26fa295b1ea`。
 
 ## 副作用与风险
 

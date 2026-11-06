@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/2cycdx.py`
 - 青龙命令：`python3 scripts/2cycdx.py`
 - 建议 Cron：`45 0 * * *`
-- 发布哈希：`90d9d3496c54e0e7b1dc2ae76775f9c4d70fb228a9084fb369d13cc4d8cb6e2e`
+- 发布哈希：`a9ab52af2e474236a5b28cb5418d7eed28b277a510d847620eee8f8ebb2b4f90`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -80,7 +80,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `90d9d3496c54e0e7b1dc2ae76775f9c4d70fb228a9084fb369d13cc4d8cb6e2e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4a0d6e0728deb3f6`。
+SHA-256 `a9ab52af2e474236a5b28cb5418d7eed28b277a510d847620eee8f8ebb2b4f90`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4a0d6e0728deb3f6`。
 
 ## 副作用与风险
 

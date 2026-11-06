@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/raccoon_daily.py`
 - 青龙命令：`python3 scripts/raccoon_daily.py`
 - 建议 Cron：`2 9 * * *`
-- 发布哈希：`3db9abada9d7cef685b2bb4eaaf6d7962521059902f861234e888182a32122a1`
+- 发布哈希：`7d7d50e628de4a8ec39022ae78a7ac7ac14f842f05bb3dece4aaa50e6359e414`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -142,7 +142,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3db9abada9d7cef685b2bb4eaaf6d7962521059902f861234e888182a32122a1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
+SHA-256 `7d7d50e628de4a8ec39022ae78a7ac7ac14f842f05bb3dece4aaa50e6359e414`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4bfc257a45d9e8d`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/pica_punch.py`
 - 青龙命令：`python3 scripts/pica_punch.py`
 - 建议 Cron：`45 5 * * *`
-- 发布哈希：`e742875231b99100252d0a05b890dea49ee9520f7a15ed624ae33fd16fca9970`
+- 发布哈希：`03bc01a131cabafffb80113430e5ca4e76595ddbd85d339ad29bc1fb67393b10`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -83,7 +83,7 @@ PICA_ACCOUNTS 中每个非空行代表一个账号，格式为邮箱或用户名
 
 ## 验证与兼容性
 
-SHA-256 `e742875231b99100252d0a05b890dea49ee9520f7a15ed624ae33fd16fca9970`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4089584217b116a7`。
+SHA-256 `03bc01a131cabafffb80113430e5ca4e76595ddbd85d339ad29bc1fb67393b10`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4089584217b116a7`。
 
 ## 副作用与风险
 

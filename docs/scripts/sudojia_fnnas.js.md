@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_fnnas.js`
 - 青龙命令：`node scripts/sudojia_fnnas.js`
 - 建议 Cron：`54 1 * * *`
-- 发布哈希：`1fdf5637f860e003d670a3b6a2d230cf37e25a62b218fa1681a9b4c6370a1232`
+- 发布哈希：`1b93e6c65dc1061ca830a4ae6042124bcdf4dd80424edd6f6cf9734e1377202f`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1fdf5637f860e003d670a3b6a2d230cf37e25a62b218fa1681a9b4c6370a1232`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bab33a90ea57e852`。
+SHA-256 `1b93e6c65dc1061ca830a4ae6042124bcdf4dd80424edd6f6cf9734e1377202f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bab33a90ea57e852`。
 
 ## 副作用与风险
 

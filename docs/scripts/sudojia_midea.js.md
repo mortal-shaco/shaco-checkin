@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_midea.js`
 - 青龙命令：`node scripts/sudojia_midea.js`
 - 建议 Cron：`48 0 * * *`
-- 发布哈希：`6e65cae6e249097bbca7fe60d8bbf003630c505d1e40d1dcae4b4c718105d034`
+- 发布哈希：`acfe1058c8b9bda0ec864a746265c674e9f1fc15f62c82de78fd77c407b33682`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6e65cae6e249097bbca7fe60d8bbf003630c505d1e40d1dcae4b4c718105d034`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4d2bfc3b3a861962`。
+SHA-256 `acfe1058c8b9bda0ec864a746265c674e9f1fc15f62c82de78fd77c407b33682`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4d2bfc3b3a861962`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/airport.py`
 - 青龙命令：`python3 scripts/airport.py`
 - 建议 Cron：`27 1 * * *`
-- 发布哈希：`6a63698249dc4f2f80aa9b1c80a343a3ebbc6c56b041707a91f198f55d36f347`
+- 发布哈希：`dad3b990c85a3eff045720c56a1fe2a81d03fdad0b1b669c0c667a90c6781988`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -83,7 +83,7 @@ SUYING_ACCOUNTS 每个非空行一个账号，以第一个 | 分隔同一账号�
 
 ## 验证与兼容性
 
-SHA-256 `6a63698249dc4f2f80aa9b1c80a343a3ebbc6c56b041707a91f198f55d36f347`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8cd72e9849a3c893`。
+SHA-256 `dad3b990c85a3eff045720c56a1fe2a81d03fdad0b1b669c0c667a90c6781988`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8cd72e9849a3c893`。
 
 ## 副作用与风险
 

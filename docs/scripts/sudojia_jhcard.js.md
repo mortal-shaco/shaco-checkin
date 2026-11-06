@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_jhcard.js`
 - 青龙命令：`node scripts/sudojia_jhcard.js`
 - 建议 Cron：`7 0 * * *`
-- 发布哈希：`1be0602a808832f633119fde2edbba8bbbbc8a282f9010d4dac8da98600db365`
+- 发布哈希：`88b7b163d30354ddfbdd58ea05c15afa276b5f77d6f361f589af1c9d24078c86`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -71,7 +71,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1be0602a808832f633119fde2edbba8bbbbc8a282f9010d4dac8da98600db365`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0dc8d7553d45c649`。
+SHA-256 `88b7b163d30354ddfbdd58ea05c15afa276b5f77d6f361f589af1c9d24078c86`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0dc8d7553d45c649`。
 
 ## 副作用与风险
 

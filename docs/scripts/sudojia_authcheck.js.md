@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_authcheck.js`
 - 青龙命令：`node scripts/sudojia_authcheck.js`
 - 建议 Cron：`32 12,21 * * *`
-- 发布哈希：`3fff15a5aa51c3dd2ea957cefd70b741d7d6f9369d485d892e4132a7f0009d35`
+- 发布哈希：`d76a48013efae9a8268eef323e8758cac558c8dc197adae12fbd0f979bb35bc5`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -329,7 +329,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3fff15a5aa51c3dd2ea957cefd70b741d7d6f9369d485d892e4132a7f0009d35`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/505cfecf6964c372`。
+SHA-256 `d76a48013efae9a8268eef323e8758cac558c8dc197adae12fbd0f979bb35bc5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/505cfecf6964c372`。
 
 ## 副作用与风险
 

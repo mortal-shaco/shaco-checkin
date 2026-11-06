@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/aliyun_web.js`
 - 青龙命令：`node scripts/aliyun_web.js`
 - 建议 Cron：`36 7,13 * * *`
-- 发布哈希：`dbaaedb75f519adc5376af068d5b6e4cc14f2d1a2d0e429f098028b02dea35fc`
+- 发布哈希：`03f6be0c27a619814f5986a8932522011453f8507778102b1ef1c0952852f0dc`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -143,7 +143,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `dbaaedb75f519adc5376af068d5b6e4cc14f2d1a2d0e429f098028b02dea35fc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5c73bf2cb192e0d0`。
+SHA-256 `03f6be0c27a619814f5986a8932522011453f8507778102b1ef1c0952852f0dc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5c73bf2cb192e0d0`。
 
 ## 副作用与风险
 

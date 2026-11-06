@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/elantran_checkin.py`
 - 青龙命令：`python3 scripts/elantran_checkin.py`
 - 建议 Cron：`28 9 * * *`
-- 发布哈希：`f108b0dc22c997a1db49f248d4fa65dd7553faadb04d5f83d94e75ce1cb53a90`
+- 发布哈希：`2b993c3d114442cd0dcec95c8215ed2da308fce3a1518e85686c652a2214f814`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -105,7 +105,7 @@ ELANTRAN_AUTH 每个非空行一个 JWT 账号；账号之间仅用换行分隔�
 
 ## 验证与兼容性
 
-SHA-256 `f108b0dc22c997a1db49f248d4fa65dd7553faadb04d5f83d94e75ce1cb53a90`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/734c839033d16d32`。
+SHA-256 `2b993c3d114442cd0dcec95c8215ed2da308fce3a1518e85686c652a2214f814`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/734c839033d16d32`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_botanystar.js`
 - 青龙命令：`node scripts/sudojia_botanystar.js`
 - 建议 Cron：`33 0 * * *`
-- 发布哈希：`32f5308de350c8dfea9f8726b73f4d5104156ef1da17865c4b346d2ed22efb07`
+- 发布哈希：`6d12598f3af40daf269887710dbef7787fee5971b075953beff3ba06b34dce19`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -71,7 +71,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `32f5308de350c8dfea9f8726b73f4d5104156ef1da17865c4b346d2ed22efb07`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3a5acb1743389e26`。
+SHA-256 `6d12598f3af40daf269887710dbef7787fee5971b075953beff3ba06b34dce19`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3a5acb1743389e26`。
 
 ## 副作用与风险
 

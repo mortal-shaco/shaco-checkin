@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ciba.js`
 - 青龙命令：`node scripts/ciba.js`
 - 建议 Cron：`0 25 11 * * *`
-- 发布哈希：`c105bda0ef235d1916e27fe20ca35e2ee4a61dc948ec3140f30a802c0ce876f5`
+- 发布哈希：`50701c362f010fa8ca8e234d87f703b5bacf6210bdfe161312e7a40593a82fc0`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -60,7 +60,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c105bda0ef235d1916e27fe20ca35e2ee4a61dc948ec3140f30a802c0ce876f5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5901669d3162577e`。
+SHA-256 `50701c362f010fa8ca8e234d87f703b5bacf6210bdfe161312e7a40593a82fc0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5901669d3162577e`。
 
 ## 副作用与风险
 

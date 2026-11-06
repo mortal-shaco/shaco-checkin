@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/a3asmr.js`
 - 青龙命令：`node scripts/a3asmr.js`
 - 建议 Cron：`15 9 * * *`
-- 发布哈希：`dee5686d9158b6ac9470bbfe6b9a728c9fadb6ecb4de52963fef5fc75c0977f3`
+- 发布哈希：`6bb83ca656512945101d667db6933f8b8715f52e2351e244bee9a2527c39d274`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -83,7 +83,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `dee5686d9158b6ac9470bbfe6b9a728c9fadb6ecb4de52963fef5fc75c0977f3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7453e17a3ed8abac`。
+SHA-256 `6bb83ca656512945101d667db6933f8b8715f52e2351e244bee9a2527c39d274`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7453e17a3ed8abac`。
 
 ## 副作用与风险
 

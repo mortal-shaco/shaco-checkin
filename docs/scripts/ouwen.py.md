@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ouwen.py`
 - 青龙命令：`python3 scripts/ouwen.py`
 - 建议 Cron：`0 18 * * *`
-- 发布哈希：`131f08b480b950cc459e6231f5831b06020a69dec2ccc983bcf5231c80d1a232`
+- 发布哈希：`eb630eac9f4822fd5652fdd4c166d0834d2acead47dec902665ec8cc92e1bef5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -75,7 +75,7 @@ OUWEN_ACCOUNTS 中每个非空行代表一个账号，格式为账号|密码；�
 
 ## 验证与兼容性
 
-SHA-256 `131f08b480b950cc459e6231f5831b06020a69dec2ccc983bcf5231c80d1a232`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/51cc62b8a3878ec3`。
+SHA-256 `eb630eac9f4822fd5652fdd4c166d0834d2acead47dec902665ec8cc92e1bef5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/51cc62b8a3878ec3`。
 
 ## 副作用与风险
 

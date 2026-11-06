@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/shuyi.py`
 - 青龙命令：`python3 scripts/shuyi.py`
 - 建议 Cron：`51 0 * * *`
-- 发布哈希：`d87c48b69310d22cda469ef95e60b95cafc471761f11dcecce954a15f1fedb54`
+- 发布哈希：`a62982dad6701fb8e2e2e5edf7dbdb079633917b55ac2d79d65b25736c7fe078`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,7 +79,7 @@ sysxc_auth 每个非空行一个账号，逐个独立处理；任一账号失败
 
 ## 验证与兼容性
 
-SHA-256 `d87c48b69310d22cda469ef95e60b95cafc471761f11dcecce954a15f1fedb54`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/551a306ac75780f1`。
+SHA-256 `a62982dad6701fb8e2e2e5edf7dbdb079633917b55ac2d79d65b25736c7fe078`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/551a306ac75780f1`。
 
 ## 副作用与风险
 

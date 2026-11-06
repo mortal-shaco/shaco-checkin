@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_oneplusbbs.py`
 - 青龙命令：`python3 scripts/ck_oneplusbbs.py`
 - 建议 Cron：`40 2 * * *`
-- 发布哈希：`3abb923486752bc92c6b2552e28bd997607958f31975a2d61f8492e3ff878825`
+- 发布哈希：`66c82ae680c614e5be468312ef731f87f6f5e74bb72edf20110911ae80634b3b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3abb923486752bc92c6b2552e28bd997607958f31975a2d61f8492e3ff878825`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f0626c73779225ec`。
+SHA-256 `66c82ae680c614e5be468312ef731f87f6f5e74bb72edf20110911ae80634b3b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f0626c73779225ec`。
 
 ## 副作用与风险
 

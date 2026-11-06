@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_7b47bad6.js`
 - 青龙命令：`node scripts/task_7b47bad6.js`
 - 建议 Cron：`27 9 * * *`
-- 发布哈希：`0afe401bc827b68423af29511594d80c496b00434bacd72c5470a26e6e0aef83`
+- 发布哈希：`5378f5e3663df41e2a870dd1434f60d4ce4d1b17a6c21c5df611ce5e29f67752`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -104,7 +104,7 @@ MINIMAX_CODE_TOKEN（或兼容别名）每个非空行一个账号；同一账�
 
 ## 验证与兼容性
 
-SHA-256 `0afe401bc827b68423af29511594d80c496b00434bacd72c5470a26e6e0aef83`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7b47bad620ba7931`。
+SHA-256 `5378f5e3663df41e2a870dd1434f60d4ce4d1b17a6c21c5df611ce5e29f67752`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7b47bad620ba7931`。
 
 ## 副作用与风险
 

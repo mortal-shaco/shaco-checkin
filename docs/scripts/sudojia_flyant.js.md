@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_flyant.js`
 - 青龙命令：`node scripts/sudojia_flyant.js`
 - 建议 Cron：`50 0 * * *`
-- 发布哈希：`3dc5a4f1526f06c7cbf8e102b27fae96a159f8182b6e7db2bb16ef9bf25b7650`
+- 发布哈希：`e1abee4bc0d6d89be7e1063d5771caa2b1a60864793844b85c1633ead2723f88`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -93,7 +93,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3dc5a4f1526f06c7cbf8e102b27fae96a159f8182b6e7db2bb16ef9bf25b7650`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4fb882fdbc0ba03a`。
+SHA-256 `e1abee4bc0d6d89be7e1063d5771caa2b1a60864793844b85c1633ead2723f88`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4fb882fdbc0ba03a`。
 
 ## 副作用与风险
 

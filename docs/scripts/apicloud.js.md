@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/apicloud.js`
 - 青龙命令：`node scripts/apicloud.js`
 - 建议 Cron：`12 9 * * *`
-- 发布哈希：`4e135d40ba6aecf8cc90e6c0ac1d8621feb2b8382095afd45152ddc7c4549864`
+- 发布哈希：`e585fc6e562dc77bca9a7871cc7b368fe736c3eb506cd7fab2903ca1d2f02781`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ APICLOUD_COOKIE（或兼容 COOKIE）每个非空行一个账号 Cookie；可选
 
 ## 验证与兼容性
 
-SHA-256 `4e135d40ba6aecf8cc90e6c0ac1d8621feb2b8382095afd45152ddc7c4549864`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5abd6992fd7b03aa`。
+SHA-256 `e585fc6e562dc77bca9a7871cc7b368fe736c3eb506cd7fab2903ca1d2f02781`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5abd6992fd7b03aa`。
 
 ## 副作用与风险
 

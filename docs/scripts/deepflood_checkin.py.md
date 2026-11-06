@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/deepflood_checkin.py`
 - 青龙命令：`python3 scripts/deepflood_checkin.py`
 - 建议 Cron：`0 0 * * *`
-- 发布哈希：`ed78fc0dc3d9212cd140a19286ae2ef3899db0d72cbd0d471c417e5d05279a68`
+- 发布哈希：`fa7b18d5b03ace3e8942fc7024d1680e695a5b6334d26e90a7c1b6fe1f3062bb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -106,7 +106,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ed78fc0dc3d9212cd140a19286ae2ef3899db0d72cbd0d471c417e5d05279a68`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01d51606a735260a`。
+SHA-256 `fa7b18d5b03ace3e8942fc7024d1680e695a5b6334d26e90a7c1b6fe1f3062bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/01d51606a735260a`。
 
 ## 副作用与风险
 

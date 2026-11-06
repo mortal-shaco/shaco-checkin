@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hellogithub.py`
 - 青龙命令：`python3 scripts/hellogithub.py`
 - 建议 Cron：`31 8 1 * *`
-- 发布哈希：`45280c4f705f455b151b322e88d3201210a564c1bc8f637e13b884de6b7852c6`
+- 发布哈希：`3e95fdd66340d7b411d708406444f890d715e5d9c87f58a9f43aebb1ce3fe703`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `45280c4f705f455b151b322e88d3201210a564c1bc8f637e13b884de6b7852c6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e249d85fcb6de594`。
+SHA-256 `3e95fdd66340d7b411d708406444f890d715e5d9c87f58a9f43aebb1ce3fe703`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e249d85fcb6de594`。
 
 ## 副作用与风险
 

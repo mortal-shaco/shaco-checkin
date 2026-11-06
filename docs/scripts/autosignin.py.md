@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/autosignin.py`
 - 青龙命令：`python3 scripts/autosignin.py`
 - 建议 Cron：`18 */6 * * *`
-- 发布哈希：`61faf526da71bb52f8479ec379f7b52fd0326e0290a2805861f94778f1fa8974`
+- 发布哈希：`559cab436c891c5e5a8b427144dfc8803a361a345a698af1429b530b4ae457fb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@ E_COOKIE 每个非空行一个账号；同一行保留该账号所有 Cookie 字
 
 ## 验证与兼容性
 
-SHA-256 `61faf526da71bb52f8479ec379f7b52fd0326e0290a2805861f94778f1fa8974`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7919605278826396`。
+SHA-256 `559cab436c891c5e5a8b427144dfc8803a361a345a698af1429b530b4ae457fb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7919605278826396`。
 
 ## 副作用与风险
 

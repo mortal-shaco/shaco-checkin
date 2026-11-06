@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/cfmoto_checkin.py`
 - 青龙命令：`task scripts/cfmoto_checkin.py`
 - 建议 Cron：`5 0 * * *`
-- 发布哈希：`d45204f3a633d6ef06813b9a637ed6add21ba382be8788f439062dce1e00cce6`
+- 发布哈希：`e350fb202a08bcb86852518d8d5c6d4666701008d4b3a1b78fbe270f8472fd29`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -104,7 +104,7 @@ CFMOTO_COOKIE 每行一个账号
 
 ## 验证与兼容性
 
-SHA-256 `d45204f3a633d6ef06813b9a637ed6add21ba382be8788f439062dce1e00cce6`；live 业务成功证据位于 `projects/checkin/validation/0ba7bb41fd4c339c`。
+SHA-256 `e350fb202a08bcb86852518d8d5c6d4666701008d4b3a1b78fbe270f8472fd29`；live 业务成功证据位于 `projects/checkin/validation/0ba7bb41fd4c339c`。
 
 ## 副作用与风险
 

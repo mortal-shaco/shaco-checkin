@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/modelscope_daily.py`
 - 青龙命令：`python3 scripts/modelscope_daily.py`
 - 建议 Cron：`0 9 * * *`
-- 发布哈希：`2a95265bfabf2f6b927222ad0786b58ba5d804bd7b5bd8d2206d70b513e25cc9`
+- 发布哈希：`a71d162d131530864fba6a2d2baa567cefa6436da0f3f11bc74dc0fc9eacf359`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -155,7 +155,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2a95265bfabf2f6b927222ad0786b58ba5d804bd7b5bd8d2206d70b513e25cc9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2d3c603c8a58ed00`。
+SHA-256 `a71d162d131530864fba6a2d2baa567cefa6436da0f3f11bc74dc0fc9eacf359`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2d3c603c8a58ed00`。
 
 ## 副作用与风险
 

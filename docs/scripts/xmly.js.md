@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/xmly.js`
 - 青龙命令：`node scripts/xmly.js`
 - 建议 Cron：`10 0 12 * * *`
-- 发布哈希：`53cc946d1ecd83346d79cb31c55de7832eb97686b0e224808607f7e56224b30a`
+- 发布哈希：`628c07d70bd75740c4ac54a3f7cde3dda02bcfd065c8c5194e1376eef78a514f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@ XMLY_LIST 中每个非空行是一个独立账号；脚本逐个执行并汇总�
 
 ## 验证与兼容性
 
-SHA-256 `53cc946d1ecd83346d79cb31c55de7832eb97686b0e224808607f7e56224b30a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/44110e6cc005cbcd`。
+SHA-256 `628c07d70bd75740c4ac54a3f7cde3dda02bcfd065c8c5194e1376eef78a514f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/44110e6cc005cbcd`。
 
 ## 副作用与风险
 

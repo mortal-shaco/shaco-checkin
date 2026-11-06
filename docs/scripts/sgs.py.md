@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sgs.py`
 - 青龙命令：`python3 scripts/sgs.py`
 - 建议 Cron：`43 0 * * *`
-- 发布哈希：`4b055b6fcaa175c57f7c5a65af58555541564960567c43ff039d45629dbcf6f5`
+- 发布哈希：`672df68ce3c6f62422e7e80dd88ccdbe30fa56abc0cd07bbba3a418b881c32bb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4b055b6fcaa175c57f7c5a65af58555541564960567c43ff039d45629dbcf6f5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/45e40e4a3ee37968`。
+SHA-256 `672df68ce3c6f62422e7e80dd88ccdbe30fa56abc0cd07bbba3a418b881c32bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/45e40e4a3ee37968`。
 
 ## 副作用与风险
 

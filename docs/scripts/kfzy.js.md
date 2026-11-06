@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kfzy.js`
 - 青龙命令：`node scripts/kfzy.js`
 - 建议 Cron：`0 40 11 * * *`
-- 发布哈希：`44947076109368440e3a91e55ac7836a4cdf21a110dd800d063ede92fba41891`
+- 发布哈希：`070cbf2b2dcfb429916ef436c8e771d62a0d1d56547efc2facd04edb169d03f4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -61,7 +61,7 @@ KFZY_COOKIE_LIST 中每个非空行代表一个账号；脚本逐个独立校验
 
 ## 验证与兼容性
 
-SHA-256 `44947076109368440e3a91e55ac7836a4cdf21a110dd800d063ede92fba41891`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ec84855cfbf1a288`。
+SHA-256 `070cbf2b2dcfb429916ef436c8e771d62a0d1d56547efc2facd04edb169d03f4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ec84855cfbf1a288`。
 
 ## 副作用与风险
 

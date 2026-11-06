@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_xiangwan.js`
 - 青龙命令：`node scripts/sudojia_xiangwan.js`
 - 建议 Cron：`15 2 * * *`
-- 发布哈希：`835ac65b7875e09b120d2bc7f665840bbcf06d03d4e0c3f67ed1ca2a5ad25aa5`
+- 发布哈希：`ea143da01ad3378f134e8ea517c5288a0c771b4b72b27ab0806d7b59baec9c8c`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -76,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `835ac65b7875e09b120d2bc7f665840bbcf06d03d4e0c3f67ed1ca2a5ad25aa5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d59346ef3ccb8591`。
+SHA-256 `ea143da01ad3378f134e8ea517c5288a0c771b4b72b27ab0806d7b59baec9c8c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d59346ef3ccb8591`。
 
 ## 副作用与风险
 

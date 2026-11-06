@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_fmapp.py`
 - 青龙命令：`python3 scripts/ck_fmapp.py`
 - 建议 Cron：`57 1 * * *`
-- 发布哈希：`ebe77416446c4562651af0131efc44f590d19c21c14a7736e4d34cd8b768b441`
+- 发布哈希：`3020492b50a9b8ae9bbbb76cf519e356917ea3dc838ab889fae7ed98b542a544`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ebe77416446c4562651af0131efc44f590d19c21c14a7736e4d34cd8b768b441`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b448219b57620cb7`。
+SHA-256 `3020492b50a9b8ae9bbbb76cf519e356917ea3dc838ab889fae7ed98b542a544`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b448219b57620cb7`。
 
 ## 副作用与风险
 

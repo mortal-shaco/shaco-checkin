@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/dahai.js`
 - 青龙命令：`node scripts/dahai.js`
 - 建议 Cron：`0 30 11 * * *`
-- 发布哈希：`2a17e92f9b12ad6fb8e917c88d90667ee59ef5f6fabdadcd621325c1709ce27b`
+- 发布哈希：`4330fc49e4934a0eb98f2cdad13f43143ad362a21c3a94360719a51793695d16`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2a17e92f9b12ad6fb8e917c88d90667ee59ef5f6fabdadcd621325c1709ce27b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5b99fb59f74d208`。
+SHA-256 `4330fc49e4934a0eb98f2cdad13f43143ad362a21c3a94360719a51793695d16`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5b99fb59f74d208`。
 
 ## 副作用与风险
 

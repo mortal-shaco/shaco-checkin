@@ -53,26 +53,17 @@
 
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      'ad4c4f3ab8ede7e1',
-      'scripts/abyssworld_checkin.js',
-      'abyssworld_checkin.js',
-      'main.js',
-      'abyssworld',
-      'candidate.js',
-    ];
+    const identities = ["ad4c4f3ab8ede7e1", "scripts/task_ad4c4f3a.js", "task_ad4c4f3a.js", "task_ad4c4f3a"];
     enabled = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
-  } else {
-    enabled = true;
   }
   process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
 })();
@@ -161,7 +152,7 @@ function sleep(ms) {
 function notificationSelected() {
   if (disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
-  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
+  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return false; /* listed-only default */
   const raw = process.env.QINGLONG_NOTIFY_SCRIPTS;
   if (String(raw).trim() === '') return false;
   const selectors = String(raw).split(/[,;\s]+/).filter(Boolean);

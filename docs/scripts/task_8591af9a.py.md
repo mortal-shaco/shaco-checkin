@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_8591af9a.py`
 - 青龙命令：`python3 scripts/task_8591af9a.py`
 - 建议 Cron：`29 9 * * *`
-- 发布哈希：`84e0f91dd500a5e99673c2bd11cee7c4d3ac7f7047bffbee6eb90effe666c949`
+- 发布哈希：`e8766dbafc9fc7865ba968a2fce86ae03343ec4f36be772e8d614aacab2f00a6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -104,7 +104,7 @@ BD2_ACCESS_TOKEN（或兼容别名 BD2_TOKEN）每个非空行一个 accessToken
 
 ## 验证与兼容性
 
-SHA-256 `84e0f91dd500a5e99673c2bd11cee7c4d3ac7f7047bffbee6eb90effe666c949`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8591af9ab9d3293b`。
+SHA-256 `e8766dbafc9fc7865ba968a2fce86ae03343ec4f36be772e8d614aacab2f00a6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8591af9ab9d3293b`。
 
 ## 副作用与风险
 

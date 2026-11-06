@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kjwj.py`
 - 青龙命令：`python3 scripts/kjwj.py`
 - 建议 Cron：`41 2 * * *`
-- 发布哈希：`16126418f2dca6c04ea2a93a1729e3a656f26d509cb2fdbee6a053f7dac27d4b`
+- 发布哈希：`7c7c8e14712e87da5ac447b1a973b213231c5115ecfbd6eb6d2d47bd7de269f4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -71,7 +71,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `16126418f2dca6c04ea2a93a1729e3a656f26d509cb2fdbee6a053f7dac27d4b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f4e13633e05b6a28`。
+SHA-256 `7c7c8e14712e87da5ac447b1a973b213231c5115ecfbd6eb6d2d47bd7de269f4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f4e13633e05b6a28`。
 
 ## 副作用与风险
 

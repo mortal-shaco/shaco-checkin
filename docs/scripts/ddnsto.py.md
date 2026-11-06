@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ddnsto.py`
 - 青龙命令：`python3 scripts/ddnsto.py`
 - 建议 Cron：`32 2 * * *`
-- 发布哈希：`4c4673b208eb9a0606553cead6295f74887f0cc6ee881a9b4ef893e7a6aa6f1a`
+- 发布哈希：`771ea868094c8fac7b9356ffd27776cd59124d0b39ad5f224195c4066bb5a16b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4c4673b208eb9a0606553cead6295f74887f0cc6ee881a9b4ef893e7a6aa6f1a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
+SHA-256 `771ea868094c8fac7b9356ffd27776cd59124d0b39ad5f224195c4066bb5a16b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e7b851436459bf8f`。
 
 ## 副作用与风险
 

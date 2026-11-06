@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bwcj.py`
 - 青龙命令：`python3 scripts/bwcj.py`
 - 建议 Cron：`31 9,18 * * *`
-- 发布哈希：`cf0c19dcb1d4f324dbe0a197122d579610828432c15c846d871599e0e95671d3`
+- 发布哈希：`6a392e49a39b710bf86ece5695ab04db84c234a0ad38986ec6c038614de795f3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `cf0c19dcb1d4f324dbe0a197122d579610828432c15c846d871599e0e95671d3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0367e0709855a394`。
+SHA-256 `6a392e49a39b710bf86ece5695ab04db84c234a0ad38986ec6c038614de795f3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0367e0709855a394`。
 
 ## 副作用与风险
 

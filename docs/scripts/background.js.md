@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/background.js`
 - 青龙命令：`node scripts/background.js`
 - 建议 Cron：`4 8 * * *`
-- 发布哈希：`fda927b77b7216deb591807d772e1d5b8983ed4ffbf654beb168254464e14e1a`
+- 发布哈希：`e5e03c536eaa6123f5f969ad5f0b82cd1f15d8cf5cab568ccc77b64ef99f18e1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@ BOHE_COOKIE 每个非空行一个账号；可选备注仅按第一个竖线分�
 
 ## 验证与兼容性
 
-SHA-256 `fda927b77b7216deb591807d772e1d5b8983ed4ffbf654beb168254464e14e1a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5d8ba0f271781047`。
+SHA-256 `e5e03c536eaa6123f5f969ad5f0b82cd1f15d8cf5cab568ccc77b64ef99f18e1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5d8ba0f271781047`。
 
 ## 副作用与风险
 

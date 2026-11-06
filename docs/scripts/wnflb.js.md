@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wnflb.js`
 - 青龙命令：`node scripts/wnflb.js`
 - 建议 Cron：`0 45 11 * * *`
-- 发布哈希：`80b8350c4ffd9a03aac1eab69869bd4099a3f7808d7d9e4effc5040785dbdc6c`
+- 发布哈希：`0c82505a038f89e0fcec191dc1b50fa2258aec5d85f6ede849fa3f123ac9a08e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -68,7 +68,7 @@ WNFLB_COOKIE_LIST 中每个非空行代表一个账号；账号依次独立执�
 
 ## 验证与兼容性
 
-SHA-256 `80b8350c4ffd9a03aac1eab69869bd4099a3f7808d7d9e4effc5040785dbdc6c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0958709b5f55078a`。
+SHA-256 `0c82505a038f89e0fcec191dc1b50fa2258aec5d85f6ede849fa3f123ac9a08e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0958709b5f55078a`。
 
 ## 副作用与风险
 

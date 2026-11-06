@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_hlzj_game.js`
 - 青龙命令：`node scripts/sudojia_hlzj_game.js`
 - 建议 Cron：`20 8,15,20 * * *`
-- 发布哈希：`4a45c25045f9bf5a1420ff25ed8600bc3936577fd0d4ead5d37bb6959930cd41`
+- 发布哈希：`6096a930bc35e38c412c152db73f488e4362fb7681de28e6a7e8a7ac2ac9b56b`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -84,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4a45c25045f9bf5a1420ff25ed8600bc3936577fd0d4ead5d37bb6959930cd41`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4d08d343f131700e`。
+SHA-256 `6096a930bc35e38c412c152db73f488e4362fb7681de28e6a7e8a7ac2ac9b56b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4d08d343f131700e`。
 
 ## 副作用与风险
 

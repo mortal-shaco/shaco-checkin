@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/littlewuh_qinglongbox_dailycheckin_scripts.py`
 - 青龙命令：`python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py`
 - 建议 Cron：`16 2 * * *`
-- 发布哈希：`ecb27e91f8d882015882232840053dc21daee6db522ced6b65468982c9b43c87`
+- 发布哈希：`beaa90915dc218b530a754e4e9b148c6941a052ff0b9c081f273d2f1b98334b4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@ NZZ_COOKIE 每个非空行一个账号，各账号独立 Cookie 会话；任一�
 
 ## 验证与兼容性
 
-SHA-256 `ecb27e91f8d882015882232840053dc21daee6db522ced6b65468982c9b43c87`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cb2f4adeccaa95b9`。
+SHA-256 `beaa90915dc218b530a754e4e9b148c6941a052ff0b9c081f273d2f1b98334b4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cb2f4adeccaa95b9`。
 
 ## 副作用与风险
 

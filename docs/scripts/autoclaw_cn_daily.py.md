@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/autoclaw_cn_daily.py`
 - 青龙命令：`python3 scripts/autoclaw_cn_daily.py`
 - 建议 Cron：`15 8 * * *`
-- 发布哈希：`497df1c163561ea9fd933bdaca5cf661cae8a8f39536cfd7bff7413968a9c3e8`
+- 发布哈希：`bc0fd7148118c873e7e948ec200084574669576cc3f0e2062b277600f83b18ce`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -166,7 +166,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `497df1c163561ea9fd933bdaca5cf661cae8a8f39536cfd7bff7413968a9c3e8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3813c988ddc0c592`。
+SHA-256 `bc0fd7148118c873e7e948ec200084574669576cc3f0e2062b277600f83b18ce`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3813c988ddc0c592`。
 
 ## 副作用与风险
 

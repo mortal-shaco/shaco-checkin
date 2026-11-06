@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/get_yys_imagelinks.py`
 - 青龙命令：`python3 scripts/get_yys_imagelinks.py`
 - 建议 Cron：`28 9 * * 0`
-- 发布哈希：`8ef7aa8d9865a9d3febb5ccc85b274f59f4d16fab4e1bbff9f7e796dca91075d`
+- 发布哈希：`00049e7c60fc0e8fd3e452f5974ec5dd15af72bedc3aedd3fe2a332c6d322b7c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -108,7 +108,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8ef7aa8d9865a9d3febb5ccc85b274f59f4d16fab4e1bbff9f7e796dca91075d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21c2272d2f618e0f`。
+SHA-256 `00049e7c60fc0e8fd3e452f5974ec5dd15af72bedc3aedd3fe2a332c6d322b7c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/21c2272d2f618e0f`。
 
 ## 副作用与风险
 

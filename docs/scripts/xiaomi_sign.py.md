@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/xiaomi_sign.py`
 - 青龙命令：`python3 scripts/xiaomi_sign.py`
 - 建议 Cron：`29 8 * * *`
-- 发布哈希：`c86a8e177082e669636be92d4488c7bc38e13e1af9658962fe9b479bee7c4708`
+- 发布哈希：`627603f38f2eeb9a13d6dff92cee6b703a30d56376bd16debd2791df12eb02c7`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -89,7 +89,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c86a8e177082e669636be92d4488c7bc38e13e1af9658962fe9b479bee7c4708`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/201d530a0f4973ba`。
+SHA-256 `627603f38f2eeb9a13d6dff92cee6b703a30d56376bd16debd2791df12eb02c7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/201d530a0f4973ba`。
 
 ## 副作用与风险
 

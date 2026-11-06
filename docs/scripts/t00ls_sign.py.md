@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/t00ls_sign.py`
 - 青龙命令：`python3 scripts/t00ls_sign.py`
 - 建议 Cron：`21 1 * * *`
-- 发布哈希：`48f6d4c05fe8db0de44d5ea6f1414af35a66268506a31f27290e143c0dee4372`
+- 发布哈希：`4de76a4f2d0721a01dffd92ee80f91e6fff3f4ee55272fe1f4fe0408f752ce9d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -167,7 +167,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `48f6d4c05fe8db0de44d5ea6f1414af35a66268506a31f27290e143c0dee4372`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/06364e72aec0863e`。
+SHA-256 `4de76a4f2d0721a01dffd92ee80f91e6fff3f4ee55272fe1f4fe0408f752ce9d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/06364e72aec0863e`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/jingyiluntan_sign.py`
 - 青龙命令：`python3 scripts/jingyiluntan_sign.py`
 - 建议 Cron：`2 2 * * *`
-- 发布哈希：`3782534af710de22762805e6182806e6139259a50b2381b50ce2b9dd3bb5b808`
+- 发布哈希：`a8b028539420b522361881979a617847abf20c34cd3aa23b785fab3c04b0d88d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -84,7 +84,7 @@ JYLT_Cookie 每个非空行一个账号，按行独立登录和执行；任一�
 
 ## 验证与兼容性
 
-SHA-256 `3782534af710de22762805e6182806e6139259a50b2381b50ce2b9dd3bb5b808`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c2696f744222baac`。
+SHA-256 `a8b028539420b522361881979a617847abf20c34cd3aa23b785fab3c04b0d88d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c2696f744222baac`。
 
 ## 副作用与风险
 

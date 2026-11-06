@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/forum_download.py`
 - 青龙命令：`python3 scripts/forum_download.py`
 - 建议 Cron：`29 2 * * *`
-- 发布哈希：`a899c4f3f8983dc390c74d3bee5c835cc65325e10a491f6ceb399267250d3131`
+- 发布哈希：`a4ba01f899da2f905b2ec6e75cba73c499d3c0a6c762c32c8cbf4c0af5e0d0aa`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -92,7 +92,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a899c4f3f8983dc390c74d3bee5c835cc65325e10a491f6ceb399267250d3131`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
+SHA-256 `a4ba01f899da2f905b2ec6e75cba73c499d3c0a6c762c32c8cbf4c0af5e0d0aa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e60b615a6554e2b6`。
 
 ## 副作用与风险
 

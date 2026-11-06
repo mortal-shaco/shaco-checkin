@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/caigamer.js`
 - 青龙命令：`node scripts/caigamer.js`
 - 建议 Cron：`0 20 11 * * *`
-- 发布哈希：`c90be77636e63377ea272c32745c24c9816fc1c3432533f0f3d1f51b26697b92`
+- 发布哈希：`12c76005390d61ec24eaf4780e2bf64539ebd23663f921f7e2bdee5462ab60a3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c90be77636e63377ea272c32745c24c9816fc1c3432533f0f3d1f51b26697b92`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8bd252d858b7095c`。
+SHA-256 `12c76005390d61ec24eaf4780e2bf64539ebd23663f921f7e2bdee5462ab60a3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8bd252d858b7095c`。
 
 ## 副作用与风险
 

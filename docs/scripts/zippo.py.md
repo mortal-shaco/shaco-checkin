@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/zippo.py`
 - 青龙命令：`python3 scripts/zippo.py`
 - 建议 Cron：`56 0 * * *`
-- 发布哈希：`ff4597dcb15f66633dae31cdb21ab6f2719c45b92a66b6fd48644a1e163f0876`
+- 发布哈希：`de111537070ac045951e7ab0a5ba224f91a5723070db91618e675eb8a029af82`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -99,7 +99,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ff4597dcb15f66633dae31cdb21ab6f2719c45b92a66b6fd48644a1e163f0876`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/60f9d3538e9f8470`。
+SHA-256 `de111537070ac045951e7ab0a5ba224f91a5723070db91618e675eb8a029af82`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/60f9d3538e9f8470`。
 
 ## 副作用与风险
 

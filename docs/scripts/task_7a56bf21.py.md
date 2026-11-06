@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_7a56bf21.py`
 - 青龙命令：`python3 scripts/task_7a56bf21.py`
 - 建议 Cron：`41 8 * * *`
-- 发布哈希：`914b1e29b87f734f8f0035a4ae1ffe78c5b45c2f9a1ee910f89f7160bb8ee1f7`
+- 发布哈希：`e974a3b5b50ee97419c619414d23af576692f6b24b5d8ed4de02f18afdb8ce0b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ HAO4K_ACCOUNT 每个非空行一个账号，格式为用户名&密码，仅拆�
 
 ## 验证与兼容性
 
-SHA-256 `914b1e29b87f734f8f0035a4ae1ffe78c5b45c2f9a1ee910f89f7160bb8ee1f7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7a56bf211c074a00`。
+SHA-256 `e974a3b5b50ee97419c619414d23af576692f6b24b5d8ed4de02f18afdb8ce0b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7a56bf211c074a00`。
 
 ## 副作用与风险
 

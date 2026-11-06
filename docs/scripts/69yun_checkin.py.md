@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/69yun_checkin.py`
 - 青龙命令：`python3 scripts/69yun_checkin.py`
 - 建议 Cron：`20 0 * * *`
-- 发布哈希：`6f4f134cd77e6d2df8f3d0ae2a8127bb75504c86e05e0f1584dc64556f9c8498`
+- 发布哈希：`a19b57d4891431615199085540edf0588e4dcf4a89d5e1cbed1698c132b1fba9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@ AIRPORT_ACCOUNTS 每个非空行表示一个独立账号，并以单行 JSON 将
 
 ## 验证与兼容性
 
-SHA-256 `6f4f134cd77e6d2df8f3d0ae2a8127bb75504c86e05e0f1584dc64556f9c8498`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1e0938cba7889cb3`。
+SHA-256 `a19b57d4891431615199085540edf0588e4dcf4a89d5e1cbed1698c132b1fba9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1e0938cba7889cb3`。
 
 ## 副作用与风险
 

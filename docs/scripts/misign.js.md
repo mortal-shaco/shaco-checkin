@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/misign.js`
 - 青龙命令：`node scripts/misign.js`
 - 建议 Cron：`19 8 * * *`
-- 发布哈希：`f3c990f47cc14020f6a00778fadc58759213d13d2125d1fec850d1cd4beba46e`
+- 发布哈希：`042efe3c7b742af8c2841e7b5434c8ee67a7c5d3349b3ba886f5c3170bc55988`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f3c990f47cc14020f6a00778fadc58759213d13d2125d1fec850d1cd4beba46e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a4947a6ba0940e49`。
+SHA-256 `042efe3c7b742af8c2841e7b5434c8ee67a7c5d3349b3ba886f5c3170bc55988`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a4947a6ba0940e49`。
 
 ## 副作用与风险
 

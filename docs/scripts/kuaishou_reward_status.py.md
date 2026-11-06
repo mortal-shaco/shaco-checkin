@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kuaishou_reward_status.py`
 - 青龙命令：`python3 scripts/kuaishou_reward_status.py`
 - 建议 Cron：`22 8,14,20 * * *`
-- 发布哈希：`c689f2a14014bfe2374054469b4564608b5db69b981f10cabbca842321f24f63`
+- 发布哈希：`2bc8f9bc1f49b28fc7a60959e1b51ab876f27775ddf85cadc42259e0ce1f512e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -67,7 +67,7 @@ KUAISHOU_COOKIE 每个非空行对应一个账号；任一账号失败时任务�
 
 ## 验证与兼容性
 
-SHA-256 `c689f2a14014bfe2374054469b4564608b5db69b981f10cabbca842321f24f63`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
+SHA-256 `2bc8f9bc1f49b28fc7a60959e1b51ab876f27775ddf85cadc42259e0ce1f512e`；live 业务成功证据位于 `projects/checkin/validation/ks_cleanroom_v1`。
 
 ## 副作用与风险
 

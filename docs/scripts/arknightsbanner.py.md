@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/arknightsbanner.py`
 - 青龙命令：`python3 scripts/arknightsbanner.py`
 - 建议 Cron：`29 1 * * *`
-- 发布哈希：`a34a5e85645481573d63273b4ba836cfac0a5b30ea0260391c096d1b393545e7`
+- 发布哈希：`01d3a08a7bb46062f7c226cd3779d476a2ee2baf1307a4fa36aeb1a215240acc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a34a5e85645481573d63273b4ba836cfac0a5b30ea0260391c096d1b393545e7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/918364c17c412528`。
+SHA-256 `01d3a08a7bb46062f7c226cd3779d476a2ee2baf1307a4fa36aeb1a215240acc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/918364c17c412528`。
 
 ## 副作用与风险
 

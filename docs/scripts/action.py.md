@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/action.py`
 - 青龙命令：`python3 scripts/action.py`
 - 建议 Cron：`38 8 * * *`
-- 发布哈希：`05710cb947f9264e45260123901de328d941a113dfd2149cce3b311de96774d9`
+- 发布哈希：`1a5afeddb43fe78bfe783d3902b93e6f3084183d97244e06e99c937433b2aca5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -106,7 +106,7 @@ CORDCLOUD_ACCOUNTS 中每个非空行是一个独立账号（邮箱|密码，或
 
 ## 验证与兼容性
 
-SHA-256 `05710cb947f9264e45260123901de328d941a113dfd2149cce3b311de96774d9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/acd4b880b9d34d61`。
+SHA-256 `1a5afeddb43fe78bfe783d3902b93e6f3084183d97244e06e99c937433b2aca5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/acd4b880b9d34d61`。
 
 ## 副作用与风险
 

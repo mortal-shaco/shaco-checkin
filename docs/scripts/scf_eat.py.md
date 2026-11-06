@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/scf_eat.py`
 - 青龙命令：`python3 scripts/scf_eat.py`
 - 建议 Cron：`37 8 * * *`
-- 发布哈希：`aa891675eca00ba43abc78bc56e3cbe92ff0ed5ee7a1b5e04769be62223e4fbc`
+- 发布哈希：`8a39580364d90df3f9e194846d2beee37dffa377babc0154c77901f239334514`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -89,7 +89,7 @@ EATASMR_COOKIE 中每个非空行是一个独立账号；可选 备注|Cookie；
 
 ## 验证与兼容性
 
-SHA-256 `aa891675eca00ba43abc78bc56e3cbe92ff0ed5ee7a1b5e04769be62223e4fbc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e2ef382ec73c4e6d`。
+SHA-256 `8a39580364d90df3f9e194846d2beee37dffa377babc0154c77901f239334514`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e2ef382ec73c4e6d`。
 
 ## 副作用与风险
 

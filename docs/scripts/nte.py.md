@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nte.py`
 - 青龙命令：`python3 scripts/nte.py`
 - 建议 Cron：`0 1 * * *`
-- 发布哈希：`8c31ee3b54f2405461352343017d1ec0bce054fce84313d3df984973ee2ad80a`
+- 发布哈希：`2df341865ceb96dd89ec7a9c1594a591defcaa50e44f76af5366b67fa323ec46`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8c31ee3b54f2405461352343017d1ec0bce054fce84313d3df984973ee2ad80a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6919295133257387`。
+SHA-256 `2df341865ceb96dd89ec7a9c1594a591defcaa50e44f76af5366b67fa323ec46`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6919295133257387`。
 
 ## 副作用与风险
 

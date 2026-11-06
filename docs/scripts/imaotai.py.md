@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/imaotai.py`
 - 青龙命令：`python3 scripts/imaotai.py`
 - 建议 Cron：`38 2 * * *`
-- 发布哈希：`12c271f3915fb0dd2d102fc342f13ece8c414f3bd7a106b5ada48fa75d9426fa`
+- 发布哈希：`707b328c201e054ecbc28772f392cd1f37108f1d79d883bccbd8352b5d16fe15`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `12c271f3915fb0dd2d102fc342f13ece8c414f3bd7a106b5ada48fa75d9426fa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
+SHA-256 `707b328c201e054ecbc28772f392cd1f37108f1d79d883bccbd8352b5d16fe15`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ef664085f75113bd`。
 
 ## 副作用与风险
 

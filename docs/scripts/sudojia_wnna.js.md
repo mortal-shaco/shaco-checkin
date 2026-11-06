@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_wnna.js`
 - 青龙命令：`node scripts/sudojia_wnna.js`
 - 建议 Cron：`29 0 * * *`
-- 发布哈希：`b523e14123109cc438888f2ad5deaf7cb92256b538e8b5cfb78176fc93e12a7f`
+- 发布哈希：`ebce77d4a39439ab6c75d9de693a423d11f97d8748ff648c9c2c14c2151c5031`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b523e14123109cc438888f2ad5deaf7cb92256b538e8b5cfb78176fc93e12a7f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/364d0c6592e14300`。
+SHA-256 `ebce77d4a39439ab6c75d9de693a423d11f97d8748ff648c9c2c14c2151c5031`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/364d0c6592e14300`。
 
 ## 副作用与风险
 

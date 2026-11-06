@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/day.py`
 - 青龙命令：`python3 scripts/day.py`
 - 建议 Cron：`58 8 * * *`
-- 发布哈希：`f480d68c95ff0941df221fd5a4cf36b0010ec950d145e990b31fe9025a43b474`
+- 发布哈希：`65bc37252d26488e628e31b4076f3ecaa0bc9137f7a74f34068991788a498d29`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@ FORUM_AUTO_SIGN_ACCOUNTS 每个非空行一个账号，格式为用户名|密码
 
 ## 验证与兼容性
 
-SHA-256 `f480d68c95ff0941df221fd5a4cf36b0010ec950d145e990b31fe9025a43b474`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/44fd1f3761334ce8`。
+SHA-256 `65bc37252d26488e628e31b4076f3ecaa0bc9137f7a74f34068991788a498d29`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/44fd1f3761334ce8`。
 
 ## 副作用与风险
 

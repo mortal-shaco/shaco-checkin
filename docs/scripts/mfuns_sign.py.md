@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/mfuns_sign.py`
 - 青龙命令：`python3 scripts/mfuns_sign.py`
 - 建议 Cron：`9 9 * * *`
-- 发布哈希：`1d60b752e4bac2b15fa4cd55a6d75feeced1509a6c5f01b0f3bff252d97d17d9`
+- 发布哈希：`36dea285b491a7ed3f98a57a0c3f4e657b07a0df2e99b01ddbc4383a83735007`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@ NEKO_MFUNS_COOKIE 每个非空行表示一个账号的 Authorization 值；账�
 
 ## 验证与兼容性
 
-SHA-256 `1d60b752e4bac2b15fa4cd55a6d75feeced1509a6c5f01b0f3bff252d97d17d9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bacc70efebb57480`。
+SHA-256 `36dea285b491a7ed3f98a57a0c3f4e657b07a0df2e99b01ddbc4383a83735007`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bacc70efebb57480`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ty_netdisk_checkin.py`
 - 青龙命令：`python3 scripts/ty_netdisk_checkin.py`
 - 建议 Cron：`6 1 * * *`
-- 发布哈希：`d91babb1a86918da573c6078ae632df83e9ae11023606ab9ae06c4f25a8a16b6`
+- 发布哈希：`70f081789f785e9064a5eb94d3f87dba92546e3b42864657681b42ce40886d31`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -108,7 +108,7 @@ TY_ACCOUNTS 每个非空行一个账号，只在首个 | 处分割用户名和�
 
 ## 验证与兼容性
 
-SHA-256 `d91babb1a86918da573c6078ae632df83e9ae11023606ab9ae06c4f25a8a16b6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
+SHA-256 `70f081789f785e9064a5eb94d3f87dba92546e3b42864657681b42ce40886d31`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/70f2505a78eb7276`。
 
 ## 副作用与风险
 

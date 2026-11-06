@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_9a14e9eb.py`
 - 青龙命令：`python3 scripts/task_9a14e9eb.py`
 - 建议 Cron：`39 0 * * *`
-- 发布哈希：`2bc04ea9ccf3a49004c6a21fef48e889caff2afec23c2bfc066a9c691252984f`
+- 发布哈希：`2b314c655e6e05b08cc64878d482558efd2d61bf285cc8dad67698a656933a25`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -67,7 +67,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2bc04ea9ccf3a49004c6a21fef48e889caff2afec23c2bfc066a9c691252984f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9a14e9eb7997f1a3`。
+SHA-256 `2b314c655e6e05b08cc64878d482558efd2d61bf285cc8dad67698a656933a25`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9a14e9eb7997f1a3`。
 
 ## 副作用与风险
 

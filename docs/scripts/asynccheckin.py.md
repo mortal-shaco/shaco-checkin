@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/asynccheckin.py`
 - 青龙命令：`python3 scripts/asynccheckin.py`
 - 建议 Cron：`*/3 7-22 * * 1-5`
-- 发布哈希：`bfd3d2091bf67676330d493adc96fe636b69184d3ac0f55815e82ece6d0288e9`
+- 发布哈希：`6b1681028599376e653922c7688375704df09568be968382d4fe479bf81b7136`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -121,7 +121,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `bfd3d2091bf67676330d493adc96fe636b69184d3ac0f55815e82ece6d0288e9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6e492a5f641ac92d`。
+SHA-256 `6b1681028599376e653922c7688375704df09568be968382d4fe479bf81b7136`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6e492a5f641ac92d`。
 
 ## 副作用与风险
 

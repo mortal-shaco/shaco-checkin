@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_allgirls.js`
 - 青龙命令：`node scripts/sudojia_allgirls.js`
 - 建议 Cron：`33 2 * * *`
-- 发布哈希：`f23f02fec7fe0742d7128134b6dc7cb36a629eeb6e8505824b21a889b9f89a59`
+- 发布哈希：`53a9c162db13ade5c29e3a648f02fde6ec070658f7debaa17e4eb5ab7922e5ad`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f23f02fec7fe0742d7128134b6dc7cb36a629eeb6e8505824b21a889b9f89a59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e8776198aafad33e`。
+SHA-256 `53a9c162db13ade5c29e3a648f02fde6ec070658f7debaa17e4eb5ab7922e5ad`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e8776198aafad33e`。
 
 ## 副作用与风险
 

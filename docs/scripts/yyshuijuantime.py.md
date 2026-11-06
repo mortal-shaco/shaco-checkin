@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/yyshuijuantime.py`
 - 青龙命令：`python3 scripts/yyshuijuantime.py`
 - 建议 Cron：`39 2 * * *`
-- 发布哈希：`d1e8f6046085797b7d17e5c020ee5b23e59892bd4515b03f4de794d09b00a69d`
+- 发布哈希：`289365ca28a7883f8bd9904e57cec6c28020230e5b929b63a793e42d60f64726`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -71,7 +71,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d1e8f6046085797b7d17e5c020ee5b23e59892bd4515b03f4de794d09b00a69d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/efe42c0f180ce822`。
+SHA-256 `289365ca28a7883f8bd9904e57cec6c28020230e5b929b63a793e42d60f64726`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/efe42c0f180ce822`。
 
 ## 副作用与风险
 

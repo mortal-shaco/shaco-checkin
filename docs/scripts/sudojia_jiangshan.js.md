@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_jiangshan.js`
 - 青龙命令：`node scripts/sudojia_jiangshan.js`
 - 建议 Cron：`20 2 * * *`
-- 发布哈希：`b5a0c6033e6f3bcf2e3e3744a716d983fa25cee2b6c9d115f749a9c7a369f4d1`
+- 发布哈希：`33f7cc62e3f3b8a095b0122cd21659a8ffd61d1d111a291f4439747067e3ec0a`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -83,7 +83,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b5a0c6033e6f3bcf2e3e3744a716d983fa25cee2b6c9d115f749a9c7a369f4d1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/db8583cdb3a987c1`。
+SHA-256 `33f7cc62e3f3b8a095b0122cd21659a8ffd61d1d111a291f4439747067e3ec0a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/db8583cdb3a987c1`。
 
 ## 副作用与风险
 

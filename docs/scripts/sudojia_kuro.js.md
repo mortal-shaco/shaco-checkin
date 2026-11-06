@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_kuro.js`
 - 青龙命令：`node scripts/sudojia_kuro.js`
 - 建议 Cron：`4 2 * * *`
-- 发布哈希：`c73dca2506d0ebf117aab21be64589d040c616f85e36faddffbfd9dc9aef24bf`
+- 发布哈希：`a239aca0327eba74fdf1485aea41c55526d26af85441b460419c10c9068b4353`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -72,7 +72,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c73dca2506d0ebf117aab21be64589d040c616f85e36faddffbfd9dc9aef24bf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c4e95d44d1608371`。
+SHA-256 `a239aca0327eba74fdf1485aea41c55526d26af85441b460419c10c9068b4353`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c4e95d44d1608371`。
 
 ## 副作用与风险
 

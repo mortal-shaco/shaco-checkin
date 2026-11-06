@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wps_airscript.js`
 - 青龙命令：`node scripts/wps_airscript.js`
 - 建议 Cron：`31 10 * * *`
-- 发布哈希：`8c707d371cd86550687952d057f8485cb0d2eb7c16490d312c5a502d58c6df60`
+- 发布哈希：`374e6677b9fce4b5075fc23ebc53b516fbc30e963f41c48d497c742d4098883e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -106,7 +106,7 @@ AIDAKA_ACCOUNTS（或兼容别名 / AIDAKA_ACCOUNTS_FILE）每个非空行一个
 
 ## 验证与兼容性
 
-SHA-256 `8c707d371cd86550687952d057f8485cb0d2eb7c16490d312c5a502d58c6df60`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ea3ec6764f1fef21`。
+SHA-256 `374e6677b9fce4b5075fc23ebc53b516fbc30e963f41c48d497c742d4098883e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ea3ec6764f1fef21`。
 
 ## 副作用与风险
 

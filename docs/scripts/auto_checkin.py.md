@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/auto_checkin.py`
 - 青龙命令：`python3 scripts/auto_checkin.py`
 - 建议 Cron：`*/2 8-18 * * 1-5`
-- 发布哈希：`454ddfe57e7365e833fb99a0b6d199aa22bd3ef3e186bec547161bf59bbe7351`
+- 发布哈希：`e6182aeb1505e114566c657039fa136d5d8ee8e44c7c01047772c52edebea928`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -126,7 +126,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `454ddfe57e7365e833fb99a0b6d199aa22bd3ef3e186bec547161bf59bbe7351`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f0ed23d57cf865a3`。
+SHA-256 `e6182aeb1505e114566c657039fa136d5d8ee8e44c7c01047772c52edebea928`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f0ed23d57cf865a3`。
 
 ## 副作用与风险
 

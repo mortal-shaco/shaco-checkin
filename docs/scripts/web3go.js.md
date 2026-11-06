@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/web3go.js`
 - 青龙命令：`node scripts/web3go.js`
 - 建议 Cron：`48 8 * * *`
-- 发布哈希：`8d96f403cdb60ba66cf5c225e05756677ffa904754ec66638c3be11401336564`
+- 发布哈希：`62f6d953f25b776c853c0013d3c653f4e3f941e2d3a1ec1c8640dc47578c8f50`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -105,7 +105,7 @@ WEB3GO_PRIVATE_KEY（或兼容别名 WEB3GO_PRIVATE_KEYS / WEB3GO_WALLETS）每�
 
 ## 验证与兼容性
 
-SHA-256 `8d96f403cdb60ba66cf5c225e05756677ffa904754ec66638c3be11401336564`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be421593e7049fc0`。
+SHA-256 `62f6d953f25b776c853c0013d3c653f4e3f941e2d3a1ec1c8640dc47578c8f50`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be421593e7049fc0`。
 
 ## 副作用与风险
 

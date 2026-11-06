@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/config.py`
 - 青龙命令：`python3 scripts/config.py`
 - 建议 Cron：`26 9 * * *`
-- 发布哈希：`bf5c6d3fb4967549449f87a50bff7c39df2a9b6e4a3d8d373b2ce8d5f292ddf2`
+- 发布哈希：`7c89109085dcf5ae483cc885c0b83866e21a9eec9977162051fa76cc9a76d340`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -118,7 +118,7 @@ MEIMODU_ACCOUNT 每个非空行一个账号。支持邮箱#密码、cookie:Cooki
 
 ## 验证与兼容性
 
-SHA-256 `bf5c6d3fb4967549449f87a50bff7c39df2a9b6e4a3d8d373b2ce8d5f292ddf2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/03d0e66b5d71fba8`。
+SHA-256 `7c89109085dcf5ae483cc885c0b83866e21a9eec9977162051fa76cc9a76d340`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/03d0e66b5d71fba8`。
 
 ## 副作用与风险
 

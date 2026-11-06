@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/illustar0_sf_autocheckin.py`
 - 青龙命令：`python3 scripts/illustar0_sf_autocheckin.py`
 - 建议 Cron：`16 9 * * *`
-- 发布哈希：`7e61f1fc578e14ec632bc669e6a1c83023bf56a6a88f21ac008cb8cc58aaf76d`
+- 发布哈希：`798f07fcd1706b12d4af62f0e8c258b35a8870bf97da62b1c1c102d102f84d7c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -89,7 +89,7 @@ SFACG_COOKIE 每个非空行一个账号；同一账号配套 Cookie 与可选 s
 
 ## 验证与兼容性
 
-SHA-256 `7e61f1fc578e14ec632bc669e6a1c83023bf56a6a88f21ac008cb8cc58aaf76d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/11d080ed77bec3d2`。
+SHA-256 `798f07fcd1706b12d4af62f0e8c258b35a8870bf97da62b1c1c102d102f84d7c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/11d080ed77bec3d2`。
 
 ## 副作用与风险
 

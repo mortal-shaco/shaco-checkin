@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_c04cea4d.py`
 - 青龙命令：`python3 scripts/task_c04cea4d.py`
 - 建议 Cron：`0 21 * * *`
-- 发布哈希：`3722ffc773fbcdd42002090e84e57653bd110687385c3d5a719e3f64fe6a7ed9`
+- 发布哈希：`d0fdc2cb82561c0750608c223d5a31454b38e544f906d2dae60b67c4fbb13db6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -159,7 +159,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3722ffc773fbcdd42002090e84e57653bd110687385c3d5a719e3f64fe6a7ed9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c04cea4deb8400a4`。
+SHA-256 `d0fdc2cb82561c0750608c223d5a31454b38e544f906d2dae60b67c4fbb13db6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c04cea4deb8400a4`。
 
 ## 副作用与风险
 

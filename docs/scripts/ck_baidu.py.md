@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_baidu.py`
 - 青龙命令：`python3 scripts/ck_baidu.py`
 - 建议 Cron：`6 0 * * *`
-- 发布哈希：`8e6eab6aaec1bb6f8d8bdf407c3462e910c9f4cb162e15705a974a8677fd4c9c`
+- 发布哈希：`bbbd770c7b07ece7cf4ca95c2ce5232e0e07e996b82884150abb8b9d7f56765d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -74,7 +74,7 @@ BAIDU_SUBMIT_ACCOUNTS 每个非空行是一组独立账号 JSON；脚本按行�
 
 ## 验证与兼容性
 
-SHA-256 `8e6eab6aaec1bb6f8d8bdf407c3462e910c9f4cb162e15705a974a8677fd4c9c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0acdab575fbc0e9e`。
+SHA-256 `bbbd770c7b07ece7cf4ca95c2ce5232e0e07e996b82884150abb8b9d7f56765d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0acdab575fbc0e9e`。
 
 ## 副作用与风险
 

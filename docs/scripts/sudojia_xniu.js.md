@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_xniu.js`
 - 青龙命令：`node scripts/sudojia_xniu.js`
 - 建议 Cron：`40 1 * * *`
-- 发布哈希：`5513d54f629ea9cf8f239c3e575031816074d482dc193bc604df3202c91a3640`
+- 发布哈希：`f11b325a951bd1eeccaae1e30bd9d0243007064d51405c3e1ff60b0c320967f0`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -98,7 +98,7 @@ XNIU_TOKEN 每个非空行代表一个账号；访问令牌与同账号公开用
 
 ## 验证与兼容性
 
-SHA-256 `5513d54f629ea9cf8f239c3e575031816074d482dc193bc604df3202c91a3640`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9ba3d61418ae2582`。
+SHA-256 `f11b325a951bd1eeccaae1e30bd9d0243007064d51405c3e1ff60b0c320967f0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9ba3d61418ae2582`。
 
 ## 副作用与风险
 

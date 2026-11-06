@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/jcqd.py`
 - 青龙命令：`python3 scripts/jcqd.py`
 - 建议 Cron：`5 1 * * *`
-- 发布哈希：`fb2e2d6343bfc016f590f7a44d08c4a4dbb266248e1b6b8fce72cebb6589f891`
+- 发布哈希：`906c45ea3e06c308d66a0038adb4652151f7b2ea271a126eda052e6fa4091d38`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -97,7 +97,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fb2e2d6343bfc016f590f7a44d08c4a4dbb266248e1b6b8fce72cebb6589f891`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/757bc6292780fb17`。
+SHA-256 `906c45ea3e06c308d66a0038adb4652151f7b2ea271a126eda052e6fa4091d38`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/757bc6292780fb17`。
 
 ## 副作用与风险
 

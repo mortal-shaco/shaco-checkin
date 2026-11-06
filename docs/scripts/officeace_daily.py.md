@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/officeace_daily.py`
 - 青龙命令：`python3 scripts/officeace_daily.py`
 - 建议 Cron：`57 0 * * *`
-- 发布哈希：`f65c18b4a84827d3f574b32778b773dd71ed6f713f1ad604f248985f571907fb`
+- 发布哈希：`acc4f55171b1bf9526e3dcc7db73d8e0fd6f814948a346c5ed2645c14275145c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -141,7 +141,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f65c18b4a84827d3f574b32778b773dd71ed6f713f1ad604f248985f571907fb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/61204ec3f68839fd`。
+SHA-256 `acc4f55171b1bf9526e3dcc7db73d8e0fd6f814948a346c5ed2645c14275145c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/61204ec3f68839fd`。
 
 ## 副作用与风险
 

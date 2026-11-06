@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/vortexa_free_claim.js`
 - 青龙命令：`node scripts/vortexa_free_claim.js`
 - 建议 Cron：`1,11,21,31,41,51 * * * *`
-- 发布哈希：`8c4f8f8b8853243dc2c8d4615fc898e0c1c3c1543d959ece49c67c8f91bc4e1e`
+- 发布哈希：`05287620b5ad1f3ad1b521c61e6da15ec9476564f0e892dc27c9b88a5d4aa0a4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -275,7 +275,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8c4f8f8b8853243dc2c8d4615fc898e0c1c3c1543d959ece49c67c8f91bc4e1e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f027fefd96fedf2`。
+SHA-256 `05287620b5ad1f3ad1b521c61e6da15ec9476564f0e892dc27c9b88a5d4aa0a4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f027fefd96fedf2`。
 
 ## 副作用与风险
 

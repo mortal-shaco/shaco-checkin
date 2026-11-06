@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_f8f6237c.py`
 - 青龙命令：`python3 scripts/task_f8f6237c.py`
 - 建议 Cron：`49 8 * * *`
-- 发布哈希：`77b73370b1ad3bc220e77c5f1681eaf70429016cbb908918e351e3994ad739d8`
+- 发布哈希：`bebf2f3bb3f16ea8ed80370feaff7c58281112c7be82a851209e53060773e7f5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -105,7 +105,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `77b73370b1ad3bc220e77c5f1681eaf70429016cbb908918e351e3994ad739d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f8f6237c9f45a8a7`。
+SHA-256 `bebf2f3bb3f16ea8ed80370feaff7c58281112c7be82a851209e53060773e7f5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f8f6237c9f45a8a7`。
 
 ## 副作用与风险
 

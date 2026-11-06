@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/auto_buy.py`
 - 青龙命令：`python3 scripts/auto_buy.py`
 - 建议 Cron：`0 0 10 * * *`
-- 发布哈希：`8003a19305229dd9a09c2c7afafa10348775c896379d3b18a5b71726c2e606eb`
+- 发布哈希：`4843e354125269958c24220e378ddc164be5b177f584c0d58f9eff15eb148cca`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -194,7 +194,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8003a19305229dd9a09c2c7afafa10348775c896379d3b18a5b71726c2e606eb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0196c3c6c89dc959`。
+SHA-256 `4843e354125269958c24220e378ddc164be5b177f584c0d58f9eff15eb148cca`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0196c3c6c89dc959`。
 
 ## 副作用与风险
 

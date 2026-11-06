@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/faq_daily_checkin.py`
 - 青龙命令：`python3 scripts/faq_daily_checkin.py`
 - 建议 Cron：`25 21 * * *`
-- 发布哈希：`95bee8134e080c6347c8ffa664ec75cab9c3e5e872e465d0a1f50696fb6a2ff2`
+- 发布哈希：`bf1c8498194a91f7e9c30a1070a3d545f49a9295d541fe42b3300c64b16045bc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -138,7 +138,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `95bee8134e080c6347c8ffa664ec75cab9c3e5e872e465d0a1f50696fb6a2ff2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d8ce25fb54ffde83`。
+SHA-256 `bf1c8498194a91f7e9c30a1070a3d545f49a9295d541fe42b3300c64b16045bc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d8ce25fb54ffde83`。
 
 ## 副作用与风险
 

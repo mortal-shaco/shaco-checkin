@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_tuchong.js`
 - 青龙命令：`node scripts/sudojia_tuchong.js`
 - 建议 Cron：`2 0 * * *`
-- 发布哈希：`e4107653f6da343939ab36dc63845a21bfeec65d8be0ea1c5d58aebe78f00c23`
+- 发布哈希：`f7614b11c5f2e51e5fbe6b3a35b8af7bde4403e7130d6e2b93e9e6abfab87825`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -72,7 +72,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e4107653f6da343939ab36dc63845a21bfeec65d8be0ea1c5d58aebe78f00c23`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0554aeea00a7519f`。
+SHA-256 `f7614b11c5f2e51e5fbe6b3a35b8af7bde4403e7130d6e2b93e9e6abfab87825`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0554aeea00a7519f`。
 
 ## 副作用与风险
 

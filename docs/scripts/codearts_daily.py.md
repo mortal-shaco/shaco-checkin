@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/codearts_daily.py`
 - 青龙命令：`python3 scripts/codearts_daily.py`
 - 建议 Cron：`16 8 * * *`
-- 发布哈希：`6cc703b8d8712b0749b0e663dd916deed186aac0364c670276e2cc167c7bdaca`
+- 发布哈希：`a02102ccd15c725ef73e23f9d037774f40ae1037d6c7f1ced7c8d52b341238c6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -110,7 +110,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6cc703b8d8712b0749b0e663dd916deed186aac0364c670276e2cc167c7bdaca`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b896028c3fdcd52d`。
+SHA-256 `a02102ccd15c725ef73e23f9d037774f40ae1037d6c7f1ced7c8d52b341238c6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b896028c3fdcd52d`。
 
 ## 副作用与风险
 

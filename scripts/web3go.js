@@ -59,28 +59,19 @@
 
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
-  let enabledFlag = false;
+  let enabled = false;
   if (selection !== undefined) {
     const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = [
-      'be421593e7049fc0',
-      'scripts/web3go_checkin.js',
-      'web3go_checkin.js',
-      'web3go.js',
-      'web3go',
-      'candidate.js',
-    ];
-    enabledFlag = selectors.some((selector) => {
-      const pattern =
-        '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+    const identities = ["be421593e7049fc0", "scripts/web3go.js", "web3go.js", "web3go"];
+    enabled = selectors.some((selector) => {
+      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
-  } else {
-    enabledFlag = true;
   }
-  process.env.QINGLONG_NOTIFY = enabledFlag ? '1' : '0';
+  process.env.QINGLONG_NOTIFY = enabled ? '1' : '0';
 })();
 // qinglong-notification-policy: end
 
@@ -168,7 +159,7 @@ function sleep(ms) {
 function notificationSelected() {
   if (disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
-  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
+  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return false; /* listed-only default */
   const raw = process.env.QINGLONG_NOTIFY_SCRIPTS;
   if (String(raw).trim() === '') return false;
   const selectors = String(raw).split(/[,;\s]+/).filter(Boolean);

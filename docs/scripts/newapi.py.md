@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/newapi.py`
 - 青龙命令：`python3 scripts/newapi.py`
 - 建议 Cron：`18 8 * * *`
-- 发布哈希：`9516e15fd3e0488f44e8dbe978c3710ca4e6b75a558cce970f74419840c9281e`
+- 发布哈希：`d227229a82bf4e189ee25fbdfbca4705953aa1c7a49bb5f13ce6607078d73bb3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9516e15fd3e0488f44e8dbe978c3710ca4e6b75a558cce970f74419840c9281e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/241e7ff85e417257`。
+SHA-256 `d227229a82bf4e189ee25fbdfbca4705953aa1c7a49bb5f13ce6607078d73bb3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/241e7ff85e417257`。
 
 ## 副作用与风险
 

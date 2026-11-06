@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_198bae30.py`
 - 青龙命令：`python3 scripts/task_198bae30.py`
 - 建议 Cron：`0 10 * * *`
-- 发布哈希：`6d3d7f66d4aa46c701e46ff6ed4dc9666cd2c2c8ceb632057d5282b53184155b`
+- 发布哈希：`da6816e01e72474e95b1bde278d6dab43284d8826a0127e87f7147042ddc18fd`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -76,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6d3d7f66d4aa46c701e46ff6ed4dc9666cd2c2c8ceb632057d5282b53184155b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/198bae30a009b250`。
+SHA-256 `da6816e01e72474e95b1bde278d6dab43284d8826a0127e87f7147042ddc18fd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/198bae30a009b250`。
 
 ## 副作用与风险
 

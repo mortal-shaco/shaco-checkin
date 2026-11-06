@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/workbuddy.py`
 - 青龙命令：`python3 scripts/workbuddy.py`
 - 建议 Cron：`45 1 * * *`
-- 发布哈希：`9a5d4dbdf22758a828ec4a19aed4111aa6ff04374f2df0e39515eaceab1c7d57`
+- 发布哈希：`fb4c22d9108de6f897cb953a0c5c9f23dc122955d68e933a06ce58bfa1369094`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9a5d4dbdf22758a828ec4a19aed4111aa6ff04374f2df0e39515eaceab1c7d57`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/af0ae4c86279f8da`。
+SHA-256 `fb4c22d9108de6f897cb953a0c5c9f23dc122955d68e933a06ce58bfa1369094`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/af0ae4c86279f8da`。
 
 ## 副作用与风险
 

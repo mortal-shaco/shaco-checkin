@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tybbs.py`
 - 青龙命令：`python3 scripts/tybbs.py`
 - 建议 Cron：`30 6 * * *`
-- 发布哈希：`c1b2b2cde60d43606326622b9c972494f8d279c7588c88fc18edd4b05b9a848c`
+- 发布哈希：`a9307bfa21cad5bd29f9818d7df216eb99e8540e0de5741b45355cdb5ae1b7a8`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -75,7 +75,7 @@ TYBBS_COOKIE（或兼容别名 BBS_COOKIE）每个非空行一个账号的完整
 
 ## 验证与兼容性
 
-SHA-256 `c1b2b2cde60d43606326622b9c972494f8d279c7588c88fc18edd4b05b9a848c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0d4996a9f8a038f6`。
+SHA-256 `a9307bfa21cad5bd29f9818d7df216eb99e8540e0de5741b45355cdb5ae1b7a8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0d4996a9f8a038f6`。
 
 ## 副作用与风险
 

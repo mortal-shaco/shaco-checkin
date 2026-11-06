@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hlyl.py`
 - 青龙命令：`python3 scripts/hlyl.py`
 - 建议 Cron：`32 0 * * *`
-- 发布哈希：`b14e3add5205384494beb549125112f50c72832f8639e67d4a189cdc13c30000`
+- 发布哈希：`a4b00c7e697017e4e408f48efe6e34cbb3647d4c89c9ac5aa7e803429221528f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b14e3add5205384494beb549125112f50c72832f8639e67d4a189cdc13c30000`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
+SHA-256 `a4b00c7e697017e4e408f48efe6e34cbb3647d4c89c9ac5aa7e803429221528f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/397f602c2c364fad`。
 
 ## 副作用与风险
 

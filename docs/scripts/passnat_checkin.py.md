@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/passnat_checkin.py`
 - 青龙命令：`python3 scripts/passnat_checkin.py`
 - 建议 Cron：`13 1 * * *`
-- 发布哈希：`a9ec88b9b8b0004d75f8ec64940cf3674b896327d27b36f3d1a60aa70c7af606`
+- 发布哈希：`cafa5e2ce69b1fa13c80faa5863e29f0cbc5e2490ff446d6c7925d8791de0698`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@ PASSNAT_SK 中每个非空行对应一个账号；账号独立执行，任一账
 
 ## 验证与兼容性
 
-SHA-256 `a9ec88b9b8b0004d75f8ec64940cf3674b896327d27b36f3d1a60aa70c7af606`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
+SHA-256 `cafa5e2ce69b1fa13c80faa5863e29f0cbc5e2490ff446d6c7925d8791de0698`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e0ea7b66d8114d3`。
 
 ## 副作用与风险
 

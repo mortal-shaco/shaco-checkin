@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_874a3b5f.py`
 - 青龙命令：`python3 scripts/task_874a3b5f.py`
 - 建议 Cron：`35 9 * * *`
-- 发布哈希：`0aadf07e14406be9fc28dc3bd8a8684d1fea1ae91717ad5025e9cb5605fe3616`
+- 发布哈希：`e6a02c5d8ee0ffbb9a9c26a42d3e56572559d22acf83e121ec3b725f5d33b3d7`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -126,7 +126,7 @@ PT_ATTENDANCE_ACCOUNTS 中每个非空行是一个独立账号，格式 attendan
 
 ## 验证与兼容性
 
-SHA-256 `0aadf07e14406be9fc28dc3bd8a8684d1fea1ae91717ad5025e9cb5605fe3616`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/874a3b5f0c910fff`。
+SHA-256 `e6a02c5d8ee0ffbb9a9c26a42d3e56572559d22acf83e121ec3b725f5d33b3d7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/874a3b5f0c910fff`。
 
 ## 副作用与风险
 

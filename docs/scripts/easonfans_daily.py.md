@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/easonfans_daily.py`
 - 青龙命令：`python3 scripts/easonfans_daily.py`
 - 建议 Cron：`0 20 * * *`
-- 发布哈希：`1cf6e4f17a8caea9a82e4b966ec0fba303ccabc4ca700861409e0203245beb50`
+- 发布哈希：`57162a2a5060eebdca324c8d6b7ca062e2ab8044286cf668b650a1b8cb3f0c6e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -118,7 +118,7 @@ EASONFANS_COOKIE 每个非空行一个账号的完整 Cookie；账号之间只�
 
 ## 验证与兼容性
 
-SHA-256 `1cf6e4f17a8caea9a82e4b966ec0fba303ccabc4ca700861409e0203245beb50`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/99686155ae0324e2`。
+SHA-256 `57162a2a5060eebdca324c8d6b7ca062e2ab8044286cf668b650a1b8cb3f0c6e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/99686155ae0324e2`。
 
 ## 副作用与风险
 

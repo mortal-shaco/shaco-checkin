@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kgqq.py`
 - 青龙命令：`python3 scripts/kgqq.py`
 - 建议 Cron：`13 2 * * *`
-- 发布哈希：`5d5d82ce5822efeb39cfbf1252abca87b9083db7452f7f57d69835252f73631d`
+- 发布哈希：`98c160e92d901b51e1fbb82e172ca9e554fb284aeb48faddd657a6e7fafaaa8c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `5d5d82ce5822efeb39cfbf1252abca87b9083db7452f7f57d69835252f73631d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d49d052949d2bef1`。
+SHA-256 `98c160e92d901b51e1fbb82e172ca9e554fb284aeb48faddd657a6e7fafaaa8c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d49d052949d2bef1`。
 
 ## 副作用与风险
 

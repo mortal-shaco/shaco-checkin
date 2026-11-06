@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/quark_signin.py`
 - 青龙命令：`python3 scripts/quark_signin.py`
 - 建议 Cron：`15 0 * * *`
-- 发布哈希：`f579c1bccda6aad0574f1796454f4f197da7ade6d2c974714b368dcaa59473ac`
+- 发布哈希：`d42f6b520d68684a6adcffc63b04bee4df52ad53dea5922678bdc87154974e12`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -87,7 +87,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f579c1bccda6aad0574f1796454f4f197da7ade6d2c974714b368dcaa59473ac`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
+SHA-256 `d42f6b520d68684a6adcffc63b04bee4df52ad53dea5922678bdc87154974e12`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/18c47e12eda9864c`。
 
 ## 副作用与风险
 

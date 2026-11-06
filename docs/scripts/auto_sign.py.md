@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/auto_sign.py`
 - 青龙命令：`python3 scripts/auto_sign.py`
 - 建议 Cron：`31 9 * * *`
-- 发布哈希：`86ecd316a194f3f518d0ca952156d33abfd5bdcbe4476a391acba2356b5a0b0f`
+- 发布哈希：`fe0ad54f7094a3e9406363e799b1f2cd66b9ee3811a1f14cb4c13ed31733a534`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -125,7 +125,7 @@ TSDM_COOKIE 中每个非空行是一个独立账号；可选 备注|Cookie（仅
 
 ## 验证与兼容性
 
-SHA-256 `86ecd316a194f3f518d0ca952156d33abfd5bdcbe4476a391acba2356b5a0b0f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ba4842f946bbd44b`。
+SHA-256 `fe0ad54f7094a3e9406363e799b1f2cd66b9ee3811a1f14cb4c13ed31733a534`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ba4842f946bbd44b`。
 
 ## 副作用与风险
 

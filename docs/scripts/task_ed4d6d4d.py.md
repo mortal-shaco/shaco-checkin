@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_ed4d6d4d.py`
 - 青龙命令：`python3 scripts/task_ed4d6d4d.py`
 - 建议 Cron：`53 8 * * *`
-- 发布哈希：`6e659c1eca78df0be8f78b4df21fa8c5f40999ffaaaab6168878be64da9c744b`
+- 发布哈希：`0a0c1dab4b69c147619fadae6e8db1c53ba8ed3114042265b87666dbd91be087`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6e659c1eca78df0be8f78b4df21fa8c5f40999ffaaaab6168878be64da9c744b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed4d6d4d632e033e`。
+SHA-256 `0a0c1dab4b69c147619fadae6e8db1c53ba8ed3114042265b87666dbd91be087`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed4d6d4d632e033e`。
 
 ## 副作用与风险
 

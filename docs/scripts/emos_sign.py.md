@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/emos_sign.py`
 - 青龙命令：`python3 scripts/emos_sign.py`
 - 建议 Cron：`30 8 * * *`
-- 发布哈希：`dff85c0996086003c529d6e5e978f94be43cb07f1710f1e590928df2e01301b0`
+- 发布哈希：`978c44b11376854663fd531774e3bf42ae7433d1b91751a8e43711416c465e4d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `dff85c0996086003c529d6e5e978f94be43cb07f1710f1e590928df2e01301b0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8aba65e222e7eb74`。
+SHA-256 `978c44b11376854663fd531774e3bf42ae7433d1b91751a8e43711416c465e4d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8aba65e222e7eb74`。
 
 ## 副作用与风险
 

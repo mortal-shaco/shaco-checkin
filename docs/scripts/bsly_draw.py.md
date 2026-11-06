@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bsly_draw.py`
 - 青龙命令：`python3 scripts/bsly_draw.py`
 - 建议 Cron：`23 0 * * *`
-- 发布哈希：`4557fc180db8755605a29053ed35fa56c32beff6f0c59171d8095db8eb37e207`
+- 发布哈希：`d86138ba83de320c83ff46cdd5442d6ef83ab10e13558b27ace77cf1446deaf2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4557fc180db8755605a29053ed35fa56c32beff6f0c59171d8095db8eb37e207`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28b170786df4dff2`。
+SHA-256 `d86138ba83de320c83ff46cdd5442d6ef83ab10e13558b27ace77cf1446deaf2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28b170786df4dff2`。
 
 ## 副作用与风险
 

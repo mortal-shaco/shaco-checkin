@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/dumate_signin.py`
 - 青龙命令：`python3 scripts/dumate_signin.py`
 - 建议 Cron：`24 9 * * *`
-- 发布哈希：`6911960321bef6da2da25317e921fb9445ed2c96b5280b481fa875bc9e70dd4c`
+- 发布哈希：`7e72c565f1a6c97e6ce8eab138fa71262d032957acf1b16693dfce42a9e1f691`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@ DUMATE_COOKIE 每个非空行一个账号 Cookie。账号逐个独立查询签�
 
 ## 验证与兼容性
 
-SHA-256 `6911960321bef6da2da25317e921fb9445ed2c96b5280b481fa875bc9e70dd4c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6a8f3b3e39d831f5`。
+SHA-256 `7e72c565f1a6c97e6ce8eab138fa71262d032957acf1b16693dfce42a9e1f691`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6a8f3b3e39d831f5`。
 
 ## 副作用与风险
 

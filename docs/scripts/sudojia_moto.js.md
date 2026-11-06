@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_moto.js`
 - 青龙命令：`node scripts/sudojia_moto.js`
 - 建议 Cron：`26 0 * * *`
-- 发布哈希：`d51fe6ba62db0760730c65268b698ce67296d2dad96fe22e2048c2652359c14c`
+- 发布哈希：`6b85153a3842b9f2758dd79e184597371eabfb6254352cd7b39b067dba3783d8`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d51fe6ba62db0760730c65268b698ce67296d2dad96fe22e2048c2652359c14c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2e1e25aaedb9b2c3`。
+SHA-256 `6b85153a3842b9f2758dd79e184597371eabfb6254352cd7b39b067dba3783d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2e1e25aaedb9b2c3`。
 
 ## 副作用与风险
 

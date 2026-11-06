@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kurobbs_sign.py`
 - 青龙命令：`python3 scripts/kurobbs_sign.py`
 - 建议 Cron：`16 1 * * *`
-- 发布哈希：`ba8b69f916ffd74d402b05c53fde344f1866a6b4e18e46b9bf1b813733d06960`
+- 发布哈希：`0143c3111012c541f33f3874b60e3b3840d78b75f1b1aa3dd440523f17742454`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -101,7 +101,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ba8b69f916ffd74d402b05c53fde344f1866a6b4e18e46b9bf1b813733d06960`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
+SHA-256 `0143c3111012c541f33f3874b60e3b3840d78b75f1b1aa3dd440523f17742454`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7f6af4cafcff2aaf`。
 
 ## 副作用与风险
 

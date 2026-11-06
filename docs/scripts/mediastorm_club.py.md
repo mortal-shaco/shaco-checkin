@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/mediastorm_club.py`
 - 青龙命令：`python3 scripts/mediastorm_club.py`
 - 建议 Cron：`3 9 * * *`
-- 发布哈希：`76599a9dd7bb2397fa1e253a96c2803295eef45cf4b4c8e262c99158963d9112`
+- 发布哈希：`805946d3f918fc665a62d380c7355e3e9417c34cb7db5775f3be95a738f83de3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@ MEDIASTORM_ACCOUNTS 每个非空行一个账号，每行 access_token|sid，只�
 
 ## 验证与兼容性
 
-SHA-256 `76599a9dd7bb2397fa1e253a96c2803295eef45cf4b4c8e262c99158963d9112`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e559f6b278de9d78`。
+SHA-256 `805946d3f918fc665a62d380c7355e3e9417c34cb7db5775f3be95a738f83de3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e559f6b278de9d78`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/mybt.py`
 - 青龙命令：`python3 scripts/mybt.py`
 - 建议 Cron：`2 8 * * *`
-- 发布哈希：`56e6107bdcec52c1cb8c8f25eaf5fe68819828e64bbb6b882192c0eeca22fe03`
+- 发布哈希：`a408398c1cd44cbe3509c291a0143284def7c2d4ec1af418cddae1afef38f6b0`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -207,7 +207,7 @@ MYBT_ACCOUNTS 每个非空行一个账号，将同账号登录凭据、备用令
 
 ## 验证与兼容性
 
-SHA-256 `56e6107bdcec52c1cb8c8f25eaf5fe68819828e64bbb6b882192c0eeca22fe03`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ec01ce8ee76b6c7`。
+SHA-256 `a408398c1cd44cbe3509c291a0143284def7c2d4ec1af418cddae1afef38f6b0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ec01ce8ee76b6c7`。
 
 ## 副作用与风险
 

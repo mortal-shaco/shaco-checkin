@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/chatglm_daily.py`
 - 青龙命令：`python3 scripts/chatglm_daily.py`
 - 建议 Cron：`23 1 * * *`
-- 发布哈希：`3c346893327c9c2d0b3ab0990003de15350a9987928693a717cc0d902c15dd93`
+- 发布哈希：`c88f37f4be233c695ebb50a1c6788ccd3124843c23d187798be139876857e2bc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -127,7 +127,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3c346893327c9c2d0b3ab0990003de15350a9987928693a717cc0d902c15dd93`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75a199c398e3576c`。
+SHA-256 `c88f37f4be233c695ebb50a1c6788ccd3124843c23d187798be139876857e2bc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75a199c398e3576c`。
 
 ## 副作用与风险
 

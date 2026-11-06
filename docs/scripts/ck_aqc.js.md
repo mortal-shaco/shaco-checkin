@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_aqc.js`
 - 青龙命令：`node scripts/ck_aqc.js`
 - 建议 Cron：`9 0-23/8 * * *`
-- 发布哈希：`9f19df43d823709f376f5ec87b82f3b22a87f1fe182df1bdf0edf9c1f0996387`
+- 发布哈希：`50e2db8a97ec899d440e8cf5e416d8db31bf635aa9a9f87e2eb4e6f4c64be3ad`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -110,7 +110,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9f19df43d823709f376f5ec87b82f3b22a87f1fe182df1bdf0edf9c1f0996387`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2f4c8afd9b69b090`。
+SHA-256 `50e2db8a97ec899d440e8cf5e416d8db31bf635aa9a9f87e2eb4e6f4c64be3ad`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2f4c8afd9b69b090`。
 
 ## 副作用与风险
 

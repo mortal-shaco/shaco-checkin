@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/atxyq.py`
 - 青龙命令：`python3 scripts/atxyq.py`
 - 建议 Cron：`21 10,23 * * *`
-- 发布哈希：`d1c808dfc66823244ab175c31f1a3f430921e554440c47e6fe76320379103d3e`
+- 发布哈希：`a5c25c2cf7ed6769a166d06c8cd8f576eb3871b19347cd952076113874e66086`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -135,7 +135,7 @@ atxyqs 每个非空行一个账号，配套 Authorization 与 Uid 用第一个 #
 
 ## 验证与兼容性
 
-SHA-256 `d1c808dfc66823244ab175c31f1a3f430921e554440c47e6fe76320379103d3e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
+SHA-256 `a5c25c2cf7ed6769a166d06c8cd8f576eb3871b19347cd952076113874e66086`；基础核验通过，尚未验证真实账号业务；基础证据位于 `evidence/basic/6b6ae91490051bce/6d8723d7248ad77b80ee7a77734038bb6dae5c87cdebc86da19af1319553fcf1`。
 
 ## 副作用与风险
 

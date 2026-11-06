@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/touhouhelper.py`
 - 青龙命令：`python3 scripts/touhouhelper.py`
 - 建议 Cron：`50 8 * * *`
-- 发布哈希：`380e120999005123e2ebb9b326dd16bbe363d6f891cbda41bf19edc1bef8d91b`
+- 发布哈希：`b4038774f6f5840cdd3683b8d1c15a0fd2939ee2aeb2dc5132cfa7e1220f02ce`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ TOUHOU_ACCOUNTS 每个非空行一个账号，格式为邮箱|密码，仅拆首
 
 ## 验证与兼容性
 
-SHA-256 `380e120999005123e2ebb9b326dd16bbe363d6f891cbda41bf19edc1bef8d91b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7a1ca78b42cf5fd4`。
+SHA-256 `b4038774f6f5840cdd3683b8d1c15a0fd2939ee2aeb2dc5132cfa7e1220f02ce`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7a1ca78b42cf5fd4`。
 
 ## 副作用与风险
 

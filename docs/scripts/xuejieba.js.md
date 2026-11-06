@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/xuejieba.js`
 - 青龙命令：`node scripts/xuejieba.js`
 - 建议 Cron：`0 50 11 * * *`
-- 发布哈希：`35640f297cb60727a2177636174c3865ae5c4f188842f0c73f99cf199c836b8e`
+- 发布哈希：`0dd909620d7d565f278d5b51d18392b751c5cb243be74d0130656ae0470a6d21`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -68,7 +68,7 @@ XUEJIEBA_COOKIE_LIST 每个非空行表示一个账号；同一行内保留该�
 
 ## 验证与兼容性
 
-SHA-256 `35640f297cb60727a2177636174c3865ae5c4f188842f0c73f99cf199c836b8e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0630d19a6fd1dd0b`。
+SHA-256 `0dd909620d7d565f278d5b51d18392b751c5cb243be74d0130656ae0470a6d21`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0630d19a6fd1dd0b`。
 
 ## 副作用与风险
 

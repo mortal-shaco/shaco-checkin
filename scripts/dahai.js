@@ -15,7 +15,8 @@ DAHAI_DRY_RUN=1：完全断网预演；QINGLONG_NOTIFY=0：关闭青龙通知。
 'use strict';
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/xnfedu_checkin.py`
 - 青龙命令：`python3 scripts/xnfedu_checkin.py`
 - 建议 Cron：`13 8 * * *`
-- 发布哈希：`223a3133e50a54a06b825494f7f02f34faa11b47ff85e9655d93e52f1fc778e2`
+- 发布哈希：`90fc574b183fc88942b131f82504d53f2fa70170244fd1e919558b277559f119`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `223a3133e50a54a06b825494f7f02f34faa11b47ff85e9655d93e52f1fc778e2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9bc7812c7df257df`。
+SHA-256 `90fc574b183fc88942b131f82504d53f2fa70170244fd1e919558b277559f119`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9bc7812c7df257df`。
 
 ## 副作用与风险
 

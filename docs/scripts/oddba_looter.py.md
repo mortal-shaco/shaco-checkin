@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/oddba_looter.py`
 - 青龙命令：`python3 scripts/oddba_looter.py`
 - 建议 Cron：`21 0,12 * * *`
-- 发布哈希：`ce50f2629686acc57f9b8877a60ce798e7f6e28afd8b86b07e8679dbec97053e`
+- 发布哈希：`491eb0eb69da4ba88fe938937570e896b7eceba8619961b037cd161263ebd5ce`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ce50f2629686acc57f9b8877a60ce798e7f6e28afd8b86b07e8679dbec97053e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4d9e489b3cac0c4`。
+SHA-256 `491eb0eb69da4ba88fe938937570e896b7eceba8619961b037cd161263ebd5ce`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d4d9e489b3cac0c4`。
 
 ## 副作用与风险
 

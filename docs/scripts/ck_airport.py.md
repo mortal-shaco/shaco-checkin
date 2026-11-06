@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_airport.py`
 - 青龙命令：`python3 scripts/ck_airport.py`
 - 建议 Cron：`16 2 * * *`
-- 发布哈希：`051d35dc78db52be0c4bac836fb5367cf2a18e1dc98a84d8df5f97eabfc80abc`
+- 发布哈希：`7ff49ba19667748e1035af866394be93863e1d253a2a64e470267d2fef4f8635`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `051d35dc78db52be0c4bac836fb5367cf2a18e1dc98a84d8df5f97eabfc80abc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d763137ff5e4fad6`。
+SHA-256 `7ff49ba19667748e1035af866394be93863e1d253a2a64e470267d2fef4f8635`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d763137ff5e4fad6`。
 
 ## 副作用与风险
 

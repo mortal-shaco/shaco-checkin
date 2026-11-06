@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/znzmo.js`
 - 青龙命令：`node scripts/znzmo.js`
 - 建议 Cron：`0 55 11 * * *`
-- 发布哈希：`15b87916a7a434bb2d7dd52149f6f65dd35669cfb21dbd4f276b49bbed97bd13`
+- 发布哈希：`00fec9b2529bc0d16de70834284695872e3baf0d64a15626d7e5a444047a6bff`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@ ZNZMO_COOKIE_LIST 每个非空行表示一个账号；逐账号独立执行，�
 
 ## 验证与兼容性
 
-SHA-256 `15b87916a7a434bb2d7dd52149f6f65dd35669cfb21dbd4f276b49bbed97bd13`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/43ad6c3466e9d02c`。
+SHA-256 `00fec9b2529bc0d16de70834284695872e3baf0d64a15626d7e5a444047a6bff`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/43ad6c3466e9d02c`。
 
 ## 副作用与风险
 

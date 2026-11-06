@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sfsu_checkin.py`
 - 青龙命令：`python3 scripts/sfsu_checkin.py`
 - 建议 Cron：`17 0 * * *`
-- 发布哈希：`097cae9a730043fbd30a6f9832018134d1039f4120d1863da170c8464a197e24`
+- 发布哈希：`a7dd365dbc610b8d14e37d38b90023b467bbf1c18a8c4e62814a15e698ec4086`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@ sfsyUrl 中每个非空行是一个独立账号的完整 URL；逐账号隔离�
 
 ## 验证与兼容性
 
-SHA-256 `097cae9a730043fbd30a6f9832018134d1039f4120d1863da170c8464a197e24`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/19b2285cc7b8a82e`。
+SHA-256 `a7dd365dbc610b8d14e37d38b90023b467bbf1c18a8c4e62814a15e698ec4086`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/19b2285cc7b8a82e`。
 
 ## 副作用与风险
 

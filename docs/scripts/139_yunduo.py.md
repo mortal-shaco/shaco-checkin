@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/139_yunduo.py`
 - 青龙命令：`python3 scripts/139_yunduo.py`
 - 建议 Cron：`11 0 * * *`
-- 发布哈希：`f534631e8ddfc5fdabd2510aef883619c7d75cb11ab050728d13499c14e0ecf4`
+- 发布哈希：`3afb9d1e5692a714e7c0d554c057bd78a0183d42cc43f1f2ddab37b0b75ac838`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -129,7 +129,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f534631e8ddfc5fdabd2510aef883619c7d75cb11ab050728d13499c14e0ecf4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/117317c83fa5c3cc`。
+SHA-256 `3afb9d1e5692a714e7c0d554c057bd78a0183d42cc43f1f2ddab37b0b75ac838`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/117317c83fa5c3cc`。
 
 ## 副作用与风险
 

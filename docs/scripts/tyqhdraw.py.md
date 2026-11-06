@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tyqhdraw.py`
 - 青龙命令：`python3 scripts/tyqhdraw.py`
 - 建议 Cron：`0 0 0 * * *`
-- 发布哈希：`8b1ce55e768630e1f2f1624d1fd31aa95b4d70bbe5b03cc3b1e73322de87ed64`
+- 发布哈希：`1306cc0d3eb3ded9d46e4d5c1c5428e1a967d7c52725e1bc962207da54525783`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8b1ce55e768630e1f2f1624d1fd31aa95b4d70bbe5b03cc3b1e73322de87ed64`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
+SHA-256 `1306cc0d3eb3ded9d46e4d5c1c5428e1a967d7c52725e1bc962207da54525783`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8ccef1e6eb2d7404`。
 
 ## 副作用与风险
 

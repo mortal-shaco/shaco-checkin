@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/mian.py`
 - 青龙命令：`python3 scripts/mian.py`
 - 建议 Cron：`20 9 * * *`
-- 发布哈希：`0975971730b6dbd1a738d6744f8a97ed3987195c12b2430bd571e5d4c517289d`
+- 发布哈希：`5c3208990ff559625e30f62d0b576b24d18f57c28104cca7459872d179b459cb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `0975971730b6dbd1a738d6744f8a97ed3987195c12b2430bd571e5d4c517289d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71c961d59b5546a3`。
+SHA-256 `5c3208990ff559625e30f62d0b576b24d18f57c28104cca7459872d179b459cb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/71c961d59b5546a3`。
 
 ## 副作用与风险
 

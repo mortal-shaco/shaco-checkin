@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_3aae8a25.py`
 - 青龙命令：`python3 scripts/task_3aae8a25.py`
 - 建议 Cron：`47 0 * * *`
-- 发布哈希：`626f80e1ba5e90ae0a793f46f9af7c87e5867e2565ec2181517f89195ed3308f`
+- 发布哈希：`62ab9f30e4d48ac786b5a5c7e1b883f95c4113f462149e11dd07f534db6ff638`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ RAINYUN_ACCOUNT 每个非空行代表一个账号；推荐每行一个 JSON 对�
 
 ## 验证与兼容性
 
-SHA-256 `626f80e1ba5e90ae0a793f46f9af7c87e5867e2565ec2181517f89195ed3308f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3aae8a254cd15cdd`。
+SHA-256 `62ab9f30e4d48ac786b5a5c7e1b883f95c4113f462149e11dd07f534db6ff638`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3aae8a254cd15cdd`。
 
 ## 副作用与风险
 

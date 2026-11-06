@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_6bed5fef.py`
 - 青龙命令：`python3 scripts/task_6bed5fef.py`
 - 建议 Cron：`*/5 * * * *`
-- 发布哈希：`53c1dc2d94f39fcb9791eb23b262a09d1643622e8c041e6bbc9a24b3f074d9b1`
+- 发布哈希：`80d2c8390b6ae5be406d6bd5f5d26d04475a78890bf9c75472b576e7bf14f9d8`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -112,7 +112,7 @@ UO_MOODLE_ACCOUNTS 中每个非空行是一个独立账号，格式 username|pas
 
 ## 验证与兼容性
 
-SHA-256 `53c1dc2d94f39fcb9791eb23b262a09d1643622e8c041e6bbc9a24b3f074d9b1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6bed5fef3c9bac1c`。
+SHA-256 `80d2c8390b6ae5be406d6bd5f5d26d04475a78890bf9c75472b576e7bf14f9d8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/6bed5fef3c9bac1c`。
 
 ## 副作用与风险
 

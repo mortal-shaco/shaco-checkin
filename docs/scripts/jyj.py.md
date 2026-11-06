@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/jyj.py`
 - 青龙命令：`python3 scripts/jyj.py`
 - 建议 Cron：`12 2 * * *`
-- 发布哈希：`49b3466fcea51c2af38bbbfdfe256c03bc9b72b3a2fad77a89c4a89e69006a4a`
+- 发布哈希：`6e18c3ba1bc1dd977e6b8797450f3f7117eba313b133d4f930e155bc3cb32878`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -122,7 +122,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `49b3466fcea51c2af38bbbfdfe256c03bc9b72b3a2fad77a89c4a89e69006a4a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d484be6cd2a617db`。
+SHA-256 `6e18c3ba1bc1dd977e6b8797450f3f7117eba313b133d4f930e155bc3cb32878`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d484be6cd2a617db`。
 
 ## 副作用与风险
 

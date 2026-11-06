@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nine_bot_checkin.py`
 - 青龙命令：`python3 scripts/nine_bot_checkin.py`
 - 建议 Cron：`0 7 * * *`
-- 发布哈希：`d33350a812fe8300f6cc894a8beb02d64c88f6bcfe36fef4617f0b1be4345bc7`
+- 发布哈希：`4d856c0e44d6baf50bf932fdf382c92224a0d3011525b95018cae2e4e0b31481`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -96,7 +96,7 @@ NINEBOT_ACCOUNTS 中每个非空行代表一个账号，格式为 Authorization�
 
 ## 验证与兼容性
 
-SHA-256 `d33350a812fe8300f6cc894a8beb02d64c88f6bcfe36fef4617f0b1be4345bc7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b80e03b90d5b3a1`。
+SHA-256 `4d856c0e44d6baf50bf932fdf382c92224a0d3011525b95018cae2e4e0b31481`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8b80e03b90d5b3a1`。
 
 ## 副作用与风险
 

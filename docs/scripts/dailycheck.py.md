@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/dailycheck.py`
 - 青龙命令：`python3 scripts/dailycheck.py`
 - 建议 Cron：`33 9 * * *`
-- 发布哈希：`0deb2f84f5ba1cddbfc9137e2c446f9126e439a4bf18cdc3325fa7757ba97ae4`
+- 发布哈希：`c97c2715dcf303badb12f4f0b55612617d7df766b978dbda992221343a08bd3c`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -112,7 +112,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `0deb2f84f5ba1cddbfc9137e2c446f9126e439a4bf18cdc3325fa7757ba97ae4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/92874903eb80e31d`。
+SHA-256 `c97c2715dcf303badb12f4f0b55612617d7df766b978dbda992221343a08bd3c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/92874903eb80e31d`。
 
 ## 副作用与风险
 

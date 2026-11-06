@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nga_checkin.py`
 - 青龙命令：`python3 scripts/nga_checkin.py`
 - 建议 Cron：`49 0 * * *`
-- 发布哈希：`cda63baeeade1bf0452482af26cc13ce059996ae32d3fbba1a188b0bda472689`
+- 发布哈希：`600b1c689384a334a4b8a838cfa6b9b3b35abb76bb1fd99780cf0cd816e2963a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -158,7 +158,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `cda63baeeade1bf0452482af26cc13ce059996ae32d3fbba1a188b0bda472689`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
+SHA-256 `600b1c689384a334a4b8a838cfa6b9b3b35abb76bb1fd99780cf0cd816e2963a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4e0cf5e129fb12a4`。
 
 ## 副作用与风险
 

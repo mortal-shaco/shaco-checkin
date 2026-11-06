@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_mawuwang.js`
 - 青龙命令：`node scripts/sudojia_mawuwang.js`
 - 建议 Cron：`13 0 * * *`
-- 发布哈希：`99fb864a17b0e9b90bfdd88756b112f8636451eb0b9cb6355088532a05e48079`
+- 发布哈希：`60c0fd67f3db5b220dc8a8da682f14dbb52a8caee569e242c73c65f5d065d3ef`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -71,7 +71,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `99fb864a17b0e9b90bfdd88756b112f8636451eb0b9cb6355088532a05e48079`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/125dbe5e1b6b8274`。
+SHA-256 `60c0fd67f3db5b220dc8a8da682f14dbb52a8caee569e242c73c65f5d065d3ef`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/125dbe5e1b6b8274`。
 
 ## 副作用与风险
 

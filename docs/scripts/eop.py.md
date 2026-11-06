@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/eop.py`
 - 青龙命令：`python3 scripts/eop.py`
 - 建议 Cron：`11 9 * * *`
-- 发布哈希：`2c46606b6ab09d154bb5f12cb8fb0374e41edf7b03166662fcd454910bccae3c`
+- 发布哈希：`331729ca44c8649bab2a236b424dca2f4a29de2d95cb863780d629fe85cea173`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -82,7 +82,7 @@ EOP_COOKIE（或兼容别名 EOP_cookie）每个非空行一个账号的完整 C
 
 ## 验证与兼容性
 
-SHA-256 `2c46606b6ab09d154bb5f12cb8fb0374e41edf7b03166662fcd454910bccae3c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/42ad8ed62f74a64a`。
+SHA-256 `331729ca44c8649bab2a236b424dca2f4a29de2d95cb863780d629fe85cea173`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/42ad8ed62f74a64a`。
 
 ## 副作用与风险
 

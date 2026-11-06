@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/dailycp.py`
 - 青龙命令：`python3 scripts/dailycp.py`
 - 建议 Cron：`57 8 * * *`
-- 发布哈希：`ee6ca1ea34be670014674a08418c1f1502bf2a6e0d4cf74324d5f393f792b593`
+- 发布哈希：`8fecf152f5ea2c7d2fb5f719b611a5eae954dbf943cf3173decf46c36326976a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -120,7 +120,7 @@ DAILYCP_ACCOUNTS 中每个非空行是一个独立账号；格式为学校全名
 
 ## 验证与兼容性
 
-SHA-256 `ee6ca1ea34be670014674a08418c1f1502bf2a6e0d4cf74324d5f393f792b593`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/88e6a9f7651b1566`。
+SHA-256 `8fecf152f5ea2c7d2fb5f719b611a5eae954dbf943cf3173decf46c36326976a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/88e6a9f7651b1566`。
 
 ## 副作用与风险
 

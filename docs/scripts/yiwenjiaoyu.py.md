@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/yiwenjiaoyu.py`
 - 青龙命令：`python3 scripts/yiwenjiaoyu.py`
 - 建议 Cron：`52 8 * * *`
-- 发布哈希：`e80fec9b58379b201c4cee579d724aa099b364526b155e80cdab989217f7b7f8`
+- 发布哈希：`9ecd1daf80d3262254a1cb4d799c2ce1ff84504db563298fc022d516f06cb025`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ YIWEN_ACCOUNTS 每个非空行一个账号，格式为手机号|密码，仅拆�
 
 ## 验证与兼容性
 
-SHA-256 `e80fec9b58379b201c4cee579d724aa099b364526b155e80cdab989217f7b7f8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/878c77e4feb4d89e`。
+SHA-256 `9ecd1daf80d3262254a1cb4d799c2ce1ff84504db563298fc022d516f06cb025`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/878c77e4feb4d89e`。
 
 ## 副作用与风险
 

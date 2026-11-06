@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_ccava.py`
 - 青龙命令：`python3 scripts/ck_ccava.py`
 - 建议 Cron：`31 1 * * *`
-- 发布哈希：`e8b3a12f12e8231ee08e019ca24f6acba11f8bc0bcc86cdcfda7424bda6d4cdf`
+- 发布哈希：`d02e1dfd94ef27b39271623cb4f083a011d402a9be20cd23733a1ceae9e09d64`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@ CCAVA_COOKIE 的每个非空行表示一个账号，逐行独立执行；任意�
 
 ## 验证与兼容性
 
-SHA-256 `e8b3a12f12e8231ee08e019ca24f6acba11f8bc0bcc86cdcfda7424bda6d4cdf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/93e0b2068d55d68f`。
+SHA-256 `d02e1dfd94ef27b39271623cb4f083a011d402a9be20cd23733a1ceae9e09d64`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/93e0b2068d55d68f`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sf.py`
 - 青龙命令：`python3 scripts/sf.py`
 - 建议 Cron：`16 1 1 1 1`
-- 发布哈希：`b56f9078e99a561e0b45e5f7f891d92a4dec1d4a2e2c3fa32b99563624f2dadf`
+- 发布哈希：`8d2779c57eb7fbf9298f4e1744b1c55f57a0d40a3d9638ee8de592d0a4a34aa1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b56f9078e99a561e0b45e5f7f891d92a4dec1d4a2e2c3fa32b99563624f2dadf`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c231dec461782853`。
+SHA-256 `8d2779c57eb7fbf9298f4e1744b1c55f57a0d40a3d9638ee8de592d0a4a34aa1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c231dec461782853`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/daily_tasks.py`
 - 青龙命令：`python3 scripts/daily_tasks.py`
 - 建议 Cron：`3 8 * * *`
-- 发布哈希：`48ccc8c0b2e822cfeda96bb3818a27907d1dd1485891be3194d02b3b83a15e75`
+- 发布哈希：`a56f32a514141fb406f6881f762254bbc5a27d4c8fac9ff9b201642939bb77b9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -111,7 +111,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `48ccc8c0b2e822cfeda96bb3818a27907d1dd1485891be3194d02b3b83a15e75`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3b82fe4eb92e84d2`。
+SHA-256 `a56f32a514141fb406f6881f762254bbc5a27d4c8fac9ff9b201642939bb77b9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3b82fe4eb92e84d2`。
 
 ## 副作用与风险
 

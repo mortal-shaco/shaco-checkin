@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_laoban.js`
 - 青龙命令：`node scripts/sudojia_laoban.js`
 - 建议 Cron：`6 1 * * *`
-- 发布哈希：`17601b584fbd45c2fcc65c13fd47570599ddde5b6d80e1d2b4f0cd6efbadf9e4`
+- 发布哈希：`bbfdc292e5f5c350397e3dc36a162b1b6e7694b67e7b769eb6065f6cc0127a21`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -71,7 +71,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `17601b584fbd45c2fcc65c13fd47570599ddde5b6d80e1d2b4f0cd6efbadf9e4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75b0acfeb8163b13`。
+SHA-256 `bbfdc292e5f5c350397e3dc36a162b1b6e7694b67e7b769eb6065f6cc0127a21`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75b0acfeb8163b13`。
 
 ## 副作用与风险
 

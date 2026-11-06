@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/daily_sign.py`
 - 青龙命令：`python3 scripts/daily_sign.py`
 - 建议 Cron：`40 8 * * *`
-- 发布哈希：`c3c190181684d9c630fe8c74a87b74c5891fd0a80a151e5525ed83e752d79590`
+- 发布哈希：`8147eb59703aec61ac0bc1a2274fb1caa8e43fd974051fed9244e93c230e8fe1`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -68,7 +68,7 @@ JD_COOKIE 每个非空行一个账号 Cookie，逐个独立签到；任一账号
 
 ## 验证与兼容性
 
-SHA-256 `c3c190181684d9c630fe8c74a87b74c5891fd0a80a151e5525ed83e752d79590`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e0697a36d583ab53`。
+SHA-256 `8147eb59703aec61ac0bc1a2274fb1caa8e43fd974051fed9244e93c230e8fe1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e0697a36d583ab53`。
 
 ## 副作用与风险
 

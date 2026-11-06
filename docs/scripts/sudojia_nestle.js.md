@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_nestle.js`
 - 青龙命令：`node scripts/sudojia_nestle.js`
 - 建议 Cron：`30 2 * * *`
-- 发布哈希：`49373b7c9d2153c74e20eb5bbe1419a77a00b8493d26a43ede24570844736a15`
+- 发布哈希：`8dbe3b0add5128bf2bae3f04b9aeea74e84a290668d315a09664aa02e2445f67`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -77,7 +77,7 @@ NESTLE_TOKEN 每个非空行一个账号，独立处理；任一账号失败时�
 
 ## 验证与兼容性
 
-SHA-256 `49373b7c9d2153c74e20eb5bbe1419a77a00b8493d26a43ede24570844736a15`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e68269710bb6fed2`。
+SHA-256 `8dbe3b0add5128bf2bae3f04b9aeea74e84a290668d315a09664aa02e2445f67`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e68269710bb6fed2`。
 
 ## 副作用与风险
 

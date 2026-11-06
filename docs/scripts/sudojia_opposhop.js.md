@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_opposhop.js`
 - 青龙命令：`node scripts/sudojia_opposhop.js`
 - 建议 Cron：`12 0 * * *`
-- 发布哈希：`8b224ed15acf8bc989aa71aab2423aee439fe7481991031ba5b1ff4b9f61d4ab`
+- 发布哈希：`05efbe23a95d25a9384d87754c11c5c6a24b511e3b788e27a799800a7f53ff77`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8b224ed15acf8bc989aa71aab2423aee439fe7481991031ba5b1ff4b9f61d4ab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/11bf36237211e761`。
+SHA-256 `05efbe23a95d25a9384d87754c11c5c6a24b511e3b788e27a799800a7f53ff77`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/11bf36237211e761`。
 
 ## 副作用与风险
 

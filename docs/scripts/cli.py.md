@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/cli.py`
 - 青龙命令：`python3 scripts/cli.py`
 - 建议 Cron：`*/5 7-22 * * *`
-- 发布哈希：`5dc94bcbe4ea2e5814123703857e16eea36e6dfdd19ff79e44286e403365c271`
+- 发布哈希：`3a57657575c49334f303aa12a1bddd03f1c686332deeb49108444ace61080057`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -113,7 +113,7 @@ SYSU_ACCOUNTS 每个非空行一个账号（学号 或 学号|人脸图片）。
 
 ## 验证与兼容性
 
-SHA-256 `5dc94bcbe4ea2e5814123703857e16eea36e6dfdd19ff79e44286e403365c271`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d6e397f627b3716b`。
+SHA-256 `3a57657575c49334f303aa12a1bddd03f1c686332deeb49108444ace61080057`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d6e397f627b3716b`。
 
 ## 副作用与风险
 

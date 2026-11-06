@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_64f5e3fd.py`
 - 青龙命令：`python3 scripts/task_64f5e3fd.py`
 - 建议 Cron：`47 8 * * *`
-- 发布哈希：`e3de220695e6857eb5f3410e106744be249ebe925918b00a01cf7aedc17ce7d9`
+- 发布哈希：`a708a999d28620e5f4307f8f10a85a75fb5c4ff918f4a1928428aaa35e7a1a6a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -83,7 +83,7 @@ GRXY_ACCOUNTS 中每个非空行代表一个账号，格式为学号|密码|学�
 
 ## 验证与兼容性
 
-SHA-256 `e3de220695e6857eb5f3410e106744be249ebe925918b00a01cf7aedc17ce7d9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/64f5e3fdafd9fdbb`。
+SHA-256 `a708a999d28620e5f4307f8f10a85a75fb5c4ff918f4a1928428aaa35e7a1a6a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/64f5e3fdafd9fdbb`。
 
 ## 副作用与风险
 

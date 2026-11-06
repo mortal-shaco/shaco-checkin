@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_ktgzs.js`
 - 青龙命令：`node scripts/sudojia_ktgzs.js`
 - 建议 Cron：`35 0 * * *`
-- 发布哈希：`f21efe027144d61267e02785e4d79046c5b49931844c295a718702c6eafebb90`
+- 发布哈希：`61a08c057065ce73ca4d42feafaa86bed73fe1c1a1f5c44ae2094752169c0607`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f21efe027144d61267e02785e4d79046c5b49931844c295a718702c6eafebb90`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c1b078ac7332577`。
+SHA-256 `61a08c057065ce73ca4d42feafaa86bed73fe1c1a1f5c44ae2094752169c0607`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c1b078ac7332577`。
 
 ## 副作用与风险
 

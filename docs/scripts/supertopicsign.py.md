@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/supertopicsign.py`
 - 青龙命令：`python3 scripts/supertopicsign.py`
 - 建议 Cron：`41 1 * * *`
-- 发布哈希：`3a3132f8fc7624512907172a1f1816507f4c3cb6f59de4fa629ea0ba36dc7242`
+- 发布哈希：`4806bf3e75e6d64dbe156ac1aab26e4632661845d45ed830c3578f46bb9dd1bb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -93,7 +93,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `3a3132f8fc7624512907172a1f1816507f4c3cb6f59de4fa629ea0ba36dc7242`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5e811acce266569`。
+SHA-256 `4806bf3e75e6d64dbe156ac1aab26e4632661845d45ed830c3578f46bb9dd1bb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a5e811acce266569`。
 
 ## 副作用与风险
 

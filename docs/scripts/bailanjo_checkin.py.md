@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/bailanjo_checkin.py`
 - 青龙命令：`python3 scripts/bailanjo_checkin.py`
 - 建议 Cron：`31 2 * * *`
-- 发布哈希：`e218734d85c1f2eff92fdc16fa00073124135bbbc43c0a9362ac5b411702e00c`
+- 发布哈希：`7602727e5d3b7a2268b04e9876313fda57c5876d77b2b735e5f174c966946ea4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -147,7 +147,7 @@ BAILANJO_ACCOUNTS 中每个非空行代表一个账号，格式为账号|密码�
 
 ## 验证与兼容性
 
-SHA-256 `e218734d85c1f2eff92fdc16fa00073124135bbbc43c0a9362ac5b411702e00c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e052c233e8ebcd95`。
+SHA-256 `7602727e5d3b7a2268b04e9876313fda57c5876d77b2b735e5f174c966946ea4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e052c233e8ebcd95`。
 
 ## 副作用与风险
 

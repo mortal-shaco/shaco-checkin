@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_tebu.js`
 - 青龙命令：`node scripts/sudojia_tebu.js`
 - 建议 Cron：`37 1 * * *`
-- 发布哈希：`2da3dcd81252458d6c97f37e787fef033d4c8e40cbf0d2a42cf1e97e11742b50`
+- 发布哈希：`cd836f7399874b95ca6b820370789ae9da838a93eda6a2290c5595c607059d9d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2da3dcd81252458d6c97f37e787fef033d4c8e40cbf0d2a42cf1e97e11742b50`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a2b79c7df4dc31e7`。
+SHA-256 `cd836f7399874b95ca6b820370789ae9da838a93eda6a2290c5595c607059d9d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a2b79c7df4dc31e7`。
 
 ## 副作用与风险
 

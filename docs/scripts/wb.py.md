@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wb.py`
 - 青龙命令：`python3 scripts/wb.py`
 - 建议 Cron：`20 8 * * *`
-- 发布哈希：`d79e05708637d6373ae68d4542a3bce99565cb6aed93c9ce8dd3ab7221b5411b`
+- 发布哈希：`124dd3ddbb633c9f57e3995b3701c124f867964a88a653f2866790d939b8402e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -104,7 +104,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d79e05708637d6373ae68d4542a3bce99565cb6aed93c9ce8dd3ab7221b5411b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/74a9aa8b41b5634c`。
+SHA-256 `124dd3ddbb633c9f57e3995b3701c124f867964a88a653f2866790d939b8402e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/74a9aa8b41b5634c`。
 
 ## 副作用与风险
 

@@ -122,10 +122,10 @@ _当前无此类脚本。_
 
 ## 验证与兼容性
 
-- `scripts/cfmoto_checkin.py`（上架）：SHA-256 `d45204f3a633d6ef06813b9a637ed6add21ba382be8788f439062dce1e00cce6`；含 live 业务证据。详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
-- `scripts/kuaishou_reward_status.py`（上架）：SHA-256 `c689f2a14014bfe2374054469b4564608b5db69b981f10cabbca842321f24f63`；含 live 业务证据。详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
-- `scripts/sudojia_moto.js`（上架）：SHA-256 `d51fe6ba62db0760730c65268b698ce67296d2dad96fe22e2048c2652359c14c`；基础核验通过，业务待检查。详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
-- `scripts/tieba_checkin.py`（上架）：SHA-256 `c159f906c2e6b0dd5e51bedc6aa91d5694012f4daef2244dc9f6c5de5db1d45a`；基础核验通过，业务待检查。详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
+- `scripts/cfmoto_checkin.py`（上架）：SHA-256 `e350fb202a08bcb86852518d8d5c6d4666701008d4b3a1b78fbe270f8472fd29`；含 live 业务证据。详见 [cfmoto_checkin.py.md](docs/scripts/cfmoto_checkin.py.md)。
+- `scripts/kuaishou_reward_status.py`（上架）：SHA-256 `2bc8f9bc1f49b28fc7a60959e1b51ab876f27775ddf85cadc42259e0ce1f512e`；含 live 业务证据。详见 [kuaishou_reward_status.py.md](docs/scripts/kuaishou_reward_status.py.md)。
+- `scripts/sudojia_moto.js`（上架）：SHA-256 `6b85153a3842b9f2758dd79e184597371eabfb6254352cd7b39b067dba3783d8`；基础核验通过，业务待检查。详见 [sudojia_moto.js.md](docs/scripts/sudojia_moto.js.md)。
+- `scripts/tieba_checkin.py`（上架）：SHA-256 `6b2b56876e08115ec00a0561180a95f48bd27436f5eb7c31ecfb4bf5aca529ab`；基础核验通过，业务待检查。详见 [tieba_checkin.py.md](docs/scripts/tieba_checkin.py.md)。
 
 发布清单中的验证只对应所列哈希；脚本、依赖或接口逻辑变化后必须重新进行 live 业务验证。`待检查` 不代表业务失败，只表示维护者尚未完成当前版本人工核验。
 

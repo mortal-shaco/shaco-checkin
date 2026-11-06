@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/youdao.py`
 - 青龙命令：`python3 scripts/youdao.py`
 - 建议 Cron：`55 0 * * *`
-- 发布哈希：`15903aa6f22a3142f994f573106b7bac7e9198615bf4f2a03515d0a29ed8602e`
+- 发布哈希：`e09ae8b10d43260cd3b5e01644578c1de9076a7a391cda07ca06c6b92ed15730`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,7 +78,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `15903aa6f22a3142f994f573106b7bac7e9198615bf4f2a03515d0a29ed8602e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4cc5f70c13c67bbd`。
+SHA-256 `e09ae8b10d43260cd3b5e01644578c1de9076a7a391cda07ca06c6b92ed15730`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4cc5f70c13c67bbd`。
 
 ## 副作用与风险
 

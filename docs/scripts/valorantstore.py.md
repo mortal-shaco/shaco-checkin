@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/valorantstore.py`
 - 青龙命令：`python3 scripts/valorantstore.py`
 - 建议 Cron：`10 0 * * *`
-- 发布哈希：`b64a7e83e69ac9347604f8ef3512e77c2f4f121de89159ff4f42619b89bd55df`
+- 发布哈希：`3dea7c8321a9b5bbd6ef01b8b8a5babe566accfa05132fddd06eb88ea746becc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ VALORANT_COOKIE 每个非空行一个完整账号 Cookie，ct 与该账号其他
 
 ## 验证与兼容性
 
-SHA-256 `b64a7e83e69ac9347604f8ef3512e77c2f4f121de89159ff4f42619b89bd55df`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1153449ac9321744`。
+SHA-256 `3dea7c8321a9b5bbd6ef01b8b8a5babe566accfa05132fddd06eb88ea746becc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1153449ac9321744`。
 
 ## 副作用与风险
 

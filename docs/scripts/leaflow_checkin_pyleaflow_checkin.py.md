@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/leaflow_checkin_pyleaflow_checkin.py`
 - 青龙命令：`python3 scripts/leaflow_checkin_pyleaflow_checkin.py`
 - 建议 Cron：`14 0 * * *`
-- 发布哈希：`71c01645d789f97abe601d2639525ae2cbd6b103d2ca904ec3bceef7590c7c45`
+- 发布哈希：`80d9c6ec4b232b2337717b07212b6785d1ce25b354f806c976a59b18f8df801e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -179,7 +179,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `71c01645d789f97abe601d2639525ae2cbd6b103d2ca904ec3bceef7590c7c45`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
+SHA-256 `80d9c6ec4b232b2337717b07212b6785d1ce25b354f806c976a59b18f8df801e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/12e44eccee922041`。
 
 ## 副作用与风险
 

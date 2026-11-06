@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/turbo.py`
 - 青龙命令：`python3 scripts/turbo.py`
 - 建议 Cron：`10 8 * * *`
-- 发布哈希：`5609d2c7117f16064fb6a6fa584d194b7d58dfed7af9a6ce2142986833aaf68d`
+- 发布哈希：`d9e21f0c12d38cc52c8f730a750c184cd414cd0fecc732e71c7c4bc8cd53d6b9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -83,7 +83,7 @@ TURBOVIEW_ACCOUNTS 中每个非空行是一个独立账号（邮箱|密码）；
 
 ## 验证与兼容性
 
-SHA-256 `5609d2c7117f16064fb6a6fa584d194b7d58dfed7af9a6ce2142986833aaf68d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/406081527220e412`。
+SHA-256 `d9e21f0c12d38cc52c8f730a750c184cd414cd0fecc732e71c7c4bc8cd53d6b9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/406081527220e412`。
 
 ## 副作用与风险
 

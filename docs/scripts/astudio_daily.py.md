@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/astudio_daily.py`
 - 青龙命令：`python3 scripts/astudio_daily.py`
 - 建议 Cron：`17 9 * * *`
-- 发布哈希：`6b6d53389d20f3373967e8f6ab113e26b77d11aee300a554257d50fef5397ce1`
+- 发布哈希：`5310b0fe14b44187cf98f439b5d0e2e126cc5cdc002e8f4767232aed880080be`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -103,7 +103,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6b6d53389d20f3373967e8f6ab113e26b77d11aee300a554257d50fef5397ce1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/56e1597cff520f65`。
+SHA-256 `5310b0fe14b44187cf98f439b5d0e2e126cc5cdc002e8f4767232aed880080be`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/56e1597cff520f65`。
 
 ## 副作用与风险
 

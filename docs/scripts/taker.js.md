@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/taker.js`
 - 青龙命令：`node scripts/taker.js`
 - 建议 Cron：`26 8 * * *`
-- 发布哈希：`9e13ae18f9516078d8911e337fe5f65973640cdc5ae639394bb2f044f2f30ce0`
+- 发布哈希：`84876a1d9e42b389aa7b6104790116563666bd50c4f3685ae23adc69b0016671`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -106,7 +106,7 @@ TAKER_PRIVATE_KEY（或兼容别名 TAKER_WALLETS）每个非空行一个钱包�
 
 ## 验证与兼容性
 
-SHA-256 `9e13ae18f9516078d8911e337fe5f65973640cdc5ae639394bb2f044f2f30ce0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e6b938e23e5d9750`。
+SHA-256 `84876a1d9e42b389aa7b6104790116563666bd50c4f3685ae23adc69b0016671`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e6b938e23e5d9750`。
 
 ## 副作用与风险
 

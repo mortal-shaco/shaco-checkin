@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_everphoto.py`
 - 青龙命令：`python3 scripts/ck_everphoto.py`
 - 建议 Cron：`3 0 * * *`
-- 发布哈希：`d273f076a1052952f0c0971240a8d3079765e4dd2afe8bf7ec121a369de59b43`
+- 发布哈希：`c779da23b4307e63062ce2908b380eb24a40396cdaf6e4f6d5dc41f504433826`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d273f076a1052952f0c0971240a8d3079765e4dd2afe8bf7ec121a369de59b43`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/08575e47b55daffb`。
+SHA-256 `c779da23b4307e63062ce2908b380eb24a40396cdaf6e4f6d5dc41f504433826`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/08575e47b55daffb`。
 
 ## 副作用与风险
 

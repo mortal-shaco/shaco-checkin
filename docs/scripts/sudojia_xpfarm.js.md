@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_xpfarm.js`
 - 青龙命令：`node scripts/sudojia_xpfarm.js`
 - 建议 Cron：`36 11,18 * * *`
-- 发布哈希：`28a6eb7e97eae3ad8795c67a1183a192e8b892140c84af98033b4468af177cfa`
+- 发布哈希：`1b7eda4e2f5154581e62742feeb5b932965afd0de0507e307cf498711cfc79d9`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -92,7 +92,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `28a6eb7e97eae3ad8795c67a1183a192e8b892140c84af98033b4468af177cfa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9705540ac69a7c3e`。
+SHA-256 `1b7eda4e2f5154581e62742feeb5b932965afd0de0507e307cf498711cfc79d9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9705540ac69a7c3e`。
 
 ## 副作用与风险
 

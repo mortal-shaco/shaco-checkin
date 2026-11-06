@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_jindian.js`
 - 青龙命令：`node scripts/sudojia_jindian.js`
 - 建议 Cron：`18 0 * * *`
-- 发布哈希：`aceb88b267dcac53b46643cdebdaae9d08f83eea53decef05e5c88fa67e02822`
+- 发布哈希：`430d5baa8f4b36db6dc1b38f3153a0c414ed539732700e71bdc3bd51f69d8698`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `aceb88b267dcac53b46643cdebdaae9d08f83eea53decef05e5c88fa67e02822`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1ee8bcd72ce624b6`。
+SHA-256 `430d5baa8f4b36db6dc1b38f3153a0c414ed539732700e71bdc3bd51f69d8698`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1ee8bcd72ce624b6`。
 
 ## 副作用与风险
 

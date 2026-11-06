@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_pangge.js`
 - 青龙命令：`node scripts/sudojia_pangge.js`
 - 建议 Cron：`7 1 * * *`
-- 发布哈希：`c2a1a7c2512f96b1f2ccdfb7a7c7f169dee13ebbc0051a22396a229386447cd7`
+- 发布哈希：`e46ad454c800551e3d8cbb0860d7a3994460772d9153b89a8d4e50cd0b4f777f`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c2a1a7c2512f96b1f2ccdfb7a7c7f169dee13ebbc0051a22396a229386447cd7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75d3da7186c8c51b`。
+SHA-256 `e46ad454c800551e3d8cbb0860d7a3994460772d9153b89a8d4e50cd0b4f777f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/75d3da7186c8c51b`。
 
 ## 副作用与风险
 

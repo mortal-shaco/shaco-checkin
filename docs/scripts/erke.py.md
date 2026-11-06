@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/erke.py`
 - 青龙命令：`python3 scripts/erke.py`
 - 建议 Cron：`12 1 1 1 1`
-- 发布哈希：`fb9229f09a1bb59f707b2e4814dc069f1e04ce7ac1c42c98f0286d9410bf417e`
+- 发布哈希：`6664983d24b38a0a8bf268971d2b5f8b077cfb23e80d4f511a1d5ddbe130df89`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fb9229f09a1bb59f707b2e4814dc069f1e04ce7ac1c42c98f0286d9410bf417e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
+SHA-256 `6664983d24b38a0a8bf268971d2b5f8b077cfb23e80d4f511a1d5ddbe130df89`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2eeae7b152108dae`。
 
 ## 副作用与风险
 

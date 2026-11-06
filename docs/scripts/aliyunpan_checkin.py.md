@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/aliyunpan_checkin.py`
 - 青龙命令：`python3 scripts/aliyunpan_checkin.py`
 - 建议 Cron：`47 1 * * *`
-- 发布哈希：`ea48b58a482f24bf324ff49b0c8f80ef5b9a18bef69aace1eeaa8a3ae804ea1d`
+- 发布哈希：`bb18fc4a14fa928ef02ac85abe30ccae6692dfcfa62397e6985acb29e8faa832`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -175,7 +175,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ea48b58a482f24bf324ff49b0c8f80ef5b9a18bef69aace1eeaa8a3ae804ea1d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
+SHA-256 `bb18fc4a14fa928ef02ac85abe30ccae6692dfcfa62397e6985acb29e8faa832`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9c6fa7a75879fa8b`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/baidu.py`
 - 青龙命令：`python3 scripts/baidu.py`
 - 建议 Cron：`36 2 * * *`
-- 发布哈希：`1e0f4f5610f83503ed177024921c98b998d4752f576e03515fdad888fd86fda0`
+- 发布哈希：`8cf096002d466bed52140dd5a557033decb318a16b3356c094c8f1ffad330551`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@ BAIDU 每个非空行对应一个站点账号 JSON 对象，同一站点的清�
 
 ## 验证与兼容性
 
-SHA-256 `1e0f4f5610f83503ed177024921c98b998d4752f576e03515fdad888fd86fda0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed0673d8c02fc410`。
+SHA-256 `8cf096002d466bed52140dd5a557033decb318a16b3356c094c8f1ffad330551`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ed0673d8c02fc410`。
 
 ## 副作用与风险
 

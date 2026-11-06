@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/l.py`
 - 青龙命令：`python3 scripts/l.py`
 - 建议 Cron：`37 */5 * * *`
-- 发布哈希：`a917ac6088163776e7ecd8695eaed4fd996c2878479cde079b47d711256ea648`
+- 发布哈希：`1964426d8eaef343664d674515fa04105ab9fecdd54fabe9e83f7915e884c22f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ LINUXDO_COOKIES 每个非空行一个账号；逐个独立校验和处理，任�
 
 ## 验证与兼容性
 
-SHA-256 `a917ac6088163776e7ecd8695eaed4fd996c2878479cde079b47d711256ea648`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f1ad78537129604d`。
+SHA-256 `1964426d8eaef343664d674515fa04105ab9fecdd54fabe9e83f7915e884c22f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f1ad78537129604d`。
 
 ## 副作用与风险
 

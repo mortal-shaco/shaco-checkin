@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/zcode_cn_daily.py`
 - 青龙命令：`python3 scripts/zcode_cn_daily.py`
 - 建议 Cron：`1 9 * * *`
-- 发布哈希：`b832bcd6fe524f1640a0f8bf655cd716d0a5173b94f08af6a0d2cd4efcb6aac3`
+- 发布哈希：`fb33fc8203e9d9529f8658e1b1e7d2b59647dcb5404b0144c02cd151dc179f9b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -179,7 +179,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b832bcd6fe524f1640a0f8bf655cd716d0a5173b94f08af6a0d2cd4efcb6aac3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a0a7b04503bfb900`。
+SHA-256 `fb33fc8203e9d9529f8658e1b1e7d2b59647dcb5404b0144c02cd151dc179f9b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a0a7b04503bfb900`。
 
 ## 副作用与风险
 

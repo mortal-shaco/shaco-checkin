@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/liangjie.py`
 - 青龙命令：`python3 scripts/liangjie.py`
 - 建议 Cron：`10 9 * * *`
-- 发布哈希：`c9688f439b12d4e30aef208b197c1d96bf51fe86403d05c51773da5f75131bfa`
+- 发布哈希：`f21dcc6b7d54a52e6fdbbd9bd573b44c871c1fb4b934b569fe4be309233a98aa`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c9688f439b12d4e30aef208b197c1d96bf51fe86403d05c51773da5f75131bfa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62fd8997988ca1e4`。
+SHA-256 `f21dcc6b7d54a52e6fdbbd9bd573b44c871c1fb4b934b569fe4be309233a98aa`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62fd8997988ca1e4`。
 
 ## 副作用与风险
 

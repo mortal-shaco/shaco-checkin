@@ -23,7 +23,8 @@ from __future__ import annotations
 import fnmatch as _ql_notify_fnmatch
 import os as _ql_notify_os
 import re as _ql_notify_re
-if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+_ql_notify_raw = _ql_notify_os.environ.get("QINGLONG_NOTIFY")
+if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}:
     _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
     if _ql_notify_selection is None:
         _ql_notify_enabled = False

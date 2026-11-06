@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kanxue.js`
 - 青龙命令：`node scripts/kanxue.js`
 - 建议 Cron：`0 35 11 * * *`
-- 发布哈希：`0470702ce86f15e65eb22335a8c7920a4039a8912e748c7aad95f9808baee33a`
+- 发布哈希：`233cc7cdb3eca161d14d6af1aa08a18736ef95c8801332b3c666bae22f6b3e7a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `0470702ce86f15e65eb22335a8c7920a4039a8912e748c7aad95f9808baee33a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ada2bb484eeceac4`。
+SHA-256 `233cc7cdb3eca161d14d6af1aa08a18736ef95c8801332b3c666bae22f6b3e7a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ada2bb484eeceac4`。
 
 ## 副作用与风险
 

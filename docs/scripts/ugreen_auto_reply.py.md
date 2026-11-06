@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ugreen_auto_reply.py`
 - 青龙命令：`python3 scripts/ugreen_auto_reply.py`
 - 建议 Cron：`2 10 * * *`
-- 发布哈希：`f083d3c155500a0646099f861ffb046ad593406050777ce2b93ccf0eba7a5f2f`
+- 发布哈希：`9372945ff6580b06fa7967ad8b5c31cabb240d50619cc5812eb480605c398608`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f083d3c155500a0646099f861ffb046ad593406050777ce2b93ccf0eba7a5f2f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a941733da99ecdb7`。
+SHA-256 `9372945ff6580b06fa7967ad8b5c31cabb240d50619cc5812eb480605c398608`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a941733da99ecdb7`。
 
 ## 副作用与风险
 

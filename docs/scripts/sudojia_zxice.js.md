@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_zxice.js`
 - 青龙命令：`node scripts/sudojia_zxice.js`
 - 建议 Cron：`34 2 * * *`
-- 发布哈希：`9aa8d6e9963acbfda802e61a469e0e838879ce72855e49f0d677d213e18a3f28`
+- 发布哈希：`39320dcc37fac871605fd39f6f3e1a04037214f6cb95868eabafde190447b9b6`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9aa8d6e9963acbfda802e61a469e0e838879ce72855e49f0d677d213e18a3f28`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4b0810d476bc5e`。
+SHA-256 `39320dcc37fac871605fd39f6f3e1a04037214f6cb95868eabafde190447b9b6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4b0810d476bc5e`。
 
 ## 副作用与风险
 

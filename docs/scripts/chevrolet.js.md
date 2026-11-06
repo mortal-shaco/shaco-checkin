@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/chevrolet.js`
 - 青龙命令：`node scripts/chevrolet.js`
 - 建议 Cron：`55 0 * * *`
-- 发布哈希：`521670e7768eb32364be4865b4ae105076f3d76d957a5cb2b8d4c1e029ec2334`
+- 发布哈希：`c5ac3652298108ebba1f09e47106de6b0d59089b1cf4f1bee8a045b9ae7ab1da`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `521670e7768eb32364be4865b4ae105076f3d76d957a5cb2b8d4c1e029ec2334`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e7302e54a0be513`。
+SHA-256 `c5ac3652298108ebba1f09e47106de6b0d59089b1cf4f1bee8a045b9ae7ab1da`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e7302e54a0be513`。
 
 ## 副作用与风险
 

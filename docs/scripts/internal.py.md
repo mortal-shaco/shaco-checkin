@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/internal.py`
 - 青龙命令：`python3 scripts/internal.py`
 - 建议 Cron：`20 7 * * *`
-- 发布哈希：`420c9bf0282461f8a71a16717c571efdc27e82692723f732a03cd150e36041ad`
+- 发布哈希：`59bb3dab263441d106c642fdbee74f37fbfbf464789608178af44846e16759b2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -133,7 +133,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `420c9bf0282461f8a71a16717c571efdc27e82692723f732a03cd150e36041ad`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/887bba5f8efd3762`。
+SHA-256 `59bb3dab263441d106c642fdbee74f37fbfbf464789608178af44846e16759b2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/887bba5f8efd3762`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/doubao_daily.py`
 - 青龙命令：`python3 scripts/doubao_daily.py`
 - 建议 Cron：`23 9 * * *`
-- 发布哈希：`f808884a85ddaeaa8b357331407a3964653e457e8a1bdbc9efd140da6336e0fe`
+- 发布哈希：`048c90f7f1084a5b1b7a710fdd92d712c832f59f52b93d1b2f0f0e145fc8272f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -173,7 +173,7 @@ DOUBAO_COOKIE 按换行分隔，每个非空行一个账号 Cookie；兼容别�
 
 ## 验证与兼容性
 
-SHA-256 `f808884a85ddaeaa8b357331407a3964653e457e8a1bdbc9efd140da6336e0fe`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4ac225148a2befcd`。
+SHA-256 `048c90f7f1084a5b1b7a710fdd92d712c832f59f52b93d1b2f0f0e145fc8272f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4ac225148a2befcd`。
 
 ## 副作用与风险
 

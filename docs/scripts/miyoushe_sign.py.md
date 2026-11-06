@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/miyoushe_sign.py`
 - 青龙命令：`python3 scripts/miyoushe_sign.py`
 - 建议 Cron：`11 8 * * *`
-- 发布哈希：`99ff2aa0bb1d152dbfed37c2e37875c5d118a7bee9bffb103c88e00a49430eb1`
+- 发布哈希：`bc896f952cb23a3ba490bcae8002995e1fa3a7c8c579f81344e4cd809d3adddd`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -104,7 +104,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `99ff2aa0bb1d152dbfed37c2e37875c5d118a7bee9bffb103c88e00a49430eb1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132658a551b47b61`。
+SHA-256 `bc896f952cb23a3ba490bcae8002995e1fa3a7c8c579f81344e4cd809d3adddd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132658a551b47b61`。
 
 ## 副作用与风险
 

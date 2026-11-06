@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hsay.py`
 - 青龙命令：`python3 scripts/hsay.py`
 - 建议 Cron：`21 9,18 * * *`
-- 发布哈希：`e675184cc0dd4f3bc74056c9b39ae074bfa26ffc2302242f979957bea3274fd1`
+- 发布哈希：`28761ada22e81f290de713253643545a252c763a69e40824f86bdac94e19c3d5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e675184cc0dd4f3bc74056c9b39ae074bfa26ffc2302242f979957bea3274fd1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
+SHA-256 `28761ada22e81f290de713253643545a252c763a69e40824f86bdac94e19c3d5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a646b7bbddbaa7d`。
 
 ## 副作用与风险
 

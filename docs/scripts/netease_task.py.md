@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/netease_task.py`
 - 青龙命令：`python3 scripts/netease_task.py`
 - 建议 Cron：`53 1 * * *`
-- 发布哈希：`e24b76bcb0e7df479cb84cb08b29487d324ee5e6265dca9c6270dfa031e3a949`
+- 发布哈希：`a81c4d0e3edc8e9d8ee32d57ac06f58ba47d49dcb3a181588839dbd09655abc3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -130,7 +130,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e24b76bcb0e7df479cb84cb08b29487d324ee5e6265dca9c6270dfa031e3a949`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a8a311f3f5aaa2e6`。
+SHA-256 `a81c4d0e3edc8e9d8ee32d57ac06f58ba47d49dcb3a181588839dbd09655abc3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a8a311f3f5aaa2e6`。
 
 ## 副作用与风险
 

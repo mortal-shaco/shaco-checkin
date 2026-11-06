@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/qqmusic_checkin.py`
 - 青龙命令：`python3 scripts/qqmusic_checkin.py`
 - 建议 Cron：`22 9 * * *`
-- 发布哈希：`a899c310354b74da8daa8b3d39f2b8880b89657a1ada338c24e58e93414f4421`
+- 发布哈希：`5903f6eef05e39d50e2cbefb5cf2b585d4b8b99c11452b770a04bbd250a4ba89`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -121,7 +121,7 @@ QM_ACCOUNT 按换行分隔，每个非空行一个账号，格式 uin|qm_keyst�
 
 ## 验证与兼容性
 
-SHA-256 `a899c310354b74da8daa8b3d39f2b8880b89657a1ada338c24e58e93414f4421`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1560f1e922d139e6`。
+SHA-256 `5903f6eef05e39d50e2cbefb5cf2b585d4b8b99c11452b770a04bbd250a4ba89`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1560f1e922d139e6`。
 
 ## 副作用与风险
 

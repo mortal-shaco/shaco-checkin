@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/weilai_auto_checkin.js`
 - 青龙命令：`node scripts/weilai_auto_checkin.js`
 - 建议 Cron：`8 9 * * *`
-- 发布哈希：`a3353e86e4f37c382ad3676b64c15194bceab1218ed4207edf5b681e8878e1f0`
+- 发布哈希：`01f7385d9e950b0ea4e3322ebd037dfcecddfcc55c80a13d4f496173232a67ff`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -99,7 +99,7 @@ WEILAI_TOKEN（或兼容别名）每个非空行一个账号；可选备注仅�
 
 ## 验证与兼容性
 
-SHA-256 `a3353e86e4f37c382ad3676b64c15194bceab1218ed4207edf5b681e8878e1f0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/276c7c90b90de432`。
+SHA-256 `01f7385d9e950b0ea4e3322ebd037dfcecddfcc55c80a13d4f496173232a67ff`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/276c7c90b90de432`。
 
 ## 副作用与风险
 

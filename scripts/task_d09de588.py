@@ -51,24 +51,14 @@ from __future__ import annotations
 import fnmatch as _ql_notify_fnmatch
 import os as _ql_notify_os
 import re as _ql_notify_re
-
-if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
+_ql_notify_raw = _ql_notify_os.environ.get("QINGLONG_NOTIFY")
+if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}:
     _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
     if _ql_notify_selection is None:
         _ql_notify_enabled = False
     else:
-        _ql_notify_selectors = [
-            item.lower()
-            for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip())
-            if item
-        ]
-        _ql_notify_identities = (
-            "d09de5880a4e46d8",
-            "scripts/upyun_auto.py",
-            "upyun_auto.py",
-            "upyun_auto",
-            "candidate.py",
-        )
+        _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
+        _ql_notify_identities = ('d09de5880a4e46d8', 'scripts/task_d09de588.py', 'task_d09de588.py', 'task_d09de588')
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors

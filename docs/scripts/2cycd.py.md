@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/2cycd.py`
 - 青龙命令：`python3 scripts/2cycd.py`
 - 建议 Cron：`0 0 * * *`
-- 发布哈希：`25b8017bb313cc0226008cc36a8141e3beffd0aa6de9d33731441593a5b20a40`
+- 发布哈希：`16c1404bc0df4abfac575dbc7e273bd931dd7481cfe8e1bf8d045e4d815c9edc`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -104,7 +104,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `25b8017bb313cc0226008cc36a8141e3beffd0aa6de9d33731441593a5b20a40`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/00e71cec355af1fb`。
+SHA-256 `16c1404bc0df4abfac575dbc7e273bd931dd7481cfe8e1bf8d045e4d815c9edc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/00e71cec355af1fb`。
 
 ## 副作用与风险
 

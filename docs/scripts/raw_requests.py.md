@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/raw_requests.py`
 - 青龙命令：`python3 scripts/raw_requests.py`
 - 建议 Cron：`51 8 * * *`
-- 发布哈希：`e2b8f6e144b645f49d84ecc44cc04dcee6ca892ae75b4e9a140e240192b6c830`
+- 发布哈希：`30cd47212a9ed35f2c766368018e76220d1623beb78e9cb0a9d51bcb3cf6e6ed`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -112,7 +112,7 @@ YM3D_COOKIE 每行一个 Cookie；若改用 YM3D_ACCOUNT，则每行用户名&�
 
 ## 验证与兼容性
 
-SHA-256 `e2b8f6e144b645f49d84ecc44cc04dcee6ca892ae75b4e9a140e240192b6c830`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7658724a6095b13b`。
+SHA-256 `30cd47212a9ed35f2c766368018e76220d1623beb78e9cb0a9d51bcb3cf6e6ed`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7658724a6095b13b`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/fnnasclub.py`
 - 青龙命令：`python3 scripts/fnnasclub.py`
 - 建议 Cron：`49 1 * * *`
-- 发布哈希：`e9dcb76a9e55372fd32934ec429bd3c72dc3e7cdde073884702fa63a999a2754`
+- 发布哈希：`b74066f4bf45f471d088b3efa8d91608746c21c6c5aa082396c5e30c4bef1939`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e9dcb76a9e55372fd32934ec429bd3c72dc3e7cdde073884702fa63a999a2754`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
+SHA-256 `b74066f4bf45f471d088b3efa8d91608746c21c6c5aa082396c5e30c4bef1939`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b5b4289ee7ca4222`。
 
 ## 副作用与风险
 

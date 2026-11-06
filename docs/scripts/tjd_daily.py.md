@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tjd_daily.py`
 - 青龙命令：`python3 scripts/tjd_daily.py`
 - 建议 Cron：`24 2 * * *`
-- 发布哈希：`bd903a15fa252459687e634d9770161d3ac46c6359ccc6009973a8966b9aa8e6`
+- 发布哈希：`e889da2e377ba3b5e70b91f9a22769b96174343bc38cc9060cce4ce73dcc528e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -143,7 +143,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `bd903a15fa252459687e634d9770161d3ac46c6359ccc6009973a8966b9aa8e6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e096ba77bcda7172`。
+SHA-256 `e889da2e377ba3b5e70b91f9a22769b96174343bc38cc9060cce4ce73dcc528e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e096ba77bcda7172`。
 
 ## 副作用与风险
 

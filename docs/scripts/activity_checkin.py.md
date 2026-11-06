@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/activity_checkin.py`
 - 青龙命令：`python3 scripts/activity_checkin.py`
 - 建议 Cron：`22 8 * * *`
-- 发布哈希：`ac136c7575b96ebc41e66015369fdc7de089ccafa73deff3d853100232929e64`
+- 发布哈希：`b37764440cee84cf6efc146cde78fb98a9eb53e30dc73b748c24a3fed75a208f`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ac136c7575b96ebc41e66015369fdc7de089ccafa73deff3d853100232929e64`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1e2ace06c33b3dec`。
+SHA-256 `b37764440cee84cf6efc146cde78fb98a9eb53e30dc73b748c24a3fed75a208f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1e2ace06c33b3dec`。
 
 ## 副作用与风险
 

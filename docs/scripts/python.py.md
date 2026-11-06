@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/python.py`
 - 青龙命令：`python3 scripts/python.py`
 - 建议 Cron：`*/5 7-22 * * *`
-- 发布哈希：`f0c72bc59c532f9d10de07090bfea551b6623a5c4de46b59ce03aec5af6a3e32`
+- 发布哈希：`308db0925e9e0526ac1a2f6c0cdeaf0668100bb35e58719cdeff1e817c6b3eae`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -105,7 +105,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f0c72bc59c532f9d10de07090bfea551b6623a5c4de46b59ce03aec5af6a3e32`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a77e89326b6c406`。
+SHA-256 `308db0925e9e0526ac1a2f6c0cdeaf0668100bb35e58719cdeff1e817c6b3eae`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/1a77e89326b6c406`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/dailynewscn.js`
 - 青龙命令：`node scripts/dailynewscn.js`
 - 建议 Cron：`0 15 9 * * *`
-- 发布哈希：`1b53595cc7e73c631a72aa2c684397141949880ea460b2047ead9798cad8609c`
+- 发布哈希：`23f49561a91cc464883dbc6a9d2f3ff8f005b563c8663230d3806ca549daa00d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -220,7 +220,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1b53595cc7e73c631a72aa2c684397141949880ea460b2047ead9798cad8609c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f3d5ae90c3c979bf`。
+SHA-256 `23f49561a91cc464883dbc6a9d2f3ff8f005b563c8663230d3806ca549daa00d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f3d5ae90c3c979bf`。
 
 ## 副作用与风险
 

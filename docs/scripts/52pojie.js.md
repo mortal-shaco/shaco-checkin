@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/52pojie.js`
 - 青龙命令：`node scripts/52pojie.js`
 - 建议 Cron：`8 0 * * *`
-- 发布哈希：`591bdea8bdcb0bbc14cf41f135994b63d55fe570f40f767614526f95572577e1`
+- 发布哈希：`a8e3786e5efb6e33c7aa8b343f9309980e08c093b4751f51e47e7954b9c08010`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `591bdea8bdcb0bbc14cf41f135994b63d55fe570f40f767614526f95572577e1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0ee602c1c54b9470`。
+SHA-256 `a8e3786e5efb6e33c7aa8b343f9309980e08c093b4751f51e47e7954b9c08010`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0ee602c1c54b9470`。
 
 ## 副作用与风险
 

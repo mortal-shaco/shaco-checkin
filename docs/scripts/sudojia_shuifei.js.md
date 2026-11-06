@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_shuifei.js`
 - 青龙命令：`node scripts/sudojia_shuifei.js`
 - 建议 Cron：`4 0 * * *`
-- 发布哈希：`e4f9dae2a64a278637c2c9dd4b376342e7eedad7e4b6cd3e00d928138f68dc69`
+- 发布哈希：`8d466690e2165dc9be251b7a7226b97ab3672e224f6a7b74cf37148552fb0056`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e4f9dae2a64a278637c2c9dd4b376342e7eedad7e4b6cd3e00d928138f68dc69`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0aecb3979149b2cc`。
+SHA-256 `8d466690e2165dc9be251b7a7226b97ab3672e224f6a7b74cf37148552fb0056`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0aecb3979149b2cc`。
 
 ## 副作用与风险
 

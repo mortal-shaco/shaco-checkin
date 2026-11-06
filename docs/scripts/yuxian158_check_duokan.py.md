@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/yuxian158_check_duokan.py`
 - 青龙命令：`python3 scripts/yuxian158_check_duokan.py`
 - 建议 Cron：`28 2 * * *`
-- 发布哈希：`f731c4be4a29ce2fe675d27559fef84cf044f689c9e556f9dec84314424b08c4`
+- 发布哈希：`1a72ddb58979bf0e905967e6bdf95c052ca423c83a48c14c5e2c274012cd818a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -131,7 +131,7 @@ DUOKAN_COOKIE 每个非空行对应一个账号；各账号独立解析和执行
 
 ## 验证与兼容性
 
-SHA-256 `f731c4be4a29ce2fe675d27559fef84cf044f689c9e556f9dec84314424b08c4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/df7ef61ae68efc75`。
+SHA-256 `1a72ddb58979bf0e905967e6bdf95c052ca423c83a48c14c5e2c274012cd818a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/df7ef61ae68efc75`。
 
 ## 副作用与风险
 

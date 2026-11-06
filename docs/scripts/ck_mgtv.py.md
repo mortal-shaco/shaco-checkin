@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_mgtv.py`
 - 青龙命令：`python3 scripts/ck_mgtv.py`
 - 建议 Cron：`36 0 * * *`
-- 发布哈希：`19908a04425a32f88464a06669f4d295c7107ad338c077a0cdddf11c8c280ebb`
+- 发布哈希：`2b96e48c02a9d1317dce566491f071f179c036b61ecaab6d71ac4524f975b8d3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `19908a04425a32f88464a06669f4d295c7107ad338c077a0cdddf11c8c280ebb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c4712e799078b55`。
+SHA-256 `2b96e48c02a9d1317dce566491f071f179c036b61ecaab6d71ac4524f975b8d3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c4712e799078b55`。
 
 ## 副作用与风险
 

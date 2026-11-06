@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_euserv.py`
 - 青龙命令：`python3 scripts/ck_euserv.py`
 - 建议 Cron：`56 10 */7 * *`
-- 发布哈希：`4364d5d8150e1d64cde62049891db9ea193453be7986250247d8a0c11d300f9e`
+- 发布哈希：`c3cf76fe79e2ef6216ed796e4f87547695c43f8e143a1f4852318bbdb99f8e88`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4364d5d8150e1d64cde62049891db9ea193453be7986250247d8a0c11d300f9e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9b86f9dc679c7816`。
+SHA-256 `c3cf76fe79e2ef6216ed796e4f87547695c43f8e143a1f4852318bbdb99f8e88`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9b86f9dc679c7816`。
 
 ## 副作用与风险
 

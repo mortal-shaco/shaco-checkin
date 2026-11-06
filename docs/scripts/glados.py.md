@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/glados.py`
 - 青龙命令：`python3 scripts/glados.py`
 - 建议 Cron：`58 0 * * *`
-- 发布哈希：`7d07316e763ce6285283d9045836c8feeead32be4bce67f4da338bb7367f97c6`
+- 发布哈希：`f5ac9de214176663a1cbff0719e629a2570c8e8afeff4e7f90486dd1291f7b45`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -178,7 +178,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7d07316e763ce6285283d9045836c8feeead32be4bce67f4da338bb7367f97c6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2d633fe3129937b6`。
+SHA-256 `f5ac9de214176663a1cbff0719e629a2570c8e8afeff4e7f90486dd1291f7b45`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/2d633fe3129937b6`。
 
 ## 副作用与风险
 

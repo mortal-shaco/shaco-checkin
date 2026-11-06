@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/aitport.js`
 - 青龙命令：`node scripts/aitport.js`
 - 建议 Cron：`1 8 * * *`
-- 发布哈希：`fa63efbcd571eb8254dfa3a7089cbc7c97504f79185f132873da11924cd1a58e`
+- 发布哈希：`faf15545ec5aebf0d3d0ea67cc8f8e33dc7175de8341efa9ab8d445eb4d546d9`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -93,7 +93,7 @@ AITPORT_ACCOUNTS 每个非空行一个账号，邮箱和密码仅按第一个 | 
 
 ## 验证与兼容性
 
-SHA-256 `fa63efbcd571eb8254dfa3a7089cbc7c97504f79185f132873da11924cd1a58e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be4fa480e7c5151e`。
+SHA-256 `faf15545ec5aebf0d3d0ea67cc8f8e33dc7175de8341efa9ab8d445eb4d546d9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be4fa480e7c5151e`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/arctime_auto_sign.py`
 - 青龙命令：`python3 scripts/arctime_auto_sign.py`
 - 建议 Cron：`56 8 * * *`
-- 发布哈希：`0c5bdf4174af4e638d4f584d95ee80b46911c6afe7bcb93ceed50688653219a3`
+- 发布哈希：`6cb7b1f56503d68a0c5bfb7b448dc4113990db92c6ddaab3452a4523c8778d7b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@ ARCTIME_ACCOUNTS 中每个非空行是一个独立账号，格式为 用户名|�
 
 ## 验证与兼容性
 
-SHA-256 `0c5bdf4174af4e638d4f584d95ee80b46911c6afe7bcb93ceed50688653219a3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c8ee1df1aee7324`。
+SHA-256 `6cb7b1f56503d68a0c5bfb7b448dc4113990db92c6ddaab3452a4523c8778d7b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c8ee1df1aee7324`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/doyoudo_auto_sign.py`
 - 青龙命令：`python3 scripts/doyoudo_auto_sign.py`
 - 建议 Cron：`59 8 * * *`
-- 发布哈希：`8a8dc1c97b0d04fe7afcf6e2a6d95d53155d62081d024508db39836d75e84507`
+- 发布哈希：`18e41fd2eb6d458fc5ac86ff1571cc5b43cb728ff7ad3738c34b04c958052f90`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -104,7 +104,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8a8dc1c97b0d04fe7afcf6e2a6d95d53155d62081d024508db39836d75e84507`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa8ce405ac3abf85`。
+SHA-256 `18e41fd2eb6d458fc5ac86ff1571cc5b43cb728ff7ad3738c34b04c958052f90`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa8ce405ac3abf85`。
 
 ## 副作用与风险
 

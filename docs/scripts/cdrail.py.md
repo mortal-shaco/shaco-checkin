@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/cdrail.py`
 - 青龙命令：`python3 scripts/cdrail.py`
 - 建议 Cron：`3 1 * * *`
-- 发布哈希：`9544e786c6d6b4ea6410714275fcd1092902320d29445b021872440e6d52ba6d`
+- 发布哈希：`b267d1cf0a1a0440b3cfa9d8ca1502e9ffb04e27366e40debcaa16d0ea86d698`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9544e786c6d6b4ea6410714275fcd1092902320d29445b021872440e6d52ba6d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7389d13167df31b6`。
+SHA-256 `b267d1cf0a1a0440b3cfa9d8ca1502e9ffb04e27366e40debcaa16d0ea86d698`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7389d13167df31b6`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/cloud_genshin.py`
 - 青龙命令：`python3 scripts/cloud_genshin.py`
 - 建议 Cron：`30 9 * * *`
-- 发布哈希：`096201548995791c9aefabf7d0d21799646ea0119cee2d786aa1a02ec58d2df3`
+- 发布哈希：`d2acdf490861f0790b5370bd003f82ba84f187b9c05195a638ddd96742631208`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -90,7 +90,7 @@ CLOUD_GENSHIN_TOKEN 中每个非空行是一个独立账号的 combo_token；逐
 
 ## 验证与兼容性
 
-SHA-256 `096201548995791c9aefabf7d0d21799646ea0119cee2d786aa1a02ec58d2df3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0b3d91e14d17bbc2`。
+SHA-256 `d2acdf490861f0790b5370bd003f82ba84f187b9c05195a638ddd96742631208`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0b3d91e14d17bbc2`。
 
 ## 副作用与风险
 

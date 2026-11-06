@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/epicfreegames.py`
 - 青龙命令：`python3 scripts/epicfreegames.py`
 - 建议 Cron：`11 8 * * 6`
-- 发布哈希：`dfe8a7dbf01f10eec1111ee8e115b59ddade78808139a802f25be2c1756eac7a`
+- 发布哈希：`d83e3d53121084bfb3bbb8cee3ac3b1a3b8fa2d994d471a451cb04fa9c457c50`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -104,7 +104,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `dfe8a7dbf01f10eec1111ee8e115b59ddade78808139a802f25be2c1756eac7a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
+SHA-256 `d83e3d53121084bfb3bbb8cee3ac3b1a3b8fa2d994d471a451cb04fa9c457c50`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/62f8f8c670e36faa`。
 
 ## 副作用与风险
 

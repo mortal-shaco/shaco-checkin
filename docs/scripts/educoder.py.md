@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/educoder.py`
 - 青龙命令：`python3 scripts/educoder.py`
 - 建议 Cron：`54 8,10,14,16 * * 1-5`
-- 发布哈希：`afe5c251704dfd356453f77cf08368f2d01dcc9596a81b7b48cdd0eebde4d16d`
+- 发布哈希：`976f3dc4d4b6b8022e690f9a83456fc8201f773034f4a5ca3c1e00cfba2e061f`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -110,7 +110,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `afe5c251704dfd356453f77cf08368f2d01dcc9596a81b7b48cdd0eebde4d16d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/56a92f26b6487e35`。
+SHA-256 `976f3dc4d4b6b8022e690f9a83456fc8201f773034f4a5ca3c1e00cfba2e061f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/56a92f26b6487e35`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_baidu_url_submit.py`
 - 青龙命令：`python3 scripts/ck_baidu_url_submit.py`
 - 建议 Cron：`8 2 * * *`
-- 发布哈希：`943ab935ebf3369f0713dc9458706df7429834f25995fccb1b83135fb9e1d16d`
+- 发布哈希：`a6180c8973edcefb799260d80d57ebb0ac98bf56163fff198904c5f0466a4113`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -75,7 +75,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `943ab935ebf3369f0713dc9458706df7429834f25995fccb1b83135fb9e1d16d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cbcac1d0442bb8ef`。
+SHA-256 `a6180c8973edcefb799260d80d57ebb0ac98bf56163fff198904c5f0466a4113`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/cbcac1d0442bb8ef`。
 
 ## 副作用与风险
 

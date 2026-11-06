@@ -3,7 +3,8 @@
 'use strict';
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {
@@ -975,7 +976,7 @@ function globMatch(value, pattern) {
 }
 
 function notificationSelected(env = process.env) {
-  if (env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
+  if (env.QINGLONG_NOTIFY_SCRIPTS === undefined) return false; /* listed-only default */
   const selectors = String(env.QINGLONG_NOTIFY_SCRIPTS).split(/[,;\s]+/).map((value) => value.trim()).filter(Boolean);
   if (!selectors.length) return false;
   const invoked = path.resolve(process.argv[1] || 'candidate.js');

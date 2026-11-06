@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/jc_checkin.py`
 - 青龙命令：`python3 scripts/jc_checkin.py`
 - 建议 Cron：`45 2 * * *`
-- 发布哈希：`b4f7a59e21b97a8fa2883f0c529e2bce2e05e45f09541025b5485ea6022e535e`
+- 发布哈希：`4df44d1739948e98242e03676b4deaba192ddef721bc5b0b15b4d75547f566a7`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -105,7 +105,7 @@ JC_ACCOUNTS 每个非空行一个邮箱|密码，仅按首个 | 分割；密码�
 
 ## 验证与兼容性
 
-SHA-256 `b4f7a59e21b97a8fa2883f0c529e2bce2e05e45f09541025b5485ea6022e535e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fd9b2a23e39332a5`。
+SHA-256 `4df44d1739948e98242e03676b4deaba192ddef721bc5b0b15b4d75547f566a7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fd9b2a23e39332a5`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_hgf.js`
 - 青龙命令：`node scripts/sudojia_hgf.js`
 - 建议 Cron：`44 1 * * *`
-- 发布哈希：`c7157dc2b55a1875b3ffca48ff5240a2429a2009ed63fabece924fb8362e5b6f`
+- 发布哈希：`2e77b452a459eab252e9438c6a0f3dc2d965d0b0bf6a305f2dcd41d14977bca8`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c7157dc2b55a1875b3ffca48ff5240a2429a2009ed63fabece924fb8362e5b6f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ad46a268a74b34b0`。
+SHA-256 `2e77b452a459eab252e9438c6a0f3dc2d965d0b0bf6a305f2dcd41d14977bca8`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ad46a268a74b34b0`。
 
 ## 副作用与风险
 

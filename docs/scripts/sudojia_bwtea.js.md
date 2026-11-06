@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_bwtea.js`
 - 青龙命令：`node scripts/sudojia_bwtea.js`
 - 建议 Cron：`53 0 * * *`
-- 发布哈希：`421a2292c33ca3a9586c8b73ffeafa9532d3ff76636c48b409f8bd2da1be3545`
+- 发布哈希：`213d972f8530e8299095073745b1fc0850edf6bf886307eaf859a743ef0c01af`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -68,7 +68,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `421a2292c33ca3a9586c8b73ffeafa9532d3ff76636c48b409f8bd2da1be3545`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5d764238c373f4ce`。
+SHA-256 `213d972f8530e8299095073745b1fc0850edf6bf886307eaf859a743ef0c01af`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5d764238c373f4ce`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_ad4c4f3a.js`
 - 青龙命令：`node scripts/task_ad4c4f3a.js`
 - 建议 Cron：`39 8 * * *`
-- 发布哈希：`1f3727c06c1a937eecef4cfb98c615b6ae8ece04f23a4e742aeb8a1428300105`
+- 发布哈希：`371bdee1487e1a29cf4f4f5cdd963877edc00a3921d13bd8b65fc6452e0f0b86`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ ABYSSWORLD_TOKEN（或兼容 TOKEN）每个非空行一个账号 Token；可选�
 
 ## 验证与兼容性
 
-SHA-256 `1f3727c06c1a937eecef4cfb98c615b6ae8ece04f23a4e742aeb8a1428300105`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ad4c4f3ab8ede7e1`。
+SHA-256 `371bdee1487e1a29cf4f4f5cdd963877edc00a3921d13bd8b65fc6452e0f0b86`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/ad4c4f3ab8ede7e1`。
 
 ## 副作用与风险
 

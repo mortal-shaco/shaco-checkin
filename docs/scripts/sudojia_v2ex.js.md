@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_v2ex.js`
 - 青龙命令：`node scripts/sudojia_v2ex.js`
 - 建议 Cron：`1 1 * * *`
-- 发布哈希：`9de68f7895bbffebce6586a5d56017b0e72aa0ba557e9f6d7b382df22134d085`
+- 发布哈希：`aa301ec50a2a4dfc81dc56d9da2745861b3f39ba136b150be7b35e4f6fad68ad`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9de68f7895bbffebce6586a5d56017b0e72aa0ba557e9f6d7b382df22134d085`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/705cf315f5da6907`。
+SHA-256 `aa301ec50a2a4dfc81dc56d9da2745861b3f39ba136b150be7b35e4f6fad68ad`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/705cf315f5da6907`。
 
 ## 副作用与风险
 

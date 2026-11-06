@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/zeeho_signin.py`
 - 青龙命令：`python3 scripts/zeeho_signin.py`
 - 建议 Cron：`32 8 * * *`
-- 发布哈希：`ad37e67220547049ba289f373bad32fa741f4d713d77678f65497be57cb9c929`
+- 发布哈希：`38c1abbe8948b17a2d2c8f8f56c4d2b8e31e71ce7e3f3efcf95daf34303f8330`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -145,7 +145,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `ad37e67220547049ba289f373bad32fa741f4d713d77678f65497be57cb9c929`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d95dd43dd4755fbe`。
+SHA-256 `38c1abbe8948b17a2d2c8f8f56c4d2b8e31e71ce7e3f3efcf95daf34303f8330`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d95dd43dd4755fbe`。
 
 ## 副作用与风险
 

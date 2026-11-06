@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_paotea.js`
 - 青龙命令：`node scripts/sudojia_paotea.js`
 - 建议 Cron：`58 1 * * *`
-- 发布哈希：`f52c46cb9460d571e10d7f2807c413600774bd5517a85aa2c7a3b67cbae28783`
+- 发布哈希：`da2cbc591fa0144e2d35cb984e15f3afce642cf5206e6a8143aa9f76e30af22e`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f52c46cb9460d571e10d7f2807c413600774bd5517a85aa2c7a3b67cbae28783`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be649dd5fba997a7`。
+SHA-256 `da2cbc591fa0144e2d35cb984e15f3afce642cf5206e6a8143aa9f76e30af22e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be649dd5fba997a7`。
 
 ## 副作用与风险
 

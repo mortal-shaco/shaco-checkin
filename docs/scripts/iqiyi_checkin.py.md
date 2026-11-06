@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/iqiyi_checkin.py`
 - 青龙命令：`python3 scripts/iqiyi_checkin.py`
 - 建议 Cron：`8 1 * * *`
-- 发布哈希：`73a0c9653a524559ae78de43aa3eaba50a8d439a26a930fed4458c8a8e6e1bdb`
+- 发布哈希：`cdedc0bbf523b163c90634c5bb4ebd1b18cf4f885bdac6a0cc0ab5d3bdfb51e2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -167,7 +167,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `73a0c9653a524559ae78de43aa3eaba50a8d439a26a930fed4458c8a8e6e1bdb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7701c083c0ca06d5`。
+SHA-256 `cdedc0bbf523b163c90634c5bb4ebd1b18cf4f885bdac6a0cc0ab5d3bdfb51e2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7701c083c0ca06d5`。
 
 ## 副作用与风险
 

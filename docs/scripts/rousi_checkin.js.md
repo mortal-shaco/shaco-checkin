@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/rousi_checkin.js`
 - 青龙命令：`node scripts/rousi_checkin.js`
 - 建议 Cron：`42 0 * * *`
-- 发布哈希：`3e3691671ccef16a6aa0cfea6b9d0324678e7fb25912caf04219efadc091b5c6`
+- 发布哈希：`c29befd581a47001303d2352a46e2c1dfa2f025c3abeef1658e91abe77ac988b`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -92,7 +92,7 @@ ROUSI_TOKEN 或 ROUSI_COOKIE 每个非空行表示一个账号；同一账号只
 
 ## 验证与兼容性
 
-SHA-256 `3e3691671ccef16a6aa0cfea6b9d0324678e7fb25912caf04219efadc091b5c6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c5c6df4d8a81a7f`。
+SHA-256 `c29befd581a47001303d2352a46e2c1dfa2f025c3abeef1658e91abe77ac988b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3c5c6df4d8a81a7f`。
 
 ## 副作用与风险
 

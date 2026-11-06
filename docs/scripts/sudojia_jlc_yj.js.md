@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_jlc_yj.js`
 - 青龙命令：`node scripts/sudojia_jlc_yj.js`
 - 建议 Cron：`31 0 * * *`
-- 发布哈希：`c16fb08eafc449abd66c10e0ea4152a356b9c29aa0a87c69b74e66454f8db713`
+- 发布哈希：`b1073867620b5d91dcef4d02c3671620e1fcd58f9ed0bb076ece949375e3daf3`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -127,7 +127,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c16fb08eafc449abd66c10e0ea4152a356b9c29aa0a87c69b74e66454f8db713`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/38602005c4e13646`。
+SHA-256 `b1073867620b5d91dcef4d02c3671620e1fcd58f9ed0bb076ece949375e3daf3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/38602005c4e13646`。
 
 ## 副作用与风险
 

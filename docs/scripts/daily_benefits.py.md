@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/daily_benefits.py`
 - 青龙命令：`python3 scripts/daily_benefits.py`
 - 建议 Cron：`47 1 1 1 1`
-- 发布哈希：`1ea8e6bd97874a6966144b26b115cf1b8c1ccbc327329a408a2729145867e4cb`
+- 发布哈希：`02e85dda873423db350dba28b4f10d1d18830404a36cbdf93432069c3b0cf974`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -95,7 +95,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1ea8e6bd97874a6966144b26b115cf1b8c1ccbc327329a408a2729145867e4cb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/35a9f7fe38bde305`。
+SHA-256 `02e85dda873423db350dba28b4f10d1d18830404a36cbdf93432069c3b0cf974`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/35a9f7fe38bde305`。
 
 ## 副作用与风险
 

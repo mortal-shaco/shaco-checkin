@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tieba_checkin.py`
 - 青龙命令：`python3 scripts/tieba_checkin.py`
 - 建议 Cron：`39 2 * * *`
-- 发布哈希：`c159f906c2e6b0dd5e51bedc6aa91d5694012f4daef2244dc9f6c5de5db1d45a`
+- 发布哈希：`6b2b56876e08115ec00a0561180a95f48bd27436f5eb7c31ecfb4bf5aca529ab`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -99,7 +99,7 @@ TIEBA_COOKIE 中每个非空行对应一个账号，各账号独立校验和执�
 
 ## 验证与兼容性
 
-SHA-256 `c159f906c2e6b0dd5e51bedc6aa91d5694012f4daef2244dc9f6c5de5db1d45a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
+SHA-256 `6b2b56876e08115ec00a0561180a95f48bd27436f5eb7c31ecfb4bf5aca529ab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e608052390d250da`。
 
 ## 副作用与风险
 

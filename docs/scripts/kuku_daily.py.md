@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kuku_daily.py`
 - 青龙命令：`python3 scripts/kuku_daily.py`
 - 建议 Cron：`0 8 * * *`
-- 发布哈希：`f4ab9950449cdbd18ba8379ee8c0308fbbe5a7033fc8968186e70eb023696568`
+- 发布哈希：`92b1a93f96442c117aa5f895b20670a04a115f71fa4b8d6640f4e8911434dd51`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -105,7 +105,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `f4ab9950449cdbd18ba8379ee8c0308fbbe5a7033fc8968186e70eb023696568`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
+SHA-256 `92b1a93f96442c117aa5f895b20670a04a115f71fa4b8d6640f4e8911434dd51`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
 
 ## 副作用与风险
 

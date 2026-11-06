@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_b80894cb.py`
 - 青龙命令：`python3 scripts/task_b80894cb.py`
 - 建议 Cron：`13 9 * * *`
-- 发布哈希：`2d1534b86e938c72473e5e3ac57b210d630c726af6984efcc9cce40c1411a664`
+- 发布哈希：`1a7c386f8a3a56a21ef0cfc4f2133d0933daacdbdafae011870ab5301ab8932d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -98,7 +98,7 @@ TJUPT_ACCOUNTS 中每个非空行是一个独立账号，格式 username|passwor
 
 ## 验证与兼容性
 
-SHA-256 `2d1534b86e938c72473e5e3ac57b210d630c726af6984efcc9cce40c1411a664`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b80894cbf3aaac9f`。
+SHA-256 `1a7c386f8a3a56a21ef0cfc4f2133d0933daacdbdafae011870ab5301ab8932d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b80894cbf3aaac9f`。
 
 ## 副作用与风险
 

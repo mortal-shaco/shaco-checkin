@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/aolaxing.py`
 - 青龙命令：`python3 scripts/aolaxing.py`
 - 建议 Cron：`38 0 * * *`
-- 发布哈希：`08315768d7e7119be58d8cc0170e95dd1de83f25bce1ff518898cebedaba9959`
+- 发布哈希：`d6621d614c5b8bb58555fb1e6a72ad9b1cde86d488d6f2df6b3f1f92835b091a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -83,7 +83,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `08315768d7e7119be58d8cc0170e95dd1de83f25bce1ff518898cebedaba9959`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ca8984737c9322f`。
+SHA-256 `d6621d614c5b8bb58555fb1e6a72ad9b1cde86d488d6f2df6b3f1f92835b091a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3ca8984737c9322f`。
 
 ## 副作用与风险
 

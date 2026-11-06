@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/nodeoj.py`
 - 青龙命令：`python3 scripts/nodeoj.py`
 - 建议 Cron：`1 10 * * *`
-- 发布哈希：`79bcdaa2983ed52a2f16c53748fad9287a3c724377b7cbf0733483121b90c37d`
+- 发布哈希：`5dd2118ea48171d3eb009204b99c63bf2b3853e797bdd7b6660c32803b50aa26`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -89,7 +89,7 @@ NODEOJ_SSID 每个非空行一个账号 ssid；也可粘贴含 ssid= 的 Cookie 
 
 ## 验证与兼容性
 
-SHA-256 `79bcdaa2983ed52a2f16c53748fad9287a3c724377b7cbf0733483121b90c37d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/046c5c66d83d3094`。
+SHA-256 `5dd2118ea48171d3eb009204b99c63bf2b3853e797bdd7b6660c32803b50aa26`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/046c5c66d83d3094`。
 
 ## 副作用与风险
 

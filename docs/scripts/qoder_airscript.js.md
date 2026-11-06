@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/qoder_airscript.js`
 - 青龙命令：`node scripts/qoder_airscript.js`
 - 建议 Cron：`17 8 * * *`
-- 发布哈希：`120cc2474028cfe428391c3bd4e65ee2d7b35a410be0e48c4de08da92f182abd`
+- 发布哈希：`e1100c39152a637e6cb16f0e0e248a6f1068e8afd1a2199ca33aa1fca7e7c7e5`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -270,7 +270,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `120cc2474028cfe428391c3bd4e65ee2d7b35a410be0e48c4de08da92f182abd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
+SHA-256 `e1100c39152a637e6cb16f0e0e248a6f1068e8afd1a2199ca33aa1fca7e7c7e5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 
 ## 副作用与风险
 

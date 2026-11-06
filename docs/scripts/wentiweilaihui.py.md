@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wentiweilaihui.py`
 - 青龙命令：`python3 scripts/wentiweilaihui.py`
 - 建议 Cron：`31 1 1 1 1`
-- 发布哈希：`68b125c40a7a893cbdb13bdd9bef92d88e2a004293fc33d0afc3754be90b7cb0`
+- 发布哈希：`761fd8f6417ee4f5e20ef71ed107b349709be31040d4bd575d5c2f45eafd8690`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `68b125c40a7a893cbdb13bdd9bef92d88e2a004293fc33d0afc3754be90b7cb0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afa2f50b7baa69db`。
+SHA-256 `761fd8f6417ee4f5e20ef71ed107b349709be31040d4bd575d5c2f45eafd8690`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/afa2f50b7baa69db`。
 
 ## 副作用与风险
 

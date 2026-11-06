@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/fxh.js`
 - 青龙命令：`node scripts/fxh.js`
 - 建议 Cron：`18 1 * * *`
-- 发布哈希：`69abeba0b8209052c2b57197df4b2196855d360460349b31fb51c257892fd86b`
+- 发布哈希：`3792b1c319913f57b19f70309d65e0bf21fb01f3b3bd7a35e697865a3a133c77`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@ fxhOpenId 每个非空行一个账号，逐个独立执行；任一账号失败�
 
 ## 验证与兼容性
 
-SHA-256 `69abeba0b8209052c2b57197df4b2196855d360460349b31fb51c257892fd86b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
+SHA-256 `3792b1c319913f57b19f70309d65e0bf21fb01f3b3bd7a35e697865a3a133c77`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/825e404e9590b589`。
 
 ## 副作用与风险
 

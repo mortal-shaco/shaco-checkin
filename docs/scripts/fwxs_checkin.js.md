@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/fwxs_checkin.js`
 - 青龙命令：`node scripts/fwxs_checkin.js`
 - 建议 Cron：`57 1 * * *`
-- 发布哈希：`936764a7447fc322ff3635fd6c2072f1503632c1a85f3f7c46f618eeb4a94a7b`
+- 发布哈希：`c7b88219b015d536ff5bcbe2fd40451bb48d6a6447bb2f07bff913b4a0279c1c`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@ fwxs 每个非空行一个账号；同一账号仅需完整 Cookie。逐账号�
 
 ## 验证与兼容性
 
-SHA-256 `936764a7447fc322ff3635fd6c2072f1503632c1a85f3f7c46f618eeb4a94a7b`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
+SHA-256 `c7b88219b015d536ff5bcbe2fd40451bb48d6a6447bb2f07bff913b4a0279c1c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/be3b140cb6fdd0e3`。
 
 ## 副作用与风险
 

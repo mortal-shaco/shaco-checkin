@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/github_actions_checkin.py`
 - 青龙命令：`python3 scripts/github_actions_checkin.py`
 - 建议 Cron：`32 9 * * *`
-- 发布哈希：`230ea7e20eca993a25012058ae2585e00f72e7adbe6ce91c29b691ab8ed3a409`
+- 发布哈希：`e5de94685faa6bd1cae9581c7bc09432035c3c93c19fba146dbc22cee66ddb15`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@ MIRRORO3_ACCOUNTS 中每个非空行代表一个账号，格式为邮箱|密码�
 
 ## 验证与兼容性
 
-SHA-256 `230ea7e20eca993a25012058ae2585e00f72e7adbe6ce91c29b691ab8ed3a409`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fadf97b9ea306b1b`。
+SHA-256 `e5de94685faa6bd1cae9581c7bc09432035c3c93c19fba146dbc22cee66ddb15`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fadf97b9ea306b1b`。
 
 ## 副作用与风险
 

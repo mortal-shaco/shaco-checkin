@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_du163.js`
 - 青龙命令：`node scripts/ck_du163.js`
 - 建议 Cron：`42 2 * * *`
-- 发布哈希：`69f6e23981e611a42bf7f39f22f27d268b9192e01e45dfc2771900c022716e96`
+- 发布哈希：`d2681ba15fa8bf5f7432f97d8b974638975b6d61b9b2e0025163b8581378e230`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `69f6e23981e611a42bf7f39f22f27d268b9192e01e45dfc2771900c022716e96`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f5d67f6a8e38d7ae`。
+SHA-256 `d2681ba15fa8bf5f7432f97d8b974638975b6d61b9b2e0025163b8581378e230`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f5d67f6a8e38d7ae`。
 
 ## 副作用与风险
 

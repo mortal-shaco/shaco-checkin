@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/startup.py`
 - 青龙命令：`python3 scripts/startup.py`
 - 建议 Cron：`*/5 8-18 * * 1-5`
-- 发布哈希：`df069487279c3537c681f9b656a940cab1e4e32ff2321491cde93ef7bfafd722`
+- 发布哈希：`704ffa453f8bb34407beeae381c0881bee2de879e27e2653dd6674f1a0401aa2`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -97,7 +97,7 @@ YUKETANG_ACCOUNTS 中每个非空行是一个独立账号，格式 username|pass
 
 ## 验证与兼容性
 
-SHA-256 `df069487279c3537c681f9b656a940cab1e4e32ff2321491cde93ef7bfafd722`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dfe95bcc2e664575`。
+SHA-256 `704ffa453f8bb34407beeae381c0881bee2de879e27e2653dd6674f1a0401aa2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dfe95bcc2e664575`。
 
 ## 副作用与风险
 

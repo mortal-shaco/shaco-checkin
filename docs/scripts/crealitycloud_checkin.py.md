@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/crealitycloud_checkin.py`
 - 青龙命令：`python3 scripts/crealitycloud_checkin.py`
 - 建议 Cron：`44 2 * * *`
-- 发布哈希：`a3390285de3d6f8ac85e0e194cf2cfe3785f9761a9b5e6d442462558b9b4eb5e`
+- 发布哈希：`5251e7e008d1a01bb7092accc9a4a1cdb07581f7ebb60b260e735082ea62ef5d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a3390285de3d6f8ac85e0e194cf2cfe3785f9761a9b5e6d442462558b9b4eb5e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
+SHA-256 `5251e7e008d1a01bb7092accc9a4a1cdb07581f7ebb60b260e735082ea62ef5d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f9739e4f6c54dce7`。
 
 ## 副作用与风险
 

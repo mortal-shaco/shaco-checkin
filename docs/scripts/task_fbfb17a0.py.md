@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_fbfb17a0.py`
 - 青龙命令：`python3 scripts/task_fbfb17a0.py`
 - 建议 Cron：`4 1 * * *`
-- 发布哈希：`18a4890bfc67b3a48b312d654298a4abb54ecd0d958cd3e3d3dc37ec74a767ea`
+- 发布哈希：`e88e9d3b651c4dc6151e2bdb5ce5acebb7119a088fe6fca17af4c490a44017b9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -89,7 +89,7 @@ QIDIAN_ACCOUNTS 中每个非空行代表一个账号，格式为 QDSign|Cookie�
 
 ## 验证与兼容性
 
-SHA-256 `18a4890bfc67b3a48b312d654298a4abb54ecd0d958cd3e3d3dc37ec74a767ea`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbfb17a0c5ba2e60`。
+SHA-256 `e88e9d3b651c4dc6151e2bdb5ce5acebb7119a088fe6fca17af4c490a44017b9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbfb17a0c5ba2e60`。
 
 ## 副作用与风险
 

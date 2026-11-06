@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/auto_signin_http.py`
 - 青龙命令：`python3 scripts/auto_signin_http.py`
 - 建议 Cron：`7 9 * * *`
-- 发布哈希：`19bf571f7d65fd47a652a5f2a392fb82219c15f0a19b2b64802c705703d58576`
+- 发布哈希：`c734785decddb554388046ddea58de761d9468e14b2a1e67e80db373f1b7ca23`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -125,7 +125,7 @@ SAKURAFRP_ACCOUNTS 中每个非空行代表一个账号，格式为用户名或�
 
 ## 验证与兼容性
 
-SHA-256 `19bf571f7d65fd47a652a5f2a392fb82219c15f0a19b2b64802c705703d58576`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/997de6e58b1ddd7a`。
+SHA-256 `c734785decddb554388046ddea58de761d9468e14b2a1e67e80db373f1b7ca23`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/997de6e58b1ddd7a`。
 
 ## 副作用与风险
 

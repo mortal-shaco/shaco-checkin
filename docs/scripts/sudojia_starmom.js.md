@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_starmom.js`
 - 青龙命令：`node scripts/sudojia_starmom.js`
 - 建议 Cron：`42 0 * * *`
-- 发布哈希：`d05f0b993b88e5e5494629c1049cb1710e2fcbf18506ab4094a4d67559981335`
+- 发布哈希：`18fbbb4af73fd787683909f5c0c7c0199154a13cde7c68946d3092c4712b3c0d`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d05f0b993b88e5e5494629c1049cb1710e2fcbf18506ab4094a4d67559981335`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4506301c45293563`。
+SHA-256 `18fbbb4af73fd787683909f5c0c7c0199154a13cde7c68946d3092c4712b3c0d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4506301c45293563`。
 
 ## 副作用与风险
 

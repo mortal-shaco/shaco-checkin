@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hifiti_checkin.py`
 - 青龙命令：`python3 scripts/hifiti_checkin.py`
 - 建议 Cron：`14 1 * * *`
-- 发布哈希：`56e43899706864cd1dd2d3cb74a839806952fdeb448af8449043dd10bf11d579`
+- 发布哈希：`f09346986a8287e0f7c1707cdbdb5fa4975bd04a158614afd63ccc12f3bccc41`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -92,7 +92,7 @@ HiFiTi_COOKIE 和 HIFIHI_COOKIE 各自每个非空行一个账号，账号独立
 
 ## 验证与兼容性
 
-SHA-256 `56e43899706864cd1dd2d3cb74a839806952fdeb448af8449043dd10bf11d579`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
+SHA-256 `f09346986a8287e0f7c1707cdbdb5fa4975bd04a158614afd63ccc12f3bccc41`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7e9bef2404a0d5b3`。
 
 ## 副作用与风险
 

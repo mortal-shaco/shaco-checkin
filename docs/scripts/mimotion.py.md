@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/mimotion.py`
 - 青龙命令：`python3 scripts/mimotion.py`
 - 建议 Cron：`46 0 * * *`
-- 发布哈希：`1f5f1e3c53247e4534117c51368c9be13d52b7093b18addfc410e23f5b6fed22`
+- 发布哈希：`0febcaa8b0592352353051c82fa35f8f325f9f8f25bf57fdfd53da04a962a151`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -95,7 +95,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1f5f1e3c53247e4534117c51368c9be13d52b7093b18addfc410e23f5b6fed22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
+SHA-256 `0febcaa8b0592352353051c82fa35f8f325f9f8f25bf57fdfd53da04a962a151`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/4b7d4969e07369fa`。
 
 ## 副作用与风险
 

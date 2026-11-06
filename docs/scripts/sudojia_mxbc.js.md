@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_mxbc.js`
 - 青龙命令：`node scripts/sudojia_mxbc.js`
 - 建议 Cron：`22 1 * * *`
-- 发布哈希：`4020cb6cea155a8106ad14fd30bd679c3afdf25b1c6c7f46aad9ebec6cf7b3a4`
+- 发布哈希：`7993e587041772a4a35d984ae469326996968048000e490ce62271279438f4ed`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -78,7 +78,7 @@ MXBC_TOKEN 每个非空行一个账号，逐个独立验证、签到和查询；
 
 ## 验证与兼容性
 
-SHA-256 `4020cb6cea155a8106ad14fd30bd679c3afdf25b1c6c7f46aad9ebec6cf7b3a4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8898c6203ce46def`。
+SHA-256 `7993e587041772a4a35d984ae469326996968048000e490ce62271279438f4ed`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8898c6203ce46def`。
 
 ## 副作用与风险
 

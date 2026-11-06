@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/lobsterai_checkin.py`
 - 青龙命令：`python3 scripts/lobsterai_checkin.py`
 - 建议 Cron：`27 0 * * *`
-- 发布哈希：`fa06fcc680ca2eb629ad3c527f0477165372f7c333b5fd2fe6bef61333b44f34`
+- 发布哈希：`a553c97f4aac96356c24f0764748d21928874e9cad9808478327e585f77b7e9a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `fa06fcc680ca2eb629ad3c527f0477165372f7c333b5fd2fe6bef61333b44f34`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3328423575cf7143`。
+SHA-256 `a553c97f4aac96356c24f0764748d21928874e9cad9808478327e585f77b7e9a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3328423575cf7143`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/huaruntong_wx.py`
 - 青龙命令：`python3 scripts/huaruntong_wx.py`
 - 建议 Cron：`18 1 1 1 1`
-- 发布哈希：`a1a8a4e01bc45df4db9d474f094de35765952a50ef29e2479d26c7e2f0e70e00`
+- 发布哈希：`14c88914c86220e5bc609c84952dc5422f3c51b1bbd03c54dc6209b4264dd4a9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `a1a8a4e01bc45df4db9d474f094de35765952a50ef29e2479d26c7e2f0e70e00`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/13902b7b1dd570d1`。
+SHA-256 `14c88914c86220e5bc609c84952dc5422f3c51b1bbd03c54dc6209b4264dd4a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/13902b7b1dd570d1`。
 
 ## 副作用与风险
 

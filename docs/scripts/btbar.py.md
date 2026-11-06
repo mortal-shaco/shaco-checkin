@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/btbar.py`
 - 青龙命令：`python3 scripts/btbar.py`
 - 建议 Cron：`46 8 * * *`
-- 发布哈希：`1e492d2f4657a2b5e73bbe6c407e48b654df65606fd4744797aaae12338b45e3`
+- 发布哈希：`3d68117e56cb18b063d0dbee18fda4a709ec951d244a7531aa601572f019bd03`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -98,7 +98,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1e492d2f4657a2b5e73bbe6c407e48b654df65606fd4744797aaae12338b45e3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c774ef56607cd4e3`。
+SHA-256 `3d68117e56cb18b063d0dbee18fda4a709ec951d244a7531aa601572f019bd03`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/c774ef56607cd4e3`。
 
 ## 副作用与风险
 

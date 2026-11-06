@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/endfield_auto_signin.py`
 - 青龙命令：`python3 scripts/endfield_auto_signin.py`
 - 建议 Cron：`35 8 * * *`
-- 发布哈希：`006dee9caf87285ddb8c5404cf82c896cc4598b9ca53c093987e57d381e75c03`
+- 发布哈希：`0e68c8f3eb71f1db9e32845add887f364de976a663dac2f4c3b2cbd74709d095`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -89,7 +89,7 @@ ENDFIELD_ACCOUNTS 每个非空行一个账号（region|token）；可选 SKYLAND
 
 ## 验证与兼容性
 
-SHA-256 `006dee9caf87285ddb8c5404cf82c896cc4598b9ca53c093987e57d381e75c03`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/225069c5a03aea03`。
+SHA-256 `0e68c8f3eb71f1db9e32845add887f364de976a663dac2f4c3b2cbd74709d095`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/225069c5a03aea03`。
 
 ## 副作用与风险
 

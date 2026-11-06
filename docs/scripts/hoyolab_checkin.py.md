@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hoyolab_checkin.py`
 - 青龙命令：`python3 scripts/hoyolab_checkin.py`
 - 建议 Cron：`25 8 * * *`
-- 发布哈希：`40ff9d2736b5f6373b24d5463bb8824eaaa2924ee8cb168da10e1173c5a591e7`
+- 发布哈希：`77c1d1ae7a87165580306f90b7c5a0a7a26705dc9fbea8dd3380b08d923206a3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -105,7 +105,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `40ff9d2736b5f6373b24d5463bb8824eaaa2924ee8cb168da10e1173c5a591e7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a79010908be3c115`。
+SHA-256 `77c1d1ae7a87165580306f90b7c5a0a7a26705dc9fbea8dd3380b08d923206a3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a79010908be3c115`。
 
 ## 副作用与风险
 

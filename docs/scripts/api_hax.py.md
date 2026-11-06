@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/api_hax.py`
 - 青龙命令：`python3 scripts/api_hax.py`
 - 建议 Cron：`44 */6 * * *`
-- 发布哈希：`7fb175bedc7d5d65a147ca7a6406cf28f86cf2f9ce0b3dcc65695d5a5856a08e`
+- 发布哈希：`b15d8ccaf99006fedcc3d5fbaffafdd3b06a5ef8ba47f67e4a552d1fdf9ea287`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7fb175bedc7d5d65a147ca7a6406cf28f86cf2f9ce0b3dcc65695d5a5856a08e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbf36f8697d4cc45`。
+SHA-256 `b15d8ccaf99006fedcc3d5fbaffafdd3b06a5ef8ba47f67e4a552d1fdf9ea287`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/fbf36f8697d4cc45`。
 
 ## 副作用与风险
 

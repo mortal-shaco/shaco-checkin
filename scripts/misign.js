@@ -48,7 +48,8 @@
 
 // qinglong-notification-policy: begin
 (() => {
-  if (process.env.QINGLONG_NOTIFY !== undefined) return;
+  const raw = process.env.QINGLONG_NOTIFY;
+  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {
@@ -86,7 +87,8 @@ const disabled = (value) => /^(0|false|no|off)$/i.test(String(value || ''));
 function notificationSelected() {
   if (disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
-  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
+  // auto / 未识别值：仅当显式名单命中本脚本时推送；未设置名单则不推送（默认仅上架）。
+  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return false;
   const raw = process.env.QINGLONG_NOTIFY_SCRIPTS;
   if (raw.trim() === '') return false;
   const selectors = raw.split(/[,;\s]+/).filter(Boolean);

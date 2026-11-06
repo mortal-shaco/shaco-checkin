@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/yht.py`
 - 青龙命令：`python3 scripts/yht.py`
 - 建议 Cron：`27 2 * * *`
-- 发布哈希：`1c2e86a3ace26132c84d27345259783e6f840b3fcdcd3d2b583cb0b7a43f5924`
+- 发布哈希：`aebb9622e29e53737b55759ae7593ec8a2c4d7049d0344cb3e05614de3446bb3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -116,7 +116,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `1c2e86a3ace26132c84d27345259783e6f840b3fcdcd3d2b583cb0b7a43f5924`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e4af0e04fafedbd8`。
+SHA-256 `aebb9622e29e53737b55759ae7593ec8a2c4d7049d0344cb3e05614de3446bb3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e4af0e04fafedbd8`。
 
 ## 副作用与风险
 

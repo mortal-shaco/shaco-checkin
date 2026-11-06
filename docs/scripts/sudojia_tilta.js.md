@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_tilta.js`
 - 青龙命令：`node scripts/sudojia_tilta.js`
 - 建议 Cron：`24 1 * * *`
-- 发布哈希：`113982900b9633fa66a2bc88c2d25f41c7b69aba94e4915c50cddf0cb72399e9`
+- 发布哈希：`3a05ef8f7b3a15db49ba3b1f8843299b714865186b282359491c00f2f0885446`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -79,7 +79,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `113982900b9633fa66a2bc88c2d25f41c7b69aba94e4915c50cddf0cb72399e9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8a2853d90ebdcb0c`。
+SHA-256 `3a05ef8f7b3a15db49ba3b1f8843299b714865186b282359491c00f2f0885446`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8a2853d90ebdcb0c`。
 
 ## 副作用与风险
 

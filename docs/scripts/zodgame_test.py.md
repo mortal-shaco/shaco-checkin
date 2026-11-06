@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/zodgame_test.py`
 - 青龙命令：`python3 scripts/zodgame_test.py`
 - 建议 Cron：`35 2 * * *`
-- 发布哈希：`d690b0be80cd9ce4902fcc64d6369a3c9c285aa8fecd72fa3bd1d04ee8ad486a`
+- 发布哈希：`7023c97fee054bd7bf6743300a66dece7e20829ad2e9437783188f1eb681f9a7`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -87,7 +87,7 @@ ZODGAME_COOKIE 每个非空行一个账号，Cookie 内部保留分号和后续�
 
 ## 验证与兼容性
 
-SHA-256 `d690b0be80cd9ce4902fcc64d6369a3c9c285aa8fecd72fa3bd1d04ee8ad486a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4bfbfde0f17e39`。
+SHA-256 `7023c97fee054bd7bf6743300a66dece7e20829ad2e9437783188f1eb681f9a7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/eb4bfbfde0f17e39`。
 
 ## 副作用与风险
 

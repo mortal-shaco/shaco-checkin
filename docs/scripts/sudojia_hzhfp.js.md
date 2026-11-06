@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_hzhfp.js`
 - 青龙命令：`node scripts/sudojia_hzhfp.js`
 - 建议 Cron：`40 0 * * *`
-- 发布哈希：`30037813aca2a2e610febf92d4b8f048e456ef85a49a4cd94b12582d62cbe1df`
+- 发布哈希：`ae241b8fe1365c20b30b6c1aaf11414923f5a64cf43ec5b111f4822878d7a0a9`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `30037813aca2a2e610febf92d4b8f048e456ef85a49a4cd94b12582d62cbe1df`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/400481011873c4b0`。
+SHA-256 `ae241b8fe1365c20b30b6c1aaf11414923f5a64cf43ec5b111f4822878d7a0a9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/400481011873c4b0`。
 
 ## 副作用与风险
 

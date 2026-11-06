@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/loomy_daily.py`
 - 青龙命令：`python3 scripts/loomy_daily.py`
 - 建议 Cron：`54 0 * * *`
-- 发布哈希：`c20848a7b50223c36de829767ecad76985770f9ab2c9753251c5cddf4f9c8e57`
+- 发布哈希：`e19e5d92280f38156664c33d5a135a64159346ba5a9c420a6d92e10df5f09e1d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -113,7 +113,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c20848a7b50223c36de829767ecad76985770f9ab2c9753251c5cddf4f9c8e57`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
+SHA-256 `e19e5d92280f38156664c33d5a135a64159346ba5a9c420a6d92e10df5f09e1d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5e0e668122f2807b`。
 
 ## 副作用与风险
 

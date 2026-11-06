@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tencent_video_checkin.py`
 - 青龙命令：`python3 scripts/tencent_video_checkin.py`
 - 建议 Cron：`11 1 * * *`
-- 发布哈希：`6f4bbdc5f8521d7a47f7383978ea3578ed9677baf872e24c296aac51e825ec42`
+- 发布哈希：`e9f2e21ed94de7d9b71773a4225001f33f6df95ccd4b5029ebefbb057e502a60`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -92,7 +92,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `6f4bbdc5f8521d7a47f7383978ea3578ed9677baf872e24c296aac51e825ec42`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
+SHA-256 `e9f2e21ed94de7d9b71773a4225001f33f6df95ccd4b5029ebefbb057e502a60`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/79a75a8c4715aa96`。
 
 ## 副作用与风险
 

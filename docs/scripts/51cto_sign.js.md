@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/51cto_sign.js`
 - 青龙命令：`node scripts/51cto_sign.js`
 - 建议 Cron：`17 2 * * *`
-- 发布哈希：`53a99da38f892c97adaceae2b960a81dc1a13ba5a1736a783218cf4b6580105d`
+- 发布哈希：`25173155c654a47f68de47bd153bd998747aeb2610531f9f78ebce19f94d0754`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `53a99da38f892c97adaceae2b960a81dc1a13ba5a1736a783218cf4b6580105d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d81ca9fcd4ad24e1`。
+SHA-256 `25173155c654a47f68de47bd153bd998747aeb2610531f9f78ebce19f94d0754`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d81ca9fcd4ad24e1`。
 
 ## 副作用与风险
 

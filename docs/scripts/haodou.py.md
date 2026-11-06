@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/haodou.py`
 - 青龙命令：`python3 scripts/haodou.py`
 - 建议 Cron：`14 9 * * *`
-- 发布哈希：`a32aa3489d4c65f40d9ed95a22db0321deb38bb57742dd2e374bee564a1d5875`
+- 发布哈希：`f3b1c4a0bde7c3cd6d88ce7b0a3a4916b75470c414e37f434a073ee28d50231e`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -77,7 +77,7 @@ HAODOU_ACCOUNT 每个非空行一个账号，格式为账号|密码，仅拆首�
 
 ## 验证与兼容性
 
-SHA-256 `a32aa3489d4c65f40d9ed95a22db0321deb38bb57742dd2e374bee564a1d5875`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bafb80cab6b6c282`。
+SHA-256 `f3b1c4a0bde7c3cd6d88ce7b0a3a4916b75470c414e37f434a073ee28d50231e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/bafb80cab6b6c282`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_freenom.py`
 - 青龙命令：`python3 scripts/ck_freenom.py`
 - 建议 Cron：`30 7 */10 * *`
-- 发布哈希：`180897c5db99be01a683e76d3456be5e27f3b50088dedd8289ed0b727ebc7da2`
+- 发布哈希：`12f5d306ad8e919c1672e4e70cfd11d917685d046048956f0c5d4824e68ffe66`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `180897c5db99be01a683e76d3456be5e27f3b50088dedd8289ed0b727ebc7da2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/563cae20eed18007`。
+SHA-256 `12f5d306ad8e919c1672e4e70cfd11d917685d046048956f0c5d4824e68ffe66`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/563cae20eed18007`。
 
 ## 副作用与风险
 

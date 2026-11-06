@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/mifan_optimized.py`
 - 青龙命令：`python3 scripts/mifan_optimized.py`
 - 建议 Cron：`59 0 * * *`
-- 发布哈希：`8a8d90447edbe65baa1b7337e8c53cc495271156e1e4b0e957cb5ef059daaf3c`
+- 发布哈希：`88e54025c518545ce75d5d51a84463bbc0e6ceb07b73f91189b70b7ea421e1d4`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -114,7 +114,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `8a8d90447edbe65baa1b7337e8c53cc495271156e1e4b0e957cb5ef059daaf3c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/68feda0fb9579305`。
+SHA-256 `88e54025c518545ce75d5d51a84463bbc0e6ceb07b73f91189b70b7ea421e1d4`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/68feda0fb9579305`。
 
 ## 副作用与风险
 

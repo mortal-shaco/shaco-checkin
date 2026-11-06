@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/hykb_gamesign.js`
 - 青龙命令：`node scripts/hykb_gamesign.js`
 - 建议 Cron：`50 1 * * *`
-- 发布哈希：`1fcd8a43f8b7f9078cf775d5f3e7b6515a2973925afaffbcd483e75d4c72f8e0`
+- 发布哈希：`5f19d023f981dfe3012e70fc2d336971b01c5d52abae468c5a56c86aad16266d`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -84,7 +84,7 @@ HYKB_SCOOKIE 每个非空行一个账号，逐账号独立执行；不按 &、@ 
 
 ## 验证与兼容性
 
-SHA-256 `1fcd8a43f8b7f9078cf775d5f3e7b6515a2973925afaffbcd483e75d4c72f8e0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b7f05744373113a8`。
+SHA-256 `5f19d023f981dfe3012e70fc2d336971b01c5d52abae468c5a56c86aad16266d`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b7f05744373113a8`。
 
 ## 副作用与风险
 

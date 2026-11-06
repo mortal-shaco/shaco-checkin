@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/agentrouter.py`
 - 青龙命令：`python3 scripts/agentrouter.py`
 - 建议 Cron：`17 1 * * *`
-- 发布哈希：`28bf9350c410b3297c9c35ff7cea3cdf66b79e08a69a725330800a8ab71bc5cc`
+- 发布哈希：`cd1b022e0a8567c180a4adb237658fc416fb1c67cf9f0fe5e6d6679263ae1d56`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -126,7 +126,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `28bf9350c410b3297c9c35ff7cea3cdf66b79e08a69a725330800a8ab71bc5cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/81684dd327c48211`。
+SHA-256 `cd1b022e0a8567c180a4adb237658fc416fb1c67cf9f0fe5e6d6679263ae1d56`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/81684dd327c48211`。
 
 ## 副作用与风险
 

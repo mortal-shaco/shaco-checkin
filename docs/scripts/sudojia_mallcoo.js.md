@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_mallcoo.js`
 - 青龙命令：`node scripts/sudojia_mallcoo.js`
 - 建议 Cron：`9 1 * * *`
-- 发布哈希：`61d2955d115806477b309cf65f2f1eae139f826e17709d8e42e4d48bc2ce93d1`
+- 发布哈希：`450b99d69172bad8e06f111d191877676e474b2d8f4a0522e5ee5bc66193685e`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -71,7 +71,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `61d2955d115806477b309cf65f2f1eae139f826e17709d8e42e4d48bc2ce93d1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7817ed50f25e649b`。
+SHA-256 `450b99d69172bad8e06f111d191877676e474b2d8f4a0522e5ee5bc66193685e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/7817ed50f25e649b`。
 
 ## 副作用与风险
 

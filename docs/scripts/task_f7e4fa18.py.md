@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_f7e4fa18.py`
 - 青龙命令：`python3 scripts/task_f7e4fa18.py`
 - 建议 Cron：`21 9 * * *`
-- 发布哈希：`3c71446b6a761243c174b53131667fe28a71f498d20160b4dfccdf91aa1138a3`
+- 发布哈希：`c0b1ecd892f93aa37f8413a5648c648b0a88e37565d0a13a847227678ed6a073`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -112,7 +112,7 @@ NETEASE_MUSICIAN_ACCOUNTS 中每个非空行是一个独立账号；密码账号
 
 ## 验证与兼容性
 
-SHA-256 `3c71446b6a761243c174b53131667fe28a71f498d20160b4dfccdf91aa1138a3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f7e4fa182acc7d66`。
+SHA-256 `c0b1ecd892f93aa37f8413a5648c648b0a88e37565d0a13a847227678ed6a073`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/f7e4fa182acc7d66`。
 
 ## 副作用与风险
 

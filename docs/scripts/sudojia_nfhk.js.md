@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_nfhk.js`
 - 青龙命令：`node scripts/sudojia_nfhk.js`
 - 建议 Cron：`26 1 * * *`
-- 发布哈希：`480be0f2a3d980e7266235346859677c148aeb2a1e1b103fa493b5ce85f84cd3`
+- 发布哈希：`6d777ba8a3ae5ea9e2a447f3a4bd7fc95046e2e0e18e2555bde33738f155dcf7`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -69,7 +69,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `480be0f2a3d980e7266235346859677c148aeb2a1e1b103fa493b5ce85f84cd3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8c6a0abab760b1dc`。
+SHA-256 `6d777ba8a3ae5ea9e2a447f3a4bd7fc95046e2e0e18e2555bde33738f155dcf7`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8c6a0abab760b1dc`。
 
 ## 副作用与风险
 

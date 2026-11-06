@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_znds.js`
 - 青龙命令：`node scripts/sudojia_znds.js`
 - 建议 Cron：`31 2 * * *`
-- 发布哈希：`7a74ad09ff1a45afdc9ffd10397552a98990061520a019506d7f022cdd72ac68`
+- 发布哈希：`8a87537a3b1227b4f3d42243f308d085001f446826e65d1632a3b68d6bfa7c59`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -77,7 +77,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7a74ad09ff1a45afdc9ffd10397552a98990061520a019506d7f022cdd72ac68`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e69a67d8a3d7b7a9`。
+SHA-256 `8a87537a3b1227b4f3d42243f308d085001f446826e65d1632a3b68d6bfa7c59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e69a67d8a3d7b7a9`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_xinxi.js`
 - 青龙命令：`node scripts/sudojia_xinxi.js`
 - 建议 Cron：`20 1 * * *`
-- 发布哈希：`e98e85e0130c0933308020eaccf9a7c3eea263c71de683679cb46de87e0c9f58`
+- 发布哈希：`c640f7974be67a5d1c623f0bdbc587076babb71f0d2dccc60f0a0fa02e7aad5e`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -115,7 +115,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `e98e85e0130c0933308020eaccf9a7c3eea263c71de683679cb46de87e0c9f58`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/83f21cfa63eab18f`。
+SHA-256 `c640f7974be67a5d1c623f0bdbc587076babb71f0d2dccc60f0a0fa02e7aad5e`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/83f21cfa63eab18f`。
 
 ## 副作用与风险
 

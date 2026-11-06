@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/akile_checkin.py`
 - 青龙命令：`python3 scripts/akile_checkin.py`
 - 建议 Cron：`44 0 * * *`
-- 发布哈希：`56c5f64c4272e8b01c9adc8cbbe30d738780385cca71db993c6de07c94d00d4c`
+- 发布哈希：`ea4dd13f255208852685f3885bf49776cbe0de50795d38b36a2f657e334d4bbd`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -111,7 +111,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `56c5f64c4272e8b01c9adc8cbbe30d738780385cca71db993c6de07c94d00d4c`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/48ce92fe72bec5fa`。
+SHA-256 `ea4dd13f255208852685f3885bf49776cbe0de50795d38b36a2f657e334d4bbd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/48ce92fe72bec5fa`。
 
 ## 副作用与风险
 

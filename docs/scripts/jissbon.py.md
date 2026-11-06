@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/jissbon.py`
 - 青龙命令：`python3 scripts/jissbon.py`
 - 建议 Cron：`21 2 * * *`
-- 发布哈希：`57f2bb930f27731335a14298e6b6a99ca8fd34687605f030507a36706ad6fd5f`
+- 发布哈希：`5843c700b81fe4f40c51e141de961aa5a31943b24fb8a3a0b8fd78c59df0f602`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -83,7 +83,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `57f2bb930f27731335a14298e6b6a99ca8fd34687605f030507a36706ad6fd5f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dff518c351ef674e`。
+SHA-256 `5843c700b81fe4f40c51e141de961aa5a31943b24fb8a3a0b8fd78c59df0f602`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/dff518c351ef674e`。
 
 ## 副作用与风险
 

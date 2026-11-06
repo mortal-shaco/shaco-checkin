@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wangchao.py`
 - 青龙命令：`python3 scripts/wangchao.py`
 - 建议 Cron：`11 2 * * *`
-- 发布哈希：`df03754107aba1b17376ca1be247476f534905554567bdfcd622f4e457517c39`
+- 发布哈希：`47ff0dea68570fea7ac30ce95d109cfd0c7413726470a0612ec9ee9da0fe2f1a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -86,7 +86,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `df03754107aba1b17376ca1be247476f534905554567bdfcd622f4e457517c39`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
+SHA-256 `47ff0dea68570fea7ac30ce95d109cfd0c7413726470a0612ec9ee9da0fe2f1a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/d0c1751256314943`。
 
 ## 副作用与风险
 

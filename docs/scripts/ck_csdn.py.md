@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_csdn.py`
 - 青龙命令：`python3 scripts/ck_csdn.py`
 - 建议 Cron：`38 1 * * *`
-- 发布哈希：`7bbc517c105bb8438d186d1e970bd1f8b1286eda01a70db1b466540e53345f8a`
+- 发布哈希：`e2a1d9c53cb6ec0100d5fbc68bfb6b68ce4a22d3c97fda0c7acfca8769786919`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `7bbc517c105bb8438d186d1e970bd1f8b1286eda01a70db1b466540e53345f8a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/90f965ebca645fae`。
+SHA-256 `e2a1d9c53cb6ec0100d5fbc68bfb6b68ce4a22d3c97fda0c7acfca8769786919`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/90f965ebca645fae`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_33agilestudio.js`
 - 青龙命令：`node scripts/sudojia_33agilestudio.js`
 - 建议 Cron：`24 0 * * *`
-- 发布哈希：`9a987bd491452098fb95e56e14cf2085c002215f73b293a15872a212deba6009`
+- 发布哈希：`885f554f753c772fdbc51c70831f1c4fe55ee8134c1e2158385630d7f1b9fa8f`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -70,7 +70,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `9a987bd491452098fb95e56e14cf2085c002215f73b293a15872a212deba6009`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
+SHA-256 `885f554f753c772fdbc51c70831f1c4fe55ee8134c1e2158385630d7f1b9fa8f`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/28da2f8c0aec7716`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/sudojia_xhn.js`
 - 青龙命令：`node scripts/sudojia_xhn.js`
 - 建议 Cron：`51 1 * * *`
-- 发布哈希：`4adf9dc60e6aed769e773b1ecdce55088fc3582e44bd428efef1f3541b3fa173`
+- 发布哈希：`a548d15525495757a0fa3b565401b6e008fe767e693ce4ce9f3d673487023873`
 - 许可证：`GPL-3.0`
 
 ## 脚本功能
@@ -71,7 +71,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4adf9dc60e6aed769e773b1ecdce55088fc3582e44bd428efef1f3541b3fa173`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b86681a8e89e05c0`。
+SHA-256 `a548d15525495757a0fa3b565401b6e008fe767e693ce4ce9f3d673487023873`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/b86681a8e89e05c0`。
 
 ## 副作用与风险
 

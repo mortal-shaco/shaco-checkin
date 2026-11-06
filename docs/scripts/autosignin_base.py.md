@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/autosignin_base.py`
 - 青龙命令：`python3 scripts/autosignin_base.py`
 - 建议 Cron：`30 7 * * *`
-- 发布哈希：`99c5ad963113497de929d47e1001c3dbfa3192233ff8aabb0d6e692ca2b2e3ed`
+- 发布哈希：`a06bd1eef1e36ecce7b0360921982d961af69ce8230a5e2f8c68b87f716fbbef`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -131,7 +131,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `99c5ad963113497de929d47e1001c3dbfa3192233ff8aabb0d6e692ca2b2e3ed`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/36caf0959fcbed55`。
+SHA-256 `a06bd1eef1e36ecce7b0360921982d961af69ce8230a5e2f8c68b87f716fbbef`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/36caf0959fcbed55`。
 
 ## 副作用与风险
 

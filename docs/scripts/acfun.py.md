@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/acfun.py`
 - 青龙命令：`python3 scripts/acfun.py`
 - 建议 Cron：`9 0 * * *`
-- 发布哈希：`bd54c8a5aa76d498a009524fb705f5653aeac8ca718f2c99315a528522528db5`
+- 发布哈希：`9c1cd9e839a5ff7fa70b94dfe00e57aa248b54f0b52266ab971fbcdef87b1b43`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -85,7 +85,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `bd54c8a5aa76d498a009524fb705f5653aeac8ca718f2c99315a528522528db5`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
+SHA-256 `9c1cd9e839a5ff7fa70b94dfe00e57aa248b54f0b52266ab971fbcdef87b1b43`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0f0989a0ef3d7803`。
 
 ## 副作用与风险
 

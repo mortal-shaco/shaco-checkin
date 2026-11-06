@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/durex.py`
 - 青龙命令：`python3 scripts/durex.py`
 - 建议 Cron：`52 0 * * *`
-- 发布哈希：`315cf86ea2ad52be595ffa63f07dda4ebb29f90fa87d8235ab1526255016d4b1`
+- 发布哈希：`b24b15ec774d33ef2b0dfef5ee0c71338a7c84783c5ff649039f9f61e6b80035`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `315cf86ea2ad52be595ffa63f07dda4ebb29f90fa87d8235ab1526255016d4b1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
+SHA-256 `b24b15ec774d33ef2b0dfef5ee0c71338a7c84783c5ff649039f9f61e6b80035`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/5bc8db2e6a36d14b`。
 
 ## 副作用与风险
 

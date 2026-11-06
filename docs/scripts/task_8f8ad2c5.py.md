@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_8f8ad2c5.py`
 - 青龙命令：`python3 scripts/task_8f8ad2c5.py`
 - 建议 Cron：`53 7,15 * * *`
-- 发布哈希：`212cc14bb1bfa74d4f9d2b6f15e7485968decceb4342be62db90d720a27a9679`
+- 发布哈希：`f3c247c7dc1c64eef974a6e13d80738363ff744c3654ed1da457d64faa311ec6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -98,7 +98,7 @@ KMMU_EPIDEMIC_ACCOUNTS 每个非空行一个账号，格式为学号|密码，�
 
 ## 验证与兼容性
 
-SHA-256 `212cc14bb1bfa74d4f9d2b6f15e7485968decceb4342be62db90d720a27a9679`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8f8ad2c581f7a3a7`。
+SHA-256 `f3c247c7dc1c64eef974a6e13d80738363ff744c3654ed1da457d64faa311ec6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8f8ad2c581f7a3a7`。
 
 ## 副作用与风险
 

@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wps_clock_in.py`
 - 青龙命令：`python3 scripts/wps_clock_in.py`
 - 建议 Cron：`43 1 * * *`
-- 发布哈希：`2f48b5611fcca5d2404201cde0c37a1dfa3f38458707aaaa1a9e9d2bf8699c85`
+- 发布哈希：`7c43de98b2e55ec0c58502bb7fec195ea0cba4064ccc51e52a679014529f7f22`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -68,7 +68,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2f48b5611fcca5d2404201cde0c37a1dfa3f38458707aaaa1a9e9d2bf8699c85`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
+SHA-256 `7c43de98b2e55ec0c58502bb7fec195ea0cba4064ccc51e52a679014529f7f22`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/aa7303325b9bca16`。
 
 ## 副作用与风险
 

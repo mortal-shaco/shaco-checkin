@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/checkin_latex.py`
 - 青龙命令：`python3 scripts/checkin_latex.py`
 - 建议 Cron：`10 1 * * *`
-- 发布哈希：`8cefcf59aea239b9f46242064af95ad62c627668077b6ff19c280ce1d70ced02`
+- 发布哈希：`1c40a5c605ee6aa1bfe917e721a94c5c82220f4b011a46e1791e6f5a8ce10dd2`
 - 许可证：`GPL-3.0-only`
 
 ## 脚本功能
@@ -76,7 +76,7 @@ COOKIE_LATEX_TOKEN 每个非空行一个账号 Token。账号逐个独立读取�
 
 ## 验证与兼容性
 
-SHA-256 `8cefcf59aea239b9f46242064af95ad62c627668077b6ff19c280ce1d70ced02`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0fd26bb9b65bd35b`。
+SHA-256 `1c40a5c605ee6aa1bfe917e721a94c5c82220f4b011a46e1791e6f5a8ce10dd2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/0fd26bb9b65bd35b`。
 
 ## 副作用与风险
 

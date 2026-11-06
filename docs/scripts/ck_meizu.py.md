@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_meizu.py`
 - 青龙命令：`python3 scripts/ck_meizu.py`
 - 建议 Cron：`30 1 * * *`
-- 发布哈希：`b4ca08c2e49aec7d683176f931946b908cdca694f7afa386820fe5c16f21c0f2`
+- 发布哈希：`e0cf77d51dc810d2e572cbe66041fe63d6fafe15175d89e6e0ab8e16b449a5b6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -76,7 +76,7 @@ MEIZU_COOKIE 每个非空行一个账号，逐个独立执行；同行完整 Coo
 
 ## 验证与兼容性
 
-SHA-256 `b4ca08c2e49aec7d683176f931946b908cdca694f7afa386820fe5c16f21c0f2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/92c9eab51e75cca3`。
+SHA-256 `e0cf77d51dc810d2e572cbe66041fe63d6fafe15175d89e6e0ab8e16b449a5b6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/92c9eab51e75cca3`。
 
 ## 副作用与风险
 

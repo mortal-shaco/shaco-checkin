@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/synspoint.py`
 - 青龙命令：`python3 scripts/synspoint.py`
 - 建议 Cron：`16 8,12 * * *`
-- 发布哈希：`5210bc8cca5d905a18ca8b774c8cd998ca16644a069f199f23be8f14d020de59`
+- 发布哈希：`8258fcd057ccf4978e6fadb9589b627101eeec180f87b2ddfee9068fd3308a47`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -91,7 +91,7 @@ synshd 每个非空行一个账号，移除完整 Bearer 前缀后保留整行�
 
 ## 验证与兼容性
 
-SHA-256 `5210bc8cca5d905a18ca8b774c8cd998ca16644a069f199f23be8f14d020de59`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8060442233509c9a`。
+SHA-256 `8258fcd057ccf4978e6fadb9589b627101eeec180f87b2ddfee9068fd3308a47`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/8060442233509c9a`。
 
 ## 副作用与风险
 

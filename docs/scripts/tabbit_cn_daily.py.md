@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/tabbit_cn_daily.py`
 - 青龙命令：`python3 scripts/tabbit_cn_daily.py`
 - 建议 Cron：`18 9 * * *`
-- 发布哈希：`d5991e68e17b3021873e53b1cfb4ed481fee3d16abe7c2153d07e742b5e52fd1`
+- 发布哈希：`30aaca5a6a350d3af0b2e1569eba7fa426e0caf0fb1b061e75f2f20343ad665a`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -111,7 +111,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `d5991e68e17b3021873e53b1cfb4ed481fee3d16abe7c2153d07e742b5e52fd1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/138727873cd50b7e`。
+SHA-256 `30aaca5a6a350d3af0b2e1569eba7fa426e0caf0fb1b061e75f2f20343ad665a`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/138727873cd50b7e`。
 
 ## 副作用与风险
 

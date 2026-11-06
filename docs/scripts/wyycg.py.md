@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wyycg.py`
 - 青龙命令：`python3 scripts/wyycg.py`
 - 建议 Cron：`42 1 * * *`
-- 发布哈希：`487107cc9afd4017ca07bd6f77112ffc4545b5e33c4cc62648ca812ba2cdcb44`
+- 发布哈希：`f4f7031ea14c4a57d2487a35b0badf03791229f8fb44550d51286b7beec65cab`
 - 许可证：`Apache-2.0`
 
 ## 脚本功能
@@ -169,7 +169,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `487107cc9afd4017ca07bd6f77112ffc4545b5e33c4cc62648ca812ba2cdcb44`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a414f4add19cb6a5`。
+SHA-256 `f4f7031ea14c4a57d2487a35b0badf03791229f8fb44550d51286b7beec65cab`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/a414f4add19cb6a5`。
 
 ## 副作用与风险
 

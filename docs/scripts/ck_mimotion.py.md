@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/ck_mimotion.py`
 - 青龙命令：`python3 scripts/ck_mimotion.py`
 - 建议 Cron：`1 0 * * *`
-- 发布哈希：`461ca54c784067d4203cbcdb4416ba1d703400de7a1994742d560ccd1a6f8686`
+- 发布哈希：`3d879d3534fe79088e80b1379ef1bfea097492e79d60e1c2538101415005d0c9`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -75,7 +75,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `461ca54c784067d4203cbcdb4416ba1d703400de7a1994742d560ccd1a6f8686`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/04e92730d2cbeb73`。
+SHA-256 `3d879d3534fe79088e80b1379ef1bfea097492e79d60e1c2538101415005d0c9`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/04e92730d2cbeb73`。
 
 ## 副作用与风险
 

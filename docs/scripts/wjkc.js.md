@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/wjkc.js`
 - 青龙命令：`node scripts/wjkc.js`
 - 建议 Cron：`4 9 * * *`
-- 发布哈希：`cfa4416738f0e0762ffd148780b0e45596b02e28381ef4f1399fc5ca75201b52`
+- 发布哈希：`ad1408649820f07b0ff0c76c6b5150387d65918cb8c84491f3cf4c09ad70e930`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -78,7 +78,7 @@ WJKC_CREDENTIALS 每个非空行一个账号；邮箱与密码仅按第一个逗
 
 ## 验证与兼容性
 
-SHA-256 `cfa4416738f0e0762ffd148780b0e45596b02e28381ef4f1399fc5ca75201b52`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/066f6353f92de3e0`。
+SHA-256 `ad1408649820f07b0ff0c76c6b5150387d65918cb8c84491f3cf4c09ad70e930`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/066f6353f92de3e0`。
 
 ## 副作用与风险
 
