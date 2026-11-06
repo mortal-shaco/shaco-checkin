@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: 领克App每日签到分享
-# cron: 1 2 * * *
+# cron: 51 9 * * *
 """
 领克App独立维护版；来源 zhaosongbing/LynkCoHelper-QingLong，MIT 许可。
+合并来源 zcc0077/lynkco-daily（MIT）。作者：小八；抖音：小八的03；官网：https://xbcars.cn
 保留原生网关签名、AppCode→HMAC续期、静态令牌回退、签到、积分及文章分享。
 原始文件未附独立版权声明；原作者署名及 MIT 许可在本文件保留。
 
@@ -20,8 +21,14 @@ LYNKCO_SHARE_MODE 默认simple，设full使用完整三步链，需 LYNKCO_CONTE
 simple失败且提供CONTENT_ID时保留完整链回退。可用LYNKCO_ARTICLE_ID固定文章。
 LYNKCO_TIMEOUT默认30秒，LYNKCO_ENERGY_DELAY默认5秒。
 LYNKCO_DRY_RUN=1完全断网，检查配置与演练步骤，不宣称真实业务成功。
-QINGLONG_NOTIFY 未设置时按上架状态；兼容LYNKCO_QL_NOTIFY。可选Bark通知变量保留。
-不自动安装依赖，不运行交互短信登录/验证码服务器，不缓存或写入凭据。
+QINGLONG_NOTIFY默认auto，按清单选择；兼容LYNKCO_QL_NOTIFY。可选Bark通知变量保留。
+LYNKCO_TASK_MODE默认daily；status只查状态、积分、任务列表和成长值（配置刷新令牌时仍续期）。
+LYNKCO_QUERY_TASKS、LYNKCO_QUERY_GROWTH默认0，可在daily模式分别启用额外查询。
+LYNKCO_LATEST_ARTICLE_LIMIT默认0，设1至50可在原有五页查找基础上按详情时间选文章。
+LYNKCO_FETCH_ACCOUNT_NAME默认0，设1从/auth/user/info查询官方账号身份。
+LYNKCO_APP_CODE、LYNKCO_CA_KEY、LYNKCO_CA_SECRET兼容为对应原生配置别名。
+额外查询接口来自上游源码，尚未做在线核验；启用后查询失败会使账号失败。
+不自动安装依赖，不运行ADB或交互短信登录/验证码服务器，不缓存或写入凭据。
 """
 # qinglong-notification-policy: begin
 import fnmatch as _ql_notify_fnmatch
@@ -64,6 +71,8 @@ import hashlib
 import hmac
 import importlib.util
 import json
+import re
+import fnmatch
 import os
 import socket
 import subprocess
@@ -72,7 +81,7 @@ import time
 import uuid
 from pathlib import Path
 from urllib.request import Request, build_opener, HTTPRedirectHandler
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 
 BASE_URL = "https://app-api-gw-toc.lynkco.com"
 NATIVE_BASE_URL = "https://app-services.lynkco.com.cn"
@@ -95,6 +104,8 @@ H5_SHARE_ORIGIN = "https://h5.lynkco.com"
 SECRETS = {}
 TIMEOUT = 30
 DRY_RUN = False
+TASK_MODE = "daily"
+DETAIL_LIMIT = 0
 
 class TaskError(Exception):
     pass
@@ -425,10 +436,16 @@ class LynkCoShareClient(ClientBase):
             return resp.json()
 
     def get_latest_article(self):
+        candidates = []
         for page in range(1, 6):
             try:
                 response = checked(self._request("POST", EP_EXPLORE_SQUARE_INDEX,
                     json={"dynamicSort": "new", "uniqueId": "", "refreshType": "MORE", "pageNo": page}).json())
+                if DETAIL_LIMIT:
+                    collect_articles(response.get("data"), candidates)
+                    if len(candidates) >= DETAIL_LIMIT:
+                        break
+                    continue
                 found = _find_article(response.get("data"))
                 if found:
                     log(f"文章查询：第{page}页找到可分享文章")
@@ -436,6 +453,23 @@ class LynkCoShareClient(ClientBase):
                 log(f"文章查询：第{page}页未找到文章")
             except TaskError:
                 log(f"文章查询：第{page}页失败，继续分页")
+        if candidates:
+            best = None
+            for item in candidates[:DETAIL_LIMIT]:
+                merged = dict(item)
+                try:
+                    detail = checked(self._request("GET", "/app/explore/home-page/article/content/" + quote(str(item["articleId"]), safe="")).json()).get("data")
+                    if isinstance(detail, dict) and isinstance(detail.get("data"), dict):
+                        detail = detail["data"]
+                    if isinstance(detail, dict):
+                        merged.update(detail)
+                except TaskError:
+                    log("⚠️ 文章详情查询失败，保留信息流文章及原有备用链")
+                merged["articleId"] = str(item["articleId"])
+                if best is None or article_time(merged) > article_time(best):
+                    best = merged
+            log(f"文章查询：按详情时间比较{min(len(candidates), DETAIL_LIMIT)}篇文章")
+            return {"articleId": best["articleId"], "title": best.get("title", "")}
         log("⚠️ 动态文章不可用，使用上游备用文章")
         return {}
 
@@ -478,6 +512,7 @@ def parse_refresh(data):
         raise TaskError("续期响应字段结构异常")
     if not isinstance(dto.get("token"), str) or not dto["token"]:
         raise TaskError("续期接口没有返回令牌")
+    identity(data)
     return dto["token"]
 
 
@@ -519,7 +554,7 @@ def lines(name):
 
 
 def read_configuration():
-    global SECRETS, TIMEOUT
+    global SECRETS, TIMEOUT, TASK_MODE, DETAIL_LIMIT
     file_data = {}
     path = os.getenv("LYNKCO_ENV_FILE", "").strip()
     if path:
@@ -542,6 +577,19 @@ def read_configuration():
                      "glDevId": "LYNKCO_NATIVE_GL_DEV_ID"}.items():
         if os.getenv(env):
             SECRETS[key] = os.environ[env]
+    for key, env in {"nativeAppKey": "LYNKCO_CA_KEY", "nativeAppSecret": "LYNKCO_CA_SECRET",
+                     "nativeAppCode": "LYNKCO_APP_CODE"}.items():
+        if not SECRETS.get(key) and os.getenv(env):
+            SECRETS[key] = os.environ[env]
+    TASK_MODE = os.getenv("LYNKCO_TASK_MODE", "daily").strip()
+    if TASK_MODE not in ("daily", "status"):
+        raise TaskError("LYNKCO_TASK_MODE必须是daily或status")
+    try:
+        DETAIL_LIMIT = int(os.getenv("LYNKCO_LATEST_ARTICLE_LIMIT", "0"))
+        if not 0 <= DETAIL_LIMIT <= 50:
+            raise ValueError()
+    except ValueError:
+        raise TaskError("LYNKCO_LATEST_ARTICLE_LIMIT必须是0至50的整数") from None
     # 同一行JSON可完整保留包含任何分隔符的凭据。
     accounts = []
     if os.getenv("LYNKCO_ACCOUNTS", "").strip():
@@ -566,7 +614,7 @@ def read_configuration():
         raise TaskError("未配置账号，请设置 LYNKCO_ACCOUNTS")
     for name in ("NATIVE_APP_KEY", "NATIVE_APP_SECRET"):
         _get_secret(name)
-    if enabled("LYNKCO_DO_SHARE") or any(a.get("refreshToken") for a in accounts):
+    if (TASK_MODE == "daily" and enabled("LYNKCO_DO_SHARE")) or any(a.get("refreshToken") for a in accounts):
         _get_secret("NATIVE_GL_DEV_ID")
     try:
         TIMEOUT = float(os.getenv("LYNKCO_TIMEOUT", "30"))
@@ -578,7 +626,7 @@ def read_configuration():
     mode = os.getenv("LYNKCO_SHARE_MODE", "simple")
     if mode not in ("simple", "full"):
         raise TaskError("LYNKCO_SHARE_MODE必须是simple或full")
-    if enabled("LYNKCO_DO_SHARE") and mode == "full" and not os.getenv("LYNKCO_CONTENT_ID"):
+    if TASK_MODE == "daily" and enabled("LYNKCO_DO_SHARE") and mode == "full" and not os.getenv("LYNKCO_CONTENT_ID"):
         raise TaskError("完整分享链必须配置 LYNKCO_CONTENT_ID")
     return accounts, delay
 
@@ -599,11 +647,11 @@ def identity(response):
     data = response.get("data")
     if isinstance(data, dict):
         # 只展示官方明确的非秘密身份字段，不打印任意响应内容。
-        for key in ("nickname", "nickName", "username", "displayName", "publicUid", "uid", "userId", "accountId"):
+        for key in ("nickname", "nickName", "username", "displayName", "accountName", "publicUid", "uid", "userId", "accountId"):
             value = data.get(key)
             if isinstance(value, (str, int)) and value != "":
                 text = str(value)
-                if key in ("nickname", "nickName", "username", "displayName"):
+                if key in ("nickname", "nickName", "username", "displayName", "accountName"):
                     import re
                     text = re.sub(r"(?<!\d)1[3-9]\d{9}(?!\d)", "[手机号已隐藏]", text)
                 # 防止错误响应把已知凭据放入身份字段。
@@ -612,6 +660,9 @@ def identity(response):
                     continue
                 log("官方账号身份：" + text.replace("\n", " ").replace("\r", " "))
                 return
+        for key in ("centerUserInfoDto", "centerUserInfo", "userInfo", "user_info"):
+            if isinstance(data.get(key), dict):
+                identity({"data": data[key]})
 
 
 def public_title(value):
@@ -692,6 +743,13 @@ def run_account(index, account, delay):
                 stats["total"] += 1
                 log("❌ DRY_RUN 签名配置异常")
         client = LynkCoSignClient(token) if token else None
+        if enabled("LYNKCO_FETCH_ACCOUNT_NAME", "0"):
+            def account_identity():
+                headers = build_native_signature("GET", "/auth/user/info", content_type="application/json; charset=utf-8")
+                headers["token"] = client.token
+                response = checked(http("GET", NATIVE_BASE_URL + "/auth/user/info", headers=headers).json())
+                identity(response)
+            stage("查询官方账号身份", account_identity, skip=not token)
         result["energy_before"] = stage("查询任务前积分", lambda: energy(client), skip=not token)
         def sign():
             info = client.get_sign_day_info()
@@ -711,7 +769,17 @@ def run_account(index, account, delay):
             if isinstance(reward, (int, float)):
                 result["sign_result"]["data"]["rewardEnergyNumber"] = reward
                 log(f"签到奖励能量体：{reward}")
-        stage("查询签到状态并签到", sign, skip=not token)
+        def status_only():
+            info = client.get_sign_day_info()
+            identity(info)
+            status = (info.get("data") or {}).get("signStatus")
+            if status not in (0, 1):
+                raise TaskError("签到状态字段异常")
+            result["day_info"] = {"success": True, "data": {"signStatus": status}}
+            result["already_signed"] = status == 1
+            log("今日签到状态：" + ("已签到" if status == 1 else "未签到；只读模式不执行签到"))
+        stage("查询签到状态" if TASK_MODE == "status" else "查询签到状态并签到",
+              status_only if TASK_MODE == "status" else sign, skip=not token)
         def continued():
             data = client.get_continue_days()
             identity(data)
@@ -724,6 +792,10 @@ def run_account(index, account, delay):
                         safe[key] = info[key]
             return {"success": True, "data": safe}
         result["continue_info"] = stage("连续签到天数及签到卡查询", continued, skip=not token)
+        if TASK_MODE == "status" or enabled("LYNKCO_QUERY_TASKS", "0"):
+            result["task_list"] = stage("查询服务端任务列表", lambda: query_tasks(client), skip=not token)
+        if TASK_MODE == "status" or enabled("LYNKCO_QUERY_GROWTH", "0"):
+            result["growth"] = stage("查询成长值", lambda: query_growth(client), skip=not token)
         def share():
             before = energy(client)
             share_client = LynkCoShareClient(token)
@@ -740,12 +812,12 @@ def run_account(index, account, delay):
                 log("分享文章：" + title)
             return {"ok": True, "via": response["via"], "pointsDelta": after-before,
                     "articleId": response["articleId"], "articleTitle": title}
-        result["share_result"] = stage("文章分享上报及积分核验", share, skip=not token or not enabled("LYNKCO_DO_SHARE"))
+        result["share_result"] = stage("文章分享上报及积分核验", share, skip=not token or TASK_MODE == "status" or not enabled("LYNKCO_DO_SHARE"))
         def after():
             time.sleep(delay)
             return energy(client)
         result["energy_after"] = stage("查询任务后积分", after, skip=not token)
-    ok = stats["failed"] == 0 and (DRY_RUN or stats["skipped"] <= (0 if enabled("LYNKCO_DO_SHARE") else 1))
+    ok = stats["failed"] == 0 and (DRY_RUN or bool(token))
     stats["seconds"] = round(time.monotonic()-start, 3)
     log(f"账号{index}统计：总任务{stats['total']}，成功{stats['success']}，已完成{stats['alreadyComplete']}，跳过{stats['skipped']}，失败{stats['failed']}，耗时{stats['seconds']}秒")
     # 保留原编排结果字段，输出只包含核验摘要而非服务端原始响应。
@@ -757,9 +829,94 @@ def run_account(index, account, delay):
     return {"account": index, "ok": ok, "statistics": stats}
 
 
+
+def collect_articles(value, items):
+    if isinstance(value, dict):
+        if value.get("articleId") and value.get("contentType", "文章") in ("文章", "article"):
+            if str(value["articleId"]) not in {str(v["articleId"]) for v in items}:
+                items.append(dict(value))
+        for child in value.values():
+            collect_articles(child, items)
+    elif isinstance(value, list):
+        for child in value:
+            collect_articles(child, items)
+
+
+def article_time(value):
+    for key in ("publishTime", "createdDate", "createdTime", "createTime", "updated", "updatedTime", "updateTime"):
+        try:
+            number = int(value.get(key) or 0)
+            if number > 0:
+                return number
+        except (TypeError, ValueError):
+            pass
+    return 0
+
+
+def query_growth(client):
+    response = checked(client._request("GET", "/app/energy/my/growth").json())
+    identity(response)
+    data = response.get("data")
+    level = data.get("accountLevelVo") if isinstance(data, dict) else None
+    number = level.get("growth") if isinstance(level, dict) else None
+    if isinstance(number, bool):
+        raise TaskError("成长值字段格式异常")
+    try:
+        number = float(number)
+        if not __import__("math").isfinite(number):
+            raise ValueError()
+    except (TypeError, ValueError):
+        raise TaskError("成长值响应缺少有效accountLevelVo.growth") from None
+    log(f"当前成长值：{number:g}")
+    return {"success": True, "data": {"growth": number}}
+
+
+def query_tasks(client):
+    response = checked(client._request("GET", "/up/api/v1/userReward/getTaskList").json())
+    identity(response)
+    data = response.get("data")
+    if not isinstance(data, (dict, list)):
+        raise TaskError("任务列表响应缺少data对象或数组")
+    # 仅提取任务名称与已知数字状态，不记录账号字段或原始响应。
+    safe = []
+    def visit(value):
+        if isinstance(value, dict):
+            name = value.get("taskName") or value.get("taskTitle")
+            if isinstance(name, str):
+                item = {"taskName": public_title(name)}
+                for key in ("taskStatus", "status", "completedCount", "totalCount", "rewardPoint"):
+                    if isinstance(value.get(key), (int, bool)):
+                        item[key] = value[key]
+                safe.append(item)
+                log("服务端任务：" + item["taskName"] + "；状态：" + json.dumps({k:v for k,v in item.items() if k != "taskName"}, ensure_ascii=False))
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+    visit(data)
+    log(f"任务列表已核验；可识别任务数：{len(safe)}；仅查询，不自动领取或执行列表任务")
+    return {"success": True, "data": safe}
+
+
+def notification_selected():
+    switch = os.getenv("QINGLONG_NOTIFY", "auto").strip().lower()
+    if switch in ("0", "false", "no", "off"):
+        return False
+    if switch in ("1", "true", "yes", "on"):
+        return True
+    selectors = os.getenv("QINGLONG_NOTIFY_SCRIPTS")
+    if selectors is None:
+        return True  # 本维护目标属于默认通知清单。
+    names = ("c087eb48daa78349", "dee713165141b125", "candidate.py", Path(__file__).name,
+             "lynkco_qinglong_single.py", "scripts/lynkco_qinglong_single.py")
+    return any(fnmatch.fnmatchcase(name, pattern) for pattern in re.split(r"[,;\s]+", selectors.strip())
+               if pattern for name in names)
+
+
 def notify_summary(body):
-    if not enabled("QINGLONG_NOTIFY"):
-        log("⏭️ QINGLONG_NOTIFY已关闭通知")
+    if not notification_selected():
+        log("⏭️ 青龙通知未选中或全局开关已关闭")
         return "disabled"
     delivered = False
     if enabled("LYNKCO_QL_NOTIFY"):

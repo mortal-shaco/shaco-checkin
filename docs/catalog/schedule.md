@@ -140,7 +140,7 @@
 | 华润通微信版签到 | `scripts/huaruntong_wx.py` | `python3 scripts/huaruntong_wx.py` | `18 1 1 1 1` | 待检查 | [huaruntong_wx.py.md](../scripts/huaruntong_wx.py.md)（`docs/scripts/huaruntong_wx.py.md`） |
 | 华住会签到 | `scripts/huazhu.py` | `python3 scripts/huazhu.py` | `5 9 * * *` | 待检查 | [huazhu.py.md](../scripts/huazhu.py.md)（`docs/scripts/huazhu.py.md`） |
 | 好游快爆游戏签到 | `scripts/hykb_gamesign.js` | `node scripts/hykb_gamesign.js` | `50 1 * * *` | 待检查 | [hykb_gamesign.js.md](../scripts/hykb_gamesign.js.md)（`docs/scripts/hykb_gamesign.js.md`） |
-| ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `20 1 * * *` | 待检查 | [ikuuu_checkin.py.md](../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
+| ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `1 21 * * *` | 待检查 | [ikuuu_checkin.py.md](../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
 | SF轻小说签到 | `scripts/illustar0_sf_autocheckin.py` | `python3 scripts/illustar0_sf_autocheckin.py` | `16 9 * * *` | 待检查 | [illustar0_sf_autocheckin.py.md](../scripts/illustar0_sf_autocheckin.py.md)（`docs/scripts/illustar0_sf_autocheckin.py.md`） |
 | i茅台申购与耐力 | `scripts/imaotai.py` | `python3 scripts/imaotai.py` | `38 2 * * *` | 待检查 | [imaotai.py.md](../scripts/imaotai.py.md)（`docs/scripts/imaotai.py.md`） |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `48 1 * * *` | 待检查 | [index.js.md](../scripts/index.js.md)（`docs/scripts/index.js.md`） |
@@ -168,7 +168,7 @@
 | LobsterAI 每日签到 | `scripts/lobsterai_checkin.py` | `python3 scripts/lobsterai_checkin.py` | `27 0 * * *` | 待检查 | [lobsterai_checkin.py.md](../scripts/lobsterai_checkin.py.md)（`docs/scripts/lobsterai_checkin.py.md`） |
 | 龙湖天街签到 | `scripts/longhu.py` | `python3 scripts/longhu.py` | `5 8 * * *` | 待检查 | [longhu.py.md](../scripts/longhu.py.md)（`docs/scripts/longhu.py.md`） |
 | Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `54 0 * * *` | 待检查 | [loomy_daily.py.md](../scripts/loomy_daily.py.md)（`docs/scripts/loomy_daily.py.md`） |
-| 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `1 2 * * *` | 待检查 | [lynkco_qinglong_single.py.md](../scripts/lynkco_qinglong_single.py.md)（`docs/scripts/lynkco_qinglong_single.py.md`） |
+| 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `51 9 * * *` | 待检查 | [lynkco_qinglong_single.py.md](../scripts/lynkco_qinglong_single.py.md)（`docs/scripts/lynkco_qinglong_single.py.md`） |
 | Wallhaven最新壁纸下载 | `scripts/main.py` | `python3 scripts/main.py` | `0 2 * * *` | 待检查 | [main.py.md](../scripts/main.py.md)（`docs/scripts/main.py.md`） |
 | 影视飓风会员签到 | `scripts/mediastorm_club.py` | `python3 scripts/mediastorm_club.py` | `3 9 * * *` | 待检查 | [mediastorm_club.py.md](../scripts/mediastorm_club.py.md)（`docs/scripts/mediastorm_club.py.md`） |
 | 喵御宅每日签到 | `scripts/mfuns_sign.py` | `python3 scripts/mfuns_sign.py` | `9 9 * * *` | 待检查 | [mfuns_sign.py.md](../scripts/mfuns_sign.py.md)（`docs/scripts/mfuns_sign.py.md`） |

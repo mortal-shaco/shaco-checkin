@@ -112,7 +112,7 @@
 | 华润通微信版签到 | `scripts/huaruntong_wx.py` | `python3 scripts/huaruntong_wx.py` | `18 1 1 1 1` | 待检查 | [huaruntong_wx.py.md](../../scripts/huaruntong_wx.py.md)（`docs/scripts/huaruntong_wx.py.md`） |
 | 华住会签到 | `scripts/huazhu.py` | `python3 scripts/huazhu.py` | `5 9 * * *` | 待检查 | [huazhu.py.md](../../scripts/huazhu.py.md)（`docs/scripts/huazhu.py.md`） |
 | 好游快爆游戏签到 | `scripts/hykb_gamesign.js` | `node scripts/hykb_gamesign.js` | `50 1 * * *` | 待检查 | [hykb_gamesign.js.md](../../scripts/hykb_gamesign.js.md)（`docs/scripts/hykb_gamesign.js.md`） |
-| ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `20 1 * * *` | 待检查 | [ikuuu_checkin.py.md](../../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
+| ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `1 21 * * *` | 待检查 | [ikuuu_checkin.py.md](../../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
 | SF轻小说签到 | `scripts/illustar0_sf_autocheckin.py` | `python3 scripts/illustar0_sf_autocheckin.py` | `16 9 * * *` | 待检查 | [illustar0_sf_autocheckin.py.md](../../scripts/illustar0_sf_autocheckin.py.md)（`docs/scripts/illustar0_sf_autocheckin.py.md`） |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `8 1 * * *` | 待检查 | [iqiyi_checkin.py.md](../../scripts/iqiyi_checkin.py.md)（`docs/scripts/iqiyi_checkin.py.md`） |
 | 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `45 2 * * *` | 待检查 | [jc_checkin.py.md](../../scripts/jc_checkin.py.md)（`docs/scripts/jc_checkin.py.md`） |
@@ -134,7 +134,7 @@
 | 咔叽网单每日签到 | `scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `16 2 * * *` | 待检查 | [littlewuh_qinglongbox_dailycheckin_scripts.py.md](../../scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md)（`docs/scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md`） |
 | LobsterAI 每日签到 | `scripts/lobsterai_checkin.py` | `python3 scripts/lobsterai_checkin.py` | `27 0 * * *` | 待检查 | [lobsterai_checkin.py.md](../../scripts/lobsterai_checkin.py.md)（`docs/scripts/lobsterai_checkin.py.md`） |
 | 龙湖天街签到 | `scripts/longhu.py` | `python3 scripts/longhu.py` | `5 8 * * *` | 待检查 | [longhu.py.md](../../scripts/longhu.py.md)（`docs/scripts/longhu.py.md`） |
-| 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `1 2 * * *` | 待检查 | [lynkco_qinglong_single.py.md](../../scripts/lynkco_qinglong_single.py.md)（`docs/scripts/lynkco_qinglong_single.py.md`） |
+| 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `51 9 * * *` | 待检查 | [lynkco_qinglong_single.py.md](../../scripts/lynkco_qinglong_single.py.md)（`docs/scripts/lynkco_qinglong_single.py.md`） |
 | 影视飓风会员签到 | `scripts/mediastorm_club.py` | `python3 scripts/mediastorm_club.py` | `3 9 * * *` | 待检查 | [mediastorm_club.py.md](../../scripts/mediastorm_club.py.md)（`docs/scripts/mediastorm_club.py.md`） |
 | 喵御宅每日签到 | `scripts/mfuns_sign.py` | `python3 scripts/mfuns_sign.py` | `9 9 * * *` | 待检查 | [mfuns_sign.py.md](../../scripts/mfuns_sign.py.md)（`docs/scripts/mfuns_sign.py.md`） |
 | HDSky签到 | `scripts/mian.py` | `python3 scripts/mian.py` | `20 9 * * *` | 待检查 | [mian.py.md](../../scripts/mian.py.md)（`docs/scripts/mian.py.md`） |

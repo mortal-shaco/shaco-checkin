@@ -12,4 +12,4 @@
 | LobsterAI 每日签到 | `scripts/lobsterai_checkin.py` | `python3 scripts/lobsterai_checkin.py` | `27 0 * * *` | 待检查 | [lobsterai_checkin.py.md](../../scripts/lobsterai_checkin.py.md)（`docs/scripts/lobsterai_checkin.py.md`） |
 | 龙湖天街签到 | `scripts/longhu.py` | `python3 scripts/longhu.py` | `5 8 * * *` | 待检查 | [longhu.py.md](../../scripts/longhu.py.md)（`docs/scripts/longhu.py.md`） |
 | Loomy 每日积分与新手任务 | `scripts/loomy_daily.py` | `python3 scripts/loomy_daily.py` | `54 0 * * *` | 待检查 | [loomy_daily.py.md](../../scripts/loomy_daily.py.md)（`docs/scripts/loomy_daily.py.md`） |
-| 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `1 2 * * *` | 待检查 | [lynkco_qinglong_single.py.md](../../scripts/lynkco_qinglong_single.py.md)（`docs/scripts/lynkco_qinglong_single.py.md`） |
+| 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `51 9 * * *` | 待检查 | [lynkco_qinglong_single.py.md](../../scripts/lynkco_qinglong_single.py.md)（`docs/scripts/lynkco_qinglong_single.py.md`） |

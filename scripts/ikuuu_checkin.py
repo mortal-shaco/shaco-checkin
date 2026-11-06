@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: ikuuu 签到
-# cron: 20 1 * * *
+# cron: 1 21 * * *
 # SPDX-License-Identifier: MIT
 # Cookie 与流量查询参考：liang97-gz/ikuuu-for-cookies（Apache-2.0）
 # 合并维护版 effectiveLicense：MIT；原始来源及其许可声明保留。
@@ -10,6 +10,7 @@
 Adapted from ``ikuuu_checkin.py`` in agluo/ql-script-hub and the original
 project at https://github.com/bighammer-link/jichang_dailycheckin .
 The upstream attribution and MIT license are preserved.
+新增域名探测与状态页解析参考 HenryFone/ikuuu-auto-checkin 的 checkin.py（MIT）。
 同时合并 cloudcranes/some_scripts 的 ikuuu/checkin_ikuuu.py（MIT）资料读取能力。
 原始脚本来源: https://github.com/bighammer-link/jichang_dailycheckin
 本脚本基于原作者的代码进行了适配和优化，以符合本脚本库的统一标准
@@ -35,6 +36,15 @@ IKUUU_FLOW=1 开启剩余流量查询；默认仅 Cookie 模式开启，不改�
 任务的通用 TOKEN。可选 SERVERCHAN_SENDKEY 来自 Server酱，兼容原脚本非空且
 不为 1 的 SCKEY。两者都受 QINGLONG_NOTIFY 总开关与
 QINGLONG_NOTIFY_SCRIPTS 选择规则控制；青龙通知无需额外配置。
+IKUUU_AUTO_DOMAIN=1 显式开启多域名切换（默认 0），授权将该账号凭据用于
+探测选中的官方域名。先探测原默认域名或 IKUUU_HOST，再按
+IKUUU_CANDIDATE_HOSTS 每行一个官方 ikuuu 主机名的顺序探测；全部不可用时
+读取 https://ikuuu.uk/ 官方状态页补充域名。探测只请求 /auth/login，不带凭据，
+禁止跨域重定向；选定域名后才建立账号会话，不自动重放签到或登录。
+状态页只接受 ikuuu.顶级域名，不接受任意链接；最多读取 64 KiB、探测 12 个域名。
+请通过官网核对备用域名归属后再开启。预演只验证并展示计划，不探测、不缓存。
+不依赖 cookies.json、config.json、登录助手或系统浏览器；凭据失效须手动更新
+青龙环境变量。不使用本地日期作为业务成功依据，不默认写文件或启动进程。
 基础预演成功并不表示真实账号业务成功。
 """
 
@@ -172,6 +182,88 @@ def service_url(cookie_mode: bool) -> str:
     return "https://" + host.lower()
 
 
+def domain_options(cookie_mode: bool) -> list[str]:
+    urls = [service_url(cookie_mode)]
+    raw = os.getenv("IKUUU_CANDIDATE_HOSTS", "")
+    for line in raw.splitlines():
+        host = line.strip().lower()
+        if not host:
+            continue
+        if not re.fullmatch(r"ikuuu\.[a-z]{2,24}", host) or host == "ikuuu.uk":
+            raise TaskError("IKUUU_CANDIDATE_HOSTS 必须每行填写一个官方 ikuuu 主机名，不含协议或路径")
+        url = "https://" + host
+        if url not in urls:
+            urls.append(url)
+    if len(urls) > 12:
+        raise TaskError("域名候选不得超过 12 个（含主域名）")
+    return urls
+
+
+def status_domains(page: str) -> list[str]:
+    # Only official-shaped hosts; never follow arbitrary page links with credentials.
+    suffixes = re.findall(r"https?://ikuuu\.([a-z]{2,24})(?=[/\s\"'<>]|$)", page, re.I)
+    suffixes += re.findall(r"ikuuu\s*['\"]?\s*\+\s*['\"]\.([a-z]{2,24})['\"]", page, re.I)
+    urls = []
+    for suffix in suffixes:
+        url = "https://ikuuu." + suffix.lower()
+        if suffix.lower() != "uk" and url not in urls:
+            urls.append(url)
+    return urls[:12]
+
+
+def probe_domain(url: str) -> bool:
+    # Separate opener: no account Cookie jar, password, or authorization header.
+    request = Request(url + "/auth/login", headers={"User-Agent": HEADERS["User-Agent"]}, method="GET")
+    try:
+        with build_opener(SameOriginRedirect(url)).open(request, timeout=12) as response:
+            return response.status == 200
+    except Exception:
+        return False
+
+
+def resolve_domain(cookie_mode: bool, dry_run: bool = False) -> str:
+    primary = service_url(cookie_mode)
+    if not enabled("IKUUU_AUTO_DOMAIN"):
+        return primary
+    urls = domain_options(cookie_mode)
+    if dry_run:
+        log("⏭️ 阶段 0/1 域名选择：预演无凭据 GET /auth/login；候选 " + ", ".join(urls)
+            + "；全部失败后 GET https://ikuuu.uk/ 补充候选；未发送请求")
+        return primary
+    started = time.monotonic()
+    log("阶段 0/1 域名选择：开始无凭据探测")
+    tried = set()
+    def choose(candidates):
+        for url in candidates:
+            if url in tried or len(tried) >= 12:
+                continue
+            tried.add(url)
+            step_started = time.monotonic()
+            ok = probe_domain(url)
+            log(f"域名探测 {url}：{'可用' if ok else '不可用'}；耗时 {time.monotonic()-step_started:.2f} 秒")
+            if ok:
+                return url
+        return ""
+    hit = choose(urls)
+    if not hit and len(tried) < 12:
+        log("本地候选均不可用，读取官方状态页（不带账号凭据）")
+        try:
+            request = Request("https://ikuuu.uk/", headers={"User-Agent": HEADERS["User-Agent"]})
+            with build_opener(SameOriginRedirect("https://ikuuu.uk")).open(request, timeout=15) as response:
+                raw = response.read(65537)
+                if response.status != 200 or len(raw) > 65536:
+                    raise TaskError("状态页响应异常或过大")
+            hit = choose(status_domains(raw.decode("utf-8")))
+        except Exception:
+            log("⚠️ 官方状态页读取或解析失败，未输出原始响应")
+    elapsed = time.monotonic() - started
+    if not hit:
+        log(f"❌ 阶段 0/1 域名选择：失败；耗时 {elapsed:.2f} 秒")
+        raise TaskError("全部候选域名不可用；请从官网核对 IKUUU_HOST 或候选域名")
+    log(f"✅ 阶段 0/1 域名选择：选定 {hit}；耗时 {elapsed:.2f} 秒")
+    return hit
+
+
 class FlowText(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -194,10 +286,16 @@ class FlowText(HTMLParser):
 def remaining_from_html(page: str) -> str:
     # Match explicitly remaining/available traffic, never total or used traffic.
     pages = [page]
-    encoded = re.search(r"var\s+originBody\s*=\s*[\"']([^\"']+)[\"']", page)
+    encoded = re.search(r"(?:var\s+)?originBody\s*=\s*[\"']([^\"']+)[\"']", page)
     if encoded:
         try:
-            pages.insert(0, base64.b64decode(encoded.group(1), validate=True).decode("utf-8"))
+            raw = encoded.group(1).strip()
+            decoded = base64.b64decode(raw + "=" * (-len(raw) % 4), validate=True)
+            try:
+                content = decoded.decode("utf-8")
+            except UnicodeError:
+                content = decoded.decode("gbk")
+            pages.insert(0, content)
         except (ValueError, UnicodeError):
             pass
     for content in pages:
@@ -289,7 +387,7 @@ class SameOriginRedirect(HTTPRedirectHandler):
 
 class IkuuuClient:
     def __init__(self, cookie_mode: bool = False, cookie: str = "") -> None:
-        self.base_url = service_url(cookie_mode)
+        self.base_url = resolve_domain(cookie_mode)
         self.cookie_mode = cookie_mode
         self.cookie_values = tuple(item.split("=", 1)[1] for item in parse_cookie(cookie).split("; ")) if cookie_mode else ()
         self.headers = dict(HEADERS, Origin=self.base_url, Referer=self.base_url + "/user")
@@ -346,7 +444,7 @@ class IkuuuClient:
                 value = json.loads(payload)
             except (ValueError, UnicodeError):
                 raise TaskError("资料读取失败：JSON 格式异常") from None
-            if not isinstance(value, dict) or ("ret" in value and value["ret"] != 1):
+            if not isinstance(value, dict) or ("ret" in value and (type(value["ret"]) is not int or value["ret"] != 1)):
                 raise TaskError("资料读取失败：业务状态异常")
             show_identity(value, email, password, self.cookie_values)
 
@@ -393,7 +491,7 @@ class IkuuuClient:
                 log("Cookie 格式检查通过；会话有效性由后续官方响应核验")
                 return
             value = self.post_json(self.base_url + "/auth/login", {"email": email, "passwd": password})
-            if value.get("ret") != 1:
+            if type(value.get("ret")) is not int or value["ret"] != 1:
                 raise TaskError("登录失败：凭据或服务状态异常")
             show_identity(value, email, password, self.cookie_values)
 
@@ -422,12 +520,12 @@ class IkuuuClient:
             value = self.post_json(self.base_url + "/user/checkin")
             show_identity(value, email, password, self.cookie_values)
             message = redact_message(safe_message(value.get("msg"), ""), email, password)
-            if value.get("ret") == 1:
+            if type(value.get("ret")) is int and value["ret"] == 1:
                 reward = reward_from(message)
                 detail = "签到成功" + (f"，获得流量 {reward}" if reward else "")
                 log(detail)
                 return "checked-in"
-            if any(word in message.lower() for word in ALREADY_WORDS):
+            if type(value.get("ret")) is int and value["ret"] == 0 and any(word in message.lower() for word in ALREADY_WORDS):
                 detail = "今日已签到"
                 return "already-checked-in"
             raise TaskError("签到失败：未获得官方成功或已签到证明")
@@ -501,6 +599,7 @@ def notification_selected() -> bool:
         return False
     identities = {
         "444530f6f4a25554",
+        "16659a6b86127fbe",
         "7ea70c9e9d579efb",
         "candidate.py",
         "ikuuu_checkin.py",
@@ -645,7 +744,7 @@ def main() -> int:
             stats = {"total": stage_total, "succeeded": 0, "alreadyComplete": 0, "skipped": 0, "failed": 0}
             log(f"---------- 账号 {index}/{total} ----------")
             try:
-                base_url = service_url(cookie_mode)
+                base_url = resolve_domain(cookie_mode, dry_run=True) if dry_run else service_url(cookie_mode)
                 if cookie_mode:
                     parse_cookie(password)
                 elif not email or not password:
