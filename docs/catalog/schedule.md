@@ -129,6 +129,7 @@
 | M-SEC 每日签到与积分查询 | `scripts/ez.py` | `python3 scripts/ez.py` | `44 9 * * *` | 待检查 | [ez.py.md](../scripts/ez.py.md)（`docs/scripts/ez.py.md`） |
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 今日校园广东海洋大学签到 | `scripts/fcpdaily_2_0.py` | `python3 scripts/fcpdaily_2_0.py` | `58 9 * * *` | 待检查 | [fcpdaily_2_0.py.md](../scripts/fcpdaily_2_0.py.md)（`docs/scripts/fcpdaily_2_0.py.md`） |
+| 威锋网签到 | `scripts/feng.js` | `node scripts/feng.js` | `16 10 * * *` | 待检查 | [feng.js.md](../scripts/feng.js.md)（`docs/scripts/feng.js.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
 | Discuz 论坛日常维护 | `scripts/forum_download.py` | `python3 scripts/forum_download.py` | `29 2 * * *` | 待检查 | [forum_download.py.md](../scripts/forum_download.py.md)（`docs/scripts/forum_download.py.md`） |
 | 废文网签到 | `scripts/fwxs_checkin.js` | `node scripts/fwxs_checkin.js` | `57 1 * * *` | 待检查 | [fwxs_checkin.js.md](../scripts/fwxs_checkin.js.md)（`docs/scripts/fwxs_checkin.js.md`） |
