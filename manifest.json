@@ -67852,6 +67852,434 @@
       }
     },
     {
+      "catalogId": "a5b6bae676d9ef43",
+      "applicationKey": "zeekr",
+      "checkProfile": {
+        "requiredEnv": [
+          "ZEEKR_TOKEN"
+        ],
+        "optionalEnv": [
+          "TOKEN",
+          "ZEEKR_VAL",
+          "zeekr_val",
+          "ZEEKR_TOKEN_1",
+          "ZEEKR_VAL_1",
+          "ZEEKR_MODE",
+          "ZEEKR_TAG",
+          "ZEEKR_STEPS",
+          "ZEEKR_LIKE",
+          "ZEEKR_POLL",
+          "ZEEKR_WAITS",
+          "ZEEKR_SETTLE",
+          "ZEEKR_MAX",
+          "ZEEKR_APPVER",
+          "ZEEKR_NATIVE",
+          "ZEEKR_NATIVE_REQUESTS",
+          "ZEEKR_PAGE_CONTEXT",
+          "ZEEKR_UA",
+          "ZEEKR_PHONE_MODEL",
+          "ZEEKR_IOS_VERSION",
+          "ZEEKR_READWAIT",
+          "ZEEKR_DELAY",
+          "ZEEKR_DAILYSTEPS",
+          "ZEEKR_NOTIFY",
+          "ZEEKR_VERBOSE",
+          "ZEEKR_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "ZEEKR_DEVICE_ID",
+          "ZEEKR_APP_SECRET"
+        ],
+        "dryRunEnv": {
+          "ZEEKR_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "ZEEKR_MODE": "all",
+          "ZEEKR_STEPS": "off",
+          "ZEEKR_LIKE": "0"
+        },
+        "successPatterns": [
+          "TASK_SUMMARY=",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日签到与连续签到状态处理",
+          "阅读任务文章及任务进度复查",
+          "显式启用的社区点赞及三页广场帖子查找",
+          "显式步数上报、固定值或范围及每日固定随机策略",
+          "碎片批量领取、失败逐项重试及缺失结果检测",
+          "七日连签奖励、碳能量球与极值领取",
+          "all、sign、claim 任务切换及场次标签",
+          "领取轮询、入账观察、失败次数与窗口限制",
+          "网页与可选原生签名头、可选页面上下文及阅读停留",
+          "iTunes 版本查询与本地版本回退",
+          "换行多账号、旧凭据别名与同账号配套字段隔离",
+          "断网预演、凭据有效期检查、请求超时与业务响应验证",
+          "脱敏分阶段日志、公开账号身份、逐账号统计与结构化汇总",
+          "按青龙全局开关和脚本列表发送任务结果通知"
+        ],
+        "sideEffects": [
+          "签到并记录签到状态",
+          "阅读文章产生阅读进度",
+          "显式开启后上报运动步数",
+          "显式开启后为社区帖子点赞",
+          "领取碎片、七日奖励、碳能量球及极值",
+          "显式开启后发送原生阅读行为记录",
+          "符合通知配置时发送青龙任务结果通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "极氪每日签到与奖励领取",
+      "path": "scripts/zeekr_egern.js",
+      "sha256": "81e9f4f539ca6cc2b590f77f91367271ebf6a372de7d6953b59cd1b29c306c1c",
+      "stage": "released",
+      "license": "Apache-2.0",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "m20104600/zeekr-checkin",
+        "branch": "main",
+        "commit": "59ef52737fd487d165cc515ff9264a71a2962008",
+        "originalPath": "dist/zeekr.egern.js",
+        "related": [
+          {
+            "catalogId": "3f13301c13e14194",
+            "sha256": "f6fcf448a73274f411f84d595da61015de8ce395f615c70312d2201067f3c0c9",
+            "repository": "m20104600/zeekr-checkin",
+            "url": "https://github.com/m20104600/zeekr-checkin",
+            "branch": "main",
+            "commit": "59ef52737fd487d165cc515ff9264a71a2962008",
+            "originalPath": "dist/zeekr.js",
+            "license": "Apache-2.0"
+          },
+          {
+            "catalogId": "475893b0ab7975e6",
+            "sha256": "cd84bc81be09d501e961416583f5146622c6c1b6f9936277053229596a63758d",
+            "repository": "m20104600/zeekr-checkin",
+            "url": "https://github.com/m20104600/zeekr-checkin",
+            "branch": "main",
+            "commit": "59ef52737fd487d165cc515ff9264a71a2962008",
+            "originalPath": "dist/zeekr.qinglong.js",
+            "license": "Apache-2.0"
+          },
+          {
+            "catalogId": "5c7f26abf8227534",
+            "sha256": "693922db3641ccbc497116b85f6521f8dbdcd8e17687e605fa5240630ab7dc43",
+            "repository": "m20104600/zeekr-checkin",
+            "url": "https://github.com/m20104600/zeekr-checkin",
+            "branch": "main",
+            "commit": "59ef52737fd487d165cc515ff9264a71a2962008",
+            "originalPath": "build.py",
+            "license": "Apache-2.0"
+          },
+          {
+            "catalogId": "1ff14351f60145de",
+            "sha256": "240f9aaf557a89d68a1c1cb455fd5edcc3989cc977dce900b053599ef9f7e9c8",
+            "repository": "m20104600/zeekr-checkin",
+            "url": "https://github.com/m20104600/zeekr-checkin",
+            "branch": "main",
+            "commit": "59ef52737fd487d165cc515ff9264a71a2962008",
+            "originalPath": "gen_configs.py",
+            "license": "Apache-2.0"
+          }
+        ]
+      },
+      "cron": "14 0 * * *",
+      "command": "node scripts/zeekr_egern.js",
+      "environment": [
+        {
+          "name": "ZEEKR_TOKEN",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人极氪 App 或官网登录后，使用本人授权的抓包工具获取发往 api-gw-toc.zeekrlife.com 的 Authorization 请求头。配套 device_id 和原生签名字段必须来自同一账号，可一并放入该行 JSON。到期或认证失败后重新获取，勿公开抓包。",
+          "format": "每个非空行一个账号，填 Bearer JWT 或裸 JWT；也可每行 JSON，包含 authorization、可选 device_id、可选 app_secret。只按换行分隔账号。"
+        },
+        {
+          "name": "TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧配置，推荐迁移至 ZEEKR_TOKEN。优先顺序为统一 Token、编号 Token、统一存储值、编号存储值。编号变量支持任意数字后缀，按变量名排序。",
+          "format": "与主凭据相同，每行一个账号；存储值允许含 authorization 与 device_id 的单行 JSON。"
+        },
+        {
+          "name": "ZEEKR_VAL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧配置，推荐迁移至 ZEEKR_TOKEN。优先顺序为统一 Token、编号 Token、统一存储值、编号存储值。编号变量支持任意数字后缀，按变量名排序。",
+          "format": "与主凭据相同，每行一个账号；存储值允许含 authorization 与 device_id 的单行 JSON。"
+        },
+        {
+          "name": "zeekr_val",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧配置，推荐迁移至 ZEEKR_TOKEN。优先顺序为统一 Token、编号 Token、统一存储值、编号存储值。编号变量支持任意数字后缀，按变量名排序。",
+          "format": "与主凭据相同，每行一个账号；存储值允许含 authorization 与 device_id 的单行 JSON。"
+        },
+        {
+          "name": "ZEEKR_TOKEN_1",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧配置，推荐迁移至 ZEEKR_TOKEN。优先顺序为统一 Token、编号 Token、统一存储值、编号存储值。编号变量支持任意数字后缀，按变量名排序。",
+          "format": "与主凭据相同，每行一个账号；存储值允许含 authorization 与 device_id 的单行 JSON。"
+        },
+        {
+          "name": "ZEEKR_VAL_1",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧配置，推荐迁移至 ZEEKR_TOKEN。优先顺序为统一 Token、编号 Token、统一存储值、编号存储值。编号变量支持任意数字后缀，按变量名排序。",
+          "format": "与主凭据相同，每行一个账号；存储值允许含 authorization 与 device_id 的单行 JSON。"
+        },
+        {
+          "name": "ZEEKR_MODE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "选择本轮任务范围。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "all 默认签到、阅读与领取；sign 签到做任务；claim 只领取。"
+        },
+        {
+          "name": "ZEEKR_TAG",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置场次，用于日志与通知标题，支持上游无前缀 TAG。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "任意非敏感场次文字，默认空。"
+        },
+        {
+          "name": "ZEEKR_STEPS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行显式填入步数；默认 off，避免自动伪造运动数据。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "off 或 0 关闭；1 至 100000 的整数或递增范围；启用即上报该值。"
+        },
+        {
+          "name": "ZEEKR_LIKE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择是否公开点赞；默认关闭，显式启用后每轮尝试点赞。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "0 默认关闭；1 开启。"
+        },
+        {
+          "name": "ZEEKR_POLL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置是否等待延迟入账并复查，任务超时应覆盖领取窗口。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "0 默认只领取一轮；1 轮询。"
+        },
+        {
+          "name": "ZEEKR_WAITS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置领取复查间隔。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "逗号分隔的 1 至 600 秒整数，默认 45,60,75。"
+        },
+        {
+          "name": "ZEEKR_SETTLE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置最后一次成功领取后的观察秒数。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "1 至 3600 的整数，默认 180。"
+        },
+        {
+          "name": "ZEEKR_MAX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置单次领取轮询窗口秒数；在请求与领取操作安全边界结束。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "1 至 3600 的整数，默认 600。"
+        },
+        {
+          "name": "ZEEKR_APPVER",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从本人极氪客户端关于页获取；留空优先查询 iTunes，失败回退 4.9.33。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "客户端版本号，默认空。"
+        },
+        {
+          "name": "ZEEKR_NATIVE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需本人抓包确认原生参数，WEB_PC 凭据保持网页头。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "0 默认关闭；1 且具备同账号签名及非零 JWT 设备字段时开启。"
+        },
+        {
+          "name": "ZEEKR_NATIVE_REQUESTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择是否补充原生阅读页行为、评论列表和推荐请求；不发布评论。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "0 默认关闭；1 开启，依赖原生模式。"
+        },
+        {
+          "name": "ZEEKR_PAGE_CONTEXT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择是否补充签到页上下文请求；可选网络失败跳过，认证失败停止。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "0 默认关闭；1 开启。"
+        },
+        {
+          "name": "ZEEKR_UA",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从本人请求头获取或留空沿用上游。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "自定义客户端请求头文字。"
+        },
+        {
+          "name": "ZEEKR_PHONE_MODEL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从本人原生请求头获取。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "机型文字，默认 iPhone17,1。"
+        },
+        {
+          "name": "ZEEKR_IOS_VERSION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从本人原生请求头获取。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "系统版本，默认 26.0。"
+        },
+        {
+          "name": "ZEEKR_READWAIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行配置阅读停留；与附加请求共用 120 秒预算。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "秒数或递增范围，默认 0，单项最多 120 秒。"
+        },
+        {
+          "name": "ZEEKR_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行配置启动延迟；与附加请求共用 120 秒预算。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "秒数或递增范围，默认 0，单项最多 120 秒。"
+        },
+        {
+          "name": "ZEEKR_DAILYSTEPS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择范围步数是否按北京时间日期与账号固定。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "0 默认逐轮随机；1 每日固定，仅显式开启步数时生效。"
+        },
+        {
+          "name": "ZEEKR_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行控制本脚本通知，仍受全局通知选择约束。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "0 关闭，其他值开启，默认 1。"
+        },
+        {
+          "name": "ZEEKR_VERBOSE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "保留旧参数兼容；维护版固定输出脱敏阶段明细。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "0 或 1。"
+        },
+        {
+          "name": "ZEEKR_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地预演或导入测试设置为 1；任何请求及远程通知均不执行。 原无前缀同名参数兼容，键名大小写不敏感，带前缀值优先。",
+          "format": "1 断网预演；其他值正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行填写需要通知的脚本标识；显式设置替换默认列表，空值全关，本脚本默认未列入。",
+          "format": "逗号、分号或空白分隔的目录标识、脚本相对路径、文件名或含 * 的文件名模式；* 表示全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定青龙自带 sendNotify.js 的目录；否则检查 /ql/data/scripts 与 /ql/scripts。",
+          "format": "本机通知模块目录，不下载任何程序。"
+        },
+        {
+          "name": "ZEEKR_DEVICE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人请求头获取，仅单账号或各账号确实共用该值时使用；多账号应放入对应凭据 JSON 的 device_id 或 app_secret 字段。",
+          "format": "同账号抓取值；留空不启用原生签名。"
+        },
+        {
+          "name": "ZEEKR_APP_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人请求头获取，仅单账号或各账号确实共用该值时使用；多账号应放入对应凭据 JSON 的 device_id 或 app_secret 字段。",
+          "format": "同账号抓取值；留空不启用原生签名。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "ZEEKR_TOKEN 每个非空行一个账号，单行凭据可为 Bearer JWT 或含同账号 authorization、device_id、app_secret 的 JSON。仅按换行分账号，不按其他符号拆分。每个账号独立执行，任一失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到与连续签到状态处理",
+        "阅读任务文章及任务进度复查",
+        "显式启用的社区点赞及三页广场帖子查找",
+        "显式步数上报、固定值或范围及每日固定随机策略",
+        "碎片批量领取、失败逐项重试及缺失结果检测",
+        "七日连签奖励、碳能量球与极值领取",
+        "all、sign、claim 任务切换及场次标签",
+        "领取轮询、入账观察、失败次数与窗口限制",
+        "网页与可选原生签名头、可选页面上下文及阅读停留",
+        "iTunes 版本查询与本地版本回退",
+        "换行多账号、旧凭据别名与同账号配套字段隔离",
+        "断网预演、凭据有效期检查、请求超时与业务响应验证",
+        "脱敏分阶段日志、公开账号身份、逐账号统计与结构化汇总",
+        "按青龙全局开关和脚本列表发送任务结果通知"
+      ],
+      "sideEffects": [
+        "签到并记录签到状态",
+        "阅读文章产生阅读进度",
+        "显式开启后上报运动步数",
+        "显式开启后为社区帖子点赞",
+        "领取碎片、七日奖励、碳能量球及极值",
+        "显式开启后发送原生阅读行为记录",
+        "符合通知配置时发送青龙任务结果通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a5b6bae676d9ef43",
+        "candidateSha256": "54e9cb7451c12a3521ddb66a0ba5bd9ccadf75b1b77fe761f335a1117f44dc53"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "54e9cb7451c12a3521ddb66a0ba5bd9ccadf75b1b77fe761f335a1117f44dc53",
+        "releaseSha256": "81e9f4f539ca6cc2b590f77f91367271ebf6a372de7d6953b59cd1b29c306c1c",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T05:10:17.975109+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "54e9cb7451c12a3521ddb66a0ba5bd9ccadf75b1b77fe761f335a1117f44dc53",
+          "toCandidateSha256": "81e9f4f539ca6cc2b590f77f91367271ebf6a372de7d6953b59cd1b29c306c1c",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "60f9d3538e9f8470",
       "applicationKey": "rookie-wb-wh/ql_scripts::zippo",
       "checkProfile": {
