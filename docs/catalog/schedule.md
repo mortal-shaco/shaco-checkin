@@ -85,6 +85,7 @@
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `16 8 * * *` | 待检查 | [codearts_daily.py.md](../scripts/codearts_daily.py.md)（`docs/scripts/codearts_daily.py.md`） |
 | ComicAI 每日签到 | `scripts/comicai_ai_cookie.py` | `python3 scripts/comicai_ai_cookie.py` | `46 1 * * *` | 待检查 | [comicai_ai_cookie.py.md](../scripts/comicai_ai_cookie.py.md)（`docs/scripts/comicai_ai_cookie.py.md`） |
 | 魅魔AI每日签到 | `scripts/config.py` | `python3 scripts/config.py` | `26 9 * * *` | 待检查 | [config.py.md](../scripts/config.py.md)（`docs/scripts/config.py.md`） |
+| 智谱清言每日领分与余额 | `scripts/content.js` | `node scripts/content.js` | `37 9 * * *` | 待检查 | [content.js.md](../scripts/content.js.md)（`docs/scripts/content.js.md`） |
 | 创想云国内站签到 | `scripts/crealitycloud_checkin.py` | `python3 scripts/crealitycloud_checkin.py` | `44 2 * * *` | 待检查 | [crealitycloud_checkin.py.md](../scripts/crealitycloud_checkin.py.md)（`docs/scripts/crealitycloud_checkin.py.md`） |
 | 大潮App签到阅读 | `scripts/dachao.py` | `python3 scripts/dachao.py` | `22 10,14,18 * * *` | 待检查 | [dachao.py.md](../scripts/dachao.py.md)（`docs/scripts/dachao.py.md`） |
 | 大海资源站每日签到 | `scripts/dahai.js` | `node scripts/dahai.js` | `0 30 11 * * *` | 待检查 | [dahai.js.md](../scripts/dahai.js.md)（`docs/scripts/dahai.js.md`） |
@@ -284,6 +285,7 @@
 | PT站点每日签到 | `scripts/task_874a3b5f.py` | `python3 scripts/task_874a3b5f.py` | `35 9 * * *` | 待检查 | [task_874a3b5f.py.md](../scripts/task_874a3b5f.py.md)（`docs/scripts/task_874a3b5f.py.md`） |
 | 昆医大疫情防控填报 | `scripts/task_8f8ad2c5.py` | `python3 scripts/task_8f8ad2c5.py` | `53 7,15 * * *` | 待检查 | [task_8f8ad2c5.py.md](../scripts/task_8f8ad2c5.py.md)（`docs/scripts/task_8f8ad2c5.py.md`） |
 | MT论坛签到 | `scripts/task_9a14e9eb.py` | `python3 scripts/task_9a14e9eb.py` | `39 0 * * *` | 待检查 | [task_9a14e9eb.py.md](../scripts/task_9a14e9eb.py.md)（`docs/scripts/task_9a14e9eb.py.md`） |
+| 今日校园问卷 | `scripts/task_9de2360b.py` | `python3 scripts/task_9de2360b.py` | `36 9 * * *` | 待检查 | [task_9de2360b.py.md](../scripts/task_9de2360b.py.md)（`docs/scripts/task_9de2360b.py.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
 | AbyssWorld每日签到 | `scripts/task_ad4c4f3a.js` | `node scripts/task_ad4c4f3a.js` | `39 8 * * *` | 待检查 | [task_ad4c4f3a.js.md](../scripts/task_ad4c4f3a.js.md)（`docs/scripts/task_ad4c4f3a.js.md`） |
 | TJUPT每日签到 | `scripts/task_b80894cb.py` | `python3 scripts/task_b80894cb.py` | `13 9 * * *` | 待检查 | [task_b80894cb.py.md](../scripts/task_b80894cb.py.md)（`docs/scripts/task_b80894cb.py.md`） |

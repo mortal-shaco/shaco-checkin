@@ -1,6 +1,6 @@
 # 分类索引 · 其他
 
-共 **25** 个脚本。返回 [`目录首页`](../README.md)。
+共 **26** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -11,6 +11,7 @@
 | 词霸每日一句 | `scripts/ciba.js` | `node scripts/ciba.js` | `0 25 11 * * *` | 待检查 | [ciba.js.md](../../scripts/ciba.js.md)（`docs/scripts/ciba.js.md`） |
 | FreeNom 域名续期维护 | `scripts/ck_freenom.py` | `python3 scripts/ck_freenom.py` | `30 7 */10 * *` | 待检查 | [ck_freenom.py.md](../../scripts/ck_freenom.py.md)（`docs/scripts/ck_freenom.py.md`） |
 | 小米运动 | `scripts/ck_mimotion.py` | `python3 scripts/ck_mimotion.py` | `1 0 * * *` | 待检查 | [ck_mimotion.py.md](../../scripts/ck_mimotion.py.md)（`docs/scripts/ck_mimotion.py.md`） |
+| 智谱清言每日领分与余额 | `scripts/content.js` | `node scripts/content.js` | `37 9 * * *` | 待检查 | [content.js.md](../../scripts/content.js.md)（`docs/scripts/content.js.md`） |
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `32 2 * * *` | 待检查 | [ddnsto.py.md](../../scripts/ddnsto.py.md)（`docs/scripts/ddnsto.py.md`） |
 | Epic免费游戏 | `scripts/epicfreegames.py` | `python3 scripts/epicfreegames.py` | `11 8 * * 6` | 待检查 | [epicfreegames.py.md](../../scripts/epicfreegames.py.md)（`docs/scripts/epicfreegames.py.md`） |
 | HelloGitHub月刊提醒 | `scripts/hellogithub.py` | `python3 scripts/hellogithub.py` | `31 8 1 * *` | 待检查 | [hellogithub.py.md](../../scripts/hellogithub.py.md)（`docs/scripts/hellogithub.py.md`） |
