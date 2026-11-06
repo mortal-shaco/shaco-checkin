@@ -164,6 +164,7 @@
 | IT之家签到 | `scripts/ithome.js` | `node scripts/ithome.js` | `36 1 * * *` | 待检查 | [ithome.js.md](../scripts/ithome.js.md)（`docs/scripts/ithome.js.md`） |
 | 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `45 2 * * *` | 待检查 | [jc_checkin.py.md](../scripts/jc_checkin.py.md)（`docs/scripts/jc_checkin.py.md`） |
 | jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `5 1 * * *` | 待检查 | [jcqd.py.md](../scripts/jcqd.py.md)（`docs/scripts/jcqd.py.md`） |
+| 交易猫签到 | `scripts/jiaoyimao.py` | `python3 scripts/jiaoyimao.py` | `35 6 * * *` | 待检查 | [jiaoyimao.py.md](../scripts/jiaoyimao.py.md)（`docs/scripts/jiaoyimao.py.md`） |
 | ikuuu 每日签到 | `scripts/jihcang_daily.py` | `python3 scripts/jihcang_daily.py` | `45 9 * * *` | 待检查 | [jihcang_daily.py.md](../scripts/jihcang_daily.py.md)（`docs/scripts/jihcang_daily.py.md`） |
 | 精易论坛签到 | `scripts/jingyiluntan_sign.py` | `python3 scripts/jingyiluntan_sign.py` | `2 2 * * *` | 待检查 | [jingyiluntan_sign.py.md](../scripts/jingyiluntan_sign.py.md)（`docs/scripts/jingyiluntan_sign.py.md`） |
 | 技实习自动签到 | `scripts/jishixi.js` | `node scripts/jishixi.js` | `42 8 * * *` | 待检查 | [jishixi.js.md](../scripts/jishixi.js.md)（`docs/scripts/jishixi.js.md`） |
@@ -228,6 +229,7 @@
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `2 9 * * *` | 待检查 | [raccoon_daily.py.md](../scripts/raccoon_daily.py.md)（`docs/scripts/raccoon_daily.py.md`） |
 | 一亩三分地每日签到答题 | `scripts/raw_requests.py` | `python3 scripts/raw_requests.py` | `51 8 * * *` | 待检查 | [raw_requests.py.md](../scripts/raw_requests.py.md)（`docs/scripts/raw_requests.py.md`） |
 | Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `42 0 * * *` | 待检查 | [rousi_checkin.js.md](../scripts/rousi_checkin.js.md)（`docs/scripts/rousi_checkin.js.md`） |
+| 橙光每日任务 | `scripts/rpg66.js` | `node scripts/rpg66.js` | `20 10 * * *` | 待检查 | [rpg66.js.md](../scripts/rpg66.js.md)（`docs/scripts/rpg66.js.md`） |
 | eatASMR每日签到 | `scripts/scf_eat.py` | `python3 scripts/scf_eat.py` | `37 8 * * *` | 待检查 | [scf_eat.py.md](../scripts/scf_eat.py.md)（`docs/scripts/scf_eat.py.md`） |
 | 成都大学ISP每日登记 | `scripts/services.js` | `node scripts/services.js` | `1 7 * * *` | 待检查 | [services.js.md](../scripts/services.js.md)（`docs/scripts/services.js.md`） |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |

@@ -1,11 +1,12 @@
 # 字母索引 · J
 
-共 **7** 个脚本。返回 [`目录首页`](../README.md)。
+共 **8** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | 机场面板每日签到 | `scripts/jc_checkin.py` | `python3 scripts/jc_checkin.py` | `45 2 * * *` | 待检查 | [jc_checkin.py.md](../../scripts/jc_checkin.py.md)（`docs/scripts/jc_checkin.py.md`） |
 | jcqd 多站签到 | `scripts/jcqd.py` | `python3 scripts/jcqd.py` | `5 1 * * *` | 待检查 | [jcqd.py.md](../../scripts/jcqd.py.md)（`docs/scripts/jcqd.py.md`） |
+| 交易猫签到 | `scripts/jiaoyimao.py` | `python3 scripts/jiaoyimao.py` | `35 6 * * *` | 待检查 | [jiaoyimao.py.md](../../scripts/jiaoyimao.py.md)（`docs/scripts/jiaoyimao.py.md`） |
 | ikuuu 每日签到 | `scripts/jihcang_daily.py` | `python3 scripts/jihcang_daily.py` | `45 9 * * *` | 待检查 | [jihcang_daily.py.md](../../scripts/jihcang_daily.py.md)（`docs/scripts/jihcang_daily.py.md`） |
 | 精易论坛签到 | `scripts/jingyiluntan_sign.py` | `python3 scripts/jingyiluntan_sign.py` | `2 2 * * *` | 待检查 | [jingyiluntan_sign.py.md](../../scripts/jingyiluntan_sign.py.md)（`docs/scripts/jingyiluntan_sign.py.md`） |
 | 技实习自动签到 | `scripts/jishixi.js` | `node scripts/jishixi.js` | `42 8 * * *` | 待检查 | [jishixi.js.md](../../scripts/jishixi.js.md)（`docs/scripts/jishixi.js.md`） |
