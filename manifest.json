@@ -72323,6 +72323,157 @@
       }
     },
     {
+      "catalogId": "3460aa0a0b9700db",
+      "applicationKey": "fuguang88/qinglong-scripts::ybt",
+      "checkProfile": {
+        "requiredEnv": [
+          "YBT_USERS"
+        ],
+        "optionalEnv": [
+          "YBT_DRY_RUN",
+          "YBT_CACHE_FILE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "YBT_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到"
+        ],
+        "features": [
+          "每天北京时间00:01使用用户名向原有接口提交表单签到，保留原有请求头和12秒超时，特定网络错误最多重试3次。",
+          "明确检查 HTTP 200或400响应中的签到状态；完整流量的 HTTP 200响应为首次签到，已签到响应按当日缓存展示流量，无缓存时提示信息有限。",
+          "展示累计签到天数、获得流量、总流量、首次签到与缓存来源统计；官方返回可公开的昵称、用户名、显示名称或公开编号时显示原值，但过滤手机号、会话格式和控制字符。",
+          "按北京时间保留当日缓存，兼容旧缓存格式；缓存异常时使用接口结果，缓存写入异常不覆盖已确认的签到结果。",
+          "支持每行一个账号、逐账号失败隔离、失败非零退出、离线预演、编号阶段日志、任务及账号统计和单行机器汇总。",
+          "所有业务结果均生成脱敏通知总结，遵循全局开关和选择名单，通过青龙现有通知模块发送；预演只模拟通知，不发生任何网络调用。"
+        ],
+        "sideEffects": [
+          "正式运行向 YBT 提交签到，服务端可能增加签到天数并发放流量。",
+          "正式首次签到成功后更新本地当日流量缓存，清除过期条目；写入内容不含原始用户名及服务器消息。",
+          "通知启用且青龙通知模块可用时发送脱敏任务结果通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "YBT签到",
+      "path": "scripts/ybt_sign.js",
+      "sha256": "efc8da2380b9353f27dc5addc539457079a26fde9fd0ba20aed992949d7b66e8",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "fuguang88/qinglong-scripts",
+        "branch": "main",
+        "commit": "a4f5ce137b8a111bc837feec1428b33b0d1e710f",
+        "originalPath": "ybt_sign.js"
+      },
+      "cron": "55 1 * * *",
+      "command": "node scripts/ybt_sign.js",
+      "environment": [
+        {
+          "name": "YBT_USERS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 YBT 注册后，从账号个人资料中查看用户名；接口使用用户名签到，不需要密码、Cookie 或 Token。请只填写本人账号的用户名。",
+          "format": "每个非空行一个完整用户名；仅按换行划分账号，不再使用 & 或 @ 分隔账号。空行忽略，行首尾空白去除。"
+        },
+        {
+          "name": "YBT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证时手动设为1，正式签到时删除或设为0。",
+          "format": "1、true、yes、on 启用；其他值不启用。预演不联网、不读写缓存、不加载通知模块，只生成脱敏通知预览。"
+        },
+        {
+          "name": "YBT_CACHE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙任务有读写权限的缓存文件路径，父目录须已存在；默认脚本目录下的 ybt_sign_cache.json。",
+          "format": "单个本地文件路径；保留北京时间当天的签到天数和流量，以用户名摘要作为键，兼容读取旧版当日缓存，写入使用限制权限的原子替换。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，设置后替换默认通知名单，未设置时本脚本默认启用。",
+          "format": "逗号、分号或空白分隔目录编号、脚本路径或文件名，支持星号通配符；本脚本可匹配3460aa0a0b9700db、ybt_sign.js及实际文件名；星号表示全部，空值表示全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙已有 sendNotify.js 的所在目录；否则依次查找脚本目录、/ql/data/scripts 和 /ql/scripts。",
+          "format": "本地目录路径；通知模块可选，未安装时业务仍可独立运行。通知在隔离子进程中限时15秒执行。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "YBT_USERS 每个非空行一个用户名，逐个独立签到；某账号失败继续处理其余账号，任一账号失败或缺少配置时进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每天北京时间00:01使用用户名向原有接口提交表单签到，保留原有请求头和12秒超时，特定网络错误最多重试3次。",
+        "明确检查 HTTP 200或400响应中的签到状态；完整流量的 HTTP 200响应为首次签到，已签到响应按当日缓存展示流量，无缓存时提示信息有限。",
+        "展示累计签到天数、获得流量、总流量、首次签到与缓存来源统计；官方返回可公开的昵称、用户名、显示名称或公开编号时显示原值，但过滤手机号、会话格式和控制字符。",
+        "按北京时间保留当日缓存，兼容旧缓存格式；缓存异常时使用接口结果，缓存写入异常不覆盖已确认的签到结果。",
+        "支持每行一个账号、逐账号失败隔离、失败非零退出、离线预演、编号阶段日志、任务及账号统计和单行机器汇总。",
+        "所有业务结果均生成脱敏通知总结，遵循全局开关和选择名单，通过青龙现有通知模块发送；预演只模拟通知，不发生任何网络调用。"
+      ],
+      "sideEffects": [
+        "正式运行向 YBT 提交签到，服务端可能增加签到天数并发放流量。",
+        "正式首次签到成功后更新本地当日流量缓存，清除过期条目；写入内容不含原始用户名及服务器消息。",
+        "通知启用且青龙通知模块可用时发送脱敏任务结果通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/3460aa0a0b9700db",
+        "candidateSha256": "ed241ef26780764bf67a4e56971d6de3c64dc0b6b75b375a087632aebf6db533"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "ed241ef26780764bf67a4e56971d6de3c64dc0b6b75b375a087632aebf6db533",
+        "releaseSha256": "efc8da2380b9353f27dc5addc539457079a26fde9fd0ba20aed992949d7b66e8",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T06:03:15.165522+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "ed241ef26780764bf67a4e56971d6de3c64dc0b6b75b375a087632aebf6db533",
+          "toCandidateSha256": "efc8da2380b9353f27dc5addc539457079a26fde9fd0ba20aed992949d7b66e8",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "e4af0e04fafedbd8",
       "applicationKey": "yht",
       "checkProfile": {
