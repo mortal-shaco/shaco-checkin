@@ -2631,6 +2631,179 @@
       }
     },
     {
+      "catalogId": "8a735e8a8b20c238",
+      "applicationKey": "airport",
+      "checkProfile": {
+        "requiredEnv": [
+          "AIRPORT_SG_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "EMAIL",
+          "PASSWORD",
+          "BASE_URL",
+          "AIRPORT_SG_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AIRPORT_SG_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "AIRPORT_SG_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到已验证成功",
+          "今日签到已完成",
+          "最终状态：success；退出码：0"
+        ],
+        "features": [
+          "建立独立 Cookie 会话并使用邮箱密码登录 HTM 面板",
+          "每日签到并识别今日已签到，明确校验业务结果",
+          "支持换行多账号、逐账号失败隔离及旧版 EMAIL/PASSWORD/BASE_URL 单账号参数",
+          "支持普通分隔格式及逐行 JSON 账号格式，保留密码内分隔符",
+          "使用标准库实现 HTTP，启用证书校验、同源重定向限制、超时与响应大小限制",
+          "官方响应提供安全的非凭据昵称或公开身份时显示以便核对账号",
+          "完全断网预演，青龙通知开关与清单选择、脱敏统计和单行 TASK_SUMMARY 输出",
+          "保留每日计划及产品专属发布路径 scripts/airport_sg_checkin.py"
+        ],
+        "sideEffects": [
+          "正式运行时登录机场账号并建立会话",
+          "正式运行时提交每日签到并领取面板对应奖励",
+          "通知开启时调用青龙 notify.py 发送脱敏任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "机场签到（HTM面板）",
+      "path": "scripts/airport_8a735e8a8b20.py",
+      "sha256": "fe01cc63b4e8d7dcdec37221ce04bcbbfebea9e5de29c39b25001e8180c518aa",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "ternurarl/Airport-Checkin",
+        "branch": "main",
+        "commit": "766b0c579ae8448f4cdbf0802b092508b91b767c",
+        "originalPath": "main.py"
+      },
+      "cron": "22 2 * * *",
+      "command": "python3 scripts/airport_8a735e8a8b20.py",
+      "environment": [
+        {
+          "name": "AIRPORT_SG_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人机场官网注册并确认账号可正常登录；面板根地址取自浏览器地址栏。邮箱和密码使用该站注册信息。仅适用于 user-login.htm 登录及 sg_sign.htm 签到的 HTM 面板，不支持验证码或二步验证。",
+          "format": "每个非空行一个账号：HTTPS面板根地址|邮箱|密码；仅按前两个 | 切分，密码内后续 |、&、@ 原样保留。也兼容每行一个包含 url、email、password 字符串的 JSON 对象（别名 base_url/BASE_URL、EMAIL、passwd/PASSWORD）。仅换行分账号，不使用 & 或 @ 分账号。"
+        },
+        {
+          "name": "EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容：本人机场注册邮箱。仅在 AIRPORT_SG_ACCOUNTS 无非空行时，与 PASSWORD、BASE_URL 配套使用。",
+          "format": "单账号邮箱"
+        },
+        {
+          "name": "PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容：本人机场登录密码，与 EMAIL、BASE_URL 配套使用。",
+          "format": "单账号密码"
+        },
+        {
+          "name": "BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版兼容：本人机场官网地址栏中的 HTTPS 面板根地址，与 EMAIL、PASSWORD 配套使用。",
+          "format": "HTTPS 根地址，不含登录路径、账号密码、查询参数或片段"
+        },
+        {
+          "name": "AIRPORT_SG_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1；默认 0。预演不请求面板或通知服务。",
+          "format": "1/0、true/false、yes/no、on/off"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通知自动选择清单；未设置或空值默认不发送，星号选择全部。可使用目录相对路径、文件名、通配符或目录编号 8a735e8a8b20c238。",
+          "format": "以逗号、分号、空白或换行分隔，例如 scripts/airport_sg_checkin.py"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填已配置的青龙 notify.py 所在目录；默认尝试导入 notify 及脚本目录、/ql/data/scripts、/ql/scripts。",
+          "format": "本机通知模块目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；同一账号的面板地址、邮箱、密码在一行组合；仅按前两个字段分隔符切分以保留密码内容。单账号配置错误不阻断后续账号；任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "建立独立 Cookie 会话并使用邮箱密码登录 HTM 面板",
+        "每日签到并识别今日已签到，明确校验业务结果",
+        "支持换行多账号、逐账号失败隔离及旧版 EMAIL/PASSWORD/BASE_URL 单账号参数",
+        "支持普通分隔格式及逐行 JSON 账号格式，保留密码内分隔符",
+        "使用标准库实现 HTTP，启用证书校验、同源重定向限制、超时与响应大小限制",
+        "官方响应提供安全的非凭据昵称或公开身份时显示以便核对账号",
+        "完全断网预演，青龙通知开关与清单选择、脱敏统计和单行 TASK_SUMMARY 输出",
+        "保留每日计划及产品专属发布路径 scripts/airport_sg_checkin.py"
+      ],
+      "sideEffects": [
+        "正式运行时登录机场账号并建立会话",
+        "正式运行时提交每日签到并领取面板对应奖励",
+        "通知开启时调用青龙 notify.py 发送脱敏任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/8a735e8a8b20c238",
+        "candidateSha256": "3d324852332b80151ec120e89ec738f772adcb020d305f140b29f28f71a971aa"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "3d324852332b80151ec120e89ec738f772adcb020d305f140b29f28f71a971aa",
+        "releaseSha256": "fe01cc63b4e8d7dcdec37221ce04bcbbfebea9e5de29c39b25001e8180c518aa",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T03:55:56.267928+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "3d324852332b80151ec120e89ec738f772adcb020d305f140b29f28f71a971aa",
+          "toCandidateSha256": "fe01cc63b4e8d7dcdec37221ce04bcbbfebea9e5de29c39b25001e8180c518aa",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "be4fa480e7c5151e",
       "applicationKey": "aitport",
       "checkProfile": {
@@ -61599,6 +61772,160 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "fd78249b0ccdc562e1a35f96dd322eb516f8d5d88f34b7be0845cada6bee116d",
           "toCandidateSha256": "0dd909620d7d565f278d5b51d18392b751c5cb243be74d0130656ae0470a6d21",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "0909dbea8968ed50",
+      "applicationKey": "xuyan0213/script::geely",
+      "checkProfile": {
+        "requiredEnv": [
+          "geely_val"
+        ],
+        "optionalEnv": [
+          "GEELY_VAL",
+          "GEELY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "GEELY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "GEELY_SUCCESS"
+        ],
+        "features": [
+          "每天 00:01 执行吉利汽车每日签到，保留上游风控签名、请求头和日期格式；精确识别上游已有的已签到响应。",
+          "查询并展示连续签到天数。",
+          "查询并展示能量体余额。",
+          "查询 App 最新版本；查询失败沿用上游 3.25.0 回退版本，不代表业务成功。",
+          "保留 geely_val JSON 凭据及大写别名兼容，扩展为换行多账号，提供同账号配套凭据抓包说明。",
+          "完全断网预演配置、签名和三个请求的构造，不模拟真实业务成功。",
+          "独立实现 HTTPS、15秒绝对超时、响应大小限制和明确业务成功检查；账号失败不阻断其他账号。",
+          "展示官方响应中的非敏感昵称、用户名、显示名称或公开 UID，抑制凭据、手机号及原始响应。",
+          "提供分账号分阶段时间轴、任务统计和唯一单行 TASK_SUMMARY 机器汇总。",
+          "依据青龙全局开关和名单发送脱敏通知；通知失败保留业务退出码；断网预演不加载通知模块。"
+        ],
+        "sideEffects": [
+          "向吉利汽车提交每日签到，可能获得签到奖励。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "吉利汽车签到",
+      "path": "scripts/xuyan0213_script_geely.js",
+      "sha256": "61377fafd93dce1712bb1663b346bba69af360169386549598d64a7601cb4f46",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "xuyan0213/script",
+        "branch": "master",
+        "commit": "64301325a938956d92d40ea631f4439956d159ca",
+        "originalPath": "geely.js"
+      },
+      "cron": "28 1 * * *",
+      "command": "node scripts/xuyan0213_script_geely.js",
+      "environment": [
+        {
+          "name": "geely_val",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人授权设备的抓包工具中解密 app.geely.com HTTPS，登录吉利汽车 App 后打开个人中心，从 /my/getMyCenterCounts 请求头获取同一账号的 token 和 devicesn，保存到同一行 JSON。风控升级或登录失效时重新获取两项，获取后关闭抓包，不分享凭据。",
+          "format": "每个非空行是一个 JSON 对象，含非空字符串 token、devicesn；支持一个或多个账号，不能用 &、@ 分隔账号。字符串保持原样，不拆分内部内容。"
+        },
+        {
+          "name": "GEELY_VAL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版大写兼容输入，获取方法与 geely_val 相同；geely_val 非空时优先。",
+          "format": "与 geely_val 相同；规范配置优先使用 geely_val。"
+        },
+        {
+          "name": "GEELY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置为 1，启用完全断网预演。",
+          "format": "1、true、yes、on 启用；默认正式执行。预演不签到、不查询、不调用通知模块。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在全局通知模式为 auto 时设置需要通知的脚本选择器。",
+          "format": "逗号、分号或空白分隔；支持目录编号 0909dbea8968ed50、geely.js、实际文件名、脚本相对路径和文件名通配符；* 全选；空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已有青龙 sendNotify.js 所在目录；不设置时搜索标准青龙目录及脚本相邻目录。",
+          "format": "目录路径；只用于可选通知集成，不影响独立业务请求。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 JSON 对象，token 和 devicesn 必须来自同一账号；按行独立处理，任一账号配置或业务失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每天 00:01 执行吉利汽车每日签到，保留上游风控签名、请求头和日期格式；精确识别上游已有的已签到响应。",
+        "查询并展示连续签到天数。",
+        "查询并展示能量体余额。",
+        "查询 App 最新版本；查询失败沿用上游 3.25.0 回退版本，不代表业务成功。",
+        "保留 geely_val JSON 凭据及大写别名兼容，扩展为换行多账号，提供同账号配套凭据抓包说明。",
+        "完全断网预演配置、签名和三个请求的构造，不模拟真实业务成功。",
+        "独立实现 HTTPS、15秒绝对超时、响应大小限制和明确业务成功检查；账号失败不阻断其他账号。",
+        "展示官方响应中的非敏感昵称、用户名、显示名称或公开 UID，抑制凭据、手机号及原始响应。",
+        "提供分账号分阶段时间轴、任务统计和唯一单行 TASK_SUMMARY 机器汇总。",
+        "依据青龙全局开关和名单发送脱敏通知；通知失败保留业务退出码；断网预演不加载通知模块。"
+      ],
+      "sideEffects": [
+        "向吉利汽车提交每日签到，可能获得签到奖励。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0909dbea8968ed50",
+        "candidateSha256": "2f65cc0ba9767eb30f1ffcad86fdcea0758d41dca87cf3a68c45034d989ccc6c"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "2f65cc0ba9767eb30f1ffcad86fdcea0758d41dca87cf3a68c45034d989ccc6c",
+        "releaseSha256": "61377fafd93dce1712bb1663b346bba69af360169386549598d64a7601cb4f46",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-06T03:58:05.180362+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "2f65cc0ba9767eb30f1ffcad86fdcea0758d41dca87cf3a68c45034d989ccc6c",
+          "toCandidateSha256": "61377fafd93dce1712bb1663b346bba69af360169386549598d64a7601cb4f46",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
