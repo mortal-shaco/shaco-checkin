@@ -13,6 +13,19 @@ Update: 2023/7/27
 
 维护说明：本文件在保留原作者署名、签到和状态查询能力的基础上，增加了
 多账号、超时、业务成功校验、完全断网预演、脱敏日志和青龙通知集成。
+归档兼容来源：zzguang83325/Glados-Railgun-checkin，checkin.py 与 logging_config.py；
+上游提交 97109b0ca9eabb56341fe78454e54a0f6163d9db，GPL-3.0。
+Copyright (C) 上游作者及贡献者（zzguang83325/Glados-Railgun-checkin）。
+保留归档文件的 GPL 第 3 版或更高版本授权声明及无担保声明；
+本合并文件按 GPL-3.0-only 分发，与当前文件授权一致。
+GLADOS_RAILGUN_SITES 必须显式指定 glados.cloud、railgun.info（逗号保序去重），
+仅使用 GLADOS_COOKIES，每行 Cookie 明确授权用于所列站点，禁止使用默认账号回退。
+归档模式与 GLADOS_SITE 不得同时设置；空站点列表拒绝执行。
+归档模式保留状态→签到→积分→可选兑换及仅签到决定账号成功的语义。
+未声明归档站点时维持规范单站主流程；旧双站默认值因凭据隔离要求不恢复。
+GLADOS_RAILGUN_TIMEOUT 为旧超时别名（5..120，空值按 30），
+GLADOS_TIMEOUT 优先（1..60），均未设置时规范模式 15，归档模式 30。
+GLADOS_RAILGUN_DRY_RUN（含旧 y）与 GLADOS_DRY_RUN 任一开启即全局断网。
 同产品参考：jiang7f/checkin-glados，checkin.py，MIT；原来源未附额外版权声明。
 可选积分兑换参考：snowfry/Gladoscheckin-GPT-Kimi，glados_checkin.py，GPL-3.0；
 上游默认 plan500 自动兑换已改为显式 opt-in（默认 none），避免意外消费积分。
@@ -52,7 +65,7 @@ if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}
         _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('2d633fe3129937b6', 'scripts/glados.py', 'glados.py', 'glados')
+        _ql_notify_identities = ('2d633fe3129937b6', 'scripts/glados.py', 'glados.py', 'glados', '6c2dc52b4d88710b', 'scripts/glados_railgun.py', 'glados_railgun.py', 'glados_railgun')
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors
@@ -92,6 +105,7 @@ EXCHANGE_PLANS = {"plan100": 100, "plan200": 200, "plan500": 500}
 RETRIES = 0
 PROXY_URL = ""
 SECRETS: List[str] = []
+LEGACY_SITES: List[str] = []
 CHECKIN_URL = "https://glados.rocks/api/user/checkin"
 STATUS_URL = "https://glados.rocks/api/user/status"
 REFERER = "https://glados.rocks/console/checkin"
@@ -150,18 +164,44 @@ def truthy(name: str) -> bool:
 
 
 def parse_timeout() -> float:
-    raw = os.getenv("GLADOS_TIMEOUT", "15").strip()
+    legacy_timeout = "GLADOS_TIMEOUT" not in os.environ and "GLADOS_RAILGUN_TIMEOUT" in os.environ
+    name = "GLADOS_RAILGUN_TIMEOUT" if legacy_timeout else "GLADOS_TIMEOUT"
+    default = "30" if LEGACY_SITES or legacy_timeout else "15"
+    raw = os.getenv(name, default).strip()
+    if legacy_timeout and not raw:
+        raw = default
     try:
         value = float(raw)
     except ValueError:
-        raise ValueError("GLADOS_TIMEOUT 必须是数字秒数")
-    if not math.isfinite(value) or value < 1 or value > 60:
-        raise ValueError("GLADOS_TIMEOUT 必须在 1 到 60 秒之间")
+        raise ValueError(name + " 必须是数字秒数") from None
+    minimum, maximum = (5, 120) if legacy_timeout else (1, 60)
+    if not math.isfinite(value) or not minimum <= value <= maximum:
+        raise ValueError("{} 必须在 {} 到 {} 秒之间".format(name, minimum, maximum))
     return value
 
 
+def parse_legacy_sites() -> List[str]:
+    if "GLADOS_RAILGUN_SITES" not in os.environ:
+        return []
+    if "GLADOS_SITE" in os.environ:
+        raise ValueError("GLADOS_SITE 与 GLADOS_RAILGUN_SITES 不得同时设置")
+    sites = []
+    for item in os.environ["GLADOS_RAILGUN_SITES"].split(","):
+        site = item.strip().lower()
+        if not site:
+            continue
+        if site not in ("glados.cloud", "railgun.info"):
+            raise ValueError("GLADOS_RAILGUN_SITES 仅支持 glados.cloud 与 railgun.info")
+        if site not in sites:
+            sites.append(site)
+    if not sites:
+        raise ValueError("GLADOS_RAILGUN_SITES 必须显式包含有效站点")
+    return sites
+
+
 def configure() -> None:
-    global CHECKIN_URL, STATUS_URL, POINTS_URL, EXCHANGE_URL, REFERER, ORIGIN, SITE_KEY
+    global CHECKIN_URL, STATUS_URL, POINTS_URL, EXCHANGE_URL, REFERER, ORIGIN, SITE_KEY, LEGACY_SITES
+    LEGACY_SITES = parse_legacy_sites()
     global CHECKIN_TOKEN, USER_AGENT, USER_AGENT_OVERRIDE, POINTS_ENABLED, EXCHANGE_PLAN, RETRIES, PROXY_URL
     site = os.getenv("GLADOS_SITE", "rocks").strip().lower()
     if site not in ("rocks", "cloud", "railgun"):
@@ -231,12 +271,19 @@ def credential_lines(name: str) -> List[str]:
 
 def load_accounts() -> List[str]:
     """每行一个完整 Cookie；Cookie 内的 &、@、=、; 均不会分割账号。"""
-    accounts = (
-        credential_lines("GR_COOKIE")
-        or credential_lines("GLADOS_COOKIE")
-        or credential_lines("GLADOS_COOKIES")
-    )
-    if not accounts:
+    if LEGACY_SITES:
+        accounts = credential_lines("GLADOS_COOKIES")
+        if not accounts:
+            raise ValueError("归档站点必须配置 GLADOS_COOKIES，禁止回退到默认账号")
+        for cookie in accounts:
+            validate_cookie(cookie)
+    else:
+        accounts = (
+            credential_lines("GR_COOKIE")
+            or credential_lines("GLADOS_COOKIE")
+            or credential_lines("GLADOS_COOKIES")
+        )
+    if not accounts and not LEGACY_SITES:
         for prefix, cookie_name in (("GLADOS_GLD", "gld:sess"), ("GLADOS_KOA", "koa:sess")):
             sessions = credential_lines(prefix + "_SESS")
             signatures = credential_lines(prefix + "_SESS_SIG")
@@ -287,10 +334,23 @@ def request_json(
     timeout: float,
     payload: Optional[Dict[str, Any]] = None,
     user_agent: Optional[str] = None,
+    legacy_form: bool = False,
 ) -> Dict[str, Any]:
+    origin = ORIGIN
+    referer = REFERER
+    if legacy_form:
+        parsed = urllib.parse.urlsplit(url)
+        if (parsed.scheme != "https" or parsed.netloc not in LEGACY_SITES
+                or parsed.path not in ("/api/user/status", "/api/user/checkin", "/api/user/points", "/api/user/exchange")
+                or parsed.query or parsed.fragment):
+            raise RuntimeError("归档请求超出显式站点与接口边界")
+        origin = "https://" + parsed.netloc
+        referer = origin + "/"
+    elif cookie and not url.startswith(ORIGIN + "/api/user/"):
+        raise RuntimeError("请求超出规范站点边界，未发送凭据")
     headers = {
-        "Referer": REFERER,
-        "Origin": ORIGIN,
+        "Referer": referer,
+        "Origin": origin,
         "User-Agent": user_agent or USER_AGENT,
         "Accept": "application/json",
     }
@@ -298,8 +358,12 @@ def request_json(
         headers["Cookie"] = cookie
     data = None
     if payload is not None:
-        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        headers["Content-Type"] = "application/json;charset=UTF-8"
+        if legacy_form:
+            data = urllib.parse.urlencode(payload).encode("utf-8")
+            headers["Content-Type"] = "application/x-www-form-urlencoded"
+        else:
+            data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+            headers["Content-Type"] = "application/json;charset=UTF-8"
     request = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
         # 禁止重定向，避免将 Cookie 或 webhook 签名转发给其他地址。
@@ -543,6 +607,301 @@ def run_account(index: int, cookie: str, timeout: float, dry_run: bool) -> Dict[
             "elapsed": elapsed, "errors": errors, "metrics": metrics}
 
 
+# 以下兼容分支来源于随任务提供的 GPL-3.0 归档文件。
+ICONS = {"success": "✅", "alreadyComplete": "☑️", "skipped": "⏭️", "warning": "⚠️", "failure": "❌"}
+
+
+def legacy_request_json(method, url, cookie, timeout, form=None, user_agent=None):
+    return request_json(method, url, cookie, timeout, form, user_agent, legacy_form=True)
+
+
+def legacy_extract_identity(data: Dict[str, Any]) -> Optional[str]:
+    for key in ("nickname", "displayName", "username", "name", "email", "uid", "id"):
+        value = data.get(key)
+        if type(value) in (str, int) and str(value).strip():
+            identity = str(value).strip()
+            if any(ord(c) < 32 or ord(c) == 127 for c in identity):
+                continue
+            if safe_business_text(identity, len(identity)) != identity:
+                continue
+            return identity
+    return None
+
+
+def legacy_query_status(domain: str, cookie: str, timeout: float, ua: str) -> Tuple[str, Optional[str]]:
+    url = "https://{}/api/user/status".format(domain)
+    payload = legacy_request_json("GET", url, cookie, timeout, user_agent=ua)
+    code = payload.get("code")
+    if code is not None and not (type(code) in (int, str) and code in (0, "0")):
+        raise RuntimeError("状态查询业务失败")
+    data = payload.get("data")
+    if not isinstance(data, dict):
+        raise RuntimeError("状态响应缺少 data")
+    left = data.get("leftDays")
+    if left is None:
+        raise RuntimeError("状态响应缺少剩余天数")
+    days = numeric(left, "剩余天数")
+    return "{} 天".format(days), legacy_extract_identity(data)
+
+
+def legacy_classify_checkin(payload: Dict[str, Any]) -> Tuple[str, str, str]:
+    code = payload.get("code")
+    message = str(payload.get("message") or payload.get("msg") or "")
+    points = str(numeric(payload.get("points", 0), "签到积分"))
+    if type(code) in (int, str) and code in (0, "0"):
+        return "success", "签到成功", points
+    if type(code) in (int, str) and code in (1, "1"):
+        return "alreadyComplete", "重复签到", "0"
+    if code in (4, "4") and payload.get("reason") == "device-mismatch":
+        device = str(payload.get("loginDevice") or "")
+        raise RuntimeError("设备平台不匹配:{}".format(safe_business_text(device or "未知")))
+    raise RuntimeError("签到业务失败")
+
+
+def legacy_perform_checkin(
+    domain: str,
+    cookie: str,
+    timeout: float,
+    ua_cache: Dict[str, str],
+) -> Tuple[str, str, str, str]:
+    url = "https://{}/api/user/checkin".format(domain)
+    form = {"token": domain}
+    start_ua = ua_cache.get("_last") or USER_AGENT
+    payload = legacy_request_json("POST", url, cookie, timeout, form=form, user_agent=start_ua)
+    if payload.get("code") in (4, "4") and payload.get("reason") == "device-mismatch":
+        login_device = str(payload.get("loginDevice") or "")
+        recover = ua_cache.get(login_device) or PLATFORM_UA.get(login_device)
+        if recover and recover != start_ua and not USER_AGENT_OVERRIDE:
+            if login_device in PLATFORM_UA:
+                ua_cache[login_device] = PLATFORM_UA[login_device]
+            payload = legacy_request_json("POST", url, cookie, timeout, form=form, user_agent=recover)
+            start_ua = recover
+    outcome, message, points = legacy_classify_checkin(payload)
+    if outcome in ("success", "alreadyComplete"):
+        ua_cache["_last"] = start_ua
+    return outcome, message, points, start_ua
+
+
+def legacy_query_points(domain: str, cookie: str, timeout: float, ua: str) -> str:
+    url = "https://{}/api/user/points".format(domain)
+    payload = legacy_request_json("GET", url, cookie, timeout, user_agent=ua)
+    code = payload.get("code")
+    if code is not None and not (type(code) in (int, str) and code in (0, "0")):
+        raise RuntimeError("积分查询业务失败")
+    points = payload.get("points")
+    if points is None:
+        raise RuntimeError("积分响应缺少 points")
+    value = numeric(points, "积分")
+    return "{} 积分".format(value)
+
+
+def legacy_perform_exchange(
+    domain: str,
+    cookie: str,
+    timeout: float,
+    ua: str,
+    plan: str,
+) -> Tuple[str, str]:
+    url = "https://{}/api/user/exchange".format(domain)
+    payload = legacy_request_json(
+        "POST",
+        url,
+        cookie,
+        timeout,
+        form={"planType": plan},
+        user_agent=ua,
+    )
+    code = payload.get("code")
+    if type(code) in (int, str) and code in (0, "0"):
+        return "success", "兑换成功:{}".format(plan)
+    return "failure", "兑换失败"
+
+
+def legacy_run_stage(
+    prefix: str,
+    name: str,
+    dry_run: bool,
+    action,
+) -> Tuple[str, str]:
+    started = time.monotonic()
+    log("{} {}开始".format(prefix, name))
+    try:
+        if dry_run:
+            log(
+                "{} {} {}（{:.2f}秒）".format(
+                    prefix, ICONS["skipped"], "断网预演：已校验配置，未发起网络请求", time.monotonic() - started
+                )
+            )
+            return "skipped", "断网预演跳过"
+        outcome, message = action()
+        icon = ICONS.get(outcome, ICONS["success"])
+        log("{} {} {}（{:.2f}秒）".format(prefix, icon, message, time.monotonic() - started))
+        return outcome, message
+    except RuntimeError as exc:
+        message = safe_business_text(exc)
+        log("{} {} {}（{:.2f}秒）".format(prefix, ICONS["failure"], message, time.monotonic() - started))
+        return "failure", message
+    except Exception:
+        message = "处理失败"
+        log("{} {} {}（{:.2f}秒）".format(prefix, ICONS["failure"], message, time.monotonic() - started))
+        return "failure", message
+
+
+def legacy_run_account(
+    index: int,
+    cookie: str,
+    sites: List[str],
+    exchange_plan: str,
+    timeout: float,
+    dry_run: bool,
+) -> Dict[str, Any]:
+    started = time.monotonic()
+    identity = "账号{}".format(index)
+    stats = {"total": 0, "success": 0, "already": 0, "skipped": 0, "failed": 0}
+    errors: List[str] = []
+    domain_ok = 0
+    print("\n========== {} ==========".format(identity), flush=True)
+
+    stages_per_domain = 3 + (1 if exchange_plan != "none" else 0)
+    total_stages = len(sites) * stages_per_domain
+    stage_no = 0
+
+    for domain in sites:
+        ua_cache: Dict[str, str] = {}
+        current_ua = USER_AGENT
+        log("[账号{}] 站点 {} 开始".format(index, domain))
+
+        stage_no += 1
+        prefix = "[账号{}][{}/{}]".format(index, stage_no, total_stages)
+        stats["total"] += 1
+
+        def status_action(domain=domain, ua=current_ua):
+            days, found = legacy_query_status(domain, cookie, timeout, ua)
+            nonlocal identity
+            if found:
+                identity = found
+                return "success", "身份：{}；剩余：{}".format(found, days)
+            return "success", "剩余：{}".format(days)
+
+        outcome, message = legacy_run_stage(prefix, "查询剩余天数", dry_run, status_action)
+        if outcome == "skipped":
+            stats["skipped"] += 1
+        elif outcome == "success":
+            stats["success"] += 1
+        else:
+            stats["failed"] += 1
+            errors.append("{}:{}".format(domain, message))
+            # 状态失败不阻断签到
+
+        stage_no += 1
+        prefix = "[账号{}][{}/{}]".format(index, stage_no, total_stages)
+        stats["total"] += 1
+        checkin_outcome = "failure"
+
+        def checkin_action(domain=domain):
+            nonlocal current_ua, checkin_outcome
+            outcome_local, msg, points, used_ua = legacy_perform_checkin(domain, cookie, timeout, ua_cache)
+            current_ua = used_ua
+            checkin_outcome = outcome_local
+            detail = msg if points in ("0", "") else "{}，获得 {} 积分".format(msg, points)
+            return outcome_local, detail
+
+        outcome, message = legacy_run_stage(prefix, "执行签到", dry_run, checkin_action)
+        if outcome == "skipped":
+            stats["skipped"] += 1
+            domain_ok += 1
+        elif outcome == "alreadyComplete":
+            stats["already"] += 1
+            domain_ok += 1
+        elif outcome == "success":
+            stats["success"] += 1
+            domain_ok += 1
+        else:
+            stats["failed"] += 1
+            errors.append("{}:{}".format(domain, message))
+
+        stage_no += 1
+        prefix = "[账号{}][{}/{}]".format(index, stage_no, total_stages)
+        stats["total"] += 1
+
+        def points_action(domain=domain, ua=current_ua):
+            return "success", "总积分：{}".format(legacy_query_points(domain, cookie, timeout, ua))
+
+        outcome, message = legacy_run_stage(prefix, "查询总积分", dry_run, points_action)
+        if outcome == "skipped":
+            stats["skipped"] += 1
+        elif outcome == "success":
+            stats["success"] += 1
+        else:
+            stats["failed"] += 1
+            errors.append("{}:{}".format(domain, message))
+
+        if exchange_plan != "none":
+            stage_no += 1
+            prefix = "[账号{}][{}/{}]".format(index, stage_no, total_stages)
+            stats["total"] += 1
+            required = EXCHANGE_PLANS[exchange_plan]
+
+            def exchange_action(domain=domain, ua=current_ua, plan=exchange_plan):
+                # 仅在签到成功或已签到后尝试兑换；失败计入统计但不否决账号签到结果
+                if checkin_outcome not in ("success", "alreadyComplete"):
+                    return "skipped", "签到未成功，跳过兑换"
+                outcome_local, msg = legacy_perform_exchange(domain, cookie, timeout, ua, plan)
+                if outcome_local != "success":
+                    return "failure", "{}（需要约 {} 积分）".format(msg, required)
+                return "success", msg
+
+            outcome, message = legacy_run_stage(
+                prefix,
+                "积分兑换 {}".format(exchange_plan),
+                dry_run,
+                exchange_action,
+            )
+            if outcome == "skipped":
+                stats["skipped"] += 1
+            elif outcome == "success":
+                stats["success"] += 1
+            else:
+                stats["failed"] += 1
+                errors.append("{}:{}".format(domain, message))
+                log(
+                    "[账号{}] {} 兑换未成功，不影响签到业务判定".format(
+                        index, ICONS["warning"]
+                    )
+                )
+
+    elapsed = time.monotonic() - started
+    # 账号成功：每个配置站点的签到均为成功/重复（或断网预演跳过）；状态/积分/兑换失败不否决
+    ok = domain_ok == len(sites)
+    if dry_run and ok:
+        result = "DRY_RUN"
+    elif ok:
+        result = "SUCCESS"
+    else:
+        result = "FAILED"
+    log(
+        "[账号{}] 身份={}；结果={}；总任务={}，成功={}，已完成={}，跳过={}，失败={}，耗时={:.2f}秒".format(
+            index,
+            identity,
+            result,
+            stats["total"],
+            stats["success"],
+            stats["already"],
+            stats["skipped"],
+            stats["failed"],
+            elapsed,
+        )
+    )
+    return {
+        "index": index,
+        "identity": identity,
+        "ok": ok,
+        "stats": stats,
+        "elapsed": elapsed,
+        "errors": errors,
+    }
+
+
 def notification_selected() -> bool:
     if "QINGLONG_NOTIFY_SCRIPTS" not in os.environ:
         return True
@@ -554,6 +913,7 @@ def notification_selected() -> bool:
     names = {
         CATALOG_ID, Path(__file__).name, "candidate.py", "checkin.py",
         "glados.py", "glados_checkin.py", "scripts/glados.py", script_path,
+        "6c2dc52b4d88710b", "scripts/glados_railgun.py", "glados_railgun.py", "glados_railgun",
     }
     for selector in selectors:
         if selector == "*":
@@ -564,10 +924,12 @@ def notification_selected() -> bool:
 
 
 def notification_enabled() -> bool:
-    value = os.getenv("QINGLONG_NOTIFY", "auto").strip().lower()
-    if value in FALSE_VALUES:
+    if LEGACY_SITES and "QINGLONG_NOTIFY" not in os.environ and "QINGLONG_NOTIFY_SCRIPTS" not in os.environ:
         return False
-    if value not in TRUE_VALUES and value != "auto":
+    value = os.getenv("QINGLONG_NOTIFY", "auto").strip().lower()
+    if value in FALSE_VALUES or (LEGACY_SITES and value == "n"):
+        return False
+    if value not in TRUE_VALUES and value != "auto" and not (LEGACY_SITES and value == "y"):
         log("⚠️ QINGLONG_NOTIFY 值无效，按 auto 处理")
     return notification_selected()
 
@@ -686,7 +1048,7 @@ def print_summary(summary: Dict[str, Any]) -> None:
 def main() -> int:
     overall_started = time.monotonic()
     started_at = now_text()
-    dry_run = truthy("GLADOS_DRY_RUN")
+    dry_run = truthy("GLADOS_DRY_RUN") or os.getenv("GLADOS_RAILGUN_DRY_RUN", "").strip().lower() in TRUE_VALUES | {"y"}
     print("=" * 56)
     print("{} | 独立维护版".format(TASK_NAME))
     print("开始时间：{}".format(started_at))
@@ -723,13 +1085,18 @@ def main() -> int:
 
     log("账号数量：{}".format(len(accounts)))
     log("站点：{}；积分查询：{}；兑换计划：{}；超时：{}秒；重试：{}".format(
-        SITE_KEY,
-        "开" if POINTS_ENABLED else "关",
+        ",".join(LEGACY_SITES) if LEGACY_SITES else SITE_KEY,
+        "开" if LEGACY_SITES or POINTS_ENABLED else "关",
         EXCHANGE_PLAN,
         int(timeout) if timeout == int(timeout) else timeout,
         RETRIES,
     ))
-    results = [run_account(i, cookie, timeout, dry_run) for i, cookie in enumerate(accounts, 1)]
+    if LEGACY_SITES:
+        log("归档显式站点：{}；仅使用 GLADOS_COOKIES；按签到结果判定账号".format(",".join(LEGACY_SITES)))
+        results = [legacy_run_account(i, cookie, LEGACY_SITES, EXCHANGE_PLAN, timeout, dry_run)
+                   for i, cookie in enumerate(accounts, 1)]
+    else:
+        results = [run_account(i, cookie, timeout, dry_run) for i, cookie in enumerate(accounts, 1)]
     account_success = sum(1 for item in results if item["ok"])
     account_failed = len(results) - account_success
     task_stats = {

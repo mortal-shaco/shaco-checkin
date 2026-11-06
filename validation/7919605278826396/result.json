@@ -1,15 +1,22 @@
 {
   "catalogId": "7919605278826396",
-  "candidateSha256": "0c9b8437b982f841c89ec842ef9e1b42e74e03a79a4cada3f037a8fbea982bfb",
+  "candidateSha256": "aae884631343266625324192a50dff74bb264f17179d84558e1ab86f13e0fb80",
   "mode": "basic",
   "exitCode": 0,
   "businessResult": "not-verified",
-  "testedAt": "2026-11-04T10:18:24.697726+00:00",
+  "testedAt": "2026-11-06T13:21:13.890771+00:00",
   "checks": [
     "exact-hash",
     "syntax",
     "provenance",
     "license",
     "usage-documentation"
-  ]
+  ],
+  "withdrawnAggregationOffline": {
+    "mode": "offline-mock",
+    "checksPassed": 24,
+    "releaseSha256": "aeee2e4867ca1a7f90e6b115b6c14eb6c4e6344ea02de238c6fcb52ad33d46e7",
+    "businessResult": "not-verified",
+    "testedAt": "2026-11-06T13:27:52.085578+00:00"
+  }
 }

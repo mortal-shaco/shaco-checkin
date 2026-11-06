@@ -28,21 +28,71 @@
  * Copyright (c) 2025 wyf9
  * Copyright (c) 2026 Qinglong maintained adaptation
  *
- * MIT License — see upstream LICENSE.
+ * 兼容归档：wyf9/hayfrp-auto-sign · src/index.ts + src/utils.ts
+ * 提交：f9b99a6c6465b276772ab7d4621ed49fde0aa4f5 · MIT
+ * 归档目录 ID：81b701d12d5b39f2
+ * 兼容规则：共享全部 HAYFRP_* 账号与选项，接收旧通知选择器；仅 HTTPS 可传输凭据。
+ * 保留逐账号登录、签到、可选 Discord、账号间隔、最终青龙通知的原顺序。
+ * 归档独立 Cron 34 1 * * * 合并到规范路径 scripts/task_2c89474a.js。
+ *
+ * MIT License
+ * Copyright (c) 2025 wyf9
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 'use strict';
 
 // qinglong-notification-policy: begin
 (() => {
-  const raw = process.env.QINGLONG_NOTIFY;
-  if (raw !== undefined && String(raw).trim() !== '' && String(raw).trim().toLowerCase() !== 'auto') return;
+  if (process.env.QINGLONG_NOTIFY !== undefined) return;
   const selection = process.env.QINGLONG_NOTIFY_SCRIPTS;
   let enabled = false;
   if (selection !== undefined) {
-    const selectors = selection.trim().toLowerCase().split(/[,;\s]+/).filter(Boolean);
-    const identities = ["2c89474a11ce9592", "scripts/task_2c89474a.js", "task_2c89474a.js", "task_2c89474a"];
+    const selectors = selection
+      .trim()
+      .toLowerCase()
+      .split(/[,;\s]+/)
+      .filter(Boolean);
+    const identities = [
+      '2c89474a11ce9592',
+      '81b701d12d5b39f2',
+      'scripts/task_81b701d1.js',
+      'task_81b701d1.js',
+      'task_81b701d1',
+      'scripts/task_2c89474a.js',
+      'task_2c89474a.js',
+      'task_2c89474a',
+      'hayfrp-auto-sign',
+      'scripts/hayfrp_auto_sign.js',
+      'hayfrp_auto_sign.js',
+      'hayfrp-auto-sign.js',
+      'hayfrp',
+      'candidate.js',
+    ];
     enabled = selectors.some((selector) => {
-      const pattern = '^' + selector.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
+      const pattern =
+        '^' +
+        selector
+          .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+          .replace(/\*/g, '.*')
+          .replace(/\\\?/g, '.') +
+        '$';
       return identities.some((identity) => new RegExp(pattern).test(identity));
     });
   }
@@ -51,7 +101,6 @@
 // qinglong-notification-policy: end
 
 const https = require('node:https');
-const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const { URL } = require('node:url');
@@ -83,7 +132,7 @@ const nowText = () =>
   })
     .format(new Date())
     .replace(/\//g, '-');
-const log = (text) => console.log(`[${stamp()}] ${text}`);
+const log = (text) => console.log(`[${stamp()}] ${redact(text)}`);
 const enabled = (value) => /^(1|true|yes|on)$/i.test(String(value || '').trim());
 const disabled = (value) => /^(0|false|no|off)$/i.test(String(value || '').trim());
 
@@ -103,6 +152,7 @@ function redact(value) {
     /(password|passwd|token|csrf|authorization|cookie)=([^&\s,;]+)/gi,
     '$1=[已隐藏]'
   );
+  text = text.replace(/\bBearer\s+[A-Za-z0-9._~+/=-]+/gi, 'Bearer [已隐藏]');
   text = text.replace(/https:\/\/discord(?:app)?\.com\/api\/webhooks\/\S+/gi, '[Webhook已隐藏]');
   text = text.replace(/\+?\d[\d ()-]{8,}\d/g, '[号码已隐藏]');
   return text;
@@ -122,6 +172,15 @@ function apiBaseUrl() {
   return raw.endsWith('/') ? raw.slice(0, -1) : raw;
 }
 
+function isHttpsUrl(raw) {
+  try {
+    const url = new URL(raw);
+    return url.protocol === 'https:' && Boolean(url.hostname) && !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
 function webhookConfigured() {
   const raw = String(process.env.HAYFRP_WEBHOOK_URL || '').trim();
   if (!raw || /^disabled$/i.test(raw)) return '';
@@ -131,7 +190,7 @@ function webhookConfigured() {
 function notificationSelected() {
   if (disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
-  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return false; /* listed-only default */
+  if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
   const raw = process.env.QINGLONG_NOTIFY_SCRIPTS;
   if (String(raw).trim() === '') return false;
   const selectors = String(raw).split(/[,;\s]+/).filter(Boolean);
@@ -139,6 +198,14 @@ function notificationSelected() {
   const filename = path.basename(process.argv[1] || 'candidate.js');
   const names = [
     CATALOG_ID,
+    '81b701d12d5b39f2',
+    'scripts/task_81b701d1.js',
+    'task_81b701d1.js',
+    'task_81b701d1',
+    'scripts/task_2c89474a.js',
+    'task_2c89474a.js',
+    'task_2c89474a',
+    'hayfrp-auto-sign',
     'scripts/hayfrp_auto_sign.js',
     'hayfrp_auto_sign.js',
     'hayfrp-auto-sign.js',
@@ -169,6 +236,7 @@ function parseAccounts(raw) {
     .map((line) => line.trim())
     .filter(Boolean);
   return lines.map((line, index) => {
+    remember(line);
     let label = '';
     let credential = line;
     const pipe = line.indexOf('|');
@@ -206,16 +274,15 @@ function httpRequest(urlString, { method = 'GET', headers = {}, body = null } = 
     } catch {
       return fail('invalid-url');
     }
-    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return fail('invalid-url');
-    const lib = parsed.protocol === 'https:' ? https : http;
+    if (!isHttpsUrl(urlString)) return fail('invalid-url');
     const payload = body == null ? null : Buffer.from(String(body), 'utf8');
     const reqHeaders = { ...headers };
     if (payload) reqHeaders['Content-Length'] = String(payload.length);
-    const req = lib.request(
+    const req = https.request(
       {
         protocol: parsed.protocol,
         hostname: parsed.hostname,
-        port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
+        port: parsed.port || 443,
         path: parsed.pathname + parsed.search,
         method,
         headers: reqHeaders,
@@ -328,7 +395,7 @@ async function doSign(account) {
   if (!token || typeof token !== 'string') throw new Error('login-business:未返回 csrf token');
   remember(token);
 
-  const identityFields = ['username', 'nickname', 'name', 'uid', 'id', 'user'];
+  const identityFields = ['username', 'nickname', 'name', 'uid', 'id', 'user', 'displayName'];
   let officialIdentity = '';
   for (const field of identityFields) {
     const value = login[field];
@@ -371,7 +438,7 @@ async function doSign(account) {
 async function sendDiscordWebhook(payload, dryRun) {
   const url = webhookConfigured();
   if (!url) return '未配置 Discord Webhook';
-  if (!/^https:\/\//i.test(url)) throw new Error('webhook-insecure');
+  if (!isHttpsUrl(url)) throw new Error('webhook-insecure');
   if (dryRun) return 'Webhook 预演已跳过真实投递（断网）';
   remember(url);
   const resp = await fetchWithRetry(url, {
@@ -533,7 +600,7 @@ async function processAccount(account, dryRun, summary) {
         {
           embeds: [
             {
-              title,
+              title: redact(title),
               description: redact(note),
             },
           ],
@@ -601,17 +668,17 @@ async function main() {
   }
 
   const apiUrl = apiBaseUrl();
-  if (!/^https:\/\//i.test(apiUrl)) {
+  if (!isHttpsUrl(apiUrl)) {
     configurationError = true;
-    log('❌ 配置错误：HAYFRP_API_URL 必须是 https:// 开头');
+    log('❌ 配置错误：HAYFRP_API_URL 必须是合法 HTTPS 地址且不含内嵌用户名密码');
   } else {
-    log(`API 地址：${apiUrl}`);
+    log(`API 地址：${new URL(apiUrl).origin}（路径及查询已隐藏）`);
   }
 
   const webhook = webhookConfigured();
-  if (webhook && !/^https:\/\//i.test(webhook)) {
+  if (webhook && !isHttpsUrl(webhook)) {
     configurationError = true;
-    log('❌ 配置错误：HAYFRP_WEBHOOK_URL 必须是 https:// 开头（或 disabled）');
+    log('❌ 配置错误：HAYFRP_WEBHOOK_URL 必须是合法 HTTPS 地址且不含内嵌用户名密码（或 disabled）');
   } else if (webhook) {
     log('Discord Webhook：已配置（地址已脱敏）');
   }

@@ -1,7 +1,17 @@
 #!/usr/bin/env python3
 # name: 森空岛每日任务
 # cron: 33 1 * * *
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-3.0
+# publish-path: scripts/skland_daily.py
+# 合并作品采用 GPL-3.0；下列原 MIT 许可与署名继续保留。
+# 归档来源：CN-Grace/QinglongScripts contributors，skyland.py（MIT）。
+# Original attribution: CN-Grace/QinglongScripts contributors.
+# 归档来源：f1owkang/QingSkyland，skyland.py（MIT）。
+# 归档 GPL 声明原文：
+# Derived from nuthx/auto-sign, skland/skland-demo.py and skland/SecuritySm.py.
+# Upstream GPL-3.0 attribution retained; original source comments retained below.
+# 本文件为自由软件，依据 GNU 通用公共许可证第 3 版分发；不提供任何担保。
+# GPL-3.0 许可文本：https://www.gnu.org/licenses/gpl-3.0.html
 # 合并来源：AdiEcho/skyland-auto-sign-ql，skyland.py，Author: AdiEcho，Update: 2026/1/29
 # 来源提交：2497b43c9b764e054dadd2dd86e354dacaffc840
 # 终末地接口交叉参考：e02ed814df52c998、0bde30a1db078051（MIT）。
@@ -37,7 +47,17 @@
 既可作为青龙面板的定时任务运行，也可在命令行独立运行。
 
 环境变量及获取方法:
-    SKLAND_TOKEN 必填规范账号变量，每个非空行一个账号，禁止用分号、逗号、&或@分隔账号。
+    SKLAND_TOKEN 为规范账号入口，每个非空行一个账号，禁止用分号、逗号、&或@分隔账号。
+    兼容 SKYLAND_TOKEN、SKLAND_ACCOUNTS（空时 TOKEN）、SKYLAND_TOKENS；按此顺序追加去重。
+    旧组通行证原文以及 JSON token/data.content 始终作为完整通行证换取授权，
+    只有规范原文 cred:token 或显式 cred/token JSON 使用直接会话凭据。
+    SKLAND_ACTION=sign 显式开启两款游戏；SKLAND_GAMES 筛选，不设置动作仍为社区任务。
+    SKLAND_ACTION=send-code 只发送短信；JSON phone/code 用于已有短信码登录。
+    SKLAND_REFRESH=1 才刷新；SKYLAND_TOKEN_FILE 同时 SKYLAND_READ_FILE=1 才只读当前目录内文件。
+    两个 DRY_RUN 变量或 --dry-run 均断网，预演不读凭据文件、不调用通知模块。
+    SKYLAND_MODE、SKYLAND_SILENT_OK、USE_PROXY、NOTIFY_TITLE 保留归档语义。
+    EXIT_WHEN_FAIL 为旧配置兼容输入；任何账号失败仍以非零退出。
+    完整兼容细则与账号参数说明见随交付的 contract.json。
       登录官方鹰角通行证网页后，在开发者工具中查看本人登录响应里的 token；
       或在森空岛官方客户端抓取本人授权响应的 cred 和 token，写为 cred:token；
       也支持单行 JSON {"cred":"本人凭据","token":"本人签名凭据"}，
@@ -55,7 +75,7 @@
     SKLAND_ACTIONS=attendance,endfield 可运行上游两种游戏签到，调度可设 30 8 * * *。
     终末地自动读取绑定接口中的 roles，无需另配角色凭据；单角色失败继续其余角色。
     SKLAND_ZONE_IDS 只筛选社区版区，不筛选游戏绑定角色。
-    SKYLAND_TYPE 为原脚本未使用的兼容变量，无业务效果。
+    SKYLAND_TYPE 仅在旧 SKLAND_ACCOUNTS/TOKEN 输入且未设置 SKLAND_ACTION 时兼容 sign/send-code。
     SKLAND_VIEW_COUNT / SKLAND_LIKE_COUNT / SKLAND_SHARE_COUNT 默认 5/10/1。
     SKLAND_NOTIFY_URL 可选 HTTPS 自有通知服务，发送脱敏 JSON 汇总。
     SKLAND_DRY_RUN=1 完全断网，只校验配置和模拟流程，不登录、不发通知请求。
@@ -64,7 +84,7 @@
 
 命令行:
     python3 candidate.py [--dry-run] [--actions checkin,view] [--zones 1,2]
-建议每天 08:00 运行；上游未给出定时表达式。分享接口只记任务次数，不发布文本。
+规范调度为 33 1 * * *；归档独立调度不再新增。分享接口只记任务次数，不发布文本。
 
 退出码:
     0 全部账号成功；1 存在失败或配置错误，便于定时任务判断执行结果。
@@ -73,14 +93,13 @@
 import fnmatch as _ql_notify_fnmatch
 import os as _ql_notify_os
 import re as _ql_notify_re
-_ql_notify_raw = _ql_notify_os.environ.get("QINGLONG_NOTIFY")
-if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}:
+if "QINGLONG_NOTIFY" not in _ql_notify_os.environ:
     _ql_notify_selection = _ql_notify_os.environ.get("QINGLONG_NOTIFY_SCRIPTS")
     if _ql_notify_selection is None:
         _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('96b3c22e1eff9659', 'scripts/skland_daily.py', 'skland_daily.py', 'skland_daily')
+        _ql_notify_identities = ('96b3c22e1eff9659', 'scripts/skland_daily.py', 'skland_daily.py', 'skland_daily', '0bde30a1db078051', 'scripts/skyland.py', 'skyland.py', 'skyland', 'd82ea23b9575791b', 'scripts/skland_demo.py', 'skland_demo.py', 'skland_demo', 'e02ed814df52c998', 'scripts/f1owkang_qingskyland_skyland.py', 'f1owkang_qingskyland_skyland.py', 'scripts/qingskyland_attendance.py', 'qingskyland_attendance.py')
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors
@@ -91,6 +110,8 @@ if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}
 
 import argparse
 import base64
+import gzip
+import uuid
 import hashlib
 import hmac
 import json
@@ -109,7 +130,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 from urllib.parse import urlencode
 
-from urllib.request import Request, build_opener, HTTPRedirectHandler
+from urllib.request import Request, build_opener, HTTPRedirectHandler, ProxyHandler
 from urllib.error import HTTPError, URLError
 
 
@@ -123,9 +144,10 @@ class NoRedirect(HTTPRedirectHandler):
 
 
 class HttpResponse:
-    def __init__(self, status, body):
+    def __init__(self, status, body, headers=None):
         self.status_code = status
         self.body = body
+        self.headers = headers or {}
 
     def json(self):
         return json.loads(self.body.decode("utf-8"))
@@ -139,6 +161,8 @@ class HttpClient:
     """标准库 HTTP 实现：TLS 校验、超时、响应大小限制、禁止重定向。"""
     def request(self, method, url, *, params=None, data=None, headers=None,
                 timeout=30, allow_redirects=False, json=None):
+        if offline_mode():
+            raise HttpFailure("预演禁止网络请求")
         if params:
             url += ("&" if "?" in url else "?") + params
         headers = dict(headers or {})
@@ -150,14 +174,14 @@ class HttpClient:
         request = Request(url, data=data, headers=headers, method=method)
         try:
             try:
-                response = build_opener(NoRedirect()).open(request, timeout=timeout)
+                response = build_opener(NoRedirect(), *proxy_handlers()).open(request, timeout=timeout)
             except HTTPError as exc:
                 response = exc
             with response:
                 body = response.read(2097153)
                 if len(body) > 2097152:
                     raise HttpFailure("响应过大")
-                return HttpResponse(response.code, body)
+                return HttpResponse(response.code, body, dict(response.headers))
         except (URLError, OSError, ValueError):
             raise HttpFailure("网络请求失败") from None
 
@@ -417,6 +441,10 @@ class Account:
 
     configuration_error: str = ""
     entry: str = ""
+    code: str = ""
+    device_protocol: str = "current"
+    passport_only: bool = False
+    time_offset: float = 0.0
     phone: str = ""
     password: str = ""
     cred: str = ""
@@ -486,10 +514,29 @@ class Config:
 
     @classmethod
     def from_env(cls, args: argparse.Namespace) -> "Config":
+        explicit_action = compatibility_action()
         actions = _split_entries(args.actions) if args.actions else _split_entries(
             _env("SKLAND_ACTIONS", "checkin,view")
         )
-        unknown = [a for a in actions if a not in ALL_ACTIONS]
+        if explicit_action == "send-code":
+            if args.actions or _env("SKLAND_ACTIONS"):
+                raise SklandError("send-code 不能与 SKLAND_ACTIONS 或 --actions 同时设置")
+            actions = ["send-code"]
+        elif not args.actions and not _env("SKLAND_ACTIONS") and explicit_action == "sign":
+            games = _env("SKLAND_GAMES", "arknights,endfield").split(",")
+            if not games or any(g not in ("arknights", "endfield") for g in games):
+                raise SklandError("SKLAND_GAMES 只支持 arknights,endfield")
+            actions = [a for g, a in (("arknights", ACTION_ATTENDANCE), ("endfield", ACTION_ENDFIELD)) if g in games]
+        elif _env("SKLAND_GAMES"):
+            games = _env("SKLAND_GAMES").split(",")
+            if any(g not in ("arknights", "endfield") for g in games):
+                raise SklandError("SKLAND_GAMES 只支持 arknights,endfield")
+            actions = [a for a in actions if not (a == ACTION_ATTENDANCE and "arknights" not in games or a == ACTION_ENDFIELD and "endfield" not in games)]
+        if _env("SKYLAND_MODE", "auto") not in ("auto", "qinglong", "hermes"):
+            raise SklandError("SKYLAND_MODE 只支持 auto、qinglong、hermes")
+        flag("SKLAND_REFRESH")
+        flag("SKYLAND_READ_FILE")
+        unknown = [a for a in actions if a not in ALL_ACTIONS + ("send-code",)]
         if unknown or not actions:
             raise SklandError(
                 "SKLAND_ACTIONS 只能是 {} 的组合，当前为 {!r}".format(
@@ -500,9 +547,9 @@ class Config:
         zone_ids = _split_entries(args.zones) if args.zones else _split_entries(_env("SKLAND_ZONE_IDS"))
 
         did = _env("SKLAND_DID")
-        accounts = _env_accounts()
+        accounts = compatible_accounts()
         for account in accounts:
-            account.did = did
+            account.did = account.did or did
 
         return cls(
             accounts=accounts,
@@ -536,29 +583,33 @@ class SklandClient:
 
     def authenticate(self) -> None:
         """换取可用的 cred 与签名 token。重复调用是安全的。"""
+        if self.account.device_protocol == "legacy0":
+            calibrate_time(self)
         if not self.account.did:
-            self.account.did = fetch_device_id()
+            self.account.did = compatible_device(self.account)
         source = self.account.entry or self._login_by_password()
         entry = self._unwrap(source)
-        direct = self._direct_credential(entry)
+        direct = None if self.account.passport_only else self._direct_credential(entry)
         if direct is None:
             direct = self._exchange_credential(entry)
         self.account.cred, self.account.token, self.account.user_id = direct
+        SECRETS.extend(v for v in (self.account.cred, self.account.token, self.account.did) if v)
 
     def _login_by_password(self) -> str:
         """用手机号与密码换取鹰角通行证 token。"""
-        payload = {"phone": self.account.phone, "password": self.account.password}
+        use_code = bool(self.account.code and not self.account.password)
+        payload = {"phone": self.account.phone, "code" if use_code else "password": self.account.code if use_code else self.account.password}
         data = self._send(
             "POST",
-            "{}/user/auth/v1/token_by_phone_password".format(HYPERGRYPH_BASE),
-            headers={"user-agent": APP_USER_AGENT, "content-type": "application/json"},
+            HYPERGRYPH_BASE + ("/user/auth/v2/token_by_phone_code" if use_code else "/user/auth/v1/token_by_phone_password"),
+            headers={"user-agent": APP_USER_AGENT, "content-type": "application/json", "dId": self.account.did},
             body=compact_json(payload),
             action="登录鹰角通行证",
         )
-        if data.get("status") != 0:
+        if type(data.get("status")) is not int or data.get("status") != 0:
             raise SklandError("登录鹰角通行证失败：{}".format("业务状态不为零"))
         token = (data.get("data") or {}).get("token")
-        if not token:
+        if not isinstance(token, str) or not token:
             raise SklandError("登录鹰角通行证失败：响应中缺少 token")
         return str(token)
 
@@ -610,10 +661,10 @@ class SklandClient:
             body=compact_json(payload),
             action="登录鹰角通行证",
         )
-        if data.get("status") != 0:
+        if type(data.get("status")) is not int or data.get("status") != 0:
             raise SklandError("登录鹰角通行证失败：{}".format("业务状态不为零"))
         code = (data.get("data") or {}).get("code")
-        if not code:
+        if not isinstance(code, str) or not code:
             raise SklandError("登录鹰角通行证失败：响应中缺少授权码")
         return str(code)
 
@@ -636,14 +687,14 @@ class SklandClient:
             body=body,
             action="换取森空岛凭据",
         )
-        if data.get("code") != 0:
+        if type(data.get("code")) is not int or data.get("code") != 0:
             raise SklandApiError(
                 "换取森空岛凭据失败：{}".format("业务状态不为零"),
                 code=data.get("code"),
             )
         result = data.get("data") or {}
         cred, token = result.get("cred"), result.get("token")
-        if not cred or not token:
+        if not all(isinstance(v, str) and v for v in (cred, token)):
             raise SklandError("换取森空岛凭据失败：响应中缺少 cred 或 token")
         for key in ("nickname", "username", "displayName"):
             identity = result.get(key)
@@ -693,6 +744,7 @@ class SklandClient:
                             )
                         )
                     else:
+                        remember_response_secrets(payload)
                         stamp("{}：HTTP {}，已解析响应".format(action, response.status_code))
                         return payload
 
@@ -719,6 +771,7 @@ class SklandClient:
             did=self.account.did,
             query=query,
             body=body,
+            now=int(time.time() + self.account.time_offset),
         )
         if extra_headers:
             # 仅允许游戏角色路由头；签名、凭据和签名公共头不能被覆盖。
@@ -737,7 +790,7 @@ class SklandClient:
             params=urlencode(query or {}) or None,
             action=action,
         )
-        if payload.get("code") != 0:
+        if type(payload.get("code")) is not int or payload.get("code") != 0:
             raise SklandApiError(
                 "{}失败：{}".format(action, "业务状态不为零"),
                 code=payload.get("code"),
@@ -848,13 +901,35 @@ class DailyTasks:
 
     def run(self) -> AccountReport:
         report = AccountReport(account=self.client.account)
-        if self._wants(ACTION_ATTENDANCE):
+        selected = set(self.config.actions)
+        if compatibility_action() == "sign":
+            try:
+                games = self._binding_data().get("list")
+                if not isinstance(games, list):
+                    raise SklandError("绑定游戏列表结构异常")
+                available = set()
+                for game in games:
+                    if not isinstance(game, dict):
+                        report.attendance.append({"ok": False, "message": "绑定游戏结构异常"})
+                        continue
+                    if game.get("appCode") in ("arknights", "endfield"):
+                        if not isinstance(game.get("bindingList"), list):
+                            report.attendance.append({"ok": False, "message": "绑定列表结构异常"})
+                        elif game["bindingList"]:
+                            available.add(ACTION_ATTENDANCE if game["appCode"] == "arknights" else ACTION_ENDFIELD)
+                selected = {a for a in selected if a not in (ACTION_ATTENDANCE, ACTION_ENDFIELD) or a in available}
+                if not selected.intersection((ACTION_ATTENDANCE, ACTION_ENDFIELD)):
+                    report.attendance.append({"ok": False, "message": "没有所选游戏的可签到角色"})
+            except Exception:
+                report.attendance.append({"ok": False, "message": "绑定游戏列表结构异常"})
+                return report
+        if ACTION_ATTENDANCE in selected:
             try:
                 with stage("获取绑定角色及明日方舟签到"):
                     self._attendance(report)
             except Exception:
                 report.attendance.append({"ok": False, "message": "绑定角色接口或签到结构异常"})
-        if self._wants(ACTION_ENDFIELD):
+        if ACTION_ENDFIELD in selected:
             try:
                 with stage("获取绑定角色及终末地签到"):
                     self._endfield(report)
@@ -889,9 +964,14 @@ class DailyTasks:
             report.zones.append(self._run_zone(zone, checked))
         return report
 
+    def _binding_data(self):
+        if not hasattr(self, "_bindings_cache"):
+            self._bindings_cache = self.client.get("/api/v1/game/player/binding", action="获取游戏绑定角色")
+        return self._bindings_cache
+
     def _attendance(self, report: AccountReport) -> None:
         """原始游戏签到：逐角色独立执行，业务码与奖励结构均须有效。"""
-        data = self.client.get("/api/v1/game/player/binding", action="获取游戏绑定角色")
+        data = self._binding_data()
         games = data.get("list")
         if not isinstance(games, list):
             raise SklandError("绑定角色列表结构无效")
@@ -906,7 +986,8 @@ class DailyTasks:
                 parent_game_id = game.get("gameId")
                 for binding in bindings:
                     if not isinstance(binding, dict):
-                        raise SklandError("绑定角色结构无效")
+                        report.attendance.append({"ok": False, "message": "绑定角色结构无效"})
+                        continue
                     item = dict(binding)
                     if item.get("gameId") in (None, "") and parent_game_id not in (None, ""):
                         item["gameId"] = parent_game_id
@@ -933,7 +1014,7 @@ class DailyTasks:
                         json_body={"gameId": game_id, "uid": character["uid"]},
                         action="明日方舟角色签到")
                     awards = result.get("awards")
-                    if not isinstance(awards, list) or not awards:
+                    if not isinstance(awards, list) or (not awards and self.client.account.device_protocol == "current"):
                         raise SklandError("签到响应缺少有效奖励列表，无法核验奖励")
                     rewards = []
                     for award in awards:
@@ -959,7 +1040,7 @@ class DailyTasks:
 
     def _endfield(self, report: AccountReport) -> None:
         """终末地签到：保留上游空请求体、角色路由头和奖励映射契约。"""
-        data = self.client.get("/api/v1/game/player/binding", action="获取终末地绑定角色")
+        data = self._binding_data()
         games = data.get("list")
         if not isinstance(games, list):
             raise SklandError("绑定角色列表结构无效")
@@ -1006,7 +1087,7 @@ class DailyTasks:
                                 },
                                 action="终末地角色签到")
                             award_ids, resources = result.get("awardIds"), result.get("resourceInfoMap")
-                            if not isinstance(award_ids, list) or not award_ids or not isinstance(resources, dict):
+                            if not isinstance(award_ids, list) or (not award_ids and self.client.account.device_protocol == "current") or not isinstance(resources, dict):
                                 raise SklandError("终末地签到响应缺少有效奖励映射")
                             rewards = []
                             for award in award_ids:
@@ -1262,7 +1343,7 @@ STAGE_NUMBER = 0
 
 
 def stamp(message: str) -> None:
-    print("[{}] {}".format(time.strftime("%H:%M:%S"), message), flush=True)
+    print("[{}] {}".format(time.strftime("%H:%M:%S"), safe_text(message)), file=log_stream(), flush=True)
 
 
 @contextmanager
@@ -1281,7 +1362,7 @@ def stage(name: str):
         stamp("✅ 阶段 {} 完成，耗时 {:.2f} 秒".format(number, time.monotonic() - started))
 
 
-def parse_account(entry: str) -> Account:
+def parse_current_account(entry: str) -> Account:
     if entry.startswith("{"):
         try:
             value = json.loads(entry)
@@ -1330,40 +1411,32 @@ def qinglong_notify(content: str, dry_run: bool, url: str = "") -> str:
         stamp("⏭️ 预演通知摘要已生成，断网模式不调用通知渠道")
         return "预演仅本地摘要"
     delivered = False
-    try:
+    title = safe_text(_env("NOTIFY_TITLE", "森空岛每日任务"))
+    if hermes_mode() and not (_env("SKYLAND_SILENT_OK").lower() == "on" and "状态：success；" in content):
+        print(title + "\n" + safe_text(content), flush=True)
+    for path in notification_files():
         try:
-            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
-                module = importlib.import_module("notify")
-        except ImportError:
-            module = None
-        if module is None or not callable(getattr(module, "send", None)):
-            paths = []
-            if _env("QINGLONG_NOTIFY_DIR"):
-                paths.append(Path(_env("QINGLONG_NOTIFY_DIR")) / "notify.py")
-            paths.extend([Path("/ql/data/scripts/notify.py"), Path("/ql/scripts/notify.py")])
-            for path in paths:
-                if path.is_file():
-                    spec = importlib.util.spec_from_file_location("qinglong_notification", path)
-                    module = importlib.util.module_from_spec(spec)
-                    with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
-                        spec.loader.exec_module(module)
-                    if callable(getattr(module, "send", None)):
-                        break
-        if module is not None and callable(getattr(module, "send", None)):
             with notification_timeout(), redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
-                module.send("森空岛每日任务", content)
+                spec = importlib.util.spec_from_file_location("qinglong_notification", path)
+                module = importlib.util.module_from_spec(spec)
+                old_path = sys.path[:]
+                try:
+                    sys.path.insert(0, str(path.parent))
+                    spec.loader.exec_module(module)
+                    module.send(title, safe_text(content))
+                finally:
+                    sys.path[:] = old_path
             delivered = True
-        else:
-            stamp("⚠️ 青龙通知模块不可用，保留业务退出码")
-    except Exception:
-        stamp("⚠️ 青龙通知失败，保留业务退出码")
+            break
+        except Exception:
+            stamp("⚠️ 青龙通知失败，继续其他发现位置并保留业务退出码")
     if url:
         try:
             from urllib.parse import urlsplit
             parsed = urlsplit(url)
             if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
                 raise ValueError
-            response = HttpClient.post(url, json={"title": "森空岛每日任务", "content": content},
+            response = HttpClient.post(url, json={"title": title, "content": safe_text(content)},
                                      timeout=10, allow_redirects=False)
             if not 200 <= response.status_code < 300:
                 raise ValueError
@@ -1398,9 +1471,11 @@ def account_stats(report: AccountReport, config: Config) -> Dict[str, int]:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
+    global OFFLINE_OVERRIDE
+    OFFLINE_OVERRIDE = False
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     started = time.monotonic()
-    dry_run = _env("SKLAND_DRY_RUN").lower() in ("1", "true", "yes", "on")
+    dry_run = offline_mode()
     stamp("========== 森空岛每日任务 ==========")
     stamp("开始时间：" + time.strftime("%Y-%m-%d %H:%M:%S"))
     config = None
@@ -1412,6 +1487,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     try:
         args = parse_args(argv)
         dry_run = dry_run or args.dry_run
+        OFFLINE_OVERRIDE = dry_run
         stamp("运行模式：" + ("断网预演" if dry_run else "正式执行"))
         with stage("校验配置"):
             config = Config.from_env(args)
@@ -1437,9 +1513,15 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 client = SklandClient(account)
                 try:
                     with stage("账号登录"):
-                        client.authenticate()
+                        if "send-code" in config.actions:
+                            send_phone_code(client)
+                        else:
+                            client.authenticate()
+                            if flag("SKLAND_REFRESH"):
+                                refresh_token(client)
                         stamp("账号 {}：{}".format(index, account.label))
-                    report = DailyTasks(client, config).run()
+                    report = (AccountReport(account=account, attendance=[{"ok": True, "message": "验证码发送成功"}])
+                              if "send-code" in config.actions else DailyTasks(client, config).run())
                 except SklandError as exc:
                     report = AccountReport(account=account, error=str(exc))
                 except Exception:
@@ -1458,7 +1540,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             stamp("账号 {} 统计：总任务 {total}，成功 {success}，已完成 {alreadyComplete}，跳过 {skipped}，失败 {failed}；耗时 {:.2f} 秒".format(
                 index, time.monotonic() - account_start, **stats))
         code = 0 if succeeded == count else 1
-        status = "dry-run" if dry_run else "success" if code == 0 else "partial-failure" if succeeded else "failure"
+        status = "dry-run" if dry_run and code == 0 else "success" if code == 0 else "partial-failure" if succeeded else "failure"
     except SklandError as exc:
         stamp("❌ 配置错误：" + str(exc))
     except SystemExit as exc:
@@ -1485,7 +1567,559 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     print("TASK_SUMMARY=" + compact_json({"status": status, "dryRun": dry_run,
           "accounts": count, "success": succeeded, "failed": failed, "exitCode": code,
           "accountResults": account_results, "taskStatistics": totals, "notification": notification}))
+    OFFLINE_OVERRIDE = False
     return code
+
+
+# 查询dId请求头
+devices_info_url = "https://fp-it.portal101.cn/deviceprofile/v4"
+
+# 数美配置
+SM_CONFIG = {
+    "organization": "UWXspnCCJN4sfYlNfqps",
+    "appId": "default",
+    "publicKey": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCmxMNr7n8ZeT0tE1R9j/mPixoinPkeM+k4VGIn/s0k7N5rJAfnZ0eMER+QhwFvshzo0LNmeUkpR8uIlU/GEVr8mN28sKmwd2gpygqj0ePnBmOW4v0ZVwbSYK+izkhVFk2V/doLoMbWy6b+UnA8mkjvg0iYWRByfRsK2gdl7llqCwIDAQAB",
+    "protocol": "https",
+    "apiHost": "fp-it.portal101.cn"
+}
+
+
+
+DES_RULE = {
+    "appId": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "uy7mzc4h",
+        "obfuscated_name": "xx"
+    },
+    "box": {
+        "is_encrypt": 0,
+        "obfuscated_name": "jf"
+    },
+    "canvas": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "snrn887t",
+        "obfuscated_name": "yk"
+    },
+    "clientSize": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "cpmjjgsu",
+        "obfuscated_name": "zx"
+    },
+    "organization": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "78moqjfc",
+        "obfuscated_name": "dp"
+    },
+    "os": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "je6vk6t4",
+        "obfuscated_name": "pj"
+    },
+    "platform": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "pakxhcd2",
+        "obfuscated_name": "gm"
+    },
+    "plugins": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "v51m3pzl",
+        "obfuscated_name": "kq"
+    },
+    "pmf": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "2mdeslu3",
+        "obfuscated_name": "vw"
+    },
+    "protocol": {
+        "is_encrypt": 0,
+        "obfuscated_name": "protocol"
+    },
+    "referer": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "y7bmrjlc",
+        "obfuscated_name": "ab"
+    },
+    "res": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "whxqm2a7",
+        "obfuscated_name": "hf"
+    },
+    "rtype": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "x8o2h2bl",
+        "obfuscated_name": "lo"
+    },
+    "sdkver": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "9q3dcxp2",
+        "obfuscated_name": "sc"
+    },
+    "status": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "2jbrxxw4",
+        "obfuscated_name": "an"
+    },
+    "subVersion": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "eo3i2puh",
+        "obfuscated_name": "ns"
+    },
+    "svm": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "fzj3kaeh",
+        "obfuscated_name": "qr"
+    },
+    "time": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "q2t3odsk",
+        "obfuscated_name": "nb"
+    },
+    "timezone": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "1uv05lj5",
+        "obfuscated_name": "as"
+    },
+    "tn": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "x9nzj1bp",
+        "obfuscated_name": "py"
+    },
+    "trees": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "acfs0xo4",
+        "obfuscated_name": "pi"
+    },
+    "ua": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "k92crp1t",
+        "obfuscated_name": "bj"
+    },
+    "url": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "y95hjkoo",
+        "obfuscated_name": "cf"
+    },
+    "version": {
+        "is_encrypt": 0,
+        "obfuscated_name": "version"
+    },
+    "vpw": {
+        "cipher": "DES",
+        "is_encrypt": 1,
+        "key": "r9924ab5",
+        "obfuscated_name": "ca"
+    }
+}
+
+BROWSER_ENV = {
+    'plugins': 'MicrosoftEdgePDFPluginPortableDocumentFormatinternal-pdf-viewer1,MicrosoftEdgePDFViewermhjfbmdgcfjbbpaeojofohoefgiehjai1',
+    'ua': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0',
+    'canvas': '259ffe69',  # 基于浏览器的canvas获得的值，不知道复用行不行
+    'timezone': -480,  # 时区，应该是固定值吧
+    'platform': 'Win32',
+    'url': 'https://www.skland.com/',  # 固定值
+    'referer': '',
+    'res': '1920_1080_24_1.25',  # 屏幕宽度_高度_色深_window.devicePixelRatio
+    'clientSize': '0_0_1080_1920_1920_1080_1920_1080',
+    'status': '0011',  # 不知道在干啥
+}
+
+
+# // 将浏览器环境对象的key全部排序，然后对其所有的值及其子对象的值加入数字并字符串相加。若值为数字，则乘以10000(0x2710)再将其转成字符串存入数组,最后再做md5,存入tn变量（tn变量要做加密）
+# //把这个对象用加密规则进行加密，然后对结果做GZIP压缩（结果是对象，应该有序列化），最后做AES加密（加密细节目前不清除），密钥为变量priId
+# //加密规则：新对象的key使用相对应加解密规则的obfuscated_name值，value为字符串化后进行进行DES加密，再进行btoa加密
+
+# 通过测试
+def _DES(o: dict):
+    result = {}
+    for i in o.keys():
+        if i in DES_RULE.keys():
+            rule = DES_RULE[i]
+            res = o[i]
+            if rule['is_encrypt'] == 1:
+                c = Cipher(TripleDES(rule['key'].encode('utf-8')), ECB())
+                data = str(res).encode('utf-8')
+                # 补足字节
+                data += b'\x00' * (8 - len(data) % 8)
+                res = base64.b64encode(c.encryptor().update(data)).decode('utf-8')
+            result[rule['obfuscated_name']] = res
+        else:
+            result[i] = o[i]
+    return result
+
+
+# 通过测试
+def _AES(v: bytes, k: bytes):
+    iv = '0102030405060708'
+    key = AES(k)
+    c = Cipher(key, CBC(iv.encode('utf-8')))
+    c.encryptor()
+    # 填充明文
+    v += b'\x00'
+    while len(v) % 16 != 0:
+        v += b'\x00'
+    return c.encryptor().update(v).hex()
+
+
+def GZIP(o: dict):
+    # 这个压缩结果似乎和前台不太一样,不清楚是否会影响
+    json_str = json.dumps(o, ensure_ascii=False, **({"separators": (",", ":")} if DEVICE_COMPACT else {}))
+    stream = gzip.compress(json_str.encode('utf-8'), 2, mtime=0)
+    return base64.b64encode(stream)
+
+
+# 获得tn的值,后续做DES加密用
+# 通过测试
+def get_tn(o: dict):
+    sorted_keys = sorted(o.keys())
+
+    result_list = []
+
+    for i in sorted_keys:
+        v = o[i]
+        if isinstance(v, (int, float)):
+            v = str(v * 10000)
+        elif isinstance(v, dict):
+            v = get_tn(v)
+        result_list.append(v)
+    return ''.join(result_list)
+
+
+def get_smid():
+    t = time.localtime(time.time() + DEVICE_TIME_OFFSET)
+    _time = '{}{:0>2d}{:0>2d}{:0>2d}{:0>2d}{:0>2d}'.format(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min,
+                                                           t.tm_sec)
+    uid = str(uuid.uuid4())
+    v = _time + hashlib.md5(uid.encode('utf-8')).hexdigest() + '00'
+    smsk_web = hashlib.md5(('smsk_web_' + v).encode('utf-8')).hexdigest()[0:14]
+    return v + smsk_web + '0'
+
+
+def get_d_id():
+    # storageName = '.thumbcache_' + md5(SM_CONFIG['organization']) // 用于从本地存储获得值
+    # uid = uuid()
+    # priId=md5(uid)[0:16]
+    # ep=rsa(uid,publicKey)
+    # SMID = localStorage.get(storageName);// 获得本地存储存的值
+    # _0x30b2eb为递归md5
+
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import padding
+    global Cipher, TripleDES, AES, CBC, ECB
+    from cryptography.hazmat.primitives.ciphers.base import Cipher
+    from cryptography.hazmat.decrepit.ciphers.algorithms import TripleDES
+    from cryptography.hazmat.primitives.ciphers.algorithms import AES
+    from cryptography.hazmat.primitives.ciphers.modes import CBC, ECB
+    PK = serialization.load_der_public_key(base64.b64decode(SM_CONFIG['publicKey']))
+    uid = str(uuid.uuid4()).encode('utf-8')
+    priId = hashlib.md5(uid).hexdigest()[0:16]
+    # ep不一定对，先走走看
+    ep = PK.encrypt(uid, padding.PKCS1v15())
+    ep = base64.b64encode(ep).decode('utf-8')
+
+    browser = BROWSER_ENV.copy()
+    current_time = int(time.time() * 1000)
+    browser.update({
+        'vpw': str(uuid.uuid4()),
+        'svm': current_time,
+        'trees': str(uuid.uuid4()),
+        'pmf': current_time
+    })
+
+    des_target = {
+        **browser,
+        'protocol': 102,
+        'organization': SM_CONFIG['organization'],
+        'appId': SM_CONFIG['appId'],
+        'os': 'web',
+        'version': '3.0.0',
+        'sdkver': '3.0.0',
+        'box': '',  # 似乎是个SMID，但是第一次的时候是空,不过不影响结果
+        'rtype': 'all',
+        'smid': get_smid(),
+        'subVersion': '1.0.0',
+        'time': 0
+    }
+    des_target['tn'] = hashlib.md5(get_tn(des_target).encode()).hexdigest()
+
+    des_result = _AES(GZIP(_DES(des_target)), priId.encode('utf-8'))
+
+    resp = http_json(devices_info_url, 'POST', {
+        'appId': 'default', 'compress': 2, 'data': des_result, 'encode': 5,
+        'ep': ep, 'organization': SM_CONFIG['organization'], 'os': 'web'
+    })
+    require_device_code(resp)
+    if not isinstance(resp.get('detail'), dict) or not resp['detail'].get('deviceId'):
+        raise SklandError('设备接口缺少必需字段')
+    # 开头必须是B
+    return 'B' + resp['detail']['deviceId']
+
+
+# 兼容规则：规范账号优先处理，随后按旧变量顺序追加并按解析后的凭据去重。
+# 旧账号变量本身不选择游戏；显式 SKLAND_ACTION=sign 或 SKLAND_ACTIONS 选择游戏。
+# SKYLAND_TYPE 仅在使用 SKLAND_ACCOUNTS/TOKEN 且未设置 SKLAND_ACTION 时解释。
+# 文件必须同时指定 SKYLAND_READ_FILE=1，预演从不读取凭据文件。
+SECRETS = []
+OFFLINE_OVERRIDE = False
+DEVICE_COMPACT = False
+DEVICE_TIME_OFFSET = 0.0
+DEVICE_CACHE = {}
+
+
+def offline_mode():
+    return OFFLINE_OVERRIDE or any(_env(k).lower() in ("1", "true", "yes", "on") for k in ("SKLAND_DRY_RUN", "SKYLAND_DRY_RUN")) or "--dry-run" in sys.argv[1:]
+
+
+def flag(name):
+    value = _env(name, "0").lower()
+    if value not in ("0", "false", "no", "off", "1", "true", "yes", "on"):
+        raise SklandError(name + " 需要布尔开关")
+    return value in ("1", "true", "yes", "on")
+
+
+def proxy_handlers():
+    # 当前入口保持原代理行为；旧 Hermes 入口默认关闭系统代理。
+    legacy = bool(_env("SKYLAND_TOKENS") or _env("SKYLAND_TOKEN_FILE"))
+    if "USE_PROXY" in os.environ or legacy:
+        return [] if _env("USE_PROXY").lower() == "on" else [ProxyHandler({})]
+    return []
+
+
+def compatibility_action():
+    action = _env("SKLAND_ACTION")
+    if not action and (_env("SKLAND_ACCOUNTS") or _env("TOKEN")):
+        action = _env("SKYLAND_TYPE")
+    if action and action not in ("sign", "send-code"):
+        raise SklandError("SKLAND_ACTION / SKYLAND_TYPE 只支持 sign 或 send-code；不写入凭据")
+    return action
+
+
+def parse_account(entry):
+    SECRETS.append(entry)
+    value = None
+    if entry.startswith("{"):
+        try:
+            value = json.loads(entry)
+        except ValueError:
+            raise SklandError("账号 JSON 无效，必须每行一个对象") from None
+        if not isinstance(value, dict):
+            raise SklandError("账号 JSON 必须是对象")
+        SECRETS.extend(v for k, v in value.items() if k in ("cred", "token", "phone", "password", "code", "did") and isinstance(v, str))
+        did = value.get("did", "")
+        if "did" in value and (not isinstance(did, str) or not did.strip() or any(c in did for c in "\r\n")):
+            raise SklandError("did 必须是非空单行字符串")
+        if "cred" in value and "token" in value:
+            account = parse_current_account(entry)
+        elif isinstance(value.get("data"), dict):
+            token = value["data"].get("content")
+            if not isinstance(token, str) or not token.strip():
+                raise SklandError("data.content 必须是非空字符串")
+            account = Account(entry=token.strip(), passport_only=True)
+        elif "token" in value:
+            token = value["token"]
+            if not isinstance(token, str) or not token.strip():
+                raise SklandError("token 必须是非空字符串")
+            account = Account(entry=token.strip(), passport_only=True)
+        elif compatibility_action() == "send-code":
+            if not isinstance(value.get("phone"), str) or not value["phone"].strip():
+                raise SklandError("send-code 需要同一行 JSON 的 phone")
+            account = Account(phone=value["phone"])
+        elif "code" in value and "password" not in value:
+            if not all(isinstance(value.get(k), str) and value[k].strip() for k in ("phone", "code")):
+                raise SklandError("短信登录需要同一行的 phone 与 code")
+            account = Account(phone=value["phone"], code=value["code"])
+        else:
+            account = parse_current_account(entry)
+        account.did = did
+    else:
+        account = parse_current_account(entry)
+    if compatibility_action() == "send-code" and not account.phone:
+        raise SklandError("发送验证码只接受明确手机号，不从 Token 推断")
+    SECRETS.extend(v for v in (account.entry, account.phone, account.password, account.code, account.did) if v)
+    direct = SklandClient._direct_credential(account.entry)
+    if direct:
+        SECRETS.extend(direct[:2])
+    if any(c in (account.did or _env("SKLAND_DID")) for c in "\r\n"):
+        raise SklandError("设备标识必须为单行文本")
+    return account
+
+
+def compatible_accounts():
+    accounts = _env_accounts()
+    entries = []
+    for name, protocol in (("SKYLAND_TOKEN", "legacy0"), ("SKLAND_ACCOUNTS", "legacyd"), ("SKYLAND_TOKENS", "legacye")):
+        raw = _env(name)
+        if name == "SKLAND_ACCOUNTS" and not raw:
+            raw = _env("TOKEN")
+        entries.extend((line.strip(), protocol) for line in raw.splitlines() if line.strip())
+    filename = _env("SKYLAND_TOKEN_FILE")
+    if filename and not flag("SKYLAND_READ_FILE"):
+        raise SklandError("凭据文件读取需显式设置 SKYLAND_READ_FILE=1")
+    if filename and not offline_mode():
+        try:
+            path = Path(filename).expanduser().resolve()
+            path.relative_to(Path.cwd().resolve())
+            if not path.is_file() or path.stat().st_size > 1048576:
+                raise ValueError
+            lines = path.read_text(encoding="utf-8").splitlines()
+        except (OSError, ValueError, UnicodeError):
+            raise SklandError("凭据文件必须为当前目录内可读的普通小文件") from None
+        entries.extend((line.strip(), "legacye") for line in lines if line.strip() and not line.strip().startswith("#"))
+    elif filename:
+        # 预演不读真实文件；仅文件输入不能声称已验证账号格式。
+        if not accounts and not entries:
+            raise SklandError("预演不读取凭据文件，请提供虚构环境账号验证格式")
+    for entry, protocol in entries:
+        try:
+            account = parse_account(entry)
+            account.device_protocol = protocol
+            if not entry.startswith("{"):
+                account.passport_only = True
+        except SklandError as exc:
+            account = Account(configuration_error=str(exc))
+        accounts.append(account)
+    unique, seen = [], set()
+    for account in accounts:
+        SECRETS.extend(v for v in (account.phone, account.password, account.code, account.did, _env("SKLAND_DID"), _env("SKLAND_NOTIFY_URL")) if v)
+        # 相同通行证原文与官方 JSON 去重；不同 did/账密协议不盲目合并。
+        entry = SklandClient._unwrap(account.entry)
+        direct = None if account.passport_only else SklandClient._direct_credential(entry)
+        key = (direct[:2] if direct else entry, account.phone, account.password, account.code, account.did)
+        if account.configuration_error or key not in seen:
+            unique.append(account)
+            seen.add(key)
+    return unique
+
+
+def safe_text(value):
+    value = str(value)
+    for secret in sorted(set(SECRETS), key=len, reverse=True):
+        if secret:
+            value = value.replace(secret, "[凭据已隐藏]")
+    return "".join(c if c.isprintable() or c == "\n" else " " for c in value)
+
+
+def notification_files():
+    paths = []
+    if _env("QINGLONG_NOTIFY_DIR"):
+        paths.append(Path(_env("QINGLONG_NOTIFY_DIR")) / "notify.py")
+    paths.extend([Path(__file__).resolve().parent / "notify.py", Path("/ql/data/scripts/notify.py"), Path("/ql/scripts/notify.py")])
+    try:
+        spec = importlib.util.find_spec("notify")
+        if spec and spec.origin:
+            paths.append(Path(spec.origin))
+    except (ImportError, ValueError):
+        pass
+    return list(dict.fromkeys(p.resolve() for p in paths if p.is_file()))
+
+
+def hermes_mode():
+    mode = _env("SKYLAND_MODE", "auto")
+    if mode == "auto":
+        # 只在旧 Hermes 输入出现时启用自动判定，保持规范入口日志流。
+        return bool(_env("SKYLAND_TOKENS") or _env("SKYLAND_TOKEN_FILE")) and not notification_files()
+    return mode == "hermes"
+
+
+def log_stream():
+    return sys.stderr if hermes_mode() else sys.stdout
+
+
+def require_device_code(resp):
+    if not isinstance(resp, dict) or type(resp.get("code")) is not int or resp["code"] != 1100:
+        raise SklandError("设备服务业务失败")
+
+
+def http_json(url, method="GET", body=None):
+    response = HttpClient().request(method, url, json=body, headers={"User-Agent": WEB_USER_AGENT}, timeout=15)
+    response.raise_for_status()
+    return response.json()
+
+
+def compatible_device(account):
+    global DEVICE_COMPACT, DEVICE_TIME_OFFSET
+    if account.device_protocol == "current":
+        return fetch_device_id()
+    if account.device_protocol == "legacy0" and "legacy0" in DEVICE_CACHE:
+        return DEVICE_CACHE["legacy0"]
+    DEVICE_COMPACT = account.device_protocol == "legacy0"
+    DEVICE_TIME_OFFSET = account.time_offset
+    try:
+        result = get_d_id()
+    except ImportError:
+        raise SklandError("旧设备协议需要 cryptography>=43；不自动安装或降级设备协议") from None
+    finally:
+        DEVICE_COMPACT = False
+        DEVICE_TIME_OFFSET = 0.0
+    SECRETS.append(result)
+    if account.device_protocol == "legacy0":
+        DEVICE_CACHE["legacy0"] = result
+    return result
+
+
+def calibrate_time(client):
+    import email.utils
+    try:
+        response = client.session.request("HEAD", ZONAI_BASE + "/", timeout=10)
+        response.raise_for_status()
+        value = response.headers.get("Date") or response.headers.get("date")
+        client.account.time_offset = email.utils.parsedate_to_datetime(value).timestamp() - time.time()
+    except Exception:
+        client.account.time_offset = 0.0
+        stamp("时间校准不可用，使用本地时间")
+
+
+def send_phone_code(client):
+    if not client.account.phone:
+        raise SklandError("send-code 需要明确手机号")
+    if not client.account.did:
+        client.account.did = compatible_device(client.account)
+    payload = client._send("POST", HYPERGRYPH_BASE + "/general/v1/send_phone_code",
+        headers={"dId": client.account.did, "content-type": "application/json"},
+        body=compact_json({"phone": client.account.phone, "type": 2}), action="显式发送短信验证码")
+    if type(payload.get("status")) is not int or payload["status"] != 0:
+        raise SklandError("发送验证码业务失败")
+
+
+def refresh_token(client):
+    data = client.get("/web/v1/auth/refresh", action="显式刷新签名令牌")
+    token = data.get("token")
+    if not isinstance(token, str) or not token:
+        raise SklandError("刷新响应缺少签名令牌")
+    client.account.token = token
+    SECRETS.append(token)
+
+def remember_response_secrets(value):
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if key in ("cred", "token", "code", "deviceId", "password", "phone", "did", "dId") and isinstance(item, str):
+                SECRETS.append(item)
+            elif isinstance(item, (dict, list)):
+                remember_response_secrets(item)
+    elif isinstance(value, list):
+        for item in value:
+            remember_response_secrets(item)
 
 
 if __name__ == "__main__":

@@ -3,11 +3,16 @@
 # cron: 18 */6 * * *
 # 来源: AkiyaKiko/EhentaiAutoSignIn, autosignin.py
 # 上游提交: eee89e605d9a2a4312d5b8466388fa19e5c8b8a0
+# 合并来源: zephyr_xiao（基于 AkiyaKiko/EhentaiAutoSignIn 改写），MIT
+# 归档目录 ID: e083167c5e868b00，上游镜像 zephyr-xiao/qinglong-script
+# 归档上游提交: 8117361cd9a9cfaa93ffe93b9ccc90016c12e422
 # 许可证: MIT（任务提供的 effectiveLicense；输入未附单独版权声明）
 """E_COOKIE 每个非空行填写一个账号的完整 Cookie，保留分号内各字段。
 登录 E-Hentai 后从浏览器开发者工具 news.php 请求头获取 Cookie，至少包含
 ipb_member_id 与 ipb_pass_hash。E_PROXY、E_USER_AGENT 保持上游兼容。
-E_DRY_RUN=1 完全断网预演；不请求服务或通知提供方。不会写回 Cookie。
+E_DRY_RUN=1 完全断网预演；不请求服务或通知提供方。默认不写回 Cookie。E_COOKIE_CACHE=1 显式启用私密缓存；
+E_COOKIE_FILE 指定路径，默认脚本旁 ehentai_cookie.txt；环境变量优先。
+仅成功核验且白名单字段变化时原子写入权限 600 的缓存；预演不读写。
 QINGLONG_NOTIFY=auto|1|0；auto 时仅 QINGLONG_NOTIFY_SCRIPTS 命中本脚本才推送。
 
 MIT License
@@ -38,7 +43,7 @@ if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}
         _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('7919605278826396', 'scripts/autosignin.py', 'autosignin.py', 'autosignin')
+        _ql_notify_identities = ('7919605278826396', 'scripts/autosignin.py', 'autosignin.py', 'autosignin', 'e083167c5e868b00', 'scripts/akiyakiko_ehentaiautosignin.py', 'akiyakiko_ehentaiautosignin.py', 'akiyakiko_ehentaiautosignin')
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors
@@ -58,6 +63,8 @@ import os
 from pathlib import Path
 import re
 import ssl
+import stat
+import tempfile
 import subprocess
 import time
 import urllib.error
@@ -104,7 +111,8 @@ class Page(html.parser.HTMLParser):
         href = attrs.get('href', '')
         parsed = urllib.parse.urlparse(href)
         if (tag == 'a' and parsed.hostname == 'forums.e-hentai.org'
-                and re.search(r'(?:\?|&)showuser=\d+(?:&|$)', href)):
+                and re.search(r'(?:\?|&)showuser=\d+(?:&|$)', href)
+                and re.search(r'logged (?:in|on) as\s*:?\s*$', ' '.join(self.parts[-4:]), re.I)):
             self.identity_depth = self.depth
 
     def handle_endtag(self, tag):
@@ -131,16 +139,77 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def validate_cookie(line):
-    fields = {}
-    for part in line.split(';'):
-        if '=' in part:
-            key, value = part.strip().split('=', 1)
-            fields[key] = value
-    if any(c in line for c in '\r\n\x00'):
-        raise ValueError('Cookie 含非法控制字符')
-    if not all(fields.get(key) for key in ('ipb_member_id', 'ipb_pass_hash')):
-        raise ValueError('Cookie 缺少 ipb_member_id 或 ipb_pass_hash')
-    return fields
+    if any(ord(c) < 32 or ord(c) > 126 for c in line):
+        raise ValueError("Cookie 必须是单行可打印 ASCII 请求头")
+    values = {}
+    for field in line.split(";"):
+        field = field.strip()
+        if not field:
+            continue
+        key, sep, value = field.partition("=")
+        key, value = key.strip(), value.strip()
+        if not sep or not re.fullmatch(r"[!#$%&'*+.^_`|~0-9A-Za-z-]+", key) or not value:
+            raise ValueError("Cookie 格式错误，请复制完整请求 Cookie")
+        if key in values:
+            raise ValueError("Cookie 存在重复字段，请重新复制单个账号 Cookie")
+        values[key] = value
+    if not all(values.get(k) for k in ("ipb_member_id", "ipb_pass_hash")):
+        raise ValueError("Cookie 缺少 ipb_member_id 或 ipb_pass_hash")
+    return values
+
+
+def serialize_cookie(values):
+    return "; ".join(f"{key}={value}" for key, value in values.items())
+
+
+def account_lines(raw):
+    return [line.strip() for line in raw.splitlines() if line.strip()]
+
+
+def cache_path():
+    return Path(os.getenv("E_COOKIE_FILE", str(Path(__file__).with_name("ehentai_cookie.txt"))))
+
+
+def read_cache(path):
+    try:
+        # 兼容旧缓存；只接受当前用户的私密普通文件，禁止符号链接。
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(fd, "r", encoding="utf-8") as handle:
+            info = os.fstat(handle.fileno())
+            if not stat.S_ISREG(info.st_mode) or info.st_mode & 0o077 or info.st_uid != os.getuid():
+                raise ValueError("缓存必须是当前用户所有、权限 600 的普通文件")
+            value = handle.read(131073)
+            if len(value) > 131072:
+                raise ValueError("Cookie 缓存过大")
+            return value
+    except ValueError:
+        raise
+    except (OSError, UnicodeError):
+        raise ValueError("无法安全读取 Cookie 缓存，请配置 E_COOKIE") from None
+
+
+def write_cache(path, lines):
+    temp_path = None
+    try:
+        if path.is_symlink():
+            raise ValueError("不允许写入符号链接缓存")
+        fd, temp_path = tempfile.mkstemp(prefix=".ehentai-cookie-", dir=path.parent)
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            os.fchmod(handle.fileno(), 0o600)
+            handle.write("\n".join(lines) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp_path, path)
+        temp_path = None
+        log("私密 Cookie 缓存已原子更新（权限 600；未修改环境变量）")
+    except (OSError, ValueError):
+        log("⚠️ Cookie 缓存保存失败，业务结果不变；请检查路径与权限")
+    finally:
+        if temp_path:
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
 
 
 def request_page(cookie, proxy, user_agent):
@@ -177,6 +246,17 @@ def request_page(cookie, proxy, user_agent):
     raise ValueError('默认 TLS 与 TLS 1.2 请求均失败')
 
 
+def safe_identity(value, cookie):
+    value = " ".join(value.split())
+    for key, secret in cookie.items():
+        if secret:
+            value = value.replace(secret, "[敏感信息已隐藏]")
+    value = re.sub(r"(?<!\w)\+?\d[\d ()-]{5,}\d(?!\w)", "[号码已隐藏]", value)
+    if re.search(r"cookie|token|session|pass_hash|device|bearer", value, re.I):
+        return ""
+    return "".join(c for c in value if c.isprintable())[:160]
+
+
 def inspect_page(body, set_cookies, fields):
     page = Page()
     page.feed(body)
@@ -184,7 +264,12 @@ def inspect_page(body, set_cookies, fields):
     text = ' '.join(' '.join(page.events).split())
     low = full.lower()
     # 只输出官方身份字段，绝不输出事件原文或响应。
-    identity = ''.join(page.identities).strip()
+    identity_match = re.search(
+        r'\b(?:you are )?logged (?:in|on) as\s*:?\s*([^|\r\n]{1,160}?)'
+        r'(?:\s*(?:\[|\(|\||log\s*out|sign\s*out)|$)', full, re.I)
+    identity = safe_identity(''.join(page.identities), fields)
+    if not identity and identity_match:
+        identity = safe_identity(identity_match.group(1), fields)
     if identity and not any(fields.get(key) and fields[key] in identity for key in ('ipb_pass_hash', 'sk')):
         log('官方账号身份：' + json.dumps(identity, ensure_ascii=False))
     if any(marker in low for marker in (
@@ -229,9 +314,41 @@ def inspect_page(body, set_cookies, fields):
             r'\b(?:dawn|daily|reward)\b', text, re.I):
         log('☑️ 今日已完成：事件区明确确认')
         return 'already-complete'
+    if re.search(r'\blogged (?:in|on) as\b', full, re.I) and re.search(
+            r'\b(?:already (?:claimed|received|collected)[^.!?]{0,100}(?:today|daily|dawn)|'
+            r'(?:daily|dawn)[^.!?]{0,100}already (?:claimed|received|collected))\b', full, re.I):
+        log('☑️ 今日已完成：事件区明确确认（兼容已登录的页面提示）')
+        return 'already-complete'
     if not page.has_event:
         raise ValueError('未找到事件面板且无明确已领取证据，无法确认签到')
     raise ValueError('页面未提供明确签到或已完成证据，可能未登录或响应变化')
+
+
+def refreshed_cookie(cookie, headers):
+    result = dict(cookie)
+    changed = 0
+    expiry_count = 0
+    for header in headers:
+        jar = http.cookies.SimpleCookie()
+        try:
+            jar.load(header)
+        except http.cookies.CookieError:
+            log("⚠️ 忽略无法解析的续期 Cookie")
+            continue
+        for name in COOKIE_FIELDS:
+            if name not in jar:
+                continue
+            morsel = jar[name]
+            if morsel["expires"] and name != "event":
+                expiry_count += 1
+            if not morsel.value or morsel["max-age"] == "0":
+                raise ValueError("服务端撤销会话 Cookie，请重新登录获取凭据")
+            if result.get(name) != morsel.value:
+                result[name] = morsel.value
+                changed += 1
+    serialized = serialize_cookie(result)
+    validate_cookie(serialized)
+    return serialized, changed, expiry_count
 
 
 def notification_selected():
@@ -253,6 +370,11 @@ def notification_selected():
         SOURCE_PATH,
         'autosignin.py',
         'scripts/autosignin.py',
+        'e083167c5e868b00',
+        'AkiyaKiko_EhentaiAutoSignIn/autosignin.py',
+        'scripts/akiyakiko_ehentaiautosignin.py',
+        'akiyakiko_ehentaiautosignin.py',
+        'akiyakiko_ehentaiautosignin',
         Path(__file__).name,
     }
     return any(
@@ -303,11 +425,23 @@ def notify_summary(body, dry):
 def main():
     start = time.monotonic()
     dry = os.getenv('E_DRY_RUN', '0').strip().lower() in ENABLED
-    accounts = [line.strip() for line in os.getenv('E_COOKIE', '').splitlines() if line.strip()]
+    use_cache = os.getenv('E_COOKIE_CACHE', '0').strip().lower() in ENABLED
+    cache_error = None
+    raw = os.getenv('E_COOKIE', '')
+    if not raw.strip() and use_cache and not dry:
+        try:
+            raw = read_cache(cache_path())
+        except ValueError as exc:
+            cache_error = str(exc)
+    accounts = account_lines(raw)
+    renewed = list(accounts)
+    cache_changed = False
     log(f'===== {TITLE} =====')
     log(f'开始时间：{datetime.datetime.now().isoformat(timespec="seconds")}；'
         f'模式：{"断网预演" if dry else "正式运行"}；账号数：{len(accounts)}')
     results = []
+    if cache_error:
+        log('❌ ' + cache_error)
     if not accounts:
         log('❌ 配置错误：必须提供 E_COOKIE，每个非空行一个账号')
     for index, cookie in enumerate(accounts, 1):
@@ -316,12 +450,24 @@ def main():
         try:
             stage_start = time.monotonic()
             log(f'账号 {index} 阶段 1：校验配置')
+            cache_mode = os.getenv('E_COOKIE_CACHE', '0').strip().lower()
+            if cache_mode not in ENABLED | DISABLED:
+                raise ValueError('E_COOKIE_CACHE 仅支持 1/0、true/false、yes/no、on/off')
             fields = validate_cookie(cookie)
             proxy = os.getenv('E_PROXY', '')
-            if proxy and urllib.parse.urlparse(proxy).scheme not in {'http', 'https'}:
-                raise ValueError('E_PROXY 必须为 HTTP 或 HTTPS 代理地址')
+            if proxy:
+                try:
+                    parsed = urllib.parse.urlsplit(proxy)
+                    valid_proxy = (parsed.scheme in {'http', 'https'} and parsed.hostname
+                                   and parsed.port != 0 and not parsed.query and not parsed.fragment
+                                   and parsed.path in ('', '/')
+                                   and all(33 <= ord(c) <= 126 for c in proxy))
+                except ValueError:
+                    valid_proxy = False
+                if not valid_proxy:
+                    raise ValueError('E_PROXY 必须为有效的 HTTP 或 HTTPS 代理地址')
             ua = os.getenv('E_USER_AGENT') or UA
-            if any(c in ua for c in '\r\n\x00'):
+            if any(ord(c) < 32 or ord(c) > 126 for c in ua):
                 raise ValueError('E_USER_AGENT 含非法控制字符')
             log(f'✅ 阶段 1 完成，耗时 {time.monotonic() - stage_start:.2f} 秒；'
                 f'代理：{"已配置" if proxy else "未配置"}')
@@ -333,10 +479,15 @@ def main():
             else:
                 body, cookies = request_page(cookie, proxy, ua)
                 status = inspect_page(body, cookies, fields)
+                if use_cache and status in ('success', 'already-complete'):
+                    renewed[index - 1], changed, expires = refreshed_cookie(fields, cookies)
+                    cache_changed |= bool(changed)
             log(f'阶段 2 完成，耗时 {time.monotonic() - stage_start:.2f} 秒')
         except ValueError as exc:
+            status = 'failure'
             log(f'❌ 账号 {index}：{exc}')
         except Exception:
+            status = 'failure'
             log(f'❌ 账号 {index}：运行错误，详情已脱敏')
         stats = {
             'account': index, 'status': status, 'total': 1,
@@ -350,6 +501,11 @@ def main():
         log(f'账号 {index} 统计：总任务 1，成功 {stats["success"]}，'
             f'已完成 {stats["alreadyComplete"]}，跳过 {stats["skipped"]}，'
             f'失败 {stats["failed"]}，耗时 {stats["durationSeconds"]} 秒')
+    if use_cache and cache_changed and not dry:
+        try:
+            write_cache(cache_path(), renewed)
+        except Exception:
+            log('⚠️ Cookie 缓存保存失败，业务结果不变（详情已脱敏）')
     failed = sum(r['failed'] for r in results)
     passed = len(results) - failed
     exit_code = int(not accounts or failed > 0)
