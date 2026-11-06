@@ -8,6 +8,7 @@
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `5 0 * * *` | 上架 | [cfmoto_checkin.py.md](../scripts/cfmoto_checkin.py.md)（`docs/scripts/cfmoto_checkin.py.md`） |
 | 快手奖励任务 | `scripts/kuaishou_reward_status.py` | `python3 scripts/kuaishou_reward_status.py` | `22 8,14,20 * * *` | 上架 | [kuaishou_reward_status.py.md](../scripts/kuaishou_reward_status.py.md)（`docs/scripts/kuaishou_reward_status.py.md`） |
 | 摩托范每日签到 | `scripts/sudojia_moto.js` | `node scripts/sudojia_moto.js` | `26 0 * * *` | 上架 | [sudojia_moto.js.md](../scripts/sudojia_moto.js.md)（`docs/scripts/sudojia_moto.js.md`） |
+| 中国电信签到与金币查询 | `scripts/10000.js` | `node scripts/10000.js` | `10 10 * * *` | 待检查 | [10000.js.md](../scripts/10000.js.md)（`docs/scripts/10000.js.md`） |
 | 139云盘云朵任务 | `scripts/139_yunduo.py` | `python3 scripts/139_yunduo.py` | `11 0 * * *` | 待检查 | [139_yunduo.py.md](../scripts/139_yunduo.py.md)（`docs/scripts/139_yunduo.py.md`） |
 | 2cycd 论坛自动签到 | `scripts/2cycd.py` | `python3 scripts/2cycd.py` | `0 0 * * *` | 待检查 | [2cycd.py.md](../scripts/2cycd.py.md)（`docs/scripts/2cycd.py.md`） |
 | 2cycdx自动签到 | `scripts/2cycdx.py` | `python3 scripts/2cycdx.py` | `45 0 * * *` | 待检查 | [2cycdx.py.md](../scripts/2cycdx.py.md)（`docs/scripts/2cycdx.py.md`） |
@@ -34,6 +35,7 @@
 | APICloud每日签到 | `scripts/apicloud.js` | `node scripts/apicloud.js` | `12 9 * * *` | 待检查 | [apicloud.js.md](../scripts/apicloud.js.md)（`docs/scripts/apicloud.js.md`） |
 | apk.tw每日签到 | `scripts/apktw.py` | `python3 scripts/apktw.py` | `19 9 * * *` | 待检查 | [apktw.py.md](../scripts/apktw.py.md)（`docs/scripts/apktw.py.md`） |
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
+| ArityFlow 独立子站签到 | `scripts/arityflow_checkin.py` | `python3 scripts/arityflow_checkin.py` | `9 10 * * *` | 待检查 | [arityflow_checkin.py.md](../scripts/arityflow_checkin.py.md)（`docs/scripts/arityflow_checkin.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |
 | 中转站每日签到 | `scripts/astrbot_plugin_relay.py` | `python3 scripts/astrbot_plugin_relay.py` | `39 9 * * *` | 待检查 | [astrbot_plugin_relay.py.md](../scripts/astrbot_plugin_relay.py.md)（`docs/scripts/astrbot_plugin_relay.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
@@ -336,6 +338,7 @@
 | V次元论坛签到 | `scripts/tybbs.py` | `python3 scripts/tybbs.py` | `30 6 * * *` | 待检查 | [tybbs.py.md](../scripts/tybbs.py.md)（`docs/scripts/tybbs.py.md`） |
 | 统一茄皇集市抽奖 | `scripts/tyqhdraw.py` | `python3 scripts/tyqhdraw.py` | `0 0 0 * * *` | 待检查 | [tyqhdraw.py.md](../scripts/tyqhdraw.py.md)（`docs/scripts/tyqhdraw.py.md`） |
 | 绿联社区自动回复 | `scripts/ugreen_auto_reply.py` | `python3 scripts/ugreen_auto_reply.py` | `2 10 * * *` | 待检查 | [ugreen_auto_reply.py.md](../scripts/ugreen_auto_reply.py.md)（`docs/scripts/ugreen_auto_reply.py.md`） |
+| 赛马娘官网每日签到 | `scripts/uma.py` | `python3 scripts/uma.py` | `8 10 * * *` | 待检查 | [uma.py.md](../scripts/uma.py.md)（`docs/scripts/uma.py.md`） |
 | 掌瓦每日商店推送 | `scripts/valorantstore.py` | `python3 scripts/valorantstore.py` | `10 0 * * *` | 待检查 | [valorantstore.py.md](../scripts/valorantstore.py.md)（`docs/scripts/valorantstore.py.md`） |
 | 维咔VikACG签到 | `scripts/vikacg_checkin.py` | `python3 scripts/vikacg_checkin.py` | `59 9 * * *` | 待检查 | [vikacg_checkin.py.md](../scripts/vikacg_checkin.py.md)（`docs/scripts/vikacg_checkin.py.md`） |
 | Vortexa 免费主机检查与领取 | `scripts/vortexa_free_claim.js` | `node scripts/vortexa_free_claim.js` | `1,11,21,31,41,51 * * * *` | 待检查 | [vortexa_free_claim.js.md](../scripts/vortexa_free_claim.js.md)（`docs/scripts/vortexa_free_claim.js.md`） |

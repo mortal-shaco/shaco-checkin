@@ -1,9 +1,10 @@
 # 分类索引 · 签到
 
-共 **315** 个脚本。返回 [`目录首页`](../README.md)。
+共 **318** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
+| 中国电信签到与金币查询 | `scripts/10000.js` | `node scripts/10000.js` | `10 10 * * *` | 待检查 | [10000.js.md](../../scripts/10000.js.md)（`docs/scripts/10000.js.md`） |
 | 2cycd 论坛自动签到 | `scripts/2cycd.py` | `python3 scripts/2cycd.py` | `0 0 * * *` | 待检查 | [2cycd.py.md](../../scripts/2cycd.py.md)（`docs/scripts/2cycd.py.md`） |
 | 2cycdx自动签到 | `scripts/2cycdx.py` | `python3 scripts/2cycdx.py` | `45 0 * * *` | 待检查 | [2cycdx.py.md](../../scripts/2cycdx.py.md)（`docs/scripts/2cycdx.py.md`） |
 | 51CTO博客每日签到 | `scripts/51cto_sign.js` | `node scripts/51cto_sign.js` | `17 2 * * *` | 待检查 | [51cto_sign.js.md](../../scripts/51cto_sign.js.md)（`docs/scripts/51cto_sign.js.md`） |
@@ -26,6 +27,7 @@
 | APICloud每日签到 | `scripts/apicloud.js` | `node scripts/apicloud.js` | `12 9 * * *` | 待检查 | [apicloud.js.md](../../scripts/apicloud.js.md)（`docs/scripts/apicloud.js.md`） |
 | apk.tw每日签到 | `scripts/apktw.py` | `python3 scripts/apktw.py` | `19 9 * * *` | 待检查 | [apktw.py.md](../../scripts/apktw.py.md)（`docs/scripts/apktw.py.md`） |
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
+| ArityFlow 独立子站签到 | `scripts/arityflow_checkin.py` | `python3 scripts/arityflow_checkin.py` | `9 10 * * *` | 待检查 | [arityflow_checkin.py.md](../../scripts/arityflow_checkin.py.md)（`docs/scripts/arityflow_checkin.py.md`） |
 | 中转站每日签到 | `scripts/astrbot_plugin_relay.py` | `python3 scripts/astrbot_plugin_relay.py` | `39 9 * * *` | 待检查 | [astrbot_plugin_relay.py.md](../../scripts/astrbot_plugin_relay.py.md)（`docs/scripts/astrbot_plugin_relay.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
 | 微助教课堂签到 | `scripts/asynccheckin.py` | `python3 scripts/asynccheckin.py` | `*/3 7-22 * * 1-5` | 待检查 | [asynccheckin.py.md](../../scripts/asynccheckin.py.md)（`docs/scripts/asynccheckin.py.md`） |
@@ -284,6 +286,7 @@
 | 塔斯汀汉堡签到 | `scripts/tsthb_checkin.py` | `python3 scripts/tsthb_checkin.py` | `19 1 * * *` | 待检查 | [tsthb_checkin.py.md](../../scripts/tsthb_checkin.py.md)（`docs/scripts/tsthb_checkin.py.md`） |
 | ViewTurbo 每日签到 | `scripts/turbo.py` | `python3 scripts/turbo.py` | `10 8 * * *` | 待检查 | [turbo.py.md](../../scripts/turbo.py.md)（`docs/scripts/turbo.py.md`） |
 | V次元论坛签到 | `scripts/tybbs.py` | `python3 scripts/tybbs.py` | `30 6 * * *` | 待检查 | [tybbs.py.md](../../scripts/tybbs.py.md)（`docs/scripts/tybbs.py.md`） |
+| 赛马娘官网每日签到 | `scripts/uma.py` | `python3 scripts/uma.py` | `8 10 * * *` | 待检查 | [uma.py.md](../../scripts/uma.py.md)（`docs/scripts/uma.py.md`） |
 | 维咔VikACG签到 | `scripts/vikacg_checkin.py` | `python3 scripts/vikacg_checkin.py` | `59 9 * * *` | 待检查 | [vikacg_checkin.py.md](../../scripts/vikacg_checkin.py.md)（`docs/scripts/vikacg_checkin.py.md`） |
 | 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
 | WorkBuddy 每日积分签到 | `scripts/wb_daily_checkin.py` | `python3 scripts/wb_daily_checkin.py` | `38 9 * * *` | 待检查 | [wb_daily_checkin.py.md](../../scripts/wb_daily_checkin.py.md)（`docs/scripts/wb_daily_checkin.py.md`） |
