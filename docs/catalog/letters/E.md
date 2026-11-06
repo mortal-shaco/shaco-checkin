@@ -1,6 +1,6 @@
 # 字母索引 · E
 
-共 **9** 个脚本。返回 [`目录首页`](../README.md)。
+共 **10** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -13,3 +13,4 @@
 | EOP官网签到 | `scripts/eop.py` | `python3 scripts/eop.py` | `11 9 * * *` | 待检查 | [eop.py.md](../../scripts/eop.py.md)（`docs/scripts/eop.py.md`） |
 | Epic免费游戏 | `scripts/epicfreegames.py` | `python3 scripts/epicfreegames.py` | `11 8 * * 6` | 待检查 | [epicfreegames.py.md](../../scripts/epicfreegames.py.md)（`docs/scripts/epicfreegames.py.md`） |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `12 1 1 1 1` | 待检查 | [erke.py.md](../../scripts/erke.py.md)（`docs/scripts/erke.py.md`） |
+| M-SEC 每日签到与积分查询 | `scripts/ez.py` | `python3 scripts/ez.py` | `44 9 * * *` | 待检查 | [ez.py.md](../../scripts/ez.py.md)（`docs/scripts/ez.py.md`） |

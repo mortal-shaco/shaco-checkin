@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **50** 个脚本。返回 [`目录首页`](../README.md)。
+共 **51** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -23,6 +23,7 @@
 | hao4k每日签到 | `scripts/task_7a56bf21.py` | `python3 scripts/task_7a56bf21.py` | `41 8 * * *` | 待检查 | [task_7a56bf21.py.md](../../scripts/task_7a56bf21.py.md)（`docs/scripts/task_7a56bf21.py.md`） |
 | MiniMax Code每日签到 | `scripts/task_7b47bad6.js` | `node scripts/task_7b47bad6.js` | `27 9 * * *` | 待检查 | [task_7b47bad6.js.md](../../scripts/task_7b47bad6.js.md)（`docs/scripts/task_7b47bad6.js.md`） |
 | 班级魔法自动签到 | `scripts/task_7be4b090.py` | `python3 scripts/task_7be4b090.py` | `44 8 * * 1-5` | 待检查 | [task_7be4b090.py.md](../../scripts/task_7be4b090.py.md)（`docs/scripts/task_7be4b090.py.md`） |
+| AnyRouter 自动签到 | `scripts/task_7d0a3609.py` | `python3 scripts/task_7d0a3609.py` | `42 9 * * *` | 待检查 | [task_7d0a3609.py.md](../../scripts/task_7d0a3609.py.md)（`docs/scripts/task_7d0a3609.py.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
 | 棕色尘埃2网页商店签到 | `scripts/task_8591af9a.py` | `python3 scripts/task_8591af9a.py` | `29 9 * * *` | 待检查 | [task_8591af9a.py.md](../../scripts/task_8591af9a.py.md)（`docs/scripts/task_8591af9a.py.md`） |
 | PT站点每日签到 | `scripts/task_874a3b5f.py` | `python3 scripts/task_874a3b5f.py` | `35 9 * * *` | 待检查 | [task_874a3b5f.py.md](../../scripts/task_874a3b5f.py.md)（`docs/scripts/task_874a3b5f.py.md`） |

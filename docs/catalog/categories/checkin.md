@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **289** 个脚本。返回 [`目录首页`](../README.md)。
+共 **292** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -90,6 +90,7 @@
 | 恩山论坛签到 | `scripts/enshan_checkin.py` | `python3 scripts/enshan_checkin.py` | `59 1 * * *` | 待检查 | [enshan_checkin.py.md](../../scripts/enshan_checkin.py.md)（`docs/scripts/enshan_checkin.py.md`） |
 | EOP官网签到 | `scripts/eop.py` | `python3 scripts/eop.py` | `11 9 * * *` | 待检查 | [eop.py.md](../../scripts/eop.py.md)（`docs/scripts/eop.py.md`） |
 | 鸿星尔克签到 | `scripts/erke.py` | `python3 scripts/erke.py` | `12 1 1 1 1` | 待检查 | [erke.py.md](../../scripts/erke.py.md)（`docs/scripts/erke.py.md`） |
+| M-SEC 每日签到与积分查询 | `scripts/ez.py` | `python3 scripts/ez.py` | `44 9 * * *` | 待检查 | [ez.py.md](../../scripts/ez.py.md)（`docs/scripts/ez.py.md`） |
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
 | Discuz 论坛日常维护 | `scripts/forum_download.py` | `python3 scripts/forum_download.py` | `29 2 * * *` | 待检查 | [forum_download.py.md](../../scripts/forum_download.py.md)（`docs/scripts/forum_download.py.md`） |
@@ -121,6 +122,7 @@
 | 夸父资源社签到 | `scripts/kfzy.js` | `node scripts/kfzy.js` | `0 40 11 * * *` | 待检查 | [kfzy.js.md](../../scripts/kfzy.js.md)（`docs/scripts/kfzy.js.md`） |
 | 全民K歌签到与奖励 | `scripts/kgqq.py` | `python3 scripts/kgqq.py` | `13 2 * * *` | 待检查 | [kgqq.py.md](../../scripts/kgqq.py.md)（`docs/scripts/kgqq.py.md`） |
 | 科技玩家签到 | `scripts/kjwj.py` | `python3 scripts/kjwj.py` | `41 2 * * *` | 待检查 | [kjwj.py.md](../../scripts/kjwj.py.md)（`docs/scripts/kjwj.py.md`） |
+| 库街区社区与游戏签到 | `scripts/kurobbs.py` | `python3 scripts/kurobbs.py` | `43 9 * * *` | 待检查 | [kurobbs.py.md](../../scripts/kurobbs.py.md)（`docs/scripts/kurobbs.py.md`） |
 | 鸣潮·库街区 每日签到 | `scripts/kurobbs_sign.py` | `python3 scripts/kurobbs_sign.py` | `16 1 * * *` | 待检查 | [kurobbs_sign.py.md](../../scripts/kurobbs_sign.py.md)（`docs/scripts/kurobbs_sign.py.md`） |
 | Leaflow 签到 | `scripts/leaflow_checkin_pyleaflow_checkin.py` | `python3 scripts/leaflow_checkin_pyleaflow_checkin.py` | `14 0 * * *` | 待检查 | [leaflow_checkin_pyleaflow_checkin.py.md](../../scripts/leaflow_checkin_pyleaflow_checkin.py.md)（`docs/scripts/leaflow_checkin_pyleaflow_checkin.py.md`） |
 | LeetCode 中文站每日一题自动打卡 | `scripts/leetcode_daily.py` | `python3 scripts/leetcode_daily.py` | `30 0 * * *` | 待检查 | [leetcode_daily.py.md](../../scripts/leetcode_daily.py.md)（`docs/scripts/leetcode_daily.py.md`） |
@@ -237,6 +239,7 @@
 | hao4k每日签到 | `scripts/task_7a56bf21.py` | `python3 scripts/task_7a56bf21.py` | `41 8 * * *` | 待检查 | [task_7a56bf21.py.md](../../scripts/task_7a56bf21.py.md)（`docs/scripts/task_7a56bf21.py.md`） |
 | MiniMax Code每日签到 | `scripts/task_7b47bad6.js` | `node scripts/task_7b47bad6.js` | `27 9 * * *` | 待检查 | [task_7b47bad6.js.md](../../scripts/task_7b47bad6.js.md)（`docs/scripts/task_7b47bad6.js.md`） |
 | 班级魔法自动签到 | `scripts/task_7be4b090.py` | `python3 scripts/task_7be4b090.py` | `44 8 * * 1-5` | 待检查 | [task_7be4b090.py.md](../../scripts/task_7be4b090.py.md)（`docs/scripts/task_7be4b090.py.md`） |
+| AnyRouter 自动签到 | `scripts/task_7d0a3609.py` | `python3 scripts/task_7d0a3609.py` | `42 9 * * *` | 待检查 | [task_7d0a3609.py.md](../../scripts/task_7d0a3609.py.md)（`docs/scripts/task_7d0a3609.py.md`） |
 | 草榴社区每日签到 | `scripts/task_845c9306.js` | `node scripts/task_845c9306.js` | `31 8 * * *` | 待检查 | [task_845c9306.js.md](../../scripts/task_845c9306.js.md)（`docs/scripts/task_845c9306.js.md`） |
 | 棕色尘埃2网页商店签到 | `scripts/task_8591af9a.py` | `python3 scripts/task_8591af9a.py` | `29 9 * * *` | 待检查 | [task_8591af9a.py.md](../../scripts/task_8591af9a.py.md)（`docs/scripts/task_8591af9a.py.md`） |
 | PT站点每日签到 | `scripts/task_874a3b5f.py` | `python3 scripts/task_874a3b5f.py` | `35 9 * * *` | 待检查 | [task_874a3b5f.py.md](../../scripts/task_874a3b5f.py.md)（`docs/scripts/task_874a3b5f.py.md`） |
