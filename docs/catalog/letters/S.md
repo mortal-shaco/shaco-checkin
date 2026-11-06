@@ -1,6 +1,6 @@
 # 字母索引 · S
 
-共 **69** 个脚本。返回 [`目录首页`](../README.md)。
+共 **70** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -72,4 +72,5 @@
 | 智能电视签到 | `scripts/sudojia_znds.js` | `node scripts/sudojia_znds.js` | `31 2 * * *` | 待检查 | [sudojia_znds.js.md](../../scripts/sudojia_znds.js.md)（`docs/scripts/sudojia_znds.js.md`） |
 | 甄稀冰淇淋每日签到 | `scripts/sudojia_zxice.js` | `node scripts/sudojia_zxice.js` | `34 2 * * *` | 待检查 | [sudojia_zxice.js.md](../../scripts/sudojia_zxice.js.md)（`docs/scripts/sudojia_zxice.js.md`） |
 | 微博超话签到 | `scripts/supertopicsign.py` | `python3 scripts/supertopicsign.py` | `41 1 * * *` | 待检查 | [supertopicsign.py.md](../../scripts/supertopicsign.py.md)（`docs/scripts/supertopicsign.py.md`） |
+| 尚香书苑签到 | `scripts/sxsy45_checkin.py` | `python3 scripts/sxsy45_checkin.py` | `4 10 * * *` | 待检查 | [sxsy45_checkin.py.md](../../scripts/sxsy45_checkin.py.md)（`docs/scripts/sxsy45_checkin.py.md`） |
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |

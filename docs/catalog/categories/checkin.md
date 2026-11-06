@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **309** 个脚本。返回 [`目录首页`](../README.md)。
+共 **312** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -237,6 +237,7 @@
 | 智能电视签到 | `scripts/sudojia_znds.js` | `node scripts/sudojia_znds.js` | `31 2 * * *` | 待检查 | [sudojia_znds.js.md](../../scripts/sudojia_znds.js.md)（`docs/scripts/sudojia_znds.js.md`） |
 | 甄稀冰淇淋每日签到 | `scripts/sudojia_zxice.js` | `node scripts/sudojia_zxice.js` | `34 2 * * *` | 待检查 | [sudojia_zxice.js.md](../../scripts/sudojia_zxice.js.md)（`docs/scripts/sudojia_zxice.js.md`） |
 | 微博超话签到 | `scripts/supertopicsign.py` | `python3 scripts/supertopicsign.py` | `41 1 * * *` | 待检查 | [supertopicsign.py.md](../../scripts/supertopicsign.py.md)（`docs/scripts/supertopicsign.py.md`） |
+| 尚香书苑签到 | `scripts/sxsy45_checkin.py` | `python3 scripts/sxsy45_checkin.py` | `4 10 * * *` | 待检查 | [sxsy45_checkin.py.md](../../scripts/sxsy45_checkin.py.md)（`docs/scripts/sxsy45_checkin.py.md`） |
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
 | T00ls每日签到 | `scripts/t00ls_sign.py` | `python3 scripts/t00ls_sign.py` | `21 1 * * *` | 待检查 | [t00ls_sign.py.md](../../scripts/t00ls_sign.py.md)（`docs/scripts/t00ls_sign.py.md`） |
 | Tabbit 国内版每日签到 | `scripts/tabbit_cn_daily.py` | `python3 scripts/tabbit_cn_daily.py` | `18 9 * * *` | 待检查 | [tabbit_cn_daily.py.md](../../scripts/tabbit_cn_daily.py.md)（`docs/scripts/tabbit_cn_daily.py.md`） |
@@ -297,9 +298,11 @@
 | AI打卡机四平台签到 | `scripts/wps_airscript.js` | `node scripts/wps_airscript.js` | `31 10 * * *` | 待检查 | [wps_airscript.js.md](../../scripts/wps_airscript.js.md)（`docs/scripts/wps_airscript.js.md`） |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `43 1 * * *` | 待检查 | [wps_clock_in.py.md](../../scripts/wps_clock_in.py.md)（`docs/scripts/wps_clock_in.py.md`） |
 | 网易云游戏自动签到 | `scripts/wyycg.py` | `python3 scripts/wyycg.py` | `42 1 * * *` | 待检查 | [wyycg.py.md](../../scripts/wyycg.py.md)（`docs/scripts/wyycg.py.md`） |
+| 芯幻签到 | `scripts/xhcyv_checkin.py` | `python3 scripts/xhcyv_checkin.py` | `5 10 * * *` | 待检查 | [xhcyv_checkin.py.md](../../scripts/xhcyv_checkin.py.md)（`docs/scripts/xhcyv_checkin.py.md`） |
 | 小米VIP会员签到 | `scripts/xiaomi_sign.py` | `python3 scripts/xiaomi_sign.py` | `29 8 * * *` | 待检查 | [xiaomi_sign.py.md](../../scripts/xiaomi_sign.py.md)（`docs/scripts/xiaomi_sign.py.md`） |
 | 喜马拉雅每日签到 | `scripts/xmly.js` | `node scripts/xmly.js` | `10 0 12 * * *` | 待检查 | [xmly.js.md](../../scripts/xmly.js.md)（`docs/scripts/xmly.js.md`） |
 | 新南方职培学院签到 | `scripts/xnfedu_checkin.py` | `python3 scripts/xnfedu_checkin.py` | `13 8 * * *` | 待检查 | [xnfedu_checkin.py.md](../../scripts/xnfedu_checkin.py.md)（`docs/scripts/xnfedu_checkin.py.md`） |
+| 司机社签到 | `scripts/xsijishe_checkin.py` | `python3 scripts/xsijishe_checkin.py` | `49 9,20 * * *` | 待检查 | [xsijishe_checkin.py.md](../../scripts/xsijishe_checkin.py.md)（`docs/scripts/xsijishe_checkin.py.md`） |
 | 学姐吧每日签到 | `scripts/xuejieba.js` | `node scripts/xuejieba.js` | `0 50 11 * * *` | 待检查 | [xuejieba.js.md](../../scripts/xuejieba.js.md)（`docs/scripts/xuejieba.js.md`） |
 | 吉利汽车签到 | `scripts/xuyan0213_script_geely.js` | `node scripts/xuyan0213_script_geely.js` | `28 1 * * *` | 待检查 | [xuyan0213_script_geely.js.md](../../scripts/xuyan0213_script_geely.js.md)（`docs/scripts/xuyan0213_script_geely.js.md`） |
 | 益禾堂手机点单 | `scripts/yht.py` | `python3 scripts/yht.py` | `27 2 * * *` | 待检查 | [yht.py.md](../../scripts/yht.py.md)（`docs/scripts/yht.py.md`） |
