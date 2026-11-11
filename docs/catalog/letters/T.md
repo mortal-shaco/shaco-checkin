@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **71** 个脚本。返回 [`目录首页`](../README.md)。
+共 **72** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -14,6 +14,7 @@
 | 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
 | 联想商城每日签到 | `scripts/task_293255e8.py` | `python3 scripts/task_293255e8.py` | `22 10 * * *` | 待检查 | [task_293255e8.py.md](../../scripts/task_293255e8.py.md)（`docs/scripts/task_293255e8.py.md`） |
+| NewAPI 自动签到 | `scripts/task_2b8f0895.py` | `python3 scripts/task_2b8f0895.py` | `55 10 * * *` | 待检查 | [task_2b8f0895.py.md](../../scripts/task_2b8f0895.py.md)（`docs/scripts/task_2b8f0895.py.md`） |
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |

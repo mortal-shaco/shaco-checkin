@@ -240,6 +240,7 @@
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
 | 佛山职院企微学工签到 | `scripts/python.py` | `python3 scripts/python.py` | `*/5 7-22 * * *` | 待检查 | [python.py.md](../scripts/python.py.md)（`docs/scripts/python.py.md`） |
 | 微微免费电话签到 | `scripts/qiandao.py` | `python3 scripts/qiandao.py` | `33 10 * * *` | 待检查 | [qiandao.py.md](../scripts/qiandao.py.md)（`docs/scripts/qiandao.py.md`） |
+| 领克签到与账户任务 | `scripts/ql_lynk.py` | `python3 scripts/ql_lynk.py` | `56 10 * * *` | 待检查 | [ql_lynk.py.md](../scripts/ql_lynk.py.md)（`docs/scripts/ql_lynk.py.md`） |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
 | QQ音乐超级会员福利站签到 | `scripts/qqmusic_checkin.py` | `python3 scripts/qqmusic_checkin.py` | `22 9 * * *` | 待检查 | [qqmusic_checkin.py.md](../scripts/qqmusic_checkin.py.md)（`docs/scripts/qqmusic_checkin.py.md`） |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` | 待检查 | [quark_signin.py.md](../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
@@ -330,6 +331,7 @@
 | 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
 | 联想商城每日签到 | `scripts/task_293255e8.py` | `python3 scripts/task_293255e8.py` | `22 10 * * *` | 待检查 | [task_293255e8.py.md](../scripts/task_293255e8.py.md)（`docs/scripts/task_293255e8.py.md`） |
+| NewAPI 自动签到 | `scripts/task_2b8f0895.py` | `python3 scripts/task_2b8f0895.py` | `55 10 * * *` | 待检查 | [task_2b8f0895.py.md](../scripts/task_2b8f0895.py.md)（`docs/scripts/task_2b8f0895.py.md`） |
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |

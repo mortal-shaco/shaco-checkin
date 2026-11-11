@@ -44171,6 +44171,311 @@
       }
     },
     {
+      "catalogId": "c537807373d74e3f",
+      "applicationKey": "vongzh/lynk-auto-sign::lynk",
+      "checkProfile": {
+        "requiredEnv": [
+          "LYNK_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "LYNK_REFRESH_TOKEN",
+          "LYNK_DEVICE_ID",
+          "LYNK_TOKEN_B",
+          "LYNK_AUTO_SHARE",
+          "LYNK_SHARE_CONTENT_ID",
+          "LYNK_DRY_RUN",
+          "LYNK_CACHE_DIR",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "LYNK_USE_QL_NOTIFY",
+          "LYNK_H5_APP_KEY",
+          "LYNK_H5_APP_SECRET",
+          "LYNK_NATIVE_APP_KEY",
+          "LYNK_NATIVE_APP_SECRET",
+          "PUSH_WECOM_WEBHOOK",
+          "PUSH_DINGTALK_WEBHOOK",
+          "PUSH_FEISHU_WEBHOOK",
+          "PUSH_TG_BOT_TOKEN",
+          "PUSH_TG_CHAT_ID",
+          "PUSH_SERVERCHAN_KEY",
+          "PUSH_PUSHPLUS_TOKEN",
+          "PUSH_BARK_URL"
+        ],
+        "dryRunEnv": {
+          "LYNK_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "LYNK_AUTO_SHARE": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "逐行多账号签到，保留每天 9 点定时与旧版主账号参数兼容",
+          "私有缓存与令牌续期，保留经业务验证的短期 accessToken 回退",
+          "查询今日签到、连续天数与补签卡；使用原生签名和 Content-MD5 签到并回查",
+          "查询能量体、累计获得、成长等级与成长值",
+          "查询连续、月度、季度、年度签到任务进度和奖励",
+          "生成文章手工分享链接",
+          "显式开启后使用分享账号完成查找、前置校验与上报，并核验能量体增长",
+          "青龙通知与七类可选直推渠道，支持全局开关和脚本选择器",
+          "完全断网预演、时间轴日志、账号和任务统计、单行结构化汇总"
+        ],
+        "sideEffects": [
+          "正式执行时续期登录令牌并在私有缓存中保存轮换结果",
+          "未签到时写入签到记录并可能领取奖励",
+          "显式开启自动分享后使用分享账号上报文章点击，可能增加能量体",
+          "通知启用时向青龙和可选渠道发送脱敏统计",
+          "显式使用 --clear-cache 删除当前配置账号的令牌缓存"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "领克签到与账户任务",
+      "path": "scripts/ql_lynk.py",
+      "sha256": "ea52bdaee0d7e8c6c06230de18ccf4625d6c143284cdb0500dc450645c8c1aa4",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "vongzh/lynk-auto-sign",
+        "branch": "main",
+        "commit": "d3212fdde9a39e2c7c3a07a1b3d7b50f69a044f2",
+        "originalPath": "ql_lynk.py"
+      },
+      "cron": "56 10 * * *",
+      "command": "python3 scripts/ql_lynk.py",
+      "environment": [
+        {
+          "name": "LYNK_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在自己的领克 App 登录抓包中，从 app-services.lynkco.com.cn 的 mobileCodeLogin 响应取得 refreshToken，从登录 URL 的 deviceId 参数取得设备 ID。",
+          "format": "每行 refreshToken|deviceId，只在第一个 | 拆分，不同账号只用换行分隔。"
+        },
+        {
+          "name": "LYNK_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版兼容输入，获取方式同 LYNK_ACCOUNTS；规范变量未设置时生效，兼容经过业务验证的短期 accessToken。",
+          "format": "单个令牌，配套 LYNK_DEVICE_ID；也支持每行 token|deviceId。"
+        },
+        {
+          "name": "LYNK_DEVICE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自有领克 App 登录 URL 的 deviceId 参数取得。",
+          "format": "旧版主账号或仅含令牌的分享账号的配套设备 ID，无默认值。"
+        },
+        {
+          "name": "LYNK_TOKEN_B",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从已授权分享账号的登录响应和请求取得相同字段，仅显式开启自动分享时使用。",
+          "format": "每行 token|deviceId；仅 token 时沿用当前主账号设备 ID；不再支持逗号分隔。"
+        },
+        {
+          "name": "LYNK_AUTO_SHARE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要自动点击文章分享时显式启用，默认关闭。",
+          "format": "1/true/yes/on 开启；其余关闭。"
+        },
+        {
+          "name": "LYNK_SHARE_CONTENT_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从领克 App 文章链接的 id 参数取得。",
+          "format": "数字编号，默认 2072260486405246976。"
+        },
+        {
+          "name": "LYNK_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置，不访问业务或通知网络、不读写缓存。",
+          "format": "1/true/yes/on 启用。"
+        },
+        {
+          "name": "LYNK_CACHE_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可指定受保护的持久缓存目录，轮换令牌只写入独立的 0600 缓存，不改写青龙环境文件。",
+          "format": "目录路径，默认运行用户主目录下 .cache/lynk-sign；清缓存会丢失轮换凭据。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "配置需要通知的脚本，设置后替换默认选中名单；本脚本默认选中。",
+          "format": "逗号、分号或空白分隔的目录编号、脚本路径、文件名或通配符；* 全选，空值全禁用。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "指定现有青龙 notify.py 或 sendNotify.js 所在目录；也查找标准青龙脚本目录与可导入 notify 模块。",
+          "format": "目录路径，通知失败不改变业务退出码。"
+        },
+        {
+          "name": "LYNK_USE_QL_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版兼容开关，仅 QINGLONG_NOTIFY=auto 时生效。",
+          "format": "默认 1；0/false/no/off 关闭。"
+        },
+        {
+          "name": "LYNK_H5_APP_KEY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅需覆盖上游公开 App 签名常量时，从自有合法 App 请求分析取得；不是个人登录凭据。",
+          "format": "完整字符串；默认沿用当前输入源码中的 App 常量。"
+        },
+        {
+          "name": "LYNK_H5_APP_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅需覆盖上游公开 App 签名常量时，从自有合法 App 请求分析取得；不是个人登录凭据。",
+          "format": "完整字符串；默认沿用当前输入源码中的 App 常量。"
+        },
+        {
+          "name": "LYNK_NATIVE_APP_KEY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅需覆盖上游公开 App 签名常量时，从自有合法 App 请求分析取得；不是个人登录凭据。",
+          "format": "完整字符串；默认沿用当前输入源码中的 App 常量。"
+        },
+        {
+          "name": "LYNK_NATIVE_APP_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅需覆盖上游公开 App 签名常量时，从自有合法 App 请求分析取得；不是个人登录凭据。",
+          "format": "完整字符串；默认沿用当前输入源码中的 App 常量。"
+        },
+        {
+          "name": "PUSH_WECOM_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的通知服务配置取得企业微信机器人 HTTPS webhook；可选额外渠道，同样遵守全局开关。",
+          "format": "完整配置值，留空不启用，仅发送脱敏统计。"
+        },
+        {
+          "name": "PUSH_DINGTALK_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的通知服务配置取得钉钉机器人 HTTPS webhook；可选额外渠道，同样遵守全局开关。",
+          "format": "完整配置值，留空不启用，仅发送脱敏统计。"
+        },
+        {
+          "name": "PUSH_FEISHU_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的通知服务配置取得飞书机器人 HTTPS webhook；可选额外渠道，同样遵守全局开关。",
+          "format": "完整配置值，留空不启用，仅发送脱敏统计。"
+        },
+        {
+          "name": "PUSH_TG_BOT_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的通知服务配置取得Telegram 机器人管理配置中的令牌；可选额外渠道，同样遵守全局开关。",
+          "format": "完整配置值，留空不启用，仅发送脱敏统计。"
+        },
+        {
+          "name": "PUSH_TG_CHAT_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的通知服务配置取得Telegram 接收会话编号，与机器人令牌配套；可选额外渠道，同样遵守全局开关。",
+          "format": "完整配置值，留空不启用，仅发送脱敏统计。"
+        },
+        {
+          "name": "PUSH_SERVERCHAN_KEY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的通知服务配置取得Server酱配置中的 SendKey；可选额外渠道，同样遵守全局开关。",
+          "format": "完整配置值，留空不启用，仅发送脱敏统计。"
+        },
+        {
+          "name": "PUSH_PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的通知服务配置取得PushPlus 配置中的令牌；可选额外渠道，同样遵守全局开关。",
+          "format": "完整配置值，留空不启用，仅发送脱敏统计。"
+        },
+        {
+          "name": "PUSH_BARK_URL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从自己的通知服务配置取得Bark 客户端中的 HTTPS 推送 URL 或设备码；可选额外渠道，同样遵守全局开关。",
+          "format": "完整配置值，留空不启用，仅发送脱敏统计。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "LYNK_ACCOUNTS 每行一个 token|deviceId，只在首个 | 拆分。兼容旧版主账号配置；分享账号也每行一个账号。逐账号独立处理，任一账号或分享子任务失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "逐行多账号签到，保留每天 9 点定时与旧版主账号参数兼容",
+        "私有缓存与令牌续期，保留经业务验证的短期 accessToken 回退",
+        "查询今日签到、连续天数与补签卡；使用原生签名和 Content-MD5 签到并回查",
+        "查询能量体、累计获得、成长等级与成长值",
+        "查询连续、月度、季度、年度签到任务进度和奖励",
+        "生成文章手工分享链接",
+        "显式开启后使用分享账号完成查找、前置校验与上报，并核验能量体增长",
+        "青龙通知与七类可选直推渠道，支持全局开关和脚本选择器",
+        "完全断网预演、时间轴日志、账号和任务统计、单行结构化汇总"
+      ],
+      "sideEffects": [
+        "正式执行时续期登录令牌并在私有缓存中保存轮换结果",
+        "未签到时写入签到记录并可能领取奖励",
+        "显式开启自动分享后使用分享账号上报文章点击，可能增加能量体",
+        "通知启用时向青龙和可选渠道发送脱敏统计",
+        "显式使用 --clear-cache 删除当前配置账号的令牌缓存"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/c537807373d74e3f",
+        "candidateSha256": "2c05f7e0f99eab9d98b0a54356c536e92ab619e3565c5d61ecaea4b20f42c639"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "2c05f7e0f99eab9d98b0a54356c536e92ab619e3565c5d61ecaea4b20f42c639",
+        "releaseSha256": "ea52bdaee0d7e8c6c06230de18ccf4625d6c143284cdb0500dc450645c8c1aa4",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:56:09.548913+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "2c05f7e0f99eab9d98b0a54356c536e92ab619e3565c5d61ecaea4b20f42c639",
+          "toCandidateSha256": "ea52bdaee0d7e8c6c06230de18ccf4625d6c143284cdb0500dc450645c8c1aa4",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "e034e75509550071",
       "applicationKey": "qoder",
       "checkProfile": {
@@ -60802,6 +61107,163 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "52b44debed0dc8caa14b966fd46eef902147449faa4831111436c44c8a527cee",
           "toCandidateSha256": "e009abc6c85bb3b4f9274c34e5185b1cd05fb0a169f98d3bf1ce7faa519d13fb",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "2b8f08952817263d",
+      "applicationKey": "tamichyan/tamichyan.github.io::checkin",
+      "checkProfile": {
+        "requiredEnv": [
+          "NEWAPI_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "NEWAPI_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "DINGTALK_WEBHOOK",
+          "DINGTALK_SECRET"
+        ],
+        "dryRunEnv": {
+          "NEWAPI_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "阶段 3/4 提交签到 ✅ 业务成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "支持多个NewAPI站点及多账号，兼容JSON数组和单行JSON配置、可选用户ID及cf_clearance。",
+          "读取官方用户信息并展示返回的非敏感身份，以官方用户ID设置new-api-user请求头。",
+          "自动签到并展示有效签到日期和奖励额度，额度同时显示缩写及数值。",
+          "读取本月签到天数与累计额度，支持在类方法中按指定月份查询历史。",
+          "完全离线预演、逐账号和分阶段计时、脱敏汇总及单行TASK_SUMMARY记录。",
+          "通过青龙通知模块发送摘要，可选独立实现钉钉机器人通知及加签；支持全局开关和脚本名单。"
+        ],
+        "sideEffects": [
+          "向站点提交签到并领取服务端确定的额度奖励。",
+          "启用通知且处于正式模式时，向已配置的青龙通知渠道及可选钉钉机器人发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "NewAPI 自动签到",
+      "path": "scripts/task_2b8f0895.py",
+      "sha256": "5995018a3be2a30883401877d925dd57b3d57ca0c9edbf0a62da44d8be1d094e",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Tamichyan/tamichyan.github.io",
+        "branch": "main",
+        "commit": "9beb7aa27d5342e035776dd912562055169859c6",
+        "originalPath": "checkin.py"
+      },
+      "cron": "55 10 * * *",
+      "command": "python3 scripts/task_2b8f0895.py",
+      "environment": [
+        {
+          "name": "NEWAPI_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录自己的NewAPI站点，在浏览器开发者工具的应用/Cookie面板复制session值；站点地址取当前站点HTTPS根地址。可选user_id取个人资料或已认证的/api/user/self响应data.id；cf_clearance取同一浏览器同一站点Cookie值。不要使用API令牌代替session，不要从第三方登录用户名猜测用户ID。会话过期后重新登录获取。",
+          "format": "每个非空行一个账号：HTTPS站点#Session值，仅按第一个#拆分；配套字段使用单行JSON对象，字段url、session必填，user_id、cf_clearance、name可选。兼容原JSON数组；旧逗号分隔简写改为换行，不使用&或@分隔账号。JSON字符串需按JSON规则转义。"
+        },
+        {
+          "name": "NEWAPI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中自行设置；离线预演不会请求业务接口或发送任何通知。",
+          "format": "1/true/yes/on启用，0/false/no/off关闭，默认0；无效值拒绝执行业务请求。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行指定允许通知的脚本名单；设置后替换默认名单。",
+          "format": "逗号、分号或空白分隔，支持目录相对路径、文件名、文件名通配符、目录编号2b8f08952817263d和*；空值禁用全部自动选择。显式启用全局开关优先。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙通知模块所在目录；未设置时先尝试导入notify.send，再查找青龙标准目录。",
+          "format": "目录内包含notify.py或sendNotify.js；支持/ql/data/scripts与/ql/scripts。JavaScript通知仅在已安装Node.js时可用，缺失不阻塞业务。"
+        },
+        {
+          "name": "DINGTALK_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：在自己的钉钉群创建自定义机器人并复制Webhook地址；无需上游私有通知模块。受QINGLONG_NOTIFY及脚本选择开关控制。",
+          "format": "HTTPS钉钉官方oapi.dingtalk.com/robot/send机器人地址，包含机器人访问参数；不写入日志。"
+        },
+        {
+          "name": "DINGTALK_SECRET",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：签名型钉钉机器人在安全设置中复制加签密钥，与Webhook配套配置。",
+          "format": "原始加签密钥；不写入日志。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；URL与Session仅按首个#拆分，后续文本原样保留。需要用户ID及cf_clearance时使用单行JSON对象组合同账号凭据；兼容原JSON数组。各账号独立处理，任一账号失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "支持多个NewAPI站点及多账号，兼容JSON数组和单行JSON配置、可选用户ID及cf_clearance。",
+        "读取官方用户信息并展示返回的非敏感身份，以官方用户ID设置new-api-user请求头。",
+        "自动签到并展示有效签到日期和奖励额度，额度同时显示缩写及数值。",
+        "读取本月签到天数与累计额度，支持在类方法中按指定月份查询历史。",
+        "完全离线预演、逐账号和分阶段计时、脱敏汇总及单行TASK_SUMMARY记录。",
+        "通过青龙通知模块发送摘要，可选独立实现钉钉机器人通知及加签；支持全局开关和脚本名单。"
+      ],
+      "sideEffects": [
+        "向站点提交签到并领取服务端确定的额度奖励。",
+        "启用通知且处于正式模式时，向已配置的青龙通知渠道及可选钉钉机器人发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/2b8f08952817263d",
+        "candidateSha256": "a8a1e08e823fd7a7f361652afd5d6ac1e11b9708c9279de589d4e42f919bf997"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "a8a1e08e823fd7a7f361652afd5d6ac1e11b9708c9279de589d4e42f919bf997",
+        "releaseSha256": "5995018a3be2a30883401877d925dd57b3d57ca0c9edbf0a62da44d8be1d094e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:54:39.370885+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "a8a1e08e823fd7a7f361652afd5d6ac1e11b9708c9279de589d4e42f919bf997",
+          "toCandidateSha256": "5995018a3be2a30883401877d925dd57b3d57ca0c9edbf0a62da44d8be1d094e",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
