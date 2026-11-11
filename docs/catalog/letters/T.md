@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **62** 个脚本。返回 [`目录首页`](../README.md)。
+共 **63** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -40,6 +40,7 @@
 | AbyssWorld每日签到 | `scripts/task_ad4c4f3a.js` | `node scripts/task_ad4c4f3a.js` | `39 8 * * *` | 待检查 | [task_ad4c4f3a.js.md](../../scripts/task_ad4c4f3a.js.md)（`docs/scripts/task_ad4c4f3a.js.md`） |
 | TJUPT每日签到 | `scripts/task_b80894cb.py` | `python3 scripts/task_b80894cb.py` | `13 9 * * *` | 待检查 | [task_b80894cb.py.md](../../scripts/task_b80894cb.py.md)（`docs/scripts/task_b80894cb.py.md`） |
 | 今日校园辅导员签到 | `scripts/task_c04cea4d.py` | `python3 scripts/task_c04cea4d.py` | `0 21 * * *` | 待检查 | [task_c04cea4d.py.md](../../scripts/task_c04cea4d.py.md)（`docs/scripts/task_c04cea4d.py.md`） |
+| 掘金签到与可选抽奖 | `scripts/task_c2801fee.py` | `python3 scripts/task_c2801fee.py` | `40 10 * * *` | 待检查 | [task_c2801fee.py.md](../../scripts/task_c2801fee.py.md)（`docs/scripts/task_c2801fee.py.md`） |
 | 又拍云签到与每日任务 | `scripts/task_d09de588.py` | `python3 scripts/task_d09de588.py` | `45 8 * * *` | 待检查 | [task_d09de588.py.md](../../scripts/task_d09de588.py.md)（`docs/scripts/task_d09de588.py.md`） |
 | 爱桌游每日签到 | `scripts/task_d530fa58.py` | `python3 scripts/task_d530fa58.py` | `0 5 * * *` | 待检查 | [task_d530fa58.py.md](../../scripts/task_d530fa58.py.md)（`docs/scripts/task_d530fa58.py.md`） |
 | Cafe123 每日签到 | `scripts/task_dd37430b.js` | `node scripts/task_dd37430b.js` | `30 11 14 * * *` | 待检查 | [task_dd37430b.js.md](../../scripts/task_dd37430b.js.md)（`docs/scripts/task_dd37430b.js.md`） |
