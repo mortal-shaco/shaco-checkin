@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/kuku_daily.py`
 - 青龙命令：`python3 scripts/kuku_daily.py`
 - 建议 Cron：`0 8 * * *`
-- 发布哈希：`23f3f48ae20d539b2939d2ac6091b499728b6d8eaf3d7800bc792f519c63e7cc`
+- 发布哈希：`4d2fc1a12c13d923e2125f78f3845708bae865eda778edbaf29a0fe534722158`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -19,6 +19,9 @@
 - 显式 --thirty-days 执行 30 天活动配置查询、签到面板检查、风控凭证解析及签到；--all-tasks 同时运行积分与活动任务，--legacy-freepoint 选择原积分任务。
 - 活动面板显示连续与累计签到天数；面板已签到或签到业务码 10152 记为已完成，新增签到仅认业务成功且 signed_today 为布尔 true；风控失败独立记录。
 - 完整保留活动 Cookie 内网页 STOKEN、PTOKEN 及其他字段，与产品 STOKEN 和换发链路隔离。
+- 显式 --current-thirty-days 执行现行活动协议，使用 Cookie 内 PTOKEN 优先换发会话，或使用网页 STOKEN；官方 userreport 读取公开 UID，使用客户端请求头和 uid、固定 tid、客户端查询参数，以 POST 空 JSON 预读、按需签到、复读面板。
+- 现行活动仅面板 signed_today 为布尔 true 判成功；签到动作业务码 10152、其他业务码或网络异常均继续复读确认，复读失败返回非零，不重复提交签到。
+- 兼容上游新增的 KUKU_TOKENS JSON 账号输入及完整 Cookie 行格式；规范变量继续按第一个分隔符解析，账号逐行独立处理。
 
 ## 环境变量与参数
 
@@ -30,8 +33,8 @@
 
 - 必填：是
 - 敏感：是
-- 获取或设置：登录官方库库 AI，在官方业务请求中复制同账号的 BDUSS Cookie 和 genflowpro 产品作用域 STOKEN。也可从已登录百度的浏览器开发者工具「应用/存储→Cookie」或官方请求 Cookie 中取得同账号 BDUSS、PTOKEN，用于脚本通过官方 HTTPS 接口换发。网页通行证 STOKEN 不等于产品 STOKEN；失效时需重新获取。勿使用第三方凭据服务或在日志分享凭据。 运行 30 天活动时，从官方活动页开发者工具的网络请求中复制含 BDUSS、网页 STOKEN 及原有 PTOKEN、BAIDUID、PANPSC 等字段的完整 Cookie；第一段产品令牌可留空，网页令牌始终保留在 Cookie 内。
-- 填写格式：每个非空行一个账号：产品STOKEN|完整Cookie。只在第一个 | 处分割，后续 Cookie 内容保留；Cookie 支持请求头、单行编辑器 JSON、含 cookies/cookie 的对象、键值对象。无产品 STOKEN 时保留开头 |，Cookie 必须含同账号 BDUSS 和 PTOKEN；有 STOKEN 时 Cookie 至少含完整 BDUSS。不用 &、@ 分隔账号。 --thirty-days 只要求 Cookie 含 BDUSS 与网页 STOKEN；--all-tasks 同时满足积分与活动凭据要求。
+- 获取或设置：登录官方库库 AI，在官方业务请求中复制同账号的 BDUSS Cookie 和 genflowpro 产品作用域 STOKEN。也可从已登录百度的浏览器开发者工具「应用/存储→Cookie」或官方请求 Cookie 中取得同账号 BDUSS、PTOKEN，用于脚本通过官方 HTTPS 接口换发。网页通行证 STOKEN 不等于产品 STOKEN；失效时需重新获取。勿使用第三方凭据服务或在日志分享凭据。 运行 30 天活动时，从官方活动页开发者工具的网络请求中复制含 BDUSS、网页 STOKEN 及原有 PTOKEN、BAIDUID、PANPSC 等字段的完整 Cookie；第一段产品令牌可留空，网页令牌始终保留在 Cookie 内。 现行活动同样从官方活动页取得完整 Cookie，有 PTOKEN 时优先官方换发，失败直接报告；无 PTOKEN 时使用 Cookie 内网页 STOKEN。
+- 填写格式：每个非空行一个账号：产品STOKEN|完整Cookie。只在第一个 | 处分割，后续 Cookie 内容保留；Cookie 支持请求头、单行编辑器 JSON、含 cookies/cookie 的对象、键值对象。无产品 STOKEN 时保留开头 |，Cookie 必须含同账号 BDUSS 和 PTOKEN；有 STOKEN 时 Cookie 至少含完整 BDUSS。不用 &、@ 分隔账号。 --thirty-days 只要求 Cookie 含 BDUSS 与网页 STOKEN；--all-tasks 同时满足积分与活动凭据要求。 --current-thirty-days 要求完整 Cookie 含 BDUSS 及 PTOKEN 或网页 STOKEN，第一段产品令牌可留空。
 
 ### 可选参数
 
@@ -40,7 +43,7 @@
 - 必填：否
 - 敏感：是
 - 获取或设置：兼容原脚本的多账号输入，所需凭据从同一账号官方 Cookie 和业务请求取得，建议迁移到 KUKU_ACCOUNTS。
-- 填写格式：仅当 KUKU_ACCOUNTS 为空时使用；每行 备注|BDUSS|PTOKEN[|STOKEN]，第四段可省略或留空以换发。备注不作为官方身份显示。禁止使用 & 或 @ 分隔账号。
+- 填写格式：仅当 KUKU_ACCOUNTS 为空时使用；每行 备注|BDUSS|PTOKEN[|STOKEN]，第四段可省略或留空以换发。备注不作为官方身份显示。禁止使用 & 或 @ 分隔账号。 另兼容 JSON 账号数组或含 accounts 数组的对象，每项为 Cookie 字符串或含 cookie/cookieHeader、business_stoken/businessStoken/stoken 的对象；兼容每行 备注|完整Cookie（仅在首个分隔符处分割；配套产品令牌请用规范变量或 JSON 字段）。新配置优先使用规范变量。
 
 ### `KUKU_COOKIES`
 
@@ -108,7 +111,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `23f3f48ae20d539b2939d2ac6091b499728b6d8eaf3d7800bc792f519c63e7cc`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
+SHA-256 `4d2fc1a12c13d923e2125f78f3845708bae865eda778edbaf29a0fe534722158`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/224698e8fa0ac8f6`。
 
 ## 副作用与风险
 
@@ -116,7 +119,8 @@ SHA-256 `23f3f48ae20d539b2939d2ac6091b499728b6d8eaf3d7800bc792f519c63e7cc`；基
 - 未提供产品 STOKEN 时向百度官方认证接口换发当前账号的 genflowpro 会话令牌；不保存本地令牌缓存。
 - 通知被选中且非预演时，向青龙配置的通知渠道发送脱敏统计摘要。
 - 仅显式选择 --thirty-days 或 --all-tasks 时提交 30 天活动签到，可能增加活动积分和签到天数。
+- 仅显式选择 --current-thirty-days 时，按现行协议向官方提交活动签到；有 PTOKEN 时向百度官方认证接口换发本次运行的活动会话令牌。
 
 ## 许可证与来源
 
-上游 `L0NE-6/KukuAI-Daily` / `kuku_daily.py` / `1f9bb5682a083879c1698ae3e35b535af96a15bf`。
+上游 `L0NE-6/KukuAI-Daily` / `kuku_daily.py` / `c9212f6b2eeca6e2e57949fa25cf83af6bc76a33`。

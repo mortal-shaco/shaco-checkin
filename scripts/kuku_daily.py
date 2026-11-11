@@ -7,7 +7,8 @@
 # 原始项目与作者：L0NE-6/KukuAI-Daily
 # https://github.com/L0NE-6/KukuAI-Daily/blob/6912419c6b29365bb7b3172cc3c18bf7b763812d/kuku_daily.py
 # 历史合并上游：e39004351be71ad4a3b3a6cd04720f481313cfd8/kuku_daily.py
-# 当前合并上游：1f9bb5682a083879c1698ae3e35b535af96a15bf/kuku_daily.py
+# 历史合并上游：1f9bb5682a083879c1698ae3e35b535af96a15bf/kuku_daily.py
+# 当前合并上游：L0NE-6/KukuAI-Daily c9212f6b2eeca6e2e57949fa25cf83af6bc76a33/kuku_daily.py
 """KukuAI（百度文库 · 库库 AI / GenFlowPro）每日积分，Python 3.8+ 标准库。
 
 每日依次查询积分面板、领取 LOGIN 和 CHAT 奖励；不会实际发送对话、发布文本或消费积分。
@@ -37,6 +38,14 @@ QINGLONG_NOTIFY 默认 auto，仅通知 QINGLONG_NOTIFY_SCRIPTS 选中的脚本�
 以及 PTOKEN、BAIDUID、PANPSC 等原有字段）。网页 STOKEN 留在 Cookie 内，
 KUKU_ACCOUNTS 第一段及 KUKU_STOKEN 始终只表示积分业务 STOKEN，不互相替代。
 只跑活动时可留空第一段；活动不可用或风控失败时如实失败，不尝试积分接口代替。
+--current-thirty-days：显式运行上游现行 30 天活动协议，独立于旧活动风控链路。
+该模式要求完整 Cookie 含 BDUSS，以及 PTOKEN 或网页 STOKEN。有 PTOKEN 时优先
+向官方换发活动会话，失败直接报告；否则使用 Cookie 内网页 STOKEN。
+产品 STOKEN 第一段不替代活动会话。流程为 userreport 获取公开 UID、POST JSON
+预读面板、按需签到、POST JSON 复读面板；仅布尔 signed_today=true 确认完成，
+10152 及其他动作响应均不能独立判成功。保留 Cookie 内 PTOKEN 及其他会话字段。
+KUKU_TOKENS 另兼容单行 JSON 账号数组（cookie、business_stoken 字段）或
+每行 备注|完整Cookie（业务令牌请改用规范变量或 JSON）；新配置统一使用 KUKU_ACCOUNTS 换行格式。
 python candidate.py --only 1：仅处理第一个账号；--token 已安全停用，不输出令牌。
 """
 # qinglong-notification-policy: begin
@@ -86,6 +95,12 @@ ACTIVITY_TOKEN_URL = BASE_URL + "/operation/activitys/api/getJsToken"
 ACTIVITY_SIGN_URL = BASE_URL + "/act/v2/kukuai30/signin"
 ACTIVITY_REFERER = ("https://kuku.baidu.com/operation/activitys/"
                     "kukuPcSignAct/main")
+USERREPORT_URL = BASE_URL + '/api/genflowpro/common/userreport?' + WEB_QUERY
+CLIENT_QUERY = 'app_id=123971023&clienttype=401&version=1.7.3.107&channel=chunlei'
+SIGNIN30_TID = '291651792210'
+ACT_USER_AGENT = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+                  '(KHTML, like Gecko) KuKuGenFlow/1.6.32 Chrome/146.0.7680.216 '
+                  'Electron/41.10.1 Safari/537.36')
 ACTIVITY_AID = 15459
 ACTIVITY_SIGN_POINT = 10
 DISABLED = {'0', 'false', 'no', 'off'}
@@ -175,6 +190,36 @@ def load_accounts():
     accounts = []
     canonical = os.getenv('KUKU_ACCOUNTS', '').strip()
     legacy = os.getenv('KUKU_TOKENS', '').strip()
+    if not canonical and legacy.startswith(('[', '{')):
+        try:
+            items = json.loads(legacy)
+            if isinstance(items, dict):
+                items = items.get('accounts', [items])
+            if not isinstance(items, list):
+                raise TaskError('KUKU_TOKENS JSON 必须是账号数组')
+        except (ValueError, TaskError):
+            return [{'error': 'KUKU_TOKENS JSON 账号配置无效'}]
+        for item in items:
+            try:
+                if isinstance(item, str):
+                    account = make_account(item, '')
+                elif isinstance(item, dict):
+                    cookie = item.get('cookie', item.get('cookieHeader'))
+                    if cookie is None:
+                        metadata = {'name', 'remark', 'note', 'business_stoken', 'businessStoken', 'stoken'}
+                        cookie = {key: value for key, value in item.items() if key not in metadata}
+                    if not isinstance(cookie, str):
+                        cookie = json.dumps(cookie, ensure_ascii=False)
+                    token = item.get('business_stoken') or item.get('businessStoken') or item.get('stoken') or ''
+                    if not isinstance(token, str):
+                        raise TaskError('业务 STOKEN 必须是字符串')
+                    account = make_account(cookie, token.strip())
+                else:
+                    raise TaskError('JSON 账号条目必须是 Cookie 字符串或对象')
+                accounts.append(account)
+            except TaskError as exc:
+                accounts.append({'error': str(exc)})
+        return accounts
     if canonical or legacy:
         for line in (canonical or legacy).splitlines():
             if not line.strip():
@@ -187,6 +232,11 @@ def load_accounts():
                     account = make_account(cookie, stoken.strip())
                 else:
                     parts = line.strip().split('|', 3)
+                    if len(parts) >= 2 and ('=' in parts[1] or ';' in parts[1]):
+                        remark, cookie_line = line.strip().split('|', 1)
+                        account = make_account(cookie_line, '')
+                        accounts.append(account)
+                        continue
                     if len(parts) not in (3, 4):
                         raise TaskError('旧 KUKU_TOKENS 应为 备注|BDUSS|PTOKEN[|STOKEN]，每行一个账号')
                     # 备注不作为官方身份输出，避免用户把敏感信息写入备注。
@@ -275,6 +325,7 @@ class Client:
             raise TaskError('换发响应中的 STOKEN 格式无效')
         # 仅更新本账号内存中的请求头，不改环境变量，不读写缓存。
         self.headers['Cookie'] = make_account(account['cookie'], stoken)['cookie']
+        return stoken
 
     def request(self, path, task=None):
         headers = dict(self.headers)
@@ -542,12 +593,138 @@ def run_activity_account(index, account, dry):
     return counts
 
 
+
+def current_activity_request(client, url, post=False, check_code=True):
+    req = urllib.request.Request(url, headers=client.headers,
+                                 data=b'{}' if post else None,
+                                 method='POST' if post else 'GET')
+    value = client.json_request(req)
+    code = integer(value.get('errno'))
+    if check_code and code != 0:
+        raise TaskError('现行活动接口未返回成功业务码（errno=%s）' % code)
+    show_identity(value)
+    return value
+
+
+def current_activity_panel(client, uk):
+    query = urllib.parse.urlencode({'uid': uk, 'tid': SIGNIN30_TID})
+    value = current_activity_request(client, ACTIVITY_HOME_URL + '?' + query + '&' + CLIENT_QUERY, True)
+    data = value.get('data')
+    if not isinstance(data, dict):
+        raise TaskError('现行活动面板缺少 data')
+    log('活动面板连续 %d 天，累计 %d 天' % (
+        max(0, integer(data.get('continuous_days')) or 0),
+        max(0, integer(data.get('total_days')) or 0)))
+    next_days = integer(data.get('next_reward_days'))
+    next_award = data.get('next_reward_award')
+    if next_days and isinstance(next_award, str) and next_award.strip():
+        log('再签 %d 天可得 %s' % (next_days, next_award))
+    return data
+
+
+def run_current_activity_account(index, account, dry):
+    started = time.monotonic()
+    labels = ('现行活动会话准备', '官方会话身份', '签到面板预读', '按需提交签到', '签到面板复读确认')
+    counts = dict(total=len(labels), success=0, alreadyComplete=0, skipped=0, failed=0)
+    ready, already = True, False
+    client, uk = None, ''
+    for stage, label in enumerate(labels, 1):
+        tick = time.monotonic()
+        result = 'skipped'
+        log('账号 %d · 现行活动阶段 %d/%d · %s' % (index, stage, len(labels), label))
+        try:
+            if not ready or already:
+                counts['skipped'] += 1
+                log('⏭️ 前置检查失败或今日已签到，跳过后续操作')
+            elif stage == 1:
+                if 'error' in account:
+                    raise TaskError(account['error'])
+                if not account['ptoken'] and not account['web_stoken']:
+                    raise TaskError('现行活动需要 Cookie 内的 PTOKEN 或网页 STOKEN')
+                client = Client(account['web_cookie'])
+                if dry:
+                    log('✅ 预演：会话参数格式检查通过，未换发、未查询、未提交签到')
+                else:
+                    if account['ptoken']:
+                        token = client.exchange_stoken(account)
+                        fields = parse_cookie(account['web_cookie'])
+                        fields['stoken'] = ('STOKEN', token)
+                        client.headers['Cookie'] = '; '.join(name + '=' + value for name, value in fields.values())
+                        log('✅ 活动会话官方换发成功，完整 Cookie 其余字段已保留')
+                    client.headers.update({'User-Agent': ACT_USER_AGENT, 'Referer': BASE_URL + '/genflowpro',
+                                           'Accept': 'application/json', 'Content-Type': 'application/json'})
+                counts['success'] += 1
+                result = 'success'
+            elif dry:
+                counts['skipped'] += 1
+                log('⏭️ 预演：未调用现行活动接口；正式运行以面板复读确认结果')
+            elif stage == 2:
+                value = current_activity_request(client, USERREPORT_URL)
+                data = value.get('data')
+                if not isinstance(data, dict):
+                    raise TaskError('会话身份响应缺少 data')
+                for key in ('bdstoken', 'uinfo'):
+                    if isinstance(data.get(key), str):
+                        SECRETS.append(data[key])
+                if not isinstance(data.get('bdstoken'), str) or not data['bdstoken'].strip():
+                    raise TaskError('会话身份响应缺少 bdstoken')
+                raw_uk = data.get('uk')
+                if isinstance(raw_uk, bool) or not isinstance(raw_uk, (str, int)) or not str(raw_uk).strip():
+                    raise TaskError('会话身份响应缺少有效 uk')
+                uk = str(raw_uk).strip()
+                log('✅ 官方账号公开 UID：' + uk)
+                counts['success'] += 1
+                result = 'success'
+            elif stage == 3:
+                data = current_activity_panel(client, uk)
+                already = data.get('signed_today') is True
+                result = 'alreadyComplete' if already else 'success'
+                counts[result] += 1
+                log('☑️ 今日已签到，面板 signed_today 为布尔 true' if already else '✅ 面板预读完成，尚需签到')
+            elif stage == 4:
+                query = urllib.parse.urlencode({'uid': uk, 'tid': SIGNIN30_TID})
+                # 动作响应即使超时或返回 10152，也必须继续复读，不重试提交。
+                try:
+                    value = current_activity_request(client, ACTIVITY_SIGN_URL + '?' + query + '&' + CLIENT_QUERY,
+                                                     True, check_code=False)
+                    log('签到动作业务码 errno=%s，等待面板复读确认' % integer(value.get('errno')))
+                except TaskError:
+                    log('⚠️ 签到动作响应不可确认，继续读取官方面板')
+                counts['skipped'] += 1
+                log('⏭️ 动作阶段暂不计业务成功，交由复读阶段确认')
+            else:
+                time.sleep(0.9)
+                data = current_activity_panel(client, uk)
+                if data.get('signed_today') is not True:
+                    raise TaskError('签到未生效，复读面板 signed_today 不是布尔 true')
+                counts['success'] += 1
+                result = 'success'
+                log('✅ 现行 30 天签到成功，复读面板 signed_today 为布尔 true')
+        except TaskError as exc:
+            ready = False
+            counts['failed'] += 1
+            result = 'failure'
+            log('❌ ' + str(exc))
+        except Exception:
+            ready = False
+            counts['failed'] += 1
+            result = 'failure'
+            log('❌ 现行活动阶段异常，已隐藏异常内容')
+        log('现行活动阶段结果：%s；耗时 %.2f 秒' % (result, time.monotonic() - tick))
+    counts['seconds'] = round(time.monotonic() - started, 2)
+    log(('账号 %d 现行活动统计：' % index) + ('总任务 %(total)d，成功 %(success)d，已完成 %(alreadyComplete)d，'
+        '跳过 %(skipped)d，失败 %(failed)d，耗时 %(seconds).2f 秒' % counts))
+    return counts
+
+
 def run_account(index, account, dry, mode):
     results = []
     if mode in {'freepoint', 'all'}:
         results.append(run_freepoint_account(index, account, dry))
     if mode in {'activity', 'all'}:
         results.append(run_activity_account(index, account, dry))
+    if mode == 'current-activity':
+        results.append(run_current_activity_account(index, account, dry))
     totals = {key: sum(item[key] for item in results) for key in results[0]}
     log('账号 %d 汇总：总任务 %d，成功 %d，已完成 %d，跳过 %d，失败 %d，耗时 %.2f 秒' % (
         index, totals['total'], totals['success'], totals['alreadyComplete'],
@@ -672,14 +849,14 @@ def main():
     error = ''
     args = sys.argv[1:]
     mode = 'freepoint'
-    switches = [arg for arg in args if arg in {'--legacy-freepoint', '--thirty-days', '--all-tasks'}]
+    switches = [arg for arg in args if arg in {'--legacy-freepoint', '--thirty-days', '--all-tasks', '--current-thirty-days'}]
     if switches:
         if len(switches) != 1:
             error = '任务开关只能选择一个'
         mode = {'--legacy-freepoint': 'freepoint', '--thirty-days': 'activity',
-                '--all-tasks': 'all'}[switches[0]]
+                '--all-tasks': 'all', '--current-thirty-days': 'current-activity'}[switches[0]]
         args = [arg for arg in args if arg not in switches]
-    log('任务选择：' + {'freepoint': '每日积分', 'activity': '30 天签到', 'all': '每日积分及 30 天签到'}[mode])
+    log('任务选择：' + {'freepoint': '每日积分', 'activity': '30 天签到', 'all': '每日积分及 30 天签到', 'current-activity': '现行 30 天签到（复读确认）'}[mode])
     if args:
         if len(args) == 2 and args[0] == '--only' and args[1].isdigit() and 1 <= int(args[1]) <= len(accounts):
             selected = [(int(args[1]), accounts[int(args[1]) - 1])]
