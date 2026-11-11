@@ -367,7 +367,6 @@
 | PT站点每日签到 | `scripts/task_874a3b5f.py` | `python3 scripts/task_874a3b5f.py` | `35 9 * * *` | 待检查 | [task_874a3b5f.py.md](../scripts/task_874a3b5f.py.md)（`docs/scripts/task_874a3b5f.py.md`） |
 | 昆医大疫情防控填报 | `scripts/task_8f8ad2c5.py` | `python3 scripts/task_8f8ad2c5.py` | `53 7,15 * * *` | 待检查 | [task_8f8ad2c5.py.md](../scripts/task_8f8ad2c5.py.md)（`docs/scripts/task_8f8ad2c5.py.md`） |
 | 百度贴吧关注吧签到 | `scripts/task_98d86c7c.js` | `node scripts/task_98d86c7c.js` | `48 10 * * *` | 待检查 | [task_98d86c7c.js.md](../scripts/task_98d86c7c.js.md)（`docs/scripts/task_98d86c7c.js.md`） |
-| 天翼云盘签到与抽奖 | `scripts/task_9973f7e5.py` | `python3 scripts/task_9973f7e5.py` | `43 10 * * *` | 待检查 | [task_9973f7e5.py.md](../scripts/task_9973f7e5.py.md)（`docs/scripts/task_9973f7e5.py.md`） |
 | MT论坛签到 | `scripts/task_9a14e9eb.py` | `python3 scripts/task_9a14e9eb.py` | `39 0 * * *` | 待检查 | [task_9a14e9eb.py.md](../scripts/task_9a14e9eb.py.md)（`docs/scripts/task_9a14e9eb.py.md`） |
 | 今日校园问卷 | `scripts/task_9de2360b.py` | `python3 scripts/task_9de2360b.py` | `36 9 * * *` | 待检查 | [task_9de2360b.py.md](../scripts/task_9de2360b.py.md)（`docs/scripts/task_9de2360b.py.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |

@@ -2,6 +2,8 @@
 # name: 天翼云盘每日签到及抽奖
 # cron: 44 10 * * *
 # 来源: jing207/189Checkin, checkin.py (MIT)
+# SPDX-License-Identifier: MIT
+# 合并来源：lijialei888/cloundqiandao / checkin.py (MIT)，提交 4d1990494ef90cbbbf878a8f5fa232bf11a89f09
 # 合并来源: gitlab.com/live2364li/189checkin / checkin.py (MIT)
 # 兼容参考: task catalog a239bc381f7989b5、6fe18a28ecf03c21 (MIT)。
 # 上游文件未含额外版权声明；本文件保留来源并沿用 MIT 许可。
@@ -31,6 +33,8 @@
 189_DRAW_SIGNIN / 189_DRAW_PHOTOS=0 可关闭对应抽奖，默认均开启。
 沿用已发布计划每日 10:44 运行；原始来源没有 cron。
 兼容 TY189_ACCOUNTS / TY189_DRY_RUN；对应 189_* 变量存在时优先，空值也不回退。
+兼容 CLOUD189_ACCOUNTS / CLOUD189_DRY_RUN；优先级为 189_*、TY189_*、CLOUD189_*。
+同名规范变量即使为空也优先，不回退到旧变量。
 依赖: 公共 PyPI requests、rsa；预演无需安装它们。不会上传照片或开启相册备份。
 验证码拦截须自行在官方客户端处理，不自动改密或绕过验证。
 通知遵循 QINGLONG_NOTIFY 和 QINGLONG_NOTIFY_SCRIPTS 选择；未配置选择时不默认推送。
@@ -90,10 +94,12 @@ def log(message):
 
 
 def setting(name, default=''):
-    aliases = {'189_ACCOUNTS': 'TY189_ACCOUNTS', '189_DRY_RUN': 'TY189_DRY_RUN'}
-    if name in os.environ:
-        return os.environ[name]
-    return os.environ.get(aliases.get(name, name), default)
+    aliases = {'189_ACCOUNTS': ('TY189_ACCOUNTS', 'CLOUD189_ACCOUNTS'),
+               '189_DRY_RUN': ('TY189_DRY_RUN', 'CLOUD189_DRY_RUN')}
+    for key in (name, *aliases.get(name, ())):
+        if key in os.environ:
+            return os.environ[key]
+    return default
 
 
 def switch(name, default):
@@ -164,7 +170,24 @@ class Client:
             raise TaskError('接口未返回有效 JSON') from None
         if not isinstance(data, dict):
             raise TaskError('接口响应结构发生变化')
+        # 收集已知敏感字段，仅用于本地日志过滤，绝不输出。
+        for key in ('token', 'accessToken', 'refreshToken', 'sessionKey', 'sessionId',
+                    'cookie', 'Cookie', 'toUrl', 'phone', 'mobile', 'deviceId'):
+            value = data.get(key)
+            if isinstance(value, str) and value:
+                self.secrets.append(value)
+        self.secrets.extend(str(cookie.value) for cookie in self.session.cookies if cookie.value)
         return data
+
+    def public_prize(self, value):
+        text = value
+        for secret in sorted(set(self.secrets), key=len, reverse=True):
+            if secret:
+                text = text.replace(secret, '[凭据已隐藏]')
+        text = re.sub(r'(?<!\d)(?:\+?86[- ]?)?1[3-9](?:[- ]?\d){9}(?!\d)',
+                      '[手机号已隐藏]', text)
+        text = ''.join(c if c.isprintable() else ' ' for c in text)
+        return text[:160]
 
     def identity(self, data):
         # 仅展示官方身份字段，过滤密码、会话字段、手机号和控制字符。
@@ -257,7 +280,14 @@ class Client:
         if 'errorCode' in data or not isinstance(data.get('prizeName'), str) or not data['prizeName'].strip():
             raise TaskError('抽奖未取得明确奖品结果，可能已抽取、资格不足或接口变化')
         self.identity(data)
-        return 'success', '抽奖成功，已确认奖品结果'
+        return 'success', '抽奖成功，已确认奖品结果：' + self.public_prize(data['prizeName'])
+
+
+def send_python_notification(module_path, title, body):
+    """在隔离子进程内使用青龙标准 notify.py 接口。"""
+    sys.path.insert(0, str(Path(module_path).resolve().parent))
+    from notify import send
+    send(title, body)
 
 
 def notify(summary, dry):
@@ -270,7 +300,9 @@ def notify(summary, dry):
     selected = value in TRUE
     if value == 'auto' and 'QINGLONG_NOTIFY_SCRIPTS' in os.environ:
         patterns = re.split(r'[,;\s]+', os.environ['QINGLONG_NOTIFY_SCRIPTS'].strip())
-        names = [CATALOG, Path(__file__).name, 'scripts/' + Path(__file__).name]
+        names = [CATALOG, '9973f7e502796463', Path(__file__).name,
+                 'scripts/' + Path(__file__).name, '189.py', 'scripts/189.py',
+                 'task_9973f7e5.py', 'scripts/task_9973f7e5.py']
         # 允许匹配安装后的 scripts 相对路径。
         parts = Path(__file__).parts
         if 'scripts' in parts:
@@ -285,22 +317,24 @@ def notify(summary, dry):
             f"成功数：{summary['succeeded']}；失败数：{summary['failed']}；"
             f"配置错误：{summary['configurationErrors']}")
     dirs = [Path(p) for p in [os.environ.get('QINGLONG_NOTIFY_DIR', ''),
+                             str(Path(__file__).resolve().parent),
                              '/ql/data/scripts', '/ql/scripts'] if p]
     # 子进程隔离通知输出和超时；只传递固定标题与脱敏计数。
-    python_code = ('import importlib.util,sys; '
-                   's=importlib.util.spec_from_file_location("ql_notify",sys.argv[1]); '
-                   'm=importlib.util.module_from_spec(s); s.loader.exec_module(m); '
-                   'm.send(sys.argv[2],sys.argv[3])')
+    python_code = ('import runpy,sys; '
+                   'runpy.run_path(sys.argv[1])["send_python_notification"](*sys.argv[2:])')
+    def python_command(path):
+        return [sys.executable, '-c', python_code, str(Path(__file__).resolve()),
+                str(Path(path).resolve()), TITLE, body]
     commands = []
     try:
         spec = importlib.util.find_spec('notify')
         if spec and spec.origin:
-            commands.append([sys.executable, '-c', python_code, spec.origin, TITLE, body])
+            commands.append(python_command(spec.origin))
     except Exception:
         pass
     for directory in dirs:
         if (directory / 'notify.py').is_file():
-            commands.append([sys.executable, '-c', python_code, str(directory / 'notify.py'), TITLE, body])
+            commands.append(python_command(directory / 'notify.py'))
         if (directory / 'sendNotify.js').is_file():
             commands.append(['node', '-e', 'Promise.resolve(require(process.argv[1]).sendNotify(process.argv[2],process.argv[3])).catch(()=>process.exit(1))',
                              str(directory / 'sendNotify.js'), TITLE, body])

@@ -413,7 +413,9 @@
           "QINGLONG_NOTIFY_SCRIPTS",
           "QINGLONG_NOTIFY_DIR",
           "TY189_ACCOUNTS",
-          "TY189_DRY_RUN"
+          "TY189_DRY_RUN",
+          "CLOUD189_ACCOUNTS",
+          "CLOUD189_DRY_RUN"
         ],
         "dryRunEnv": {
           "189_DRY_RUN": "1"
@@ -424,6 +426,9 @@
           "QINGLONG_NOTIFY": "auto"
         },
         "successPatterns": [
+          "登录业务校验通过",
+          "签到成功|今日已经签到",
+          "TASK_SUMMARY=",
           "\"status\":\"success\"",
           "\"exitCode\":0"
         ],
@@ -438,7 +443,10 @@
           "完全断网预演、分阶段时间轴日志、账号统计、单行 TASK_SUMMARY JSON 和青龙脱敏通知。",
           "兼容 TY189_ACCOUNTS 和 TY189_DRY_RUN，规范变量优先，命令行账号继续优先。",
           "兼容登录页字段引号、输入标签属性顺序和网页字符实体变化。",
-          "通知全局显式开关优先于脚本选择列表，默认仅通知列表选中时推送。"
+          "通知全局显式开关优先于脚本选择列表，默认仅通知列表选中时推送。",
+          "兼容 CLOUD189_ACCOUNTS 和 CLOUD189_DRY_RUN，保留规范变量、原兼容变量及命令行的既有优先级。",
+          "抽奖成功后显示脱敏奖品名称，过滤已知凭据、会话及手机号。",
+          "通过青龙 notify.py 的标准 send 接口发送脱敏摘要，兼容现有 JavaScript 发送器和合并来源选择器。"
         ],
         "sideEffects": [
           "登录建立账号会话。",
@@ -453,7 +461,7 @@
       },
       "displayName": "天翼云盘每日签到及抽奖",
       "path": "scripts/189.py",
-      "sha256": "916655413d1f5864c237d83f00b13f1410c56931496d4fd132904c0039dfa371",
+      "sha256": "d6f2e5ac2f960cd5d0e7f72e16868b699979b8a98b919b8f3760e7387834e90e",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -492,6 +500,16 @@
             "commit": "e7b5f44c3f6bd2afc37a7688865aab0260989c14",
             "originalPath": "checkin.py",
             "license": "MIT"
+          },
+          {
+            "repository": "lijialei888/cloundqiandao",
+            "url": "https://github.com/lijialei888/cloundqiandao",
+            "branch": "main",
+            "commit": "4d1990494ef90cbbbf878a8f5fa232bf11a89f09",
+            "originalPath": "checkin.py",
+            "catalogId": "9973f7e502796463",
+            "sha256": "762c1214913046aa31534e623d64da44d0910ce608a7fa09d61ecfc1d59b0a40",
+            "license": "MIT"
           }
         ]
       },
@@ -502,14 +520,14 @@
           "name": "189_ACCOUNTS",
           "required": true,
           "sensitive": true,
-          "howToGet": "在天翼云盘官网或官方客户端注册并设置登录密码；使用自己的登录账号和密码，无需抓包。若提示验证码，请先在官方客户端完成验证。兼容原 --username 和 --password 单账号参数，两者须同时提供，提供时优先于本变量；为避免进程参数泄漏，建议使用环境变量。 未设置本变量时兼容 TY189_ACCOUNTS；本变量存在时优先，空值会报配置错误。",
+          "howToGet": "在天翼云盘官网或官方客户端注册并设置登录密码；使用自己的登录账号和密码，无需抓包。若提示验证码，请先在官方客户端完成验证。兼容原 --username 和 --password 单账号参数，两者须同时提供，提供时优先于本变量；为避免进程参数泄漏，建议使用环境变量。 未设置本变量时兼容 TY189_ACCOUNTS；本变量存在时优先，空值会报配置错误。 未设置上述两个变量时兼容 CLOUD189_ACCOUNTS；环境变量优先级为 189_ACCOUNTS、TY189_ACCOUNTS、CLOUD189_ACCOUNTS，已设置的空值不回退。",
           "format": "每个非空行一个账号，格式为 账号|密码；仅在第一个 | 处分割，密码后续的 | 和空白保留，不使用 & 或 @ 分隔账号。"
         },
         {
           "name": "189_DRY_RUN",
           "required": false,
           "sensitive": false,
-          "howToGet": "设置为 1 启用完全断网预演；预演不验证真实账号、不执行签到或抽奖，通知仅模拟。 未设置本变量时兼容 TY189_DRY_RUN。",
+          "howToGet": "设置为 1 启用完全断网预演；预演不验证真实账号、不执行签到或抽奖，通知仅模拟。 未设置本变量时兼容 TY189_DRY_RUN。 未设置上述两个变量时兼容 CLOUD189_DRY_RUN，已设置的空值视为无效配置，不回退。",
           "format": "1/0、true/false、yes/no、on/off；默认 0。"
         },
         {
@@ -537,14 +555,14 @@
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "需要推送时填写本脚本目录编号 e9e87f29cf49ea77、安装后的文件名或 scripts 相对路径，支持文件名通配符和 *；设置后替换默认选择，空值禁用全部，未设置时本脚本不默认入选，QINGLONG_NOTIFY=1 可直接启用。",
+          "howToGet": "需要推送时填写本脚本目录编号 e9e87f29cf49ea77、安装后的文件名或 scripts 相对路径，支持文件名通配符和 *；设置后替换默认选择，空值禁用全部，未设置时本脚本不默认入选，QINGLONG_NOTIFY=1 可直接启用。 同时识别合并来源编号 9973f7e502796463、189.py、scripts/189.py、task_9973f7e5.py 及其 scripts 路径。",
           "format": "逗号、分号、空白或换行分隔选择项。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选，填写现有青龙通知模块所在目录；同时支持导入 notify.send，或使用 /ql/data/scripts、/ql/scripts 中的 notify.py、sendNotify.js；不下载或安装通知模块。",
+          "howToGet": "可选，填写现有青龙通知模块所在目录；同时支持导入 notify.send，或使用 /ql/data/scripts、/ql/scripts 中的 notify.py、sendNotify.js；不下载或安装通知模块。 也自动查找当前脚本所在目录；Python 发送器通过 from notify import send 在隔离子进程中导入。",
           "format": "本机已有通知目录路径。"
         },
         {
@@ -560,6 +578,20 @@
           "sensitive": false,
           "howToGet": "兼容待合并候选的断网预演开关，仅在未设置 189_DRY_RUN 时使用。",
           "format": "1/0、true/false、yes/no、on/off；默认 0。"
+        },
+        {
+          "name": "CLOUD189_ACCOUNTS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容传入候选的账号变量。使用自己在天翼云盘官网或官方客户端注册并设置的登录账号和密码；验证码和风控在官方客户端完成。仅在未设置 189_ACCOUNTS 及 TY189_ACCOUNTS 时使用；命令行配套账号密码继续优先。",
+          "format": "每个非空行一个账号，账号|密码，仅在第一个 | 处分割，密码后续的 | 和空白保留。"
+        },
+        {
+          "name": "CLOUD189_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容传入候选的完全断网预演开关，仅在未设置 189_DRY_RUN 及 TY189_DRY_RUN 时使用。",
+          "format": "1/0、true/false、yes/no、on/off；默认 0，开启后不调用通知发送器。"
         }
       ],
       "multiAccount": {
@@ -582,7 +614,10 @@
         "完全断网预演、分阶段时间轴日志、账号统计、单行 TASK_SUMMARY JSON 和青龙脱敏通知。",
         "兼容 TY189_ACCOUNTS 和 TY189_DRY_RUN，规范变量优先，命令行账号继续优先。",
         "兼容登录页字段引号、输入标签属性顺序和网页字符实体变化。",
-        "通知全局显式开关优先于脚本选择列表，默认仅通知列表选中时推送。"
+        "通知全局显式开关优先于脚本选择列表，默认仅通知列表选中时推送。",
+        "兼容 CLOUD189_ACCOUNTS 和 CLOUD189_DRY_RUN，保留规范变量、原兼容变量及命令行的既有优先级。",
+        "抽奖成功后显示脱敏奖品名称，过滤已知凭据、会话及手机号。",
+        "通过青龙 notify.py 的标准 send 接口发送脱敏摘要，兼容现有 JavaScript 发送器和合并来源选择器。"
       ],
       "sideEffects": [
         "登录建立账号会话。",
@@ -601,20 +636,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/e9e87f29cf49ea77",
-        "candidateSha256": "970c68d2275edd4bdf491ade7c479a0ff903377ca346bb858e6e2fa6a5b44a3a"
+        "candidateSha256": "c382b9b9a202c6c5a1de188a3274d08ae66c4113f3cd75a899d1b6e056671333"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "970c68d2275edd4bdf491ade7c479a0ff903377ca346bb858e6e2fa6a5b44a3a",
-        "releaseSha256": "916655413d1f5864c237d83f00b13f1410c56931496d4fd132904c0039dfa371",
+        "validatedSha256": "c382b9b9a202c6c5a1de188a3274d08ae66c4113f3cd75a899d1b6e056671333",
+        "releaseSha256": "d6f2e5ac2f960cd5d0e7f72e16868b699979b8a98b919b8f3760e7387834e90e",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T11:40:26.621025+00:00",
+          "approvedAt": "2026-11-11T11:51:51.897897+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "970c68d2275edd4bdf491ade7c479a0ff903377ca346bb858e6e2fa6a5b44a3a",
-          "toCandidateSha256": "916655413d1f5864c237d83f00b13f1410c56931496d4fd132904c0039dfa371",
+          "fromCandidateSha256": "c382b9b9a202c6c5a1de188a3274d08ae66c4113f3cd75a899d1b6e056671333",
+          "toCandidateSha256": "d6f2e5ac2f960cd5d0e7f72e16868b699979b8a98b919b8f3760e7387834e90e",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -68125,157 +68160,6 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "f3c0106602213c19bd2402f025a6e64bcb7bff882bf63fe68393411bb3963654",
           "toCandidateSha256": "fb3de12cdc8d54a423f2582c1cbd0caeed69023ef212a8572d2c891bc1890534",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
-      "catalogId": "9973f7e502796463",
-      "applicationKey": "lijialei888/cloundqiandao::checkin",
-      "checkProfile": {
-        "requiredEnv": [
-          "CLOUD189_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "CLOUD189_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "CLOUD189_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "QINGLONG_NOTIFY": "auto"
-        },
-        "successPatterns": [
-          "登录认证通过",
-          "签到通过，空间奖励",
-          "抽奖成功，奖品：",
-          "\"status\":\"success\""
-        ],
-        "features": [
-          "兼容原账号密码命令行参数，支持每行一个账号的环境配置与独立会话。",
-          "使用天翼官方登录页面公钥进行 RSA 加密登录，不依赖其他仓库或应用。",
-          "每日签到并显示空间奖励，识别接口返回的已签到状态。",
-          "执行签到活动及相册活动两次抽奖，校验明确奖品，逐项报告结果。",
-          "显示官方响应中的非敏感昵称、用户名、显示名称或公开身份；手机号和凭据不输出。",
-          "支持完全断网预演、分阶段时间轴、账号及任务统计和唯一结构化汇总。",
-          "支持青龙通知开关、脚本选择及 Python 或 JavaScript 通知发送器；通知失败不覆盖业务退出码。"
-        ],
-        "sideEffects": [
-          "正式执行向天翼提交账号密码登录并建立会话。",
-          "正式执行每日签到，领取接口返回的云盘空间奖励。",
-          "正式执行签到活动与相册活动抽奖，消耗相应活动免费抽奖机会并领取奖品。",
-          "启用通知时通过本机青龙发送器发送脱敏任务统计。"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "天翼云盘签到与抽奖",
-      "path": "scripts/task_9973f7e5.py",
-      "sha256": "28f42592b0c0e229961097b289b4f829227b92d5a391774c12e78c143b3780d3",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "lijialei888/cloundqiandao",
-        "branch": "main",
-        "commit": "4d1990494ef90cbbbf878a8f5fa232bf11a89f09",
-        "originalPath": "checkin.py"
-      },
-      "cron": "43 10 * * *",
-      "command": "python3 scripts/task_9973f7e5.py",
-      "environment": [
-        {
-          "name": "CLOUD189_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "使用天翼云盘官方客户端的登录账号和密码；在青龙环境变量中添加，账号需先完成官方注册及必要验证。需要验证码或风控处理时先在官方客户端登录，本脚本不绕过验证。",
-          "format": "每个非空行一个账号，格式为 账号|密码；仅在首个竖线处分割，密码中的后续竖线原样保留；空行忽略，不使用 & 或 @ 分隔账号。优先使用环境变量；兼容原 --username 与 --password 配套命令行参数，但不可同时配置环境账号。"
-        },
-        {
-          "name": "CLOUD189_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "需要不联网检查配置时设为 1；正式执行留空或设为 0。",
-          "format": "1、true、yes、on 开启；预演不登录、不抽奖、不调用任何通知发送器。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需填写要发送通知的脚本选择器；设置后替换默认选择，空值禁用全部。",
-          "format": "逗号、分号、空白或换行分隔；支持目录编号 9973f7e502796463、脚本相对路径、文件名及通配符，* 选中全部；全局禁用优先。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选：填写本机青龙 notify.py 或 sendNotify.js 所在目录；也自动尝试脚本目录及青龙标准脚本目录。",
-          "format": "本机目录路径；不下载、不安装通知模块；通知正文仅含脱敏统计。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "CLOUD189_ACCOUNTS 每个非空行一个账号，首个 | 左侧为账号、右侧完整内容为密码；不同账号独立登录，任一账号或配置行失败时整体非零退出。"
-      },
-      "dependencies": [
-        "rsa>=4.9,<5"
-      ],
-      "features": [
-        "兼容原账号密码命令行参数，支持每行一个账号的环境配置与独立会话。",
-        "使用天翼官方登录页面公钥进行 RSA 加密登录，不依赖其他仓库或应用。",
-        "每日签到并显示空间奖励，识别接口返回的已签到状态。",
-        "执行签到活动及相册活动两次抽奖，校验明确奖品，逐项报告结果。",
-        "显示官方响应中的非敏感昵称、用户名、显示名称或公开身份；手机号和凭据不输出。",
-        "支持完全断网预演、分阶段时间轴、账号及任务统计和唯一结构化汇总。",
-        "支持青龙通知开关、脚本选择及 Python 或 JavaScript 通知发送器；通知失败不覆盖业务退出码。"
-      ],
-      "sideEffects": [
-        "正式执行向天翼提交账号密码登录并建立会话。",
-        "正式执行每日签到，领取接口返回的云盘空间奖励。",
-        "正式执行签到活动与相册活动抽奖，消耗相应活动免费抽奖机会并领取奖品。",
-        "启用通知时通过本机青龙发送器发送脱敏任务统计。"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/9973f7e502796463",
-        "candidateSha256": "916c289036afe33281e0c61c52d4f281074834adec0b42db51f42484fabb8d24"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "916c289036afe33281e0c61c52d4f281074834adec0b42db51f42484fabb8d24",
-        "releaseSha256": "28f42592b0c0e229961097b289b4f829227b92d5a391774c12e78c143b3780d3",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T10:47:01.529743+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "916c289036afe33281e0c61c52d4f281074834adec0b42db51f42484fabb8d24",
-          "toCandidateSha256": "28f42592b0c0e229961097b289b4f829227b92d5a391774c12e78c143b3780d3",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
