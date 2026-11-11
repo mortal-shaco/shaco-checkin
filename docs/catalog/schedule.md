@@ -142,6 +142,7 @@
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 今日校园广东海洋大学签到 | `scripts/fcpdaily_2_0.py` | `python3 scripts/fcpdaily_2_0.py` | `58 9 * * *` | 待检查 | [fcpdaily_2_0.py.md](../scripts/fcpdaily_2_0.py.md)（`docs/scripts/fcpdaily_2_0.py.md`） |
 | 威锋网签到 | `scripts/feng.js` | `node scripts/feng.js` | `16 10 * * *` | 待检查 | [feng.js.md](../scripts/feng.js.md)（`docs/scripts/feng.js.md`） |
+| 今日校园同学列表 | `scripts/find_student.py` | `python3 scripts/find_student.py` | `59 10 * * *` | 待检查 | [find_student.py.md](../scripts/find_student.py.md)（`docs/scripts/find_student.py.md`） |
 | FL 自动登录签到 | `scripts/fl.js` | `node scripts/fl.js` | `52 10 * * *` | 待检查 | [fl.js.md](../scripts/fl.js.md)（`docs/scripts/fl.js.md`） |
 | 飞客茶馆签到 | `scripts/flyertea.js` | `node scripts/flyertea.js` | `18 10 * * *` | 待检查 | [flyertea.js.md](../scripts/flyertea.js.md)（`docs/scripts/flyertea.js.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
@@ -335,6 +336,7 @@
 | 联想商城每日签到 | `scripts/task_293255e8.py` | `python3 scripts/task_293255e8.py` | `22 10 * * *` | 待检查 | [task_293255e8.py.md](../scripts/task_293255e8.py.md)（`docs/scripts/task_293255e8.py.md`） |
 | NewAPI 自动签到 | `scripts/task_2b8f0895.py` | `python3 scripts/task_2b8f0895.py` | `55 10 * * *` | 待检查 | [task_2b8f0895.py.md](../scripts/task_2b8f0895.py.md)（`docs/scripts/task_2b8f0895.py.md`） |
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
+| 夸克网盘签到 | `scripts/task_352588bd.py` | `python3 scripts/task_352588bd.py` | `58 10 * * *` | 待检查 | [task_352588bd.py.md](../scripts/task_352588bd.py.md)（`docs/scripts/task_352588bd.py.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
 | 三国杀社区签到 | `scripts/task_4c362933.js` | `node scripts/task_4c362933.js` | `4 * * * *` | 待检查 | [task_4c362933.js.md](../scripts/task_4c362933.js.md)（`docs/scripts/task_4c362933.js.md`） |
@@ -360,6 +362,7 @@
 | MT论坛签到 | `scripts/task_9a14e9eb.py` | `python3 scripts/task_9a14e9eb.py` | `39 0 * * *` | 待检查 | [task_9a14e9eb.py.md](../scripts/task_9a14e9eb.py.md)（`docs/scripts/task_9a14e9eb.py.md`） |
 | 今日校园问卷 | `scripts/task_9de2360b.py` | `python3 scripts/task_9de2360b.py` | `36 9 * * *` | 待检查 | [task_9de2360b.py.md](../scripts/task_9de2360b.py.md)（`docs/scripts/task_9de2360b.py.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
+| SSPanel 每日签到 | `scripts/task_a5843af9.py` | `python3 scripts/task_a5843af9.py` | `0 11 * * *` | 待检查 | [task_a5843af9.py.md](../scripts/task_a5843af9.py.md)（`docs/scripts/task_a5843af9.py.md`） |
 | AbyssWorld每日签到 | `scripts/task_ad4c4f3a.js` | `node scripts/task_ad4c4f3a.js` | `39 8 * * *` | 待检查 | [task_ad4c4f3a.js.md](../scripts/task_ad4c4f3a.js.md)（`docs/scripts/task_ad4c4f3a.js.md`） |
 | 天翼云盘签到与抽奖 | `scripts/task_ae1f0152.py` | `python3 scripts/task_ae1f0152.py` | `45 10 * * *` | 待检查 | [task_ae1f0152.py.md](../scripts/task_ae1f0152.py.md)（`docs/scripts/task_ae1f0152.py.md`） |
 | 米游社原神自动签到 | `scripts/task_b59e3196.py` | `python3 scripts/task_b59e3196.py` | `56 1 * * *` | 待检查 | [task_b59e3196.py.md](../scripts/task_b59e3196.py.md)（`docs/scripts/task_b59e3196.py.md`） |

@@ -25053,6 +25053,175 @@
       }
     },
     {
+      "catalogId": "9698197c18a7c2eb",
+      "applicationKey": "jerryshell/cpdaily-api::find",
+      "checkProfile": {
+        "requiredEnv": [
+          "CPDAILY_ACCOUNTS",
+          "CPDAILY_RESPONSE_RULE"
+        ],
+        "optionalEnv": [
+          "CPDAILY_LIMITS",
+          "CPDAILY_OFFSET",
+          "CPDAILY_TIMEOUT",
+          "CPDAILY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CPDAILY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CPDAILY_LIMITS": "20",
+          "CPDAILY_OFFSET": "0",
+          "CPDAILY_TIMEOUT": "15"
+        },
+        "successPatterns": [
+          "QUERY_SUCCESS",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "通过固定 HTTPS 接口以 GET 查询今日校园同学列表，保留上游 limits=20、offset=0 默认分页参数",
+          "使用独立标准库 HTTP 实现，从同一账号 JSON 读取原 config.headers 和 config.cookies 对应内容",
+          "按换行处理多账号，业务成功字段和值需严格匹配，返回同学数组后才视为成功",
+          "仅显示返回对象中安全的昵称、用户名、显示名称及公开用户标识，不输出原始响应或凭据",
+          "支持完全断网参数预演、分阶段日志、每账号统计和唯一 TASK_SUMMARY 记录",
+          "按青龙通知订阅规则投递脱敏摘要；失败不覆盖业务退出码；预演只生成摘要并跳过外部投递"
+        ],
+        "sideEffects": []
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "今日校园同学列表",
+      "path": "scripts/find_student.py",
+      "sha256": "3d2fa4714f784ec88b11122f7b9fa741111e82bdfdc16107a4cb868066cd8ccd",
+      "stage": "released",
+      "license": "GPL-3.0-only",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "jerryshell/cpdaily-api",
+        "branch": "master",
+        "commit": "02a6360cfb6c2a79e5e019a19ee4e9324ed15648",
+        "originalPath": "find_student.py"
+      },
+      "cron": "59 10 * * *",
+      "command": "python3 scripts/find_student.py",
+      "environment": [
+        {
+          "name": "CPDAILY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人授权登录今日校园后的网络请求中找到 https://www.cpdaily.com/v6/user/findStudent，复制该请求实际使用的 Cookie 和请求头。上游未提供 config 内容，本脚本不猜测学校特定认证字段。将配套凭据放在同一行 JSON 中；不得复制到日志或公开仓库。",
+          "format": "每个非空行一个 JSON 对象，包含 cookies 和 headers 字符串映射；至少提供非空 cookies，或 headers 内的 Cookie/Authorization。Cookie 只能配置一处，不配置 Host 等传输层字段。账号仅按换行分隔，字段值中的 &、@ 保持原值。"
+        },
+        {
+          "name": "CPDAILY_RESPONSE_RULE",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "从该接口已知成功响应核对业务成功字段和值，以及同学对象数组路径。本次输入没有响应样本，不能假定成功码或数据层级。正式运行必须填写，预演可省略。可选 identityPath 指向当前账号身份对象。",
+          "format": "JSON 对象：successPath 为点号分隔对象字段路径，successValue 为精确成功值（字符串、整数或布尔值，类型也需相同），studentsPath 为同学数组路径；可选 identityPath 为当前账号身份对象路径。不要填入凭据或原始响应。"
+        },
+        {
+          "name": "CPDAILY_LIMITS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按单次查询数量需要设置，默认沿用上游的 20。",
+          "format": "1～1000 的整数"
+        },
+        {
+          "name": "CPDAILY_OFFSET",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按分页需要设置，默认沿用上游的 0；仅查询当前页，不自动遍历。",
+          "format": "0～2147483647 的整数"
+        },
+        {
+          "name": "CPDAILY_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选请求超时秒数，默认 15。",
+          "format": "1～60 的整数"
+        },
+        {
+          "name": "CPDAILY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证参数时设置为 1；不请求接口、不执行外部通知组件。",
+          "format": "1/true/yes/on 开启，默认关闭"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "指定需要通知的脚本，设置后替换默认订阅；空值关闭全部。可填目录编号 9698197c18a7c2eb、文件名 find_student.py/candidate.py、对应 scripts/ 相对路径或通配符。",
+          "format": "逗号、分号或空白分隔；* 匹配全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选青龙通知组件目录；同时支持可导入的 notify，以及 /ql/data/scripts、/ql/scripts 下的 notify.py 或 sendNotify.js。未安装组件不影响业务退出码。",
+          "format": "包含 notify.py 或 sendNotify.js 的目录；脚本业务不依赖该目录"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON，将该账号配套 headers 和 cookies 放在同一对象；不使用 &、@ 分隔账号。各账号独立运行，任一失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "通过固定 HTTPS 接口以 GET 查询今日校园同学列表，保留上游 limits=20、offset=0 默认分页参数",
+        "使用独立标准库 HTTP 实现，从同一账号 JSON 读取原 config.headers 和 config.cookies 对应内容",
+        "按换行处理多账号，业务成功字段和值需严格匹配，返回同学数组后才视为成功",
+        "仅显示返回对象中安全的昵称、用户名、显示名称及公开用户标识，不输出原始响应或凭据",
+        "支持完全断网参数预演、分阶段日志、每账号统计和唯一 TASK_SUMMARY 记录",
+        "按青龙通知订阅规则投递脱敏摘要；失败不覆盖业务退出码；预演只生成摘要并跳过外部投递"
+      ],
+      "sideEffects": [],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/9698197c18a7c2eb",
+        "candidateSha256": "f32677ba8a6296dd5cb1b2020535786729a5934201cb76db328d3acb0112f7d2"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "f32677ba8a6296dd5cb1b2020535786729a5934201cb76db328d3acb0112f7d2",
+        "releaseSha256": "3d2fa4714f784ec88b11122f7b9fa741111e82bdfdc16107a4cb868066cd8ccd",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:58:48.378317+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "f32677ba8a6296dd5cb1b2020535786729a5934201cb76db328d3acb0112f7d2",
+          "toCandidateSha256": "3d2fa4714f784ec88b11122f7b9fa741111e82bdfdc16107a4cb868066cd8ccd",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "669a029282a2f49e",
       "applicationKey": "fl",
       "checkProfile": {
@@ -61777,6 +61946,217 @@
       }
     },
     {
+      "catalogId": "352588bd2bb301df",
+      "applicationKey": "pla888/kuake_qiandao::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "QUARK_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "QUARK_KPS",
+          "QUARK_SIGN",
+          "QUARK_VCODE",
+          "QUARK_DRY_RUN",
+          "QUARK_QUERY_BALANCE",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "SMTP_SERVER",
+          "SMTP_PORT",
+          "EMAIL",
+          "PASSWORD"
+        ],
+        "dryRunEnv": {
+          "QUARK_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QUARK_QUERY_BALANCE": "0"
+        },
+        "successPatterns": [
+          "签到成功，获得容量",
+          "今日已签到，获得容量",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日签到并显示签到奖励容量",
+          "查询今日签到状态、奖励和签到进度",
+          "查询会员类型、到期时间、总容量、已用容量及使用百分比",
+          "可选查询抽奖余额",
+          "显示接口提供的公开昵称、用户名、显示名称或 UID",
+          "逐行多账号及旧凭据变量兼容",
+          "可选 TLS 邮箱通知与青龙脱敏通知",
+          "完全断网预演、分阶段日志及结构化业务汇总"
+        ],
+        "sideEffects": [
+          "调用网盘签到接口，领取每日容量奖励并携带原有 sign_cyclic=true 参数",
+          "启用通知时发送脱敏摘要到配置的青龙通知渠道或本人邮箱"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "夸克网盘签到",
+      "path": "scripts/task_352588bd.py",
+      "sha256": "bb8434e89ebe1c5d480e80b288329b37ffb33933000906481095b43d39610d80",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "PLA888/kuake_qiandao",
+        "branch": "master",
+        "commit": "fdbaf547f0ca14f375759225122bace857b1eb6c",
+        "originalPath": "main.py"
+      },
+      "cron": "58 10 * * *",
+      "command": "python3 scripts/task_352588bd.py",
+      "environment": [
+        {
+          "name": "QUARK_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人夸克手机客户端，使用本人授权的 HTTPS 抓包查看 drive-m.quark.cn 的 /1/clouddrive/capacity/growth/info 或 /sign 请求查询参数。获取同一账号的 kps、sign、vcode，分别 URL 解码一次后填写；失效后重新获取，禁止分享凭据。 优先读取此变量，未设置时兼容完整的三个旧变量。",
+          "format": "每个非空行一个账号，格式为 kps|sign|vcode，仅拆分前两个竖线，保留第三字段的后续内容；不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "QUARK_KPS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录本人夸克手机客户端，使用本人授权的 HTTPS 抓包查看 drive-m.quark.cn 的 /1/clouddrive/capacity/growth/info 或 /sign 请求查询参数。获取同一账号的 kps、sign、vcode，分别 URL 解码一次后填写；失效后重新获取，禁止分享凭据。 单账号旧变量，与 QUARK_SIGN、QUARK_VCODE 配套。",
+          "format": "单账号 kps，仅在未设置 QUARK_ACCOUNTS 时使用。"
+        },
+        {
+          "name": "QUARK_SIGN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录本人夸克手机客户端，使用本人授权的 HTTPS 抓包查看 drive-m.quark.cn 的 /1/clouddrive/capacity/growth/info 或 /sign 请求查询参数。获取同一账号的 kps、sign、vcode，分别 URL 解码一次后填写；失效后重新获取，禁止分享凭据。 单账号旧变量。",
+          "format": "单账号 sign，与另两个旧变量配套。"
+        },
+        {
+          "name": "QUARK_VCODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录本人夸克手机客户端，使用本人授权的 HTTPS 抓包查看 drive-m.quark.cn 的 /1/clouddrive/capacity/growth/info 或 /sign 请求查询参数。获取同一账号的 kps、sign、vcode，分别 URL 解码一次后填写；失效后重新获取，禁止分享凭据。 单账号旧变量。",
+          "format": "单账号 vcode，与另两个旧变量配套。"
+        },
+        {
+          "name": "QUARK_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置，默认关闭。",
+          "format": "1 开启完全断网预演，0 正式运行。"
+        },
+        {
+          "name": "QUARK_QUERY_BALANCE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要查询原脚本提供的抽奖余额时手动开启。",
+          "format": "1 增加余额查询，0 关闭，默认 0；不进行抽奖或消费。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙手动填写需要通知的脚本选择器，auto 模式生效。",
+          "format": "支持目录编号 352588bd2bb301df、脚本文件名、相对 scripts 路径及文件名通配符；逗号、分号或空白分隔，* 表示全部，空值关闭；未配置时默认无选中项。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙自带通知模块所在目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的本机目录；同时自动查找 import notify、/ql/data/scripts 和 /ql/scripts。"
+        },
+        {
+          "name": "SMTP_SERVER",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人邮件服务商的 SMTP 设置获取，与 EMAIL、PASSWORD 配套，全部配置后启用。",
+          "format": "SMTP 主机名，连接有超时且强制 TLS。"
+        },
+        {
+          "name": "SMTP_PORT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从邮件服务商的 SMTP 设置获取。",
+          "format": "整数端口，默认 587，465 使用隐式 TLS，其余端口要求 STARTTLS。"
+        },
+        {
+          "name": "EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "填写本人邮件服务商允许的发件邮箱，同时作为收件邮箱。",
+          "format": "单个邮箱地址，与 SMTP_SERVER、PASSWORD 配套。"
+        },
+        {
+          "name": "PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在本人邮箱安全设置中开启 SMTP 并生成授权码。",
+          "format": "SMTP 授权码，仅用于邮箱认证，不会写入日志或汇总。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，凭据合并为 kps|sign|vcode，仅拆分前两个竖线；逐账号独立执行，任一账号或配置失败则整体非零退出；兼容三个旧变量组成的单账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到并显示签到奖励容量",
+        "查询今日签到状态、奖励和签到进度",
+        "查询会员类型、到期时间、总容量、已用容量及使用百分比",
+        "可选查询抽奖余额",
+        "显示接口提供的公开昵称、用户名、显示名称或 UID",
+        "逐行多账号及旧凭据变量兼容",
+        "可选 TLS 邮箱通知与青龙脱敏通知",
+        "完全断网预演、分阶段日志及结构化业务汇总"
+      ],
+      "sideEffects": [
+        "调用网盘签到接口，领取每日容量奖励并携带原有 sign_cyclic=true 参数",
+        "启用通知时发送脱敏摘要到配置的青龙通知渠道或本人邮箱"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/352588bd2bb301df",
+        "candidateSha256": "14e99e6d343ff578eea83011e5a447b38b43cce0371373e93de1e3ad0d1e3fc1"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "14e99e6d343ff578eea83011e5a447b38b43cce0371373e93de1e3ad0d1e3fc1",
+        "releaseSha256": "bb8434e89ebe1c5d480e80b288329b37ffb33933000906481095b43d39610d80",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:58:45.328540+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "14e99e6d343ff578eea83011e5a447b38b43cce0371373e93de1e3ad0d1e3fc1",
+          "toCandidateSha256": "bb8434e89ebe1c5d480e80b288329b37ffb33933000906481095b43d39610d80",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "3827d2e03a385b9d",
       "applicationKey": "yingxiaqwq/auto-moguding::index",
       "checkProfile": {
@@ -66172,6 +66552,205 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "7b05858fa92c6c36b1177a47dce80011ce7906b6eb1344cfc07199a4e71bfd5b",
           "toCandidateSha256": "428b88c2d6a526c7232b1878eb797b80534bb3dbfef5efb45fbaf392a81f0c0c",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "a5843af909a36789",
+      "applicationKey": "jing5460/ssr-sign::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "SSPANEL_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "SSPANEL_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "SendKey",
+          "ktkey",
+          "QmsgKey",
+          "tele_bot_token",
+          "tele_user_id",
+          "tele_api_url",
+          "push_token"
+        ],
+        "dryRunEnv": {
+          "SSPANEL_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\": \"success\"",
+          "\"exitCode\": 0"
+        ],
+        "features": [
+          "独立会话访问站点，通过邮箱密码登录并明确校验登录结果。",
+          "每日签到，明确验证业务返回 ret=1；未确认成功时失败退出，不自动重试。",
+          "兼容 editXY 主题，展示等级、到期时间及剩余流量；主题无字段时明确跳过。",
+          "展示官方返回的昵称、用户名、显示名称或公开 UID，隐藏凭据及手机号。",
+          "支持多站点多账号逐行配置及账号隔离，任一账号失败整体非零退出。",
+          "保留 Server酱、酷推、Qmsg、Telegram、Pushplus 五种可选通知渠道，支持青龙通知及全局开关、名单。",
+          "提供断网预演、时间轴日志、逐账号统计和单行结构化汇总。",
+          "保留云函数入口 main_handler(event, context)，返回业务退出码。"
+        ],
+        "sideEffects": [
+          "正式运行时建立登录会话并提交每日签到，可能增加站点赠送流量。",
+          "启用通知时向配置的青龙通知服务及可选渠道发送脱敏汇总。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "SSPanel 每日签到",
+      "path": "scripts/task_a5843af9.py",
+      "sha256": "13531f32c7e199d538f84deb0d7798a0d796ed789de75824dd6cc263df75ccd8",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "jing5460/SSr-Sign",
+        "branch": "main",
+        "commit": "01b49a00a654ddc006515efac5a7f071929f7890",
+        "originalPath": "main.py"
+      },
+      "cron": "0 11 * * *",
+      "command": "python3 scripts/task_a5843af9.py",
+      "environment": [
+        {
+          "name": "SSPANEL_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "从所使用的 SSPanel 站点登录页获取 HTTPS 地址，使用自己注册的登录邮箱和密码；密码从密码管理器获取。不支持验证码或双因素认证。",
+          "format": "每个非空行：HTTPS站点|邮箱|密码，仅分割前两个竖线，密码中的后续竖线原样保留；行首尾空白去除。账号之间只用换行。"
+        },
+        {
+          "name": "SSPANEL_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设为 1，正式执行时删除或设为 0。",
+          "format": "1/true/yes/on 为完全断网预演，仅校验参数，不投递通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写希望接收通知的脚本标识，设置后替换默认选择。",
+          "format": "逗号、分号或空白分隔；支持目录编号 a5843af909a36789、脚本相对路径、文件名及通配符；* 为全部，空值为全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写现有 notify.py 或 sendNotify.js 所在目录，亦自动查找标准青龙路径和可导入的 notify 模块。",
+          "format": "本地目录，不下载或安装通知模块。"
+        },
+        {
+          "name": "SendKey",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：从 Server酱账号的发送密钥页取得。",
+          "format": "单个密钥，受通知总开关和名单控制。"
+        },
+        {
+          "name": "ktkey",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：从酷推管理页面取得发送密钥。",
+          "format": "单个密钥，受通知总开关和名单控制。"
+        },
+        {
+          "name": "QmsgKey",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：从 Qmsg 管理页面取得消息密钥。",
+          "format": "单个密钥，受通知总开关和名单控制。"
+        },
+        {
+          "name": "tele_bot_token",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：通过 Telegram 的 BotFather 创建机器人并取得令牌。",
+          "format": "机器人令牌，需同时配置 tele_user_id。"
+        },
+        {
+          "name": "tele_user_id",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：从 Telegram 机器人的会话更新中取得自己的会话编号。",
+          "format": "与 tele_bot_token 配套的会话编号，仅用于通知。"
+        },
+        {
+          "name": "tele_api_url",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选：默认官方 https://api.telegram.org；代理须自行管理并使用 HTTPS。",
+          "format": "无内嵌凭据的 HTTPS 地址，仅用于 Telegram 通知。"
+        },
+        {
+          "name": "push_token",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：从 Pushplus 账号的令牌页面取得。",
+          "format": "单个推送令牌，受通知总开关和名单控制。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，使用 HTTPS站点|邮箱|密码，仅分割前两个竖线。每个账号使用独立会话；任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "独立会话访问站点，通过邮箱密码登录并明确校验登录结果。",
+        "每日签到，明确验证业务返回 ret=1；未确认成功时失败退出，不自动重试。",
+        "兼容 editXY 主题，展示等级、到期时间及剩余流量；主题无字段时明确跳过。",
+        "展示官方返回的昵称、用户名、显示名称或公开 UID，隐藏凭据及手机号。",
+        "支持多站点多账号逐行配置及账号隔离，任一账号失败整体非零退出。",
+        "保留 Server酱、酷推、Qmsg、Telegram、Pushplus 五种可选通知渠道，支持青龙通知及全局开关、名单。",
+        "提供断网预演、时间轴日志、逐账号统计和单行结构化汇总。",
+        "保留云函数入口 main_handler(event, context)，返回业务退出码。"
+      ],
+      "sideEffects": [
+        "正式运行时建立登录会话并提交每日签到，可能增加站点赠送流量。",
+        "启用通知时向配置的青龙通知服务及可选渠道发送脱敏汇总。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a5843af909a36789",
+        "candidateSha256": "8c3bca80687fc7a04b8d6e4f8be56f961a86dbc66e8711cb2b671c38e71391e9"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "8c3bca80687fc7a04b8d6e4f8be56f961a86dbc66e8711cb2b671c38e71391e9",
+        "releaseSha256": "13531f32c7e199d538f84deb0d7798a0d796ed789de75824dd6cc263df75ccd8",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:59:24.393736+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "8c3bca80687fc7a04b8d6e4f8be56f961a86dbc66e8711cb2b671c38e71391e9",
+          "toCandidateSha256": "13531f32c7e199d538f84deb0d7798a0d796ed789de75824dd6cc263df75ccd8",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

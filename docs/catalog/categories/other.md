@@ -1,6 +1,6 @@
 # 分类索引 · 其他
 
-共 **29** 个脚本。返回 [`目录首页`](../README.md)。
+共 **30** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -15,6 +15,7 @@
 | 加密货币 INR 报价监控 | `scripts/cryptocurrency.py` | `python3 scripts/cryptocurrency.py` | `*/5 * * * *` | 待检查 | [cryptocurrency.py.md](../../scripts/cryptocurrency.py.md)（`docs/scripts/cryptocurrency.py.md`） |
 | DDNSTO七天免费续费 | `scripts/ddnsto.py` | `python3 scripts/ddnsto.py` | `32 2 * * *` | 待检查 | [ddnsto.py.md](../../scripts/ddnsto.py.md)（`docs/scripts/ddnsto.py.md`） |
 | Epic免费游戏 | `scripts/epicfreegames.py` | `python3 scripts/epicfreegames.py` | `11 8 * * 6` | 待检查 | [epicfreegames.py.md](../../scripts/epicfreegames.py.md)（`docs/scripts/epicfreegames.py.md`） |
+| 今日校园同学列表 | `scripts/find_student.py` | `python3 scripts/find_student.py` | `59 10 * * *` | 待检查 | [find_student.py.md](../../scripts/find_student.py.md)（`docs/scripts/find_student.py.md`） |
 | HelloGitHub月刊提醒 | `scripts/hellogithub.py` | `python3 scripts/hellogithub.py` | `31 8 1 * *` | 待检查 | [hellogithub.py.md](../../scripts/hellogithub.py.md)（`docs/scripts/hellogithub.py.md`） |
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `48 1 * * *` | 待检查 | [index.js.md](../../scripts/index.js.md)（`docs/scripts/index.js.md`） |
 | LINUX DO 登录与浏览统计 | `scripts/l.py` | `python3 scripts/l.py` | `37 */5 * * *` | 待检查 | [l.py.md](../../scripts/l.py.md)（`docs/scripts/l.py.md`） |
