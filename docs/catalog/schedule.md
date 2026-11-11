@@ -237,6 +237,7 @@
 | Rousi 签到 | `scripts/rousi_checkin.js` | `node scripts/rousi_checkin.js` | `42 0 * * *` | 待检查 | [rousi_checkin.js.md](../scripts/rousi_checkin.js.md)（`docs/scripts/rousi_checkin.js.md`） |
 | 橙光每日任务 | `scripts/rpg66.js` | `node scripts/rpg66.js` | `20 10 * * *` | 待检查 | [rpg66.js.md](../scripts/rpg66.js.md)（`docs/scripts/rpg66.js.md`） |
 | eatASMR每日签到 | `scripts/scf_eat.py` | `python3 scripts/scf_eat.py` | `37 8 * * *` | 待检查 | [scf_eat.py.md](../scripts/scf_eat.py.md)（`docs/scripts/scf_eat.py.md`） |
+| ActivityWatch 屏幕时长记录 | `scripts/screen_logger.py` | `python3 scripts/screen_logger.py` | `49 * * * *` | 待检查 | [screen_logger.py.md](../scripts/screen_logger.py.md)（`docs/scripts/screen_logger.py.md`） |
 | 成都大学ISP每日登记 | `scripts/services.js` | `node scripts/services.js` | `1 7 * * *` | 待检查 | [services.js.md](../scripts/services.js.md)（`docs/scripts/services.js.md`） |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |
@@ -398,6 +399,7 @@
 | 羿文教育积分签到 | `scripts/yiwenjiaoyu.py` | `python3 scripts/yiwenjiaoyu.py` | `52 8 * * *` | 待检查 | [yiwenjiaoyu.py.md](../scripts/yiwenjiaoyu.py.md)（`docs/scripts/yiwenjiaoyu.py.md`） |
 | 有道云笔记每日空间奖励 | `scripts/youdao.py` | `python3 scripts/youdao.py` | `55 0 * * *` | 待检查 | [youdao.py.md](../scripts/youdao.py.md)（`docs/scripts/youdao.py.md`） |
 | 有道云笔记签到 | `scripts/youdaonote.py` | `python3 scripts/youdaonote.py` | `50 9 * * *` | 待检查 | [youdaonote.py.md](../scripts/youdaonote.py.md)（`docs/scripts/youdaonote.py.md`） |
+| Yurifans 每日签到 | `scripts/yurifans.py` | `python3 scripts/yurifans.py` | `32 10 * * *` | 待检查 | [yurifans.py.md](../scripts/yurifans.py.md)（`docs/scripts/yurifans.py.md`） |
 | 多看阅读 | `scripts/yuxian158_check_duokan.py` | `python3 scripts/yuxian158_check_duokan.py` | `28 2 * * *` | 待检查 | [yuxian158_check_duokan.py.md](../scripts/yuxian158_check_duokan.py.md)（`docs/scripts/yuxian158_check_duokan.py.md`） |
 | 阴阳师绘卷时间获取 | `scripts/yyshuijuantime.py` | `python3 scripts/yyshuijuantime.py` | `39 2 * * *` | 待检查 | [yyshuijuantime.py.md](../scripts/yyshuijuantime.py.md)（`docs/scripts/yyshuijuantime.py.md`） |
 | ZCode 国内版领套餐 | `scripts/zcode_cn_daily.py` | `python3 scripts/zcode_cn_daily.py` | `1 9 * * *` | 待检查 | [zcode_cn_daily.py.md](../scripts/zcode_cn_daily.py.md)（`docs/scripts/zcode_cn_daily.py.md`） |

@@ -1,6 +1,6 @@
 # 分类索引 · 其他
 
-共 **27** 个脚本。返回 [`目录首页`](../README.md)。
+共 **28** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -19,6 +19,7 @@
 | Pixiv 收藏图片下载 | `scripts/index.js` | `node scripts/index.js` | `48 1 * * *` | 待检查 | [index.js.md](../../scripts/index.js.md)（`docs/scripts/index.js.md`） |
 | LINUX DO 登录与浏览统计 | `scripts/l.py` | `python3 scripts/l.py` | `37 */5 * * *` | 待检查 | [l.py.md](../../scripts/l.py.md)（`docs/scripts/l.py.md`） |
 | 小米运动账号验证与步数上传 | `scripts/mimotion.py` | `python3 scripts/mimotion.py` | `46 0 * * *` | 待检查 | [mimotion.py.md](../../scripts/mimotion.py.md)（`docs/scripts/mimotion.py.md`） |
+| ActivityWatch 屏幕时长记录 | `scripts/screen_logger.py` | `python3 scripts/screen_logger.py` | `49 * * * *` | 待检查 | [screen_logger.py.md](../../scripts/screen_logger.py.md)（`docs/scripts/screen_logger.py.md`） |
 | 成都大学ISP每日登记 | `scripts/services.js` | `node scripts/services.js` | `1 7 * * *` | 待检查 | [services.js.md](../../scripts/services.js.md)（`docs/scripts/services.js.md`） |
 | SSL证书检查 | `scripts/ssl_cert_check.py` | `python3 scripts/ssl_cert_check.py` | `10 2 * * *` | 待检查 | [ssl_cert_check.py.md](../../scripts/ssl_cert_check.py.md)（`docs/scripts/ssl_cert_check.py.md`） |
 | 雀巢会员 | `scripts/sudojia_nestle.js` | `node scripts/sudojia_nestle.js` | `30 2 * * *` | 待检查 | [sudojia_nestle.js.md](../../scripts/sudojia_nestle.js.md)（`docs/scripts/sudojia_nestle.js.md`） |

@@ -44036,6 +44036,232 @@
       }
     },
     {
+      "catalogId": "f5dda6d90f455cf3",
+      "applicationKey": "michelledaviest/daily-checkin-bot::screen",
+      "checkProfile": {
+        "requiredEnv": [
+          "SCREEN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "SHEET_ID",
+          "GSA_KEY_JSON",
+          "GSA_KEY_PATH",
+          "AW_SERVER",
+          "LAPTOP_BUCKET",
+          "PHONE_BUCKET",
+          "SCREEN_TIME_TAB",
+          "TIMEZONE",
+          "BREAK_MIN_SECONDS",
+          "SCREEN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "SCREEN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TIMEZONE": "America/New_York",
+          "BREAK_MIN_SECONDS": "300",
+          "SCREEN_TIME_TAB": "screen_time",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "更新 Google 表格并核验响应 完成",
+          "TASK_SUMMARY=",
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "按每小时计划读取 ActivityWatch HTTP 事件，不依赖工作流仓库、固定配置目录或外部应用可执行文件。",
+          "按指定本地时区计算当天 UTC 查询边界，保留夏令时日期边界。",
+          "统计电脑活跃小时数、达到阈值的休息次数与最长专注分钟数；短暂离开不重置专注段。",
+          "可选统计手机屏幕会话总时长、长间隔休息次数与最长专注段。",
+          "按真实表头定位指标列和日期列，按日期新增或更新 Google 表格，保留其他字段；无事件时跳过写入。",
+          "兼容单账号 SHEET_ID、显式密钥路径及既有时间、桶和工作表参数；新增每行一个账号的内联凭据配置。",
+          "独立处理多账号；手机失败仍保存可用电脑统计，同时返回失败；校验事件结构、表头、重复日期及写入确认。",
+          "断网预演验证配置、指标计算和新增更新计划，不认证、不读取密钥文件、不写表。",
+          "输出分阶段脱敏日志、每账号统计、整体统计及唯一 TASK_SUMMARY JSON；按青龙全局开关及选择器发送脱敏摘要，通知异常保留业务退出码。"
+        ],
+        "sideEffects": [
+          "正式运行且有可用事件时，在指定 Google 工作表中新增当天记录或更新当天的屏幕时长、休息和专注指标。",
+          "正式运行且通知启用并选中时，通过青龙通知模块投递脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "ActivityWatch 屏幕时长记录",
+      "path": "scripts/screen_logger.py",
+      "sha256": "1497ba3801f2c6369c536ee17200332e2ee6d61e32030842e91af8e280b7afff",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "michelledaviest/daily-checkin-bot",
+        "branch": "main",
+        "commit": "d86334d5924df2bd47084c7a55d4628c93ddbd0a",
+        "originalPath": "scripts/screen_logger.py"
+      },
+      "cron": "49 * * * *",
+      "command": "python3 scripts/screen_logger.py",
+      "environment": [
+        {
+          "name": "SCREEN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 Google Cloud 启用 Sheets API，创建服务账号并下载 JSON 密钥，将目标表格共享给密钥中的 client_email 并授予编辑权限。表格链接 /d/ 后为 sheet_id；将密钥对象放入同一账号行的 service_account。ActivityWatch 端提供 HTTP 数据服务，从其桶列表获取 laptop_bucket 与 phone_bucket。青龙容器需通过 aw_server 访问数据源；无须本机调用应用可执行文件。",
+          "format": "每个非空行一个 JSON 对象，必填 sheet_id、service_account；可选 aw_server、laptop_bucket、phone_bucket、screen_time_tab、timezone、break_min_seconds。密钥中的换行使用 JSON 转义，不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "SHEET_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容单账号：从 Google 表格 URL 的 /d/ 后提取；仅在未设置 SCREEN_ACCOUNTS 时使用。",
+          "format": "单个表格标识，需配套 GSA_KEY_JSON 或显式 GSA_KEY_PATH。"
+        },
+        {
+          "name": "GSA_KEY_JSON",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号：Google Cloud 服务账号密钥 JSON；推荐改用 SCREEN_ACCOUNTS 将配套参数放在同一行。",
+          "format": "完整 JSON 对象，仅兼容 SHEET_ID。"
+        },
+        {
+          "name": "GSA_KEY_PATH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容路径：由使用者显式挂载自己的服务账号 JSON 文件；推荐内联 JSON，无固定私有路径依赖。",
+          "format": "文件路径；不再自动读取默认密钥或 .env；断网预演不读取文件。"
+        },
+        {
+          "name": "AW_SERVER",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置可访问的 ActivityWatch HTTP 数据服务地址；容器内 localhost 不是电脑。",
+          "format": "默认 http://localhost:5600；允许 HTTP 或 HTTPS，不含用户名、密码、查询参数和片段。"
+        },
+        {
+          "name": "LAPTOP_BUCKET",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从 ActivityWatch 的桶列表选择电脑 AFK 数据桶。",
+          "format": "默认 aw-watcher-afk_<主机名>，每行 laptop_bucket 可覆盖。"
+        },
+        {
+          "name": "PHONE_BUCKET",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如需手机统计，从同一服务的桶列表选择 Android 屏幕会话数据桶。",
+          "format": "默认空，仅统计电脑；每行 phone_bucket 可覆盖。"
+        },
+        {
+          "name": "SCREEN_TIME_TAB",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在目标表格创建工作表，并设置 local_date、laptop_screen_hours、laptop_breaks_count、laptop_longest_focus_block_min 表头；手机启用时还需 phone_screen_hours、phone_breaks_count、phone_longest_focus_block_min。允许调整列顺序，不得重复日期或表头。",
+          "format": "默认 screen_time；每行 screen_time_tab 可覆盖。上游 SHEET_TAB 文档与实现不符，实际沿用 SCREEN_TIME_TAB。"
+        },
+        {
+          "name": "TIMEZONE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按被统计设备的本地日期选择 IANA 时区。",
+          "format": "默认 America/New_York，例如 Asia/Shanghai；每行 timezone 可覆盖。"
+        },
+        {
+          "name": "BREAK_MIN_SECONDS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置判定长休息并重置专注段的阈值。",
+          "format": "正整数秒，默认 300；每行 break_min_seconds 可覆盖。"
+        },
+        {
+          "name": "SCREEN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证时设置为 1；不会访问任何网络、读取密钥文件、通知或写表。",
+          "format": "1、true、yes、on 开启；允许占位密钥对象，仅验证配置和本地计算计划。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填入需要通知的 catalogId、scripts 相对路径、文件名或文件名通配符。",
+          "format": "逗号、分号或空白分隔；* 表示全部；空值禁用自动通知。识别本文件名及 scripts/screen_logger.py、screen_logger.py、f5dda6d90f455cf3。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选设置青龙通知模块所在目录；未设置则尝试 import notify、/ql/data/scripts 和 /ql/scripts。",
+          "format": "目录路径；通知不可用或失败仅记录状态，不修改业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，表格标识、服务账号密钥与数据源配置在同一行。各账号独立处理；任一账号失败整体非零退出。"
+      },
+      "dependencies": [
+        "google-auth>=2,<3"
+      ],
+      "features": [
+        "按每小时计划读取 ActivityWatch HTTP 事件，不依赖工作流仓库、固定配置目录或外部应用可执行文件。",
+        "按指定本地时区计算当天 UTC 查询边界，保留夏令时日期边界。",
+        "统计电脑活跃小时数、达到阈值的休息次数与最长专注分钟数；短暂离开不重置专注段。",
+        "可选统计手机屏幕会话总时长、长间隔休息次数与最长专注段。",
+        "按真实表头定位指标列和日期列，按日期新增或更新 Google 表格，保留其他字段；无事件时跳过写入。",
+        "兼容单账号 SHEET_ID、显式密钥路径及既有时间、桶和工作表参数；新增每行一个账号的内联凭据配置。",
+        "独立处理多账号；手机失败仍保存可用电脑统计，同时返回失败；校验事件结构、表头、重复日期及写入确认。",
+        "断网预演验证配置、指标计算和新增更新计划，不认证、不读取密钥文件、不写表。",
+        "输出分阶段脱敏日志、每账号统计、整体统计及唯一 TASK_SUMMARY JSON；按青龙全局开关及选择器发送脱敏摘要，通知异常保留业务退出码。"
+      ],
+      "sideEffects": [
+        "正式运行且有可用事件时，在指定 Google 工作表中新增当天记录或更新当天的屏幕时长、休息和专注指标。",
+        "正式运行且通知启用并选中时，通过青龙通知模块投递脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/f5dda6d90f455cf3",
+        "candidateSha256": "dc122544a36d2742636ffc432222fb307e16d902fd94cd7d6aa44745a208e784"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "dc122544a36d2742636ffc432222fb307e16d902fd94cd7d6aa44745a208e784",
+        "releaseSha256": "1497ba3801f2c6369c536ee17200332e2ee6d61e32030842e91af8e280b7afff",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:03:00.957103+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "dc122544a36d2742636ffc432222fb307e16d902fd94cd7d6aa44745a208e784",
+          "toCandidateSha256": "1497ba3801f2c6369c536ee17200332e2ee6d61e32030842e91af8e280b7afff",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "9798376670c63280",
       "applicationKey": "hanhan9449/auto-sign-in::services",
       "checkProfile": {
@@ -74564,6 +74790,173 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "9eae356e0f8996df6257df345ecbea96f79791cf90e6fd3d2583896ee3db67c4",
           "toCandidateSha256": "4795f0df5f7fbc97a3c8222713ac578346216dcbc6c2e219fa5cb81eb3a345fc",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "b1ca5d9bad50645c",
+      "applicationKey": "yurifans",
+      "checkProfile": {
+        "requiredEnv": [
+          "YURIFANS_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "YURIFANS_EMAIL",
+          "YURIFANS_PASSWORD",
+          "YURIFANS_COOKIE_CACHE",
+          "YURIFANS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "YURIFANS_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "邮箱密码登录并校验登录态，显示官方返回的非敏感账号名称",
+          "逐行多账号独立执行，兼容原邮箱与密码环境变量",
+          "复用手动取得的 WAF 通行 Cookie 与匹配的 User-Agent，可显式只读兼容旧缓存",
+          "查询每日签到状态、今日奖励与当前积分，已签到时跳过重复提交",
+          "执行每日签到并再次查询状态验证成功",
+          "完全断网预演、阶段耗时与账号及任务统计、单行 TASK_SUMMARY 汇总",
+          "遵循全局开关和选择器发送青龙脱敏通知，通知故障保留业务退出码"
+        ],
+        "sideEffects": [
+          "登录产生本站会话",
+          "每日签到并领取站点积分奖励",
+          "通知启用时通过青龙通知渠道发送脱敏结果"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Yurifans 每日签到",
+      "path": "scripts/yurifans.py",
+      "sha256": "93af8640147cdd5117e746ff61365a36506dd9f8e29dcd05687703723e43109a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "jckling/Daily-Bonus",
+        "branch": "master",
+        "commit": "79782fbeca62f1c9b514e0e13d0c94570a782a3a",
+        "originalPath": "checkin/yurifans.py"
+      },
+      "cron": "32 10 * * *",
+      "command": "python3 scripts/yurifans.py",
+      "environment": [
+        {
+          "name": "YURIFANS_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://yuri.website 注册并取得本人邮箱与密码。遇到雷池验证时，在浏览器正常通过验证后，从开发者工具 Network 的本站请求头复制 Cookie 和 User-Agent，加入同一账号对象。严禁分享凭据。",
+          "format": "每个非空行一个 JSON 对象，必填 email、password，选填 cookie、user_agent，所有字段值为字符串。JSON 转义可保留密码中的分隔符。账号以换行分隔，不使用 & 或 @ 分隔账号。优先使用本变量。"
+        },
+        {
+          "name": "YURIFANS_EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游邮箱变量，来自本人 Yurifans 账号；仅在未配置 YURIFANS_ACCOUNTS 时使用。",
+          "format": "每行一个邮箱，非空行与 YURIFANS_PASSWORD 一一对应。"
+        },
+        {
+          "name": "YURIFANS_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游密码变量，来自本人 Yurifans 账号；仅在未配置 YURIFANS_ACCOUNTS 时使用。",
+          "format": "每行一个密码，非空行与 YURIFANS_EMAIL 一一对应。需要 Cookie 时建议迁移到统一账号变量。"
+        },
+        {
+          "name": "YURIFANS_COOKIE_CACHE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可显式指定已有上游 Cookie 缓存供兼容读取。建议使用统一账号变量内的 cookie 和 user_agent。",
+          "format": "可选本地 JSON 路径，支持旧 Cookie 数组或含 cookies、user_agent 的对象。仅复用 sl- 前缀通行 Cookie，不读取登录 Cookie。默认不访问缓存，不写入、不删除。"
+        },
+        {
+          "name": "YURIFANS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地验证或青龙环境变量中设置。",
+          "format": "1、true、yes、on 开启完全断网预演，验证账号配置并模拟阶段，跳过外部通知投递。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙配置要接收通知的脚本选择器。",
+          "format": "逗号、分号或空白分隔，支持目录相对路径、文件名及通配符、目录编号 b1ca5d9bad50645c；* 选择全部；空字符串关闭全部默认选择。全局显式开关优先。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填入青龙通知模块所在目录。",
+          "format": "目录内含 notify.py 或 sendNotify.js；同时尝试可导入的 notify.send、脚本同目录、/ql/data/scripts、/ql/scripts。JavaScript 通知需要青龙已有 Node.js。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个独立账号 JSON 对象，同一账号的邮箱、密码与可选通行凭据放在同一对象。各账号独立会话和错误处理，任一账号失败整体非零退出。旧变量按非空行配对。"
+      },
+      "dependencies": [],
+      "features": [
+        "邮箱密码登录并校验登录态，显示官方返回的非敏感账号名称",
+        "逐行多账号独立执行，兼容原邮箱与密码环境变量",
+        "复用手动取得的 WAF 通行 Cookie 与匹配的 User-Agent，可显式只读兼容旧缓存",
+        "查询每日签到状态、今日奖励与当前积分，已签到时跳过重复提交",
+        "执行每日签到并再次查询状态验证成功",
+        "完全断网预演、阶段耗时与账号及任务统计、单行 TASK_SUMMARY 汇总",
+        "遵循全局开关和选择器发送青龙脱敏通知，通知故障保留业务退出码"
+      ],
+      "sideEffects": [
+        "登录产生本站会话",
+        "每日签到并领取站点积分奖励",
+        "通知启用时通过青龙通知渠道发送脱敏结果"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/b1ca5d9bad50645c",
+        "candidateSha256": "f8c3e71faca0eb8305c16e5f2f518cab13d2ce9699531c813ca874eeed030d28"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "f8c3e71faca0eb8305c16e5f2f518cab13d2ce9699531c813ca874eeed030d28",
+        "releaseSha256": "93af8640147cdd5117e746ff61365a36506dd9f8e29dcd05687703723e43109a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:04:23.242829+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "f8c3e71faca0eb8305c16e5f2f518cab13d2ce9699531c813ca874eeed030d28",
+          "toCandidateSha256": "93af8640147cdd5117e746ff61365a36506dd9f8e29dcd05687703723e43109a",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

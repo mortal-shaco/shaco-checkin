@@ -1,10 +1,11 @@
 # 字母索引 · S
 
-共 **71** 个脚本。返回 [`目录首页`](../README.md)。
+共 **72** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | eatASMR每日签到 | `scripts/scf_eat.py` | `python3 scripts/scf_eat.py` | `37 8 * * *` | 待检查 | [scf_eat.py.md](../../scripts/scf_eat.py.md)（`docs/scripts/scf_eat.py.md`） |
+| ActivityWatch 屏幕时长记录 | `scripts/screen_logger.py` | `python3 scripts/screen_logger.py` | `49 * * * *` | 待检查 | [screen_logger.py.md](../../scripts/screen_logger.py.md)（`docs/scripts/screen_logger.py.md`） |
 | 成都大学ISP每日登记 | `scripts/services.js` | `node scripts/services.js` | `1 7 * * *` | 待检查 | [services.js.md](../../scripts/services.js.md)（`docs/scripts/services.js.md`） |
 | 顺丰快递积分任务 | `scripts/sf.py` | `python3 scripts/sf.py` | `16 1 1 1 1` | 待检查 | [sf.py.md](../../scripts/sf.py.md)（`docs/scripts/sf.py.md`） |
 | 顺丰速运签到 | `scripts/sfsu_checkin.py` | `python3 scripts/sfsu_checkin.py` | `17 0 * * *` | 待检查 | [sfsu_checkin.py.md](../../scripts/sfsu_checkin.py.md)（`docs/scripts/sfsu_checkin.py.md`） |
