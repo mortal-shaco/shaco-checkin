@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_98d86c7c.js`
 - 青龙命令：`node scripts/task_98d86c7c.js`
 - 建议 Cron：`48 10 * * *`
-- 发布哈希：`addeb13cc79a65f35dbab057df95d13909e36f7553a8f4e8f54fa61c89145097`
+- 发布哈希：`c25ffc94564db3765dcffd2b49f09cc4f47025ed5ddaa375e66e2f312c87c498`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -20,6 +20,8 @@
 - 保留同账号 STOKEN 网页兜底能力和单账号命令行参数；兼容单独 BDUSS 并支持每行组合凭据。
 - 显式配置最多五轮安全重试，重试前刷新 TBS 并等待60至90秒；默认网页单轮流程和每次签到前五秒间隔保持不变。
 - 兼容 SCKEY 并新增 PUSHPLUS_TOKEN，通过 HTTPS 发送脱敏结果，以业务码200验证受理，通知失败保留业务退出码。
+- 依据官方关注列表跳过今日已签到项目，签到响应提供排名和累计签到天数时显示。
+- 兼容原 accounts/push 配置结构的环境 JSON 迁移，保留启用开关和按账号分组的 Server酱、PushDeer 通知，并提供独立可选全局通知密钥。
 
 ## 环境变量与参数
 
@@ -99,6 +101,27 @@
 - 获取或设置：登录 PushPlus 官方控制台获取自己的推送令牌；此名称兼容上游配置。
 - 填写格式：可选 PushPlus 令牌兼容别名，不是账号凭据，PUSHPLUS_TOKEN 未配置时使用。
 
+### `TIEBA_CONFIG`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：旧配置迁移：将自己原 config.json 的完整 JSON 内容保存到此环境变量，勿公开。BDUSS/STOKEN 从登录后的贴吧开发者工具 Cookie 存储获取。
+- 填写格式：可选兼容输入，替代 BDUSS：对象含 accounts 数组和 push 数组；账号字段 enable（布尔）、bduss、可选 stoken 和 push（通知分组名数组）；通知字段 name、type（serverchan 或 pushdeer）、key。enable=false 不运行。不得同时设置 BDUSS，推荐迁移到 BDUSS 每行一个账号。
+
+### `TIEBA_SERVERCHAN_KEY`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：登录 Server酱官方控制台获取自己的 SendKey，保存在青龙环境变量。
+- 填写格式：可选全局 Server酱通知密钥，受通知总开关和脚本选择器约束；使用 HTTPS，明确受理后才报告通知成功。
+
+### `TIEBA_PUSHDEER_KEY`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：在 PushDeer 官方客户端中获取自己的推送 Key，保存在青龙环境变量。
+- 填写格式：可选全局 PushDeer 通知密钥，受通知总开关和脚本选择器约束；使用 HTTPS，明确受理后才报告通知成功。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -109,12 +132,13 @@
 
 ## 验证与兼容性
 
-SHA-256 `addeb13cc79a65f35dbab057df95d13909e36f7553a8f4e8f54fa61c89145097`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/98d86c7c8da22e52`。
+SHA-256 `c25ffc94564db3765dcffd2b49f09cc4f47025ed5ddaa375e66e2f312c87c498`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/98d86c7c8da22e52`。
 
 ## 副作用与风险
 
 - 对当前账号关注的贴吧执行每日签到，可能获得服务端签到奖励并更新签到记录
 - 正式执行且通知开启时，通过可用青龙通知组件及已配置的 PushPlus 向配置渠道发送脱敏汇总。
+- 正式运行且通知规则允许时，向显式配置的 Server酱和 PushDeer 通道发送脱敏汇总。
 
 ## 许可证与来源
 

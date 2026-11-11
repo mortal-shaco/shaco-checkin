@@ -24,6 +24,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+// 合并来源：wangyw15/tieba-signin index.py (MIT)，提交 fb036f4caf6385dece9b2b315911231a580d79f0。
+// 保留原来源归属：wangyw15/tieba-signin contributors。
+// 原功能：config.json 的 accounts(enable/name/bduss/stoken/push)、push 分组，
+// 关注吧签到、已签跳过、排名/累计天数、Server酱及PushDeer；原入口无内置计划。
+// TIEBA_CONFIG 可直接填写原 config.json 的 JSON 内容，避免依赖配置文件或仓库。
+// 优先使用 BDUSS；TIEBA_CONFIG 账号仅作旧配置迁移，显式 enable=false 的账号不运行。
+// 原账号 name 仅作本地配置标记，不打印；官方返回的公开身份正常显示。
+// TIEBA_SERVERCHAN_KEY/TIEBA_PUSHDEER_KEY 为独立可选全局通知密钥。
 'use strict';
 
 // qinglong-notification-policy: begin
@@ -77,6 +85,8 @@ const secrets = [];
 let stageNumber = 0;
 let signMode = 'web';
 let maxRounds = 1;
+let legacyConfig = { accounts: [], push: [] };
+let accountConfigs = [];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const randomWait = (min, max) => sleep((min + Math.random() * (max - min)) * 1000);
 
@@ -248,8 +258,11 @@ async function clientForums(credential) {
 function signResult(data, client) {
   const code = String(client ? data.error_code : data.no);
   if (code === '0') {
-    const rank = data.user_info?.user_sign_rank;
-    return { message: '签到成功' + (/^\d+$/.test(String(rank)) ? `，第 ${rank} 个签到` : '') };
+    const info = data.data?.uinfo || data.user_info || {};
+    const rank = info.user_sign_rank;
+    const days = info.total_sign_num;
+    return { message: '签到成功' + (/^\d+$/.test(String(rank)) ? `，第 ${rank} 个签到` : '') +
+      (/^\d+$/.test(String(days)) ? `，共签到 ${days} 天` : '') };
   }
   if (code === (client ? '160002' : '1101')) return { outcome: 'alreadyComplete', message: '已经签到过了' };
   const error = failure(code === '2150040' ? '需要验证码，停止当前账号后续签到' :
@@ -318,7 +331,7 @@ async function runAccount(account, accountLine) {
     });
     const { forums } = await stage(account, '读取关注贴吧', async () => {
       if (signMode === 'client') { const forums = await clientForums(credential); return { forums, message: `完整分页读取 ${forums.length} 个关注贴吧` }; }
-      const data = await requestJson('/mo/q/newmoindex', credential);
+      const data = await requestJson('/mo/q/newmoindex', credential, null, { stoken });
       if (String(data.no) !== '0' || !Array.isArray(data.data?.like_forum)) {
         throw failure('关注吧接口业务失败或响应结构变化');
       }
@@ -333,6 +346,7 @@ async function runAccount(account, accountLine) {
       const forum = forums[index];
       try {
         await stage(account, `签到 ${forum.forum_name}吧`, async () => {
+          if (String(forum.is_sign) === '1') return { outcome: 'alreadyComplete', message: '关注列表确认今日已签到' };
           return await signWithRetries(forum, credential, stoken, tbs);
         });
       } catch (error) {
@@ -400,6 +414,38 @@ async function sendPushplus(body) {
   } catch { return 'PushPlus 发送失败，保留业务退出码'; }
 }
 
+async function sendAdditionalNotifications(summary) {
+  const routes = [];
+  if (process.env.TIEBA_SERVERCHAN_KEY) routes.push({ type: 'serverchan', key: process.env.TIEBA_SERVERCHAN_KEY });
+  if (process.env.TIEBA_PUSHDEER_KEY) routes.push({ type: 'pushdeer', key: process.env.TIEBA_PUSHDEER_KEY });
+  for (const route of legacyConfig.push) {
+    const indices = accountConfigs.flatMap((account, index) =>
+      Array.isArray(account.push) && account.push.includes(route.name) ? [index + 1] : []);
+    if (indices.length) routes.push({ ...route, indices });
+  }
+  const results = [];
+  for (const route of routes) {
+    const accounts = route.indices ? summary.accountResults.filter(a => route.indices.includes(a.index)) : summary.accountResults;
+    const body = `${TITLE}\n状态 ${summary.status}\n账号总数 ${accounts.length}，成功 ${accounts.filter(a => a.status === 'success').length}，失败 ${accounts.filter(a => a.failed).length}\n` +
+      accounts.map(a => `账号 ${a.index}：成功 ${a.tasks.success}，已完成 ${a.tasks.alreadyComplete}，失败 ${a.tasks.failed}`).join('\n');
+    try {
+      if (route.type === 'serverchan') {
+        if (!/^[A-Za-z0-9_-]+$/.test(route.key)) throw failure('通知密钥格式无效');
+        const data = await requestJson('/' + encodeURIComponent(route.key) + '.send', null,
+          { title: TITLE, desp: body }, { hostname: 'sctapi.ftqq.com' });
+        if (String(data.data?.errno) !== '0') throw failure('Server酱未明确受理');
+        results.push('Server酱请求已受理');
+      } else if (route.type === 'pushdeer') {
+        const data = await requestJson('/message/push', null,
+          { pushkey: route.key, text: TITLE, desp: body, type: 'markdown' }, { hostname: 'api2.pushdeer.com' });
+        if (String(data.code) !== '0') throw failure('PushDeer未明确受理');
+        results.push('PushDeer请求已受理');
+      }
+    } catch { results.push('附加通知发送失败，保留业务退出码'); }
+  }
+  return results.length ? results.join('；') : '未配置附加通知';
+}
+
 async function notify(summary) {
   if (!notificationEnabled()) return '已通过通知开关关闭';
   const body = `${TITLE}\n模式 ${summary.mode}\n账号总数 ${summary.accounts}，成功 ${summary.success}，失败 ${summary.failed}\n状态 ${summary.status}\n子任务 ${summary.tasks.total}，成功 ${summary.tasks.success}，已完成 ${summary.tasks.alreadyComplete}，跳过 ${summary.tasks.skipped}，失败 ${summary.tasks.failed}`;
@@ -408,7 +454,7 @@ async function notify(summary) {
     log(`通知摘要（断网演练仅本地输出） ${body}`);
     return '断网演练已输出通知摘要';
   }
-  const pushStatus = await sendPushplus(body);
+  const pushStatus = (await sendPushplus(body)) + '；' + (await sendAdditionalNotifications(summary));
   const directories = [process.env.QINGLONG_NOTIFY_DIR, __dirname, '/ql/data/scripts', '/ql/scripts'].filter(Boolean);
   const payload = { title: TITLE, body };
   const jsCode = `let input=''; process.stdin.on('data', c=>input+=c); process.stdin.on('end', async()=>{try { const p=JSON.parse(input); const m=require(process.argv[1]); await m.sendNotify(p.title,p.body); } catch { process.exitCode=1; }});`;
@@ -438,8 +484,38 @@ async function main() {
   const rounds = process.env.TIEBA_MAX_ROUNDS || '1';
   if (!['web', 'client'].includes(signMode) || !/^[1-5]$/.test(rounds)) configError = '签到模式必须为 web/client，重试轮数必须为1至5';
   maxRounds = Number(rounds);
-  const credentials = bdussInput.split(/\r?\n/).map(value => value.trim()).filter(Boolean);
-  secrets.push(...credentials, process.env.STOKEN, process.env.SCKEY, process.env.PUSHPLUS_TOKEN);
+  let credentials = bdussInput.split(/\r?\n/).map(value => value.trim()).filter(Boolean);
+  // 原文件配置通过环境 JSON 迁移；不读取旧绝对路径、工作流模块或 config.json。
+  if (process.env.TIEBA_CONFIG) {
+    secrets.push(process.env.TIEBA_CONFIG);
+    try {
+      const config = JSON.parse(process.env.TIEBA_CONFIG);
+      if (!config || !Array.isArray(config.accounts) || !Array.isArray(config.push)) throw new Error();
+      for (const a of config.accounts) {
+        if (!a || typeof a.bduss !== 'string' || (a.stoken !== undefined && typeof a.stoken !== 'string') ||
+            (a.push !== undefined && !Array.isArray(a.push)) || typeof a.enable !== 'boolean') throw new Error();
+        secrets.push(a.bduss, a.stoken);
+      }
+      for (const route of config.push) {
+        if (!route || !['serverchan', 'pushdeer'].includes(route.type) || typeof route.name !== 'string' ||
+            typeof route.key !== 'string' || !route.key.trim()) throw new Error();
+        secrets.push(route.key);
+      }
+      if (new Set(config.push.map(r => r.name)).size !== config.push.length ||
+          config.accounts.some(a => a.push?.some(name => !config.push.some(r => r.name === name)))) throw new Error();
+      legacyConfig = config;
+      if (credentials.length) {
+        // 同时给出两套账号容易将通知发给错误分组，显式拒绝歧义。
+        configError = 'BDUSS 与 TIEBA_CONFIG 账号不能同时配置，请选择一种账号来源';
+      } else {
+        accountConfigs = config.accounts.filter(a => a.enable);
+        credentials = accountConfigs.map(a => a.bduss + (a.stoken ? '|' + a.stoken : ''));
+        if (credentials.some(line => /[\r\n]/.test(line))) throw new Error();
+      }
+    } catch { configError = 'TIEBA_CONFIG 格式错误，请使用原 accounts/push 结构和有效通知分组'; }
+  }
+  secrets.push(...credentials, process.env.STOKEN, process.env.SCKEY, process.env.PUSHPLUS_TOKEN,
+    process.env.TIEBA_SERVERCHAN_KEY, process.env.TIEBA_PUSHDEER_KEY);
   if (credentials.length > 1 && process.env.STOKEN) configError = '多账号必须将 STOKEN 与对应 BDUSS 合并到每行，不支持共享 STOKEN';
   log(`========== ${TITLE} ==========`);
   log(`开始时间 ${new Date(started).toISOString()}，模式 ${dryRun ? '断网演练' : '正式执行'}，账号数 ${credentials.length}`);
