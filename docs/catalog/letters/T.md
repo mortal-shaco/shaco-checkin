@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **61** 个脚本。返回 [`目录首页`](../README.md)。
+共 **62** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -9,6 +9,7 @@
 | Taker每日挖矿 | `scripts/taker.js` | `node scripts/taker.js` | `26 8 * * *` | 待检查 | [taker.js.md](../../scripts/taker.js.md)（`docs/scripts/taker.js.md`） |
 | 每日打卡签到 | `scripts/task_0c4949f3.py` | `python3 scripts/task_0c4949f3.py` | `34 10 * * *` | 待检查 | [task_0c4949f3.py.md](../../scripts/task_0c4949f3.py.md)（`docs/scripts/task_0c4949f3.py.md`） |
 | 掘金好好生活计划打卡 | `scripts/task_0e52328d.py` | `python3 scripts/task_0e52328d.py` | `2 1 * * *` | 待检查 | [task_0e52328d.py.md](../../scripts/task_0e52328d.py.md)（`docs/scripts/task_0e52328d.py.md`） |
+| NSSCTF 自动登录签到 | `scripts/task_13284d0d.py` | `python3 scripts/task_13284d0d.py` | `39 10 * * *` | 待检查 | [task_13284d0d.py.md](../../scripts/task_13284d0d.py.md)（`docs/scripts/task_13284d0d.py.md`） |
 | 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
 | 联想商城每日签到 | `scripts/task_293255e8.py` | `python3 scripts/task_293255e8.py` | `22 10 * * *` | 待检查 | [task_293255e8.py.md](../../scripts/task_293255e8.py.md)（`docs/scripts/task_293255e8.py.md`） |

@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **356** 个脚本。返回 [`目录首页`](../README.md)。
+共 **359** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -162,6 +162,7 @@
 | 量界智算签到 | `scripts/liangjie.py` | `python3 scripts/liangjie.py` | `10 9 * * *` | 待检查 | [liangjie.py.md](../../scripts/liangjie.py.md)（`docs/scripts/liangjie.py.md`） |
 | 咔叽网单每日签到 | `scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `python3 scripts/littlewuh_qinglongbox_dailycheckin_scripts.py` | `16 2 * * *` | 待检查 | [littlewuh_qinglongbox_dailycheckin_scripts.py.md](../../scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md)（`docs/scripts/littlewuh_qinglongbox_dailycheckin_scripts.py.md`） |
 | LobsterAI 每日签到 | `scripts/lobsterai_checkin.py` | `python3 scripts/lobsterai_checkin.py` | `27 0 * * *` | 待检查 | [lobsterai_checkin.py.md](../../scripts/lobsterai_checkin.py.md)（`docs/scripts/lobsterai_checkin.py.md`） |
+| WorkBuddy 每日签到 | `scripts/local_daily.py` | `python3 scripts/local_daily.py` | `38 10 * * *` | 待检查 | [local_daily.py.md](../../scripts/local_daily.py.md)（`docs/scripts/local_daily.py.md`） |
 | 龙湖天街签到 | `scripts/longhu.py` | `python3 scripts/longhu.py` | `5 8 * * *` | 待检查 | [longhu.py.md](../../scripts/longhu.py.md)（`docs/scripts/longhu.py.md`） |
 | 领克App每日签到分享 | `scripts/lynkco_qinglong_single.py` | `python3 scripts/lynkco_qinglong_single.py` | `51 9 * * *` | 待检查 | [lynkco_qinglong_single.py.md](../../scripts/lynkco_qinglong_single.py.md)（`docs/scripts/lynkco_qinglong_single.py.md`） |
 | 影视飓风会员签到 | `scripts/mediastorm_club.py` | `python3 scripts/mediastorm_club.py` | `3 9 * * *` | 待检查 | [mediastorm_club.py.md](../../scripts/mediastorm_club.py.md)（`docs/scripts/mediastorm_club.py.md`） |
@@ -172,6 +173,7 @@
 | 米游社游戏签到 | `scripts/miyoushe_sign.py` | `python3 scripts/miyoushe_sign.py` | `11 8 * * *` | 待检查 | [miyoushe_sign.py.md](../../scripts/miyoushe_sign.py.md)（`docs/scripts/miyoushe_sign.py.md`） |
 | ModelScope 魔搭每日签到 | `scripts/modelscope_daily.py` | `python3 scripts/modelscope_daily.py` | `0 9 * * *` | 待检查 | [modelscope_daily.py.md](../../scripts/modelscope_daily.py.md)（`docs/scripts/modelscope_daily.py.md`） |
 | mybt 每日签到与访问积分 | `scripts/mybt.py` | `python3 scripts/mybt.py` | `2 8 * * *` | 待检查 | [mybt.py.md](../../scripts/mybt.py.md)（`docs/scripts/mybt.py.md`） |
+| 奶昔论坛签到 | `scripts/naixi_qinglong.py` | `python3 scripts/naixi_qinglong.py` | `37 10 * * *` | 待检查 | [naixi_qinglong.py.md](../../scripts/naixi_qinglong.py.md)（`docs/scripts/naixi_qinglong.py.md`） |
 | NDNU第二课堂签到签退 | `scripts/ndnu.py` | `python3 scripts/ndnu.py` | `*/5 7-22 * * *` | 待检查 | [ndnu.py.md](../../scripts/ndnu.py.md)（`docs/scripts/ndnu.py.md`） |
 | 网易云全能打卡 | `scripts/netease_task.py` | `python3 scripts/netease_task.py` | `53 1 * * *` | 待检查 | [netease_task.py.md](../../scripts/netease_task.py.md)（`docs/scripts/netease_task.py.md`） |
 | NewAPI 自动签到 | `scripts/newapi.py` | `python3 scripts/newapi.py` | `18 8 * * *` | 待检查 | [newapi.py.md](../../scripts/newapi.py.md)（`docs/scripts/newapi.py.md`） |
@@ -271,6 +273,7 @@
 | Tabbit 国内版每日签到 | `scripts/tabbit_cn_daily.py` | `python3 scripts/tabbit_cn_daily.py` | `18 9 * * *` | 待检查 | [tabbit_cn_daily.py.md](../../scripts/tabbit_cn_daily.py.md)（`docs/scripts/tabbit_cn_daily.py.md`） |
 | 每日打卡签到 | `scripts/task_0c4949f3.py` | `python3 scripts/task_0c4949f3.py` | `34 10 * * *` | 待检查 | [task_0c4949f3.py.md](../../scripts/task_0c4949f3.py.md)（`docs/scripts/task_0c4949f3.py.md`） |
 | 掘金好好生活计划打卡 | `scripts/task_0e52328d.py` | `python3 scripts/task_0e52328d.py` | `2 1 * * *` | 待检查 | [task_0e52328d.py.md](../../scripts/task_0e52328d.py.md)（`docs/scripts/task_0e52328d.py.md`） |
+| NSSCTF 自动登录签到 | `scripts/task_13284d0d.py` | `python3 scripts/task_13284d0d.py` | `39 10 * * *` | 待检查 | [task_13284d0d.py.md](../../scripts/task_13284d0d.py.md)（`docs/scripts/task_13284d0d.py.md`） |
 | 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
 | 联想商城每日签到 | `scripts/task_293255e8.py` | `python3 scripts/task_293255e8.py` | `22 10 * * *` | 待检查 | [task_293255e8.py.md](../../scripts/task_293255e8.py.md)（`docs/scripts/task_293255e8.py.md`） |

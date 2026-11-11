@@ -35085,6 +35085,188 @@
       }
     },
     {
+      "catalogId": "022a9a680ac352c1",
+      "applicationKey": "local-daily",
+      "checkProfile": {
+        "requiredEnv": [
+          "WORKBUDDY_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WORKBUDDY_ACCESS_TOKEN",
+          "WORKBUDDY_UID",
+          "WORKBUDDY_DRY_RUN",
+          "WORKBUDDY_TIMEOUT",
+          "WORKBUDDY_MAX_ATTEMPTS",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WORKBUDDY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WORKBUDDY_TIMEOUT": "15",
+          "WORKBUDDY_MAX_ATTEMPTS": "4"
+        },
+        "successPatterns": [
+          "业务核验成功",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "每日 09:30 查询状态后领取 WorkBuddy 每日签到积分；服务端已签到则跳过领取",
+          "支持 status 参数只查询今日状态、连续天数、累计积分和签到日期；支持 --json 逐账号结构化结果",
+          "签到响应须有明确业务码并二次查询确认；状态查询超时和临时 HTTP 错误最多尝试四次",
+          "多账号隔离执行、旧令牌变量兼容、断网预演、时间轴日志、脱敏通知与单行机器汇总"
+        ],
+        "sideEffects": [
+          "执行 run 且服务端尚未签到时领取每日签到积分",
+          "通知开启且脚本入选时通过青龙通知模块发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "WorkBuddy 每日签到",
+      "path": "scripts/local_daily.py",
+      "sha256": "8658ced397d52c020699622bb9cfeee5e06343ac51231053b41a9314e1b0bd8a",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Peng-Can/local-daily-checkin",
+        "branch": "master",
+        "commit": "2fcf8f909b773be36cf7de1f7df4cac438725727",
+        "originalPath": "checkin.py",
+        "related": [
+          {
+            "catalogId": "bd487bf015d1bd69",
+            "sha256": "e53f2425e5184ea333b2674637bb043cc93231a297a8ae2dc1d7fb6d91797c37",
+            "repository": "Peng-Can/local-daily-checkin",
+            "url": "https://github.com/Peng-Can/local-daily-checkin",
+            "branch": "master",
+            "commit": "2fcf8f909b773be36cf7de1f7df4cac438725727",
+            "originalPath": "tests/mock_server.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "38 10 * * *",
+      "command": "python3 scripts/local_daily.py",
+      "environment": [
+        {
+          "name": "WORKBUDDY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 WorkBuddy 会话开发者工具 Network 中查看 checkin-activity-status 请求，复制 X-User-Id 及 Authorization 的 Bearer 后的访问令牌。无法打开开发者工具时向官方客户端支持查询本人访问令牌的获取方式；不扫描进程，不上传请求。",
+          "format": "每个非空行一个 uid|accessToken，仅按首个 | 分隔；令牌过期后重新获取。"
+        },
+        {
+          "name": "WORKBUDDY_ACCESS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号变量，与 WORKBUDDY_UID 配套；从本人官方请求的 Authorization 中获取 Bearer 后的值。合并变量非空时优先使用合并变量。",
+          "format": "单个访问令牌，不含 Bearer 前缀。"
+        },
+        {
+          "name": "WORKBUDDY_UID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号配套字段，从同一账号官方请求的 X-User-Id 获取。",
+          "format": "单个账号标识，须与令牌属于同一账号。"
+        },
+        {
+          "name": "WORKBUDDY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置 1 启用完全断网预演。",
+          "format": "1 开启；默认关闭。"
+        },
+        {
+          "name": "WORKBUDDY_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置请求超时秒数。",
+          "format": "1 至 120 的数值，默认 15。"
+        },
+        {
+          "name": "WORKBUDDY_MAX_ATTEMPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需设置状态查询最大尝试次数；领取请求不自动重试。",
+          "format": "1 至 4 的整数，默认 4；等待间隔为 5、15、45 秒。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在自动通知模式下选择本脚本，可填写目录编号、脚本文件名、scripts/ 相对路径或文件名通配符。",
+          "format": "逗号、分号或空白分隔；* 为全部；空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；未设置时尝试标准青龙目录或导入 notify.send。",
+          "format": "本地通知模块目录；仅通知适配，不是业务运行依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，格式 uid|accessToken；只分割第一个 |，保留其后令牌文本；逐个独立执行，任一账号失败则进程非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日 09:30 查询状态后领取 WorkBuddy 每日签到积分；服务端已签到则跳过领取",
+        "支持 status 参数只查询今日状态、连续天数、累计积分和签到日期；支持 --json 逐账号结构化结果",
+        "签到响应须有明确业务码并二次查询确认；状态查询超时和临时 HTTP 错误最多尝试四次",
+        "多账号隔离执行、旧令牌变量兼容、断网预演、时间轴日志、脱敏通知与单行机器汇总"
+      ],
+      "sideEffects": [
+        "执行 run 且服务端尚未签到时领取每日签到积分",
+        "通知开启且脚本入选时通过青龙通知模块发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/022a9a680ac352c1",
+        "candidateSha256": "726b902719ea33eb1ad6dc125db87d605d4745f0c6a57f70d3991a711f878f64"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "726b902719ea33eb1ad6dc125db87d605d4745f0c6a57f70d3991a711f878f64",
+        "releaseSha256": "8658ced397d52c020699622bb9cfeee5e06343ac51231053b41a9314e1b0bd8a",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:10:47.678182+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "726b902719ea33eb1ad6dc125db87d605d4745f0c6a57f70d3991a711f878f64",
+          "toCandidateSha256": "8658ced397d52c020699622bb9cfeee5e06343ac51231053b41a9314e1b0bd8a",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "b4130175dc0a855e",
       "applicationKey": "longhu",
       "checkProfile": {
@@ -37903,6 +38085,185 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "000173b61ebb9f90b020c4b4a306e3a571574ff01462c8ab8d741514c40d9361",
           "toCandidateSha256": "a408398c1cd44cbe3509c291a0143284def7c2d4ec1af418cddae1afef38f6b0",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "53811af369a269c5",
+      "applicationKey": "icebergocean/clockin::naixi",
+      "checkProfile": {
+        "requiredEnv": [
+          "NAIXI_COOKIE"
+        ],
+        "optionalEnv": [
+          "NAIXI_COOKIE1",
+          "NAIXI_DRY_RUN",
+          "CLOCKIN_RANDOM_DELAY",
+          "CLOCKIN_RANDOM_DELAY_MAX",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "CLOCKIN_NOTIFY_ONLY_FAILURE"
+        ],
+        "dryRunEnv": {
+          "NAIXI_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "今日已签到",
+          "签到成功"
+        ],
+        "features": [
+          "每日签到并复查页面确认成功",
+          "识别今日已签到并避免重复签到",
+          "查询连续签到天数、累计签到天数和今日奖励",
+          "显示官方页面返回的非敏感账号名称",
+          "保留默认随机延迟及账号间等待",
+          "多行多账号与连续编号 Cookie 兼容",
+          "完全断网预演与参数检查",
+          "分阶段脱敏日志、账号统计与单行结构化汇总",
+          "青龙通知及全局任务选择，通知故障保留业务退出码"
+        ],
+        "sideEffects": [
+          "向奶昔论坛提交每日签到，可能增加签到天数和论坛签到奖励",
+          "正式运行时按全局配置发送脱敏青龙通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "奶昔论坛签到",
+      "path": "scripts/naixi_qinglong.py",
+      "sha256": "174d490eefa116fad9ea6e8f1a7565d08bb67c2bf95ada63873bd3b5cf3e3dd5",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "icebergOcean/clockin",
+        "branch": "main",
+        "commit": "459a86bf5f8929559e57f527471eaddf089bda06",
+        "originalPath": "naixi_qinglong.py"
+      },
+      "cron": "37 10 * * *",
+      "command": "python3 scripts/naixi_qinglong.py",
+      "environment": [
+        {
+          "name": "NAIXI_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://forum.naixi.net，在浏览器开发者工具网络面板选择本站已登录请求，复制完整 Cookie 请求头值，在青龙私密环境变量中保存；失效后重新登录获取。",
+          "format": "每个非空行一个账号的完整 Cookie 值，保留分号和等号，不添加 Cookie: 前缀；不使用 @、@@ 或 & 分隔账号，兼容字面量 \\n 换行。"
+        },
+        {
+          "name": "NAIXI_COOKIE1",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容旧编号配置，获取方式同 NAIXI_COOKIE，可继续配置 NAIXI_COOKIE2、NAIXI_COOKIE3 等连续编号变量。",
+          "format": "每个变量为完整 Cookie 值，从 1 开始遇首个空编号停止，有编号输入时优先使用编号组。推荐迁移到 NAIXI_COOKIE 多行配置。"
+        },
+        {
+          "name": "NAIXI_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按是否需要断网预演设置。",
+          "format": "1 启用断网预演，默认 0；预演跳过等待、签到、网络依赖加载和通知实际投递。"
+        },
+        {
+          "name": "CLOCKIN_RANDOM_DELAY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "沿用原脚本随机延迟开关。",
+          "format": "默认 1；1/true/yes/y/on 启用，其他值关闭。"
+        },
+        {
+          "name": "CLOCKIN_RANDOM_DELAY_MAX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按随机签到等待需求设置。",
+          "format": "非负整数秒，默认 3600；负值按 0，格式无效采用默认值。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需配置通知任务选择列表，未设置时本任务默认选中。",
+          "format": "逗号、分号或空白分隔的目录条目编号、脚本相对路径、文件名或通配模式；* 选择全部，显式空值关闭全部，仅对 auto 模式生效。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙通知脚本所在目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的目录；自动兼容 notify.send、/ql/data/scripts 和 /ql/scripts。"
+        },
+        {
+          "name": "CLOCKIN_NOTIFY_ONLY_FAILURE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "旧版通知变量，无需继续配置。",
+          "format": "统一策略要求覆盖成功、部分失败、失败、配置错误和预演，该旧变量不再过滤通知。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "NAIXI_COOKIE 每个非空行一个账号，完整 Cookie 原样保留。兼容连续编号变量且编号组优先；独立执行账号，任一账号失败整体非零退出。"
+      },
+      "dependencies": [
+        "curl_cffi"
+      ],
+      "features": [
+        "每日签到并复查页面确认成功",
+        "识别今日已签到并避免重复签到",
+        "查询连续签到天数、累计签到天数和今日奖励",
+        "显示官方页面返回的非敏感账号名称",
+        "保留默认随机延迟及账号间等待",
+        "多行多账号与连续编号 Cookie 兼容",
+        "完全断网预演与参数检查",
+        "分阶段脱敏日志、账号统计与单行结构化汇总",
+        "青龙通知及全局任务选择，通知故障保留业务退出码"
+      ],
+      "sideEffects": [
+        "向奶昔论坛提交每日签到，可能增加签到天数和论坛签到奖励",
+        "正式运行时按全局配置发送脱敏青龙通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/53811af369a269c5",
+        "candidateSha256": "e0edc0b1169ef6da27977279ae8582b59e3538b4557574e2e219a50e50c7c050"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "e0edc0b1169ef6da27977279ae8582b59e3538b4557574e2e219a50e50c7c050",
+        "releaseSha256": "174d490eefa116fad9ea6e8f1a7565d08bb67c2bf95ada63873bd3b5cf3e3dd5",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:10:45.565042+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "e0edc0b1169ef6da27977279ae8582b59e3538b4557574e2e219a50e50c7c050",
+          "toCandidateSha256": "174d490eefa116fad9ea6e8f1a7565d08bb67c2bf95ada63873bd3b5cf3e3dd5",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -57999,6 +58360,167 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "320fde4050c623d83e4b468a53a7ff7ab70aba14cc2cf2e53e65fe437724aee4",
           "toCandidateSha256": "750d06839abf9e2b883f116a5155652b5f0b77442bfb01d1b25106fe51c08cc9",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "13284d0dbe0aac03",
+      "applicationKey": "marven11/nssctfautologin::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "NSSCTF_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "NSSCTF_USERNAME",
+          "NSSCTF_PASSWORD",
+          "NSSCTF_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "NSSCTF_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "NSSCTF_DRY_RUN": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用用户名和密码登录 NSSCTF，保留旧版单账号参数兼容。",
+          "登录后签到，再查询并输出硬币余额；签到失败仍尝试查询余额，整体返回失败。",
+          "支持每行一个账号，密码包含额外分隔符时保持完整；账号之间独立处理。",
+          "使用上游接口与业务 code=200 判定，并校验登录令牌、硬币字段和响应大小；请求设有超时，拒绝重定向。",
+          "显示官方返回的公开昵称、用户名或 UID，隐藏密码、令牌、手机号及原始响应；保留上游硬币数字独立输出。",
+          "提供完全断网预演、时间轴阶段日志、账号及任务统计，以及单行 TASK_SUMMARY JSON。",
+          "支持青龙通知模块发现、全局开关与选择名单；通知失败保留业务退出码。"
+        ],
+        "sideEffects": [
+          "正式运行创建登录会话。",
+          "正式运行提交签到，可能增加账号硬币余额。",
+          "启用并匹配通知配置时向已配置渠道发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "NSSCTF 自动登录签到",
+      "path": "scripts/task_13284d0d.py",
+      "sha256": "df50dcdeb01040745288179b9549ebbfecf1823f4515639b4b123a262d4171df",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Marven11/NSSCTFAutoLogin",
+        "branch": "main",
+        "commit": "80809b70095b2d4ada61a74d2919ad81bf372dd0",
+        "originalPath": "main.py"
+      },
+      "cron": "39 10 * * *",
+      "command": "python3 scripts/task_13284d0d.py",
+      "environment": [
+        {
+          "name": "NSSCTF_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 NSSCTF 官网 https://www.nssctf.cn/ 注册或使用自己的账号，将登录用户名与密码填写到青龙环境变量；密码遗失时先在官网重置。",
+          "format": "每行一个账号，格式为 用户名|密码；只在第一个 | 分割，后续 | 属于密码。忽略空行，不以 & 或 @ 分账号。"
+        },
+        {
+          "name": "NSSCTF_USERNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号配置，使用自己的 NSSCTF 登录用户名；仅在未设置 NSSCTF_ACCOUNTS 时生效。",
+          "format": "单个用户名，必须同时配置 NSSCTF_PASSWORD。"
+        },
+        {
+          "name": "NSSCTF_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号配置，使用同一 NSSCTF 账号的登录密码；仅在未设置 NSSCTF_ACCOUNTS 时生效。",
+          "format": "单个密码，必须同时配置 NSSCTF_USERNAME。"
+        },
+        {
+          "name": "NSSCTF_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设置为 1，正式运行设置为 0 或不设置。",
+          "format": "1 表示完全断网预演，仅检查参数格式，不验证真实凭据，不签到，不实际发送通知；0 表示正式运行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中填写需要通知的脚本选择器；可填本脚本 catalogId 13284d0dbe0aac03 或部署后的文件名。",
+          "format": "用逗号、分号、空白或换行分隔 catalogId、脚本相对路径、文件名或文件名通配符；* 全选，空字符串全禁用。auto 且未配置名单时不发送。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写已有青龙通知模块所在目录。未设置时尝试导入 notify.send 以及标准青龙脚本目录。",
+          "format": "本地目录路径，仅用于可选通知，不影响独立业务功能。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "NSSCTF_ACCOUNTS 每个非空行一个账号，用户名与密码只在第一个 | 分割。各账号独立登录和执行；任一账号失败则整体非零退出。旧变量仅兼容单账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用用户名和密码登录 NSSCTF，保留旧版单账号参数兼容。",
+        "登录后签到，再查询并输出硬币余额；签到失败仍尝试查询余额，整体返回失败。",
+        "支持每行一个账号，密码包含额外分隔符时保持完整；账号之间独立处理。",
+        "使用上游接口与业务 code=200 判定，并校验登录令牌、硬币字段和响应大小；请求设有超时，拒绝重定向。",
+        "显示官方返回的公开昵称、用户名或 UID，隐藏密码、令牌、手机号及原始响应；保留上游硬币数字独立输出。",
+        "提供完全断网预演、时间轴阶段日志、账号及任务统计，以及单行 TASK_SUMMARY JSON。",
+        "支持青龙通知模块发现、全局开关与选择名单；通知失败保留业务退出码。"
+      ],
+      "sideEffects": [
+        "正式运行创建登录会话。",
+        "正式运行提交签到，可能增加账号硬币余额。",
+        "启用并匹配通知配置时向已配置渠道发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/13284d0dbe0aac03",
+        "candidateSha256": "3b6e70bf658d25c0847211d758f94afc71412449bb8f6ffb2139c5963ff13fd1"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "3b6e70bf658d25c0847211d758f94afc71412449bb8f6ffb2139c5963ff13fd1",
+        "releaseSha256": "df50dcdeb01040745288179b9549ebbfecf1823f4515639b4b123a262d4171df",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:11:27.626769+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "3b6e70bf658d25c0847211d758f94afc71412449bb8f6ffb2139c5963ff13fd1",
+          "toCandidateSha256": "df50dcdeb01040745288179b9549ebbfecf1823f4515639b4b123a262d4171df",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
