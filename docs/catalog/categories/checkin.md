@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **379** 个脚本。返回 [`目录首页`](../README.md)。
+共 **381** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -12,6 +12,7 @@
 | 吾爱破解每日签到 | `scripts/52pojie.py` | `python3 scripts/52pojie.py` | `25 6 * * *` | 待检查 | [52pojie.py.md](../../scripts/52pojie.py.md)（`docs/scripts/52pojie.py.md`） |
 | 55188论坛签到 | `scripts/55188auto.py` | `python3 scripts/55188auto.py` | `27 8 * * *` | 待检查 | [55188auto.py.md](../../scripts/55188auto.py.md)（`docs/scripts/55188auto.py.md`） |
 | 69云签到 | `scripts/69yun_checkin.py` | `python3 scripts/69yun_checkin.py` | `20 0 * * *` | 待检查 | [69yun_checkin.py.md](../../scripts/69yun_checkin.py.md)（`docs/scripts/69yun_checkin.py.md`） |
+| 七日杀中文网每日签到 | `scripts/7risha_checkin.js` | `node scripts/7risha_checkin.js` | `* * * * *` | 待检查 | [7risha_checkin.js.md](../../scripts/7risha_checkin.js.md)（`docs/scripts/7risha_checkin.js.md`） |
 | 爱上ASMR每日签到 | `scripts/a3asmr.js` | `node scripts/a3asmr.js` | `15 9 * * *` | 待检查 | [a3asmr.js.md](../../scripts/a3asmr.js.md)（`docs/scripts/a3asmr.js.md`） |
 | 微博黄婷婷超话每日任务 | `scripts/account2_daily.py` | `python3 scripts/account2_daily.py` | `28 10 * * *` | 待检查 | [account2_daily.py.md](../../scripts/account2_daily.py.md)（`docs/scripts/account2_daily.py.md`） |
 | AcFun每日任务 | `scripts/acfun.py` | `python3 scripts/acfun.py` | `9 0 * * *` | 待检查 | [acfun.py.md](../../scripts/acfun.py.md)（`docs/scripts/acfun.py.md`） |
@@ -329,6 +330,7 @@
 | 重庆工程职院顶岗实习 | `scripts/task_f8f6237c.py` | `python3 scripts/task_f8f6237c.py` | `49 8 * * *` | 待检查 | [task_f8f6237c.py.md](../../scripts/task_f8f6237c.py.md)（`docs/scripts/task_f8f6237c.py.md`） |
 | 起点阅读 App 签到 | `scripts/task_fbfb17a0.py` | `python3 scripts/task_fbfb17a0.py` | `4 1 * * *` | 待检查 | [task_fbfb17a0.py.md](../../scripts/task_fbfb17a0.py.md)（`docs/scripts/task_fbfb17a0.py.md`） |
 | 安徽工业大学晚寝考勤 | `scripts/task_ffb00b6d.py` | `python3 scripts/task_ffb00b6d.py` | `26 21 * * *` | 待检查 | [task_ffb00b6d.py.md](../../scripts/task_ffb00b6d.py.md)（`docs/scripts/task_ffb00b6d.py.md`） |
+| 塔斯汀每日签到 | `scripts/tastin_checkin.py` | `python3 scripts/tastin_checkin.py` | `4 11 * * *` | 待检查 | [tastin_checkin.py.md](../../scripts/tastin_checkin.py.md)（`docs/scripts/tastin_checkin.py.md`） |
 | 塔斯汀每日签到 | `scripts/tastin_sign.py` | `python3 scripts/tastin_sign.py` | `40 9 * * *` | 待检查 | [tastin_sign.py.md](../../scripts/tastin_sign.py.md)（`docs/scripts/tastin_sign.py.md`） |
 | 星辰超级智能体签到 | `scripts/teleagent_checkin.py` | `python3 scripts/teleagent_checkin.py` | `12 10 * * *` | 待检查 | [teleagent_checkin.py.md](../../scripts/teleagent_checkin.py.md)（`docs/scripts/teleagent_checkin.py.md`） |
 | Telegram每日Bot签到 | `scripts/telegram_daily_checkin.py` | `python3 scripts/telegram_daily_checkin.py` | `33 8 * * *` | 待检查 | [telegram_daily_checkin.py.md](../../scripts/telegram_daily_checkin.py.md)（`docs/scripts/telegram_daily_checkin.py.md`） |
