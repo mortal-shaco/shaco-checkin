@@ -17506,173 +17506,6 @@
       }
     },
     {
-      "catalogId": "914f52282cf5f911",
-      "applicationKey": "875778261/qoder-daily-claim::qoder-daily-claim",
-      "checkProfile": {
-        "requiredEnv": [
-          "QODER_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "QODER_DRY_RUN",
-          "QODER_FORCE",
-          "QODER_CHECKIN_DIR",
-          "QODER_CHECKIN_LOG_DIR",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "QODER_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "QODER_FORCE": "0"
-        },
-        "successPatterns": [
-          "\"ok\":true",
-          "\"status\":\"success\""
-        ],
-        "features": [
-          "查询官方Credits活动，兼容上游三种列表包装结构；异常响应不当作无活动成功",
-          "按活动状态及时间窗口领取Credits，明确CLAIMED才计成功，识别幂等重放并查询奖励复核",
-          "保留显式强制重放开关、多账号独立处理和官方非秘密身份显示",
-          "完全离线演练、逐阶段与逐账号统计、唯一TASK_SUMMARY结构化汇总",
-          "可选按账号及北京时间10点切换活动日写入脱敏记录与日志，默认不写文件",
-          "按青龙开关及选择器通知；通知不可用不改变业务退出码，演练仅生成本地摘要"
-        ],
-        "sideEffects": [
-          "调用领取接口领取Credits，显式强制模式可能重放领取请求",
-          "显式配置记录目录时写入脱敏记录或日志",
-          "真实运行且启用通知时通过青龙模块发送脱敏总结"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "Qoder CN 每日 Credits 领取",
-      "path": "scripts/claim.js",
-      "sha256": "cae4725f3dd1876f7d53ecb2a5078aad20d4a1c50ac148541116eab3eb6ab442",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "875778261/qoder-daily-claim",
-        "branch": "main",
-        "commit": "4e51719caaf1689aef530589a14b53462ad96732",
-        "originalPath": "skills/qoder-daily-claim/scripts/claim.js"
-      },
-      "cron": "53 10 * * *",
-      "command": "node scripts/claim.js",
-      "environment": [
-        {
-          "name": "QODER_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "在本人已登录的 Qoder CN 官方客户端开发者工具网络请求中，找到 openapi.qoder.com.cn 的 /sash/api/v1/me/campaigns 请求，复制 Authorization 中 Bearer 后的 Token。无法查看时请勿猜测，不需本地文件或其他程序。",
-          "format": "每个非空行一个不带Bearer前缀的Token，或包含token和可选expiresAt日期的JSON对象；只用换行分隔账号"
-        },
-        {
-          "name": "QODER_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "设为1进行完全离线配置与流程演练，不查询、不领取、不写记录、不调用可能联网的通知模块。",
-          "format": "1、true、yes、on启用，默认关闭"
-        },
-        {
-          "name": "QODER_FORCE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "仅需强制重放领取时显式启用，等价于--force，默认关闭。",
-          "format": "1、true、yes、on启用"
-        },
-        {
-          "name": "QODER_CHECKIN_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行指定可写目录，等价于--checkin-dir；按账号与北京时间10点切换的活动日写入结果，记录不替代官方核验。",
-          "format": "目录路径；默认不写文件"
-        },
-        {
-          "name": "QODER_CHECKIN_LOG_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选指定脱敏统计日志目录。",
-          "format": "目录路径；默认不写文件"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自动模式选择通知脚本，可填914f52282cf5f911、脚本相对路径、文件名或通配符；空值关闭全部。",
-          "format": "逗号、分号、空白分隔；*匹配全部"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选指定青龙sendNotify.js目录；否则查找/ql/data/scripts和/ql/scripts。",
-          "format": "目录路径"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "每个非空行一个账号Token或JSON，配套有效期放同一JSON内，不用其他账号分隔符；独立处理，任一账号失败则整体非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "查询官方Credits活动，兼容上游三种列表包装结构；异常响应不当作无活动成功",
-        "按活动状态及时间窗口领取Credits，明确CLAIMED才计成功，识别幂等重放并查询奖励复核",
-        "保留显式强制重放开关、多账号独立处理和官方非秘密身份显示",
-        "完全离线演练、逐阶段与逐账号统计、唯一TASK_SUMMARY结构化汇总",
-        "可选按账号及北京时间10点切换活动日写入脱敏记录与日志，默认不写文件",
-        "按青龙开关及选择器通知；通知不可用不改变业务退出码，演练仅生成本地摘要"
-      ],
-      "sideEffects": [
-        "调用领取接口领取Credits，显式强制模式可能重放领取请求",
-        "显式配置记录目录时写入脱敏记录或日志",
-        "真实运行且启用通知时通过青龙模块发送脱敏总结"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/914f52282cf5f911",
-        "candidateSha256": "dd505095a0ecaa91bda65a6f82851b791e0c027942a3b2fab7e2b8b5e7b0e55f"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "dd505095a0ecaa91bda65a6f82851b791e0c027942a3b2fab7e2b8b5e7b0e55f",
-        "releaseSha256": "cae4725f3dd1876f7d53ecb2a5078aad20d4a1c50ac148541116eab3eb6ab442",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T10:28:29.061378+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "dd505095a0ecaa91bda65a6f82851b791e0c027942a3b2fab7e2b8b5e7b0e55f",
-          "toCandidateSha256": "cae4725f3dd1876f7d53ecb2a5078aad20d4a1c50ac148541116eab3eb6ab442",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
       "catalogId": "d6e397f627b3716b",
       "applicationKey": "undefined443/sysu-check-in::sysu-check-in",
       "checkProfile": {
@@ -46084,15 +45917,17 @@
           "QODER_CONFIG_FILE",
           "QODER_REFRESH_MARGIN_H",
           "QODER_LOG_FILE",
-          "QODER_BASE_URL"
+          "QODER_BASE_URL",
+          "QODER_FORCE",
+          "QODER_CHECKIN_DIR",
+          "QODER_CHECKIN_LOG_DIR"
         ],
         "dryRunEnv": {
           "QODER_DRY_RUN": "1"
         },
         "liveEnv": {},
         "successPatterns": [
-          "\"status\":\"success\"",
-          "\"status\":\"already-complete\""
+          "TASK_SUCCESS"
         ],
         "features": [
           "规范 JSON 行多账号，兼容两套令牌字段命名、原账号开关及旧令牌环境变量，支持中国区、国际区及逐账号不同地区",
@@ -46114,7 +45949,11 @@
           "兼容旧 JSON 数组、accounts 包装、token 与 expires_at 别名，以及显式配置文件中的设备字段，保持规范 JSON 行和原文件优先级",
           "显式设置 QODER_EMPTY_RETRY 或 QODER_EMPTY_WAIT 时，仅无普通活动才在本轮重查；--once 禁用等待，未设置时保留规范版单轮默认",
           "可选临期刷新，解析秒、毫秒、ISO 过期时间及访问令牌到期字段；刷新失败仅沿用未过期令牌",
-          "兼容 silent、poll、silent-poll 调用，可选追加脱敏 JSON 行记录及企业微信、PushPlus、HTTPS Webhook 汇总通知"
+          "兼容 silent、poll、silent-poll 调用，可选追加脱敏 JSON 行记录及企业微信、PushPlus、HTTPS Webhook 汇总通知",
+          "兼容中国区纯访问令牌账号及裸令牌行，显式启用后领取 Credits，无需桌面文件或设备头",
+          "领取后回查奖励状态，只有明确 CLAIMED 才显示奖励确认，面值不冒充到账",
+          "兼容 data 数组活动包装和官方 user.name 身份，异常项目失败闭合",
+          "显式重放有效窗口内已领取 Credits，可选按活动日保存脱敏记录，记录不替代官方核验"
         ],
         "sideEffects": [
           "显式启用账号后领取可领活动奖励，可能消耗同设备活动领取资格；额外非 CLAIM_BENEFIT 的中国区 Pro 活动仅在明确打开对应开关后领取",
@@ -46122,7 +45961,9 @@
           "显式配置私有账号文件时将轮换后的令牌原子写回该文件",
           "通知启用且非预演时向青龙通知渠道及配置的账号或全局渠道投递脱敏汇总",
           "显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存",
-          "显式设置 QODER_LOG_FILE 且非预演时追加脱敏 JSON 行日志"
+          "显式设置 QODER_LOG_FILE 且非预演时追加脱敏 JSON 行日志",
+          "显式重放时再次提交有效窗口内已领取 Credits 的领取请求",
+          "显式设置 QODER_CHECKIN_DIR 或 QODER_CHECKIN_LOG_DIR 时写入脱敏统计文件"
         ]
       },
       "postReview": {
@@ -46131,7 +45972,7 @@
       },
       "displayName": "Qoder每日签到",
       "path": "scripts/qoder_airscript.js",
-      "sha256": "2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb",
+      "sha256": "2190b79803d4fe75c0a082ffdd4da77eb5120da7d654f4ed7ab3186709bfdf42",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -46180,6 +46021,16 @@
             "catalogId": "9cceef808f4e3500",
             "sha256": "3f88bf542c08b4d14784509a5a622e32aff441f1ac3fcc42f806fe58b43089cb",
             "license": "MIT"
+          },
+          {
+            "repository": "875778261/qoder-daily-claim",
+            "url": "https://github.com/875778261/qoder-daily-claim",
+            "branch": "main",
+            "commit": "4e51719caaf1689aef530589a14b53462ad96732",
+            "originalPath": "skills/qoder-daily-claim/scripts/claim.js",
+            "catalogId": "914f52282cf5f911",
+            "sha256": "f41d792daba40862fd47c966b938850cc4c5849799285c77031393fb08619289",
+            "license": "MIT"
           }
         ]
       },
@@ -46191,7 +46042,7 @@
           "required": true,
           "sensitive": true,
           "howToGet": "在本人已登录的 Qoder 客户端授权请求中取得 Authorization 访问令牌及 Cosy-* 设备头，刷新令牌从本人登录凭据取得。仅处理本人账号，避免上传凭据。兼容原取号工具 JSON，但运行不依赖该工具。 PAT 也可在 https://qoder.cn/account/integrations 创建本人个人访问令牌，放在同一账号 JSON 的 personalToken 字段。",
-          "format": "每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。 兼容旧 JSON 数组、accounts 包装及 token、expires_at 别名；device 字段可由环境变量及显式配置补齐，仍须八项完整。可选 expiresAt 为秒、毫秒或 ISO 日期。"
+          "format": "每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。 兼容旧 JSON 数组、accounts 包装及 token、expires_at 别名；device 字段可由环境变量及显式配置补齐，仍须八项完整。可选 expiresAt 为秒、毫秒或 ISO 日期。 中国区纯访问令牌支持 authMode=credits 与 token，enabled=true 后仅领取 Credits，无需设备且不续期；也兼容每非空行一个裸 Token，须 QODER_ENABLED=1。"
         },
         {
           "name": "QODER_ACCOUNTS_FILE",
@@ -46493,6 +46344,27 @@
           "sensitive": false,
           "howToGet": "仅从官方请求核对同区域基址；一般无需配置。",
           "format": "逗号分隔的官方根地址，仅允许与当前区域相同的 https://openapi.qoder.com.cn 或 https://openapi.qoder.sh；不向任意地址或其他地区转发凭据。"
+        },
+        {
+          "name": "QODER_FORCE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择是否重放已领取 Credits；等价于 --force。",
+          "format": "1/true/yes/on 开启，默认关闭；仅有效窗口内 Credits，不绕过账号启用或 Pro 开关。"
+        },
+        {
+          "name": "QODER_CHECKIN_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行指定可写目录；等价于 --checkin-dir。",
+          "format": "目录路径，默认不写；按账号序号及北京时间10点切换的活动日保存脱敏统计，不读取记录跳过核验。"
+        },
+        {
+          "name": "QODER_CHECKIN_LOG_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行指定可写目录。",
+          "format": "目录路径，默认不写；逐账号追加脱敏统计，预演不写。"
         }
       ],
       "multiAccount": {
@@ -46521,7 +46393,11 @@
         "兼容旧 JSON 数组、accounts 包装、token 与 expires_at 别名，以及显式配置文件中的设备字段，保持规范 JSON 行和原文件优先级",
         "显式设置 QODER_EMPTY_RETRY 或 QODER_EMPTY_WAIT 时，仅无普通活动才在本轮重查；--once 禁用等待，未设置时保留规范版单轮默认",
         "可选临期刷新，解析秒、毫秒、ISO 过期时间及访问令牌到期字段；刷新失败仅沿用未过期令牌",
-        "兼容 silent、poll、silent-poll 调用，可选追加脱敏 JSON 行记录及企业微信、PushPlus、HTTPS Webhook 汇总通知"
+        "兼容 silent、poll、silent-poll 调用，可选追加脱敏 JSON 行记录及企业微信、PushPlus、HTTPS Webhook 汇总通知",
+        "兼容中国区纯访问令牌账号及裸令牌行，显式启用后领取 Credits，无需桌面文件或设备头",
+        "领取后回查奖励状态，只有明确 CLAIMED 才显示奖励确认，面值不冒充到账",
+        "兼容 data 数组活动包装和官方 user.name 身份，异常项目失败闭合",
+        "显式重放有效窗口内已领取 Credits，可选按活动日保存脱敏记录，记录不替代官方核验"
       ],
       "sideEffects": [
         "显式启用账号后领取可领活动奖励，可能消耗同设备活动领取资格；额外非 CLAIM_BENEFIT 的中国区 Pro 活动仅在明确打开对应开关后领取",
@@ -46529,7 +46405,9 @@
         "显式配置私有账号文件时将轮换后的令牌原子写回该文件",
         "通知启用且非预演时向青龙通知渠道及配置的账号或全局渠道投递脱敏汇总",
         "显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存",
-        "显式设置 QODER_LOG_FILE 且非预演时追加脱敏 JSON 行日志"
+        "显式设置 QODER_LOG_FILE 且非预演时追加脱敏 JSON 行日志",
+        "显式重放时再次提交有效窗口内已领取 Credits 的领取请求",
+        "显式设置 QODER_CHECKIN_DIR 或 QODER_CHECKIN_LOG_DIR 时写入脱敏统计文件"
       ],
       "review": {
         "staticPassed": true,
@@ -46542,20 +46420,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/e034e75509550071",
-        "candidateSha256": "1c4e79710bec77aff57165dafc1a403e9bf6048e3c9eeb3f37e6c2da9e3a0f84"
+        "candidateSha256": "0a137154cd576b02fb1e0e3f3a719e40f07532b534420386208b4186073adcad"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "1c4e79710bec77aff57165dafc1a403e9bf6048e3c9eeb3f37e6c2da9e3a0f84",
-        "releaseSha256": "2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb",
+        "validatedSha256": "0a137154cd576b02fb1e0e3f3a719e40f07532b534420386208b4186073adcad",
+        "releaseSha256": "2190b79803d4fe75c0a082ffdd4da77eb5120da7d654f4ed7ab3186709bfdf42",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T13:55:03.009838+00:00",
+          "approvedAt": "2026-11-11T14:11:45.718965+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "1c4e79710bec77aff57165dafc1a403e9bf6048e3c9eeb3f37e6c2da9e3a0f84",
-          "toCandidateSha256": "2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb",
+          "fromCandidateSha256": "0a137154cd576b02fb1e0e3f3a719e40f07532b534420386208b4186073adcad",
+          "toCandidateSha256": "2190b79803d4fe75c0a082ffdd4da77eb5120da7d654f4ed7ab3186709bfdf42",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

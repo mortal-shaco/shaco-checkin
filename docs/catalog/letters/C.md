@@ -1,6 +1,6 @@
 # 字母索引 · C
 
-共 **46** 个脚本。返回 [`目录首页`](../README.md)。
+共 **45** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -34,7 +34,6 @@
 | 芒果TV每日签到 | `scripts/ck_mgtv.py` | `python3 scripts/ck_mgtv.py` | `36 0 * * *` | 待检查 | [ck_mgtv.py.md](../../scripts/ck_mgtv.py.md)（`docs/scripts/ck_mgtv.py.md`） |
 | 小米运动 | `scripts/ck_mimotion.py` | `python3 scripts/ck_mimotion.py` | `1 0 * * *` | 待检查 | [ck_mimotion.py.md](../../scripts/ck_mimotion.py.md)（`docs/scripts/ck_mimotion.py.md`） |
 | 一加手机社区官方论坛 | `scripts/ck_oneplusbbs.py` | `python3 scripts/ck_oneplusbbs.py` | `40 2 * * *` | 待检查 | [ck_oneplusbbs.py.md](../../scripts/ck_oneplusbbs.py.md)（`docs/scripts/ck_oneplusbbs.py.md`） |
-| Qoder CN 每日 Credits 领取 | `scripts/claim.js` | `node scripts/claim.js` | `53 10 * * *` | 待检查 | [claim.js.md](../../scripts/claim.js.md)（`docs/scripts/claim.js.md`） |
 | 中山大学人脸签到 | `scripts/cli.py` | `python3 scripts/cli.py` | `*/5 7-22 * * *` | 待检查 | [cli.py.md](../../scripts/cli.py.md)（`docs/scripts/cli.py.md`） |
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
 | 中国移动签到有礼 | `scripts/cmcc_auto.py` | `python3 scripts/cmcc_auto.py` | `29 10 * * *` | 待检查 | [cmcc_auto.py.md](../../scripts/cmcc_auto.py.md)（`docs/scripts/cmcc_auto.py.md`） |

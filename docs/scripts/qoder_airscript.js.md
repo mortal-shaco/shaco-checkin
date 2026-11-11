@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/qoder_airscript.js`
 - 青龙命令：`node scripts/qoder_airscript.js`
 - 建议 Cron：`17 8 * * *`
-- 发布哈希：`2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb`
+- 发布哈希：`2190b79803d4fe75c0a082ffdd4da77eb5120da7d654f4ed7ab3186709bfdf42`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -29,6 +29,10 @@
 - 显式设置 QODER_EMPTY_RETRY 或 QODER_EMPTY_WAIT 时，仅无普通活动才在本轮重查；--once 禁用等待，未设置时保留规范版单轮默认
 - 可选临期刷新，解析秒、毫秒、ISO 过期时间及访问令牌到期字段；刷新失败仅沿用未过期令牌
 - 兼容 silent、poll、silent-poll 调用，可选追加脱敏 JSON 行记录及企业微信、PushPlus、HTTPS Webhook 汇总通知
+- 兼容中国区纯访问令牌账号及裸令牌行，显式启用后领取 Credits，无需桌面文件或设备头
+- 领取后回查奖励状态，只有明确 CLAIMED 才显示奖励确认，面值不冒充到账
+- 兼容 data 数组活动包装和官方 user.name 身份，异常项目失败闭合
+- 显式重放有效窗口内已领取 Credits，可选按活动日保存脱敏记录，记录不替代官方核验
 
 ## 环境变量与参数
 
@@ -41,7 +45,7 @@
 - 必填：是
 - 敏感：是
 - 获取或设置：在本人已登录的 Qoder 客户端授权请求中取得 Authorization 访问令牌及 Cosy-* 设备头，刷新令牌从本人登录凭据取得。仅处理本人账号，避免上传凭据。兼容原取号工具 JSON，但运行不依赖该工具。 PAT 也可在 https://qoder.cn/account/integrations 创建本人个人访问令牌，放在同一账号 JSON 的 personalToken 字段。
-- 填写格式：每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。 兼容旧 JSON 数组、accounts 包装及 token、expires_at 别名；device 字段可由环境变量及显式配置补齐，仍须八项完整。可选 expiresAt 为秒、毫秒或 ISO 日期。
+- 填写格式：每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。 兼容旧 JSON 数组、accounts 包装及 token、expires_at 别名；device 字段可由环境变量及显式配置补齐，仍须八项完整。可选 expiresAt 为秒、毫秒或 ISO 日期。 中国区纯访问令牌支持 authMode=credits 与 token，enabled=true 后仅领取 Credits，无需设备且不续期；也兼容每非空行一个裸 Token，须 QODER_ENABLED=1。
 
 ### 可选参数
 
@@ -346,6 +350,27 @@
 - 获取或设置：仅从官方请求核对同区域基址；一般无需配置。
 - 填写格式：逗号分隔的官方根地址，仅允许与当前区域相同的 https://openapi.qoder.com.cn 或 https://openapi.qoder.sh；不向任意地址或其他地区转发凭据。
 
+### `QODER_FORCE`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：自行选择是否重放已领取 Credits；等价于 --force。
+- 填写格式：1/true/yes/on 开启，默认关闭；仅有效窗口内 Credits，不绕过账号启用或 Pro 开关。
+
+### `QODER_CHECKIN_DIR`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：自行指定可写目录；等价于 --checkin-dir。
+- 填写格式：目录路径，默认不写；按账号序号及北京时间10点切换的活动日保存脱敏统计，不读取记录跳过核验。
+
+### `QODER_CHECKIN_LOG_DIR`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：自行指定可写目录。
+- 填写格式：目录路径，默认不写；逐账号追加脱敏统计，预演不写。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -356,7 +381,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
+SHA-256 `2190b79803d4fe75c0a082ffdd4da77eb5120da7d654f4ed7ab3186709bfdf42`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 
 ## 副作用与风险
 
@@ -366,6 +391,8 @@ SHA-256 `2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb`；基
 - 通知启用且非预演时向青龙通知渠道及配置的账号或全局渠道投递脱敏汇总
 - 显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存
 - 显式设置 QODER_LOG_FILE 且非预演时追加脱敏 JSON 行日志
+- 显式重放时再次提交有效窗口内已领取 Credits 的领取请求
+- 显式设置 QODER_CHECKIN_DIR 或 QODER_CHECKIN_LOG_DIR 时写入脱敏统计文件
 
 ## 许可证与来源
 
