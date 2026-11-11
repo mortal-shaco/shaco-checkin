@@ -4,6 +4,7 @@
 // 独立 Node.js 维护版本；上游：wallechfox/qoder-checkin
 // 合并来源：L0NE-6/Qoder-Daily/qoder_daily.py，MIT 授权。
 // 合并来源：sunp-1/qoder-checkin/qoder_claim.py，MIT 授权。
+// 合并来源：wzhu22750-lang/qoder_checkin/qoder_checkin_local.py，MIT 授权。
 // 与 Python 版 qoder_core.py 对齐：优先用 accessToken，查活动 401 时才用
 // refreshToken 续期，不再一上来就强制刷新。
 // 上游授权：MIT。原文件没有单独的版权声明。
@@ -93,12 +94,31 @@ QODER_CLAIM_TOKEN 可作为旧访问令牌变量，每非空行一个账号；�
 --base-url 仅接受两个官方 HTTPS 根地址并转换为地区，未指定时沿用维护版
 中国区默认，不自动向另一地区转发凭据。Windows 解密/组件调用不适用于
 独立维护脚本，凭据及设备头改为本人从已授权请求手工取得。
-相关 local 脚本是10:05运行的 PAT 换 job token 后领取；凭据契约不同，本轮
-仅参考接口不合入 PAT 动作。daily 是同一每日领取/Pro 工作流，维护版已有
+相关 local 脚本是10:05运行的 PAT 换 job token 后领取；本轮合入独立 PAT 凭据入口，
+沿用现有账号的设备令牌链，PAT 账号仅在中国区使用来源中的最小鉴权头。daily 是同一每日领取/Pro 工作流，维护版已有
 完整兼容功能及通知链，保留原开关。AirScript 是每日表格领取，原 A/B/C/D/E/F
 行为已有 JSON 行、启用开关、三通知及结果输出替代。gettoken 是 Windows
 参数获取工具，会打印并写 tokens.txt，不作为计划任务引入。
 保留维护版 cron 17 8 * * *；活动开窗说明不自动变更现有计划。
+本轮主来源功能：从 QODER_PAT 或隐式 qoder_pat.txt 取得 PAT，POST
+/api/v1/jobToken/exchange 换任务令牌，兼容 personal_token/personal_access_token；
+GET 活动、按有效窗口选择 CLAIM_BENEFIT、POST 领取、识别 replayed/CLAIMED；
+建议北京时间每天10:05，暂未下发最多三轮等待。副作用为换令牌及领取。
+维护版已有每日领取、窗口识别、显式有界等待，缺少 PAT 换令牌能力，故合入原任务。
+参数：在 https://qoder.cn/account/integrations 创建本人 PAT（pt- 前缀），
+规范 QODER_ACCOUNTS 每行可写 {"personalToken":"本人PAT","enabled":true,"region":"cn"}，
+同一行可用 pat 或 personal_token 别名；无需设备头，不读取应用文件、不执行组件。
+兼容 QODER_PAT：每非空行一个 PAT；仅在其他账号入口均未配置时使用，
+须 QODER_ENABLED=1 授权兑换及领取。不要与同账号访问令牌重复配置。
+不再隐式读取 qoder_pat.txt，私有文件请显式使用 QODER_ACCOUNTS_FILE 的 JSON 行。
+PAT 模式只支持签到，status/refresh 请改用现有访问/刷新令牌模式，避免只读时兑换。
+PAT 的第二字段仅在 HTTP 400/422 时尝试；鉴权拒绝及瞬时故障不反复提交 PAT。
+PAT 领取只接受明确 CLAIMED、明确幂等结果或含正数 benefit.amount 的成功收据；
+未知响应不再打印 OK。主来源原 OK claimed/OK already-claimed 标记保留。
+默认计划仍为17 8 * * *，PAT 活动可将同一任务手动改至北京时间5 10 * * *；
+--once 及 QODER_WINDOW_RETRY 的原语义不变，不静默增加等待或改动计划。
+所有业务请求均自行通过 Node.js HTTPS 发出，凭据不发往其他地区或文本服务。
+上次准备失败为引用不存在的私有上游路径；本次仅用提供的 input 源码，运行不依赖该路径。
 */
 'use strict';
 // qinglong-notification-policy: begin
@@ -130,7 +150,7 @@ function notificationSelected() {
   if (process.argv.includes('--no-notify') || disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
   if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
-  const names=['2303ec2803cf2832','e034e75509550071','7dae37fb02629e65','scripts/qoder_airscript.js','qoder_airscript.js',path.basename(__filename)];
+  const names=['2303ec2803cf2832','e034e75509550071','7dae37fb02629e65','d94f5f76e5dd357b','scripts/qoder_airscript.js','qoder_airscript.js',path.basename(__filename)];
   return process.env.QINGLONG_NOTIFY_SCRIPTS.split(/[,;\s]+/).filter(Boolean).some(s=>{
     const pattern='^'+s.split('*').map(p=>p.split('?').map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('.')).join('.*')+'$';
     return names.some(n=>new RegExp(pattern).test(n));
@@ -149,7 +169,7 @@ const now = () => new Date().toLocaleTimeString('zh-CN', {hour12:false});
 const log = s => console.log(`[${now()}] ${s}`);
 const stamp = () => new Date().toISOString();
 const nonempty = x => typeof x === 'string' && x.trim() && !/[\x00-\x1f\x7f]/.test(x);
-function request(url, method, headers, body) {
+function request(url, method, headers, body, allowSchemaError=false) {
   if (dry) throw new Error('预演禁止网络请求');
   return new Promise((resolve, reject) => {
     const bytes = body === undefined ? null : Buffer.from(JSON.stringify(body));
@@ -165,7 +185,7 @@ function request(url, method, headers, body) {
         let data;
         try { data=JSON.parse(Buffer.concat(chunks).toString('utf8')); }
         catch {
-          if ([401,403].includes(res.statusCode)) { resolve({status:res.statusCode,data:null}); return; }
+          if ([401,403].includes(res.statusCode) || allowSchemaError && [400,422].includes(res.statusCode)) { resolve({status:res.statusCode,data:null}); return; }
           reject(new Error(`HTTP ${res.statusCode}：响应不是有效 JSON`)); return;
         }
         resolve({status:res.statusCode, data});
@@ -178,7 +198,9 @@ function request(url, method, headers, body) {
     req.end();
   });
 }
+const patOf = a => a.personalToken || a.pat || a.personal_token;
 function headers(a, token) {
+  if (patOf(a)) return {'Accept':'application/json','Cosy-ClientType':'10','User-Agent':'Qoder',...(token ? {Authorization:`Bearer ${token}`} : {})};
   const h = {'Accept':'application/json','Content-Type':'application/json','User-Agent':'Qoder/claim'};
   for (const f of fields) h[`Cosy-${f[0].toUpperCase()}${f.slice(1)}`] = a.device[f];
   if (token) h.Authorization = `Bearer ${token}`;
@@ -191,7 +213,7 @@ function businessOK(d) {
 function identity(d, a) {
   const objects = [d, d && d.user, d && d.account];
   const secrets = [a,...accounts].filter(x=>x && typeof x==='object').flatMap(x=>
-    [x.accessToken,x.access_token,x.refreshToken,x.refresh_token,x.device?.machineToken,x.device?.machineCode,x.device?.machineId,x.device?.machineHostname,x.serverchan,x.pushplus,x.qywx]);
+    [x.personalToken,x.pat,x.personal_token,x.accessToken,x.access_token,x.refreshToken,x.refresh_token,x.device?.machineToken,x.device?.machineCode,x.device?.machineId,x.device?.machineHostname,x.serverchan,x.pushplus,x.qywx]);
   secrets.push(...['PUSHPLUS_TOKEN','BARK_URL','WECOM_WEBHOOK','DINGTALK_WEBHOOK','DINGTALK_SECRET'].map(k=>process.env[k]));
   const protectedValues=secrets.filter(nonempty);
   for (const obj of objects) {
@@ -217,6 +239,38 @@ function persist(index,a) {
   try {fs.writeFileSync(temp,updated.join('\n')+'\n',{mode:0o600,flag:'wx'}); fs.renameSync(temp,file); lines=updated;}
   catch {try {fs.unlinkSync(temp);} catch {} throw new Error('私有账号文件写回失败');}
   log('刷新令牌已写回指定私有账号文件');
+}
+async function exchangePat(a) {
+  // 仅依据提供的主来源兼容两种字段，不把网络或鉴权错误当字段错误重试。
+  const pat=patOf(a);
+  for (const field of ['personal_token','personal_access_token']) {
+    const q=await request(accountBase(a)+'/api/v1/jobToken/exchange','POST',
+      {'Content-Type':'application/json','Accept':'application/json','User-Agent':'qoder/1.1.47'}, {[field]:pat},true);
+    log(`PAT 兑换任务令牌 HTTP ${q.status}`);
+    if ([400,422].includes(q.status) && field==='personal_token') continue;
+    const d=payload(q.data);
+    if (q.status!==200 || !businessOK(q.data) || !businessOK(d)) throw new Error(`PAT 兑换失败：HTTP ${q.status} 或业务拒绝；请在官方集成页面检查本人 PAT`);
+    const token=d.token || d.job_token || d.jobToken;
+    if (!nonempty(token) || token===pat || [q.data,d].some(b=>b.failureCode || b.errorCode)) throw new Error('PAT 兑换响应缺少有效任务令牌或业务拒绝');
+    a.accessToken=token; // 短期令牌仅在内存中使用，不写回 PAT 文件。
+    identity(q.data,a); if (d!==q.data) identity(d,a);
+    return token;
+  }
+  throw new Error('PAT 兑换字段不被接口接受');
+}
+function epochSeconds(v) {
+  if (v==null || v==='') return null;
+  const n=typeof v==='number' || /^\d+(?:\.\d+)?$/.test(v) ? Number(v) : Date.parse(v)/1000;
+  if (!Number.isFinite(n) || n<0) return null;
+  return n>=1e12 ? n/1000 : n;
+}
+function normalizePatCampaign(c) {
+  if (!c || typeof c!=='object' || Array.isArray(c)) throw new Error('PAT 活动项目契约不符');
+  const start=epochSeconds(c.startAt ?? c.beginAt), end=epochSeconds(c.endAt);
+  const active=(start===null || start<=Date.now()/1000) && (end===null || Date.now()/1000<=end);
+  const invalid=[c.startAt ?? c.beginAt,c.endAt].some(v=>v!=null && epochSeconds(v)===null);
+  return {...c, startAt:start, endAt:end,
+    claimStatus:!active || invalid ? 'EXPIRED' : c.claimStatus || (c.actionType==='CLAIM_BENEFIT' ? 'CLAIMABLE' : 'UNKNOWN')};
 }
 async function refresh(a,index) {
   const rt=a.refreshToken || a.refresh_token;
@@ -249,15 +303,16 @@ function authDead(q) {
     d && [d.code,d.Code].some(code=>['105','10019901001'].includes(String(code))));
 }
 function minimalHeaders(a,token) {
+  if (patOf(a)) return {...headers(a,token),'Content-Type':'application/json'};
   return {'Authorization':`Bearer ${token}`,'Cosy-ClientType':a.device.clientType,'User-Agent':'Qoder','Content-Type':'application/json'};
 }
 async function queryCampaigns(a,index,r,allowRefresh=true) {
   let token=a.accessToken || a.access_token;
   const once=async()=>{
-    const q=await request(accountBase(a)+'/sash/api/v1/me/campaigns?forceRefresh=true','GET',headers(a,token));
+    const q=await request(accountBase(a)+'/sash/api/v1/me/campaigns'+(patOf(a)?'':'?forceRefresh=true'),'GET',headers(a,token));
     log(`账号${r.account} 活动查询 HTTP ${q.status}`);
     const d=campaignBody(q);
-    if (accountBase(a)==='https://openapi.qoder.com.cn' && d && !d.campaigns.length) {
+    if (!patOf(a) && accountBase(a)==='https://openapi.qoder.com.cn' && d && !d.campaigns.length) {
       log(`账号${r.account} 中国区明确空列表，按上游四头协议只读重查一次`);
       // 原强制刷新请求保留，补取沿用当前主来源不带 forceRefresh 的四头请求。
       const retry=await request(accountBase(a)+'/sash/api/v1/me/campaigns','GET',minimalHeaders(a,token));
@@ -268,7 +323,7 @@ async function queryCampaigns(a,index,r,allowRefresh=true) {
     return q;
   };
   let q=await once();
-  if (allowRefresh && authDead(q) && (a.refreshToken || a.refresh_token)) {
+  if (allowRefresh && !patOf(a) && authDead(q) && (a.refreshToken || a.refresh_token)) {
     log(`账号${r.account} HTTP 或已知业务码表示鉴权失效，续期后仅重试一次`);
     token=await refresh(a,index); q=await once();
   }
@@ -276,7 +331,7 @@ async function queryCampaigns(a,index,r,allowRefresh=true) {
   if (!d) throw new Error(`活动查询失败或响应契约不符（HTTP ${q.status}）`);
   identity(q.data,a); if(d!==q.data) identity(d,a);
   log(`账号${r.account} 返回活动${d.campaigns.length}项`);
-  return {...q,data:d};
+  return {...q,data:patOf(a) ? {...d,campaigns:d.campaigns.map(normalizePatCampaign)} : d};
 }
 function windowActive() {
   const d=new Date(Date.now()+8*3600000);
@@ -322,7 +377,7 @@ const claimFailures={
   CAMPAIGN_NOT_ACTIVE:'活动尚未开放或已结束', ACHIEVEMENT_NOT_COMPLETED:'活动条件尚未完成',
   RISK_BLOCKED:'设备风控未通过，请更新本人设备头', RISK_DEPENDENCY_UNAVAILABLE:'设备风控依赖暂不可用'
 };
-function claimVerdict(q) {
+function claimVerdict(q, patMode=false) {
   const d=payload(q.data);
   const bodies=[d,q.data].filter(x=>x && typeof x==='object');
   const replay=bodies.some(b=>b.replayed===true || ['ALREADY_CLAIMED','REPLAYED'].includes(b.result) ||
@@ -331,7 +386,7 @@ function claimVerdict(q) {
   const failure=bodies.some(b=>b.failureCode || b.errorCode);
   const reason=bodies.map(b=>claimFailures[b.failureCode] || claimFailures[b.errorCode]).find(Boolean);
   if (failure) throw new Error(reason || `领取业务拒绝：HTTP ${q.status}`);
-  if ([200,201].includes(q.status) && businessOK(q.data) && businessOK(d) && d.status==='CLAIMED') return 'claimed';
+  if ([200,201].includes(q.status) && businessOK(q.data) && businessOK(d) && (d.status==='CLAIMED' || patMode && d.status==null && d.benefit && Number.isFinite(Number(d.benefit.amount)) && Number(d.benefit.amount)>0)) return 'claimed';
   throw new Error(reason || `领取未确认：HTTP ${q.status}`);
 }
 function legacyDevice() {
@@ -360,15 +415,17 @@ async function one(a,index) {
     await stage(r,'参数校验',async()=>{
       if (!a || typeof a!=='object' || Array.isArray(a)) throw new Error('账号行必须是 JSON 对象');
       if (a.region!==undefined && !['cn','global'].includes(a.region)) throw new Error('账号区域必须为 cn 或 global');
-      if (!a.device || fields.some(f=>!nonempty(a.device[f]))) throw new Error('device 八项参数必须为非空单行字符串');
-      if (!nonempty(a.accessToken || a.access_token) && !nonempty(a.refreshToken || a.refresh_token)) throw new Error('至少提供一项有效访问或刷新令牌');
-      for (const k of ['accessToken','access_token','refreshToken','refresh_token','serverchan','pushplus','qywx']) if (a[k]!==undefined && a[k]!=='' && !nonempty(a[k])) throw new Error('凭据必须为单行字符串');
+      if (patOf(a) && accountBase(a)!=='https://openapi.qoder.com.cn') throw new Error('PAT 来源仅支持中国区，不向国际区转发');
+      if (!patOf(a) && (!a.device || fields.some(f=>!nonempty(a.device[f])))) throw new Error('device 八项参数必须为非空单行字符串');
+      if (!nonempty(patOf(a)) && !nonempty(a.accessToken || a.access_token) && !nonempty(a.refreshToken || a.refresh_token)) throw new Error('至少提供一项有效访问或刷新令牌');
+      for (const k of ['personalToken','pat','personal_token','accessToken','access_token','refreshToken','refresh_token','serverchan','pushplus','qywx']) if (a[k]!==undefined && a[k]!=='' && !nonempty(a[k])) throw new Error('凭据必须为单行字符串');
     });
     if (only && index+1!==only) {r.skipped++; r.status='skipped'; log(`⏭️ 账号${index+1} 不在指定执行范围`); return;}
     if (action!=='status' && a.enabled!==true && a.qiandao!=='是') {r.skipped++; r.status='skipped'; log(`⏭️ 账号${index+1} 签到未启用`); return;}
+    if (patOf(a) && action!=='checkin') await stage(r,'PAT 动作校验',async()=>{throw new Error('PAT 仅支持签到；只读或仅刷新请使用访问或刷新令牌账号');});
     if (action==='refresh' && !nonempty(a.refreshToken || a.refresh_token)) {await stage(r,'刷新参数校验',async()=>{throw new Error('仅刷新模式必须提供刷新令牌');});}
     if (action==='status' && !nonempty(a.accessToken || a.access_token)) {await stage(r,'只读参数校验',async()=>{throw new Error('只读模式必须提供有效访问令牌，不执行刷新');});}
-    if (dry) {await stage(r,'断网流程预演',async()=>log(action==='status' ? '将只读查询活动状态、奖励和窗口；本次未发请求、未刷新、未领取、未写回' : action==='refresh' ? '将仅刷新令牌；本次未发请求、未写回' : '将优先使用访问令牌，必要时刷新，强制刷新活动；中国区空表补取，逐项领取，Pro 只读核验；本次未发请求、未写回')); r.status='dry-run'; return;}
+    if (dry) {await stage(r,'断网流程预演',async()=>log(patOf(a) ? '将用 PAT 兑换任务令牌并领取中国区活动；本次未发请求、未读取隐式凭据文件、未写回' : action==='status' ? '将只读查询活动状态、奖励和窗口；本次未发请求、未刷新、未领取、未写回' : action==='refresh' ? '将仅刷新令牌；本次未发请求、未写回' : '将优先使用访问令牌，必要时刷新，强制刷新活动；中国区空表补取，逐项领取，Pro 只读核验；本次未发请求、未写回')); r.status='dry-run'; return;}
     if (action==='status') {
       const q=await stage(r,'只读查询活动',()=>queryCampaigns(a,index,r,false));
       await stage(r,'整理活动状态',async()=>{
@@ -385,7 +442,8 @@ async function one(a,index) {
     }
     if (action==='refresh') {await stage(r,'仅刷新令牌',()=>refresh(a,index)); r.status='success'; return;}
     let token=a.accessToken || a.access_token;
-    if (!token) token=await stage(r,'获取访问令牌',()=>refresh(a,index));
+    if (patOf(a)) token=await stage(r,'PAT 兑换任务令牌',()=>exchangePat(a));
+    else if (!token) token=await stage(r,'获取访问令牌',()=>refresh(a,index));
     let q=await stage(r,'查询活动',()=>queryCampaigns(a,index,r));
     const eligible=c=>c && (c.actionType==='CLAIM_BENEFIT' || accountBase(a)==='https://openapi.qoder.com.cn' && enabled(process.env.QODER_PRO_UPGRADE) && looksPro(c));
     for (let attempt=0; !onceOnly && enabled(process.env.QODER_WINDOW_RETRY) && attempt<retryMax && windowActive() &&
@@ -416,12 +474,12 @@ async function one(a,index) {
           if (reward) {pro=pro || reward.kind==='CREDITS' && reward.amount>=1000; log(`账号${r.account} 奖励面值${reward.amount}，${pro?'识别为 Pro 升级候选':'普通活动'}`);}
         }
         const before=verify && pro ? await diagnostic(r,'领取前回读总剩余额度',()=>quotaRemaining(a,token)) : null;
-        const cr=await request(accountBase(a)+'/sash/api/v1/me/campaigns/'+encodeURIComponent(String(cid))+'/claim','POST',{...headers(a,token),Origin:accountBase(a)},{});
+        const cr=await request(accountBase(a)+'/sash/api/v1/me/campaigns/'+encodeURIComponent(String(cid))+'/claim','POST',{...headers(a,token),Origin:accountBase(a)},patOf(a) ? undefined : {});
         log(`账号${r.account} 领取 HTTP ${cr.status}`);
-        const verdict=claimVerdict(cr);
+        const verdict=claimVerdict(cr,!!patOf(a));
         const d=payload(cr.data);
         identity(cr.data,a); if(d!==cr.data) identity(d,a);
-        if (verdict==='already') {r.alreadyComplete++; log('☑️ 服务端确认活动已领取，未重复计入 Credits'); return;}
+        if (verdict==='already') {if(patOf(a)) log('OK already-claimed'); r.alreadyComplete++; log('☑️ 服务端确认活动已领取，未重复计入 Credits'); return;}
         if (verify && pro) {
           const after=await diagnostic(r,'领取后回读总剩余额度',async()=>{await sleep(2000); return quotaRemaining(a,token);});
           if (before!==null && after!==null) {const delta=after-before; log(delta>0 ? `账号${r.account} Pro 额度回读增加 ${delta}` : `账号${r.account} Pro 领取已确认，额度暂未增加，待到账核验`);}
@@ -429,6 +487,7 @@ async function one(a,index) {
         }
         const amount=Number(d.benefit?.amount ?? c.benefit?.amount ?? 0);
         if (Number.isFinite(amount)) r.credits+=amount;
+        if (patOf(a)) log(`OK claimed +${Number.isFinite(amount) ? amount : 0} credits`);
         log(`领取已确认，累计 ${r.credits.toLocaleString('en-US')} Credits`);
         const days=Number(d.benefit?.validity?.days);
         if(Number.isFinite(days) && days>0) log(`奖励有效期 ${days} 天`);
@@ -438,7 +497,7 @@ async function one(a,index) {
     else if (claimable.length) r.status='success';
     else {
       const seconds=Date.now()/1000;
-      if (benefits.some(b=>b.claimStatus==='CLAIMED' && Number(b.startAt || 0)<=seconds && seconds<Number(b.endAt || 0))) {r.alreadyComplete++; r.status='already-complete'; log('☑️ 今日已领取');}
+      if (benefits.some(b=>b.claimStatus==='CLAIMED' && Number(b.startAt || 0)<=seconds && (patOf(a) && b.endAt===null || seconds<Number(b.endAt || 0)))) {r.alreadyComplete++; r.status='already-complete'; if(patOf(a)) log('OK already-claimed'); log('☑️ 今日已领取');}
       else {r.skipped++; r.status='unavailable'; if ((a.region || process.env.QODER_REGION)==='global') log('国际区活动窗口北京时间 10:00 开启，暂未下发不视为领取成功'); log(benefits.length ? '⏭️ 活动待下发，等下轮' : '⏭️ 活动未开放');}
     }
   } catch {r.status='failure';}
@@ -553,6 +612,7 @@ async function main() {
       accounts=[...legacyAccounts(process.env.QODER_TOKENS,'cn'),...legacyAccounts(process.env.QODER_GLOBAL_TOKENS,'global')];
       if (!accounts.length && process.env.QODER_CLAIM_TOKEN) accounts=process.env.QODER_CLAIM_TOKEN.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(accessToken=>({accessToken,region,device:legacyDevice(),enabled:enabled(process.env.QODER_ENABLED)}));
     }
+    if (!accounts.length && !file && process.env.QODER_ACCOUNTS===undefined && tokenArg===undefined && !inputFile && process.env.QODER_PAT) accounts=process.env.QODER_PAT.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(personalToken=>({personalToken,region,enabled:enabled(process.env.QODER_ENABLED)}));
     if (!accounts.length) throw new Error();
     if(only>accounts.length || !Number.isSafeInteger(only)) throw new Error();
   } catch {configFailure=true; log('❌ 阶段1 配置错误：请检查账号变量、私有文件及区域设置');}

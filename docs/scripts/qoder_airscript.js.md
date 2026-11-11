@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/qoder_airscript.js`
 - 青龙命令：`node scripts/qoder_airscript.js`
 - 建议 Cron：`17 8 * * *`
-- 发布哈希：`868d9faf8f2a9d5c19ee1ed4c9522cb78d4feb579c3e8505f5e9ee0d0d0ea2d1`
+- 发布哈希：`4e996ff7db81cc0b590b6da5a18c75045ff70669310d5da12870085c2b2129a3`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -22,6 +22,9 @@
 - 标准 Node.js 自行实现 HTTPS，校验证书、超时、响应大小限制、脱敏日志及完全断网预演，不依赖私有仓库、应用可执行文件或下载安装过程
 - 新增 QODER_ACTION=status 和 --status，只读显示活动状态、奖励面值和有效窗口，成功仅表示查询完成；不领取、续期或写回令牌
 - 兼容 QODER_CLAIM_TOKEN、--token、--from-file、官方地址 --base-url、--once、--dry-run 和脱敏 --json 结果；规范账号配置和原默认计划保留
+- 支持中国区 PAT 换取短期任务令牌后领取全部活动；兼容两种兑换字段，仅字段错误时尝试备用字段，保留原领取及幂等成功标记
+- PAT 账号无须设备头或本机客户端；保持规范 JSON 行账号及 QODER_PAT 兼容入口，默认不兑换、不领取，不隐式读取凭据文件
+- PAT 活动支持秒、毫秒及日期文本有效窗口；成功收据需明确领取状态、明确幂等结果或正数奖励面值，未知结果失败退出
 
 ## 环境变量与参数
 
@@ -33,8 +36,8 @@
 
 - 必填：是
 - 敏感：是
-- 获取或设置：在本人已登录的 Qoder 客户端授权请求中取得 Authorization 访问令牌及 Cosy-* 设备头，刷新令牌从本人登录凭据取得。仅处理本人账号，避免上传凭据。兼容原取号工具 JSON，但运行不依赖该工具。
-- 填写格式：每非空行一个 JSON 对象。accessToken/access_token 与 refreshToken/refresh_token 至少一项；device 包含 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八个非空字符串。enabled=true 或 qiandao=是 才领取或刷新。region 可为 cn/global。可选 name、uid、serverchan、pushplus、qywx。只读模式必须有访问令牌。
+- 获取或设置：在本人已登录的 Qoder 客户端授权请求中取得 Authorization 访问令牌及 Cosy-* 设备头，刷新令牌从本人登录凭据取得。仅处理本人账号，避免上传凭据。兼容原取号工具 JSON，但运行不依赖该工具。 PAT 也可在 https://qoder.cn/account/integrations 创建本人个人访问令牌，放在同一账号 JSON 的 personalToken 字段。
+- 填写格式：每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。
 
 ### 可选参数
 
@@ -65,6 +68,13 @@
 - 敏感：是
 - 获取或设置：兼容主来源，从本人授权请求 Authorization 中取得访问令牌。规范及旧账号变量均未配置时使用。--token 可显式提供单账号令牌。
 - 填写格式：每非空行一个访问令牌，配合 QODER_COSY_* 设备头；领取须 QODER_ENABLED=1。
+
+### `QODER_PAT`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：在 https://qoder.cn/account/integrations 创建本人 PAT；兼容主来源环境变量，推荐使用规范 QODER_ACCOUNTS 的 personalToken 字段。
+- 填写格式：每非空行一个 PAT，仅其他账号入口均未配置时使用；仅中国区，须 QODER_ENABLED=1 才兑换并领取。不会隐式读取 qoder_pat.txt；私有文件请使用 QODER_ACCOUNTS_FILE 的 JSON 行。
 
 ### `QODER_ENABLED`
 
@@ -279,7 +289,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `868d9faf8f2a9d5c19ee1ed4c9522cb78d4feb579c3e8505f5e9ee0d0d0ea2d1`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
+SHA-256 `4e996ff7db81cc0b590b6da5a18c75045ff70669310d5da12870085c2b2129a3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 
 ## 副作用与风险
 
@@ -287,6 +297,7 @@ SHA-256 `868d9faf8f2a9d5c19ee1ed4c9522cb78d4feb579c3e8505f5e9ee0d0d0ea2d1`；基
 - 必要时或仅刷新模式下刷新令牌，可能使旧刷新令牌轮换失效
 - 显式配置私有账号文件时将轮换后的令牌原子写回该文件
 - 通知启用且非预演时向青龙通知渠道及配置的账号或全局渠道投递脱敏汇总
+- 显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存
 
 ## 许可证与来源
 
