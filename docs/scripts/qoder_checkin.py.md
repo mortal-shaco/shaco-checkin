@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/qoder_checkin.py`
 - 青龙命令：`python3 scripts/qoder_checkin.py`
 - 建议 Cron：`6 11 * * *`
-- 发布哈希：`b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0`
+- 发布哈希：`eccca7ad12eb3303879936e402b47f957f4892f3a2123548c29407ee6943ab32`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -17,6 +17,7 @@
 - 可选安全令牌缓存、脱敏 JSON 行日志并保留原机器记录字段
 - 兼容 silent、poll、silent-poll 调用，支持每日主跑与兜底任务
 - 完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总
+- 活动未下发时本轮重查，兼容 QODER_EMPTY_RETRY 和 QODER_EMPTY_WAIT，默认最多查询三次、间隔二十秒
 
 ## 环境变量与参数
 
@@ -173,6 +174,20 @@
 - 获取或设置：取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。
 - 填写格式：字符串，对应 device.version；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。
 
+### `QODER_EMPTY_RETRY`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选，自行设置活动未下发时本轮查询次数。
+- 填写格式：整数，默认 3，最小 1；非法整数使用默认值。仅无 CLAIM_BENEFIT 时重查，预演不联网或等待。
+
+### `QODER_EMPTY_WAIT`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选，自行设置空活动重查的等待秒数。
+- 填写格式：整数秒，默认 20，最小 0；非法整数使用默认值。预演不等待。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -183,7 +198,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9cceef808f4e3500`。
+SHA-256 `eccca7ad12eb3303879936e402b47f957f4892f3a2123548c29407ee6943ab32`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9cceef808f4e3500`。
 
 ## 副作用与风险
 
@@ -195,4 +210,4 @@ SHA-256 `b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0`；基
 
 ## 许可证与来源
 
-上游 `spirodelazz/ide-daily-checkin` / `scripts/qoder_checkin.py` / `feb59d8e62b5fff07cb9d33e1f64171eb7e78d1d`。
+上游 `spirodelazz/ide-daily-checkin` / `scripts/qoder_checkin.py` / `8e2e1237a2107afec2cddd0089fca191c6083873`。

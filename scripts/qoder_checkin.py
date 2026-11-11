@@ -34,7 +34,11 @@ expiresAt 以及可选 device 对象。兼容原 JSON 数组和 {"accounts": [..
 兼容 QODER_CONFIG_FILE、QODER_ACCOUNTS_FILE 指向自行提供的 JSON 文件。
 环境账号存在时优先使用环境输入，避免意外执行文件中的额外账号。
 
-每日北京时间 10:20 执行。沿用主控的兜底任务可另配 0 15 * * *、30 20 * * *。
+保留已发布计划，每日按青龙时区 11:06 执行。上游主控的 10:20 主跑及
+15:00、20:30 兜底可沿用独立计划任务。日志时间使用北京时间。
+活动未下发时本轮最多查询 3 次，间隔 20 秒，兼容 QODER_EMPTY_RETRY、
+QODER_EMPTY_WAIT 覆盖查询次数及间隔秒数，次数至少 1，间隔至少 0。
+无效整数沿用默认值；仅没有 CLAIM_BENEFIT 时重查，预演不等待。
 兼容 silent、poll、silent-poll 参数，均执行查询与幂等奖励领取。
 QODER_DRY_RUN=1 完全断网，仅校验输入及预演流程和通知。
 QODER_CACHE_FILE 可选，显式开启私有令牌缓存，刷新后原子保存，原凭据文件保持只读。
@@ -96,6 +100,17 @@ DEVICE_KEYS = [
     ('version', 'Cosy-Version', 'QODER_COSY_VERSION', ''),
 ]
 SECRETS = set()
+
+# 保留上游 pythonw 无控制台运行能力。
+if sys.stdout is None:
+    sys.stdout = open(os.devnull, 'w', encoding='utf-8')
+if sys.stderr is None:
+    sys.stderr = open(os.devnull, 'w', encoding='utf-8')
+for stream in (sys.stdout, sys.stderr):
+    try:
+        stream.reconfigure(encoding='utf-8', errors='replace')
+    except (AttributeError, OSError, ValueError):
+        pass
 
 
 class TaskError(Exception):
@@ -212,6 +227,16 @@ def load_accounts():
     return [normalize(item, i + 1) for i, item in enumerate(doc)]
 
 
+def empty_retry_plan():
+    """沿用当前上游的空活动查询次数、间隔及非法值兼容规则。"""
+    def integer(name, default):
+        try:
+            return int(os.getenv(name, '').strip() or default)
+        except (TypeError, ValueError):
+            return default
+    return max(1, integer('QODER_EMPTY_RETRY', 3)), max(0, integer('QODER_EMPTY_WAIT', 20))
+
+
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         return None
@@ -289,6 +314,7 @@ class Service:
                 self.bases.remove(base)
                 self.bases.insert(0, base)
                 return last
+            log(f'⚠️ 当前端点请求未完成，HTTP {last[0]}，继续尝试配置的后备端点')
         return last
 
 
@@ -338,6 +364,7 @@ def ensure_token(service, account, force=False):
                                expiresAt=coerce_exp(data.get('expires_at') or data.get('expiresAt')) or jwt_exp(new))
                 SECRETS.update((new, rotated))
                 save_cache(account)
+                log('✅ 令牌刷新成功，已取得有效格式的访问令牌')
                 return
     if token and not force and (not expiry or expiry > time.time()):
         log('⚠️ 刷新不可用，继续使用尚未过期的访问令牌')
@@ -383,7 +410,8 @@ def run_account(service, account):
                 if any(c in value for c in '\r\n'):
                     raise TaskError('设备请求头包含非法换行')
         stage(1, '凭据与设备配置检查', validate_device)
-        stage(2, '活动查询预演', lambda: None)
+        times, wait = empty_retry_plan()
+        stage(2, '活动查询预演', lambda: log(f'空活动最多查询 {times} 次，间隔 {wait} 秒；预演跳过请求与等待'))
         stage(3, '幂等奖励领取预演', lambda: None)
         return {'name': f'账号{index}', 'uid': '-', 'phase': 'dry-run', 'msg': 'DRY_RUN_OK，未请求接口或写入文件',
                 'credits': 0, 'tasks': {'success': 0, 'already': 0, 'skipped': 3, 'failed': 0}}
@@ -391,20 +419,31 @@ def run_account(service, account):
     stage(1, '检查或刷新令牌', lambda: ensure_token(service, account))
     account['_tasks']['success'] = 1
     def campaigns():
-        status, data = service.api(account, PATH_CAMPAIGNS)
-        if status == 401:
-            ensure_token(service, account, True)
+        times, wait = empty_retry_plan()
+        for attempt in range(1, times + 1):
+            log(f'2.{attempt} 活动查询开始，最多 {times} 次')
             status, data = service.api(account, PATH_CAMPAIGNS)
-        if status != 200 or not business_ok(data) or not isinstance(data.get('campaigns'), list):
-            raise TaskError(f'活动查询失败或响应契约不匹配，HTTP {status}')
-        return data
+            if status == 401:
+                log('⚠️ 活动查询认证失效，强制刷新后重试一次')
+                ensure_token(service, account, True)
+                status, data = service.api(account, PATH_CAMPAIGNS)
+            if status != 200 or not business_ok(data) or not isinstance(data.get('campaigns'), list):
+                raise TaskError(f'活动查询失败或响应契约不匹配，HTTP {status}')
+            benefits = [c for c in data['campaigns']
+                        if isinstance(c, dict) and c.get('actionType') == 'CLAIM_BENEFIT']
+            log(f'✅ 活动查询通过，奖励活动 {len(benefits)} 个')
+            if benefits or attempt == times:
+                return data
+            log(f'⏳ 活动未下发，等待 {wait} 秒后重查')
+            if wait:
+                time.sleep(wait)
     data = stage(2, '查询活动', campaigns)
     account['_tasks']['success'] = 2
     name = identity(data, index)
     log(f'官方账号 {name}')
     benefits = [c for c in data['campaigns'] if isinstance(c, dict) and c.get('actionType') == 'CLAIM_BENEFIT']
     available = [c for c in benefits if c.get('claimStatus') == 'CLAIMABLE']
-    result = {'name': name, 'uid': '-', 'phase': 'pending', 'msg': '活动未开放或未下发，等待下轮，尚未验证领取成功',
+    result = {'name': name, 'uid': '-', 'phase': 'pending', 'msg': '活动未开放或未下发，本轮查询结束，等待下轮，尚未验证领取成功',
               'credits': 0, 'tasks': {'success': 2, 'already': 0, 'skipped': 0, 'failed': 0}}
     if available:
         failed = 0

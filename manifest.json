@@ -46502,7 +46502,9 @@
           "QODER_COSY_MACHINE_TOKEN",
           "QODER_COSY_MACHINE_CODE",
           "QODER_COSY_MACHINE_TYPE",
-          "QODER_COSY_VERSION"
+          "QODER_COSY_VERSION",
+          "QODER_EMPTY_RETRY",
+          "QODER_EMPTY_WAIT"
         ],
         "dryRunEnv": {
           "QODER_DRY_RUN": "1"
@@ -46510,7 +46512,7 @@
         "liveEnv": {},
         "successPatterns": [
           "签到成功",
-          "今日已领取"
+          "今日已领取，服务端确认 CLAIMED"
         ],
         "features": [
           "查询 Qoder 活动并领取全部可领取的 CLAIM_BENEFIT 奖励，以 CLAIMED 明确确认成功",
@@ -46520,7 +46522,8 @@
           "逐行多账号、逐账号设备配置、旧版环境参数和配置文件兼容",
           "可选安全令牌缓存、脱敏 JSON 行日志并保留原机器记录字段",
           "兼容 silent、poll、silent-poll 调用，支持每日主跑与兜底任务",
-          "完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总"
+          "完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总",
+          "活动未下发时本轮重查，兼容 QODER_EMPTY_RETRY 和 QODER_EMPTY_WAIT，默认最多查询三次、间隔二十秒"
         ],
         "sideEffects": [
           "领取活动 Credits 奖励",
@@ -46536,14 +46539,14 @@
       },
       "displayName": "Qoder 每日签到",
       "path": "scripts/qoder_checkin.py",
-      "sha256": "b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0",
+      "sha256": "eccca7ad12eb3303879936e402b47f957f4892f3a2123548c29407ee6943ab32",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
       "source": {
         "repository": "spirodelazz/ide-daily-checkin",
         "branch": "main",
-        "commit": "feb59d8e62b5fff07cb9d33e1f64171eb7e78d1d",
+        "commit": "8e2e1237a2107afec2cddd0089fca191c6083873",
         "originalPath": "scripts/qoder_checkin.py",
         "related": [
           {
@@ -46562,7 +46565,7 @@
             "repository": "spirodelazz/ide-daily-checkin",
             "url": "https://github.com/spirodelazz/ide-daily-checkin",
             "branch": "main",
-            "commit": "feb59d8e62b5fff07cb9d33e1f64171eb7e78d1d",
+            "commit": "8e2e1237a2107afec2cddd0089fca191c6083873",
             "originalPath": "scripts/qoder_extract.py",
             "license": "MIT"
           }
@@ -46717,6 +46720,20 @@
           "sensitive": false,
           "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
           "format": "字符串，对应 device.version；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        },
+        {
+          "name": "QODER_EMPTY_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，自行设置活动未下发时本轮查询次数。",
+          "format": "整数，默认 3，最小 1；非法整数使用默认值。仅无 CLAIM_BENEFIT 时重查，预演不联网或等待。"
+        },
+        {
+          "name": "QODER_EMPTY_WAIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，自行设置空活动重查的等待秒数。",
+          "format": "整数秒，默认 20，最小 0；非法整数使用默认值。预演不等待。"
         }
       ],
       "multiAccount": {
@@ -46733,7 +46750,8 @@
         "逐行多账号、逐账号设备配置、旧版环境参数和配置文件兼容",
         "可选安全令牌缓存、脱敏 JSON 行日志并保留原机器记录字段",
         "兼容 silent、poll、silent-poll 调用，支持每日主跑与兜底任务",
-        "完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总"
+        "完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总",
+        "活动未下发时本轮重查，兼容 QODER_EMPTY_RETRY 和 QODER_EMPTY_WAIT，默认最多查询三次、间隔二十秒"
       ],
       "sideEffects": [
         "领取活动 Credits 奖励",
@@ -46753,20 +46771,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/9cceef808f4e3500",
-        "candidateSha256": "4b7cb6d601faec2bf893fc55789962d57effd4acf398c2faf2534b9415c1ac2d"
+        "candidateSha256": "4ecb32db4d347304b1778ee3384eab6c17aa67ff4e7ea49596bbf9081061e453"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "4b7cb6d601faec2bf893fc55789962d57effd4acf398c2faf2534b9415c1ac2d",
-        "releaseSha256": "b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0",
+        "validatedSha256": "4ecb32db4d347304b1778ee3384eab6c17aa67ff4e7ea49596bbf9081061e453",
+        "releaseSha256": "eccca7ad12eb3303879936e402b47f957f4892f3a2123548c29407ee6943ab32",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T11:13:23.671595+00:00",
+          "approvedAt": "2026-11-11T13:38:42.922115+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "4b7cb6d601faec2bf893fc55789962d57effd4acf398c2faf2534b9415c1ac2d",
-          "toCandidateSha256": "b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0",
+          "fromCandidateSha256": "4ecb32db4d347304b1778ee3384eab6c17aa67ff4e7ea49596bbf9081061e453",
+          "toCandidateSha256": "eccca7ad12eb3303879936e402b47f957f4892f3a2123548c29407ee6943ab32",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
