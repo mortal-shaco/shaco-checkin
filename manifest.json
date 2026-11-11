@@ -10912,6 +10912,150 @@
       }
     },
     {
+      "catalogId": "f02d352e0599ff52",
+      "applicationKey": "buddy",
+      "checkProfile": {
+        "requiredEnv": [
+          "BUDDY_COOKIE"
+        ],
+        "optionalEnv": [
+          "BUDDY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BUDDY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BUDDY_DRY_RUN": "0"
+        },
+        "successPatterns": [
+          "[DONE] 签到成功",
+          "[OK] 今日已签到",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "查询加油站今日签到状态、主题、连续签到天数和累计积分",
+          "自动领取每日签到奖励，领取后复查官方签到状态",
+          "识别已签到账号并跳过重复领取",
+          "支持 --check 仅查询状态",
+          "支持每行一个账号、账号隔离与失败汇总",
+          "支持完全离线预演、时间轴日志、逐账号统计和单行结构化汇总",
+          "按全局开关和脚本选择发送青龙脱敏通知，通知失败保留业务退出码",
+          "官方返回昵称、用户名、显示名称或公开 UID 时显示该身份"
+        ],
+        "sideEffects": [
+          "正式模式下为尚未签到的账号执行每日签到并领取奖励"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "WorkBuddy 加油站每日签到",
+      "path": "scripts/buddy.py",
+      "sha256": "11d2fea35aa78079a1e0ce6002001e6c9c6b05519628c4c2509fc7afc434d5de",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Xriou/buddy-checkin",
+        "branch": "main",
+        "commit": "86fec15268382debdc578c33d4e0630d3ca48904",
+        "originalPath": "checkin.py"
+      },
+      "cron": "54 10 * * *",
+      "command": "python3 scripts/buddy.py",
+      "environment": [
+        {
+          "name": "BUDDY_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.workbuddy.cn，在开发者工具的网络面板找到 /billing/meter/checkin-status 的 POST 请求，复制请求头 Cookie 的完整值。失效后重新登录获取。仅用于本人账号。",
+          "format": "每个非空行一个账号，填写完整 Cookie 值（名称=值；多项使用英文分号），不包含 Cookie: 前缀，不以 &、@ 或分号分隔账号。等号后的凭据文本保持完整。"
+        },
+        {
+          "name": "BUDDY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 可进行完全断网预演，默认 0。预演仅检查配置并模拟阶段与通知。",
+          "format": "1/0、true/false、yes/no 或 on/off"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "auto 模式的脚本选择列表，未设置时默认包含本脚本。设置后替换默认列表，空值关闭全部。支持目录标识、脚本相对路径、文件名及文件名通配符。",
+          "format": "逗号、分号或空白分隔，支持 f02d352e0599ff52、checkin.py、candidate.py 和 *"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 或 sendNotify.js 所在目录。优先尝试导入 notify.send，其次此目录与 /ql/data/scripts、/ql/scripts。通知不可用时记录原因并保留业务退出码。",
+          "format": "本机通知模块目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "BUDDY_COOKIE 每个非空行一个账号，整行作为 Cookie 请求头值。各账号独立处理和隔离会话，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询加油站今日签到状态、主题、连续签到天数和累计积分",
+        "自动领取每日签到奖励，领取后复查官方签到状态",
+        "识别已签到账号并跳过重复领取",
+        "支持 --check 仅查询状态",
+        "支持每行一个账号、账号隔离与失败汇总",
+        "支持完全离线预演、时间轴日志、逐账号统计和单行结构化汇总",
+        "按全局开关和脚本选择发送青龙脱敏通知，通知失败保留业务退出码",
+        "官方返回昵称、用户名、显示名称或公开 UID 时显示该身份"
+      ],
+      "sideEffects": [
+        "正式模式下为尚未签到的账号执行每日签到并领取奖励"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/f02d352e0599ff52",
+        "candidateSha256": "24e5557bd4af6edd11e8bcbe092ec6393559d38cbdbc3a57a2b866b5a56a8555"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "24e5557bd4af6edd11e8bcbe092ec6393559d38cbdbc3a57a2b866b5a56a8555",
+        "releaseSha256": "11d2fea35aa78079a1e0ce6002001e6c9c6b05519628c4c2509fc7afc434d5de",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:50:50.654254+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "24e5557bd4af6edd11e8bcbe092ec6393559d38cbdbc3a57a2b866b5a56a8555",
+          "toCandidateSha256": "11d2fea35aa78079a1e0ce6002001e6c9c6b05519628c4c2509fc7afc434d5de",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "7ca80eead6ecc78a",
       "applicationKey": "bugutv",
       "checkProfile": {
@@ -67618,6 +67762,169 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "56c090e804d68808a55dec5e02586182ce4a62816d83701c8c92b169b2a9ce1c",
           "toCandidateSha256": "0a0c1dab4b69c147619fadae6e8db1c53ba8ed3114042265b87666dbd91be087",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "ed929736b882170c",
+      "applicationKey": "huxc573/aicreditpunch::checkin",
+      "checkProfile": {
+        "requiredEnv": [
+          "AICREDIT_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "AICREDIT_DRY_RUN",
+          "WORKBUDDY_TIMEOUT",
+          "WORKBUDDY_RETRIES",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AICREDIT_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "保留原脚本 WorkBuddy 与 Trae 两平台的独立账号任务，支持 --workbuddy-only、--trae-only 选择执行范围。",
+          "查询 WorkBuddy 签到状态、活动周期、连续签到天数与积分余额，展示套餐、奖励及购买积分构成。",
+          "执行签到并回查确认成功，识别今日已签到以避免重复领取。",
+          "查询 Trae 签到状态与可用积分，领取后回查并优先以余额差计算本次所得。",
+          "Trae 凭据临期或认证失败时通过官方接口刷新，仅在本次进程内使用。",
+          "支持 --status-only 只查询，以及环境变量或 --dry-run 完全离线预演。",
+          "保留每日北京时间 08:45、11:45、14:45、17:45、20:45、23:45 运行时刻，由青龙配置调度。",
+          "逐账号隔离执行，输出官方返回的非敏感身份、脱敏时间轴、统计与单行机器汇总。",
+          "在成功、部分失败、失败、配置错误和预演结束时按全局开关调用青龙通知。"
+        ],
+        "sideEffects": [
+          "正式运行时向所选平台提交每日签到并领取平台积分。",
+          "Trae 凭据临期或认证失败时可能更新服务端授权会话。",
+          "按通知开关发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AI 积分签到",
+      "path": "scripts/task_ed929736.py",
+      "sha256": "b338de90ab3a22e694b11b5e32f60ecd94baa130daec6746ac03178cf55aa655",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "huxc573/AICreditPunch",
+        "branch": "main",
+        "commit": "1f5823ebc42b9b68340801cb0c61af66da2a8dc8",
+        "originalPath": "checkin.py"
+      },
+      "cron": "25 8,11,14,17,20,23 * * *",
+      "command": "python3 scripts/task_ed929736.py",
+      "environment": [
+        {
+          "name": "AICREDIT_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人官方 WorkBuddy 或 Trae 登录会话中查看签到请求的鉴权头与设备字段，或查看本人官方登录授权响应。WorkBuddy 的 Bearer 值填入 access_token，X-User-Id、X-Domain、X-Enterprise-Id 分别填入 uid、domain、enterprise_id。Trae 的 Cloud-IDE-JWT 值填入 accessToken，授权响应 RefreshToken、UserID 与 TokenExpireAt 分别填入 refreshToken、userId 与 expiresAt，x-device-id 填入 deviceId。凭据过期后重新授权并更新青龙变量。",
+          "format": "每个非空行一个 JSON 对象。platform 为 workbuddy 时必填 access_token，兼容 accessToken、token 字段，选填 uid、domain、enterprise_id、api_base。platform 为 trae 时必填 accessToken、refreshToken、userId、deviceId，选填 claimDeviceId、expiresAt（秒时间戳）、fingerprint（brand、type、os）。不同平台分别填写独立账号行，默认执行全部已启用账号，enabled=false 可禁用。"
+        },
+        {
+          "name": "AICREDIT_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中手动设置为 1 开启完全离线预演。",
+          "format": "1 开启，0 关闭，默认 0。"
+        },
+        {
+          "name": "WORKBUDDY_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置单次请求超时，对两个平台均生效。",
+          "format": "5 至 120 秒的整数，默认 20。"
+        },
+        {
+          "name": "WORKBUDDY_RETRIES",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动设置网络和临时服务端错误的重试次数。",
+          "format": "0 至 5 的整数，默认 2。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "手动填写需要通知的脚本选择器，设置后替换默认名单。",
+          "format": "支持目录相对路径、文件名、文件名通配符与目录编号 ed929736b882170c，以逗号、分号或空白分隔；* 匹配全部，空值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写已由青龙提供的 notify.py 所在目录；默认尝试导入 notify.send、/ql/data/scripts/notify.py、/ql/scripts/notify.py。",
+          "format": "通知模块目录路径，不填时自动查找。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个独立账号 JSON 对象，同一账号的配套凭据放在同一对象中。逐账号执行并隔离失败，任一账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "保留原脚本 WorkBuddy 与 Trae 两平台的独立账号任务，支持 --workbuddy-only、--trae-only 选择执行范围。",
+        "查询 WorkBuddy 签到状态、活动周期、连续签到天数与积分余额，展示套餐、奖励及购买积分构成。",
+        "执行签到并回查确认成功，识别今日已签到以避免重复领取。",
+        "查询 Trae 签到状态与可用积分，领取后回查并优先以余额差计算本次所得。",
+        "Trae 凭据临期或认证失败时通过官方接口刷新，仅在本次进程内使用。",
+        "支持 --status-only 只查询，以及环境变量或 --dry-run 完全离线预演。",
+        "保留每日北京时间 08:45、11:45、14:45、17:45、20:45、23:45 运行时刻，由青龙配置调度。",
+        "逐账号隔离执行，输出官方返回的非敏感身份、脱敏时间轴、统计与单行机器汇总。",
+        "在成功、部分失败、失败、配置错误和预演结束时按全局开关调用青龙通知。"
+      ],
+      "sideEffects": [
+        "正式运行时向所选平台提交每日签到并领取平台积分。",
+        "Trae 凭据临期或认证失败时可能更新服务端授权会话。",
+        "按通知开关发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ed929736b882170c",
+        "candidateSha256": "0d62b912d305cd3197f61dc3a239100566d13dde98d15044b58ef9254d3247f6"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "0d62b912d305cd3197f61dc3a239100566d13dde98d15044b58ef9254d3247f6",
+        "releaseSha256": "b338de90ab3a22e694b11b5e32f60ecd94baa130daec6746ac03178cf55aa655",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:49:50.501155+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "0d62b912d305cd3197f61dc3a239100566d13dde98d15044b58ef9254d3247f6",
+          "toCandidateSha256": "b338de90ab3a22e694b11b5e32f60ecd94baa130daec6746ac03178cf55aa655",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

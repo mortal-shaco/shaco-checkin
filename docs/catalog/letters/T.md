@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **70** 个脚本。返回 [`目录首页`](../README.md)。
+共 **71** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -54,6 +54,7 @@
 | hao4k每日签到 | `scripts/task_e5c5d07b.py` | `python3 scripts/task_e5c5d07b.py` | `55 8 * * *` | 待检查 | [task_e5c5d07b.py.md](../../scripts/task_e5c5d07b.py.md)（`docs/scripts/task_e5c5d07b.py.md`） |
 | 王者营地每日签到 | `scripts/task_e7937ed1.js` | `node scripts/task_e7937ed1.js` | `59 15 8 * * *` | 待检查 | [task_e7937ed1.js.md](../../scripts/task_e7937ed1.js.md)（`docs/scripts/task_e7937ed1.js.md`） |
 | FZQOJ每日签到 | `scripts/task_ed4d6d4d.py` | `python3 scripts/task_ed4d6d4d.py` | `53 8 * * *` | 待检查 | [task_ed4d6d4d.py.md](../../scripts/task_ed4d6d4d.py.md)（`docs/scripts/task_ed4d6d4d.py.md`） |
+| AI 积分签到 | `scripts/task_ed929736.py` | `python3 scripts/task_ed929736.py` | `25 8,11,14,17,20,23 * * *` | 待检查 | [task_ed929736.py.md](../../scripts/task_ed929736.py.md)（`docs/scripts/task_ed929736.py.md`） |
 | 昆明医科大学健康登记 | `scripts/task_eddc6997.py` | `python3 scripts/task_eddc6997.py` | `49 10 * * *` | 待检查 | [task_eddc6997.py.md](../../scripts/task_eddc6997.py.md)（`docs/scripts/task_eddc6997.py.md`） |
 | M-SEC 每日签到 | `scripts/task_f37fb5e9.py` | `python3 scripts/task_f37fb5e9.py` | `6 8 * * *` | 待检查 | [task_f37fb5e9.py.md](../../scripts/task_f37fb5e9.py.md)（`docs/scripts/task_f37fb5e9.py.md`） |
 | 网易云音乐人签到 | `scripts/task_f7e4fa18.py` | `python3 scripts/task_f7e4fa18.py` | `21 9 * * *` | 待检查 | [task_f7e4fa18.py.md](../../scripts/task_f7e4fa18.py.md)（`docs/scripts/task_f7e4fa18.py.md`） |

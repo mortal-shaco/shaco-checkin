@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **371** 个脚本。返回 [`目录首页`](../README.md)。
+共 **373** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -51,6 +51,7 @@
 | B站每日任务 | `scripts/bilibili.py` | `python3 scripts/bilibili.py` | `6 2 * * *` | 待检查 | [bilibili.py.md](../../scripts/bilibili.py.md)（`docs/scripts/bilibili.py.md`） |
 | Holmes AI 每日签到 | `scripts/bot.py` | `python3 scripts/bot.py` | `14 8 * * *` | 待检查 | [bot.py.md](../../scripts/bot.py.md)（`docs/scripts/bot.py.md`） |
 | BT吧签到 | `scripts/btbar.py` | `python3 scripts/btbar.py` | `46 8 * * *` | 待检查 | [btbar.py.md](../../scripts/btbar.py.md)（`docs/scripts/btbar.py.md`） |
+| WorkBuddy 加油站每日签到 | `scripts/buddy.py` | `python3 scripts/buddy.py` | `54 10 * * *` | 待检查 | [buddy.py.md](../../scripts/buddy.py.md)（`docs/scripts/buddy.py.md`） |
 | 布谷TV每日签到 | `scripts/bugutv.py` | `python3 scripts/bugutv.py` | `12 1 * * *` | 待检查 | [bugutv.py.md](../../scripts/bugutv.py.md)（`docs/scripts/bugutv.py.md`） |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `31 9,18 * * *` | 待检查 | [bwcj.py.md](../../scripts/bwcj.py.md)（`docs/scripts/bwcj.py.md`） |
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
@@ -316,6 +317,7 @@
 | hao4k每日签到 | `scripts/task_e5c5d07b.py` | `python3 scripts/task_e5c5d07b.py` | `55 8 * * *` | 待检查 | [task_e5c5d07b.py.md](../../scripts/task_e5c5d07b.py.md)（`docs/scripts/task_e5c5d07b.py.md`） |
 | 王者营地每日签到 | `scripts/task_e7937ed1.js` | `node scripts/task_e7937ed1.js` | `59 15 8 * * *` | 待检查 | [task_e7937ed1.js.md](../../scripts/task_e7937ed1.js.md)（`docs/scripts/task_e7937ed1.js.md`） |
 | FZQOJ每日签到 | `scripts/task_ed4d6d4d.py` | `python3 scripts/task_ed4d6d4d.py` | `53 8 * * *` | 待检查 | [task_ed4d6d4d.py.md](../../scripts/task_ed4d6d4d.py.md)（`docs/scripts/task_ed4d6d4d.py.md`） |
+| AI 积分签到 | `scripts/task_ed929736.py` | `python3 scripts/task_ed929736.py` | `25 8,11,14,17,20,23 * * *` | 待检查 | [task_ed929736.py.md](../../scripts/task_ed929736.py.md)（`docs/scripts/task_ed929736.py.md`） |
 | M-SEC 每日签到 | `scripts/task_f37fb5e9.py` | `python3 scripts/task_f37fb5e9.py` | `6 8 * * *` | 待检查 | [task_f37fb5e9.py.md](../../scripts/task_f37fb5e9.py.md)（`docs/scripts/task_f37fb5e9.py.md`） |
 | 网易云音乐人签到 | `scripts/task_f7e4fa18.py` | `python3 scripts/task_f7e4fa18.py` | `21 9 * * *` | 待检查 | [task_f7e4fa18.py.md](../../scripts/task_f7e4fa18.py.md)（`docs/scripts/task_f7e4fa18.py.md`） |
 | 重庆工程职院顶岗实习 | `scripts/task_f8f6237c.py` | `python3 scripts/task_f8f6237c.py` | `49 8 * * *` | 待检查 | [task_f8f6237c.py.md](../../scripts/task_f8f6237c.py.md)（`docs/scripts/task_f8f6237c.py.md`） |

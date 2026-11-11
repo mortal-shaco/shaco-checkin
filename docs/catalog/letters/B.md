@@ -1,6 +1,6 @@
 # 字母索引 · B
 
-共 **12** 个脚本。返回 [`目录首页`](../README.md)。
+共 **13** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -14,5 +14,6 @@
 | Holmes AI 每日签到 | `scripts/bot.py` | `python3 scripts/bot.py` | `14 8 * * *` | 待检查 | [bot.py.md](../../scripts/bot.py.md)（`docs/scripts/bot.py.md`） |
 | 百事乐元抽奖 | `scripts/bsly_draw.py` | `python3 scripts/bsly_draw.py` | `23 0 * * *` | 待检查 | [bsly_draw.py.md](../../scripts/bsly_draw.py.md)（`docs/scripts/bsly_draw.py.md`） |
 | BT吧签到 | `scripts/btbar.py` | `python3 scripts/btbar.py` | `46 8 * * *` | 待检查 | [btbar.py.md](../../scripts/btbar.py.md)（`docs/scripts/btbar.py.md`） |
+| WorkBuddy 加油站每日签到 | `scripts/buddy.py` | `python3 scripts/buddy.py` | `54 10 * * *` | 待检查 | [buddy.py.md](../../scripts/buddy.py.md)（`docs/scripts/buddy.py.md`） |
 | 布谷TV每日签到 | `scripts/bugutv.py` | `python3 scripts/bugutv.py` | `12 1 * * *` | 待检查 | [bugutv.py.md](../../scripts/bugutv.py.md)（`docs/scripts/bugutv.py.md`） |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `31 9,18 * * *` | 待检查 | [bwcj.py.md](../../scripts/bwcj.py.md)（`docs/scripts/bwcj.py.md`） |
