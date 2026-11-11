@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **370** 个脚本。返回 [`目录首页`](../README.md)。
+共 **372** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -30,6 +30,7 @@
 | apk.tw每日签到 | `scripts/apktw.py` | `python3 scripts/apktw.py` | `19 9 * * *` | 待检查 | [apktw.py.md](../../scripts/apktw.py.md)（`docs/scripts/apktw.py.md`） |
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
 | ArityFlow 独立子站签到 | `scripts/arityflow_checkin.py` | `python3 scripts/arityflow_checkin.py` | `9 10 * * *` | 待检查 | [arityflow_checkin.py.md](../../scripts/arityflow_checkin.py.md)（`docs/scripts/arityflow_checkin.py.md`） |
+| 魔搭社区每日签到 | `scripts/astrbot_plugin_modelscope.py` | `python3 scripts/astrbot_plugin_modelscope.py` | `0 6 * * *` | 待检查 | [astrbot_plugin_modelscope.py.md](../../scripts/astrbot_plugin_modelscope.py.md)（`docs/scripts/astrbot_plugin_modelscope.py.md`） |
 | 中转站每日签到 | `scripts/astrbot_plugin_relay.py` | `python3 scripts/astrbot_plugin_relay.py` | `39 9 * * *` | 待检查 | [astrbot_plugin_relay.py.md](../../scripts/astrbot_plugin_relay.py.md)（`docs/scripts/astrbot_plugin_relay.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
 | 微助教课堂签到 | `scripts/asynccheckin.py` | `python3 scripts/asynccheckin.py` | `*/3 7-22 * * 1-5` | 待检查 | [asynccheckin.py.md](../../scripts/asynccheckin.py.md)（`docs/scripts/asynccheckin.py.md`） |
@@ -112,6 +113,7 @@
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 今日校园广东海洋大学签到 | `scripts/fcpdaily_2_0.py` | `python3 scripts/fcpdaily_2_0.py` | `58 9 * * *` | 待检查 | [fcpdaily_2_0.py.md](../../scripts/fcpdaily_2_0.py.md)（`docs/scripts/fcpdaily_2_0.py.md`） |
 | 威锋网签到 | `scripts/feng.js` | `node scripts/feng.js` | `16 10 * * *` | 待检查 | [feng.js.md](../../scripts/feng.js.md)（`docs/scripts/feng.js.md`） |
+| FL 自动登录签到 | `scripts/fl.js` | `node scripts/fl.js` | `52 10 * * *` | 待检查 | [fl.js.md](../../scripts/fl.js.md)（`docs/scripts/fl.js.md`） |
 | 飞客茶馆签到 | `scripts/flyertea.js` | `node scripts/flyertea.js` | `18 10 * * *` | 待检查 | [flyertea.js.md](../../scripts/flyertea.js.md)（`docs/scripts/flyertea.js.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
 | Follow 每日签到 | `scripts/follow.js` | `node scripts/follow.js` | `17 10 * * *` | 待检查 | [follow.js.md](../../scripts/follow.js.md)（`docs/scripts/follow.js.md`） |

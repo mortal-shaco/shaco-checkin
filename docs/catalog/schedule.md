@@ -40,6 +40,7 @@
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
 | ArityFlow 独立子站签到 | `scripts/arityflow_checkin.py` | `python3 scripts/arityflow_checkin.py` | `9 10 * * *` | 待检查 | [arityflow_checkin.py.md](../scripts/arityflow_checkin.py.md)（`docs/scripts/arityflow_checkin.py.md`） |
 | 明日方舟寻访公告 | `scripts/arknightsbanner.py` | `python3 scripts/arknightsbanner.py` | `29 1 * * *` | 待检查 | [arknightsbanner.py.md](../scripts/arknightsbanner.py.md)（`docs/scripts/arknightsbanner.py.md`） |
+| 魔搭社区每日签到 | `scripts/astrbot_plugin_modelscope.py` | `python3 scripts/astrbot_plugin_modelscope.py` | `0 6 * * *` | 待检查 | [astrbot_plugin_modelscope.py.md](../scripts/astrbot_plugin_modelscope.py.md)（`docs/scripts/astrbot_plugin_modelscope.py.md`） |
 | 中转站每日签到 | `scripts/astrbot_plugin_relay.py` | `python3 scripts/astrbot_plugin_relay.py` | `39 9 * * *` | 待检查 | [astrbot_plugin_relay.py.md](../scripts/astrbot_plugin_relay.py.md)（`docs/scripts/astrbot_plugin_relay.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
 | 微助教课堂签到 | `scripts/asynccheckin.py` | `python3 scripts/asynccheckin.py` | `*/3 7-22 * * 1-5` | 待检查 | [asynccheckin.py.md](../scripts/asynccheckin.py.md)（`docs/scripts/asynccheckin.py.md`） |
@@ -93,6 +94,7 @@
 | 芒果TV每日签到 | `scripts/ck_mgtv.py` | `python3 scripts/ck_mgtv.py` | `36 0 * * *` | 待检查 | [ck_mgtv.py.md](../scripts/ck_mgtv.py.md)（`docs/scripts/ck_mgtv.py.md`） |
 | 小米运动 | `scripts/ck_mimotion.py` | `python3 scripts/ck_mimotion.py` | `1 0 * * *` | 待检查 | [ck_mimotion.py.md](../scripts/ck_mimotion.py.md)（`docs/scripts/ck_mimotion.py.md`） |
 | 一加手机社区官方论坛 | `scripts/ck_oneplusbbs.py` | `python3 scripts/ck_oneplusbbs.py` | `40 2 * * *` | 待检查 | [ck_oneplusbbs.py.md](../scripts/ck_oneplusbbs.py.md)（`docs/scripts/ck_oneplusbbs.py.md`） |
+| Qoder CN 每日 Credits 领取 | `scripts/claim.js` | `node scripts/claim.js` | `53 10 * * *` | 待检查 | [claim.js.md](../scripts/claim.js.md)（`docs/scripts/claim.js.md`） |
 | 中山大学人脸签到 | `scripts/cli.py` | `python3 scripts/cli.py` | `*/5 7-22 * * *` | 待检查 | [cli.py.md](../scripts/cli.py.md)（`docs/scripts/cli.py.md`） |
 | 云原神每日签到 | `scripts/cloud_genshin.py` | `python3 scripts/cloud_genshin.py` | `30 9 * * *` | 待检查 | [cloud_genshin.py.md](../scripts/cloud_genshin.py.md)（`docs/scripts/cloud_genshin.py.md`） |
 | 中国移动签到有礼 | `scripts/cmcc_auto.py` | `python3 scripts/cmcc_auto.py` | `29 10 * * *` | 待检查 | [cmcc_auto.py.md](../scripts/cmcc_auto.py.md)（`docs/scripts/cmcc_auto.py.md`） |
@@ -138,6 +140,7 @@
 | 电子科大晚安成电打卡 | `scripts/faq_daily_checkin.py` | `python3 scripts/faq_daily_checkin.py` | `25 21 * * *` | 待检查 | [faq_daily_checkin.py.md](../scripts/faq_daily_checkin.py.md)（`docs/scripts/faq_daily_checkin.py.md`） |
 | 今日校园广东海洋大学签到 | `scripts/fcpdaily_2_0.py` | `python3 scripts/fcpdaily_2_0.py` | `58 9 * * *` | 待检查 | [fcpdaily_2_0.py.md](../scripts/fcpdaily_2_0.py.md)（`docs/scripts/fcpdaily_2_0.py.md`） |
 | 威锋网签到 | `scripts/feng.js` | `node scripts/feng.js` | `16 10 * * *` | 待检查 | [feng.js.md](../scripts/feng.js.md)（`docs/scripts/feng.js.md`） |
+| FL 自动登录签到 | `scripts/fl.js` | `node scripts/fl.js` | `52 10 * * *` | 待检查 | [fl.js.md](../scripts/fl.js.md)（`docs/scripts/fl.js.md`） |
 | 飞客茶馆签到 | `scripts/flyertea.js` | `node scripts/flyertea.js` | `18 10 * * *` | 待检查 | [flyertea.js.md](../scripts/flyertea.js.md)（`docs/scripts/flyertea.js.md`） |
 | 飞牛Nas论坛签到 | `scripts/fnnasclub.py` | `python3 scripts/fnnasclub.py` | `49 1 * * *` | 待检查 | [fnnasclub.py.md](../scripts/fnnasclub.py.md)（`docs/scripts/fnnasclub.py.md`） |
 | Follow 每日签到 | `scripts/follow.js` | `node scripts/follow.js` | `17 10 * * *` | 待检查 | [follow.js.md](../scripts/follow.js.md)（`docs/scripts/follow.js.md`） |

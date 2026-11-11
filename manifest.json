@@ -5820,6 +5820,167 @@
       }
     },
     {
+      "catalogId": "7b0e6bc8644c6dfe",
+      "applicationKey": "astrbot-plugin-modelscope",
+      "checkProfile": {
+        "requiredEnv": [
+          "MODELSCOPE_COOKIES"
+        ],
+        "optionalEnv": [
+          "MODELSCOPE_COOKIE",
+          "MODELSCOPE_TIMEOUT",
+          "MODELSCOPE_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "MODELSCOPE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "MODELSCOPE_TIMEOUT": "30"
+        },
+        "successPatterns": [
+          "最终状态：success",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "每天北京时间 06:00 执行，也可在青龙手动运行一次；需将调度器时区设为 Asia/Shanghai。",
+          "支持多账号、完整 Cookie 与单独会话值；兼容旧式单账号输入，账号失败互不阻塞。",
+          "签到前查询今日账单，通过登录接口触发幂等签到，最多三次查询今日 EARN 记录并核对 daily_active 或 aliyun_bindlogin 规则。",
+          "按北京时间处理账单日期，区分本次新增到账、今日合计和今天已签到；展示魔粒可用及总余额。",
+          "展示官方返回的非敏感昵称、用户名或公开标识；凭据、手机号和原始响应不进入日志。",
+          "请求超时、响应大小限制、禁止重定向携带凭据、明确业务成功核验；无法核验到账时非零退出。",
+          "提供断网预演、带阶段耗时的时间轴日志、账号与任务统计及单行 TASK_SUMMARY 汇总。",
+          "成功、部分失败、失败和配置错误通过青龙通知工具发送脱敏总结；通知失败保留业务退出码，预演仅本地预览通知。"
+        ],
+        "sideEffects": [
+          "登录信息接口触发每日签到，可能领取当日魔粒奖励，重复调用幂等。",
+          "正式执行时按青龙通知开关与选择列表向已配置渠道发送脱敏总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "魔搭社区每日签到",
+      "path": "scripts/astrbot_plugin_modelscope.py",
+      "sha256": "2197fd0b94c0590839e76f7b5b759abefc33601096791e4a00bb78ca1c949f0d",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "yierlingyi/astrbot_plugin_modelscope_daily",
+        "branch": "main",
+        "commit": "002d8ed697dfd934c71c99216e7c3ce653cc02a7",
+        "originalPath": "main.py"
+      },
+      "cron": "0 6 * * *",
+      "command": "python3 scripts/astrbot_plugin_modelscope.py",
+      "environment": [
+        {
+          "name": "MODELSCOPE_COOKIES",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.modelscope.cn，在开发者工具网络面板选择本站已登录请求，复制包含 m_session_id 的 Cookie 请求头。不要使用模型调用 API Key；会话失效后重新登录获取。",
+          "format": "每个非空行一个账号，支持完整 Cookie、Cookie: 前缀、m_session_id=会话值或单独会话值；保留整行其它 Cookie，不用 &、@ 分隔账号；重复行去重。"
+        },
+        {
+          "name": "MODELSCOPE_COOKIE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧式单账号兼容输入，获取方式同 MODELSCOPE_COOKIES；主变量为空时才读取。",
+          "format": "单账号 Cookie 或会话值。"
+        },
+        {
+          "name": "MODELSCOPE_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，默认 30；按网络状况设置单次网络操作超时。",
+          "format": "5 至 120 的整数，单位秒。"
+        },
+        {
+          "name": "MODELSCOPE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为 1 启用完全断网预演；只检查格式，不确认真实签到或凭据有效性。",
+          "format": "1/true/yes/on 启用；0/false/no/off 关闭，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，auto 模式下设置后替换默认列表；可填本任务目录标识 7b0e6bc8644c6dfe、文件名、scripts/相对路径或文件名通配符。",
+          "format": "逗号、分号或空白分隔；* 选择全部，空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填青龙公开通知工具所在目录；也会尝试导入 notify.send 及 /ql/data/scripts、/ql/scripts。通知工具需已配置通知渠道。",
+          "format": "包含 notify.py 或 sendNotify.js 的目录；不是业务依赖，不可用时保留业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；同账号完整 Cookie 保留为一行；逐账号独立处理、重复行去重、账号间隔一秒；任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每天北京时间 06:00 执行，也可在青龙手动运行一次；需将调度器时区设为 Asia/Shanghai。",
+        "支持多账号、完整 Cookie 与单独会话值；兼容旧式单账号输入，账号失败互不阻塞。",
+        "签到前查询今日账单，通过登录接口触发幂等签到，最多三次查询今日 EARN 记录并核对 daily_active 或 aliyun_bindlogin 规则。",
+        "按北京时间处理账单日期，区分本次新增到账、今日合计和今天已签到；展示魔粒可用及总余额。",
+        "展示官方返回的非敏感昵称、用户名或公开标识；凭据、手机号和原始响应不进入日志。",
+        "请求超时、响应大小限制、禁止重定向携带凭据、明确业务成功核验；无法核验到账时非零退出。",
+        "提供断网预演、带阶段耗时的时间轴日志、账号与任务统计及单行 TASK_SUMMARY 汇总。",
+        "成功、部分失败、失败和配置错误通过青龙通知工具发送脱敏总结；通知失败保留业务退出码，预演仅本地预览通知。"
+      ],
+      "sideEffects": [
+        "登录信息接口触发每日签到，可能领取当日魔粒奖励，重复调用幂等。",
+        "正式执行时按青龙通知开关与选择列表向已配置渠道发送脱敏总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/7b0e6bc8644c6dfe",
+        "candidateSha256": "699ad94fe91d48734a9dabcfff6e8663dc8bc0cc24a91901296f61504aa0d9e8"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "699ad94fe91d48734a9dabcfff6e8663dc8bc0cc24a91901296f61504aa0d9e8",
+        "releaseSha256": "2197fd0b94c0590839e76f7b5b759abefc33601096791e4a00bb78ca1c949f0d",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:27:53.612810+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "699ad94fe91d48734a9dabcfff6e8663dc8bc0cc24a91901296f61504aa0d9e8",
+          "toCandidateSha256": "2197fd0b94c0590839e76f7b5b759abefc33601096791e4a00bb78ca1c949f0d",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "c7b19578064eea37",
       "applicationKey": "astrbot-plugin-relay",
       "checkProfile": {
@@ -15751,6 +15912,173 @@
       }
     },
     {
+      "catalogId": "914f52282cf5f911",
+      "applicationKey": "875778261/qoder-daily-claim::qoder-daily-claim",
+      "checkProfile": {
+        "requiredEnv": [
+          "QODER_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "QODER_DRY_RUN",
+          "QODER_FORCE",
+          "QODER_CHECKIN_DIR",
+          "QODER_CHECKIN_LOG_DIR",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "QODER_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QODER_FORCE": "0"
+        },
+        "successPatterns": [
+          "\"ok\":true",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "查询官方Credits活动，兼容上游三种列表包装结构；异常响应不当作无活动成功",
+          "按活动状态及时间窗口领取Credits，明确CLAIMED才计成功，识别幂等重放并查询奖励复核",
+          "保留显式强制重放开关、多账号独立处理和官方非秘密身份显示",
+          "完全离线演练、逐阶段与逐账号统计、唯一TASK_SUMMARY结构化汇总",
+          "可选按账号及北京时间10点切换活动日写入脱敏记录与日志，默认不写文件",
+          "按青龙开关及选择器通知；通知不可用不改变业务退出码，演练仅生成本地摘要"
+        ],
+        "sideEffects": [
+          "调用领取接口领取Credits，显式强制模式可能重放领取请求",
+          "显式配置记录目录时写入脱敏记录或日志",
+          "真实运行且启用通知时通过青龙模块发送脱敏总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Qoder CN 每日 Credits 领取",
+      "path": "scripts/claim.js",
+      "sha256": "cae4725f3dd1876f7d53ecb2a5078aad20d4a1c50ac148541116eab3eb6ab442",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "875778261/qoder-daily-claim",
+        "branch": "main",
+        "commit": "4e51719caaf1689aef530589a14b53462ad96732",
+        "originalPath": "skills/qoder-daily-claim/scripts/claim.js"
+      },
+      "cron": "53 10 * * *",
+      "command": "node scripts/claim.js",
+      "environment": [
+        {
+          "name": "QODER_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人已登录的 Qoder CN 官方客户端开发者工具网络请求中，找到 openapi.qoder.com.cn 的 /sash/api/v1/me/campaigns 请求，复制 Authorization 中 Bearer 后的 Token。无法查看时请勿猜测，不需本地文件或其他程序。",
+          "format": "每个非空行一个不带Bearer前缀的Token，或包含token和可选expiresAt日期的JSON对象；只用换行分隔账号"
+        },
+        {
+          "name": "QODER_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设为1进行完全离线配置与流程演练，不查询、不领取、不写记录、不调用可能联网的通知模块。",
+          "format": "1、true、yes、on启用，默认关闭"
+        },
+        {
+          "name": "QODER_FORCE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅需强制重放领取时显式启用，等价于--force，默认关闭。",
+          "format": "1、true、yes、on启用"
+        },
+        {
+          "name": "QODER_CHECKIN_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行指定可写目录，等价于--checkin-dir；按账号与北京时间10点切换的活动日写入结果，记录不替代官方核验。",
+          "format": "目录路径；默认不写文件"
+        },
+        {
+          "name": "QODER_CHECKIN_LOG_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定脱敏统计日志目录。",
+          "format": "目录路径；默认不写文件"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自动模式选择通知脚本，可填914f52282cf5f911、脚本相对路径、文件名或通配符；空值关闭全部。",
+          "format": "逗号、分号、空白分隔；*匹配全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选指定青龙sendNotify.js目录；否则查找/ql/data/scripts和/ql/scripts。",
+          "format": "目录路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号Token或JSON，配套有效期放同一JSON内，不用其他账号分隔符；独立处理，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询官方Credits活动，兼容上游三种列表包装结构；异常响应不当作无活动成功",
+        "按活动状态及时间窗口领取Credits，明确CLAIMED才计成功，识别幂等重放并查询奖励复核",
+        "保留显式强制重放开关、多账号独立处理和官方非秘密身份显示",
+        "完全离线演练、逐阶段与逐账号统计、唯一TASK_SUMMARY结构化汇总",
+        "可选按账号及北京时间10点切换活动日写入脱敏记录与日志，默认不写文件",
+        "按青龙开关及选择器通知；通知不可用不改变业务退出码，演练仅生成本地摘要"
+      ],
+      "sideEffects": [
+        "调用领取接口领取Credits，显式强制模式可能重放领取请求",
+        "显式配置记录目录时写入脱敏记录或日志",
+        "真实运行且启用通知时通过青龙模块发送脱敏总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/914f52282cf5f911",
+        "candidateSha256": "dd505095a0ecaa91bda65a6f82851b791e0c027942a3b2fab7e2b8b5e7b0e55f"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "dd505095a0ecaa91bda65a6f82851b791e0c027942a3b2fab7e2b8b5e7b0e55f",
+        "releaseSha256": "cae4725f3dd1876f7d53ecb2a5078aad20d4a1c50ac148541116eab3eb6ab442",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:28:29.061378+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "dd505095a0ecaa91bda65a6f82851b791e0c027942a3b2fab7e2b8b5e7b0e55f",
+          "toCandidateSha256": "cae4725f3dd1876f7d53ecb2a5078aad20d4a1c50ac148541116eab3eb6ab442",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "d6e397f627b3716b",
       "applicationKey": "undefined443/sysu-check-in::sysu-check-in",
       "checkProfile": {
@@ -24358,6 +24686,179 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "7b005784be49d80e66155c39b13ab5de98b769a67abe262d36df1f0d6aa13219",
           "toCandidateSha256": "c73bd1b06df81caa424470883b8b7c86172c9a93b365b944afe5ff070275bf41",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "669a029282a2f49e",
+      "applicationKey": "fl",
+      "checkProfile": {
+        "requiredEnv": [
+          "FL_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "USER_EMAIL",
+          "USER_PASSWORD",
+          "PUSHPLUS_TOKEN",
+          "FL_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "FL_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到"
+        ],
+        "features": [
+          "使用邮箱和密码自动登录 FL，保留上游接口、请求方法、授权头及旧环境变量兼容性",
+          "执行每日签到，明确判断签到成功及官方已签到响应，显示奖励 MB 和累计签到流量 GB",
+          "官方返回非敏感昵称、用户名或公开 UID 时按原值显示，凭据、邮箱和手机号不输出",
+          "按行支持多账号独立处理，任一账号失败整体非零退出",
+          "请求和响应体超时、响应体积限制、禁止重定向、登录瞬态错误一次重试及失败闭合",
+          "完全断网预演，包括跳过登录、签到和所有通知网络行为",
+          "保留可选 PushPlus 结果通知，增加遵循全局开关及名单的青龙通知，发送失败保留业务退出码",
+          "按账号及阶段输出时间轴、任务统计和唯一 TASK_SUMMARY 结构化摘要",
+          "独立 Node.js 18 及以上脚本，无第三方依赖或安装引导"
+        ],
+        "sideEffects": [
+          "正式执行登录会创建服务端登录会话或授权令牌",
+          "正式执行每日签到会更新签到记录并增加账号流量奖励",
+          "启用通知时通过青龙通知模块或可选 PushPlus 发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "FL 自动登录签到",
+      "path": "scripts/fl.js",
+      "sha256": "690c5178ee8ff03691fb2d59f512e21396bcb74b10989e354cd86473995423af",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "xpsu/fl-checkin",
+        "branch": "master",
+        "commit": "f2256b8f8c864722831e6bff88f1ee607b2ba7da",
+        "originalPath": "checkin.ts"
+      },
+      "cron": "52 10 * * *",
+      "command": "node scripts/fl.js",
+      "environment": [
+        {
+          "name": "FL_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在 https://flzt.org 注册或登录，使用自己的登录邮箱和密码，无需抓包。在青龙环境变量中新建此变量；优先使用此规范变量。",
+          "format": "每个非空行一个账号，格式为邮箱|密码；仅按第一个竖线分割，后续竖线属于密码；密码不去除首尾空格，账号之间不可使用 & 或 @ 分隔。"
+        },
+        {
+          "name": "USER_EMAIL",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游变量，填写 FL 网站的登录邮箱；仅未设置 FL_ACCOUNTS 时生效。",
+          "format": "每个非空行一个邮箱，与 USER_PASSWORD 的非空行逐行配对，不支持合并分隔符。"
+        },
+        {
+          "name": "USER_PASSWORD",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游变量，填写对应账号的登录密码；建议迁移至 FL_ACCOUNTS。",
+          "format": "每个非空行一个密码，与 USER_EMAIL 逐行配对，保留密码首尾空格。"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "在 PushPlus 官网个人中心获取推送令牌；设置后保留上游可选结果通知，通知内容只含账号序号、状态及流量统计。",
+          "format": "单个推送令牌；断网预演不发送，QINGLONG_NOTIFY 关闭时不发送。"
+        },
+        {
+          "name": "FL_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "由运行者设置为 1 开启完全断网预演。",
+          "format": "1 为预演；未设置或其他值执行真实登录及签到。预演仅验证配置，不代表真实业务成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中指定需要通知的脚本；使用本脚本目录编号、脚本文件名、相对 scripts 的路径或文件名通配符。",
+          "format": "逗号、分号或空白分隔，支持 *；空值禁用全部；设置后替换默认名单；QINGLONG_NOTIFY 显式开关优先。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要自定义青龙通知模块目录时设置；默认查找 /ql/data/scripts 和 /ql/scripts，优先 sendNotify.js，其次 notify.py。",
+          "format": "包含青龙 sendNotify.js 或 notify.py 的目录；通知模块是可选集成，不影响脚本独立运行，发送异常不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "FL_ACCOUNTS 每个非空行一个账号，邮箱与密码仅按第一个竖线分割；各账号独立处理，任一账号失败整体非零退出。兼容旧邮箱与密码变量按非空行逐行配对。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用邮箱和密码自动登录 FL，保留上游接口、请求方法、授权头及旧环境变量兼容性",
+        "执行每日签到，明确判断签到成功及官方已签到响应，显示奖励 MB 和累计签到流量 GB",
+        "官方返回非敏感昵称、用户名或公开 UID 时按原值显示，凭据、邮箱和手机号不输出",
+        "按行支持多账号独立处理，任一账号失败整体非零退出",
+        "请求和响应体超时、响应体积限制、禁止重定向、登录瞬态错误一次重试及失败闭合",
+        "完全断网预演，包括跳过登录、签到和所有通知网络行为",
+        "保留可选 PushPlus 结果通知，增加遵循全局开关及名单的青龙通知，发送失败保留业务退出码",
+        "按账号及阶段输出时间轴、任务统计和唯一 TASK_SUMMARY 结构化摘要",
+        "独立 Node.js 18 及以上脚本，无第三方依赖或安装引导"
+      ],
+      "sideEffects": [
+        "正式执行登录会创建服务端登录会话或授权令牌",
+        "正式执行每日签到会更新签到记录并增加账号流量奖励",
+        "启用通知时通过青龙通知模块或可选 PushPlus 发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/669a029282a2f49e",
+        "candidateSha256": "feaf63ee32c11a9280313f2ad5cbe069d6f14a7077c8c8f2d134b1adc1624378"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "feaf63ee32c11a9280313f2ad5cbe069d6f14a7077c8c8f2d134b1adc1624378",
+        "releaseSha256": "690c5178ee8ff03691fb2d59f512e21396bcb74b10989e354cd86473995423af",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:28:26.243713+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "feaf63ee32c11a9280313f2ad5cbe069d6f14a7077c8c8f2d134b1adc1624378",
+          "toCandidateSha256": "690c5178ee8ff03691fb2d59f512e21396bcb74b10989e354cd86473995423af",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
