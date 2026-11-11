@@ -157,7 +157,6 @@
 | 芬享汇每日签到 | `scripts/fxh.js` | `node scripts/fxh.js` | `18 1 * * *` | 待检查 | [fxh.js.md](../scripts/fxh.js.md)（`docs/scripts/fxh.js.md`） |
 | 智汇福大晚点名签到 | `scripts/fzu.py` | `python3 scripts/fzu.py` | `35 21 * * *` | 待检查 | [fzu.py.md](../scripts/fzu.py.md)（`docs/scripts/fzu.py.md`） |
 | 吉利汽车签到 | `scripts/geely.js` | `node scripts/geely.js` | `37 0 * * *` | 待检查 | [geely.js.md](../scripts/geely.js.md)（`docs/scripts/geely.js.md`） |
-| WorkBuddy 每日签到与成长中心 | `scripts/get_token.py` | `python3 scripts/get_token.py` | `51 0,4,8,12,16,20 * * *` | 待检查 | [get_token.py.md](../scripts/get_token.py.md)（`docs/scripts/get_token.py.md`） |
 | 阴阳师官网视频与原画 | `scripts/get_yys_cgvideo.py` | `python3 scripts/get_yys_cgvideo.py` | `11 9 * * 0` | 待检查 | [get_yys_cgvideo.py.md](../scripts/get_yys_cgvideo.py.md)（`docs/scripts/get_yys_cgvideo.py.md`） |
 | 阴阳师官网原画与CG素材 | `scripts/get_yys_imagelinks.py` | `python3 scripts/get_yys_imagelinks.py` | `28 9 * * 0` | 待检查 | [get_yys_imagelinks.py.md](../scripts/get_yys_imagelinks.py.md)（`docs/scripts/get_yys_imagelinks.py.md`） |
 | Mirror O3 Pro 每日签到 | `scripts/github_actions_checkin.py` | `python3 scripts/github_actions_checkin.py` | `32 9 * * *` | 待检查 | [github_actions_checkin.py.md](../scripts/github_actions_checkin.py.md)（`docs/scripts/github_actions_checkin.py.md`） |
@@ -421,7 +420,7 @@
 | 网际快车每日签到 | `scripts/wjkc.js` | `node scripts/wjkc.js` | `4 9 * * *` | 待检查 | [wjkc.js.md](../scripts/wjkc.js.md)（`docs/scripts/wjkc.js.md`） |
 | 万能福利吧每日签到 | `scripts/wnflb.js` | `node scripts/wnflb.js` | `0 45 11 * * *` | 待检查 | [wnflb.js.md](../scripts/wnflb.js.md)（`docs/scripts/wnflb.js.md`） |
 | WorkBuddy签到 | `scripts/workbuddy.py` | `python3 scripts/workbuddy.py` | `45 1 * * *` | 待检查 | [workbuddy.py.md](../scripts/workbuddy.py.md)（`docs/scripts/workbuddy.py.md`） |
-| WorkBuddy 国内版日常维护 | `scripts/workbuddy_daily.py` | `python3 scripts/workbuddy_daily.py` | `47 7,12 * * *` | 待检查 | [workbuddy_daily.py.md](../scripts/workbuddy_daily.py.md)（`docs/scripts/workbuddy_daily.py.md`） |
+| WorkBuddy 国内版日常维护 | `scripts/workbuddy_daily.py` | `python3 scripts/workbuddy_daily.py` | `19 7,12 * * *` | 待检查 | [workbuddy_daily.py.md](../scripts/workbuddy_daily.py.md)（`docs/scripts/workbuddy_daily.py.md`） |
 | 科研通 AbleSci 每日签到 | `scripts/worker.js` | `node scripts/worker.js` | `9 8 * * *` | 待检查 | [worker.js.md](../scripts/worker.js.md)（`docs/scripts/worker.js.md`） |
 | AI打卡机四平台签到 | `scripts/wps_airscript.js` | `node scripts/wps_airscript.js` | `31 10 * * *` | 待检查 | [wps_airscript.js.md](../scripts/wps_airscript.js.md)（`docs/scripts/wps_airscript.js.md`） |
 | WPS打卡活动信息 | `scripts/wps_clock_in.py` | `python3 scripts/wps_clock_in.py` | `43 1 * * *` | 待检查 | [wps_clock_in.py.md](../scripts/wps_clock_in.py.md)（`docs/scripts/wps_clock_in.py.md`） |

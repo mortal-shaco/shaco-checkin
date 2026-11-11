@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: WorkBuddy 国内版日常维护
-# cron: 47 7,12 * * *
+# cron: 19 7,12 * * *
+# 合并来源：88lin/workbuddy-auto-signin，firlsy/ql_scripts-AI_auto_sign/get_token/signin.py（MIT）。
+# --tasks accept 显式批量接取服务端未锁定的待接任务，逐批回读确认，仅接单，不上报事件或同意协议。
+# first_buddy 的前置协议仍需本人处理；不因接单自动领取首只 Buddy。
+# 可用 --tasks checkin,accept,claim,travel,buddy_info,badges 组合运行，默认任务保持原有集合。
+# 原上游 auto/silent/silent-poll/silent-growth 的签到、成长查询和奖励由现有任务覆盖。
+# 原上游 status 对应 --status，growth 对应显式任务筛选，doctor 可用断网预演检查凭据。
+# 原每四小时维护发布计划 51 0,4,8,12,16,20 * * * 可在青龙为上述显式组合单独配置。
+# 不导入上游客户端解密助手；本人从官方请求获取明文凭据，沿用维护版变量和获取方式。
 # 合并来源：Peng-Can/local-daily-checkin，checkin.py（MIT）。
 # --local-daily [run|status|credits] 为独立入口，兼容 run/status/credits 位置参数。
 # --verify-wallet 核验签到资源包增长；credits / --expire 查询逐笔到期，--expiring-days N、--html、--json 可选。
@@ -2487,7 +2495,7 @@ def desktop_playbook_events(uid, nick, case_id="01-ProductDesign", case_name="�
     events.extend([cta, send])
     return events
 
-TASK_NAME_CN.update({'Sequential_Tasks_7': 'PC灵感功能', 'WorkBuddy_Valorant': '无畏契约拼豆专家', 'expert_use_maidehao': '中国电商运营专家', 'expert_use_douyinyin': '抖音策略师', 'expert_use_shangjia_xuanchuan': '商家宣传页与海报设计师', 'expert_use_bowangwang': '直播电商教练', 'daily_activity': '每日活跃', 'checkin': '每日签到', 'travel': '猫猫旅行', 'claim': '达标领奖', 'buddy_info': 'Buddy信息', 'badges': '徽章查询', 'lottery': '抽奖', 'blindbox': '盲盒', 'redeem': '连登兑换', 'makeup': '昨日补签', 'gift': '礼包补偿'})
+TASK_NAME_CN.update({'accept': '批量接取待接任务', 'Sequential_Tasks_7': 'PC灵感功能', 'WorkBuddy_Valorant': '无畏契约拼豆专家', 'expert_use_maidehao': '中国电商运营专家', 'expert_use_douyinyin': '抖音策略师', 'expert_use_shangjia_xuanchuan': '商家宣传页与海报设计师', 'expert_use_bowangwang': '直播电商教练', 'daily_activity': '每日活跃', 'checkin': '每日签到', 'travel': '猫猫旅行', 'claim': '达标领奖', 'buddy_info': 'Buddy信息', 'badges': '徽章查询', 'lottery': '抽奖', 'blindbox': '盲盒', 'redeem': '连登兑换', 'makeup': '昨日补签', 'gift': '礼包补偿'})
 
 # ---------- 独立维护边界与执行器 ----------
 DRY = False
@@ -2706,7 +2714,7 @@ for _expert_code in ['WorkBuddy_Valorant', *EXPERT_TASK_SPECS]:
 
 # Stage selection is fail-closed: misspelled or unsupported names are config errors.
 DEFAULT_TASKS = {'checkin', 'travel', 'claim', 'buddy_info', 'badges'}
-ALLOWED = DEFAULT_TASKS | {'lottery','blindbox','redeem','gift','makeup','daily_activity'}
+ALLOWED = DEFAULT_TASKS | {'lottery','blindbox','redeem','gift','makeup','daily_activity','accept'}
 for alias, codes, fn in GROWTH:
     ALLOWED.add(alias.lower())
     ALLOWED.update(c.lower() for c in codes)
@@ -2936,6 +2944,57 @@ def checkin(s):
     timeline('签到连签%s天，累计积分%s' % (safe_number(after.get('streak_days')), safe_number(after.get('total_credits'))))
     return 'success'
 
+def accept_pending(s):
+    """显式批量接单，以逐条回执及官方任务状态回读共同确认。"""
+    path = '/v2/activity/growth/tasks'
+    tasks = read_data(s, path).get('tasks')
+    if not isinstance(tasks, list) or any(not isinstance(row, dict) for row in tasks):
+        raise SafeError('待接任务列表结构无效')
+    pending = []
+    for row in tasks:
+        if row.get('locked') or row.get('accept_status') != 'not_accepted':
+            continue
+        code = row.get('task_code')
+        if not isinstance(code, str) or not re.fullmatch(r'[A-Za-z0-9_.-]+', code):
+            raise SafeError('待接任务代码格式无效')
+        if code == 'first_buddy':
+            timeline('首只 Buddy 前置协议需本人处理，跳过批量接单')
+            continue
+        if code not in pending:
+            pending.append(code)
+    accepted = 0
+    for start in range(0, len(pending), 20):
+        batch = pending[start:start + 20]
+        reply = read_data(s, path + '/accept', 'POST', {'task_codes': batch})
+        results = reply.get('results')
+        if not isinstance(results, list) or len(results) != len(batch):
+            raise SafeError('接单回执数量或结构无效，停止后续写入')
+        seen = set()
+        for row in results:
+            if not isinstance(row, dict):
+                raise SafeError('接单回执条目无效')
+            code = row.get('task_code')
+            if not isinstance(code, str) or code not in batch or code in seen:
+                raise SafeError('接单回执任务不匹配')
+            if row.get('status') not in ('ok', 'success', 'accepted'):
+                raise SafeError('服务端拒绝接单，前置条件需本人核对')
+            seen.add(code)
+        rows = read_data(s, path).get('tasks')
+        if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+            raise SafeError('接单后任务列表无效')
+        for code in batch:
+            matching = [row for row in rows if row.get('task_code') == code]
+            if len(matching) != 1 or matching[0].get('accept_status') not in (
+                    'accepted', 'in_progress', 'completed', 'claimed'):
+                raise SafeError('接单未通过服务端状态回读')
+            timeline('任务%s：已回读确认接单' % code)
+            accepted += 1
+        if start + 20 < len(pending):
+            time.sleep(WRITE_GAP)
+    timeline('批量接单确认%d项；未执行任务事件、对话或协议确认' % accepted)
+    return 'success' if accepted else 'alreadyComplete'
+
+
 def claim_ready(s):
     tasks = read_data(s, '/v2/activity/growth/tasks').get('tasks')
     if not isinstance(tasks, list):
@@ -3027,7 +3086,7 @@ def notify_summary(body):
     selectors = os.getenv('QINGLONG_NOTIFY_SCRIPTS')
     if selectors is not None:
         patterns = [v for v in re.split(r'[,;\s]+',selectors) if v]
-        names = ('022a9a680ac352c1','local_daily.py','scripts/local_daily.py','cdf18dad86c644b6','132c582ed57df40f','437220302cb75855','workbuddy_daily.py','candidate.py',
+        names = ('51413af773dd1c9a','get_token/signin.py','022a9a680ac352c1','local_daily.py','scripts/local_daily.py','cdf18dad86c644b6','132c582ed57df40f','437220302cb75855','workbuddy_daily.py','candidate.py',
                  'scripts/workbuddy_daily.py','scripts/wb_daily_checkin.py','wb_daily_checkin.py',
                  'checkin/workbuddy_daily.py','scripts/checkin/workbuddy_daily.py',
                  pathlib.Path(__file__).name)
@@ -3742,7 +3801,7 @@ def main():
                 elif args.credit_report:
                     stage(2,'只读积分日报',lambda:credit_report(billing_report_headers(at,uid),False,idx,reports))
                 elif stage(2,'账号身份、积分、用量、成长及任务查询',lambda:query_all(s)) and not args.query:
-                    actions = [('checkin',lambda:checkin(s)), ('claim',lambda:claim_ready(s))]
+                    actions = [('checkin',lambda:checkin(s)), ('accept',lambda:accept_pending(s)), ('claim',lambda:claim_ready(s))]
                     for key, fn in [('travel',t_travel),('buddy_info',t_buddy_info),('badges',t_badges),('lottery',t_lottery),('blindbox',t_blindbox),('gift',t_gift_compensation),('makeup',t_makeup),('daily_activity',t_daily_activity)]:
                         actions.append((key,lambda fn=fn:fn(s,uid,nick,recipe_log)))
                     actions.append(('redeem',lambda:t_redeem(s,uid,nick,recipe_log)))

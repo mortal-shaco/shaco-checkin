@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/workbuddy_daily.py`
 - 青龙命令：`python3 scripts/workbuddy_daily.py`
-- 建议 Cron：`47 7,12 * * *`
-- 发布哈希：`06a2bbfa2eeae0bbec0565e373692dfa2d4f8f3d9b3311db4cb5321f223297a2`
+- 建议 Cron：`19 7,12 * * *`
+- 发布哈希：`91f0af2e2dbbbabaf591f4232693d9d5463c30e748fdaeda89838c3f4cd3a4db`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -53,6 +53,7 @@
 - 展示逐笔剩余、总量、获取方式、使用状态、到期和周期刷新时间；优先扣减结束时间，再取周期结束和失效时间，兼容秒、毫秒与北京时间字符串。
 - 支持 --expiring-days 非负天数筛选和 --html 安全转义片段；以使用中记录为中心展示前后各十笔，--json 保留完整脱敏明细；入口仅查询且独立于签到、余额增长核验。
 - 通过 --local-daily 将新积分明细入口合入现有规范脚本；同时配置凭据时默认仍运行原日常任务。
+- 显式 --tasks accept 按每批最多20项接取未锁定的待接任务，逐条核对回执并回读 accepted、in_progress、completed 或 claimed；默认不接单，首只 Buddy 协议由本人处理。
 
 ## 环境变量与参数
 
@@ -158,7 +159,7 @@
 - 必填：否
 - 敏感：否
 - 获取或设置：按需自行选择 --tasks 同名任务；默认只选签到、旅行、已完成任务领奖、Buddy信息和徽章。
-- 填写格式：逗号或空白分隔任务名：checkin、travel、claim、buddy_info、badges、lottery、blindbox、redeem、gift、makeup、daily_activity，以及现有成长任务名或任务代码。
+- 填写格式：逗号或空白分隔任务名：checkin、travel、claim、buddy_info、badges、lottery、blindbox、redeem、gift、makeup、daily_activity，以及现有成长任务名或任务代码。；新增 accept 显式批量接单，可与 checkin、claim、travel 同轮组合；不加入默认任务。
 
 ### `WORKBUDDY_ONLY_TASKS`
 
@@ -317,7 +318,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `06a2bbfa2eeae0bbec0565e373692dfa2d4f8f3d9b3311db4cb5321f223297a2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
+SHA-256 `91f0af2e2dbbbabaf591f4232693d9d5463c30e748fdaeda89838c3f4cd3a4db`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
 
 ## 副作用与风险
 
@@ -336,6 +337,7 @@ SHA-256 `06a2bbfa2eeae0bbec0565e373692dfa2d4f8f3d9b3311db4cb5321f223297a2`；基
 - 仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。
 - 仅显式 --travel-auto 时，已到达旅行领奖后回读空闲和当日上限，再派遣下一次旅行。
 - 仅选择 --local-daily run 且服务端确认尚未签到时领取每日积分，并回读今日已签；--verify-wallet 额外只读核验资源包增长。
+- 仅显式选择 accept 时批量接取待接成长任务，改变任务接受状态；不执行任务事件、模型对话或协议确认。
 
 ## 许可证与来源
 

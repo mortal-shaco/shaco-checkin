@@ -27984,234 +27984,6 @@
       }
     },
     {
-      "catalogId": "51413af773dd1c9a",
-      "applicationKey": "firlsy/ql_scripts-ai_auto_sign::get-token",
-      "checkProfile": {
-        "requiredEnv": [
-          "WORKBUDDY_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "WB_ACCESS_TOKEN",
-          "WORKBUDDY_DRY_RUN",
-          "WORKBUDDY_ACTION",
-          "WORKBUDDY_BUDGET_SECONDS",
-          "WORKBUDDY_DEPART",
-          "WORKBUDDY_MAKEUP",
-          "WORKBUDDY_LOTTERY",
-          "WORKBUDDY_BUDDY_OPEN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "WORKBUDDY_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "WORKBUDDY_ACTION": "auto",
-          "WORKBUDDY_DEPART": "0",
-          "WORKBUDDY_MAKEUP": "0",
-          "WORKBUDDY_LOTTERY": "0",
-          "WORKBUDDY_BUDDY_OPEN": "0"
-        },
-        "successPatterns": [
-          "\"result\": \"CLAIMED\"",
-          "\"result\": \"ALREADY\"",
-          "\"status\":\"success\""
-        ],
-        "features": [
-          "每日签到、状态查询、已签到及活动未开启识别",
-          "成长中心旅行礼物、接取任务、领取任务奖励和三档连登兑换",
-          "能量、连登、旅行状态展示及实物中奖收件提醒",
-          "独立开关控制派遣、按服务端日历补登、抽奖、能量开 Buddy",
-          "兼容上游命令名称；离线凭据诊断、按行多账号及断网预演",
-          "阶段脱敏日志、结构化业务结果、单行任务汇总及青龙通知"
-        ],
-        "sideEffects": [
-          "领取签到积分",
-          "领取旅行礼物、接取任务、领取任务及连登兑换奖励",
-          "显式开启后派遣旅行、使用补登卡、消耗抽奖机会及能量",
-          "通知开启时发送脱敏结果"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "WorkBuddy 每日签到与成长中心",
-      "path": "scripts/get_token.py",
-      "sha256": "e7442b7b4c533d02ef790c245aaafe3cd8fa2e0162245d97618c34cc25403b76",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "firlsy/ql_scripts-AI_auto_sign",
-        "branch": "main",
-        "commit": "820b611ad874f8282a23d90b621afd68e66d0960",
-        "originalPath": "get_token/signin.py",
-        "related": [
-          {
-            "catalogId": "157067a792e72b91",
-            "sha256": "8b500befd1f1c1c1d06e0889496d0f7c1008e961013948c87d55d46710ff8fa5",
-            "repository": "firlsy/ql_scripts-AI_auto_sign",
-            "url": "https://github.com/firlsy/ql_scripts-AI_auto_sign.git",
-            "branch": "main",
-            "commit": "820b611ad874f8282a23d90b621afd68e66d0960",
-            "originalPath": "get_token/export_token.py",
-            "license": "MIT"
-          },
-          {
-            "catalogId": "278316b5451beb55",
-            "sha256": "339c36bd7ae1b0770e7cf0b071a14ec812c4b2ff48dd9abcf6a2d8901c9d5693",
-            "repository": "firlsy/ql_scripts-AI_auto_sign",
-            "url": "https://github.com/firlsy/ql_scripts-AI_auto_sign.git",
-            "branch": "main",
-            "commit": "820b611ad874f8282a23d90b621afd68e66d0960",
-            "originalPath": "get_token/get_token.py",
-            "license": "MIT"
-          }
-        ]
-      },
-      "cron": "51 0,4,8,12,16,20 * * *",
-      "command": "python3 scripts/get_token.py",
-      "environment": [
-        {
-          "name": "WORKBUDDY_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录自己的 WorkBuddy，在开发者工具网络面板查看官方签到请求：Authorization 去掉 Bearer 前缀填入 auth.accessToken，X-User-Id 填入 account.uid；如有租户和域请求头，分别填入 account.enterpriseId、auth.domain。加密字段不能直接使用。",
-          "format": "每个非空行一个 JSON 对象；必填 auth.accessToken、account.uid；可选 account.enterpriseId、auth.domain；auth.endpoint 仅允许 https://copilot.tencent.com"
-        },
-        {
-          "name": "WB_ACCESS_TOKEN",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "兼容关联工具的令牌变量，从自己登录后的官方请求取得；规范变量为空时使用。",
-          "format": "每行一个令牌，不含 Bearer 前缀"
-        },
-        {
-          "name": "WORKBUDDY_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙设置预演开关；业务与通知均不联网。",
-          "format": "1 开启，默认关闭"
-        },
-        {
-          "name": "WORKBUDDY_ACTION",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "在青龙设置任务动作，命令行参数优先。",
-          "format": "auto 默认；兼容 silent、silent-poll、silent-growth、growth、status、claim、all、doctor"
-        },
-        {
-          "name": "WORKBUDDY_BUDGET_SECONDS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按每账号执行时限配置。",
-          "format": "正数秒；普通任务默认 420，上限 540；轮询默认 180，上限 240"
-        },
-        {
-          "name": "WORKBUDDY_DEPART",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "确认接受自动派遣旅行后自行开启。",
-          "format": "1 开启，默认 0 关闭"
-        },
-        {
-          "name": "WORKBUDDY_MAKEUP",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "确认接受消耗补登卡，每轮最多一天后自行开启。",
-          "format": "1 开启，默认 0 关闭"
-        },
-        {
-          "name": "WORKBUDDY_LOTTERY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "确认接受消耗抽奖机会，每轮一次后自行开启。",
-          "format": "1 开启，默认 0 关闭"
-        },
-        {
-          "name": "WORKBUDDY_BUDDY_OPEN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "确认接受消耗能量开 Buddy后自行开启。",
-          "format": "1 开启，默认 0 关闭"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "设置需通知的脚本选择列表；未设置时本任务默认启用。",
-          "format": "逗号、分号或空白分隔来源标识、相对路径、文件名或通配符；空值禁用，* 全选"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，指定青龙 notify.py 或 sendNotify.js 所在目录；同时支持标准青龙脚本目录及 notify 模块。",
-          "format": "本机通知模块目录"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "每个非空行一个账号会话 JSON，同账号配套凭据合并在对象中；兼容令牌别名同样每行一个账号。独立执行，任一失败整体非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "每日签到、状态查询、已签到及活动未开启识别",
-        "成长中心旅行礼物、接取任务、领取任务奖励和三档连登兑换",
-        "能量、连登、旅行状态展示及实物中奖收件提醒",
-        "独立开关控制派遣、按服务端日历补登、抽奖、能量开 Buddy",
-        "兼容上游命令名称；离线凭据诊断、按行多账号及断网预演",
-        "阶段脱敏日志、结构化业务结果、单行任务汇总及青龙通知"
-      ],
-      "sideEffects": [
-        "领取签到积分",
-        "领取旅行礼物、接取任务、领取任务及连登兑换奖励",
-        "显式开启后派遣旅行、使用补登卡、消耗抽奖机会及能量",
-        "通知开启时发送脱敏结果"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/51413af773dd1c9a",
-        "candidateSha256": "e3bef46a241ae00eaf7ca6b1a7e62fee9139e939a2fe2c56e4f8384e629ae448"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "e3bef46a241ae00eaf7ca6b1a7e62fee9139e939a2fe2c56e4f8384e629ae448",
-        "releaseSha256": "e7442b7b4c533d02ef790c245aaafe3cd8fa2e0162245d97618c34cc25403b76",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T04:01:56.722340+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "e3bef46a241ae00eaf7ca6b1a7e62fee9139e939a2fe2c56e4f8384e629ae448",
-          "toCandidateSha256": "e7442b7b4c533d02ef790c245aaafe3cd8fa2e0162245d97618c34cc25403b76",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
       "catalogId": "8edbbefea99ad1fb",
       "applicationKey": "qluser-alan/some_scripts::get",
       "checkProfile": {
@@ -79026,7 +78798,8 @@
         },
         "liveEnv": {},
         "successPatterns": [
-          "业务核验成功"
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
         ],
         "features": [
           "国内默认任务保持每日签到、已达标成长奖励领取、猫猫旅行、Buddy信息和徽章查询；积分、用量、成长等级、能量、任务状态及两类连签保持可查询。",
@@ -79072,7 +78845,8 @@
           "新增独立只读 credits / --expire 积分到期入口，按资源汇总提供的包代码查询付费和免费逐笔记录，分页有界、按账号去重并按到期排序；缺字段、业务失败或分页不完整均失败退出。",
           "展示逐笔剩余、总量、获取方式、使用状态、到期和周期刷新时间；优先扣减结束时间，再取周期结束和失效时间，兼容秒、毫秒与北京时间字符串。",
           "支持 --expiring-days 非负天数筛选和 --html 安全转义片段；以使用中记录为中心展示前后各十笔，--json 保留完整脱敏明细；入口仅查询且独立于签到、余额增长核验。",
-          "通过 --local-daily 将新积分明细入口合入现有规范脚本；同时配置凭据时默认仍运行原日常任务。"
+          "通过 --local-daily 将新积分明细入口合入现有规范脚本；同时配置凭据时默认仍运行原日常任务。",
+          "显式 --tasks accept 按每批最多20项接取未锁定的待接任务，逐条核对回执并回读 accepted、in_progress、completed 或 claimed；默认不接单，首只 Buddy 协议由本人处理。"
         ],
         "sideEffects": [
           "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
@@ -79089,7 +78863,8 @@
           "Cookie 加油站入口为尚未签到的账号领取每日奖励；--check 只查询。服务端轮换 Cookie 仅存于本轮账号内存。",
           "仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。",
           "仅显式 --travel-auto 时，已到达旅行领奖后回读空闲和当日上限，再派遣下一次旅行。",
-          "仅选择 --local-daily run 且服务端确认尚未签到时领取每日积分，并回读今日已签；--verify-wallet 额外只读核验资源包增长。"
+          "仅选择 --local-daily run 且服务端确认尚未签到时领取每日积分，并回读今日已签；--verify-wallet 额外只读核验资源包增长。",
+          "仅显式选择 accept 时批量接取待接成长任务，改变任务接受状态；不执行任务事件、模型对话或协议确认。"
         ]
       },
       "postReview": {
@@ -79098,7 +78873,7 @@
       },
       "displayName": "WorkBuddy 国内版日常维护",
       "path": "scripts/workbuddy_daily.py",
-      "sha256": "06a2bbfa2eeae0bbec0565e373692dfa2d4f8f3d9b3311db4cb5321f223297a2",
+      "sha256": "91f0af2e2dbbbabaf591f4232693d9d5463c30e748fdaeda89838c3f4cd3a4db",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -79217,10 +78992,40 @@
             "catalogId": "022a9a680ac352c1",
             "sha256": "4b6eb442c5ddcbdb8d8b4f90347574d7da662b8cc10a9f34ef8b525fe9639e50",
             "license": "MIT"
+          },
+          {
+            "catalogId": "157067a792e72b91",
+            "sha256": "8b500befd1f1c1c1d06e0889496d0f7c1008e961013948c87d55d46710ff8fa5",
+            "repository": "firlsy/ql_scripts-AI_auto_sign",
+            "url": "https://github.com/firlsy/ql_scripts-AI_auto_sign.git",
+            "branch": "main",
+            "commit": "820b611ad874f8282a23d90b621afd68e66d0960",
+            "originalPath": "get_token/export_token.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "278316b5451beb55",
+            "sha256": "339c36bd7ae1b0770e7cf0b071a14ec812c4b2ff48dd9abcf6a2d8901c9d5693",
+            "repository": "firlsy/ql_scripts-AI_auto_sign",
+            "url": "https://github.com/firlsy/ql_scripts-AI_auto_sign.git",
+            "branch": "main",
+            "commit": "820b611ad874f8282a23d90b621afd68e66d0960",
+            "originalPath": "get_token/get_token.py",
+            "license": "MIT"
+          },
+          {
+            "repository": "firlsy/ql_scripts-AI_auto_sign",
+            "url": "https://github.com/firlsy/ql_scripts-AI_auto_sign.git",
+            "branch": "main",
+            "commit": "820b611ad874f8282a23d90b621afd68e66d0960",
+            "originalPath": "get_token/signin.py",
+            "catalogId": "51413af773dd1c9a",
+            "sha256": "a5aa672b340a0c7a7d4ffd589471528e28198480d7d9838e30e0ea7da591ec44",
+            "license": "MIT"
           }
         ]
       },
-      "cron": "47 7,12 * * *",
+      "cron": "19 7,12 * * *",
       "command": "python3 scripts/workbuddy_daily.py",
       "environment": [
         {
@@ -79298,7 +79103,7 @@
           "required": false,
           "sensitive": false,
           "howToGet": "按需自行选择 --tasks 同名任务；默认只选签到、旅行、已完成任务领奖、Buddy信息和徽章。",
-          "format": "逗号或空白分隔任务名：checkin、travel、claim、buddy_info、badges、lottery、blindbox、redeem、gift、makeup、daily_activity，以及现有成长任务名或任务代码。"
+          "format": "逗号或空白分隔任务名：checkin、travel、claim、buddy_info、badges、lottery、blindbox、redeem、gift、makeup、daily_activity，以及现有成长任务名或任务代码。；新增 accept 显式批量接单，可与 checkin、claim、travel 同轮组合；不加入默认任务。"
         },
         {
           "name": "WORKBUDDY_ONLY_TASKS",
@@ -79519,7 +79324,8 @@
         "新增独立只读 credits / --expire 积分到期入口，按资源汇总提供的包代码查询付费和免费逐笔记录，分页有界、按账号去重并按到期排序；缺字段、业务失败或分页不完整均失败退出。",
         "展示逐笔剩余、总量、获取方式、使用状态、到期和周期刷新时间；优先扣减结束时间，再取周期结束和失效时间，兼容秒、毫秒与北京时间字符串。",
         "支持 --expiring-days 非负天数筛选和 --html 安全转义片段；以使用中记录为中心展示前后各十笔，--json 保留完整脱敏明细；入口仅查询且独立于签到、余额增长核验。",
-        "通过 --local-daily 将新积分明细入口合入现有规范脚本；同时配置凭据时默认仍运行原日常任务。"
+        "通过 --local-daily 将新积分明细入口合入现有规范脚本；同时配置凭据时默认仍运行原日常任务。",
+        "显式 --tasks accept 按每批最多20项接取未锁定的待接任务，逐条核对回执并回读 accepted、in_progress、completed 或 claimed；默认不接单，首只 Buddy 协议由本人处理。"
       ],
       "sideEffects": [
         "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
@@ -79536,7 +79342,8 @@
         "Cookie 加油站入口为尚未签到的账号领取每日奖励；--check 只查询。服务端轮换 Cookie 仅存于本轮账号内存。",
         "仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。",
         "仅显式 --travel-auto 时，已到达旅行领奖后回读空闲和当日上限，再派遣下一次旅行。",
-        "仅选择 --local-daily run 且服务端确认尚未签到时领取每日积分，并回读今日已签；--verify-wallet 额外只读核验资源包增长。"
+        "仅选择 --local-daily run 且服务端确认尚未签到时领取每日积分，并回读今日已签；--verify-wallet 额外只读核验资源包增长。",
+        "仅显式选择 accept 时批量接取待接成长任务，改变任务接受状态；不执行任务事件、模型对话或协议确认。"
       ],
       "review": {
         "staticPassed": true,
@@ -79549,20 +79356,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/132c582ed57df40f",
-        "candidateSha256": "6d3ceec7694e1bef476398385694197918079cbe12e6f8225cdbe3a0d4f9bf15"
+        "candidateSha256": "c6b8bce86f8f72524c3a0671bcb87f81e2f82bb5b498999699c56c957436351f"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "6d3ceec7694e1bef476398385694197918079cbe12e6f8225cdbe3a0d4f9bf15",
-        "releaseSha256": "06a2bbfa2eeae0bbec0565e373692dfa2d4f8f3d9b3311db4cb5321f223297a2",
+        "validatedSha256": "c6b8bce86f8f72524c3a0671bcb87f81e2f82bb5b498999699c56c957436351f",
+        "releaseSha256": "91f0af2e2dbbbabaf591f4232693d9d5463c30e748fdaeda89838c3f4cd3a4db",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T12:17:23.196891+00:00",
+          "approvedAt": "2026-11-11T12:29:11.218900+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "6d3ceec7694e1bef476398385694197918079cbe12e6f8225cdbe3a0d4f9bf15",
-          "toCandidateSha256": "06a2bbfa2eeae0bbec0565e373692dfa2d4f8f3d9b3311db4cb5321f223297a2",
+          "fromCandidateSha256": "c6b8bce86f8f72524c3a0671bcb87f81e2f82bb5b498999699c56c957436351f",
+          "toCandidateSha256": "91f0af2e2dbbbabaf591f4232693d9d5463c30e748fdaeda89838c3f4cd3a4db",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
