@@ -5820,6 +5820,192 @@
       }
     },
     {
+      "catalogId": "df0326edb14b4597",
+      "applicationKey": "astrbot-plugin-kuro",
+      "checkProfile": {
+        "requiredEnv": [
+          "KURO_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "KURO_TOKEN",
+          "KURO_ENABLE_WUWA",
+          "KURO_ENABLE_PGR",
+          "KURO_ENABLE_FORUM_SIGN",
+          "KURO_ENABLE_FORUM_TASKS",
+          "KURO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "KURO_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "KURO_ENABLE_WUWA": "1",
+          "KURO_ENABLE_PGR": "1",
+          "KURO_ENABLE_FORUM_SIGN": "1",
+          "KURO_ENABLE_FORUM_TASKS": "0"
+        },
+        "successPatterns": [
+          "TASK_SUMMARY=",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "鸣潮、战双游戏每日签到；主备角色接口查询；显示官方角色名称与签到记录奖励。",
+          "库街区社区签到与重复签到识别。",
+          "查询官方账号身份及库洛币余额；官方非敏感昵称、用户名和公开 UID 按返回值展示。",
+          "显式开启的论坛每日任务：浏览3篇、点赞5篇与分享登记。",
+          "每行一个账号、独立执行、超时和严格业务判定、脱敏时间轴日志及单行结构化汇总。",
+          "每日07:30青龙调度，支持手动执行、按任务开关、完全离线预演与青龙通知。"
+        ],
+        "sideEffects": [
+          "鸣潮与战双签到并领取接口发放的签到奖励。",
+          "社区签到并获得库洛币。",
+          "显式开启论坛任务后记录浏览、为5篇帖子点赞并登记分享；不发布帖子、评论或分享文案。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "库街区每日签到",
+      "path": "scripts/astrbot_plugin_kuro.py",
+      "sha256": "0b89100b3e3cdb6115b46d730125c9426c21f09497f4b459e9fb4d8b31a81cda",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "lango578/astrbot_plugin_kuro_checkin",
+        "branch": "main",
+        "commit": "72e4291e3f77f137206492f4721ae21906404972",
+        "originalPath": "main.py"
+      },
+      "cron": "31 7 * * *",
+      "command": "python3 scripts/astrbot_plugin_kuro.py",
+      "environment": [
+        {
+          "name": "KURO_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录 https://www.kurobbs.com，打开开发者工具的 Application → Cookies，复制 user_token 的值。设备字段可从本人发往 api.kurobbs.com 的请求头 devCode、distinct_id 获取。仅在青龙私密环境变量中填写，不粘贴整个 Cookie。",
+          "format": "每个非空行一个账号；支持原始 token，或含 token、可选 devcode、distinct_id 的单行 JSON 对象；不使用 &、@ 分隔账号。未填设备字段沿用上游固定登录设备值。"
+        },
+        {
+          "name": "KURO_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容单账号输入，获取方法同 KURO_ACCOUNTS；仅在未设置 KURO_ACCOUNTS 时读取。",
+          "format": "单个 token；推荐迁移到 KURO_ACCOUNTS。"
+        },
+        {
+          "name": "KURO_ENABLE_WUWA",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；默认开启鸣潮签到。",
+          "format": "1 开启，0 关闭；兼容 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "KURO_ENABLE_PGR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；默认开启战双签到。",
+          "format": "1 开启，0 关闭；兼容 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "KURO_ENABLE_FORUM_SIGN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；默认开启社区签到。",
+          "format": "1 开启，0 关闭；兼容 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "KURO_ENABLE_FORUM_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置；默认关闭；开启后浏览3篇帖子、点赞5篇帖子并登记分享，会产生公开互动。",
+          "format": "1 开启，0 关闭；兼容 true/false、yes/no、on/off。"
+        },
+        {
+          "name": "KURO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地验证或青龙预演时设为 1；不访问任何网络，也不调用通知渠道，只生成脱敏通知摘要。",
+          "format": "1 完全离线，0 正式运行；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置要通知的脚本选择器；设置后替代默认名单。当前脚本默认列入通知任务。",
+          "format": "支持目录编号、scripts/文件名、文件名、文件名通配符；逗号、分号或空白分隔；* 全选；空值全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙通知模块所在目录；未设置时尝试 import notify、/ql/data/scripts 和 /ql/scripts。",
+          "format": "包含 notify.py 或 sendNotify.js 的本机目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；同一账号的 token 与设备信息放在同一个 JSON 对象中，也支持每行只填 token。各账号独立执行，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "鸣潮、战双游戏每日签到；主备角色接口查询；显示官方角色名称与签到记录奖励。",
+        "库街区社区签到与重复签到识别。",
+        "查询官方账号身份及库洛币余额；官方非敏感昵称、用户名和公开 UID 按返回值展示。",
+        "显式开启的论坛每日任务：浏览3篇、点赞5篇与分享登记。",
+        "每行一个账号、独立执行、超时和严格业务判定、脱敏时间轴日志及单行结构化汇总。",
+        "每日07:30青龙调度，支持手动执行、按任务开关、完全离线预演与青龙通知。"
+      ],
+      "sideEffects": [
+        "鸣潮与战双签到并领取接口发放的签到奖励。",
+        "社区签到并获得库洛币。",
+        "显式开启论坛任务后记录浏览、为5篇帖子点赞并登记分享；不发布帖子、评论或分享文案。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/df0326edb14b4597",
+        "candidateSha256": "2defeb10577bed3fe15b49e2fa38930bebf1cffb177d892b1b625a3bbfb7f68a"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "2defeb10577bed3fe15b49e2fa38930bebf1cffb177d892b1b625a3bbfb7f68a",
+        "releaseSha256": "0b89100b3e3cdb6115b46d730125c9426c21f09497f4b459e9fb4d8b31a81cda",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:56:37.067732+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "2defeb10577bed3fe15b49e2fa38930bebf1cffb177d892b1b625a3bbfb7f68a",
+          "toCandidateSha256": "0b89100b3e3cdb6115b46d730125c9426c21f09497f4b459e9fb4d8b31a81cda",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "7b0e6bc8644c6dfe",
       "applicationKey": "astrbot-plugin-modelscope",
       "checkProfile": {
@@ -60442,6 +60628,148 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "320fde4050c623d83e4b468a53a7ff7ab70aba14cc2cf2e53e65fe437724aee4",
           "toCandidateSha256": "750d06839abf9e2b883f116a5155652b5f0b77442bfb01d1b25106fe51c08cc9",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "1007059beed08b37",
+      "applicationKey": "hankchn/checkin-cordcloud::checkin",
+      "checkProfile": {
+        "requiredEnv": [
+          "CORDCLOUD_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "CORDCLOUD_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CORDCLOUD_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "检查 CordCloud 登录会话，支持网页完成验证后的 Cookie 登录。",
+          "会话失效时可使用同账号邮箱密码调用上游已有登录接口，登录业务码和用户面板状态联合验证。",
+          "调用每日签到接口，依据明确成功业务码确认结果，依据明确的已签到消息识别重复签到。",
+          "逐行多账号独立运行，任何账号失败时整体非零退出。",
+          "提供完全断网预演、分账号分阶段日志、子任务统计和单行结构化汇总。",
+          "正式执行结束后通过青龙通知模块发送脱敏汇总，支持全局开关和脚本筛选，通知异常保留业务退出码。",
+          "官方 JSON 响应提供非敏感昵称、用户名、显示名称或公开 UID 时显示账号身份。"
+        ],
+        "sideEffects": [
+          "正式模式可能创建登录会话。",
+          "正式模式执行每日签到，可能领取平台签到奖励。",
+          "正式模式在通知启用且通知模块可用时发送脱敏任务通知。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "CordCloud 每日签到",
+      "path": "scripts/task_1007059b.js",
+      "sha256": "91847f5b92ea1fc035c952d21efff0034825b8ed7277fb6856f13f2333e28685",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "hankchn/checkin-cordcloud",
+        "branch": "main",
+        "commit": "77749ac19de6413dbd80a9b65ab23eb5e232de8c",
+        "originalPath": "scripts/checkin.js"
+      },
+      "cron": "57 10 * * *",
+      "command": "node scripts/task_1007059b.js",
+      "environment": [
+        {
+          "name": "CORDCLOUD_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人 CordCloud 官方站点登录并完成邮箱二次验证，打开浏览器开发者工具的网络面板，从 /user 请求的请求头复制完整 Cookie。也可使用本人注册邮箱和登录密码。需要二次验证或网页挑战时使用已验证的 Cookie。只在青龙私有环境变量中保存。",
+          "format": "每个非空行一个 JSON 对象，字段 cookie 为完整 Cookie 请求头值，或同时填写 email、password。可同时填写三者以便会话失效后尝试密码登录。可选 baseUrl 默认为 https://cordc.net，必须为 HTTPS 站点根地址。可选 loginPath 默认为 /auth/login。JSON 字符串内的引号和反斜杠须转义。账号仅按换行分隔，Cookie 内的等号和分号、密码内的 & 和 @ 均保持原样。"
+        },
+        {
+          "name": "CORDCLOUD_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中设置。",
+          "format": "设为 1 完全断网预演，仅验证配置并模拟会话、登录、签到和通知；其他值执行正式任务。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要筛选通知脚本时设置，未设置时本任务默认启用通知。",
+          "format": "逗号、分号、空白或换行分隔，可用目录编号 1007059beed08b37、scripts/checkin.js、checkin.js、实际文件名或带 * 的文件名模式；* 匹配全部，空值禁用全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "通知模块不在青龙标准目录时，填写管理员配置的 sendNotify.js 所在目录。",
+          "format": "可选本地目录；还会依次查找 /ql/data/scripts/sendNotify.js 和 /ql/scripts/sendNotify.js。模块须导出 sendNotify。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "CORDCLOUD_ACCOUNTS 每个非空行一个账号 JSON 对象。同账号的 Cookie、邮箱和密码放在同一对象内，每个账号独立维护内存会话。任一账号配置、登录或签到失败，继续处理其余账号并整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "检查 CordCloud 登录会话，支持网页完成验证后的 Cookie 登录。",
+        "会话失效时可使用同账号邮箱密码调用上游已有登录接口，登录业务码和用户面板状态联合验证。",
+        "调用每日签到接口，依据明确成功业务码确认结果，依据明确的已签到消息识别重复签到。",
+        "逐行多账号独立运行，任何账号失败时整体非零退出。",
+        "提供完全断网预演、分账号分阶段日志、子任务统计和单行结构化汇总。",
+        "正式执行结束后通过青龙通知模块发送脱敏汇总，支持全局开关和脚本筛选，通知异常保留业务退出码。",
+        "官方 JSON 响应提供非敏感昵称、用户名、显示名称或公开 UID 时显示账号身份。"
+      ],
+      "sideEffects": [
+        "正式模式可能创建登录会话。",
+        "正式模式执行每日签到，可能领取平台签到奖励。",
+        "正式模式在通知启用且通知模块可用时发送脱敏任务通知。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/1007059beed08b37",
+        "candidateSha256": "b181d1c941fe4105bba733e4fc8ee1d12742c322f05c1a3b513013c7cf5ded0c"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "b181d1c941fe4105bba733e4fc8ee1d12742c322f05c1a3b513013c7cf5ded0c",
+        "releaseSha256": "91847f5b92ea1fc035c952d21efff0034825b8ed7277fb6856f13f2333e28685",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:56:39.095384+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b181d1c941fe4105bba733e4fc8ee1d12742c322f05c1a3b513013c7cf5ded0c",
+          "toCandidateSha256": "91847f5b92ea1fc035c952d21efff0034825b8ed7277fb6856f13f2333e28685",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

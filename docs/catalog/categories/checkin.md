@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **375** 个脚本。返回 [`目录首页`](../README.md)。
+共 **377** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -30,6 +30,7 @@
 | apk.tw每日签到 | `scripts/apktw.py` | `python3 scripts/apktw.py` | `19 9 * * *` | 待检查 | [apktw.py.md](../../scripts/apktw.py.md)（`docs/scripts/apktw.py.md`） |
 | Arctime每日签到 | `scripts/arctime_auto_sign.py` | `python3 scripts/arctime_auto_sign.py` | `56 8 * * *` | 待检查 | [arctime_auto_sign.py.md](../../scripts/arctime_auto_sign.py.md)（`docs/scripts/arctime_auto_sign.py.md`） |
 | ArityFlow 独立子站签到 | `scripts/arityflow_checkin.py` | `python3 scripts/arityflow_checkin.py` | `9 10 * * *` | 待检查 | [arityflow_checkin.py.md](../../scripts/arityflow_checkin.py.md)（`docs/scripts/arityflow_checkin.py.md`） |
+| 库街区每日签到 | `scripts/astrbot_plugin_kuro.py` | `python3 scripts/astrbot_plugin_kuro.py` | `31 7 * * *` | 待检查 | [astrbot_plugin_kuro.py.md](../../scripts/astrbot_plugin_kuro.py.md)（`docs/scripts/astrbot_plugin_kuro.py.md`） |
 | 魔搭社区每日签到 | `scripts/astrbot_plugin_modelscope.py` | `python3 scripts/astrbot_plugin_modelscope.py` | `0 6 * * *` | 待检查 | [astrbot_plugin_modelscope.py.md](../../scripts/astrbot_plugin_modelscope.py.md)（`docs/scripts/astrbot_plugin_modelscope.py.md`） |
 | 中转站每日签到 | `scripts/astrbot_plugin_relay.py` | `python3 scripts/astrbot_plugin_relay.py` | `39 9 * * *` | 待检查 | [astrbot_plugin_relay.py.md](../../scripts/astrbot_plugin_relay.py.md)（`docs/scripts/astrbot_plugin_relay.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
@@ -282,6 +283,7 @@
 | 欢太商城每日任务 | `scripts/task_0b0caa60.py` | `python3 scripts/task_0b0caa60.py` | `46 10 * * *` | 待检查 | [task_0b0caa60.py.md](../../scripts/task_0b0caa60.py.md)（`docs/scripts/task_0b0caa60.py.md`） |
 | 每日打卡签到 | `scripts/task_0c4949f3.py` | `python3 scripts/task_0c4949f3.py` | `34 10 * * *` | 待检查 | [task_0c4949f3.py.md](../../scripts/task_0c4949f3.py.md)（`docs/scripts/task_0c4949f3.py.md`） |
 | 掘金好好生活计划打卡 | `scripts/task_0e52328d.py` | `python3 scripts/task_0e52328d.py` | `2 1 * * *` | 待检查 | [task_0e52328d.py.md](../../scripts/task_0e52328d.py.md)（`docs/scripts/task_0e52328d.py.md`） |
+| CordCloud 每日签到 | `scripts/task_1007059b.js` | `node scripts/task_1007059b.js` | `57 10 * * *` | 待检查 | [task_1007059b.js.md](../../scripts/task_1007059b.js.md)（`docs/scripts/task_1007059b.js.md`） |
 | NSSCTF 自动登录签到 | `scripts/task_13284d0d.py` | `python3 scripts/task_13284d0d.py` | `39 10 * * *` | 待检查 | [task_13284d0d.py.md](../../scripts/task_13284d0d.py.md)（`docs/scripts/task_13284d0d.py.md`） |
 | 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
