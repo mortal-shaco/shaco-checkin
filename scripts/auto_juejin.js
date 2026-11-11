@@ -29,6 +29,17 @@
  * 云函数兼容入口 exports.main 返回 {result,msg}；导入不会自动执行。
  * Node.js >=18；仅使用标准库，无业务外部依赖。
  *
+ * 合并来源：ynzy/juejin_auto_game，app.js (MIT)，提交 f42080a828232628098fccdfe82c00954fd74908。
+ * JUEJIN_ACCOUNTS 另支持每行 JSON：cookie、aid、uuid、signature（兼容 _signature）。
+ * 从本人已登录 api.juejin.cn 请求取得 Cookie 和对应查询参数，不分享凭据。
+ * JUEJIN_TASKS 可显式追加 signin,lucky,draw，不取消维护版默认签到和统计。
+ * lucky、draw 分别开启沾喜气、免费抽奖，未设置时保留原开关。
+ * JUEJIN_LUCKY_SOURCE=configured 默认使用手动历史 ID；global 使用官方中奖记录。
+ * 显式 JUEJIN_TASKS=lucky 且未配置来源或历史 ID 时使用 global。
+ * JSON 模式签到及抽奖需 signature；原 Cookie 和旧参数接口保持兼容。
+ * 不包含未提供实现的 autoGame/collectBugGame，不猜测游戏协议。
+ * 上游直连推送统一替换为青龙通知；不发布公共文本。
+ *
  * MIT License
  * Original source attribution: suojian0313/juejin_helper
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -73,6 +84,7 @@ const TITLE = '掘金每日签到';
 const CATALOG = '9e33a705da89cfd6';
 const enabledValues = ['1', 'true', 'yes', 'on'];
 const disabledValues = ['0', 'false', 'no', 'off'];
+let credentialSecrets = [];
 const isEnabled = value => enabledValues.includes((value || '').toLowerCase());
 function accountsFrom(env) {
   if (env.JUEJIN_COOKIE !== undefined) {
@@ -82,6 +94,16 @@ function accountsFrom(env) {
   const lines = env.JUEJIN_ACCOUNTS !== undefined ? env.JUEJIN_ACCOUNTS.split(/\r?\n/) :
     (env.juejin_aid || env.juejin_sessionid ? [`${env.juejin_aid || ''}|${env.juejin_sessionid || ''}`] : []);
   return lines.map(line => line.trim()).filter(Boolean).map(line => {
+    if (line.startsWith('{')) {
+      try {
+        const value = JSON.parse(line);
+        const signature = value.signature === undefined ? value._signature : value.signature;
+        const field = text => typeof text === 'string' && !!text.trim() && !/[\x00-\x1f\x7f]/.test(text);
+        return { cookie: value.cookie, aid: value.aid, uuid: value.uuid, signature,
+          valid: field(value.cookie) && value.cookie.includes('=') && field(value.aid) && /^\d+$/.test(value.aid)
+            && field(value.uuid) && field(signature) };
+      } catch { return { cookie: '', aid: '', valid: false }; }
+    }
     const at = line.indexOf('|');
     const aid = at < 0 ? '' : line.slice(0, at).trim();
     const session = at < 0 ? '' : line.slice(at + 1).trim();
@@ -97,7 +119,8 @@ const endpoint = {
   lucky: ['POST', 'lottery_lucky/my_lucky'],
   free: ['GET', 'lottery_config/get'],
   dip: ['POST', 'lottery_lucky/dip_lucky'],
-  lottery: ['POST', 'lottery/draw']
+  lottery: ['POST', 'lottery/draw'],
+  history: ['POST', 'lottery_history/global_big']
 };
 function log(text) {
   console.log(`[${new Date().toTimeString().slice(0, 8)}] ${text}`);
@@ -105,7 +128,7 @@ function log(text) {
 function safeText(value, cookie) {
   if (typeof value !== 'string' && typeof value !== 'number') return '';
   let text = String(value).replace(/[\r\n\x00-\x1f\x7f]/g, ' ');
-  const sensitive = [cookie, ...cookie.split(';').map(part => part.slice(part.indexOf('=') + 1).trim())];
+  const sensitive = [...credentialSecrets, cookie, ...cookie.split(';').map(part => part.slice(part.indexOf('=') + 1).trim())];
   for (const secret of sensitive.filter(item => item)) {
     if (secret.length >= 4) text = text.split(secret).join('[凭据已隐藏]');
     else if (text === secret) text = '[凭据已隐藏]';
@@ -114,14 +137,17 @@ function safeText(value, cookie) {
     .replace(/\b1[3-9]\d{9}\b/g, '[手机号已隐藏]');
 }
 function request(account, key, config) {
-  const { cookie, aid } = account;
-  const { dryRun, historyId } = config;
+  const { cookie, aid, uuid, signature } = account;
+  const { dryRun, historyId, luckySource } = config;
   if (dryRun) throw new Error('预演模式禁止网络请求');
   const [method, route] = endpoint[key];
   const url = new URL(`https://api.juejin.cn/growth_api/v1/${route}`);
   if (aid) url.searchParams.set('aid', aid);
+  if (uuid) url.searchParams.set('uuid', uuid);
+  if (signature && ['checkIn', 'lottery'].includes(key)) url.searchParams.set('_signature', signature);
+  const payload = key === 'dip' && luckySource === 'global' ? JSON.stringify({ lottery_history_id: historyId }) : undefined;
   // 保留上游 dip_lucky 参数所在的查询串，不推测未提供证据的接口变更。
-  if (key === 'dip') url.searchParams.set('lottery_history_id', historyId);
+  if (key === 'dip' && luckySource !== 'global') url.searchParams.set('lottery_history_id', historyId);
   return new Promise((resolve, reject) => {
     let settled = false;
     let timer;
@@ -134,7 +160,8 @@ function request(account, key, config) {
     };
     const req = https.request(url, {
       method,
-      headers: { Accept: 'application/json', 'Content-Type': 'application/json', Cookie: cookie },
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json', Cookie: cookie,
+        'User-Agent': 'Mozilla/5.0', ...(payload === undefined ? {} : { 'Content-Length': Buffer.byteLength(payload) }) },
       timeout: 15000
     }, res => {
       if (res.statusCode !== 200) {
@@ -176,7 +203,7 @@ function request(account, key, config) {
       req.destroy();
     });
     req.on('error', () => finish(new Error('网络请求失败')));
-    req.end();
+    req.end(payload);
   });
 }
 function number(value) { return typeof value === 'number' && Number.isFinite(value) && value >= 0; }
@@ -190,7 +217,7 @@ function identify(data, cookie) {
   }
 }
 async function runAccount(account, index, config) {
-  const { cookie } = account;
+  const cookie = typeof account.cookie === 'string' ? account.cookie : '';
   const { dryRun, dip, lottery } = config;
   let freeCount = null;
   const begin = Date.now();
@@ -232,16 +259,29 @@ async function runAccount(account, index, config) {
       result.checkInStatus = true;
       return { kind: 'alreadyComplete', message: '☑️ 今日已签到' };
     }
-    await read('checkIn');
+    const signed = await read('checkIn');
+    if (signed && number(signed.incr_point) && number(signed.sum_point))
+      log(`账号 ${index} 签到获得矿石 ${signed.incr_point}，矿石总数 ${signed.sum_point}`);
     if (await read('status') !== true) throw new Error('签到后状态核验失败');
     result.checkInStatus = true;
     return { message: '✅ 今日签到成功，已核验状态' };
   });
   await stage('沾喜气', async () => {
     if (!dip) return { kind: 'skipped', message: '⏭️ 开关未开启' };
-    if (dryRun) return { kind: 'skipped', message: '⏭️ 预演，计划使用配置的历史记录沾喜气' };
-    await read('dip');
-    return { message: '✅ 沾喜气业务成功' };
+    if (dryRun) return { kind: 'skipped', message: `⏭️ 预演，计划${config.luckySource === 'global' ? '获取中奖记录后' : '使用配置的历史记录'}沾喜气` };
+    let historyId = config.historyId;
+    if (config.luckySource === 'global') {
+      const history = await read('history');
+      const id = history && Array.isArray(history.lotteries) && history.lotteries[0] && history.lotteries[0].history_id;
+      if (!(typeof id === 'string' && /^\d+$/.test(id) && /[1-9]/.test(id)) && !(Number.isSafeInteger(id) && id > 0))
+        throw new Error('中奖记录为空或编号无效，未执行沾喜气');
+      historyId = id;
+      log(`账号 ${index} 已确认有效中奖记录，未输出记录编号`);
+    }
+    const data = await request(account, 'dip', { ...config, historyId });
+    identify(data, cookie);
+    if (config.luckySource === 'global' && (!data || !number(data.dip_value))) throw new Error('沾喜气幸运值字段异常');
+    return { message: `✅ 沾喜气业务成功${data && number(data.dip_value) ? `，本次幸运值 ${data.dip_value}` : ''}` };
   });
   await stage('查询免费抽奖次数', async () => {
     if (dryRun) return { kind: 'skipped', message: '⏭️ 预演，计划查询免费抽奖次数，不模拟业务成功' };
@@ -293,7 +333,7 @@ function notifySelected() {
   if (enabledValues.includes(mode) && process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
   const selectors = (process.env.QINGLONG_NOTIFY_SCRIPTS || '').split(/[,;\s]+/).filter(Boolean);
   const current = __filename.replace(/\\/g, '/');
-  const names = [CATALOG, '012f027cd2f3c11b', 'juejin.js', 'scripts/juejin.js', path.basename(__filename), 'auto_juejin.js', 'scripts/auto_juejin.js', current];
+  const names = [CATALOG, '012f027cd2f3c11b', '428b6cfe6c4ed62e', 'task_428b6cfe.js', 'scripts/task_428b6cfe.js', 'juejin.js', 'scripts/juejin.js', path.basename(__filename), 'auto_juejin.js', 'scripts/auto_juejin.js', current];
   return selectors.some(selector => {
     const escaped = selector.split(/([*?])/).map(part => {
       if (part === '*') return '.*';
@@ -347,18 +387,25 @@ async function notify(summary, dryRun) {
 async function main() {
   const started = Date.now();
   const dryRun = isEnabled(process.env.JUEJIN_DRY_RUN);
-  const dip = isEnabled(process.env.JUEJIN_DIP_LUCKY);
-  const lottery = isEnabled(process.env.JUEJIN_FREE_LOTTERY);
+  const tasks = process.env.JUEJIN_TASKS === undefined ? [] : process.env.JUEJIN_TASKS.split(',').map(value => value.trim());
+  const invalidTasks = tasks.some(value => !['signin', 'lucky', 'draw'].includes(value));
+  const dip = isEnabled(process.env.JUEJIN_DIP_LUCKY) || tasks.includes('lucky');
+  const lottery = isEnabled(process.env.JUEJIN_FREE_LOTTERY) || tasks.includes('draw');
   const historyId = (process.env.JUEJIN_LOTTERY_HISTORY_ID || '').trim();
   const accounts = accountsFrom(process.env);
-  const config = { dryRun, dip, lottery, historyId };
+  const luckySource = process.env.JUEJIN_LUCKY_SOURCE === undefined ?
+    (tasks.includes('lucky') && !historyId ? 'global' : 'configured') : process.env.JUEJIN_LUCKY_SOURCE;
+  credentialSecrets = accounts.flatMap(account => [account.cookie, account.uuid, account.signature,
+    ...(typeof account.cookie === 'string' ? account.cookie.split(';').map(part => part.slice(part.indexOf('=') + 1).trim()) : [])])
+    .concat(historyId).filter(value => typeof value === 'string' && value);
+  const config = { dryRun, dip, lottery, historyId, luckySource };
   console.log(`========== ${TITLE} ==========`);
   log(`开始时间 ${new Date(started).toISOString()}，模式 ${dryRun ? '断网预演' : '正式执行'}，账号数 ${accounts.length}`);
   log('阶段 0 参数检查');
   const invalidSwitch = ['JUEJIN_DRY_RUN', 'JUEJIN_DIP_LUCKY', 'JUEJIN_FREE_LOTTERY'].some(name =>
     process.env[name] !== undefined && ![...enabledValues, ...disabledValues].includes(process.env[name].toLowerCase()));
   const invalidNotify = process.env.QINGLONG_NOTIFY !== undefined && !['auto', ...enabledValues, ...disabledValues].includes(process.env.QINGLONG_NOTIFY.toLowerCase());
-  const invalid = accounts.length === 0 || invalidSwitch || invalidNotify || (dip && !/^\d+$/.test(historyId));
+  const invalid = accounts.length === 0 || invalidSwitch || invalidNotify || invalidTasks || !['configured', 'global'].includes(luckySource) || (dip && luckySource === 'configured' && !/^\d+$/.test(historyId));
   const results = [];
   if (invalid) log('❌ 配置错误，请检查 账号变量、布尔开关、通知开关及沾喜气所需的历史记录 ID');
   else for (let index = 0; index < accounts.length; index++) results.push(await runAccount(accounts[index], index + 1, config));

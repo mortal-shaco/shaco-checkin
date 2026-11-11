@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/auto_juejin.js`
 - 青龙命令：`node scripts/auto_juejin.js`
 - 建议 Cron：`36 10 * * *`
-- 发布哈希：`3e7b9b47d6f56f2aabe3f8db769c7808e2e127b45ea6e2adc5c85cd424134deb`
+- 发布哈希：`2854f6ba1611d1ac133b6304da1077b43567acd7db3a2cb844335361f9e2d7f2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -21,6 +21,9 @@
 - 兼容逐行 aid|sessionid 多账号和旧 juejin_aid、juejin_sessionid 单账号参数；每个账号保留独立 aid 查询参数
 - 保留云函数 main 导出及 result、msg 返回值，导入不自动执行，阶段保留 result、msg 机器可读输出
 - 显示官方返回的昵称、用户名、显示名称或公开 UID；抑制凭据、手机号和原始响应
+- 显式选择后从官方中奖记录取得有效历史编号，使用 JSON 请求体沾喜气并校验本次幸运值
+- 兼容逐行 JSON 的 cookie、aid、uuid、signature 或 _signature，保留账号级查询参数
+- 显式 signin、lucky、draw 追加开关，始终保留原签到和只读统计
 
 ## 环境变量与参数
 
@@ -55,7 +58,7 @@
 
 - 必填：否
 - 敏感：是
-- 获取或设置：在掘金网页版本人执行沾喜气时，从网络请求参数中获取有效 lottery_history_id。开启沾喜气时必填，不沿用上游固定记录。
+- 获取或设置：configured 来源开启沾喜气时必填，从本人请求取得有效 lottery_history_id；global 来源自动获取，不使用该值。
 - 填写格式：十进制数字字符串，共享的目标抽奖历史记录标识，无需与登录凭据合并。
 
 ### `JUEJIN_FREE_LOTTERY`
@@ -83,15 +86,15 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：auto 模式下填写通知脚本标识；支持维护目录标识 9e33a705da89cfd6、合并来源标识 012f027cd2f3c11b、auto_juejin.js、scripts/auto_juejin.js、juejin.js、scripts/juejin.js、实际文件名或路径及通配符。显式空名单禁用通知。
+- 获取或设置：通知模块位于自定义目录时填写，默认查找 /ql/data/scripts 和 /ql/scripts；模块不可用时保留业务退出码。
 - 填写格式：可选目录路径，目录中应存在导出 sendNotify 函数的 sendNotify.js。
 
 ### `JUEJIN_ACCOUNTS`
 
 - 必填：否
 - 敏感：是
-- 获取或设置：登录掘金网页版，在开发者工具网络面板查看 api.juejin.cn 请求；从查询参数取得 aid，从请求 Cookie 取得 sessionid 值，不要粘贴整条 Cookie。 仅未设置 JUEJIN_COOKIE 时启用，作为兼容输入。
-- 填写格式：每个非空行一个账号，格式为 aid|sessionid，仅按第一个 | 拆分；aid 为数字，sessionid 不含分号、空白或控制字符。
+- 获取或设置：仅未设置 JUEJIN_COOKIE 时启用。登录掘金网页，从本人 api.juejin.cn 请求取得 Cookie 头及 aid、uuid、_signature 查询参数。所有字段须来自同一账号会话；signature 兼容 _signature。也保留旧 aid|sessionid 输入。
+- 填写格式：每个非空行一个账号：aid|sessionid（仅按第一个 | 拆分），或完整 JSON 对象（cookie、aid、uuid、signature 均为非空字符串，aid 为数字）。不使用 & 或 @ 分隔账号。
 
 ### `juejin_aid`
 
@@ -107,17 +110,31 @@
 - 获取或设置：兼容上游单账号变量，从登录后的掘金请求 Cookie 取得 sessionid 值。仅未设置 JUEJIN_ACCOUNTS 时使用，必须配合 juejin_aid。 同时未设置 JUEJIN_COOKIE 时才启用。
 - 填写格式：单账号会话值，不含字段名
 
+### `JUEJIN_TASKS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：按需显式追加来源任务，不取消维护版每日签到与只读统计。未设置时完全使用原开关。
+- 填写格式：逗号分隔 signin、lucky、draw；lucky 开启沾喜气，draw 开启一次免费抽奖。lucky 且未提供来源和手动 ID 时使用 global。
+
+### `JUEJIN_LUCKY_SOURCE`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：需要自动选择官方中奖记录时设置 global；configured 保留手动历史 ID。此变量不单独开启沾喜气。
+- 填写格式：configured 或 global；默认 configured，但显式任务包含 lucky 且无手动 ID 时默认 global。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
 
 ## 多账号
 
-优先读取 JUEJIN_COOKIE，每个非空行一个账号的完整 Cookie，不按分号、& 或 @ 拆分。未设置时兼容 JUEJIN_ACCOUNTS，每个非空行 aid|sessionid，仅按第一个 | 拆分并保留后续会话文本；再兼容旧变量对单账号。显式空值不回退。各账号独立执行，任一失败整体非零退出。
+优先读取 JUEJIN_COOKIE，每个非空行一个账号的完整 Cookie，不按分号、& 或 @ 拆分。未设置时兼容 JUEJIN_ACCOUNTS，每个非空行 aid|sessionid，仅按第一个 | 拆分并保留后续会话文本；再兼容旧变量对单账号。显式空值不回退。各账号独立执行，任一失败整体非零退出。 JUEJIN_ACCOUNTS 另支持逐行 JSON 对象，保留每账号 uuid、signature 查询参数；单账号无效不阻止其他账号。
 
 ## 验证与兼容性
 
-SHA-256 `3e7b9b47d6f56f2aabe3f8db769c7808e2e127b45ea6e2adc5c85cd424134deb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9e33a705da89cfd6`。
+SHA-256 `2854f6ba1611d1ac133b6304da1077b43567acd7db3a2cb844335361f9e2d7f2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9e33a705da89cfd6`。
 
 ## 副作用与风险
 
