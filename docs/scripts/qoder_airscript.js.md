@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/qoder_airscript.js`
 - 青龙命令：`node scripts/qoder_airscript.js`
 - 建议 Cron：`17 8 * * *`
-- 发布哈希：`4e996ff7db81cc0b590b6da5a18c75045ff70669310d5da12870085c2b2129a3`
+- 发布哈希：`2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -25,6 +25,10 @@
 - 支持中国区 PAT 换取短期任务令牌后领取全部活动；兼容两种兑换字段，仅字段错误时尝试备用字段，保留原领取及幂等成功标记
 - PAT 账号无须设备头或本机客户端；保持规范 JSON 行账号及 QODER_PAT 兼容入口，默认不兑换、不领取，不隐式读取凭据文件
 - PAT 活动支持秒、毫秒及日期文本有效窗口；成功收据需明确领取状态、明确幂等结果或正数奖励面值，未知结果失败退出
+- 兼容旧 JSON 数组、accounts 包装、token 与 expires_at 别名，以及显式配置文件中的设备字段，保持规范 JSON 行和原文件优先级
+- 显式设置 QODER_EMPTY_RETRY 或 QODER_EMPTY_WAIT 时，仅无普通活动才在本轮重查；--once 禁用等待，未设置时保留规范版单轮默认
+- 可选临期刷新，解析秒、毫秒、ISO 过期时间及访问令牌到期字段；刷新失败仅沿用未过期令牌
+- 兼容 silent、poll、silent-poll 调用，可选追加脱敏 JSON 行记录及企业微信、PushPlus、HTTPS Webhook 汇总通知
 
 ## 环境变量与参数
 
@@ -37,7 +41,7 @@
 - 必填：是
 - 敏感：是
 - 获取或设置：在本人已登录的 Qoder 客户端授权请求中取得 Authorization 访问令牌及 Cosy-* 设备头，刷新令牌从本人登录凭据取得。仅处理本人账号，避免上传凭据。兼容原取号工具 JSON，但运行不依赖该工具。 PAT 也可在 https://qoder.cn/account/integrations 创建本人个人访问令牌，放在同一账号 JSON 的 personalToken 字段。
-- 填写格式：每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。
+- 填写格式：每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。 兼容旧 JSON 数组、accounts 包装及 token、expires_at 别名；device 字段可由环境变量及显式配置补齐，仍须八项完整。可选 expiresAt 为秒、毫秒或 ISO 日期。
 
 ### 可选参数
 
@@ -46,7 +50,7 @@
 - 必填：否
 - 敏感：是
 - 获取或设置：自行建立私有 JSON 行账号文件并显式指定路径，格式同 QODER_ACCOUNTS。该方式或旧变量可替代规范账号变量。
-- 填写格式：文件路径，优先于环境账号；刷新后原子写回并设置权限0600，预演不写回。--from-file 则只读取单个 JSON 对象且不写回。
+- 填写格式：文件路径，优先于环境账号；刷新后原子写回并设置权限0600，预演不写回。--from-file 则只读取单个 JSON 对象且不写回。 兼容 JSON 数组及 accounts 包装，写回保留原容器结构。
 
 ### `QODER_TOKENS`
 
@@ -88,56 +92,56 @@
 - 必填：否
 - 敏感：否
 - 获取或设置：旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-ClientType 头取得。
-- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。
+- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。
 
 ### `QODER_COSY_MACHINE_OS`
 
 - 必填：否
 - 敏感：是
 - 获取或设置：旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineOS 头取得。
-- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。
+- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。
 
 ### `QODER_COSY_MACHINE_HOSTNAME`
 
 - 必填：否
 - 敏感：是
 - 获取或设置：旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineHostname 头取得。
-- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。
+- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。
 
 ### `QODER_COSY_MACHINE_ID`
 
 - 必填：否
 - 敏感：是
 - 获取或设置：旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineId 头取得。
-- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。
+- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。
 
 ### `QODER_COSY_MACHINE_TOKEN`
 
 - 必填：否
 - 敏感：是
 - 获取或设置：旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineToken 头取得。
-- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。
+- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。
 
 ### `QODER_COSY_MACHINE_CODE`
 
 - 必填：否
 - 敏感：是
 - 获取或设置：旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineCode 头取得。
-- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。
+- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。
 
 ### `QODER_COSY_MACHINE_TYPE`
 
 - 必填：否
 - 敏感：是
 - 获取或设置：旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineType 头取得。
-- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。
+- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。
 
 ### `QODER_COSY_VERSION`
 
 - 必填：否
 - 敏感：否
 - 获取或设置：旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-Version 头取得。
-- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。
+- 填写格式：非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。
 
 ### `QODER_MACHINE_TOKEN`
 
@@ -279,6 +283,69 @@
 - 获取或设置：使用青龙已配置的通知模块目录。
 - 填写格式：含 sendNotify.js 的目录；也查找 /ql/data/scripts 和 /ql/scripts。缺失或失败保留业务退出码。
 
+### `QODER_EMPTY_RETRY`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选，自行设置活动未下发时本轮查询次数。
+- 填写格式：显式配置才开启；整数至少1，非法值使用3。未配置两个重查变量时保持原规范脚本单轮；--once 禁用等待重查。
+
+### `QODER_EMPTY_WAIT`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：可选，自行设置空活动重查的等待秒数。
+- 填写格式：显式配置才开启；整数秒至少0，非法值使用20。任一重查变量存在时次数默认3、间隔默认20秒；预演不等待。
+
+### `QYWX_TOKEN`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：从本人企业微信机器人设置取得 webhook 的 key，兼容配置 notify.qywxToken。
+- 填写格式：机器人 key 或含 key= 的完整地址；受全局通知开关控制。
+
+### `PLUSPLUS_TOKEN`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：从本人 PushPlus 取得推送令牌，兼容配置 notify.plusplusToken。
+- 填写格式：推送令牌；受全局通知开关控制。
+
+### `QODER_WEBHOOK`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：指定本人信任的 HTTPS 通知接收端，兼容配置 notify.webhook。
+- 填写格式：HTTPS 地址，仅发送中文标题和脱敏统计；受全局通知开关控制。 成功须 HTTP 200 且 success=true 或 code 为0或200；失败不改变业务退出码。
+
+### `QODER_CONFIG_FILE`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：自行创建私有配置 JSON 并显式指定路径，无须运行提取器。
+- 填写格式：不默认读取文件；支持 device、refreshMarginH、notify、baseUrls。device 字段低于账号及环境变量优先级。notify 支持 qywxToken、plusplusToken、webhook。
+
+### `QODER_REFRESH_MARGIN_H`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：自行选择临期续期窗口。
+- 填写格式：非负整数小时；优先于显式配置 refreshMarginH。未配置时保持优先使用访问令牌，鉴权失效才刷新。
+
+### `QODER_LOG_FILE`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：自行指定可写的脱敏日志路径。
+- 填写格式：默认关闭文件日志，显式启用后追加 JSON 行，预演不写。
+
+### `QODER_BASE_URL`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：仅从官方请求核对同区域基址；一般无需配置。
+- 填写格式：逗号分隔的官方根地址，仅允许与当前区域相同的 https://openapi.qoder.com.cn 或 https://openapi.qoder.sh；不向任意地址或其他地区转发凭据。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
@@ -289,7 +356,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `4e996ff7db81cc0b590b6da5a18c75045ff70669310d5da12870085c2b2129a3`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
+SHA-256 `2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/e034e75509550071`。
 
 ## 副作用与风险
 
@@ -298,6 +365,7 @@ SHA-256 `4e996ff7db81cc0b590b6da5a18c75045ff70669310d5da12870085c2b2129a3`；基
 - 显式配置私有账号文件时将轮换后的令牌原子写回该文件
 - 通知启用且非预演时向青龙通知渠道及配置的账号或全局渠道投递脱敏汇总
 - 显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存
+- 显式设置 QODER_LOG_FILE 且非预演时追加脱敏 JSON 行日志
 
 ## 许可证与来源
 

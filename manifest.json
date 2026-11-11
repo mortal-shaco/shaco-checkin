@@ -46075,16 +46075,21 @@
           "DINGTALK_SECRET",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
+          "QINGLONG_NOTIFY_DIR",
+          "QODER_EMPTY_RETRY",
+          "QODER_EMPTY_WAIT",
+          "QYWX_TOKEN",
+          "PLUSPLUS_TOKEN",
+          "QODER_WEBHOOK",
+          "QODER_CONFIG_FILE",
+          "QODER_REFRESH_MARGIN_H",
+          "QODER_LOG_FILE",
+          "QODER_BASE_URL"
         ],
         "dryRunEnv": {
           "QODER_DRY_RUN": "1"
         },
-        "liveEnv": {
-          "QODER_ACTION": "checkin",
-          "QODER_PRO_UPGRADE": "0",
-          "QODER_WINDOW_RETRY": "0"
-        },
+        "liveEnv": {},
         "successPatterns": [
           "\"status\":\"success\"",
           "\"status\":\"already-complete\""
@@ -46105,14 +46110,19 @@
           "兼容 QODER_CLAIM_TOKEN、--token、--from-file、官方地址 --base-url、--once、--dry-run 和脱敏 --json 结果；规范账号配置和原默认计划保留",
           "支持中国区 PAT 换取短期任务令牌后领取全部活动；兼容两种兑换字段，仅字段错误时尝试备用字段，保留原领取及幂等成功标记",
           "PAT 账号无须设备头或本机客户端；保持规范 JSON 行账号及 QODER_PAT 兼容入口，默认不兑换、不领取，不隐式读取凭据文件",
-          "PAT 活动支持秒、毫秒及日期文本有效窗口；成功收据需明确领取状态、明确幂等结果或正数奖励面值，未知结果失败退出"
+          "PAT 活动支持秒、毫秒及日期文本有效窗口；成功收据需明确领取状态、明确幂等结果或正数奖励面值，未知结果失败退出",
+          "兼容旧 JSON 数组、accounts 包装、token 与 expires_at 别名，以及显式配置文件中的设备字段，保持规范 JSON 行和原文件优先级",
+          "显式设置 QODER_EMPTY_RETRY 或 QODER_EMPTY_WAIT 时，仅无普通活动才在本轮重查；--once 禁用等待，未设置时保留规范版单轮默认",
+          "可选临期刷新，解析秒、毫秒、ISO 过期时间及访问令牌到期字段；刷新失败仅沿用未过期令牌",
+          "兼容 silent、poll、silent-poll 调用，可选追加脱敏 JSON 行记录及企业微信、PushPlus、HTTPS Webhook 汇总通知"
         ],
         "sideEffects": [
           "显式启用账号后领取可领活动奖励，可能消耗同设备活动领取资格；额外非 CLAIM_BENEFIT 的中国区 Pro 活动仅在明确打开对应开关后领取",
           "必要时或仅刷新模式下刷新令牌，可能使旧刷新令牌轮换失效",
           "显式配置私有账号文件时将轮换后的令牌原子写回该文件",
           "通知启用且非预演时向青龙通知渠道及配置的账号或全局渠道投递脱敏汇总",
-          "显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存"
+          "显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存",
+          "显式设置 QODER_LOG_FILE 且非预演时追加脱敏 JSON 行日志"
         ]
       },
       "postReview": {
@@ -46121,7 +46131,7 @@
       },
       "displayName": "Qoder每日签到",
       "path": "scripts/qoder_airscript.js",
-      "sha256": "4e996ff7db81cc0b590b6da5a18c75045ff70669310d5da12870085c2b2129a3",
+      "sha256": "2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -46160,6 +46170,16 @@
             "catalogId": "d94f5f76e5dd357b",
             "sha256": "e362c425661de4918795a29bf02f189cec33c33c1c41e24f604a243f149a83b8",
             "license": "MIT"
+          },
+          {
+            "repository": "spirodelazz/ide-daily-checkin",
+            "url": "https://github.com/spirodelazz/ide-daily-checkin",
+            "branch": "main",
+            "commit": "8e2e1237a2107afec2cddd0089fca191c6083873",
+            "originalPath": "scripts/qoder_checkin.py",
+            "catalogId": "9cceef808f4e3500",
+            "sha256": "3f88bf542c08b4d14784509a5a622e32aff441f1ac3fcc42f806fe58b43089cb",
+            "license": "MIT"
           }
         ]
       },
@@ -46171,14 +46191,14 @@
           "required": true,
           "sensitive": true,
           "howToGet": "在本人已登录的 Qoder 客户端授权请求中取得 Authorization 访问令牌及 Cosy-* 设备头，刷新令牌从本人登录凭据取得。仅处理本人账号，避免上传凭据。兼容原取号工具 JSON，但运行不依赖该工具。 PAT 也可在 https://qoder.cn/account/integrations 创建本人个人访问令牌，放在同一账号 JSON 的 personalToken 字段。",
-          "format": "每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。"
+          "format": "每非空行一个 JSON 对象。设备令牌模式：accessToken/access_token 与 refreshToken/refresh_token 至少一项，device 的 clientType、machineOS、machineHostname、machineId、machineToken、machineCode、machineType、version 八项非空单行字符串必填。PAT 模式：personalToken（兼容 pat/personal_token），仅中国区且不需要 device。enabled=true 或 qiandao=是 才执行兑换、领取或刷新。region 为 cn/global；可选 name、uid、serverchan、pushplus、qywx。只读及仅刷新使用原设备令牌模式。 兼容旧 JSON 数组、accounts 包装及 token、expires_at 别名；device 字段可由环境变量及显式配置补齐，仍须八项完整。可选 expiresAt 为秒、毫秒或 ISO 日期。"
         },
         {
           "name": "QODER_ACCOUNTS_FILE",
           "required": false,
           "sensitive": true,
           "howToGet": "自行建立私有 JSON 行账号文件并显式指定路径，格式同 QODER_ACCOUNTS。该方式或旧变量可替代规范账号变量。",
-          "format": "文件路径，优先于环境账号；刷新后原子写回并设置权限0600，预演不写回。--from-file 则只读取单个 JSON 对象且不写回。"
+          "format": "文件路径，优先于环境账号；刷新后原子写回并设置权限0600，预演不写回。--from-file 则只读取单个 JSON 对象且不写回。 兼容 JSON 数组及 accounts 包装，写回保留原容器结构。"
         },
         {
           "name": "QODER_TOKENS",
@@ -46220,56 +46240,56 @@
           "required": false,
           "sensitive": false,
           "howToGet": "旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-ClientType 头取得。",
-          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。"
+          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。"
         },
         {
           "name": "QODER_COSY_MACHINE_OS",
           "required": false,
           "sensitive": true,
           "howToGet": "旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineOS 头取得。",
-          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。"
+          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。"
         },
         {
           "name": "QODER_COSY_MACHINE_HOSTNAME",
           "required": false,
           "sensitive": true,
           "howToGet": "旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineHostname 头取得。",
-          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。"
+          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。"
         },
         {
           "name": "QODER_COSY_MACHINE_ID",
           "required": false,
           "sensitive": true,
           "howToGet": "旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineId 头取得。",
-          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。"
+          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。"
         },
         {
           "name": "QODER_COSY_MACHINE_TOKEN",
           "required": false,
           "sensitive": true,
           "howToGet": "旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineToken 头取得。",
-          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。"
+          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。"
         },
         {
           "name": "QODER_COSY_MACHINE_CODE",
           "required": false,
           "sensitive": true,
           "howToGet": "旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineCode 头取得。",
-          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。"
+          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。"
         },
         {
           "name": "QODER_COSY_MACHINE_TYPE",
           "required": false,
           "sensitive": true,
           "howToGet": "旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-MachineType 头取得。",
-          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。"
+          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。"
         },
         {
           "name": "QODER_COSY_VERSION",
           "required": false,
           "sensitive": false,
           "howToGet": "旧变量或命令行导入缺少 device 时，从本人授权请求的 Cosy-Version 头取得。",
-          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。"
+          "format": "非空单行字符串；仅 CLIENT_TYPE 默认10，其余必须提供，不生成设备身份。 优先账号 device，其次环境变量，再其次 QODER_CONFIG_FILE 的 device。"
         },
         {
           "name": "QODER_MACHINE_TOKEN",
@@ -46410,6 +46430,69 @@
           "sensitive": false,
           "howToGet": "使用青龙已配置的通知模块目录。",
           "format": "含 sendNotify.js 的目录；也查找 /ql/data/scripts 和 /ql/scripts。缺失或失败保留业务退出码。"
+        },
+        {
+          "name": "QODER_EMPTY_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，自行设置活动未下发时本轮查询次数。",
+          "format": "显式配置才开启；整数至少1，非法值使用3。未配置两个重查变量时保持原规范脚本单轮；--once 禁用等待重查。"
+        },
+        {
+          "name": "QODER_EMPTY_WAIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，自行设置空活动重查的等待秒数。",
+          "format": "显式配置才开启；整数秒至少0，非法值使用20。任一重查变量存在时次数默认3、间隔默认20秒；预演不等待。"
+        },
+        {
+          "name": "QYWX_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人企业微信机器人设置取得 webhook 的 key，兼容配置 notify.qywxToken。",
+          "format": "机器人 key 或含 key= 的完整地址；受全局通知开关控制。"
+        },
+        {
+          "name": "PLUSPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人 PushPlus 取得推送令牌，兼容配置 notify.plusplusToken。",
+          "format": "推送令牌；受全局通知开关控制。"
+        },
+        {
+          "name": "QODER_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "指定本人信任的 HTTPS 通知接收端，兼容配置 notify.webhook。",
+          "format": "HTTPS 地址，仅发送中文标题和脱敏统计；受全局通知开关控制。 成功须 HTTP 200 且 success=true 或 code 为0或200；失败不改变业务退出码。"
+        },
+        {
+          "name": "QODER_CONFIG_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行创建私有配置 JSON 并显式指定路径，无须运行提取器。",
+          "format": "不默认读取文件；支持 device、refreshMarginH、notify、baseUrls。device 字段低于账号及环境变量优先级。notify 支持 qywxToken、plusplusToken、webhook。"
+        },
+        {
+          "name": "QODER_REFRESH_MARGIN_H",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择临期续期窗口。",
+          "format": "非负整数小时；优先于显式配置 refreshMarginH。未配置时保持优先使用访问令牌，鉴权失效才刷新。"
+        },
+        {
+          "name": "QODER_LOG_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行指定可写的脱敏日志路径。",
+          "format": "默认关闭文件日志，显式启用后追加 JSON 行，预演不写。"
+        },
+        {
+          "name": "QODER_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅从官方请求核对同区域基址；一般无需配置。",
+          "format": "逗号分隔的官方根地址，仅允许与当前区域相同的 https://openapi.qoder.com.cn 或 https://openapi.qoder.sh；不向任意地址或其他地区转发凭据。"
         }
       ],
       "multiAccount": {
@@ -46434,14 +46517,19 @@
         "兼容 QODER_CLAIM_TOKEN、--token、--from-file、官方地址 --base-url、--once、--dry-run 和脱敏 --json 结果；规范账号配置和原默认计划保留",
         "支持中国区 PAT 换取短期任务令牌后领取全部活动；兼容两种兑换字段，仅字段错误时尝试备用字段，保留原领取及幂等成功标记",
         "PAT 账号无须设备头或本机客户端；保持规范 JSON 行账号及 QODER_PAT 兼容入口，默认不兑换、不领取，不隐式读取凭据文件",
-        "PAT 活动支持秒、毫秒及日期文本有效窗口；成功收据需明确领取状态、明确幂等结果或正数奖励面值，未知结果失败退出"
+        "PAT 活动支持秒、毫秒及日期文本有效窗口；成功收据需明确领取状态、明确幂等结果或正数奖励面值，未知结果失败退出",
+        "兼容旧 JSON 数组、accounts 包装、token 与 expires_at 别名，以及显式配置文件中的设备字段，保持规范 JSON 行和原文件优先级",
+        "显式设置 QODER_EMPTY_RETRY 或 QODER_EMPTY_WAIT 时，仅无普通活动才在本轮重查；--once 禁用等待，未设置时保留规范版单轮默认",
+        "可选临期刷新，解析秒、毫秒、ISO 过期时间及访问令牌到期字段；刷新失败仅沿用未过期令牌",
+        "兼容 silent、poll、silent-poll 调用，可选追加脱敏 JSON 行记录及企业微信、PushPlus、HTTPS Webhook 汇总通知"
       ],
       "sideEffects": [
         "显式启用账号后领取可领活动奖励，可能消耗同设备活动领取资格；额外非 CLAIM_BENEFIT 的中国区 Pro 活动仅在明确打开对应开关后领取",
         "必要时或仅刷新模式下刷新令牌，可能使旧刷新令牌轮换失效",
         "显式配置私有账号文件时将轮换后的令牌原子写回该文件",
         "通知启用且非预演时向青龙通知渠道及配置的账号或全局渠道投递脱敏汇总",
-        "显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存"
+        "显式启用的中国区 PAT 账号向官方兑换短期任务令牌，随后领取有效活动奖励；短期令牌仅存内存",
+        "显式设置 QODER_LOG_FILE 且非预演时追加脱敏 JSON 行日志"
       ],
       "review": {
         "staticPassed": true,
@@ -46454,337 +46542,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/e034e75509550071",
-        "candidateSha256": "b88f2cd044db2326a292ea71d9ac20aa3f9c60f1956707f679db7a0f654dc6b0"
+        "candidateSha256": "1c4e79710bec77aff57165dafc1a403e9bf6048e3c9eeb3f37e6c2da9e3a0f84"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "b88f2cd044db2326a292ea71d9ac20aa3f9c60f1956707f679db7a0f654dc6b0",
-        "releaseSha256": "4e996ff7db81cc0b590b6da5a18c75045ff70669310d5da12870085c2b2129a3",
+        "validatedSha256": "1c4e79710bec77aff57165dafc1a403e9bf6048e3c9eeb3f37e6c2da9e3a0f84",
+        "releaseSha256": "2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T11:33:28.287806+00:00",
+          "approvedAt": "2026-11-11T13:55:03.009838+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "b88f2cd044db2326a292ea71d9ac20aa3f9c60f1956707f679db7a0f654dc6b0",
-          "toCandidateSha256": "4e996ff7db81cc0b590b6da5a18c75045ff70669310d5da12870085c2b2129a3",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
-      "catalogId": "9cceef808f4e3500",
-      "applicationKey": "ide-daily",
-      "checkProfile": {
-        "requiredEnv": [
-          "QODER_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "QODER_CONFIG_FILE",
-          "QODER_ACCOUNTS_FILE",
-          "QODER_BASE_URL",
-          "QODER_CACHE_FILE",
-          "QODER_LOG_FILE",
-          "QODER_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR",
-          "QYWX_TOKEN",
-          "PLUSPLUS_TOKEN",
-          "QODER_WEBHOOK",
-          "QODER_COSY_CLIENT_TYPE",
-          "QODER_COSY_MACHINE_OS",
-          "QODER_COSY_MACHINE_HOSTNAME",
-          "QODER_COSY_MACHINE_ID",
-          "QODER_COSY_MACHINE_TOKEN",
-          "QODER_COSY_MACHINE_CODE",
-          "QODER_COSY_MACHINE_TYPE",
-          "QODER_COSY_VERSION",
-          "QODER_EMPTY_RETRY",
-          "QODER_EMPTY_WAIT"
-        ],
-        "dryRunEnv": {
-          "QODER_DRY_RUN": "1"
-        },
-        "liveEnv": {},
-        "successPatterns": [
-          "签到成功",
-          "今日已领取，服务端确认 CLAIMED"
-        ],
-        "features": [
-          "查询 Qoder 活动并领取全部可领取的 CLAIM_BENEFIT 奖励，以 CLAIMED 明确确认成功",
-          "临期刷新令牌、刷新失败沿用未过期令牌、查询返回 401 后强制刷新重试",
-          "兼容令牌字段别名、ISO 时间与秒或毫秒过期时间",
-          "多个 HTTPS 端点在网络错误或 HTTP 404 时回退",
-          "逐行多账号、逐账号设备配置、旧版环境参数和配置文件兼容",
-          "可选安全令牌缓存、脱敏 JSON 行日志并保留原机器记录字段",
-          "兼容 silent、poll、silent-poll 调用，支持每日主跑与兜底任务",
-          "完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总",
-          "活动未下发时本轮重查，兼容 QODER_EMPTY_RETRY 和 QODER_EMPTY_WAIT，默认最多查询三次、间隔二十秒"
-        ],
-        "sideEffects": [
-          "领取活动 Credits 奖励",
-          "刷新登录令牌，可能轮换刷新令牌",
-          "显式启用缓存时创建文件锁并以私有文件保存轮换令牌",
-          "实际运行时追加脱敏 JSON 行日志",
-          "实际运行且通知启用时向青龙及显式配置的兼容通知渠道发送脱敏统计"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "Qoder 每日签到",
-      "path": "scripts/qoder_checkin.py",
-      "sha256": "eccca7ad12eb3303879936e402b47f957f4892f3a2123548c29407ee6943ab32",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "spirodelazz/ide-daily-checkin",
-        "branch": "main",
-        "commit": "8e2e1237a2107afec2cddd0089fca191c6083873",
-        "originalPath": "scripts/qoder_checkin.py",
-        "related": [
-          {
-            "catalogId": "1fbe07bb4d5e9acc",
-            "sha256": "27ff1ebf64b6ba03ce955d433caad1be81c4dd500a369a37adf366ae469185e8",
-            "repository": "spirodelazz/ide-daily-checkin",
-            "url": "https://github.com/spirodelazz/ide-daily-checkin",
-            "branch": "main",
-            "commit": "feb59d8e62b5fff07cb9d33e1f64171eb7e78d1d",
-            "originalPath": "scripts/run_all_checkin.py",
-            "license": "MIT"
-          },
-          {
-            "catalogId": "dcbfc9a56cdee613",
-            "sha256": "0f433d2de652b21ebeb377f0646b721f6318b60e91d88825c400b464290d6f54",
-            "repository": "spirodelazz/ide-daily-checkin",
-            "url": "https://github.com/spirodelazz/ide-daily-checkin",
-            "branch": "main",
-            "commit": "8e2e1237a2107afec2cddd0089fca191c6083873",
-            "originalPath": "scripts/qoder_extract.py",
-            "license": "MIT"
-          }
-        ]
-      },
-      "cron": "6 11 * * *",
-      "command": "python3 scripts/qoder_checkin.py",
-      "environment": [
-        {
-          "name": "QODER_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "从本人已授权的 Qoder 请求取得 Authorization 中 Bearer 后的访问令牌，从本人登录会话取得刷新令牌，同账号 Cosy-* 请求头填写 device；无需运行提取器或安装客户端。",
-          "format": "每个非空行一个 JSON 对象，accessToken 或 refreshToken 至少一个；可选 expiresAt（秒、毫秒或 ISO 时间）、device 对象。兼容 token、access_token、refresh_token、expires_at 别名及旧 JSON 数组或 accounts 包装对象。环境输入优先于文件。"
-        },
-        {
-          "name": "QODER_CONFIG_FILE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行提供已有配置 JSON，也可仅使用环境变量。",
-          "format": "默认脚本目录 qoder_config.json，支持 device、baseUrls、refreshMarginH（非负整数，默认 72 小时）、notify。文件缺失可正常使用环境输入。"
-        },
-        {
-          "name": "QODER_ACCOUNTS_FILE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行提供本人旧版账号 JSON，无需运行提取器。",
-          "format": "默认脚本目录 qoder_accounts.json；仅未配置 QODER_ACCOUNTS 时读取；内容为账号数组或 accounts 包装对象。"
-        },
-        {
-          "name": "QODER_BASE_URL",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "默认使用上游接口，仅在确认服务官方 HTTPS 地址后覆盖。",
-          "format": "逗号分隔 HTTPS 基址，默认 https://openapi.qoder.com.cn；网络失败或 HTTP 404 回退；禁止用户信息、查询参数、片段及重定向。"
-        },
-        {
-          "name": "QODER_CACHE_FILE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，指定青龙可写的私有文件路径，目录应仅自己可访问。",
-          "format": "默认关闭持久化；启用后以 0600 权限原子保存轮换令牌，并创建文件锁避免并发刷新；需要支持 fcntl 的系统，账号源文件保持只读。"
-        },
-        {
-          "name": "QODER_LOG_FILE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，指定脱敏 JSON 行日志位置。",
-          "format": "默认脚本目录 qoder_checkin.log；预演不写文件。"
-        },
-        {
-          "name": "QODER_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "验证时设置为 1。",
-          "format": "1、true、yes、on 开启完全断网预演，其他值实际运行。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "按需要选择通知任务，未设置时本任务默认入选。",
-          "format": "逗号、分号或空白分隔，支持目录标识 9cceef808f4e3500、scripts/qoder_checkin.py、文件名和文件名通配符；* 全选，空值全关。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "指定青龙 notify.py 或 sendNotify.js 所在目录，也自动查找标准目录。",
-          "format": "目录路径；通知失败或缺失时保留业务退出码。"
-        },
-        {
-          "name": "QYWX_TOKEN",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人企业微信机器人设置取得 webhook 的 key，兼容配置 notify.qywxToken。",
-          "format": "机器人 key 或含 key= 的完整地址；受全局通知开关控制。"
-        },
-        {
-          "name": "PLUSPLUS_TOKEN",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "从本人 PushPlus 取得推送令牌，兼容配置 notify.plusplusToken。",
-          "format": "推送令牌；受全局通知开关控制。"
-        },
-        {
-          "name": "QODER_WEBHOOK",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "指定本人信任的 HTTPS 通知接收端，兼容配置 notify.webhook。",
-          "format": "HTTPS 地址，仅发送中文标题和脱敏统计；受全局通知开关控制。"
-        },
-        {
-          "name": "QODER_COSY_CLIENT_TYPE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
-          "format": "字符串，对应 device.clientType；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
-        },
-        {
-          "name": "QODER_COSY_MACHINE_OS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
-          "format": "字符串，对应 device.machineOS；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
-        },
-        {
-          "name": "QODER_COSY_MACHINE_HOSTNAME",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
-          "format": "字符串，对应 device.machineHostname；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
-        },
-        {
-          "name": "QODER_COSY_MACHINE_ID",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
-          "format": "字符串，对应 device.machineId；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
-        },
-        {
-          "name": "QODER_COSY_MACHINE_TOKEN",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
-          "format": "字符串，对应 device.machineToken；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
-        },
-        {
-          "name": "QODER_COSY_MACHINE_CODE",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
-          "format": "字符串，对应 device.machineCode；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
-        },
-        {
-          "name": "QODER_COSY_MACHINE_TYPE",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
-          "format": "字符串，对应 device.machineType；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
-        },
-        {
-          "name": "QODER_COSY_VERSION",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
-          "format": "字符串，对应 device.version；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
-        },
-        {
-          "name": "QODER_EMPTY_RETRY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，自行设置活动未下发时本轮查询次数。",
-          "format": "整数，默认 3，最小 1；非法整数使用默认值。仅无 CLAIM_BENEFIT 时重查，预演不联网或等待。"
-        },
-        {
-          "name": "QODER_EMPTY_WAIT",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，自行设置空活动重查的等待秒数。",
-          "format": "整数秒，默认 20，最小 0；非法整数使用默认值。预演不等待。"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "每个非空行一个账号 JSON 对象，同账号令牌、刷新令牌、过期时间与设备字段合并；按顺序独立执行，任一账号失败或活动待下发时整体非零退出。兼容旧 JSON 数组与 accounts 包装对象。"
-      },
-      "dependencies": [],
-      "features": [
-        "查询 Qoder 活动并领取全部可领取的 CLAIM_BENEFIT 奖励，以 CLAIMED 明确确认成功",
-        "临期刷新令牌、刷新失败沿用未过期令牌、查询返回 401 后强制刷新重试",
-        "兼容令牌字段别名、ISO 时间与秒或毫秒过期时间",
-        "多个 HTTPS 端点在网络错误或 HTTP 404 时回退",
-        "逐行多账号、逐账号设备配置、旧版环境参数和配置文件兼容",
-        "可选安全令牌缓存、脱敏 JSON 行日志并保留原机器记录字段",
-        "兼容 silent、poll、silent-poll 调用，支持每日主跑与兜底任务",
-        "完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总",
-        "活动未下发时本轮重查，兼容 QODER_EMPTY_RETRY 和 QODER_EMPTY_WAIT，默认最多查询三次、间隔二十秒"
-      ],
-      "sideEffects": [
-        "领取活动 Credits 奖励",
-        "刷新登录令牌，可能轮换刷新令牌",
-        "显式启用缓存时创建文件锁并以私有文件保存轮换令牌",
-        "实际运行时追加脱敏 JSON 行日志",
-        "实际运行且通知启用时向青龙及显式配置的兼容通知渠道发送脱敏统计"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/9cceef808f4e3500",
-        "candidateSha256": "4ecb32db4d347304b1778ee3384eab6c17aa67ff4e7ea49596bbf9081061e453"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "4ecb32db4d347304b1778ee3384eab6c17aa67ff4e7ea49596bbf9081061e453",
-        "releaseSha256": "eccca7ad12eb3303879936e402b47f957f4892f3a2123548c29407ee6943ab32",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T13:38:42.922115+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "4ecb32db4d347304b1778ee3384eab6c17aa67ff4e7ea49596bbf9081061e453",
-          "toCandidateSha256": "eccca7ad12eb3303879936e402b47f957f4892f3a2123548c29407ee6943ab32",
+          "fromCandidateSha256": "1c4e79710bec77aff57165dafc1a403e9bf6048e3c9eeb3f37e6c2da9e3a0f84",
+          "toCandidateSha256": "2d373706b01dadaa4f16e919cc0ba76d38d16abadbae426f3be96087346abdfb",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

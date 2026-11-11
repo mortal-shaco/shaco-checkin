@@ -2,6 +2,7 @@
 // cron: 17 8 * * *
 // Qoder 每日自动签到 · 金山文档 AirScript 版（修复版）
 // 独立 Node.js 维护版本；上游：wallechfox/qoder-checkin
+// 合并来源：spirodelazz/ide-daily-checkin/scripts/qoder_checkin.py，MIT 授权。
 // 合并来源：L0NE-6/Qoder-Daily/qoder_daily.py，MIT 授权。
 // 合并来源：sunp-1/qoder-checkin/qoder_claim.py，MIT 授权。
 // 合并来源：wzhu22750-lang/qoder_checkin/qoder_checkin_local.py，MIT 授权。
@@ -120,6 +121,32 @@ PAT 领取只接受明确 CLAIMED、明确幂等结果或含正数 benefit.amoun
 所有业务请求均自行通过 Node.js HTTPS 发出，凭据不发往其他地区或文本服务。
 上次准备失败为引用不存在的私有上游路径；本次仅用提供的 input 源码，运行不依赖该路径。
 */
+/*
+本轮离线盘点：qoder_checkin.py 与 incoming_candidate.py 均查询全部普通活动、
+领取 Credits、续期、空表最多3轮间隔20秒重查；支持 expiresAt 秒/毫秒/ISO、
+JSON 账号及设备配置、企业微信/PushPlus/Webhook、silent/poll/silent-poll。
+主来源本身无 cron；主控建议10:20主跑、15:00及20:30兜底，incoming 为11:06。
+本规范脚本保留17 8 * * *，额外兜底可复用同一文件设置独立计划，不另发产品脚本。
+同任务接口比对：活动 GET /sash/api/v1/me/campaigns、领取 POST .../{id}/claim、
+刷新 POST /api/v1/deviceToken/refresh 与规范版相同，无更换接口的证据。
+extract 只获取凭据并依赖 Windows 组件，不合入；signin/probe 为 WorkBuddy，
+run_all 为跨应用调度，不合入。维护版原 PAT、双区、Pro、通知链、命令行全部保留。
+QODER_EMPTY_RETRY/WAIT 显式配置才启用空表重查，默认保持规范版单轮；
+次数至少1、等待至少0，非法整数使用来源默认3/20；--once 禁用所有等待重查。
+QODER_CONFIG_FILE 显式指定 JSON 可含 device、refreshMarginH、notify，
+不隐式读取本机文件。device 优先账号字段，其次环境变量，再其次显式配置。
+QODER_ACCOUNTS 支持旧 JSON 数组、accounts 包装及 token/expires_at 别名；
+显式账号文件继续优先并安全写回（兼容数组/包装），不自动写缓存或设备文件。
+QODER_REFRESH_MARGIN_H 或显式配置 refreshMarginH 可开启临期刷新；
+未配置时保持规范版优先访问令牌、鉴权失效才刷新的默认，失败可沿用未过期令牌。
+QODER_LOG_FILE 显式指定时追加脱敏机器记录，不默认写文件；预演不写。
+QYWX_TOKEN、PLUSPLUS_TOKEN、QODER_WEBHOOK 兼容新来源全局通知；
+全局开关及断网预演始终生效。自定义通知仅接受 HTTPS，无重定向。
+基址覆盖 QODER_BASE_URL/配置 baseUrls 仅允许同区域官方根地址，拒绝任意
+凭据转发；保留原 --base-url 和逐账号区域，无客户端依赖或下载引导。
+QODER_CACHE_FILE 不合入：规范版已有显式账号文件原子写回，避免并行持久化
+覆盖轮换令牌；使用 QODER_ACCOUNTS_FILE 保存同账号全部配套参数。
+*/
 'use strict';
 // qinglong-notification-policy: begin
 (() => {
@@ -150,7 +177,7 @@ function notificationSelected() {
   if (process.argv.includes('--no-notify') || disabled(process.env.QINGLONG_NOTIFY)) return false;
   if (enabled(process.env.QINGLONG_NOTIFY)) return true;
   if (process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
-  const names=['2303ec2803cf2832','e034e75509550071','7dae37fb02629e65','d94f5f76e5dd357b','scripts/qoder_airscript.js','qoder_airscript.js',path.basename(__filename)];
+  const names=['9cceef808f4e3500','scripts/qoder_checkin.py','qoder_checkin.py','2303ec2803cf2832','e034e75509550071','7dae37fb02629e65','d94f5f76e5dd357b','scripts/qoder_airscript.js','qoder_airscript.js',path.basename(__filename)];
   return process.env.QINGLONG_NOTIFY_SCRIPTS.split(/[,;\s]+/).filter(Boolean).some(s=>{
     const pattern='^'+s.split('*').map(p=>p.split('?').map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('.')).join('.*')+'$';
     return names.some(n=>new RegExp(pattern).test(n));
@@ -162,7 +189,8 @@ const started = Date.now();
 const fields = ['clientType','machineOS','machineHostname','machineId','machineToken','machineCode','machineType','version'];
 const results = [];
 let accounts = [], lines = [], file = '', base, configFailure = false;
-let retryMax=16, retryGap=90;
+let retryMax=16, retryGap=90, emptyTimes=1, emptyWait=20, refreshMargin=null;
+let importedConfig={}, accountFileShape='lines';
 const accountBase = a => a.region==='global' ? 'https://openapi.qoder.sh' : a.region==='cn' ? 'https://openapi.qoder.com.cn' : base;
 const payload = d => d && typeof d.data==='object' && d.data && !Array.isArray(d.data) ? d.data : d;
 const now = () => new Date().toLocaleTimeString('zh-CN', {hour12:false});
@@ -213,8 +241,9 @@ function businessOK(d) {
 function identity(d, a) {
   const objects = [d, d && d.user, d && d.account];
   const secrets = [a,...accounts].filter(x=>x && typeof x==='object').flatMap(x=>
-    [x.personalToken,x.pat,x.personal_token,x.accessToken,x.access_token,x.refreshToken,x.refresh_token,x.device?.machineToken,x.device?.machineCode,x.device?.machineId,x.device?.machineHostname,x.serverchan,x.pushplus,x.qywx]);
-  secrets.push(...['PUSHPLUS_TOKEN','BARK_URL','WECOM_WEBHOOK','DINGTALK_WEBHOOK','DINGTALK_SECRET'].map(k=>process.env[k]));
+    [x.token,x.personalToken,x.pat,x.personal_token,x.accessToken,x.access_token,x.refreshToken,x.refresh_token,x.device?.machineToken,x.device?.machineCode,x.device?.machineId,x.device?.machineHostname,x.serverchan,x.pushplus,x.qywx]);
+  secrets.push(...['PUSHPLUS_TOKEN','BARK_URL','WECOM_WEBHOOK','DINGTALK_WEBHOOK','DINGTALK_SECRET','QYWX_TOKEN','PLUSPLUS_TOKEN','QODER_WEBHOOK'].map(k=>process.env[k]));
+  secrets.push(...Object.values(importedConfig.device || {}),...Object.values(importedConfig.notify || {}));
   const protectedValues=secrets.filter(nonempty);
   for (const obj of objects) {
     if (!obj || typeof obj !== 'object') continue;
@@ -236,7 +265,8 @@ function persist(index,a) {
   if (!file) {log('⚠️ 刷新令牌仅在本次内存中使用；未配置账号文件写回'); return;}
   const updated=lines.slice(); updated[index]=JSON.stringify(a);
   const temp=`${file}.${process.pid}.tmp`;
-  try {fs.writeFileSync(temp,updated.join('\n')+'\n',{mode:0o600,flag:'wx'}); fs.renameSync(temp,file); lines=updated;}
+  const doc=accountFileShape==='array' ? updated.map(JSON.parse) : accountFileShape==='wrapped' ? {...importedConfig.accountDocument,accounts:updated.map(JSON.parse)} : null;
+  try {fs.writeFileSync(temp,doc ? JSON.stringify(doc)+'\n' : updated.join('\n')+'\n',{mode:0o600,flag:'wx'}); fs.renameSync(temp,file); lines=updated;}
   catch {try {fs.unlinkSync(temp);} catch {} throw new Error('私有账号文件写回失败');}
   log('刷新令牌已写回指定私有账号文件');
 }
@@ -259,10 +289,31 @@ async function exchangePat(a) {
   throw new Error('PAT 兑换字段不被接口接受');
 }
 function epochSeconds(v) {
+  if (typeof v==='boolean') return null;
   if (v==null || v==='') return null;
   const n=typeof v==='number' || /^\d+(?:\.\d+)?$/.test(v) ? Number(v) : Date.parse(v)/1000;
   if (!Number.isFinite(n) || n<0) return null;
   return n>=1e12 ? n/1000 : n;
+}
+function tokenExpiry(token) {
+  try {return epochSeconds(JSON.parse(Buffer.from(String(token).split('.')[1],'base64url').toString()).exp);} catch {return null;}
+}
+function parseAccounts(raw) {
+  raw=raw.replace(/^\uFEFF/,'').trim();
+  let doc; try {doc=JSON.parse(raw);} catch {}
+  if (Array.isArray(doc)) {accountFileShape='array'; return doc;}
+  if (doc && Array.isArray(doc.accounts)) {accountFileShape='wrapped'; importedConfig.accountDocument=doc; return doc.accounts;}
+  return raw.split(/\r?\n/).filter(x=>x.trim()).map(line=>{try{return JSON.parse(line);}catch{return null;}});
+}
+function normalizeAccount(a) {
+  if (!a || typeof a!=='object' || Array.isArray(a)) return a;
+  return {...a,accessToken:a.accessToken || a.access_token || a.token,
+    refreshToken:a.refreshToken || a.refresh_token,expiresAt:a.expiresAt ?? a.expires_at,
+    device:{...legacyDevice(),...(a.device || {})}};
+}
+function retryInteger(name,fallback,min) {
+  const raw=process.env[name];
+  return Math.max(min,/^[+-]?\d+$/.test(raw || '') && Number.isSafeInteger(Number(raw)) ? Number(raw) : fallback);
 }
 function normalizePatCampaign(c) {
   if (!c || typeof c!=='object' || Array.isArray(c)) throw new Error('PAT 活动项目契约不符');
@@ -284,6 +335,7 @@ async function refresh(a,index) {
   if (!nonempty(token)) throw new Error('刷新响应缺少有效访问令牌');
   const rtNew=d.refreshToken || d.refresh_token || rt;
   if (!nonempty(rtNew)) throw new Error('刷新响应令牌格式无效');
+  a.expiresAt=epochSeconds(d.expiresAt ?? d.expires_at) || tokenExpiry(token);
   a.accessToken=token; a.refreshToken=rtNew; delete a.access_token; delete a.refresh_token;
   identity(q.data,a); if (d!==q.data) identity(d,a);
   persist(index,a); return token;
@@ -392,7 +444,7 @@ function claimVerdict(q, patMode=false) {
 function legacyDevice() {
   const suffix={clientType:'CLIENT_TYPE',machineOS:'MACHINE_OS',machineHostname:'MACHINE_HOSTNAME',machineId:'MACHINE_ID',machineToken:'MACHINE_TOKEN',machineCode:'MACHINE_CODE',machineType:'MACHINE_TYPE',version:'VERSION'};
   return Object.fromEntries(fields.map(f=>[f,process.env['QODER_COSY_'+suffix[f]] ||
-    (['machineToken','machineCode','machineType'].includes(f) ? process.env['QODER_'+suffix[f]] : '') || (f==='clientType'?'10':'')]));
+    (['machineToken','machineCode','machineType'].includes(f) ? process.env['QODER_'+suffix[f]] : '') || importedConfig.device?.[f] || (f==='clientType'?'10':'')]));
 }
 function legacyAccounts(raw,region) {
   const first=s=>{const i=s.indexOf('|'); return i<0?[s,'',false]:[s.slice(0,i),s.slice(i+1),true];};
@@ -433,7 +485,7 @@ async function one(a,index) {
           if (!c || typeof c!=='object') throw new Error('活动项目契约不符');
           const status=['CLAIMABLE','CLAIMED','PENDING','EXPIRED'].includes(c.claimStatus) ? c.claimStatus : 'UNKNOWN';
           const amount=Number(c.benefit?.amount);
-          const time=v=>{const n=Number(v);return v!=null && Number.isFinite(n) && n>0 && n<8640000000000 ? new Date(n*1000).toISOString() : null;};
+          const time=v=>{const n=epochSeconds(v);return n!==null && n>0 && n<8640000000000 ? new Date(n*1000).toISOString() : null;};
           return {index:i+1,status,amount:c.benefit?.amount!=null && Number.isFinite(amount) && amount>=0 ? amount : null,startAt:time(c.startAt),endAt:time(c.endAt)};
         });
         for (const c of r.campaigns) log(`账号${r.account} 活动${c.index} 状态${c.status} 奖励${c.amount ?? '未知'} Credits 窗口${c.startAt || '未知'} 至 ${c.endAt || '未知'}`);
@@ -444,7 +496,20 @@ async function one(a,index) {
     let token=a.accessToken || a.access_token;
     if (patOf(a)) token=await stage(r,'PAT 兑换任务令牌',()=>exchangePat(a));
     else if (!token) token=await stage(r,'获取访问令牌',()=>refresh(a,index));
+    else if (refreshMargin!==null && (a.refreshToken || a.refresh_token)) {
+      const expires=epochSeconds(a.expiresAt) || tokenExpiry(token);
+      if (expires && expires-Date.now()/1000<=refreshMargin*3600) {
+        const refreshed=await diagnostic(r,'临期续期',()=>refresh(a,index));
+        if (refreshed) token=refreshed;
+        else if (expires<=Date.now()/1000) await stage(r,'过期令牌检查',async()=>{throw new Error('访问令牌过期且刷新失败，请重新获取本人凭据');});
+        else log(`账号${r.account} 刷新失败，沿用未过期访问令牌`);
+      }
+    }
     let q=await stage(r,'查询活动',()=>queryCampaigns(a,index,r));
+    for (let attempt=1; !onceOnly && attempt<emptyTimes && !q.data.campaigns.some(c=>c?.actionType==='CLAIM_BENEFIT'); attempt++) {
+      await stage(r,'空活动等待',async()=>{log(`账号${r.account} 无普通活动，第${attempt+1}/${emptyTimes}轮，等待${emptyWait}秒`); await sleep(emptyWait*1000);});
+      q=await stage(r,'空活动重新查询',()=>queryCampaigns(a,index,r));
+    }
     const eligible=c=>c && (c.actionType==='CLAIM_BENEFIT' || accountBase(a)==='https://openapi.qoder.com.cn' && enabled(process.env.QODER_PRO_UPGRADE) && looksPro(c));
     for (let attempt=0; !onceOnly && enabled(process.env.QODER_WINDOW_RETRY) && attempt<retryMax && windowActive() &&
       !q.data.campaigns.some(c=>eligible(c) && ['CLAIMABLE','CLAIMED'].includes(c.claimStatus)); attempt++) {
@@ -497,7 +562,7 @@ async function one(a,index) {
     else if (claimable.length) r.status='success';
     else {
       const seconds=Date.now()/1000;
-      if (benefits.some(b=>b.claimStatus==='CLAIMED' && Number(b.startAt || 0)<=seconds && (patOf(a) && b.endAt===null || seconds<Number(b.endAt || 0)))) {r.alreadyComplete++; r.status='already-complete'; if(patOf(a)) log('OK already-claimed'); log('☑️ 今日已领取');}
+      if (benefits.some(b=>b.claimStatus==='CLAIMED' && (epochSeconds(b.startAt) ?? 0)<=seconds && (patOf(a) && b.endAt===null || seconds<(epochSeconds(b.endAt) ?? 0)))) {r.alreadyComplete++; r.status='already-complete'; if(patOf(a)) log('OK already-claimed'); log('☑️ 今日已领取');}
       else {r.skipped++; r.status='unavailable'; if ((a.region || process.env.QODER_REGION)==='global') log('国际区活动窗口北京时间 10:00 开启，暂未下发不视为领取成功'); log(benefits.length ? '⏭️ 活动待下发，等下轮' : '⏭️ 活动未开放');}
     }
   } catch {r.status='failure';}
@@ -518,7 +583,7 @@ function sendQinglong(modulePath,title,body) {
 }
 async function notifications(summary) {
   if (!notifyEnabled) {log('⏭️ 通知已关闭'); return 'disabled';}
-  if (dry) {log('⏭️ 断网预演：青龙及账号通知仅模拟'); return 'dry-run';}
+  if (dry) {log(`⏭️ 断网预演：青龙及账号通知仅模拟；账号总数${summary.accounts} 成功${summary.succeeded} 失败${summary.failed} 状态${summary.status}`); return 'dry-run';}
   const title='Qoder每日签到';
   const body=`账号总数 ${summary.accounts}，成功 ${summary.succeeded}，失败 ${summary.failed}，跳过 ${summary.skipped}，未确认领取 ${summary.unverified}；状态 ${summary.status}`;
   let delivered=false, failure=false;
@@ -535,6 +600,13 @@ async function notifications(summary) {
     }
   }
   const globalChannels=[];
+  const incomingNotify=importedConfig.notify || {};
+  const plus=process.env.PLUSPLUS_TOKEN || incomingNotify.plusplusToken;
+  const wecom=process.env.QYWX_TOKEN || incomingNotify.qywxToken;
+  const hook=process.env.QODER_WEBHOOK || incomingNotify.webhook;
+  if (nonempty(plus)) globalChannels.push(['兼容 PushPlus','https://www.pushplus.plus/send',{token:plus,title,content:body,template:'txt'},d=>d.code===200]);
+  if (nonempty(wecom)) globalChannels.push(['兼容企业微信','https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key='+encodeURIComponent(wecom.split('key=').pop()),{msgtype:'text',text:{content:body}},d=>d.errcode===0]);
+  if (nonempty(hook)) globalChannels.push(['兼容 Webhook',hook,{title,content:body},d=>d.success===true || d.code===0 || d.code===200]);
   if (nonempty(process.env.PUSHPLUS_TOKEN)) globalChannels.push(['全局 PushPlus','https://www.pushplus.plus/send',
     {token:process.env.PUSHPLUS_TOKEN,title,content:body,template:'txt'},d=>d.code===200]);
   if (nonempty(process.env.BARK_URL)) globalChannels.push(['Bark',process.env.BARK_URL.replace(/\/+$/,''),{title,body,group:'Qoder'},d=>d.code===200]);
@@ -569,6 +641,15 @@ async function notifications(summary) {
 async function main() {
   log('========== Qoder每日签到 =========='); log(`开始时间 ${stamp()}；模式 ${dry?'断网预演':'正式运行'}`);
   try {
+    if (process.env.QODER_CONFIG_FILE) {
+      importedConfig=JSON.parse(fs.readFileSync(process.env.QODER_CONFIG_FILE,'utf8').replace(/^\uFEFF/,''));
+      if (!importedConfig || typeof importedConfig!=='object' || Array.isArray(importedConfig)) throw new Error();
+    }
+    const margin=process.env.QODER_REFRESH_MARGIN_H ?? importedConfig.refreshMarginH;
+    if (margin!==undefined) {if(!/^\d+$/.test(String(margin)) || !Number.isSafeInteger(Number(margin))) throw new Error(); refreshMargin=Number(margin);}
+    if (process.env.QODER_EMPTY_RETRY!==undefined || process.env.QODER_EMPTY_WAIT!==undefined) {
+      emptyTimes=retryInteger('QODER_EMPTY_RETRY',3,1); emptyWait=retryInteger('QODER_EMPTY_WAIT',20,0);
+    }
     const args=process.argv.slice(2);
     for(let j=0;j<args.length;j++) {
       if(args[j]==='--only') {if(!args[j+1] || !/^[1-9]\d*$/.test(args[j+1])) throw new Error(); only=Number(args[++j]);}
@@ -582,7 +663,7 @@ async function main() {
           regionArg=regions[value.replace(/\/+$/,'')]; if (!regionArg) throw new Error();
         }
       }
-      else if(!['--refresh-only','--no-notify','--status','--once','--dry-run','--json'].includes(args[j])) throw new Error();
+      else if(!['--refresh-only','--no-notify','--status','--once','--dry-run','--json','silent','poll','silent-poll'].includes(args[j])) throw new Error();
     }
     if(!only && process.env.QODER_ONLY) {if(!/^[1-9]\d*$/.test(process.env.QODER_ONLY)) throw new Error(); only=Number(process.env.QODER_ONLY);}
     if (args.includes('--status') && args.includes('--refresh-only')) throw new Error();
@@ -606,13 +687,17 @@ async function main() {
       file='';
     } else if (file || process.env.QODER_ACCOUNTS!==undefined) {
       const raw=file ? fs.readFileSync(file,'utf8') : process.env.QODER_ACCOUNTS;
-      lines=raw.split(/\r?\n/).filter(x=>x.trim());
-      accounts=lines.map(line=>{try{return JSON.parse(line);} catch{return null;}});
+      accounts=parseAccounts(raw); lines=accounts.map(a=>JSON.stringify(a));
     } else {
       accounts=[...legacyAccounts(process.env.QODER_TOKENS,'cn'),...legacyAccounts(process.env.QODER_GLOBAL_TOKENS,'global')];
       if (!accounts.length && process.env.QODER_CLAIM_TOKEN) accounts=process.env.QODER_CLAIM_TOKEN.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(accessToken=>({accessToken,region,device:legacyDevice(),enabled:enabled(process.env.QODER_ENABLED)}));
     }
     if (!accounts.length && !file && process.env.QODER_ACCOUNTS===undefined && tokenArg===undefined && !inputFile && process.env.QODER_PAT) accounts=process.env.QODER_PAT.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(personalToken=>({personalToken,region,enabled:enabled(process.env.QODER_ENABLED)}));
+    accounts=accounts.map(normalizeAccount);
+    const configuredBases=process.env.QODER_BASE_URL ? process.env.QODER_BASE_URL.split(',') : importedConfig.baseUrls;
+    if (configuredBases!==undefined) {
+      if (!Array.isArray(configuredBases) || !configuredBases.length || configuredBases.some(u=>typeof u!=='string' || u.trim().replace(/\/+$/,'')!==base)) throw new Error();
+    }
     if (!accounts.length) throw new Error();
     if(only>accounts.length || !Number.isSafeInteger(only)) throw new Error();
   } catch {configFailure=true; log('❌ 阶段1 配置错误：请检查账号变量、私有文件及区域设置');}
@@ -627,6 +712,13 @@ async function main() {
   const exitCode=configFailure || failed || unverified || !succeeded ? 1 : 0;
   const summary={task:'Qoder每日签到',mode:dry?'dry-run':'live',action,accounts:accounts.length,succeeded,failed,skipped,unverified,status:configFailure?'configuration-error':failed || unverified?(succeeded?'partial-failure':'failure'):exitCode?'no-verified-success':dry?'dry-run':'success',exitCode,results};
   try {summary.notification=await notifications(summary);} catch {summary.notification='unavailable-or-failed'; log('⚠️ 通知处理失败，保留业务退出码');}
+  if (!dry && process.env.QODER_LOG_FILE) {
+    try {
+      const rec={time:stamp(),script:'qoder_checkin',trigger:process.argv.some(x=>x==='poll' || x==='silent-poll')?'poll':'checkin',
+        result:summary.status,summary:{claimed:results.filter(r=>r.status==='success').length,already:results.filter(r=>r.status==='already-complete').length,pending:unverified,failed},results};
+      fs.appendFileSync(process.env.QODER_LOG_FILE,JSON.stringify(rec)+'\n',{mode:0o600});
+    } catch {log('⚠️ 脱敏日志写入失败，保留业务退出码');}
+  }
   summary.elapsedMs=Date.now()-started; summary.finishedAt=stamp();
   log('--------------------------------');
   log(`任务统计：账号${summary.accounts} 成功${succeeded} 失败${failed} 跳过${skipped}；子任务成功${results.reduce((n,r)=>n+r.success,0)} 失败${results.reduce((n,r)=>n+r.failed,0)}；总耗时${summary.elapsedMs}毫秒`);
