@@ -7731,6 +7731,160 @@
       }
     },
     {
+      "catalogId": "d853362aaeebaf00",
+      "applicationKey": "nwsuafzq/auto_checkin::autock3",
+      "checkProfile": {
+        "requiredEnv": [
+          "AUTOCK3_ACCOUNTS",
+          "AUTOCK3_BASE_URL"
+        ],
+        "optionalEnv": [
+          "AUTOCK3_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AUTOCK3_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "AUTOCK3_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功：已核验 ret=1",
+          "最终状态：success"
+        ],
+        "features": [
+          "使用邮箱和密码登录旧版面板，保留原登录接口、签到接口、表单字段和每周记住登录的请求参数。",
+          "登录验证通过后签到，只有 HTTP 200 且 JSON 整数 ret=1 才认定业务成功；未知响应或已签到但未返回明确成功码时保守报错。",
+          "每行一个账号，独立会话隔离，账号失败不阻止其他账号，任一失败时进程非零退出。",
+          "按每天一次的青龙计划运行，替代原常驻进程每 86401 秒重复执行。",
+          "完全断网预演、带时间戳的分阶段日志、账号及子任务统计、单条 TASK_SUMMARY 汇总。",
+          "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID；不输出邮箱、手机号、凭据或原始响应。",
+          "遵守青龙全局通知开关与脚本选择器，通知内容为脱敏统计；预演只模拟通知，通知不可用时保留业务退出码。"
+        ],
+        "sideEffects": [
+          "正式运行向明确配置的站点提交登录，可能建立服务器登录会话并更新登录记录。",
+          "正式运行提交每日签到，可能更新签到记录及站点给予的流量或积分。",
+          "在通知开关及选择器允许时，调用本地青龙通知模块发送脱敏任务总结。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "旧版面板每日签到",
+      "path": "scripts/autock3.py",
+      "sha256": "9a71050a8ab9713fc4c7a38a1488c4888c406d433c4ce1060dbf6889feba3bb9",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "nwsuafzq/auto_checkin",
+        "branch": "master",
+        "commit": "bef03e11214454280e0c4bea8548c10dc0652c0b",
+        "originalPath": "autock3.py"
+      },
+      "cron": "50 10 * * *",
+      "command": "python3 scripts/autock3.py",
+      "environment": [
+        {
+          "name": "AUTOCK3_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在自己仍使用的面板注册账号或进入账户设置，取得本人邮箱和登录密码；原脚本的占位值不能使用。在青龙环境变量中填写，每行一个账号。",
+          "format": "邮箱|密码，每个非空行一个账号，只在第一个竖线处分割，密码内后续竖线和空格均保留；密码不可包含换行。"
+        },
+        {
+          "name": "AUTOCK3_BASE_URL",
+          "required": true,
+          "sensitive": false,
+          "howToGet": "从自己面板的浏览器地址栏复制 HTTPS 源站，不包含路径、查询参数或账户信息。先在浏览器开发者工具确认本站支持原脚本的 POST /user/_login.php 和 POST /user/_checkin.php、email/passwd/remember_me 字段，且成功响应为 JSON 整数 ret=1。无在线证据证明原旧域名仍有效，因此不设置旧站点默认值。",
+          "format": "https://自己管理或可信的站点域名，使用默认 443 端口，不包含子路径。"
+        },
+        {
+          "name": "AUTOCK3_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证时设为 1；正式执行时删除或设为 0。",
+          "format": "1、true、yes、on 表示启用；默认 0。预演不发送任何请求。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "配置允许发送通知的脚本选择器；设置后替代默认选择，空值关闭所有脚本。QINGLONG_NOTIFY 显式关闭时优先关闭。",
+          "format": "逗号、分号、空白或换行分隔；支持目录相对路径、文件名、文件名通配符、目录编号 d853362aaeebaf00；* 表示全部。支持原文件名 autock3.py 和导入文件名。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在青龙通知模块位于自定义目录时填写。通知先尝试导入 notify.send，再检查该目录与青龙标准目录的 notify.py 或 sendNotify.js。",
+          "format": "可选的本地青龙通知模块目录；缺失时不影响登录和签到。预演不会加载通知模块。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "AUTOCK3_ACCOUNTS 每个非空行填写一个邮箱|密码，只在第一个竖线处分割；账号分别使用独立内存 Cookie 会话，顺序执行，任一账号失败则整体非零退出，其他账号继续。全部账号共用明确配置的本站 HTTPS 源站。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用邮箱和密码登录旧版面板，保留原登录接口、签到接口、表单字段和每周记住登录的请求参数。",
+        "登录验证通过后签到，只有 HTTP 200 且 JSON 整数 ret=1 才认定业务成功；未知响应或已签到但未返回明确成功码时保守报错。",
+        "每行一个账号，独立会话隔离，账号失败不阻止其他账号，任一失败时进程非零退出。",
+        "按每天一次的青龙计划运行，替代原常驻进程每 86401 秒重复执行。",
+        "完全断网预演、带时间戳的分阶段日志、账号及子任务统计、单条 TASK_SUMMARY 汇总。",
+        "显示官方返回的非敏感昵称、用户名、显示名称或公开 UID；不输出邮箱、手机号、凭据或原始响应。",
+        "遵守青龙全局通知开关与脚本选择器，通知内容为脱敏统计；预演只模拟通知，通知不可用时保留业务退出码。"
+      ],
+      "sideEffects": [
+        "正式运行向明确配置的站点提交登录，可能建立服务器登录会话并更新登录记录。",
+        "正式运行提交每日签到，可能更新签到记录及站点给予的流量或积分。",
+        "在通知开关及选择器允许时，调用本地青龙通知模块发送脱敏任务总结。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d853362aaeebaf00",
+        "candidateSha256": "b4241271c3988d9b67a59ba41518fdae0b5357626cbae6729bd43b7a57c0a220"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "b4241271c3988d9b67a59ba41518fdae0b5357626cbae6729bd43b7a57c0a220",
+        "releaseSha256": "9a71050a8ab9713fc4c7a38a1488c4888c406d433c4ce1060dbf6889feba3bb9",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:21:50.630124+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "b4241271c3988d9b67a59ba41518fdae0b5357626cbae6729bd43b7a57c0a220",
+          "toCandidateSha256": "9a71050a8ab9713fc4c7a38a1488c4888c406d433c4ce1060dbf6889feba3bb9",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "3813c988ddc0c592",
       "applicationKey": "autoclaw",
       "checkProfile": {

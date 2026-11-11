@@ -1,6 +1,6 @@
 # 字母索引 · A
 
-共 **33** 个脚本。返回 [`目录首页`](../README.md)。
+共 **34** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -34,6 +34,7 @@
 | 掘金每日签到 | `scripts/auto_juejin.js` | `node scripts/auto_juejin.js` | `36 10 * * *` | 待检查 | [auto_juejin.js.md](../../scripts/auto_juejin.js.md)（`docs/scripts/auto_juejin.js.md`） |
 | 天使动漫签到打工 | `scripts/auto_sign.py` | `python3 scripts/auto_sign.py` | `31 9 * * *` | 待检查 | [auto_sign.py.md](../../scripts/auto_sign.py.md)（`docs/scripts/auto_sign.py.md`） |
 | SakuraFRP每日签到 | `scripts/auto_signin_http.py` | `python3 scripts/auto_signin_http.py` | `7 9 * * *` | 待检查 | [auto_signin_http.py.md](../../scripts/auto_signin_http.py.md)（`docs/scripts/auto_signin_http.py.md`） |
+| 旧版面板每日签到 | `scripts/autock3.py` | `python3 scripts/autock3.py` | `50 10 * * *` | 待检查 | [autock3.py.md](../../scripts/autock3.py.md)（`docs/scripts/autock3.py.md`） |
 | AutoClaw 国内版每日签到 | `scripts/autoclaw_cn_daily.py` | `python3 scripts/autoclaw_cn_daily.py` | `15 8 * * *` | 待检查 | [autoclaw_cn_daily.py.md](../../scripts/autoclaw_cn_daily.py.md)（`docs/scripts/autoclaw_cn_daily.py.md`） |
 | E-Hentai 自动签到 | `scripts/autosignin.py` | `python3 scripts/autosignin.py` | `18 */6 * * *` | 待检查 | [autosignin.py.md](../../scripts/autosignin.py.md)（`docs/scripts/autosignin.py.md`） |
 | 广州信息技术职校微信签到 | `scripts/autosignin_base.py` | `python3 scripts/autosignin_base.py` | `30 7 * * *` | 待检查 | [autosignin_base.py.md](../../scripts/autosignin_base.py.md)（`docs/scripts/autosignin_base.py.md`） |
