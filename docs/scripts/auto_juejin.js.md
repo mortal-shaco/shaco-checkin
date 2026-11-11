@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/auto_juejin.js`
 - 青龙命令：`node scripts/auto_juejin.js`
 - 建议 Cron：`36 10 * * *`
-- 发布哈希：`532facb50319f8d1ced494cba1d3d19e91de39ea5d89e9a6a4be9c09621dc8fd`
+- 发布哈希：`3e7b9b47d6f56f2aabe3f8db769c7808e2e127b45ea6e2adc5c85cd424134deb`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -17,6 +17,10 @@
 - 每行一个账号独立执行，失败汇总并非零退出
 - 完全断网预演、带时间戳的分阶段日志、账号和任务统计、单行结构化汇总
 - 按青龙通知开关和脚本名单发送脱敏摘要，通知失败保留业务退出码
+- 默认查询并显示官方免费抽奖次数；无免费次数正常跳过，查询失败禁止抽奖
+- 兼容逐行 aid|sessionid 多账号和旧 juejin_aid、juejin_sessionid 单账号参数；每个账号保留独立 aid 查询参数
+- 保留云函数 main 导出及 result、msg 返回值，导入不自动执行，阶段保留 result、msg 机器可读输出
+- 显示官方返回的昵称、用户名、显示名称或公开 UID；抑制凭据、手机号和原始响应
 
 ## 环境变量与参数
 
@@ -28,8 +32,8 @@
 
 - 必填：是
 - 敏感：是
-- 获取或设置：登录掘金网页版，打开浏览器开发者工具的网络面板，从本人 api.juejin.cn 已登录请求的请求头复制完整 Cookie。过期后重新登录获取，不要向他人发送请求或凭据。
-- 填写格式：每个非空行一个账号的完整 Cookie，使用键值对，保留分号及后续内容，不添加 Cookie: 前缀，不用 & 或 @ 分隔账号。
+- 获取或设置：登录掘金网页版，打开浏览器开发者工具的网络面板，从本人 api.juejin.cn 已登录请求的请求头复制完整 Cookie。过期后重新登录获取，不要向他人发送请求或凭据。 这是维护版规范变量；也兼容 JUEJIN_ACCOUNTS 或旧变量对。
+- 填写格式：每个非空行一个账号的完整 Cookie，使用键值对，保留分号及后续内容，不添加 Cookie: 前缀，不用 & 或 @ 分隔账号。 输入优先级为 JUEJIN_COOKIE、JUEJIN_ACCOUNTS、juejin_aid 与 juejin_sessionid；显式设置的高优先级空值视为配置错误，不回退。
 
 ### 可选参数
 
@@ -72,15 +76,36 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：auto 模式下填写需要通知的脚本标识。可使用当前目录标识 9e33a705da89cfd6、文件名 auto_juejin.js、实际文件名、脚本相对路径或通配符。
+- 获取或设置：按需设置青龙通知开关；auto 仅通知名单内脚本，未提供名单默认关闭。强制开启仍遵守显式设置的名单；断网预演只记录通知摘要。
 - 填写格式：逗号、分号、空白或换行分隔，支持 * 和 ?，* 匹配全部，空值关闭全部。
 
 ### `QINGLONG_NOTIFY_DIR`
 
 - 必填：否
 - 敏感：否
-- 获取或设置：青龙通知模块位于自定义目录时填写该目录。不填时依次寻找 /ql/data/scripts/sendNotify.js 和 /ql/scripts/sendNotify.js。通知不可用不改变业务退出码。
+- 获取或设置：auto 模式下填写通知脚本标识；支持维护目录标识 9e33a705da89cfd6、合并来源标识 012f027cd2f3c11b、auto_juejin.js、scripts/auto_juejin.js、juejin.js、scripts/juejin.js、实际文件名或路径及通配符。显式空名单禁用通知。
 - 填写格式：可选目录路径，目录中应存在导出 sendNotify 函数的 sendNotify.js。
+
+### `JUEJIN_ACCOUNTS`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：登录掘金网页版，在开发者工具网络面板查看 api.juejin.cn 请求；从查询参数取得 aid，从请求 Cookie 取得 sessionid 值，不要粘贴整条 Cookie。 仅未设置 JUEJIN_COOKIE 时启用，作为兼容输入。
+- 填写格式：每个非空行一个账号，格式为 aid|sessionid，仅按第一个 | 拆分；aid 为数字，sessionid 不含分号、空白或控制字符。
+
+### `juejin_aid`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：兼容上游单账号变量，从掘金请求查询参数取得。仅未设置 JUEJIN_ACCOUNTS 时使用，必须配合 juejin_sessionid。 同时未设置 JUEJIN_COOKIE 时才启用。
+- 填写格式：数字应用标识
+
+### `juejin_sessionid`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：兼容上游单账号变量，从登录后的掘金请求 Cookie 取得 sessionid 值。仅未设置 JUEJIN_ACCOUNTS 时使用，必须配合 juejin_aid。 同时未设置 JUEJIN_COOKIE 时才启用。
+- 填写格式：单账号会话值，不含字段名
 
 ## 参数获取方法
 
@@ -88,11 +113,11 @@
 
 ## 多账号
 
-JUEJIN_COOKIE 每个非空行一个账号，整行作为 Cookie 原样使用，不按分号、& 或 @ 拆分账号。各账号独立执行，任一账号失败整体非零退出。
+优先读取 JUEJIN_COOKIE，每个非空行一个账号的完整 Cookie，不按分号、& 或 @ 拆分。未设置时兼容 JUEJIN_ACCOUNTS，每个非空行 aid|sessionid，仅按第一个 | 拆分并保留后续会话文本；再兼容旧变量对单账号。显式空值不回退。各账号独立执行，任一失败整体非零退出。
 
 ## 验证与兼容性
 
-SHA-256 `532facb50319f8d1ced494cba1d3d19e91de39ea5d89e9a6a4be9c09621dc8fd`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9e33a705da89cfd6`。
+SHA-256 `3e7b9b47d6f56f2aabe3f8db769c7808e2e127b45ea6e2adc5c85cd424134deb`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/9e33a705da89cfd6`。
 
 ## 副作用与风险
 

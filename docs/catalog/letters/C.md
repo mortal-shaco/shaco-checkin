@@ -1,12 +1,13 @@
 # 字母索引 · C
 
-共 **43** 个脚本。返回 [`目录首页`](../README.md)。
+共 **44** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
 | 菜鸟图库图币签到 | `scripts/cainiao.py` | `python3 scripts/cainiao.py` | `27 10 * * *` | 待检查 | [cainiao.py.md](../../scripts/cainiao.py.md)（`docs/scripts/cainiao.py.md`） |
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `3 1 * * *` | 待检查 | [cdrail.py.md](../../scripts/cdrail.py.md)（`docs/scripts/cdrail.py.md`） |
+| 机场账号每日签到 | `scripts/cf_workers.js` | `node scripts/cf_workers.js` | `42 10 * * *` | 待检查 | [cf_workers.js.md](../../scripts/cf_workers.js.md)（`docs/scripts/cf_workers.js.md`） |
 | 春风动力签到 | `scripts/cfmoto_checkin.py` | `task scripts/cfmoto_checkin.py` | `5 0 * * *` | 上架 | [cfmoto_checkin.py.md](../../scripts/cfmoto_checkin.py.md)（`docs/scripts/cfmoto_checkin.py.md`） |
 | 超星学习通巡课签到 | `scripts/chaoxing_assistant.js` | `node scripts/chaoxing_assistant.js` | `*/10 7-22 * * *` | 待检查 | [chaoxing_assistant.js.md](../../scripts/chaoxing_assistant.js.md)（`docs/scripts/chaoxing_assistant.js.md`） |
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |

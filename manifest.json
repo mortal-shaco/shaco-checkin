@@ -7270,18 +7270,21 @@
           "JUEJIN_FREE_LOTTERY",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
+          "QINGLONG_NOTIFY_DIR",
+          "JUEJIN_ACCOUNTS",
+          "juejin_aid",
+          "juejin_sessionid"
         ],
         "dryRunEnv": {
           "JUEJIN_DRY_RUN": "1"
         },
         "liveEnv": {
           "JUEJIN_DIP_LUCKY": "0",
-          "JUEJIN_FREE_LOTTERY": "0",
-          "QINGLONG_NOTIFY": "auto"
+          "JUEJIN_FREE_LOTTERY": "0"
         },
         "successPatterns": [
-          "掘金任务全部完成"
+          "掘金任务全部完成",
+          "\"status\":\"success\""
         ],
         "features": [
           "查询今日签到状态，未签到时执行签到并再次核验",
@@ -7291,7 +7294,11 @@
           "显式开启后查询免费次数，仅在次数为正时抽奖一次并显示奖品",
           "每行一个账号独立执行，失败汇总并非零退出",
           "完全断网预演、带时间戳的分阶段日志、账号和任务统计、单行结构化汇总",
-          "按青龙通知开关和脚本名单发送脱敏摘要，通知失败保留业务退出码"
+          "按青龙通知开关和脚本名单发送脱敏摘要，通知失败保留业务退出码",
+          "默认查询并显示官方免费抽奖次数；无免费次数正常跳过，查询失败禁止抽奖",
+          "兼容逐行 aid|sessionid 多账号和旧 juejin_aid、juejin_sessionid 单账号参数；每个账号保留独立 aid 查询参数",
+          "保留云函数 main 导出及 result、msg 返回值，导入不自动执行，阶段保留 result、msg 机器可读输出",
+          "显示官方返回的昵称、用户名、显示名称或公开 UID；抑制凭据、手机号和原始响应"
         ],
         "sideEffects": [
           "未签到时完成每日签到并触发平台签到奖励",
@@ -7306,7 +7313,7 @@
       },
       "displayName": "掘金每日签到",
       "path": "scripts/auto_juejin.js",
-      "sha256": "532facb50319f8d1ced494cba1d3d19e91de39ea5d89e9a6a4be9c09621dc8fd",
+      "sha256": "3e7b9b47d6f56f2aabe3f8db769c7808e2e127b45ea6e2adc5c85cd424134deb",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -7314,7 +7321,29 @@
         "repository": "suojian0313/juejin_helper",
         "branch": "main",
         "commit": "790a83033e4979e0a66399678be46337f09e218b",
-        "originalPath": "auto_juejin.js"
+        "originalPath": "auto_juejin.js",
+        "related": [
+          {
+            "catalogId": "5d6ff91498bd5970",
+            "sha256": "cb74f6e5cccd3ca49acd8ae72b61270af5e12a872d33b3a33fcd5c4004e98303",
+            "repository": "CocoSilent/auto-sign",
+            "url": "https://github.com/CocoSilent/auto-sign",
+            "branch": "main",
+            "commit": "336a77f8b43519f582d0568a326e60ca96a44d40",
+            "originalPath": "cloudfunctions/juejin/utils.js",
+            "license": "MIT"
+          },
+          {
+            "repository": "CocoSilent/auto-sign",
+            "url": "https://github.com/CocoSilent/auto-sign",
+            "branch": "main",
+            "commit": "336a77f8b43519f582d0568a326e60ca96a44d40",
+            "originalPath": "cloudfunctions/juejin/index.js",
+            "catalogId": "012f027cd2f3c11b",
+            "sha256": "753619b5a609dac41f676cf085ab6e3e0eb08851e075da6ac1ab3edcd3c9df16",
+            "license": "MIT"
+          }
+        ]
       },
       "cron": "36 10 * * *",
       "command": "node scripts/auto_juejin.js",
@@ -7323,8 +7352,8 @@
           "name": "JUEJIN_COOKIE",
           "required": true,
           "sensitive": true,
-          "howToGet": "登录掘金网页版，打开浏览器开发者工具的网络面板，从本人 api.juejin.cn 已登录请求的请求头复制完整 Cookie。过期后重新登录获取，不要向他人发送请求或凭据。",
-          "format": "每个非空行一个账号的完整 Cookie，使用键值对，保留分号及后续内容，不添加 Cookie: 前缀，不用 & 或 @ 分隔账号。"
+          "howToGet": "登录掘金网页版，打开浏览器开发者工具的网络面板，从本人 api.juejin.cn 已登录请求的请求头复制完整 Cookie。过期后重新登录获取，不要向他人发送请求或凭据。 这是维护版规范变量；也兼容 JUEJIN_ACCOUNTS 或旧变量对。",
+          "format": "每个非空行一个账号的完整 Cookie，使用键值对，保留分号及后续内容，不添加 Cookie: 前缀，不用 & 或 @ 分隔账号。 输入优先级为 JUEJIN_COOKIE、JUEJIN_ACCOUNTS、juejin_aid 与 juejin_sessionid；显式设置的高优先级空值视为配置错误，不回退。"
         },
         {
           "name": "JUEJIN_DRY_RUN",
@@ -7365,21 +7394,42 @@
           "name": "QINGLONG_NOTIFY_SCRIPTS",
           "required": false,
           "sensitive": false,
-          "howToGet": "auto 模式下填写需要通知的脚本标识。可使用当前目录标识 9e33a705da89cfd6、文件名 auto_juejin.js、实际文件名、脚本相对路径或通配符。",
+          "howToGet": "按需设置青龙通知开关；auto 仅通知名单内脚本，未提供名单默认关闭。强制开启仍遵守显式设置的名单；断网预演只记录通知摘要。",
           "format": "逗号、分号、空白或换行分隔，支持 * 和 ?，* 匹配全部，空值关闭全部。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "青龙通知模块位于自定义目录时填写该目录。不填时依次寻找 /ql/data/scripts/sendNotify.js 和 /ql/scripts/sendNotify.js。通知不可用不改变业务退出码。",
+          "howToGet": "auto 模式下填写通知脚本标识；支持维护目录标识 9e33a705da89cfd6、合并来源标识 012f027cd2f3c11b、auto_juejin.js、scripts/auto_juejin.js、juejin.js、scripts/juejin.js、实际文件名或路径及通配符。显式空名单禁用通知。",
           "format": "可选目录路径，目录中应存在导出 sendNotify 函数的 sendNotify.js。"
+        },
+        {
+          "name": "JUEJIN_ACCOUNTS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "登录掘金网页版，在开发者工具网络面板查看 api.juejin.cn 请求；从查询参数取得 aid，从请求 Cookie 取得 sessionid 值，不要粘贴整条 Cookie。 仅未设置 JUEJIN_COOKIE 时启用，作为兼容输入。",
+          "format": "每个非空行一个账号，格式为 aid|sessionid，仅按第一个 | 拆分；aid 为数字，sessionid 不含分号、空白或控制字符。"
+        },
+        {
+          "name": "juejin_aid",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容上游单账号变量，从掘金请求查询参数取得。仅未设置 JUEJIN_ACCOUNTS 时使用，必须配合 juejin_sessionid。 同时未设置 JUEJIN_COOKIE 时才启用。",
+          "format": "数字应用标识"
+        },
+        {
+          "name": "juejin_sessionid",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "兼容上游单账号变量，从登录后的掘金请求 Cookie 取得 sessionid 值。仅未设置 JUEJIN_ACCOUNTS 时使用，必须配合 juejin_aid。 同时未设置 JUEJIN_COOKIE 时才启用。",
+          "format": "单账号会话值，不含字段名"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "JUEJIN_COOKIE 每个非空行一个账号，整行作为 Cookie 原样使用，不按分号、& 或 @ 拆分账号。各账号独立执行，任一账号失败整体非零退出。"
+        "rule": "优先读取 JUEJIN_COOKIE，每个非空行一个账号的完整 Cookie，不按分号、& 或 @ 拆分。未设置时兼容 JUEJIN_ACCOUNTS，每个非空行 aid|sessionid，仅按第一个 | 拆分并保留后续会话文本；再兼容旧变量对单账号。显式空值不回退。各账号独立执行，任一失败整体非零退出。"
       },
       "dependencies": [],
       "features": [
@@ -7390,7 +7440,11 @@
         "显式开启后查询免费次数，仅在次数为正时抽奖一次并显示奖品",
         "每行一个账号独立执行，失败汇总并非零退出",
         "完全断网预演、带时间戳的分阶段日志、账号和任务统计、单行结构化汇总",
-        "按青龙通知开关和脚本名单发送脱敏摘要，通知失败保留业务退出码"
+        "按青龙通知开关和脚本名单发送脱敏摘要，通知失败保留业务退出码",
+        "默认查询并显示官方免费抽奖次数；无免费次数正常跳过，查询失败禁止抽奖",
+        "兼容逐行 aid|sessionid 多账号和旧 juejin_aid、juejin_sessionid 单账号参数；每个账号保留独立 aid 查询参数",
+        "保留云函数 main 导出及 result、msg 返回值，导入不自动执行，阶段保留 result、msg 机器可读输出",
+        "显示官方返回的昵称、用户名、显示名称或公开 UID；抑制凭据、手机号和原始响应"
       ],
       "sideEffects": [
         "未签到时完成每日签到并触发平台签到奖励",
@@ -7409,20 +7463,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/9e33a705da89cfd6",
-        "candidateSha256": "17d2665a17d8b0092fa5ec6639013268e122da582696b1baff78dd9cace589d1"
+        "candidateSha256": "7625758ac3ef374f5a9792666fc2773b2d95b168cf3f7bb6c6a1cf4acfb9be03"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "17d2665a17d8b0092fa5ec6639013268e122da582696b1baff78dd9cace589d1",
-        "releaseSha256": "532facb50319f8d1ced494cba1d3d19e91de39ea5d89e9a6a4be9c09621dc8fd",
+        "validatedSha256": "7625758ac3ef374f5a9792666fc2773b2d95b168cf3f7bb6c6a1cf4acfb9be03",
+        "releaseSha256": "3e7b9b47d6f56f2aabe3f8db769c7808e2e127b45ea6e2adc5c85cd424134deb",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T10:10:04.374021+00:00",
+          "approvedAt": "2026-11-11T10:25:56.496557+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "17d2665a17d8b0092fa5ec6639013268e122da582696b1baff78dd9cace589d1",
-          "toCandidateSha256": "532facb50319f8d1ced494cba1d3d19e91de39ea5d89e9a6a4be9c09621dc8fd",
+          "fromCandidateSha256": "7625758ac3ef374f5a9792666fc2773b2d95b168cf3f7bb6c6a1cf4acfb9be03",
+          "toCandidateSha256": "3e7b9b47d6f56f2aabe3f8db769c7808e2e127b45ea6e2adc5c85cd424134deb",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -11469,6 +11523,220 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "5caed175e6b1ff5b1033fbbd59105a71dfb952c8dd79bc9b92f3d354a69e5225",
           "toCandidateSha256": "b267d1cf0a1a0440b3cfa9d8ca1502e9ffb04e27366e40debcaa16d0ea86d698",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "a497ca3639ff7639",
+      "applicationKey": "cf-workers",
+      "checkProfile": {
+        "requiredEnv": [
+          "CF_WORKERS_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "JC",
+          "DOMAIN",
+          "ZH",
+          "USER",
+          "MM",
+          "PASS",
+          "CF_WORKERS_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "TGTOKEN",
+          "TGID"
+        ],
+        "dryRunEnv": {
+          "CF_WORKERS_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "TASK_SUMMARY=.*\"status\":\"success\""
+        ],
+        "features": [
+          "邮箱密码登录并每日签到",
+          "初始会话获取、Cookie 合并和会话就绪检查",
+          "青龙定时和终端手动执行、多账号独立处理与旧参数兼容",
+          "断网预演、业务成功校验、超时及脱敏结构化日志",
+          "按青龙通知策略发送汇总，可选官方 Telegram 通知"
+        ],
+        "sideEffects": [
+          "创建站点登录会话",
+          "每日签到，可能领取站点流量奖励",
+          "启用通知时发送脱敏汇总消息"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "机场账号每日签到",
+      "path": "scripts/cf_workers.js",
+      "sha256": "aba64c871a6ed26bd0b64d9f993af1e4be0021ada323480f130df4e37d8e420e",
+      "stage": "released",
+      "license": "Apache-2.0",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "gitlab.com/HardIsStyle/CF-Workers-checkin",
+        "branch": "main",
+        "commit": "209e7033cde012294e7a454e7862812533233545",
+        "originalPath": "worker.js",
+        "related": [
+          {
+            "catalogId": "8fb4a521c8826a35",
+            "sha256": "844329a0f8ec9fee341a220bc83c63acae8f32e24e527bd4fa4619b378c60ae1",
+            "repository": "cmliussss2024/CF-Workers-checkin",
+            "url": "https://github.com/cmliussss2024/CF-Workers-checkin",
+            "branch": "main",
+            "commit": "fb1857b5623d1faa8e7dbf2a49ed380e0ae15e28",
+            "originalPath": "worker.js",
+            "license": "Apache-2.0"
+          }
+        ]
+      },
+      "cron": "42 10 * * *",
+      "command": "node scripts/cf_workers.js",
+      "environment": [
+        {
+          "name": "CF_WORKERS_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "从本人机场登录页取得 HTTPS 域名，使用注册邮箱和登录密码；在青龙添加该变量。完整旧单账号参数仍兼容，推荐迁移。",
+          "format": "每个非空行一个 JSON 对象，包含 domain、email、password；密码按 JSON 转义后解析，原样保留。"
+        },
+        {
+          "name": "JC",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人站点域名，优先于 DOMAIN",
+          "format": "仅旧版单账号兼容；必须配齐域名、邮箱、密码，设置 CF_WORKERS_ACCOUNTS 后忽略旧参数。"
+        },
+        {
+          "name": "DOMAIN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "JC 的兼容别名",
+          "format": "仅旧版单账号兼容；必须配齐域名、邮箱、密码，设置 CF_WORKERS_ACCOUNTS 后忽略旧参数。"
+        },
+        {
+          "name": "ZH",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人注册邮箱，优先于 USER",
+          "format": "仅旧版单账号兼容；必须配齐域名、邮箱、密码，设置 CF_WORKERS_ACCOUNTS 后忽略旧参数。"
+        },
+        {
+          "name": "USER",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "ZH 的兼容别名，建议避免系统默认用户名",
+          "format": "仅旧版单账号兼容；必须配齐域名、邮箱、密码，设置 CF_WORKERS_ACCOUNTS 后忽略旧参数。"
+        },
+        {
+          "name": "MM",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "本人登录密码，优先于 PASS",
+          "format": "仅旧版单账号兼容；必须配齐域名、邮箱、密码，设置 CF_WORKERS_ACCOUNTS 后忽略旧参数。"
+        },
+        {
+          "name": "PASS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "MM 的兼容别名",
+          "format": "仅旧版单账号兼容；必须配齐域名、邮箱、密码，设置 CF_WORKERS_ACCOUNTS 后忽略旧参数。"
+        },
+        {
+          "name": "CF_WORKERS_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "断网预演时设为 1。",
+          "format": "1 为断网预演，其他值正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写任务来源编号、脚本相对路径、文件名或文件名通配符。",
+          "format": "逗号、分号或空白分隔；* 匹配全部；空值关闭全部选择。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "指定青龙 sendNotify.js 所在目录；默认检查 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本机目录，仅通知使用，不是签到依赖。"
+        },
+        {
+          "name": "TGTOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：从 Telegram 官方 BotFather 取得本人的机器人令牌；须配合 TGID，遵守通知总开关与选择规则。",
+          "format": "官方机器人令牌，不使用第三方代理。"
+        },
+        {
+          "name": "TGID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：取得本人 Telegram 会话标识，配合 TGTOKEN。",
+          "format": "单个聊天标识。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 JSON 账号对象，包含同账号域名、邮箱、密码；独立执行，任一账号配置或业务失败均非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "邮箱密码登录并每日签到",
+        "初始会话获取、Cookie 合并和会话就绪检查",
+        "青龙定时和终端手动执行、多账号独立处理与旧参数兼容",
+        "断网预演、业务成功校验、超时及脱敏结构化日志",
+        "按青龙通知策略发送汇总，可选官方 Telegram 通知"
+      ],
+      "sideEffects": [
+        "创建站点登录会话",
+        "每日签到，可能领取站点流量奖励",
+        "启用通知时发送脱敏汇总消息"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/a497ca3639ff7639",
+        "candidateSha256": "d7ccaf78b37452d24404f5dcb82a9ebbda2260fcec02ca4bd51dedfa67513b6a"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "d7ccaf78b37452d24404f5dcb82a9ebbda2260fcec02ca4bd51dedfa67513b6a",
+        "releaseSha256": "aba64c871a6ed26bd0b64d9f993af1e4be0021ada323480f130df4e37d8e420e",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:27:19.189610+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "d7ccaf78b37452d24404f5dcb82a9ebbda2260fcec02ca4bd51dedfa67513b6a",
+          "toCandidateSha256": "aba64c871a6ed26bd0b64d9f993af1e4be0021ada323480f130df4e37d8e420e",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -31695,187 +31963,6 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "6fac3023c4ba77d121f3e7679bd5a0cc28b3739bb988776f28a22fb80e9d20bf",
           "toCandidateSha256": "5843c700b81fe4f40c51e141de961aa5a31943b24fb8a3a0b8fd78c59df0f602",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
-      "catalogId": "012f027cd2f3c11b",
-      "applicationKey": "cocosilent/auto-sign::juejin",
-      "checkProfile": {
-        "requiredEnv": [
-          "JUEJIN_ACCOUNTS"
-        ],
-        "optionalEnv": [
-          "juejin_aid",
-          "juejin_sessionid",
-          "JUEJIN_FREE_LOTTERY",
-          "JUEJIN_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "JUEJIN_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "JUEJIN_FREE_LOTTERY": "0"
-        },
-        "successPatterns": [
-          "签到成功",
-          "\"status\":\"success\""
-        ],
-        "features": [
-          "每日签到，严格检查 HTTP 状态与业务码",
-          "查询免费抽奖次数，无免费次数时正常跳过",
-          "显式授权后仅免费次数为正时抽奖一次",
-          "兼容原单账号变量和云函数 main 导出，新增逐行多账号独立执行",
-          "完全断网演练、请求超时、响应大小限制、失败非零退出",
-          "显示接口提供的非秘密账号身份，输出阶段日志、账号统计和唯一 TASK_SUMMARY 汇总",
-          "按全局开关和脚本名单发送青龙脱敏通知，通知失败保留业务退出码"
-        ],
-        "sideEffects": [
-          "每日签到改变签到状态并可能获得积分奖励",
-          "显式开启后抽奖一次，消耗抽奖机会并可能获得奖品",
-          "启用通知时发送脱敏任务总结"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "掘金每日签到与可选免费抽奖",
-      "path": "scripts/juejin.js",
-      "sha256": "9cb3dd9561e9da906f97967c4dedbabeb477ca620850ea67856f8c0527583058",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "CocoSilent/auto-sign",
-        "branch": "main",
-        "commit": "336a77f8b43519f582d0568a326e60ca96a44d40",
-        "originalPath": "cloudfunctions/juejin/index.js",
-        "related": [
-          {
-            "catalogId": "5d6ff91498bd5970",
-            "sha256": "cb74f6e5cccd3ca49acd8ae72b61270af5e12a872d33b3a33fcd5c4004e98303",
-            "repository": "CocoSilent/auto-sign",
-            "url": "https://github.com/CocoSilent/auto-sign",
-            "branch": "main",
-            "commit": "336a77f8b43519f582d0568a326e60ca96a44d40",
-            "originalPath": "cloudfunctions/juejin/utils.js",
-            "license": "MIT"
-          }
-        ]
-      },
-      "cron": "42 10 * * *",
-      "command": "node scripts/juejin.js",
-      "environment": [
-        {
-          "name": "JUEJIN_ACCOUNTS",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "登录掘金网页版，在开发者工具网络面板查看 api.juejin.cn 请求；从查询参数取得 aid，从请求 Cookie 取得 sessionid 值，不要粘贴整条 Cookie。",
-          "format": "每个非空行一个账号，格式为 aid|sessionid，仅按第一个 | 拆分；aid 为数字，sessionid 不含分号、空白或控制字符。"
-        },
-        {
-          "name": "juejin_aid",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "兼容上游单账号变量，从掘金请求查询参数取得。仅未设置 JUEJIN_ACCOUNTS 时使用，必须配合 juejin_sessionid。",
-          "format": "数字应用标识"
-        },
-        {
-          "name": "juejin_sessionid",
-          "required": false,
-          "sensitive": true,
-          "howToGet": "兼容上游单账号变量，从登录后的掘金请求 Cookie 取得 sessionid 值。仅未设置 JUEJIN_ACCOUNTS 时使用，必须配合 juejin_aid。",
-          "format": "单账号会话值，不含字段名"
-        },
-        {
-          "name": "JUEJIN_FREE_LOTTERY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置以显式授权抽奖；仅免费次数查询成功且为正时抽一次。查询与抽奖非原子操作，避免其他任务并发抽奖。",
-          "format": "1 开启；默认 0 关闭"
-        },
-        {
-          "name": "JUEJIN_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置；仅验证配置和演练三个阶段，不发送业务请求或实际通知。",
-          "format": "1 开启；默认 0"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置通知名单，替换默认选择；可用目录编号 012f027cd2f3c11b、脚本路径、文件名或文件名通配符。",
-          "format": "逗号、分号或空白分隔；* 全选；空值关闭全部"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，填写青龙已有 sendNotify.js 的目录；未配置时查找 /ql/data/scripts 与 /ql/scripts。仅用于通知，不是业务依赖。",
-          "format": "本地目录路径"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "每个非空行一个账号，使用 aid|sessionid，仅按第一个 | 拆分；逐账号独立执行，任一失败整体非零退出。旧变量对只兼容单账号。"
-      },
-      "dependencies": [],
-      "features": [
-        "每日签到，严格检查 HTTP 状态与业务码",
-        "查询免费抽奖次数，无免费次数时正常跳过",
-        "显式授权后仅免费次数为正时抽奖一次",
-        "兼容原单账号变量和云函数 main 导出，新增逐行多账号独立执行",
-        "完全断网演练、请求超时、响应大小限制、失败非零退出",
-        "显示接口提供的非秘密账号身份，输出阶段日志、账号统计和唯一 TASK_SUMMARY 汇总",
-        "按全局开关和脚本名单发送青龙脱敏通知，通知失败保留业务退出码"
-      ],
-      "sideEffects": [
-        "每日签到改变签到状态并可能获得积分奖励",
-        "显式开启后抽奖一次，消耗抽奖机会并可能获得奖品",
-        "启用通知时发送脱敏任务总结"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/012f027cd2f3c11b",
-        "candidateSha256": "f0ecbc8db2edc926b97d16f19efa8da135aa633e4873bf89799847f7bc34f5fd"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "f0ecbc8db2edc926b97d16f19efa8da135aa633e4873bf89799847f7bc34f5fd",
-        "releaseSha256": "9cb3dd9561e9da906f97967c4dedbabeb477ca620850ea67856f8c0527583058",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T10:15:47.193256+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "f0ecbc8db2edc926b97d16f19efa8da135aa633e4873bf89799847f7bc34f5fd",
-          "toCandidateSha256": "9cb3dd9561e9da906f97967c4dedbabeb477ca620850ea67856f8c0527583058",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

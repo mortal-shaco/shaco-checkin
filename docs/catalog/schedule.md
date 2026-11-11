@@ -68,6 +68,7 @@
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
 | 菜鸟图库图币签到 | `scripts/cainiao.py` | `python3 scripts/cainiao.py` | `27 10 * * *` | 待检查 | [cainiao.py.md](../scripts/cainiao.py.md)（`docs/scripts/cainiao.py.md`） |
 | 成都地铁签到 | `scripts/cdrail.py` | `python3 scripts/cdrail.py` | `3 1 * * *` | 待检查 | [cdrail.py.md](../scripts/cdrail.py.md)（`docs/scripts/cdrail.py.md`） |
+| 机场账号每日签到 | `scripts/cf_workers.js` | `node scripts/cf_workers.js` | `42 10 * * *` | 待检查 | [cf_workers.js.md](../scripts/cf_workers.js.md)（`docs/scripts/cf_workers.js.md`） |
 | 超星学习通巡课签到 | `scripts/chaoxing_assistant.js` | `node scripts/chaoxing_assistant.js` | `*/10 7-22 * * *` | 待检查 | [chaoxing_assistant.js.md](../scripts/chaoxing_assistant.js.md)（`docs/scripts/chaoxing_assistant.js.md`） |
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | VManAPI 每日签到 | `scripts/check_in.py` | `python3 scripts/check_in.py` | `23 8 * * *` | 待检查 | [check_in.py.md](../scripts/check_in.py.md)（`docs/scripts/check_in.py.md`） |
@@ -178,7 +179,6 @@
 | 精易论坛签到 | `scripts/jingyiluntan_sign.py` | `python3 scripts/jingyiluntan_sign.py` | `2 2 * * *` | 待检查 | [jingyiluntan_sign.py.md](../scripts/jingyiluntan_sign.py.md)（`docs/scripts/jingyiluntan_sign.py.md`） |
 | 技实习自动签到 | `scripts/jishixi.js` | `node scripts/jishixi.js` | `42 8 * * *` | 待检查 | [jishixi.js.md](../scripts/jishixi.js.md)（`docs/scripts/jishixi.js.md`） |
 | 杰士邦安心福利社 | `scripts/jissbon.py` | `python3 scripts/jissbon.py` | `21 2 * * *` | 待检查 | [jissbon.py.md](../scripts/jissbon.py.md)（`docs/scripts/jissbon.py.md`） |
-| 掘金每日签到与可选免费抽奖 | `scripts/juejin.js` | `node scripts/juejin.js` | `42 10 * * *` | 待检查 | [juejin.js.md](../scripts/juejin.js.md)（`docs/scripts/juejin.js.md`） |
 | 劲友家日常任务 | `scripts/jyj.py` | `python3 scripts/jyj.py` | `12 2 * * *` | 待检查 | [jyj.py.md](../scripts/jyj.py.md)（`docs/scripts/jyj.py.md`） |
 | 看雪论坛签到 | `scripts/kanxue.js` | `node scripts/kanxue.js` | `0 35 11 * * *` | 待检查 | [kanxue.js.md](../scripts/kanxue.js.md)（`docs/scripts/kanxue.js.md`） |
 | 夸父资源社签到 | `scripts/kfzy.js` | `node scripts/kfzy.js` | `0 40 11 * * *` | 待检查 | [kfzy.js.md](../scripts/kfzy.js.md)（`docs/scripts/kfzy.js.md`） |

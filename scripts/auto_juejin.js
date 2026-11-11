@@ -2,7 +2,7 @@
 // cron: 36 10 * * *
 /**
  * name: 掘金每日签到
- * cron: 0 9 * * *
+ * cron: 36 10 * * *
  * 来源 suojian0313/juejin_helper，auto_juejin.js
  * 上游提交 790a83033e4979e0a66399678be46337f09e218b，维护许可 MIT。
  *
@@ -19,7 +19,15 @@
  * 中的目录标识、脚本相对路径、文件名或通配符时通知，未设置名单默认不通知。
  * QINGLONG_NOTIFY_DIR 可指向青龙 sendNotify.js 所在目录。
  * 预演仅记录通知摘要和投递计划，避免通知组件联网。
- * 上游未声明 cron，此维护版本采用每日 09:00，可在青龙中调整。
+ * 保留已发布维护任务的每日 10:36 计划；来源云函数未声明 cron。
+ * 合并来源：CocoSilent/auto-sign，cloudfunctions/juejin/index.js 与 utils.js (MIT)。
+ * 兼容 JUEJIN_ACCOUNTS：每个非空行 aid|sessionid，仅按第一个 | 拆分。
+ * 从本人 api.juejin.cn 请求查询参数取得 aid，从 Cookie 取得 sessionid 的值。
+ * 兼容 juejin_aid + juejin_sessionid 单账号变量；输入优先级：
+ * JUEJIN_COOKIE > JUEJIN_ACCOUNTS > 旧变量对，显式空值不回退。
+ * 默认查询免费抽奖次数；仍仅显式开启 JUEJIN_FREE_LOTTERY 后抽奖。
+ * 云函数兼容入口 exports.main 返回 {result,msg}；导入不会自动执行。
+ * Node.js >=18；仅使用标准库，无业务外部依赖。
  *
  * MIT License
  * Original source attribution: suojian0313/juejin_helper
@@ -63,15 +71,24 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const TITLE = '掘金每日签到';
 const CATALOG = '9e33a705da89cfd6';
-const started = Date.now();
 const enabledValues = ['1', 'true', 'yes', 'on'];
 const disabledValues = ['0', 'false', 'no', 'off'];
 const isEnabled = value => enabledValues.includes((value || '').toLowerCase());
-const dryRun = isEnabled(process.env.JUEJIN_DRY_RUN);
-const cookies = (process.env.JUEJIN_COOKIE || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-const dip = isEnabled(process.env.JUEJIN_DIP_LUCKY);
-const lottery = isEnabled(process.env.JUEJIN_FREE_LOTTERY);
-const historyId = (process.env.JUEJIN_LOTTERY_HISTORY_ID || '').trim();
+function accountsFrom(env) {
+  if (env.JUEJIN_COOKIE !== undefined) {
+    return env.JUEJIN_COOKIE.split(/\r?\n/).map(line => line.trim()).filter(Boolean)
+      .map(cookie => ({ cookie, aid: '', valid: cookie.includes('=') && !/[\x00-\x1f\x7f]/.test(cookie) }));
+  }
+  const lines = env.JUEJIN_ACCOUNTS !== undefined ? env.JUEJIN_ACCOUNTS.split(/\r?\n/) :
+    (env.juejin_aid || env.juejin_sessionid ? [`${env.juejin_aid || ''}|${env.juejin_sessionid || ''}`] : []);
+  return lines.map(line => line.trim()).filter(Boolean).map(line => {
+    const at = line.indexOf('|');
+    const aid = at < 0 ? '' : line.slice(0, at).trim();
+    const session = at < 0 ? '' : line.slice(at + 1).trim();
+    return { cookie: `sessionid=${session}`, aid,
+      valid: /^\d+$/.test(aid) && !!session && !/[;\s\x00-\x1f\x7f]/.test(session) };
+  });
+}
 const endpoint = {
   status: ['GET', 'get_today_status'],
   checkIn: ['POST', 'check_in'],
@@ -89,16 +106,20 @@ function safeText(value, cookie) {
   if (typeof value !== 'string' && typeof value !== 'number') return '';
   let text = String(value).replace(/[\r\n\x00-\x1f\x7f]/g, ' ');
   const sensitive = [cookie, ...cookie.split(';').map(part => part.slice(part.indexOf('=') + 1).trim())];
-  for (const secret of sensitive.filter(item => item && item.length >= 4)) {
-    text = text.split(secret).join('[凭据已隐藏]');
+  for (const secret of sensitive.filter(item => item)) {
+    if (secret.length >= 4) text = text.split(secret).join('[凭据已隐藏]');
+    else if (text === secret) text = '[凭据已隐藏]';
   }
   return text.replace(/(?:cookie|token|session|authorization)\s*[:=]\s*\S+/gi, '[凭据已隐藏]')
     .replace(/\b1[3-9]\d{9}\b/g, '[手机号已隐藏]');
 }
-function request(cookie, key) {
+function request(account, key, config) {
+  const { cookie, aid } = account;
+  const { dryRun, historyId } = config;
   if (dryRun) throw new Error('预演模式禁止网络请求');
   const [method, route] = endpoint[key];
   const url = new URL(`https://api.juejin.cn/growth_api/v1/${route}`);
+  if (aid) url.searchParams.set('aid', aid);
   // 保留上游 dip_lucky 参数所在的查询串，不推测未提供证据的接口变更。
   if (key === 'dip') url.searchParams.set('lottery_history_id', historyId);
   return new Promise((resolve, reject) => {
@@ -113,7 +134,7 @@ function request(cookie, key) {
     };
     const req = https.request(url, {
       method,
-      headers: { Accept: 'application/json', Cookie: cookie },
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json', Cookie: cookie },
       timeout: 15000
     }, res => {
       if (res.statusCode !== 200) {
@@ -164,9 +185,14 @@ function identify(data, cookie) {
   for (const name of ['nickname', 'user_name', 'username', 'display_name', 'user_id', 'uid']) {
     if (data[name] !== undefined) log(`账号身份 ${name}=${safeText(data[name], cookie)}`);
   }
-  if (data.user_info && typeof data.user_info === 'object') identify(data.user_info, cookie);
+  for (const key of ['user_info', 'user']) {
+    if (data[key] && typeof data[key] === 'object') identify(data[key], cookie);
+  }
 }
-async function runAccount(cookie, index) {
+async function runAccount(account, index, config) {
+  const { cookie } = account;
+  const { dryRun, dip, lottery } = config;
+  let freeCount = null;
   const begin = Date.now();
   const stats = { account: index, total: 0, success: 0, alreadyComplete: 0, skipped: 0, failed: 0 };
   const result = { checkInStatus: false, continuousDay: null, totalDay: null, oreCount: null, prize: null, LuckyValue: null };
@@ -178,18 +204,21 @@ async function runAccount(cookie, index) {
       const outcome = await action();
       stats[outcome.kind || 'success']++;
       log(`账号 ${index} ${name} ${outcome.message}，耗时 ${Date.now() - stepStart}ms`);
+      console.log(JSON.stringify({ result: true, msg: outcome.message }));
     } catch (error) {
       stats.failed++;
-      log(`账号 ${index} ${name} ❌ ${safeText(error.message, cookie)}，耗时 ${Date.now() - stepStart}ms`);
+      const message = safeText(error.message, cookie);
+      log(`账号 ${index} ${name} ❌ ${message}，耗时 ${Date.now() - stepStart}ms`);
+      console.log(JSON.stringify({ result: false, msg: message }));
     }
   }
   async function read(key) {
-    const data = await request(cookie, key);
+    const data = await request(account, key, config);
     identify(data, cookie);
     return data;
   }
-  if (!cookie.includes('=') || /[\x00-\x1f\x7f]/.test(cookie)) {
-    await stage('凭据格式检查', async () => { throw new Error('Cookie 格式异常'); });
+  if (!account.valid) {
+    await stage('凭据格式检查', async () => { throw new Error('凭据格式异常，请检查完整 Cookie 或 aid|sessionid'); });
     stats.durationMs = Date.now() - begin;
     stats.status = 'failure';
     log(`账号 ${index} 统计 总任务 1，成功 0，已完成 0，跳过 0，失败 1，耗时 ${stats.durationMs}ms`);
@@ -214,12 +243,18 @@ async function runAccount(cookie, index) {
     await read('dip');
     return { message: '✅ 沾喜气业务成功' };
   });
+  await stage('查询免费抽奖次数', async () => {
+    if (dryRun) return { kind: 'skipped', message: '⏭️ 预演，计划查询免费抽奖次数，不模拟业务成功' };
+    const data = await read('free');
+    if (!data || !Number.isSafeInteger(data.free_count) || data.free_count < 0) throw new Error('免费次数字段异常');
+    freeCount = data.free_count;
+    return { message: `✅ 免费抽奖次数 ${freeCount}` };
+  });
   await stage('免费抽奖', async () => {
     if (!lottery) return { kind: 'skipped', message: '⏭️ 开关未开启' };
     if (dryRun) return { kind: 'skipped', message: '⏭️ 预演，计划核验免费次数，最多抽奖一次' };
-    const config = await read('free');
-    if (!config || !Number.isSafeInteger(config.free_count) || config.free_count < 0) throw new Error('免费次数字段异常');
-    if (config.free_count === 0) return { kind: 'skipped', message: '⏭️ 无免费次数，未提交抽奖' };
+    if (freeCount === null) return { kind: 'skipped', message: '⏭️ 免费次数查询失败，禁止抽奖' };
+    if (freeCount === 0) return { kind: 'skipped', message: '⏭️ 无免费次数，未提交抽奖' };
     const draw = await read('lottery');
     if (!draw || typeof draw.lottery_name !== 'string' || !draw.lottery_name.trim()) throw new Error('抽奖结果字段异常');
     result.prize = safeText(draw.lottery_name, cookie);
@@ -255,10 +290,10 @@ async function runAccount(cookie, index) {
 function notifySelected() {
   const mode = (process.env.QINGLONG_NOTIFY || 'auto').toLowerCase();
   if (disabledValues.includes(mode)) return false;
-  if (enabledValues.includes(mode)) return true;
+  if (enabledValues.includes(mode) && process.env.QINGLONG_NOTIFY_SCRIPTS === undefined) return true;
   const selectors = (process.env.QINGLONG_NOTIFY_SCRIPTS || '').split(/[,;\s]+/).filter(Boolean);
   const current = __filename.replace(/\\/g, '/');
-  const names = [CATALOG, path.basename(__filename), 'auto_juejin.js', 'scripts/auto_juejin.js', current];
+  const names = [CATALOG, '012f027cd2f3c11b', 'juejin.js', 'scripts/juejin.js', path.basename(__filename), 'auto_juejin.js', 'scripts/auto_juejin.js', current];
   return selectors.some(selector => {
     const escaped = selector.split(/([*?])/).map(part => {
       if (part === '*') return '.*';
@@ -269,7 +304,7 @@ function notifySelected() {
     return names.some(name => pattern.test(name) || (selector.includes('/') && current.endsWith(`/${selector}`)));
   });
 }
-async function notify(summary) {
+async function notify(summary, dryRun) {
   const body = `账号总数 ${summary.accounts}，成功 ${summary.success}，失败 ${summary.failed}，预演 ${summary.dryRunAccounts}，状态 ${summary.status}`;
   log(`通知摘要 ${body}`);
   if (!notifySelected()) return 'disabled';
@@ -310,25 +345,33 @@ async function notify(summary) {
   });
 }
 async function main() {
+  const started = Date.now();
+  const dryRun = isEnabled(process.env.JUEJIN_DRY_RUN);
+  const dip = isEnabled(process.env.JUEJIN_DIP_LUCKY);
+  const lottery = isEnabled(process.env.JUEJIN_FREE_LOTTERY);
+  const historyId = (process.env.JUEJIN_LOTTERY_HISTORY_ID || '').trim();
+  const accounts = accountsFrom(process.env);
+  const config = { dryRun, dip, lottery, historyId };
   console.log(`========== ${TITLE} ==========`);
-  log(`开始时间 ${new Date(started).toISOString()}，模式 ${dryRun ? '断网预演' : '正式执行'}，账号数 ${cookies.length}`);
+  log(`开始时间 ${new Date(started).toISOString()}，模式 ${dryRun ? '断网预演' : '正式执行'}，账号数 ${accounts.length}`);
   log('阶段 0 参数检查');
   const invalidSwitch = ['JUEJIN_DRY_RUN', 'JUEJIN_DIP_LUCKY', 'JUEJIN_FREE_LOTTERY'].some(name =>
     process.env[name] !== undefined && ![...enabledValues, ...disabledValues].includes(process.env[name].toLowerCase()));
-  const invalid = cookies.length === 0 || invalidSwitch || (dip && !/^\d+$/.test(historyId));
+  const invalidNotify = process.env.QINGLONG_NOTIFY !== undefined && !['auto', ...enabledValues, ...disabledValues].includes(process.env.QINGLONG_NOTIFY.toLowerCase());
+  const invalid = accounts.length === 0 || invalidSwitch || invalidNotify || (dip && !/^\d+$/.test(historyId));
   const results = [];
-  if (invalid) log('❌ 配置错误，请检查 JUEJIN_COOKIE、布尔开关及沾喜气所需的历史记录 ID');
-  else for (let index = 0; index < cookies.length; index++) results.push(await runAccount(cookies[index], index + 1));
-  const failed = invalid ? cookies.length : results.filter(item => item.failed > 0).length;
+  if (invalid) log('❌ 配置错误，请检查 账号变量、布尔开关、通知开关及沾喜气所需的历史记录 ID');
+  else for (let index = 0; index < accounts.length; index++) results.push(await runAccount(accounts[index], index + 1, config));
+  const failed = invalid ? accounts.length : results.filter(item => item.failed > 0).length;
   const success = results.filter(item => item.status === 'success').length;
-  const status = invalid ? 'configuration-error' : failed ? (success ? 'partial-failure' : 'failure') : dryRun ? 'dry-run' : 'success';
+  const status = invalid ? 'configuration-error' : failed ? (results.some(item => !item.failed) ? 'partial-failure' : 'failure') : dryRun ? 'dry-run' : 'success';
   process.exitCode = invalid || failed ? 1 : 0;
   const summary = {
-    name: TITLE, status, mode: dryRun ? 'dry-run' : 'live', accounts: cookies.length,
+    name: TITLE, status, mode: dryRun ? 'dry-run' : 'live', accounts: accounts.length,
     success, failed, dryRunAccounts: results.filter(item => item.status === 'dry-run').length,
     configurationError: Boolean(invalid), results
   };
-  try { summary.notification = await notify(summary); }
+  try { summary.notification = await notify(summary, dryRun); }
   catch { summary.notification = 'failed'; }
   summary.durationMs = Date.now() - started;
   summary.finishedAt = new Date().toISOString();
@@ -340,19 +383,17 @@ async function main() {
   log(`通知状态 ${summary.notification}，总耗时 ${summary.durationMs}ms，完成时间 ${summary.finishedAt}`);
   log(`最终状态 ${status}${status === 'success' ? ' 掘金任务全部完成' : status === 'dry-run' ? ' DRY_RUN_OK' : ''}`);
   console.log(`TASK_SUMMARY=${JSON.stringify(summary)}`);
+  return { result: !invalid && failed === 0, msg: invalid || failed ? '任务存在失败或配置错误' : dryRun ? '断网演练成功' : '任务成功' };
 }
-main().catch(async () => {
-  // 未预期异常仅输出固定文本，禁止输出可能携带请求配置的堆栈。
+exports.main = main;
+if (require.main === module) main().catch(async () => {
   process.exitCode = 1;
   log('❌ 执行器发生未预期异常');
-  const summary = {
-    name: TITLE, status: 'failure', mode: dryRun ? 'dry-run' : 'live',
-    accounts: cookies.length, success: 0, failed: cookies.length, dryRunAccounts: 0
-  };
-  try { summary.notification = await notify(summary); }
+  const summary = { name: TITLE, status: 'failure', mode: isEnabled(process.env.JUEJIN_DRY_RUN) ? 'dry-run' : 'live',
+    accounts: accountsFrom(process.env).length, success: 0, failed: accountsFrom(process.env).length, dryRunAccounts: 0 };
+  try { summary.notification = await notify(summary, isEnabled(process.env.JUEJIN_DRY_RUN)); }
   catch { summary.notification = 'failed'; }
-  summary.durationMs = Date.now() - started;
   summary.finishedAt = new Date().toISOString();
-  log(`完成时间 ${summary.finishedAt}，最终状态 failure，通知状态 ${summary.notification}`);
+  log(`任务统计 账号 ${summary.accounts}，成功 0，失败 ${summary.failed}，完成时间 ${summary.finishedAt}，最终状态 failure，通知状态 ${summary.notification}`);
   console.log(`TASK_SUMMARY=${JSON.stringify(summary)}`);
 });
