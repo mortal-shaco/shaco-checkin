@@ -8,7 +8,7 @@
 Upstream: https://github.com/wangjin0601/ensign
 Original path: elantran_checkin.py
 Branch: main
-Commit: d7b3aac51ec6fd6a15caa38ac8fba6ca3fe37453
+Reviewed upstream commit: a374da23ea09df33c3ed24f7da4acdb1dcd3642d
 License: MIT
 
 Copyright (c) 2025 wongcw / wangjin0601
@@ -20,6 +20,26 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+本轮来源核对：上游签到、积分、帖子、点赞和评论路径及 code=0 成功约定未变。
+相关登录工具使用 nversion=196，但不是签到接口变更证据，保留签到的 169。
+上游新增 content_engine、可选图片上传及本地 Token 文件回退；这些不在维护版
+已有功能中，未提供内容引擎与上传契约，不引入私有依赖或本地凭据文件要求。
+交互式短信登录会发送短信并保存凭据，与定时签到运行边界不同，不合并。
+保留每日 09:28 调度、原有环境参数、周五/周末互动及一言署名回退链。
+ELANTRAN_AUTH：在 Elantran 小程序业务请求 Authorization 头中获取 JWT；
+每个非空行一个账号，可带 Bearer 前缀。不要公开凭据。
+ELANTRAN_SKIP_SOCIAL=1 可跳过所有社区互动，其他时间安排保持不变。
+通知通过本地青龙 notify.py；断网预演也尝试通知，但子进程禁止网络连接，
+网络通知无法发送时记录失败并保留业务退出码。
 
 功能清点（相对上游 elantran_checkin.py）：
 - 每日签到（查状态 /home/bbs/sign_today_user_status，执行 /home/bbs/sign）
@@ -38,7 +58,6 @@ ELANTRAN_DRY_RUN=1：完全断网预演，不发起任何网络请求。
 """
 
 from __future__ import annotations
-
 # qinglong-notification-policy: begin
 import fnmatch as _ql_notify_fnmatch
 import os as _ql_notify_os
@@ -59,6 +78,9 @@ if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}
     _ql_notify_os.environ["QINGLONG_NOTIFY"] = "1" if _ql_notify_enabled else "0"
 # qinglong-notification-policy: end
 
+import fnmatch as _ql_notify_fnmatch
+
+
 import base64
 import html
 import importlib.util
@@ -69,7 +91,10 @@ import re
 import ssl
 import sys
 import time
-import traceback
+import subprocess
+import contextlib
+import io
+import socket
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -149,9 +174,23 @@ def _full_ts() -> str:
     return _now().strftime("%Y-%m-%d %H:%M:%S")
 
 
+def redact(value: Any) -> str:
+    text = str(value)
+    for line in env_raw(AUTH_ENV).splitlines():
+        secret = line.strip()
+        if secret:
+            text = text.replace(secret, "[凭据已隐藏]")
+            if secret.lower().startswith("bearer "):
+                text = text.replace(secret[7:].strip(), "[凭据已隐藏]")
+    text = re.sub(r"(?i)bearer\s+[^\s]+", "[凭据已隐藏]", text)
+    text = re.sub(r"[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", "[凭据已隐藏]", text)
+    text = re.sub(r"(?<!\d)1[3-9]\d{9}(?!\d)", "[手机号已隐藏]", text)
+    return "".join(ch if ord(ch) >= 32 and ord(ch) != 127 else " " for ch in text)
+
+
 def log(msg: str = "") -> None:
     if msg:
-        print(f"[{_clock()}] {msg}", flush=True)
+        print(f"[{_clock()}] {redact(msg)}", flush=True)
     else:
         print(flush=True)
 
@@ -194,8 +233,8 @@ def parse_accounts(raw: str) -> List[str]:
         text = line.strip()
         if not text or text.startswith("#"):
             continue
-        if any(ord(ch) < 32 for ch in text):
-            raise SafeError(f"第 {line_no} 行凭据含非法控制字符")
+        if text.lower().startswith("bearer "):
+            text = text[7:].strip()
         accounts.append(text)
     return accounts
 
@@ -224,6 +263,8 @@ def identity_from_token(token: str) -> Tuple[str, str]:
 def check_token_local(token: str) -> Tuple[bool, str, str, str]:
     if not token:
         return False, "未配置认证 Token", "", ""
+    if any(ord(ch) < 32 for ch in token):
+        return False, "凭据含非法控制字符", "", ""
     data = decode_jwt_payload(token)
     if not data:
         return False, "Token 格式无效", "", ""
@@ -270,7 +311,7 @@ def http_json(
         raise SafeError("断网预演禁止 HTTP 请求")
     parsed = urllib.parse.urlparse(url)
     host = parsed.hostname or ""
-    if host not in allow_hosts:
+    if parsed.scheme != "https" or parsed.username or parsed.password or parsed.port not in (None, 443) or host not in allow_hosts:
         raise SafeError("拒绝访问非白名单主机")
     request_headers = {
         "User-Agent": UA,
@@ -286,7 +327,14 @@ def http_json(
     request = urllib.request.Request(url, data=data, headers=request_headers, method=method)
     context = ssl.create_default_context()
     try:
-        with urllib.request.urlopen(request, timeout=timeout, context=context) as response:
+        # 不跟随重定向，防止 Authorization 被转发给其他站点。
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, headers, newurl):
+                return None
+        opener = urllib.request.build_opener(
+            NoRedirect(), urllib.request.HTTPSHandler(context=context)
+        )
+        with opener.open(request, timeout=timeout) as response:
             status = int(response.getcode())
             raw = response.read(max_bytes + 1)
     except urllib.error.HTTPError as error:
@@ -315,17 +363,18 @@ def http_json(
 
 
 def business_message(payload: Any) -> str:
-    if not isinstance(payload, dict):
-        return ""
-    for key in ("message", "msg", "title"):
-        value = payload.get(key)
-        if isinstance(value, str) and value.strip():
-            return compact(value, 120)
-    return ""
+    # 服务端自由文本可能回显凭据，仅报告数值业务码。
+    code = payload.get("code") if isinstance(payload, dict) else None
+    if type(code) is int:
+        return f"业务码 {code}"
+    return "业务响应格式无效"
 
 
 def format_hitokoto(payload: Any) -> str:
-    text = normalize_public_text(payload.get("hitokoto") if isinstance(payload, dict) else "")
+    raw_text = payload.get("hitokoto") if isinstance(payload, dict) else None
+    if not isinstance(raw_text, str):
+        raise SafeError("文案格式无效")
+    text = normalize_public_text(raw_text)
     if not text:
         raise SafeError("文案缺失")
     author = normalize_public_text(payload.get("from_who") if isinstance(payload, dict) else "")
@@ -460,7 +509,7 @@ def _should_notify() -> bool:
         return True
     selectors = _script_selectors()
     if selectors is None:
-        return True
+        return False
     if not selectors:
         return False
     return any(_selector_match(s) for s in selectors)
@@ -500,19 +549,45 @@ def _load_notify_send():
     return None
 
 
+def notification_worker() -> int:
+    # 子进程限时，通知组件的输出不进入业务日志；预演时连通知也不能联网。
+    if env_truthy(DRY_RUN_ENV):
+        def deny_network(*args, **kwargs):
+            raise OSError("断网预演禁止网络")
+        socket.socket.connect = deny_network
+        socket.socket.connect_ex = deny_network
+        socket.create_connection = deny_network
+        socket.getaddrinfo = deny_network
+    try:
+        data = json.loads(sys.stdin.read())
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            send = _load_notify_send()
+            if send is None:
+                return 3
+            result = send(data["title"], data["content"])
+            return 1 if result is False else 0
+    except Exception:
+        return 1
+
+
 def send_notification(title: str, content: str) -> str:
     if not _should_notify():
         return "skipped"
-    send = _load_notify_send()
-    if send is None:
-        log(f"{STATUS_ICONS['warning']} 未找到可用 notify.py，跳过通知并保留业务退出码")
-        return "unavailable"
     try:
-        send(title, content)
-        return "sent"
+        completed = subprocess.run(
+            [sys.executable, os.path.abspath(__file__), "--notify-worker"],
+            input=json.dumps({"title": redact(title), "content": redact(content)}, ensure_ascii=False),
+            text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            timeout=20, check=False,
+        )
+        status = {0: "sent", 3: "unavailable"}.get(completed.returncode, "failed")
+    except subprocess.TimeoutExpired:
+        status = "timeout"
     except Exception:
-        log(f"{STATUS_ICONS['warning']} 通知发送失败，已忽略并保留业务退出码")
-        return "failed"
+        status = "failed"
+    if status != "sent":
+        log(f"⚠️ 通知状态 {status}，保留业务退出码（预演禁止通知组件联网）")
+    return status
 
 
 # ---------------------------------------------------------------------------
@@ -538,7 +613,7 @@ class ElantranClient:
 
     def api(self, path: str, body: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         url = f"{BASE_URL}{path}"
-        return http_json(
+        result = http_json(
             url,
             method="POST",
             headers=self.headers,
@@ -547,6 +622,20 @@ class ElantranClient:
             dry_run=self.dry_run,
             allow_hosts=(API_HOST,),
         )
+        payload = result.get("json")
+        code = payload.get("code") if isinstance(payload, dict) else None
+        code_text = str(code) if type(code) is int else "格式无效"
+        log(f"请求 {path}：HTTP {result['status']}，业务码 {code_text}")
+        if isinstance(payload, dict) and code == 0 and isinstance(payload.get("data"), dict):
+            data = payload["data"]
+            user = data.get("user") if isinstance(data.get("user"), dict) else {}
+            if path == "/home/user/get_my_stat_info":
+                user = user or data
+            for key in ("nickname", "name", "username", "display_name", "uid", "id"):
+                value = user.get(key)
+                if isinstance(value, (str, int)) and value != "":
+                    log(f"公开身份 {key}: {value}")
+        return result
 
     def sign_status(self) -> Tuple[str, str]:
         result = self.api("/home/bbs/sign_today_user_status", {})
@@ -564,7 +653,7 @@ class ElantranClient:
             return "alreadyComplete", "今日已签到"
         if status == "NOT":
             return "pending", "今日未签到"
-        raise SafeError(f"签到状态未知：{status}")
+        raise SafeError("签到状态未知，未执行签到")
 
     def sign(self) -> Tuple[str, str]:
         result = self.api("/home/bbs/sign", {})
@@ -577,10 +666,8 @@ class ElantranClient:
         if code != 0:
             raise SafeError(f"签到失败：{business_message(payload) or '未知错误'}")
         data = payload.get("data") if isinstance(payload.get("data"), dict) else {}
-        title = str(data.get("title") or "签到成功")
-        msg = str(data.get("msg") or "").replace("<br>", " ")
-        detail = compact(f"{title} {msg}".strip(), 160)
-        return "success", detail or "签到成功"
+        return "success", "签到成功（业务码 0）"
+
 
     def sign_detail_tomorrow(self) -> Optional[int]:
         today = _now().strftime("%Y-%m-%d")
@@ -695,8 +782,15 @@ def run_account_dry(
     }
     stages: List[str] = []
 
+    previous_stage_time = time.monotonic()
+
     def stage(num: int, title: str, state: str, detail: str) -> None:
         icon = STATUS_ICONS.get(state, STATUS_ICONS["failure"])
+        nonlocal previous_stage_time
+        duration = time.monotonic() - previous_stage_time
+        previous_stage_time = time.monotonic()
+        if "耗时" not in detail:
+            detail += f"（耗时 {duration:.2f}秒）"
         log(f"阶段{num} {title}：{icon} {detail}")
         stages.append(f"{num}:{title}:{state}")
         if state == "success":
@@ -794,8 +888,15 @@ def run_account_live(
         else:
             stats["failed"] += 1
 
+    previous_stage_time = time.monotonic()
+
     def stage(num: int, title: str, state: str, detail: str) -> None:
         icon = STATUS_ICONS.get(state, STATUS_ICONS["failure"])
+        nonlocal previous_stage_time
+        duration = time.monotonic() - previous_stage_time
+        previous_stage_time = time.monotonic()
+        if "耗时" not in detail:
+            detail += f"（耗时 {duration:.2f}秒）"
         log(f"阶段{num} {title}：{icon} {detail}")
         mark(state)
         messages.append(f"{title}:{detail}")
@@ -952,7 +1053,7 @@ def run_account_live(
                 except SafeError:
                     pass
                 text, source = fetch_public_text(dry_run=False, timeout=timeout)
-                reply = compact(text, 80) or "支持一下，好帖子。"
+                reply = text  # 保留完整署名；fetch_public_text 已限制为 280 字
                 client.comment_post(post_id, reply)
                 stage(
                     6,
@@ -1053,17 +1154,19 @@ def main() -> int:
             else:
                 total = len(accounts)
                 for idx, token in enumerate(accounts, start=1):
-                    if dry:
-                        ar = run_account_dry(idx, total, token, plan)
-                    else:
-                        ar = run_account_live(
-                            idx,
-                            total,
-                            token,
-                            timeout=timeout,
-                            plan=plan,
-                            action_delay_sec=action_delay_sec,
-                        )
+                    try:
+                        if dry:
+                            ar = run_account_dry(idx, total, token, plan)
+                        else:
+                            ar = run_account_live(
+                                idx, total, token, timeout=timeout, plan=plan,
+                                action_delay_sec=action_delay_sec,
+                            )
+                    except Exception:
+                        log(f"账号{idx}：❌ 执行异常，继续处理后续账号")
+                        log("账号统计：总任务 1，成功 0，已完成 0，跳过 0，失败 1")
+                        ar = {"ok": False, "identity": f"账号{idx}", "status": "failure",
+                              "message": "执行异常", "stats": {"failed": 1}}
                     account_results.append(ar)
                     if idx < total and account_delay_sec > 0 and not dry:
                         log(f"账号间隔等待 {account_delay_sec:.0f} 秒")
@@ -1090,7 +1193,7 @@ def main() -> int:
         exit_code = 2
         summary_status = "configuration-error"
         log(f"{STATUS_ICONS['failure']} 未处理异常: {type(exc).__name__}")
-        traceback.print_exc()
+        # 不打印异常堆栈或局部值，防止凭据被异常回显。
 
     task_end = _now()
     elapsed_ms = int((task_end - task_start).total_seconds() * 1000)
@@ -1114,7 +1217,7 @@ def main() -> int:
     log(f"  总耗时: {elapsed_ms}ms")
     log(f"  完成时间: {task_end.strftime('%Y-%m-%d %H:%M:%S')}")
 
-    if dry and not config_error:
+    if dry and not config_error and not fail_count:
         event = "dry-run"
     elif config_error:
         event = "configuration-error"
@@ -1136,7 +1239,7 @@ def main() -> int:
     ]
     for a in account_results:
         lines.append(
-            f"- {a.get('identity')}: {a.get('status')} / {compact(str(a.get('message', '')), 120)}"
+            f"- {redact(a.get('identity'))}: {a.get('status')} / {redact(compact(str(a.get('message', '')), 120))}"
         )
     notify_status = send_notification(SCRIPT_NAME, "\n".join(lines))
     log(f"通知状态: {notify_status}")
@@ -1176,4 +1279,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(notification_worker() if sys.argv[1:] == ["--notify-worker"] else main())

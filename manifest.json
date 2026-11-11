@@ -3356,6 +3356,258 @@
       }
     },
     {
+      "catalogId": "89bf4d992b4beaa3",
+      "applicationKey": "ai",
+      "checkProfile": {
+        "requiredEnv": [
+          "AI_CHECKIN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WORKBUDDY_ACCESS_TOKEN",
+          "WORKBUDDY_UID",
+          "TRAE_TOKEN",
+          "TRAE_USER_ID",
+          "TRAE_REGION",
+          "CHECKIN_REFRESH_STATE",
+          "WORKBUDDY_DOMAIN",
+          "CHECKIN_HTTP_TIMEOUT",
+          "CHECKIN_MAX_RETRY",
+          "CHECKIN_TRAE_MAX_RETRY",
+          "CHECKIN_RETRY_WAIT_MIN",
+          "CHECKIN_RETRY_WAIT_MAX",
+          "AI_CHECKIN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "AI_CHECKIN_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "WorkBuddy 状态预检、每日积分签到及已签到幂等识别",
+          "Trae CN 状态预检、每日签到、稳定设备请求头、积分余额和最早过期日期查询",
+          "Qoder 查询并仅领取积分权益签到活动、逐活动校验及幂等回放识别",
+          "保留主脚本已有三项服务，支持按账号配置、停领标记及 --no-trae、--no-qoder 跳过选项",
+          "令牌有效期提示、限流与网络错误重试、可选 Trae 和 Qoder 自动续期及私有原子状态保存",
+          "多账号独立处理、离线预演、时间轴日志、单行结构化汇总与青龙脱敏通知"
+        ],
+        "sideEffects": [
+          "正式执行时领取 WorkBuddy 每日签到积分",
+          "正式执行时领取 Trae CN 每日签到积分",
+          "正式执行时领取 Qoder 可领取的积分权益活动",
+          "显式配置私有状态文件及刷新令牌后轮换 Trae 或 Qoder 凭据并保存状态",
+          "按通知开关与选择器发送脱敏青龙通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AiCheckin 每日签到",
+      "path": "scripts/ai.py",
+      "sha256": "88199c18bd23d0ff483d3224e5bde961340e34c7e56fd01f8da2868ef056fbeb",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "LiSeafood/AiCheckin",
+        "branch": "main",
+        "commit": "2c7c9eaff484c45e539dd15288551b4166604032",
+        "originalPath": "checkin.py",
+        "related": [
+          {
+            "catalogId": "47abb463b4b89e28",
+            "sha256": "445dd7dfaaab0351d54de178544f505d24200204381f9cd06ee759a4897da813",
+            "repository": "LiSeafood/AiCheckin",
+            "url": "https://github.com/LiSeafood/AiCheckin.git",
+            "branch": "main",
+            "commit": "2c7c9eaff484c45e539dd15288551b4166604032",
+            "originalPath": "set_token.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "54 10 * * *",
+      "command": "python3 scripts/ai.py",
+      "environment": [
+        {
+          "name": "AI_CHECKIN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人已登录客户端的开发者工具网络面板取得对应接口请求凭据。WorkBuddy 取 billing 请求 Authorization 的 Bearer 值；Trae 取 checkin_credits 请求 Cloud-IDE-JWT 值和本人用户 ID；Qoder 取 campaigns 请求 Bearer 及 Cosy-MachineId、Cosy-MachineToken、Cosy-MachineCode、Cosy-MachineType。禁止分享或提交凭据。",
+          "format": "每个非空行一个 JSON 对象。必填 service（workbuddy、trae、qoder）和 token。Trae 另填 user_id，region 仅支持 CN。Qoder 另填 machine_id 和 device 对象，其中 machineToken、machineCode、machineType 必填。可选 excluded 为布尔值，refresh_token 为本人刷新令牌，expires_at 为带时区的 ISO 时间。对象内部字段组合本账号配套凭据，不使用其他符号分隔账号。"
+        },
+        {
+          "name": "WORKBUDDY_ACCESS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入，从本人 WorkBuddy billing 请求的 Authorization 取得；仅未配置规范账号变量时读取。",
+          "format": "每个非空行一个令牌，不带 Bearer 前缀。"
+        },
+        {
+          "name": "WORKBUDDY_UID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选兼容输入，从本人 WorkBuddy 账号信息取得。",
+          "format": "按账号行对应的 UID，仅用于参数兼容。"
+        },
+        {
+          "name": "TRAE_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选兼容输入，从本人 Trae CN checkin_credits 请求 Authorization 取得；仅未配置规范账号变量时读取。",
+          "format": "每个非空行一个 JWT，不带 Cloud-IDE-JWT 前缀。"
+        },
+        {
+          "name": "TRAE_USER_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选兼容输入，从本人 Trae CN 账号信息取得；缺省尝试 JWT 的 data.id。",
+          "format": "按令牌账号行对应的用户 ID。"
+        },
+        {
+          "name": "TRAE_REGION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本人 Trae 客户端区域，仅支持国内版。",
+          "format": "CN。"
+        },
+        {
+          "name": "CHECKIN_REFRESH_STATE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行指定专用私有状态文件位置；启用后才允许刷新令牌及安全持久化。文件应仅供本任务访问，勿提交或放入订阅目录。",
+          "format": "可写文件路径，父目录须已存在；文件权限 600，锁文件保护并发；不配置则不轮换凭据。"
+        },
+        {
+          "name": "WORKBUDDY_DOMAIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按本人账号的官方 CodeBuddy 服务区域选择，默认 www.codebuddy.cn。",
+          "format": "www.codebuddy.cn 或 www.codebuddy.com。"
+        },
+        {
+          "name": "CHECKIN_HTTP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按运行环境配置请求超时，默认 30 秒。",
+          "format": "1 至 120 的整数，单位秒。"
+        },
+        {
+          "name": "CHECKIN_MAX_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按运行环境配置 WorkBuddy 重试次数，默认 14。",
+          "format": "1 至 20 的整数。"
+        },
+        {
+          "name": "CHECKIN_TRAE_MAX_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按运行环境配置 Trae 领取重试次数，默认 4。",
+          "format": "1 至 20 的整数。"
+        },
+        {
+          "name": "CHECKIN_RETRY_WAIT_MIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按运行环境配置网络失败等待下限，默认 15 秒。",
+          "format": "0 至 300 的整数。"
+        },
+        {
+          "name": "CHECKIN_RETRY_WAIT_MAX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按运行环境配置网络失败等待上限，默认 30 秒；业务限流保留上游递增等待。",
+          "format": "下限至 300 的整数。"
+        },
+        {
+          "name": "AI_CHECKIN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证时设为 1。",
+          "format": "1、true、yes、on 启用，其他值正式执行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙设置需要通知的脚本选择器；默认未列入，不投递。",
+          "format": "逗号、分号、空白或换行分隔的目录相对路径、文件名、通配符或目录编号；* 选择全部，空值关闭自动选择。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知组件所在目录；可选，自动发现标准目录或可导入的 notify 模块。",
+          "format": "含 notify.py 或 sendNotify.js 的目录路径。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 JSON 账号对象，同一账号的凭据集中在该对象；逐账号独立处理，任一账号失败则整体非零退出。兼容令牌别名也按非空行分账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "WorkBuddy 状态预检、每日积分签到及已签到幂等识别",
+        "Trae CN 状态预检、每日签到、稳定设备请求头、积分余额和最早过期日期查询",
+        "Qoder 查询并仅领取积分权益签到活动、逐活动校验及幂等回放识别",
+        "保留主脚本已有三项服务，支持按账号配置、停领标记及 --no-trae、--no-qoder 跳过选项",
+        "令牌有效期提示、限流与网络错误重试、可选 Trae 和 Qoder 自动续期及私有原子状态保存",
+        "多账号独立处理、离线预演、时间轴日志、单行结构化汇总与青龙脱敏通知"
+      ],
+      "sideEffects": [
+        "正式执行时领取 WorkBuddy 每日签到积分",
+        "正式执行时领取 Trae CN 每日签到积分",
+        "正式执行时领取 Qoder 可领取的积分权益活动",
+        "显式配置私有状态文件及刷新令牌后轮换 Trae 或 Qoder 凭据并保存状态",
+        "按通知开关与选择器发送脱敏青龙通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/89bf4d992b4beaa3",
+        "candidateSha256": "dfd310a022a9cd9dae43fc9d711a1e07aa57a357cd106d0d447ae50a1a52d512"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "dfd310a022a9cd9dae43fc9d711a1e07aa57a357cd106d0d447ae50a1a52d512",
+        "releaseSha256": "88199c18bd23d0ff483d3224e5bde961340e34c7e56fd01f8da2868ef056fbeb",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T11:14:05.068108+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "dfd310a022a9cd9dae43fc9d711a1e07aa57a357cd106d0d447ae50a1a52d512",
+          "toCandidateSha256": "88199c18bd23d0ff483d3224e5bde961340e34c7e56fd01f8da2868ef056fbeb",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "81e41cede93b9ced",
       "applicationKey": "ai-ide",
       "checkProfile": {
@@ -23824,15 +24076,13 @@
           "ELANTRAN_DRY_RUN": "1"
         },
         "liveEnv": {
-          "ELANTRAN_DRY_RUN": "0",
-          "ELANTRAN_SKIP_SOCIAL": "0",
+          "ELANTRAN_TIMEOUT": "30",
           "ELANTRAN_ACTION_DELAY_SEC": "2",
           "ELANTRAN_ACCOUNT_DELAY_SEC": "3"
         },
         "successPatterns": [
-          "签到",
-          "TASK_SUMMARY=",
-          "最终状态: success"
+          "最终状态: success",
+          "\"status\":\"success\""
         ],
         "features": [
           "Elantran 小程序每日社区签到，并查询签到状态与总积分",
@@ -23856,14 +24106,14 @@
       },
       "displayName": "Elantran社区签到",
       "path": "scripts/elantran_checkin.py",
-      "sha256": "2b993c3d114442cd0dcec95c8215ed2da308fce3a1518e85686c652a2214f814",
+      "sha256": "ac22528690e487f44f802e3eb8357e1186bb10d80bd01e3e4653dc54f0d68e20",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
       "source": {
         "repository": "wangjin0601/ensign",
         "branch": "main",
-        "commit": "d7b3aac51ec6fd6a15caa38ac8fba6ca3fe37453",
+        "commit": "a374da23ea09df33c3ed24f7da4acdb1dcd3642d",
         "originalPath": "elantran_checkin.py"
       },
       "cron": "28 9 * * *",
@@ -23874,7 +24124,7 @@
           "required": true,
           "sensitive": true,
           "howToGet": "打开 Elantran 微信小程序，在开发者工具或抓包工具中查看业务请求的 Authorization 请求头，复制 Bearer 后的 JWT Token，写入青龙环境变量。不要把 Token 发给他人或写入公开仓库、日志、通知。",
-          "format": "每个非空行一个账号的 JWT；账号之间只用换行分隔，勿使用 & 或 @。"
+          "format": "每个非空行一个账号 JWT，可带 Bearer 前缀；账号之间仅用换行，不用 & 或 @。"
         },
         {
           "name": "ELANTRAN_DRY_RUN",
@@ -23936,7 +24186,7 @@
           "name": "QINGLONG_NOTIFY_DIR",
           "required": false,
           "sensitive": false,
-          "howToGet": "可选指定本地青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准目录。",
+          "howToGet": "可选指定本地青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准目录。通知独立限时执行，失败不影响业务退出码；断网预演禁止通知组件联网。",
           "format": "已存在的本地通知组件目录，不会下载或安装组件"
         }
       ],
@@ -23972,20 +24222,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/734c839033d16d32",
-        "candidateSha256": "356acd85c4785f389157036699d2bc61d32459788b7779e8e22bc37329fe9071"
+        "candidateSha256": "dfd325cef9cdd1a9d40c15d12bdfff54f7ec8bcff199882187f0f928d7b51ce0"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "356acd85c4785f389157036699d2bc61d32459788b7779e8e22bc37329fe9071",
-        "releaseSha256": "2b993c3d114442cd0dcec95c8215ed2da308fce3a1518e85686c652a2214f814",
-        "statement": "Qinglong task metadata and the shared listed-only notification-selection gate were normalized during release staging.",
+        "validatedSha256": "dfd325cef9cdd1a9d40c15d12bdfff54f7ec8bcff199882187f0f928d7b51ce0",
+        "releaseSha256": "ac22528690e487f44f802e3eb8357e1186bb10d80bd01e3e4653dc54f0d68e20",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T01:39:55.176823+00:00",
-          "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
-          "fromCandidateSha256": "356acd85c4785f389157036699d2bc61d32459788b7779e8e22bc37329fe9071",
-          "toCandidateSha256": "2b993c3d114442cd0dcec95c8215ed2da308fce3a1518e85686c652a2214f814",
+          "approvedAt": "2026-11-11T11:15:13.631951+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "dfd325cef9cdd1a9d40c15d12bdfff54f7ec8bcff199882187f0f928d7b51ce0",
+          "toCandidateSha256": "ac22528690e487f44f802e3eb8357e1186bb10d80bd01e3e4653dc54f0d68e20",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

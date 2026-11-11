@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/elantran_checkin.py`
 - 青龙命令：`python3 scripts/elantran_checkin.py`
 - 建议 Cron：`28 9 * * *`
-- 发布哈希：`2b993c3d114442cd0dcec95c8215ed2da308fce3a1518e85686c652a2214f814`
+- 发布哈希：`ac22528690e487f44f802e3eb8357e1186bb10d80bd01e3e4653dc54f0d68e20`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -28,7 +28,7 @@
 - 必填：是
 - 敏感：是
 - 获取或设置：打开 Elantran 微信小程序，在开发者工具或抓包工具中查看业务请求的 Authorization 请求头，复制 Bearer 后的 JWT Token，写入青龙环境变量。不要把 Token 发给他人或写入公开仓库、日志、通知。
-- 填写格式：每个非空行一个账号的 JWT；账号之间只用换行分隔，勿使用 & 或 @。
+- 填写格式：每个非空行一个账号 JWT，可带 Bearer 前缀；账号之间仅用换行，不用 & 或 @。
 
 ### 可选参数
 
@@ -92,7 +92,7 @@
 
 - 必填：否
 - 敏感：否
-- 获取或设置：可选指定本地青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准目录。
+- 获取或设置：可选指定本地青龙 notify.py 所在目录；也支持导入 notify.send 和青龙标准目录。通知独立限时执行，失败不影响业务退出码；断网预演禁止通知组件联网。
 - 填写格式：已存在的本地通知组件目录，不会下载或安装组件
 
 ## 参数获取方法
@@ -105,7 +105,7 @@ ELANTRAN_AUTH 每个非空行一个 JWT 账号；账号之间仅用换行分隔�
 
 ## 验证与兼容性
 
-SHA-256 `2b993c3d114442cd0dcec95c8215ed2da308fce3a1518e85686c652a2214f814`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/734c839033d16d32`。
+SHA-256 `ac22528690e487f44f802e3eb8357e1186bb10d80bd01e3e4653dc54f0d68e20`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/734c839033d16d32`。
 
 ## 副作用与风险
 
@@ -116,4 +116,4 @@ SHA-256 `2b993c3d114442cd0dcec95c8215ed2da308fce3a1518e85686c652a2214f814`；基
 
 ## 许可证与来源
 
-上游 `wangjin0601/ensign` / `elantran_checkin.py` / `d7b3aac51ec6fd6a15caa38ac8fba6ca3fe37453`。
+上游 `wangjin0601/ensign` / `elantran_checkin.py` / `a374da23ea09df33c3ed24f7da4acdb1dcd3642d`。
