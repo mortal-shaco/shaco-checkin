@@ -42032,6 +42032,186 @@
       }
     },
     {
+      "catalogId": "fa764c990d2fb7f6",
+      "applicationKey": "jim6699/python_scripts::微微免费电话",
+      "checkProfile": {
+        "requiredEnv": [
+          "WEWE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WEWE_DRY_RUN",
+          "WEWE_ALLOW_INSECURE_HTTP",
+          "WEWE_REPORT_SIGNIN",
+          "WEWE_TIMEOUT",
+          "PUSHPLUS_TOKEN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WEWE_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "WEWE_REPORT_SIGNIN": "0",
+          "WEWE_TIMEOUT": "15"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "每日签到，保留原始接口、POST 表单和 android-10011-102 参数",
+          "按行配置多账号，逐账号独立执行并汇总退出状态",
+          "可选签到事件上报，默认关闭非必要上报",
+          "可选 PushPlus HTTPS 统计通知及青龙通知发现、选择和总开关",
+          "完全断网预演、超时限制、禁用重定向、限制响应体大小与脱敏日志",
+          "明确签到成功或已签到消息校验；未知响应失败闭合",
+          "展示官方响应提供且可安全输出的非敏感账号身份",
+          "保留 main_handler 云函数入口，并返回同一业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行向微微免费电话提交签到，可能改变签到状态和奖励",
+          "显式启用后提交签到事件上报",
+          "启用通知时通过青龙或可选 PushPlus 发送脱敏统计通知"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "微微免费电话签到",
+      "path": "scripts/qiandao.py",
+      "sha256": "db573bfda6e188fa82cae3f1312a34a4aa3046694e765c7478c775ce8a73bb82",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Jim6699/Python_scripts",
+        "branch": "main",
+        "commit": "3b17c42aac3604cc842c6c94821603699f0bd071",
+        "originalPath": "微微免费电话/qiandao.py"
+      },
+      "cron": "33 10 * * *",
+      "command": "python3 scripts/qiandao.py",
+      "environment": [
+        {
+          "name": "WEWE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人微微免费电话 App 中进行签到，通过本人授权的抓包工具查看发往 xconfig.uwewe.cn/sign/signvideoClient 的表单 userId。仅保存 userId，不复制整段请求；每行一个账号。上游未提供其他登录凭据或自动获取方式。",
+          "format": "每个非空行填写一个完整 userId；不使用 &、@ 或逗号分隔账号"
+        },
+        {
+          "name": "WEWE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置；启用时不执行签到、事件上报、PushPlus 或青龙通知网络投递，只生成摘要。",
+          "format": "1 启用，0 关闭；默认 0"
+        },
+        {
+          "name": "WEWE_ALLOW_INSECURE_HTTP",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "上游仅提供明文 HTTP 签到地址，可能暴露 userId；知悉风险后自行显式启用。默认阻止正式请求，不推测 HTTPS 接口。",
+          "format": "1 允许向原始 HTTP 地址提交，0 拒绝；默认 0"
+        },
+        {
+          "name": "WEWE_REPORT_SIGNIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置；非必要事件上报默认关闭。启用后提交原始 event、place、time、type、typeEN、plat、version，不包含 userId。缺少上报业务响应契约，提交结果标为未核实并导致非零退出。",
+          "format": "1 启用事件上报，0 关闭；默认 0"
+        },
+        {
+          "name": "WEWE_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按运行环境自行设置网络超时。",
+          "format": "1 至 60 秒的数字；默认 15"
+        },
+        {
+          "name": "PUSHPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人 PushPlus 账户取得推送令牌，可选；使用 HTTPS 发送统计通知，不在通知中附带 userId 或接口原文。",
+          "format": "单个令牌，不用于账号分隔"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 auto 模式自行配置通知名单，支持目录编号 fa764c990d2fb7f6、文件名、脚本相对路径、文件名通配符；未设置时本任务在默认名单内，空字符串关闭全部。",
+          "format": "逗号、分号或空白分隔选择项；* 表示全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙提供的 notify.py 或 sendNotify.js 所在目录。也依次发现可导入的 notify.send、/ql/data/scripts 和 /ql/scripts 中的通知模块；无需私有工作流仓库。",
+          "format": "通知模块所在目录的绝对路径"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "WEWE_ACCOUNTS 每个非空行一个账号，逐个独立执行；任何账号失败或配置错误时整体非零退出。账号行不再拆分字段。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日签到，保留原始接口、POST 表单和 android-10011-102 参数",
+        "按行配置多账号，逐账号独立执行并汇总退出状态",
+        "可选签到事件上报，默认关闭非必要上报",
+        "可选 PushPlus HTTPS 统计通知及青龙通知发现、选择和总开关",
+        "完全断网预演、超时限制、禁用重定向、限制响应体大小与脱敏日志",
+        "明确签到成功或已签到消息校验；未知响应失败闭合",
+        "展示官方响应提供且可安全输出的非敏感账号身份",
+        "保留 main_handler 云函数入口，并返回同一业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行向微微免费电话提交签到，可能改变签到状态和奖励",
+        "显式启用后提交签到事件上报",
+        "启用通知时通过青龙或可选 PushPlus 发送脱敏统计通知"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/fa764c990d2fb7f6",
+        "candidateSha256": "bdede5982ceab9c6520562bb2cecc0e9457625370f98fbcd7b49fb33f7040aae"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "bdede5982ceab9c6520562bb2cecc0e9457625370f98fbcd7b49fb33f7040aae",
+        "releaseSha256": "db573bfda6e188fa82cae3f1312a34a4aa3046694e765c7478c775ce8a73bb82",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:07:01.387197+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "bdede5982ceab9c6520562bb2cecc0e9457625370f98fbcd7b49fb33f7040aae",
+          "toCandidateSha256": "db573bfda6e188fa82cae3f1312a34a4aa3046694e765c7478c775ce8a73bb82",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "e034e75509550071",
       "applicationKey": "qoder",
       "checkProfile": {
@@ -57309,6 +57489,165 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "695433620737bf170fd98d3b44ee5902a7bb8f38bbe34c8b35d7488758d2928c",
           "toCandidateSha256": "84876a1d9e42b389aa7b6104790116563666bd50c4f3685ae23adc69b0016671",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "0c4949f3b1b01793",
+      "applicationKey": "maratrain/dailycheckin::checkin",
+      "checkProfile": {
+        "requiredEnv": [
+          "QL_CHECKIN_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "QL_CHECKIN_DRY_RUN",
+          "QL_CHECKIN_REFRESH_AUTH",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "QL_CHECKIN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QL_CHECKIN_REFRESH_AUTH": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "米游社指定分区米游币打卡和任务积分状态查询，默认原神、星穹铁道、绝区零分区",
+          "原神、崩坏：星穹铁道、绝区零、崩坏3角色查询、每日签到、已签识别及奖励展示；默认启用前三款",
+          "米游社网页凭据有效性检查，显式授权后通过 passport 接口续期，失败回退旧接口",
+          "库街区鸣潮和战双帕弥什全部绑定角色每日补给签到、已签识别及奖励查询",
+          "微博登录身份查询、分页获取全部关注超话并签到、验签失败时获取 st 重试",
+          "run 默认签到；test 仅查询现有凭据有效性，不续期",
+          "每行一个账号的多账号配置、模块独立开关、完全离线预演、失败闭合退出",
+          "时间轴日志、模块任务和账号统计、唯一 TASK_SUMMARY 单行 JSON、按全局和脚本选择开关调用青龙通知"
+        ],
+        "sideEffects": [
+          "为已配置米游社账号执行选定分区打卡和已绑定游戏每日签到，领取对应奖励",
+          "为已配置库街区账号执行鸣潮或战双帕弥什每日补给签到",
+          "为已配置微博账号签到其关注且允许签到的超话",
+          "仅在显式授权时轮换米游社 cookie_token，旧凭据可能随之失效",
+          "通知启用且匹配脚本时调用青龙通知渠道投递脱敏统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "每日打卡签到",
+      "path": "scripts/task_0c4949f3.py",
+      "sha256": "4853ee27871c38ac4f78407da36fdc20337beba0980ab4c3ddd59262039be95b",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Maratrain/DailyCheckIn",
+        "branch": "main",
+        "commit": "f83fa2b125ed8e6894ff21f1aeb9e0f4c5b3a00b",
+        "originalPath": "checkin.py"
+      },
+      "cron": "34 10 * * *",
+      "command": "python3 scripts/task_0c4949f3.py",
+      "environment": [
+        {
+          "name": "QL_CHECKIN_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "仅获取本人账号凭据。米游社：在本人登录的米游社客户端请求中取得同账号 stoken、stuid、mid 和 x-rpc-device_id；从官方签到网页的请求 Cookie 取得 cookie_token、account_id。v2 stoken 必须配 mid；扫码登录签发的 stoken 可能没有米游币权限，可使用官方短信登录后取得的凭据。库街区：在本人官方客户端已登录请求头中取得 token、devcode、distinct_id，user_id 可由官方 mineV2 查询。微博：登录 https://m.weibo.cn 后，在浏览器开发者工具的网络面板复制本人请求的 Cookie，必须包含 SUB，可包含 XSRF-TOKEN。凭据仅保存为青龙私密环境变量，不向日志粘贴。",
+          "format": "每个非空行是一个完整 JSON 对象，一个对象表示一个账号，可包含 mihoyo、kuro、weibo 中已授权的模块；各平台凭据独立，不要求不同平台使用相同身份。模块内字段保留原 config.json 名称，enabled 为布尔开关，省略模块即关闭。mihoyo 必填 stoken、stuid、device_id；可选 mid、cookie_token、account_id、bbs_checkin（默认 true）、bbs_gids（默认 [\"2\",\"6\",\"8\"]）、game_sign（默认 [\"genshin\",\"honkaisr\",\"zzz\"]，另支持 honkai3rd）；v2 stoken 必填 mid。kuro 必填 token、devcode、distinct_id，可选 user_id、games（默认 [\"wuwa\",\"pgr\"]）。weibo 必填 cookie。所有凭据和标识使用字符串，游戏和分区选项使用字符串数组，不拆分 Cookie 内的等号、分号、& 或 @。"
+        },
+        {
+          "name": "QL_CHECKIN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置为 1。",
+          "format": "1、true、yes、on 开启，默认 0；不会请求官方服务或通知服务。"
+        },
+        {
+          "name": "QL_CHECKIN_REFRESH_AUTH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "只有接受米游社续期会导致旧 cookie_token 失效时才设置为 1。",
+          "format": "默认 0；开启后保留 passport 接口优先、旧接口回退的续期链，刷新结果只保存在本次进程内存。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写本脚本目录标识 0c4949f3b1b01793、脚本文件名或青龙 scripts 相对路径；支持文件名通配符。",
+          "format": "逗号、分号、空白或换行分隔；* 匹配全部；显式空值关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙 notify.py 所在目录。",
+          "format": "目录路径。依次发现可导入 notify.send、此目录、/ql/data/scripts/notify.py、/ql/scripts/notify.py；投递超时 25 秒。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "QL_CHECKIN_ACCOUNTS 每个非空行一个 JSON 账号对象；账号逐一独立运行，模块失败后继续其他模块及账号，任何账号失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "米游社指定分区米游币打卡和任务积分状态查询，默认原神、星穹铁道、绝区零分区",
+        "原神、崩坏：星穹铁道、绝区零、崩坏3角色查询、每日签到、已签识别及奖励展示；默认启用前三款",
+        "米游社网页凭据有效性检查，显式授权后通过 passport 接口续期，失败回退旧接口",
+        "库街区鸣潮和战双帕弥什全部绑定角色每日补给签到、已签识别及奖励查询",
+        "微博登录身份查询、分页获取全部关注超话并签到、验签失败时获取 st 重试",
+        "run 默认签到；test 仅查询现有凭据有效性，不续期",
+        "每行一个账号的多账号配置、模块独立开关、完全离线预演、失败闭合退出",
+        "时间轴日志、模块任务和账号统计、唯一 TASK_SUMMARY 单行 JSON、按全局和脚本选择开关调用青龙通知"
+      ],
+      "sideEffects": [
+        "为已配置米游社账号执行选定分区打卡和已绑定游戏每日签到，领取对应奖励",
+        "为已配置库街区账号执行鸣潮或战双帕弥什每日补给签到",
+        "为已配置微博账号签到其关注且允许签到的超话",
+        "仅在显式授权时轮换米游社 cookie_token，旧凭据可能随之失效",
+        "通知启用且匹配脚本时调用青龙通知渠道投递脱敏统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0c4949f3b1b01793",
+        "candidateSha256": "733564cb07ae604b18e0d0ddb9aaf7c7d371eeaff30a611888c894863e1af790"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "733564cb07ae604b18e0d0ddb9aaf7c7d371eeaff30a611888c894863e1af790",
+        "releaseSha256": "4853ee27871c38ac4f78407da36fdc20337beba0980ab4c3ddd59262039be95b",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:08:26.398988+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "733564cb07ae604b18e0d0ddb9aaf7c7d371eeaff30a611888c894863e1af790",
+          "toCandidateSha256": "4853ee27871c38ac4f78407da36fdc20337beba0980ab4c3ddd59262039be95b",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

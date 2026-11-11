@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **351** 个脚本。返回 [`目录首页`](../README.md)。
+共 **353** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -192,6 +192,7 @@
 | PSNINE 每日祈祷 | `scripts/psnine.py` | `python3 scripts/psnine.py` | `16 0 * * *` | 待检查 | [psnine.py.md](../../scripts/psnine.py.md)（`docs/scripts/psnine.py.md`） |
 | PT 多站签到（SafeLine 兼容维护版） | `scripts/pt_sign_v5.js` | `node scripts/pt_sign_v5.js` | `46 2 * * *` | 待检查 | [pt_sign_v5.js.md](../../scripts/pt_sign_v5.js.md)（`docs/scripts/pt_sign_v5.js.md`） |
 | 佛山职院企微学工签到 | `scripts/python.py` | `python3 scripts/python.py` | `*/5 7-22 * * *` | 待检查 | [python.py.md](../../scripts/python.py.md)（`docs/scripts/python.py.md`） |
+| 微微免费电话签到 | `scripts/qiandao.py` | `python3 scripts/qiandao.py` | `33 10 * * *` | 待检查 | [qiandao.py.md](../../scripts/qiandao.py.md)（`docs/scripts/qiandao.py.md`） |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
 | QQ音乐超级会员福利站签到 | `scripts/qqmusic_checkin.py` | `python3 scripts/qqmusic_checkin.py` | `22 9 * * *` | 待检查 | [qqmusic_checkin.py.md](../../scripts/qqmusic_checkin.py.md)（`docs/scripts/qqmusic_checkin.py.md`） |
 | 一亩三分地每日签到答题 | `scripts/raw_requests.py` | `python3 scripts/raw_requests.py` | `51 8 * * *` | 待检查 | [raw_requests.py.md](../../scripts/raw_requests.py.md)（`docs/scripts/raw_requests.py.md`） |
@@ -267,6 +268,7 @@
 | 所有女生会员服务中心积分版 | `scripts/synspoint.py` | `python3 scripts/synspoint.py` | `16 8,12 * * *` | 待检查 | [synspoint.py.md](../../scripts/synspoint.py.md)（`docs/scripts/synspoint.py.md`） |
 | T00ls每日签到 | `scripts/t00ls_sign.py` | `python3 scripts/t00ls_sign.py` | `21 1 * * *` | 待检查 | [t00ls_sign.py.md](../../scripts/t00ls_sign.py.md)（`docs/scripts/t00ls_sign.py.md`） |
 | Tabbit 国内版每日签到 | `scripts/tabbit_cn_daily.py` | `python3 scripts/tabbit_cn_daily.py` | `18 9 * * *` | 待检查 | [tabbit_cn_daily.py.md](../../scripts/tabbit_cn_daily.py.md)（`docs/scripts/tabbit_cn_daily.py.md`） |
+| 每日打卡签到 | `scripts/task_0c4949f3.py` | `python3 scripts/task_0c4949f3.py` | `34 10 * * *` | 待检查 | [task_0c4949f3.py.md](../../scripts/task_0c4949f3.py.md)（`docs/scripts/task_0c4949f3.py.md`） |
 | 掘金好好生活计划打卡 | `scripts/task_0e52328d.py` | `python3 scripts/task_0e52328d.py` | `2 1 * * *` | 待检查 | [task_0e52328d.py.md](../../scripts/task_0e52328d.py.md)（`docs/scripts/task_0e52328d.py.md`） |
 | 洛谷签到 | `scripts/task_198bae30.py` | `python3 scripts/task_198bae30.py` | `0 10 * * *` | 待检查 | [task_198bae30.py.md](../../scripts/task_198bae30.py.md)（`docs/scripts/task_198bae30.py.md`） |
 | OpenLayer每日签到 | `scripts/task_1d90366e.js` | `node scripts/task_1d90366e.js` | `23 8,20 * * *` | 待检查 | [task_1d90366e.js.md](../../scripts/task_1d90366e.js.md)（`docs/scripts/task_1d90366e.js.md`） |
