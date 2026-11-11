@@ -3,8 +3,8 @@
 - 管理状态：`待检查`（与本地脚本管理一致：待检查 / 已检查 / 上架）
 - 脚本路径：`scripts/workbuddy_daily.py`
 - 青龙命令：`python3 scripts/workbuddy_daily.py`
-- 建议 Cron：`27 7,12 * * *`
-- 发布哈希：`def84da0042e0598500cad72f84da1596fabea25f9845e97706ab2dc717dd219`
+- 建议 Cron：`47 7,12 * * *`
+- 发布哈希：`06a2bbfa2eeae0bbec0565e373692dfa2d4f8f3d9b3311db4cb5321f223297a2`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -42,6 +42,17 @@
 - 国内签到及新入口按原顺序回退两个官方状态接口；状态未知时停止领取，写请求仅一次并回读今日已签。
 - 独立入口保留本次积分、累计积分、余额、连签与活动名称的逐账号 JSON，正确保留数值零；38 9 * * * 可单独调度。
 - 新增独立旅行只读详情和到达倒计时、官方目的地选择，以及显式授权的领奖后连续派遣；兼容 travel、--travel-status、--travel-auto、--location、--no-travel、--check-only、--no-notify。
+- 按青龙每日调度查询状态后领取 WorkBuddy 每日签到积分；服务端已签到则跳过领取。
+- 支持 status 参数只查询今日状态、连续天数、累计积分和签到日期；支持 --json 逐账号结构化结果
+- 签到响应须有明确业务码并二次查询确认；状态查询超时和临时 HTTP 错误最多尝试四次
+- 多账号隔离执行、旧令牌变量兼容、断网预演、时间轴日志、脱敏通知与单行机器汇总
+- 状态查询按来源顺序回退两个官方状态接口和两个官方域名；认证失败停止回退，领取请求仅一次。
+- 显式 --verify-wallet 查询真实账户余额，领取前后按资源包比较增长与失效，增长不足时短暂等待后只读复查并失败闭合；status 模式仅查询。
+- 兼容 --status 只读入口；沿用维护发布调度每日10:38，可自行配置原每日09:30。
+- 新增独立只读 credits / --expire 积分到期入口，按资源汇总提供的包代码查询付费和免费逐笔记录，分页有界、按账号去重并按到期排序；缺字段、业务失败或分页不完整均失败退出。
+- 展示逐笔剩余、总量、获取方式、使用状态、到期和周期刷新时间；优先扣减结束时间，再取周期结束和失效时间，兼容秒、毫秒与北京时间字符串。
+- 支持 --expiring-days 非负天数筛选和 --html 安全转义片段；以使用中记录为中心展示前后各十笔，--json 保留完整脱敏明细；入口仅查询且独立于签到、余额增长核验。
+- 通过 --local-daily 将新积分明细入口合入现有规范脚本；同时配置凭据时默认仍运行原日常任务。
 
 ## 环境变量与参数
 
@@ -76,6 +87,13 @@
 - 敏感：是
 - 获取或设置：在本人已登录的 WorkBuddy 客户端登录信息中读取 auth.accessToken 或 auth.access_token；也可从本人向 https://www.codebuddy.cn 发起的已认证请求中获取 Authorization 的 Bearer 令牌部分。不要分享或公开这些值。macOS 文件位于 ~/Library/Application Support/CodeBuddyExtension/Data/Public/auth/workbuddy-desktop.info；Windows 位于 LOCALAPPDATA 或 APPDATA 下相同相对路径；Linux 位于 XDG_DATA_HOME 或 ~/.local/share 下相同相对路径。可在无客户端的青龙环境直接填写令牌，无需复制客户端或安装额外程序。
 - 填写格式：每个非空行一个账号；每行为原始令牌、uid+token（只在第一个 + 处分割），或单行 JSON 对象，字段 token 必填，uid、org、domain 可选。uid 对应 account.uid/id，org 对应 account.enterpriseId/enterprise_id，domain 对应 auth.domain 或根级 domain。不同账号只能换行分隔。兼容 --token 参数优先输入；未配置环境变量时可选读取本人本机登录文件。；仅独立 --daily-checkin 入口必填；与原凭据同时配置时须显式选择该入口。
+
+### `WORKBUDDY_ACCOUNTS`
+
+- 必填：是
+- 敏感：是
+- 获取或设置：在本人已登录的 WorkBuddy 会话开发者工具 Network 中查看 checkin-activity-status 请求，复制 X-User-Id 及 Authorization 的 Bearer 后的访问令牌。无法打开开发者工具时向官方客户端支持查询本人访问令牌的获取方式；不扫描进程，不上传请求。
+- 填写格式：每个非空行一个 uid|accessToken，仅按首个 | 分隔；令牌过期后重新获取。
 
 ### 可选参数
 
@@ -261,17 +279,45 @@
 - 获取或设置：设置为 1 开启完全断网预演；正式运行取消设置。
 - 填写格式：1、true、yes、on 表示启用，默认关闭；预演仍需占位账号参数。
 
+### `WORKBUDDY_ACCESS_TOKEN`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：兼容上游单账号变量，与 WORKBUDDY_UID 配套；从本人官方请求的 Authorization 中获取 Bearer 后的值。合并变量非空时优先使用合并变量。
+- 填写格式：单个访问令牌，不含 Bearer 前缀。
+
+### `WORKBUDDY_UID`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：兼容单账号配套字段，从同一账号官方请求的 X-User-Id 获取。
+- 填写格式：单个账号标识，须与令牌属于同一账号。
+
+### `WORKBUDDY_TIMEOUT`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：按需设置请求超时秒数。
+- 填写格式：1 至 120 的数值，默认 15。
+
+### `WORKBUDDY_MAX_ATTEMPTS`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：按需设置状态查询最大尝试次数；领取请求不自动重试。
+- 填写格式：1 至 4 的整数，默认 4；等待间隔为 5、15、45 秒。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
 
 ## 多账号
 
-每个非空行一个账号；国内配套 AT/RT 放入 WORKBUDDY_REFRESH_TOKEN 同一行，按首字段分隔保留后续令牌；国际凭据独立逐行配置。账号依次独立处理，任一账号或阶段失败整体非零退出；禁止用 &、@ 或逗号分隔账号。；Cookie 入口 BUDDY_COOKIE 每个非空行一个账号，整行请求头值保留，分号及等号属于同一账号的 Cookie 字段。；每日积分入口每行原始令牌、uid+token 或同一账号的单行 JSON，仅首个+分割，保留后续令牌文本。
+每个非空行一个账号；国内配套 AT/RT 放入 WORKBUDDY_REFRESH_TOKEN 同一行，按首字段分隔保留后续令牌；国际凭据独立逐行配置。账号依次独立处理，任一账号或阶段失败整体非零退出；禁止用 &、@ 或逗号分隔账号。；Cookie 入口 BUDDY_COOKIE 每个非空行一个账号，整行请求头值保留，分号及等号属于同一账号的 Cookie 字段。；每日积分入口每行原始令牌、uid+token 或同一账号的单行 JSON，仅首个+分割，保留后续令牌文本。；--local-daily 入口使用 WORKBUDDY_ACCOUNTS，每个非空行 uid|accessToken，仅分割首个 |，账号独立执行，任一失败进程非零退出。
 
 ## 验证与兼容性
 
-SHA-256 `def84da0042e0598500cad72f84da1596fabea25f9845e97706ab2dc717dd219`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
+SHA-256 `06a2bbfa2eeae0bbec0565e373692dfa2d4f8f3d9b3311db4cb5321f223297a2`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
 
 ## 副作用与风险
 
@@ -289,6 +335,7 @@ SHA-256 `def84da0042e0598500cad72f84da1596fabea25f9845e97706ab2dc717dd219`；基
 - Cookie 加油站入口为尚未签到的账号领取每日奖励；--check 只查询。服务端轮换 Cookie 仅存于本轮账号内存。
 - 仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。
 - 仅显式 --travel-auto 时，已到达旅行领奖后回读空闲和当日上限，再派遣下一次旅行。
+- 仅选择 --local-daily run 且服务端确认尚未签到时领取每日积分，并回读今日已签；--verify-wallet 额外只读核验资源包增长。
 
 ## 许可证与来源
 
