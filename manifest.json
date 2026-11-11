@@ -38238,19 +38238,19 @@
         "dryRunEnv": {
           "WORKBUDDY_DRY_RUN": "1"
         },
-        "liveEnv": {
-          "WORKBUDDY_TIMEOUT": "15",
-          "WORKBUDDY_MAX_ATTEMPTS": "4"
-        },
+        "liveEnv": {},
         "successPatterns": [
           "业务核验成功",
           "TASK_SUMMARY="
         ],
         "features": [
-          "每日 09:30 查询状态后领取 WorkBuddy 每日签到积分；服务端已签到则跳过领取",
+          "按青龙每日调度查询状态后领取 WorkBuddy 每日签到积分；服务端已签到则跳过领取。",
           "支持 status 参数只查询今日状态、连续天数、累计积分和签到日期；支持 --json 逐账号结构化结果",
           "签到响应须有明确业务码并二次查询确认；状态查询超时和临时 HTTP 错误最多尝试四次",
-          "多账号隔离执行、旧令牌变量兼容、断网预演、时间轴日志、脱敏通知与单行机器汇总"
+          "多账号隔离执行、旧令牌变量兼容、断网预演、时间轴日志、脱敏通知与单行机器汇总",
+          "状态查询按来源顺序回退两个官方状态接口和两个官方域名；认证失败停止回退，领取请求仅一次。",
+          "显式 --verify-wallet 查询真实账户余额，领取前后按资源包比较增长与失效，增长不足时短暂等待后只读复查并失败闭合；status 模式仅查询。",
+          "兼容 --status 只读入口；沿用维护发布调度每日10:38，可自行配置原每日09:30。"
         ],
         "sideEffects": [
           "执行 run 且服务端尚未签到时领取每日签到积分",
@@ -38263,7 +38263,7 @@
       },
       "displayName": "WorkBuddy 每日签到",
       "path": "scripts/local_daily.py",
-      "sha256": "8658ced397d52c020699622bb9cfeee5e06343ac51231053b41a9314e1b0bd8a",
+      "sha256": "d272e05e9502110ba2a371998987ca1bdf96941641f1dcc187b852340cf02227",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -38281,6 +38281,16 @@
             "branch": "master",
             "commit": "2fcf8f909b773be36cf7de1f7df4cac438725727",
             "originalPath": "tests/mock_server.py",
+            "license": "MIT"
+          },
+          {
+            "repository": "suows/workbuddy-auto-checkin",
+            "url": "https://github.com/suows/workbuddy-auto-checkin",
+            "branch": "main",
+            "commit": "6a6f16a5763bec8f87368e4c6ebd2bef3adb4eb1",
+            "originalPath": "scripts/checkin.py",
+            "catalogId": "923f799da19cb2f5",
+            "sha256": "02ffd821cc05fb9a2a4f9a8e1030a71b3adcda27efc6cd4a008320387651de89",
             "license": "MIT"
           }
         ]
@@ -38359,10 +38369,13 @@
       },
       "dependencies": [],
       "features": [
-        "每日 09:30 查询状态后领取 WorkBuddy 每日签到积分；服务端已签到则跳过领取",
+        "按青龙每日调度查询状态后领取 WorkBuddy 每日签到积分；服务端已签到则跳过领取。",
         "支持 status 参数只查询今日状态、连续天数、累计积分和签到日期；支持 --json 逐账号结构化结果",
         "签到响应须有明确业务码并二次查询确认；状态查询超时和临时 HTTP 错误最多尝试四次",
-        "多账号隔离执行、旧令牌变量兼容、断网预演、时间轴日志、脱敏通知与单行机器汇总"
+        "多账号隔离执行、旧令牌变量兼容、断网预演、时间轴日志、脱敏通知与单行机器汇总",
+        "状态查询按来源顺序回退两个官方状态接口和两个官方域名；认证失败停止回退，领取请求仅一次。",
+        "显式 --verify-wallet 查询真实账户余额，领取前后按资源包比较增长与失效，增长不足时短暂等待后只读复查并失败闭合；status 模式仅查询。",
+        "兼容 --status 只读入口；沿用维护发布调度每日10:38，可自行配置原每日09:30。"
       ],
       "sideEffects": [
         "执行 run 且服务端尚未签到时领取每日签到积分",
@@ -38379,20 +38392,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/022a9a680ac352c1",
-        "candidateSha256": "726b902719ea33eb1ad6dc125db87d605d4745f0c6a57f70d3991a711f878f64"
+        "candidateSha256": "b9936cf253d736e98b189a4be3ffe0ebc0ca068818de45a300b7c70fc710b09a"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "726b902719ea33eb1ad6dc125db87d605d4745f0c6a57f70d3991a711f878f64",
-        "releaseSha256": "8658ced397d52c020699622bb9cfeee5e06343ac51231053b41a9314e1b0bd8a",
+        "validatedSha256": "b9936cf253d736e98b189a4be3ffe0ebc0ca068818de45a300b7c70fc710b09a",
+        "releaseSha256": "d272e05e9502110ba2a371998987ca1bdf96941641f1dcc187b852340cf02227",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T10:10:47.678182+00:00",
+          "approvedAt": "2026-11-11T11:44:18.090789+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "726b902719ea33eb1ad6dc125db87d605d4745f0c6a57f70d3991a711f878f64",
-          "toCandidateSha256": "8658ced397d52c020699622bb9cfeee5e06343ac51231053b41a9314e1b0bd8a",
+          "fromCandidateSha256": "b9936cf253d736e98b189a4be3ffe0ebc0ca068818de45a300b7c70fc710b09a",
+          "toCandidateSha256": "d272e05e9502110ba2a371998987ca1bdf96941641f1dcc187b852340cf02227",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -48189,6 +48202,193 @@
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
           "fromCandidateSha256": "1135391387f8f0b539cba83bf4599853aa32bdae6e98f56c910a76843062c77e",
           "toCandidateSha256": "1e797c93a0120cc3d04de9e3a5ff6df3c2b6f7ee9d87f169754eda16883e0354",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "b3357f7fc6526506",
+      "applicationKey": "relay",
+      "checkProfile": {
+        "requiredEnv": [
+          "RELAY_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "RELAY_BASE_URL",
+          "RELAY_SITES_JSON",
+          "EXAMPLE_ACCESS_TOKEN",
+          "EXAMPLE_USER_ID",
+          "RELAY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "RELAY_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "签到成功",
+          "今日已签到"
+        ],
+        "features": [
+          "多站点每日签到，兼容原 JSON 配置、--config、重复 --site 筛选及 --list 列表",
+          "独立实现 HTTPS POST，保留 Authorization、New-Api-User 请求头及空 JSON 请求体",
+          "明确检查业务成功，识别可配置的重复签到提示并输出 quota_awarded 奖励",
+          "逐行多账号及旧凭据变量兼容，逐账号独立执行并汇总失败退出码",
+          "支持 --timeout、--version、--help、--dry-run 及环境变量断网预演",
+          "显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号",
+          "时间戳分阶段日志、账号与任务统计及单行 TASK_SUMMARY 结构化汇总",
+          "按青龙开关和脚本选择发送脱敏总结；预演模拟通知且不联网"
+        ],
+        "sideEffects": [
+          "正式运行向配置站点提交签到，可能改变签到记录和账户奖励额度",
+          "通知启用且选中时，通过青龙已有通知模块发送脱敏任务总结"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Relay 中转站每日签到",
+      "path": "scripts/relay_checkin.py",
+      "sha256": "7a6c20ebfd6603c97bfb773cf90720e5f6862ed7b3b94ef256007e44630e8b9c",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "sstxww/relay-checkin",
+        "branch": "main",
+        "commit": "51aa0d47ee6f3e768d19270eba5f1738abf85bf3",
+        "originalPath": "relay_checkin.py",
+        "related": [
+          {
+            "catalogId": "a9c3ff6605538014",
+            "sha256": "d51d26a0def45a3144e5c808135f3faf585a8d07756cc4af68557a50e349dbef",
+            "repository": "sstxww/relay-checkin",
+            "url": "https://github.com/sstxww/relay-checkin",
+            "branch": "main",
+            "commit": "51aa0d47ee6f3e768d19270eba5f1738abf85bf3",
+            "originalPath": "tests/test_relay_checkin.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "38 9 * * *",
+      "command": "python3 scripts/relay_checkin.py",
+      "environment": [
+        {
+          "name": "RELAY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "从本人登录后的浏览器网络面板中找到签到请求，获取同账号的 Authorization 完整值和 New-Api-User 数字编号；不是模型调用密钥。",
+          "format": "每个非空行一个账号：站点标识:数字用户编号|Authorization；仅在首个竖线处分割令牌，保留后续文本及 Bearer 前缀。站点标识对应配置 id，简易配置为 example；不用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "RELAY_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人支持 New API 签到的站点地址栏获取；与 RELAY_SITES_JSON 或 --config 三选一。",
+          "format": "无凭据、查询串或片段的 HTTPS 地址；生成 example 站点，签到路径 /api/user/checkin；不预设真实站点。"
+        },
+        {
+          "name": "RELAY_SITES_JSON",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "根据本人签到请求确认站点地址和路径。可替代原 sites.json；优先顺序为 --config、本变量、脚本旁 sites.json、RELAY_BASE_URL。",
+          "format": "JSON 对象含 sites 非空数组。每站必填字符串 id、name、homepage、base_url、checkin_path、access_token_env、user_id_env；可选 already_checked_in_messages 字符串数组。地址必须 HTTPS、路径必须站内绝对路径；凭据不放入 JSON。"
+        },
+        {
+          "name": "EXAMPLE_ACCESS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版 example 站点兼容输入：从本人签到请求的 Authorization 请求头获取完整值。优先使用规范变量 RELAY_ACCOUNTS。",
+          "format": "单账号令牌；RELAY_ACCOUNTS 未设置时与 EXAMPLE_USER_ID 配套使用。自定义旧站点按 access_token_env 指定的变量读取。"
+        },
+        {
+          "name": "EXAMPLE_USER_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧版 example 站点兼容输入：从同账号签到请求的 New-Api-User 请求头获取。",
+          "format": "单个数字用户编号；自定义旧站点按 user_id_env 指定的变量读取。"
+        },
+        {
+          "name": "RELAY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "预演时设为 1；也支持 --dry-run，任一启用即预演。",
+          "format": "1、true、yes、on 启用；仅验证配置，不请求签到和通知服务。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写通知脚本选择，设置后替代默认选择。",
+          "format": "逗号、分号、空白或换行分隔；支持 b3357f7fc6526506、relay_checkin.py、candidate.py、scripts/relay_checkin.py 及文件名通配符；* 全选，空值全关。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写青龙已有通知模块的目录；不自动安装。",
+          "format": "目录内含 notify.py 或 sendNotify.js；另支持导入 notify.send 及 /ql/data/scripts、/ql/scripts 标准目录。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "RELAY_ACCOUNTS 每个非空行一个账号，格式为站点标识:数字用户编号|Authorization；仅在首个竖线处分割。各账号独立执行，任一失败则整体非零退出；--site 筛选站点。兼容旧版每站一组凭据变量。"
+      },
+      "dependencies": [],
+      "features": [
+        "多站点每日签到，兼容原 JSON 配置、--config、重复 --site 筛选及 --list 列表",
+        "独立实现 HTTPS POST，保留 Authorization、New-Api-User 请求头及空 JSON 请求体",
+        "明确检查业务成功，识别可配置的重复签到提示并输出 quota_awarded 奖励",
+        "逐行多账号及旧凭据变量兼容，逐账号独立执行并汇总失败退出码",
+        "支持 --timeout、--version、--help、--dry-run 及环境变量断网预演",
+        "显示官方返回的非敏感昵称、用户名、显示名称或公开用户编号",
+        "时间戳分阶段日志、账号与任务统计及单行 TASK_SUMMARY 结构化汇总",
+        "按青龙开关和脚本选择发送脱敏总结；预演模拟通知且不联网"
+      ],
+      "sideEffects": [
+        "正式运行向配置站点提交签到，可能改变签到记录和账户奖励额度",
+        "通知启用且选中时，通过青龙已有通知模块发送脱敏任务总结"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/b3357f7fc6526506",
+        "candidateSha256": "f16f5794aa7b05951af6aa9e8970a6d65385c780fa647dfb5dfbb04e192643a9"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "f16f5794aa7b05951af6aa9e8970a6d65385c780fa647dfb5dfbb04e192643a9",
+        "releaseSha256": "7a6c20ebfd6603c97bfb773cf90720e5f6862ed7b3b94ef256007e44630e8b9c",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T11:43:24.507743+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "f16f5794aa7b05951af6aa9e8970a6d65385c780fa647dfb5dfbb04e192643a9",
+          "toCandidateSha256": "7a6c20ebfd6603c97bfb773cf90720e5f6862ed7b3b94ef256007e44630e8b9c",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -67705,8 +67905,8 @@
           "TIEBA_MAX_ROUNDS": "1"
         },
         "successPatterns": [
-          "TASK_SUMMARY=",
-          "最终状态 success"
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
         ],
         "features": [
           "验证 BDUSS 登录状态并通过 HTTPS 获取 tbs 校验值",
@@ -67721,7 +67921,8 @@
           "显式配置最多五轮安全重试，重试前刷新 TBS 并等待60至90秒；默认网页单轮流程和每次签到前五秒间隔保持不变。",
           "兼容 SCKEY 并新增 PUSHPLUS_TOKEN，通过 HTTPS 发送脱敏结果，以业务码200验证受理，通知失败保留业务退出码。",
           "依据官方关注列表跳过今日已签到项目，签到响应提供排名和累计签到天数时显示。",
-          "兼容原 accounts/push 配置结构的环境 JSON 迁移，保留启用开关和按账号分组的 Server酱、PushDeer 通知，并提供独立可选全局通知密钥。"
+          "兼容原 accounts/push 配置结构的环境 JSON 迁移，保留启用开关和按账号分组的 Server酱、PushDeer 通知，并提供独立可选全局通知密钥。",
+          "逐吧显示官方关注列表快照中的等级与经验值，已签到条目同样展示；字段未返回时明确标注，不额外请求或改变签到结果。"
         ],
         "sideEffects": [
           "对当前账号关注的贴吧执行每日签到，可能获得服务端签到奖励并更新签到记录",
@@ -67735,10 +67936,10 @@
       },
       "displayName": "百度贴吧关注吧签到",
       "path": "scripts/task_98d86c7c.js",
-      "sha256": "c25ffc94564db3765dcffd2b49f09cc4f47025ed5ddaa375e66e2f312c87c498",
+      "sha256": "fb3de12cdc8d54a423f2582c1cbd0caeed69023ef212a8572d2c891bc1890534",
       "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
       "source": {
         "repository": "xdmjun/tbautosign",
         "branch": "main",
@@ -67764,6 +67965,16 @@
             "catalogId": "8f485a1ad8a02948",
             "sha256": "9e1c42e00c5b4a0f01437e9b41b2581852d98c13c3eaff078075f1f592e4d5ce",
             "license": "MIT"
+          },
+          {
+            "repository": "hackbayonet/Tieba",
+            "url": "https://github.com/hackbayonet/Tieba",
+            "branch": "master",
+            "commit": "3a045ca6a4d5a961b5779af78be7806fb0a57b6c",
+            "originalPath": "test.py",
+            "catalogId": "c0b7f40a1c58b1f3",
+            "sha256": "75751a11aa72f3a3c017b8dc77d142b7b221734280e6b94f0bf69a7207397ec6",
+            "license": "GPL-3.0"
           }
         ]
       },
@@ -67881,7 +68092,8 @@
         "显式配置最多五轮安全重试，重试前刷新 TBS 并等待60至90秒；默认网页单轮流程和每次签到前五秒间隔保持不变。",
         "兼容 SCKEY 并新增 PUSHPLUS_TOKEN，通过 HTTPS 发送脱敏结果，以业务码200验证受理，通知失败保留业务退出码。",
         "依据官方关注列表跳过今日已签到项目，签到响应提供排名和累计签到天数时显示。",
-        "兼容原 accounts/push 配置结构的环境 JSON 迁移，保留启用开关和按账号分组的 Server酱、PushDeer 通知，并提供独立可选全局通知密钥。"
+        "兼容原 accounts/push 配置结构的环境 JSON 迁移，保留启用开关和按账号分组的 Server酱、PushDeer 通知，并提供独立可选全局通知密钥。",
+        "逐吧显示官方关注列表快照中的等级与经验值，已签到条目同样展示；字段未返回时明确标注，不额外请求或改变签到结果。"
       ],
       "sideEffects": [
         "对当前账号关注的贴吧执行每日签到，可能获得服务端签到奖励并更新签到记录",
@@ -67899,20 +68111,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/98d86c7c8da22e52",
-        "candidateSha256": "72f65da3ea2dc99630d843669db5748d6a77a1c4aa4dc7c8897750d3a71f9990"
+        "candidateSha256": "f3c0106602213c19bd2402f025a6e64bcb7bff882bf63fe68393411bb3963654"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "72f65da3ea2dc99630d843669db5748d6a77a1c4aa4dc7c8897750d3a71f9990",
-        "releaseSha256": "c25ffc94564db3765dcffd2b49f09cc4f47025ed5ddaa375e66e2f312c87c498",
+        "validatedSha256": "f3c0106602213c19bd2402f025a6e64bcb7bff882bf63fe68393411bb3963654",
+        "releaseSha256": "fb3de12cdc8d54a423f2582c1cbd0caeed69023ef212a8572d2c891bc1890534",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T11:31:20.344244+00:00",
+          "approvedAt": "2026-11-11T11:44:29.513562+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "72f65da3ea2dc99630d843669db5748d6a77a1c4aa4dc7c8897750d3a71f9990",
-          "toCandidateSha256": "c25ffc94564db3765dcffd2b49f09cc4f47025ed5ddaa375e66e2f312c87c498",
+          "fromCandidateSha256": "f3c0106602213c19bd2402f025a6e64bcb7bff882bf63fe68393411bb3963654",
+          "toCandidateSha256": "fb3de12cdc8d54a423f2582c1cbd0caeed69023ef212a8572d2c891bc1890534",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

@@ -32,6 +32,23 @@ SOFTWARE.
 // 优先使用 BDUSS；TIEBA_CONFIG 账号仅作旧配置迁移，显式 enable=false 的账号不运行。
 // 原账号 name 仅作本地配置标记，不打印；官方返回的公开身份正常显示。
 // TIEBA_SERVERCHAN_KEY/TIEBA_PUSHDEER_KEY 为独立可选全局通知密钥。
+// 合并来源 https://github.com/hackbayonet/Tieba ，原文件 test.py。
+// Created by bayonet on 2016/5/27 9:51.
+// 关联参考 chavyleung/scripts 的 tieba/tieba.js，保留“百度签到脚本”归属。
+// 四份关联 function/tieba/tieba.js 内容相同，仅参考同应用字段 user_level/user_exp。
+// 合并后的有效许可证 GPL-3.0，以上原有 MIT 许可与归属继续保留。
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, version 3 of the License.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details: https://www.gnu.org/licenses/gpl-3.0.html
+// 上游功能清单：用户名密码登录、读取关注吧、逐吧签到、输出等级与经验，无内置定时。
+// 维护版沿用 BDUSS 登录、每日10:48、全部通知渠道、客户端模式及网页兜底。
+// 等级与经验展示使用官方关注列表快照，不额外请求、不改变签到成功判定。
+// 原用户名密码无环境变量接口，维护版使用已登录 Cookie 中的 BDUSS。
+// 不依赖旧准备路径或私有仓库；业务 HTTP 由本文件标准库实现。
 'use strict';
 
 // qinglong-notification-policy: begin
@@ -243,7 +260,7 @@ async function clientForums(credential) {
       for (const item of items) {
         if (!item || typeof item.name !== 'string' || !item.name.trim() || !item.id) throw failure('客户端关注条目不完整');
         const key = String(item.id);
-        if (!seen.has(key)) { seen.add(key); forums.push({ forum_name: item.name, id: key }); added++; }
+        if (!seen.has(key)) { seen.add(key); forums.push({ forum_name: item.name, id: key, user_level: item.user_level, user_exp: item.user_exp }); added++; }
       }
     }
     publicIdentity(data);
@@ -307,6 +324,13 @@ async function signWithRetries(forum, credential, stoken, initialTbs) {
   }
 }
 
+// 关联源码明确使用这两个官方字段。缺失或异常时仅标记未返回。
+function forumProgress(forum) {
+  const numeric = value => (typeof value === 'number' || typeof value === 'string') &&
+    /^\d+$/.test(String(value)) ? String(value) : '未返回';
+  return `关注列表快照，等级 ${numeric(forum.user_level)}，经验值 ${numeric(forum.user_exp)}`;
+}
+
 async function runAccount(account, accountLine) {
   const split = accountLine.indexOf('|');
   const credential = split < 0 ? accountLine : accountLine.slice(0, split).trim();
@@ -322,7 +346,7 @@ async function runAccount(account, accountLine) {
       return { message: `凭据格式通过，签到模式 ${signMode}，最多 ${maxRounds} 轮，网页兜底 ${stoken ? '已配置' : '未配置'}` };
     });
     if (dryRun) {
-      await stage(account, '断网演练', async () => ({ message: 'DRY_RUN_OK 流程计划为登录校验、关注吧读取、逐吧签到及验证码停止，实际请求 0 次' }));
+      await stage(account, '断网演练', async () => ({ message: 'DRY_RUN_OK 流程计划为登录校验、关注吧读取、等级与经验展示、逐吧签到及验证码停止，实际请求 0 次' }));
       account.status = 'dry-run';
       return;
     }
@@ -344,6 +368,7 @@ async function runAccount(account, accountLine) {
     });
     for (let index = 0; index < forums.length; index++) {
       const forum = forums[index];
+      log(`账号 ${account.index} · ${forum.forum_name}吧 · ${forumProgress(forum)}`);
       try {
         await stage(account, `签到 ${forum.forum_name}吧`, async () => {
           if (String(forum.is_sign) === '1') return { outcome: 'alreadyComplete', message: '关注列表确认今日已签到' };

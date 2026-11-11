@@ -4,8 +4,8 @@
 - 脚本路径：`scripts/task_98d86c7c.js`
 - 青龙命令：`node scripts/task_98d86c7c.js`
 - 建议 Cron：`48 10 * * *`
-- 发布哈希：`c25ffc94564db3765dcffd2b49f09cc4f47025ed5ddaa375e66e2f312c87c498`
-- 许可证：`MIT`
+- 发布哈希：`fb3de12cdc8d54a423f2582c1cbd0caeed69023ef212a8572d2c891bc1890534`
+- 许可证：`GPL-3.0`
 
 ## 脚本功能
 
@@ -22,6 +22,7 @@
 - 兼容 SCKEY 并新增 PUSHPLUS_TOKEN，通过 HTTPS 发送脱敏结果，以业务码200验证受理，通知失败保留业务退出码。
 - 依据官方关注列表跳过今日已签到项目，签到响应提供排名和累计签到天数时显示。
 - 兼容原 accounts/push 配置结构的环境 JSON 迁移，保留启用开关和按账号分组的 Server酱、PushDeer 通知，并提供独立可选全局通知密钥。
+- 逐吧显示官方关注列表快照中的等级与经验值，已签到条目同样展示；字段未返回时明确标注，不额外请求或改变签到结果。
 
 ## 环境变量与参数
 
@@ -132,7 +133,7 @@
 
 ## 验证与兼容性
 
-SHA-256 `c25ffc94564db3765dcffd2b49f09cc4f47025ed5ddaa375e66e2f312c87c498`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/98d86c7c8da22e52`。
+SHA-256 `fb3de12cdc8d54a423f2582c1cbd0caeed69023ef212a8572d2c891bc1890534`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/98d86c7c8da22e52`。
 
 ## 副作用与风险
 
