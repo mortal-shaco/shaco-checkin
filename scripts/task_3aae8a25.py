@@ -6,12 +6,19 @@
 # 上游提交: c589e71cebb4c15fc6b0e3087a2bff4aaf032be1
 # 原项目基于 SerendipityR-2022/Rainyun-Qiandao 与 fatekey/Rainyun-Qiandao
 # 兼容来源: cloudcranes/some_scripts rainyun.py 与 FalseHappiness/RainyunCheckIn app.py
+# 合并来源: Zhouyi2013/Rainyun-Qiandao rainyun.py（MIT）
 """雨云每日签到与可选服务器积分续费。
 
 使用 RAINYUN_ACCOUNT（兼容旧变量 rainyun_ck），每个非空行代表一个账号。推荐每行填写一个
 JSON 对象：{"username":"用户名","password":"密码","autoRenew":false,
 "apiKey":"可选 API Key"}。仅签到时也兼容“用户名#密码”，只在第一个 #
 处分隔，密码内后续的 # 会保留；还兼容上游的 JSON 二维数组。
+
+用户名和密码从雨云官网注册账号取得；续费 API Key 从雨云控制台 API 设置创建。
+兼容 RAINYUN_USER 与 RAINYUN_PASS 两组逐行配对的旧变量，只在前两种变量均为空时使用。
+新配置推荐 RAINYUN_ACCOUNT，以同一行绑定同一账号凭据。保留密码内后续 # 字符。
+积分按原脚本 2000 积分约合 1 元展示，仅用于估算。
+规范定时为每日 00:47，迁移时可保留原青龙任务定时并改用本脚本命令。
 
 autoRenew 默认关闭。只有同一账号行明确设置为 true 且提供 apiKey 时，才会按
 RAINYUN_CONFIG 的到期阈值、续费天数和最低积分保留值执行续费。
@@ -54,7 +61,7 @@ if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}
         _ql_notify_enabled = False
     else:
         _ql_notify_selectors = [item.lower() for item in _ql_notify_re.split(r"[,;\s]+", _ql_notify_selection.strip()) if item]
-        _ql_notify_identities = ('3aae8a254cd15cdd', 'scripts/task_3aae8a25.py', 'task_3aae8a25.py', 'task_3aae8a25', '89f2e9b460331a75', 'scripts/rainyun.py', 'rainyun.py', 'rainyun')
+        _ql_notify_identities = ('3aae8a254cd15cdd', 'scripts/task_3aae8a25.py', 'task_3aae8a25.py', 'task_3aae8a25')
         _ql_notify_enabled = any(
             _ql_notify_fnmatch.fnmatch(identity, selector)
             for selector in _ql_notify_selectors
@@ -85,7 +92,8 @@ from datetime import datetime
 
 TITLE = "雨云签到与安全续费"
 CATALOG_ID = "3aae8a254cd15cdd"
-APPLICATION_KEY = "lmtxq/rainyun-qinglong::main"
+APPLICATION_KEY = "rainyun"
+LEGACY_APPLICATION_KEY = "lmtxq/rainyun-qinglong::main"
 BASE_URL = "https://api.v2.rainyun.com"
 ORIGIN = "https://api.rainyun.com"
 MAX_RESPONSE_BYTES = 256 * 1024
@@ -226,7 +234,7 @@ def make_account(username, password, auto_renew=False, api_key="", position=0):
 def parse_accounts():
     raw = account_input()
     if not raw.strip():
-        return [], ["缺少账号配置 RAINYUN_ACCOUNT 或 rainyun_ck"]
+        return [], ["缺少账号配置 RAINYUN_ACCOUNT（兼容 rainyun_ck 或配对的 RAINYUN_USER/RAINYUN_PASS）"]
 
     accounts = []
     errors = []
@@ -274,7 +282,22 @@ def parse_accounts():
 def account_input():
     """Prefer the maintained setting, while keeping the old rainyun_ck task usable."""
     canonical = os.environ.get("RAINYUN_ACCOUNT", "")
-    return canonical if canonical.strip() else os.environ.get("rainyun_ck", "")
+    if canonical.strip():
+        return canonical
+    legacy = os.environ.get("rainyun_ck", "")
+    if legacy.strip():
+        return legacy
+    users = [line.strip() for line in os.environ.get("RAINYUN_USER", "").splitlines() if line.strip()]
+    passwords = [line.strip() for line in os.environ.get("RAINYUN_PASS", "").splitlines() if line.strip()]
+    if not users and not passwords:
+        return ""
+    if len(users) != len(passwords):
+        # 不猜测配对关系，避免将密码用于错误的账号。
+        return json.dumps([{} for _ in range(max(len(users), len(passwords)))])
+    return json.dumps([
+        {"username": username, "password": password}
+        for username, password in zip(users, passwords)
+    ])
 
 
 class RejectRedirect(urllib.request.HTTPRedirectHandler):
@@ -528,6 +551,8 @@ def notification_selected():
         "candidate.py",
         "main.py",
         APPLICATION_KEY,
+        LEGACY_APPLICATION_KEY,
+        "2a3132b87208e955",
         "89f2e9b460331a75",
         "scripts/rainyun.py",
         "rainyun.py",
@@ -597,12 +622,17 @@ def javascript_notifiers():
 
 
 def notification_body(summary):
+    points_details = "".join(
+        f"\n账号 {item['account']}：积分 {item['points']}，约 {item['approximateCny']} 元"
+        for item in summary["accountResults"] if "points" in item
+    )
     return (
         f"状态：{summary['status']}；账号总数：{summary['accounts']}；"
         f"成功：{summary['success']}；失败：{summary['failed']}；"
         f"配置错误：{summary['configurationErrors']}；"
         f"子任务成功：{summary['steps']['success']}；"
         f"子任务失败：{summary['steps']['failed']}"
+        + points_details
     )
 
 
@@ -689,6 +719,7 @@ def run_account(index, account, settings, dry_run):
     stats = empty_stats(len(actions))
     client = None if dry_run else RainyunHTTP(account, settings.timeout)
     logged_in = False
+    points_result = None
     workflow_ok = True
     log(f"--- 账号 {index} ---")
 
@@ -738,7 +769,8 @@ def run_account(index, account, settings, dry_run):
         elif action == "查询积分":
             try:
                 result, points = client.query_user()
-                state, detail = "success", f"积分查询成功：{points}"
+                points_result = points
+                state, detail = "success", f"积分查询成功：{points}，约 {points / 2000:.2f} 元"
                 identity = public_identity(result, account.password)
                 if identity:
                     log(f"账号 {index} 官方身份：{identity}")
@@ -777,6 +809,9 @@ def run_account(index, account, settings, dry_run):
         "steps": stats,
         "durationSeconds": round(time.monotonic() - account_started, 3),
     }
+    if points_result is not None:
+        result["points"] = points_result
+        result["approximateCny"] = f"{points_result / 2000:.2f}"
     log(
         f"账号 {index} 统计：总任务 {stats['total']}，成功 {stats['success']}，"
         f"已完成 {stats['alreadyComplete']}，跳过 {stats['skipped']}，"

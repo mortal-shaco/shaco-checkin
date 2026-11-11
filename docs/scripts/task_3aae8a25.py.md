@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/task_3aae8a25.py`
 - 青龙命令：`python3 scripts/task_3aae8a25.py`
 - 建议 Cron：`47 0 * * *`
-- 发布哈希：`62ab9f30e4d48ac786b5a5c7e1b883f95c4113f462149e11dd07f534db6ff638`
+- 发布哈希：`05e276b272473a3f7f3f606e8e7311909cab2d6e5c09d8deb1e72e7ea061e560`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -23,6 +23,8 @@
 - 提供完全断网预演、分阶段脱敏日志、逐账号统计和单行 TASK_SUMMARY JSON 汇总。
 - 按全局开关和脚本选择器调用青龙 Python 或 JavaScript 通知，并在通知失败时保留业务退出码。
 - 规范任务每日 00:47；旧雨云 01:28 定时任务如需保留原 Cron，请将命令改为 python3 scripts/task_3aae8a25.py。
+- 兼容原脚本 RAINYUN_USER 与 RAINYUN_PASS 逐行配对变量，规范变量和 rainyun_ck 优先。
+- 查询积分后按原脚本每 2000 积分约合 1 元显示估算金额，并加入脱敏通知。
 
 ## 环境变量与参数
 
@@ -32,9 +34,9 @@
 
 ### `RAINYUN_ACCOUNT`
 
-- 必填：是（也可设置 `rainyun_ck`）
+- 必填：是（也可设置 `rainyun_ck`、`RAINYUN_USER 与 RAINYUN_PASS`）
 - 敏感：是
-- 获取或设置：用户名和密码来自雨云官网账号；如需续费，API Key 从雨云控制台的 API 设置中创建。推荐把同一账号的字段写在同一行 JSON 对象中。 沿用旧任务时也可只设置 rainyun_ck。 规范变量与所列旧变量任选其一；只保留旧变量也可运行。
+- 获取或设置：用户名和密码来自雨云官网注册账号；续费 API Key 在雨云控制台的 API 设置中创建。推荐每行一个 JSON 对象绑定同一账号凭据。规范变量优先，其次兼容 rainyun_ck，最后兼容 RAINYUN_USER 与 RAINYUN_PASS。
 - 填写格式：每个非空行一个账号，推荐 {"username":"用户名","password":"密码","autoRenew":false,"apiKey":"可选 API Key"}；仅签到兼容 用户名#密码，并只在第一个 # 处分隔；也兼容上游 JSON 二维数组。
 
 ### 可选参数
@@ -81,17 +83,31 @@
 - 获取或设置：仅当青龙通知脚本不在标准目录时，填写包含 notify.py 或 sendNotify.js 的目录。
 - 填写格式：青龙容器内的绝对目录路径。
 
+### `RAINYUN_USER`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：雨云官网注册账号的用户名。仅当 RAINYUN_ACCOUNT 与 rainyun_ck 均为空时使用，必须配套 RAINYUN_PASS。推荐迁移至规范账号变量。
+- 填写格式：每个非空行一个用户名，与 RAINYUN_PASS 的非空行顺序对应，数量必须相同。
+
+### `RAINYUN_PASS`
+
+- 必填：否
+- 敏感：是
+- 获取或设置：与 RAINYUN_USER 相同账号的雨云官网登录密码。
+- 填写格式：每个非空行一个密码，支持包含 # 的密码；两组旧变量非空行数量不一致时全部拒绝执行。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
 
 ## 多账号
 
-RAINYUN_ACCOUNT 每个非空行代表一个账号；推荐每行一个 JSON 对象以绑定该账号的密码、续费开关和 API Key。简写格式只在第一个 # 处分隔用户名与密码。各账号使用独立会话并独立统计，任一账号失败时进程返回非零状态。 兼容旧变量 rainyun_ck，RAINYUN_ACCOUNT 优先；勿同时放入同一账号。
+RAINYUN_ACCOUNT 每个非空行代表一个账号；推荐每行一个 JSON 对象以绑定该账号的密码、续费开关和 API Key。简写格式只在第一个 # 处分隔用户名与密码。各账号使用独立会话并独立统计，任一账号失败时进程返回非零状态。 兼容旧变量 rainyun_ck，RAINYUN_ACCOUNT 优先；勿同时放入同一账号。 最后兼容两组旧变量 RAINYUN_USER 与 RAINYUN_PASS，按非空行顺序一一配对，数量不一致时拒绝执行。
 
 ## 验证与兼容性
 
-SHA-256 `62ab9f30e4d48ac786b5a5c7e1b883f95c4113f462149e11dd07f534db6ff638`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3aae8a254cd15cdd`。
+SHA-256 `05e276b272473a3f7f3f606e8e7311909cab2d6e5c09d8deb1e72e7ea061e560`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/3aae8a254cd15cdd`。
 
 ## 副作用与风险
 

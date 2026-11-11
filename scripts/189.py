@@ -2,7 +2,8 @@
 # name: 天翼云盘每日签到及抽奖
 # cron: 44 10 * * *
 # 来源: jing207/189Checkin, checkin.py (MIT)
-# 兼容参考: task catalog a239bc381f7989b5 (MIT)，增加验证码失败提示。
+# 合并来源: gitlab.com/live2364li/189checkin / checkin.py (MIT)
+# 兼容参考: task catalog a239bc381f7989b5、6fe18a28ecf03c21 (MIT)。
 # 上游文件未含额外版权声明；本文件保留来源并沿用 MIT 许可。
 # MIT License
 # Copyright (c) jing207/189Checkin contributors
@@ -28,7 +29,8 @@
 兼容 --username / --password 单账号参数（优先于环境变量，但不推荐暴露于进程参数）。
 189_DRY_RUN=1 完全断网预演，包含通知模拟，不会校验真实凭据。
 189_DRAW_SIGNIN / 189_DRAW_PHOTOS=0 可关闭对应抽奖，默认均开启。
-推荐每日 08:15 运行一次；原始来源没有 cron，此为维护版建议。
+沿用已发布计划每日 10:44 运行；原始来源没有 cron。
+兼容 TY189_ACCOUNTS / TY189_DRY_RUN；对应 189_* 变量存在时优先，空值也不回退。
 依赖: 公共 PyPI requests、rsa；预演无需安装它们。不会上传照片或开启相册备份。
 验证码拦截须自行在官方客户端处理，不自动改密或绕过验证。
 通知遵循 QINGLONG_NOTIFY 和 QINGLONG_NOTIFY_SCRIPTS 选择；未配置选择时不默认推送。
@@ -55,6 +57,7 @@ if _ql_notify_raw is None or str(_ql_notify_raw).strip().lower() in {"", "auto"}
 import argparse
 import datetime as dt
 import fnmatch
+import html
 import importlib.util
 import json
 import os
@@ -86,8 +89,15 @@ def log(message):
     print(f'[{dt.datetime.now():%H:%M:%S}] {message}', flush=True)
 
 
+def setting(name, default=''):
+    aliases = {'189_ACCOUNTS': 'TY189_ACCOUNTS', '189_DRY_RUN': 'TY189_DRY_RUN'}
+    if name in os.environ:
+        return os.environ[name]
+    return os.environ.get(aliases.get(name, name), default)
+
+
 def switch(name, default):
-    value = os.environ.get(name, str(int(default))).strip().lower()
+    value = setting(name, str(int(default))).strip().lower()
     if value not in TRUE | FALSE:
         raise TaskError(f'{name} 必须为 1/0、true/false、yes/no 或 on/off')
     return value in TRUE
@@ -136,6 +146,7 @@ class Client:
                 if method != 'GET':
                     raise TaskError('登录提交出现非预期跳转，已停止')
                 url = target
+                kwargs.pop('params', None)
                 continue
             if not 200 <= response.status_code < 300:
                 raise TaskError('接口 HTTP 状态异常')
@@ -156,33 +167,43 @@ class Client:
         return data
 
     def identity(self, data):
-        # 不将登录账号或 phone 等字段当成公开身份。
+        # 仅展示官方身份字段，过滤密码、会话字段、手机号和控制字符。
         for key in ('nickname', 'nickName', 'displayName', 'username', 'userName', 'publicUid'):
             value = data.get(key)
-            if not isinstance(value, (str, int)):
+            if isinstance(value, bool) or not isinstance(value, (str, int)):
                 continue
             text = str(value)
-            if (not text or any(secret and secret in text for secret in self.secrets)
-                    or (key != 'publicUid' and re.search(r'(?<!\d)\+?\d[\d -]{6,}\d(?!\d)', text))
-                    or any(c in text for c in '\r\n\x1b')):
+            if (not text or any(secret and secret in text for secret in self.secrets[1:])
+                    or re.search(r'(?<!\d)(?:\+?86[- ]?)?1[3-9](?:[- ]?\d){9}(?!\d)', text)
+                    or not text.isprintable()):
                 continue
             log(f'官方账号身份：{text}')
 
+    @staticmethod
+    def extract(page, name, input_field=False):
+        if input_field:
+            tags = re.findall(r'<input\b[^>]*>', page, re.I)
+            for tag in tags:
+                attrs = dict(re.findall(r'''([\w-]+)\s*=\s*["']([^"']*)["']''', tag))
+                if attrs.get('id') == name or attrs.get('name') == name:
+                    value = attrs.get('value')
+                    if value:
+                        return html.unescape(value)
+        else:
+            match = re.search(r'''\b''' + re.escape(name) + r'''\s*=\s*["']([^"']+)["']''', page)
+            if match:
+                return html.unescape(match.group(1))
+        raise TaskError('登录页面缺少必要字段，需核验接口或在官方客户端处理验证码')
+
     def login(self):
         page = self.request('GET', LOGIN).text
-        patterns = {
-            'captchaToken': r"captchaToken' value='(.+?)'",
-            'lt': r'lt = "(.+?)"',
-            'returnUrl': r"returnUrl = '(.+?)'",
-            'paramId': r'paramId = "(.+?)"',
-            'key': r'j_rsaKey" value="(\S+)"',
+        fields = {
+            'captchaToken': self.extract(page, 'captchaToken', True),
+            'lt': self.extract(page, 'lt'),
+            'returnUrl': self.extract(page, 'returnUrl'),
+            'paramId': self.extract(page, 'paramId'),
+            'key': self.extract(page, 'j_rsaKey', True),
         }
-        fields = {}
-        for name, pattern in patterns.items():
-            match = re.search(pattern, page)
-            if not match:
-                raise TaskError('登录页缺少必要字段，可能需要验证码或接口已变化')
-            fields[name] = match.group(1)
         self.secrets.extend(fields.values())
         try:
             public_key = self.rsa.PublicKey.load_pkcs1_openssl_pem(
@@ -195,8 +216,7 @@ class Client:
                     'mailSuffix': '@189.cn', 'paramId': fields['paramId']}
         except Exception:
             raise TaskError('登录加密失败，检查依赖和官方登录页') from None
-        self.session.headers.update({'lt': fields['lt']})
-        result = self.json('POST', SUBMIT, data=data, headers={'Referer': 'https://open.e.189.cn/'})
+        result = self.json('POST', SUBMIT, data=data, headers={'lt': fields['lt'], 'Referer': 'https://open.e.189.cn/'})
         if str(result.get('result')) != '0':
             if '验证码' in str(result.get('msg', '')):
                 raise TaskError('登录需要验证码，请先在官方客户端完成验证再重试')
@@ -208,10 +228,18 @@ class Client:
         self.identity(result)
         return 'success', '登录业务校验通过，已建立独立会话'
 
+    @staticmethod
+    def check_business_codes(data):
+        # 兼容参考中的显式拒绝码，仍要求每个动作自己的完成字段。
+        for key in ('res_code', 'result', 'code'):
+            if key in data and str(data[key]) not in {'0', '', 'None'}:
+                raise TaskError('接口业务码拒绝操作，响应内容已隐藏')
+
     def sign(self):
         data = self.json('GET', SIGN, params={'rand': str(round(time.time() * 1000)),
                          'clientType': 'TELEANDROID', 'version': '8.6.3', 'model': 'SM-G930K'},
                          headers={'Referer': 'https://m.cloud.189.cn/zhuanti/2016/sign/index.jsp?albumBackupOpened=1'})
+        self.check_business_codes(data)
         flag, bonus = data.get('isSign'), data.get('netdiskBonus')
         if ('errorCode' in data or str(flag).lower() not in {'true', 'false'}
                 or isinstance(bonus, bool) or not re.fullmatch(r'\d+(?:\.\d+)?', str(bonus))):
@@ -224,6 +252,7 @@ class Client:
     def draw(self, task):
         data = self.json('GET', DRAW, params={'taskId': task, 'activityId': 'ACT_SIGNIN'},
                          headers={'Referer': 'https://m.cloud.189.cn/zhuanti/2016/sign/index.jsp?albumBackupOpened=1'})
+        self.check_business_codes(data)
         # 来源只提供 prizeName 成功契约；未知错误不假定为“已抽奖”。
         if 'errorCode' in data or not isinstance(data.get('prizeName'), str) or not data['prizeName'].strip():
             raise TaskError('抽奖未取得明确奖品结果，可能已抽取、资格不足或接口变化')
@@ -239,7 +268,7 @@ def notify(summary, dry):
         log('⚠️ 通知开关无效，不影响业务退出码')
         return '配置无效'
     selected = value in TRUE
-    if 'QINGLONG_NOTIFY_SCRIPTS' in os.environ:
+    if value == 'auto' and 'QINGLONG_NOTIFY_SCRIPTS' in os.environ:
         patterns = re.split(r'[,;\s]+', os.environ['QINGLONG_NOTIFY_SCRIPTS'].strip())
         names = [CATALOG, Path(__file__).name, 'scripts/' + Path(__file__).name]
         # 允许匹配安装后的 scripts 相对路径。
@@ -296,7 +325,7 @@ def main():
     started = time.monotonic()
     log(f'========== {TITLE} ==========')
     log(f'开始时间：{dt.datetime.now().isoformat(timespec="seconds")}')
-    dry = os.environ.get('189_DRY_RUN', '').strip().lower() in TRUE
+    dry = setting('189_DRY_RUN').strip().lower() in TRUE
     records, config_errors = [], 0
     accounts = []
     try:
@@ -310,7 +339,7 @@ def main():
                 raise TaskError('命令行账号密码必须同时非空')
             accounts = [(args.username, args.password)]
         else:
-            lines = [line for line in os.environ.get('189_ACCOUNTS', '').splitlines() if line.strip()]
+            lines = [line for line in setting('189_ACCOUNTS').splitlines() if line.strip()]
             for line in lines:
                 user, sep, password = line.partition('|')
                 accounts.append((user, password) if sep and user and password else None)
