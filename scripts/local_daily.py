@@ -4,6 +4,7 @@
 # cron: 38 10 * * *
 # 原签到调度 30 9 * * * 仍可由青龙独立配置。
 # 合并来源：suows/workbuddy-auto-checkin scripts/checkin.py，MIT。
+# 合并来源：JackieZheng/xueren-workbuddy-checkin scripts/workbuddy_checkin.py，MIT。
 # SPDX-License-Identifier: MIT
 # 来源：Peng-Can/local-daily-checkin，checkin.py，MIT。
 """WorkBuddy 每日签到，Python 标准库独立实现。
@@ -16,6 +17,8 @@ WORKBUDDY_ACCOUNTS：每个非空行一个账号，格式 uid|accessToken，仅�
 WORKBUDDY_DRY_RUN=1 完全断网预演。调度由青龙负责，沿用维护版本发布计划每日 10:38，亦兼容原每日 09:30。
 --status 等价于 status；--verify-wallet 显式启用真实余额与本次资源包增长核验。
 该开关在 status 模式只读余额，run 模式领取后确认增长，余额读取失败即失败。
+credits（或 --expire）只读查询逐笔积分到期；--expiring-days N 筛选临期，--html 输出安全 HTML。
+该入口按上游依次查询资源汇总及付费、免费发放记录，时间统一为北京时间。
 余额快照仅保留在内存中。成长、补登、兑换和模型对话由已有维护脚本提供。
 不扫描进程、不读客户端文件、不安装自启动、不改代理、不落盘凭据。
 
@@ -61,6 +64,7 @@ import argparse
 import fnmatch
 import json
 import hashlib
+import html
 import math
 from typing import Any
 import os
@@ -71,7 +75,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 TITLE = 'WorkBuddy 每日签到'
 CATALOG_ID = '022a9a680ac352c1'
@@ -215,6 +219,17 @@ class ApiClient:
                 if not exc.fallback or base == BASES[-1]:
                     raise
 
+
+
+    def credit_packages(self):
+        # 上游逐笔接口位于根路径，不能复用余额接口的 /v2 前缀。
+        roots = tuple(base.replace('/v2/billing/', '/billing/') for base in BASES)
+        for base in roots:
+            try:
+                return read_credit_packages(self, base)
+            except TaskError as exc:
+                if not exc.fallback or base == roots[-1]:
+                    raise
 
 
 def credit_number(value: Any) -> int | float | None:
@@ -467,6 +482,157 @@ def diff_packages(
     return growth, expired
 
 
+
+BEIJING = timezone(timedelta(hours=8))
+
+
+def package_time(value):
+    """官方无时区时间按北京时间解析，兼容秒、毫秒和 ISO 时间。"""
+    number = credit_number(value)
+    if number is not None:
+        timestamp = number / 1000 if number > 100000000000 else number
+        try:
+            datetime.fromtimestamp(timestamp, BEIJING)
+            return timestamp
+        except (ValueError, OverflowError, OSError):
+            return None
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.strip().replace('Z', '+00:00'))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=BEIJING)
+        return parsed.timestamp()
+    except (ValueError, OverflowError, OSError):
+        return None
+
+
+def format_package_time(value):
+    return datetime.fromtimestamp(value, BEIJING).strftime('%Y-%m-%d %H:%M:%S') if value is not None else None
+
+
+def credit_data(body):
+    if type(body.get('code')) not in (int, str) or body['code'] not in (0, '0'):
+        raise TaskError('积分到期接口业务失败或缺少明确成功码')
+    data = body.get('data')
+    if not isinstance(data, dict):
+        raise TaskError('积分到期接口缺少有效数据')
+    return data
+
+
+def safe_credit_text(value, client):
+    if not isinstance(value, str):
+        return ''
+    value = value.replace(client.token, '[凭据已隐藏]').replace(client.uid, '[账号字段已隐藏]')
+    value = re.sub(r'(?i)bearer\s+\S+|eyJ[\w.=-]+|(?:\+?86)?1[3-9]\d{9}', '[敏感内容已隐藏]', value)
+    return re.sub(r'[\x00-\x1f\x7f]', ' ', value)[:160]
+
+
+def read_credit_packages(client, base):
+    data = credit_data(client.request('get-user-resource-summary', base))
+    identity({'identity': field(data, 'nickname', 'username', 'displayName', 'display_name', 'uid')}, client.uid, client.token)
+    packages = data.get('Packages')
+    if not isinstance(packages, list):
+        raise TaskError('资源汇总缺少包代码列表')
+    codes = []
+    for package in packages:
+        if not isinstance(package, dict) or not isinstance(package.get('PackageCode'), str) or not package['PackageCode']:
+            raise TaskError('资源包代码格式异常')
+        if package['PackageCode'] not in codes:
+            codes.append(package['PackageCode'])
+    rows, seen = [], set()
+    now = time.time()
+    # 两类记录都读完才报告完整成功，分页有界，超限时失败闭合。
+    for action in ('get-user-resource-paid-packages', 'get-user-resource-free-packages') if codes else ():
+        endpoint_seen = set()
+        for page in range(1, 51):
+            payload = dict(PageNumber=page, PageSize=200, PackageCodes=codes,
+                           Status=[0, 3], IsDisplayTotalInfo=True)
+            data = credit_data(client.request(action, base, payload))
+            accounts = data.get('Accounts')
+            count = credit_number(data.get('TotalCount'))
+            if not isinstance(accounts, list) or len(accounts) > 200:
+                raise TaskError('逐笔资源包列表无效')
+            if count is not None and (count < 0 or count != int(count)):
+                raise TaskError('逐笔资源包总数无效')
+            for item in accounts:
+                if not isinstance(item, dict):
+                    raise TaskError('逐笔资源包结构异常')
+                key = tuple(_first_text(item, name) for name in ('AccountId', 'PackageCode', 'CycleStartTime'))
+                if not key[0] or not key[1]:
+                    raise TaskError('逐笔资源包缺少去重标识')
+                if key in endpoint_seen:
+                    raise TaskError('逐笔资源包分页重复，无法确认完整结果')
+                endpoint_seen.add(key)
+                if key in seen:
+                    continue
+                seen.add(key)
+                remain = credit_number(field(item, 'CycleCapacityRemainPrecise', 'CycleCapacityRemain'))
+                total = credit_number(field(item, 'CycleCapacitySizePrecise', 'CycleCapacitySize'))
+                status = credit_number(item.get('Status'))
+                if remain is None or total is None or remain < 0 or total < 0 or status not in (0, 3):
+                    raise TaskError('逐笔资源包额度或状态无效')
+                expiry = None
+                expiry_source = None
+                for name in ('DeductionEndTime', 'CycleEndTime', 'ExpiredTime'):
+                    expiry = package_time(item.get(name))
+                    if expiry is not None:
+                        expiry_source = name
+                        break
+                refresh = package_time(item.get('CycleEndTime'))
+                source = {}
+                for attribute in item.get('AccountAttributes') or []:
+                    if isinstance(attribute, dict) and attribute.get('Key') in ('grantReason', 'grantSource'):
+                        source[attribute['Key']] = safe_credit_text(attribute.get('Value'), client)
+                state = '已用完' if status == 3 or remain == 0 else '使用中' if remain < total else '未使用'
+                rows.append(dict(remain=remain, total=total, status=status, state=state,
+                                 source=source.get('grantReason') or source.get('grantSource') or '未知来源',
+                                 expire_ts=expiry, expire_at=format_package_time(expiry),
+                                 expire_source=expiry_source, refresh_at=format_package_time(refresh),
+                                 expire_kind='周期刷新' if refresh is not None and expiry is not None and refresh < expiry else '到期失效',
+                                 days_left=math.floor((expiry - now) / 86400) if expiry is not None else None))
+            received = (page - 1) * 200 + len(accounts)
+            if count is not None and received > count:
+                raise TaskError('逐笔资源包总数与分页不一致')
+            if len(accounts) < 200:
+                if count is not None and received < count:
+                    raise TaskError('逐笔资源包分页不完整')
+                break
+            if count is not None and received == count:
+                break
+        else:
+            raise TaskError('逐笔资源包超出分页上限')
+    rows.sort(key=lambda row: (row['expire_ts'] is None, row['expire_ts'] or 0, -row['remain']))
+    return rows
+
+
+def credits_report(rows, days):
+    live = [row for row in rows if row['status'] == 0 and row['remain'] > 0
+            and (row['expire_ts'] is None or row['expire_ts'] > time.time())]
+    soon = [row for row in live if row['days_left'] is not None and 0 <= row['days_left'] <= days] if days is not None else []
+    displayed = soon if days is not None else rows
+    anchor = next((i for i, row in enumerate(displayed) if row['state'] == '使用中'), None)
+    if anchor is None:
+        anchor = next((i for i, row in enumerate(displayed) if row['state'] == '未使用'), 0)
+    start, end = max(0, anchor - 10), min(len(displayed), anchor + 11)
+    return dict(packages=rows, total_remaining=sum(row['remain'] for row in live),
+                expiring_days=days, expiring_soon=soon,
+                window=dict(records=displayed[start:end], anchor=anchor, start=start, end=end,
+                            truncated=len(displayed) > end - start))
+
+
+def print_credits(report, as_html=False):
+    rows = report['window']['records']
+    log(f"积分到期查询完成，有效剩余 {report['total_remaining']}，记录 {len(report['packages'])}，展示 {len(rows)}")
+    if as_html:
+        cells = ''.join('<tr>' + ''.join('<td>' + html.escape(str(value)) + '</td>' for value in
+                        (row['source'], row['state'], row['remain'], row['total'], row['expire_at'] or '未知', row['expire_kind'], row['refresh_at'] or '未知')) + '</tr>' for row in rows)
+        print('<section><h2>积分到期明细（北京时间）</h2><table><thead><tr><th>获取方式</th><th>状态</th><th>剩余</th><th>总量</th><th>到期时间</th><th>类型</th><th>周期结束</th></tr></thead><tbody>' + cells + '</tbody></table></section>')
+    else:
+        for row in rows:
+            log(f"{row['source']}，{row['state']}，剩余 {row['remain']}/{row['total']}，到期 {row['expire_at'] or '未知'}，{row['expire_kind']}，周期结束 {row['refresh_at'] or '未知'}")
+
+
 def identity(info, uid, token):
     value = info.get('identity')
     if not isinstance(value, (str, int)) or not str(value):
@@ -489,7 +655,7 @@ def stage(number, title, action):
     return result
 
 
-def account(index, line, mode, dry, timeout, attempts, verify_wallet=False):
+def account(index, line, mode, dry, timeout, attempts, verify_wallet=False, expiring_days=None, as_html=False):
     start = time.monotonic()
     record = dict(account=index, status='failed', action=mode, tasks=0, success=0,
                   alreadyComplete=0, skipped=0, failed=0, reward=0)
@@ -512,6 +678,13 @@ def account(index, line, mode, dry, timeout, attempts, verify_wallet=False):
         if dry:
             log('DRY_RUN_OK：参数有效，未发送请求、未修改任何状态')
             record.update(status='dry-run', action='dry-run')
+        elif mode == 'credits':
+            client = ApiClient(uid, token, timeout)
+            rows = execute(2, '查询积分发放与到期记录', client.credit_packages)
+            report = credits_report(rows, expiring_days)
+            print_credits(report, as_html)
+            record.update(status='success', credits=report)
+            log('业务核验成功')
         else:
             client = ApiClient(uid, token, timeout)
             info = execute(2, '查询今日状态', lambda: client.status(attempts))
@@ -622,20 +795,33 @@ class TaskParser(argparse.ArgumentParser):
 def main():
     start = time.monotonic()
     parser = TaskParser(description=__doc__)
-    parser.add_argument('action', nargs='?', choices=['run', 'status'], default='run')
+    parser.add_argument('action', nargs='?', choices=['run', 'status', 'credits'], default='run')
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--json', action='store_true')
     parser.add_argument('--status', action='store_true', help='只查询今日状态')
     parser.add_argument('--verify-wallet', action='store_true', help='显式核验真实余额及资源包增长')
+    parser.add_argument('--expire', action='store_true', help='只读积分到期查询')
+    parser.add_argument('--expiring-days', type=int, help='仅展示指定天数内到期的有效记录')
+    parser.add_argument('--html', action='store_true', help='积分到期明细以 HTML 片段输出')
     argument_error = None
     try:
         args = parser.parse_args()
     except TaskError as exc:
         argument_error = str(exc)
         args = argparse.Namespace(action='run', dry_run=False, json=False,
-                                  status=False, verify_wallet=False)
+                                  status=False, verify_wallet=False, expire=False, expiring_days=None, html=False)
+    if args.expire:
+        args.action = 'credits'
     if args.status:
+        if args.action == 'credits':
+            argument_error = '积分到期入口与签到状态入口不能同时选择'
         args.action = 'status'
+    if (args.expiring_days is not None or args.html) and args.action != 'credits':
+        argument_error = '临期筛选和 HTML 输出仅适用于 credits'
+    if args.expiring_days is not None and args.expiring_days < 0:
+        argument_error = '临期天数须为非负整数'
+    if args.action == 'credits' and args.verify_wallet:
+        argument_error = 'credits 与 --verify-wallet 须分别运行'
     dry = args.dry_run or os.getenv('WORKBUDDY_DRY_RUN', '').strip().lower() in TRUE
     if dry:
         def deny_network(event, arguments):
@@ -663,7 +849,7 @@ def main():
         log('❌ 配置错误：' + config_error)
     else:
         for index, line in enumerate(lines, 1):
-            records.append(account(index, line, args.action, dry, timeout, attempts, args.verify_wallet))
+            records.append(account(index, line, args.action, dry, timeout, attempts, args.verify_wallet, args.expiring_days, args.html))
     failed = sum(r['status'] == 'failed' for r in records)
     succeeded = len(records) - failed
     status = ('configuration-error' if config_error else 'partial-failure' if failed and succeeded

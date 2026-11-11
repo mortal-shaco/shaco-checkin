@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **74** 个脚本。返回 [`目录首页`](../README.md)。
+共 **73** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -43,7 +43,6 @@
 | 今日校园问卷 | `scripts/task_9de2360b.py` | `python3 scripts/task_9de2360b.py` | `36 9 * * *` | 待检查 | [task_9de2360b.py.md](../../scripts/task_9de2360b.py.md)（`docs/scripts/task_9de2360b.py.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
 | AbyssWorld每日签到 | `scripts/task_ad4c4f3a.js` | `node scripts/task_ad4c4f3a.js` | `39 8 * * *` | 待检查 | [task_ad4c4f3a.js.md](../../scripts/task_ad4c4f3a.js.md)（`docs/scripts/task_ad4c4f3a.js.md`） |
-| 天翼云盘签到与抽奖 | `scripts/task_ae1f0152.py` | `python3 scripts/task_ae1f0152.py` | `45 10 * * *` | 待检查 | [task_ae1f0152.py.md](../../scripts/task_ae1f0152.py.md)（`docs/scripts/task_ae1f0152.py.md`） |
 | 米游社原神自动签到 | `scripts/task_b59e3196.py` | `python3 scripts/task_b59e3196.py` | `56 1 * * *` | 待检查 | [task_b59e3196.py.md](../../scripts/task_b59e3196.py.md)（`docs/scripts/task_b59e3196.py.md`） |
 | TJUPT每日签到 | `scripts/task_b80894cb.py` | `python3 scripts/task_b80894cb.py` | `13 9 * * *` | 待检查 | [task_b80894cb.py.md](../../scripts/task_b80894cb.py.md)（`docs/scripts/task_b80894cb.py.md`） |
 | 今日校园辅导员签到 | `scripts/task_c04cea4d.py` | `python3 scripts/task_c04cea4d.py` | `0 21 * * *` | 待检查 | [task_c04cea4d.py.md](../../scripts/task_c04cea4d.py.md)（`docs/scripts/task_c04cea4d.py.md`） |

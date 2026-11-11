@@ -2,11 +2,16 @@
 # name: 天翼云盘每日签到及抽奖
 # cron: 44 10 * * *
 # 来源: jing207/189Checkin, checkin.py (MIT)
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-3.0
+# 合并来源：jemii/tyy checkin.py，提交 70ef55dee1fb8dfbfeace0c529dd4b8fb3844403（GPL-3.0）。
+# 合并维护版本采用 GPL-3.0，以下原有 MIT 版权和许可声明继续保留。
+# 本程序为自由软件，可依据 GNU 通用公共许可证第 3 版再分发和修改。
+# 本程序不提供任何担保，包括适销性或特定用途适用性的默示担保。
+# 许可证全文：https://www.gnu.org/licenses/gpl-3.0.html
 # 合并来源：lijialei888/cloundqiandao / checkin.py (MIT)，提交 4d1990494ef90cbbbf878a8f5fa232bf11a89f09
 # 合并来源: gitlab.com/live2364li/189checkin / checkin.py (MIT)
 # 兼容参考: task catalog a239bc381f7989b5、6fe18a28ecf03c21 (MIT)。
-# 上游文件未含额外版权声明；本文件保留来源并沿用 MIT 许可。
+# 原 MIT 上游文件未含额外版权声明，保留原许可和来源如下。
 # MIT License
 # Copyright (c) jing207/189Checkin contributors
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,6 +36,8 @@
 兼容 --username / --password 单账号参数（优先于环境变量，但不推荐暴露于进程参数）。
 189_DRY_RUN=1 完全断网预演，包含通知模拟，不会校验真实凭据。
 189_DRAW_SIGNIN / 189_DRAW_PHOTOS=0 可关闭对应抽奖，默认均开启。
+TY189_TASKS 默认 sign,draw,photos，可用逗号选择子集，顺序固定为签到和两类抽奖。
+抽奖同时受原有 189_DRAW_SIGNIN / 189_DRAW_PHOTOS 开关约束，任一关闭即跳过。
 沿用已发布计划每日 10:44 运行；原始来源没有 cron。
 兼容 TY189_ACCOUNTS / TY189_DRY_RUN；对应 189_* 变量存在时优先，空值也不回退。
 兼容 CLOUD189_ACCOUNTS / CLOUD189_DRY_RUN；优先级为 189_*、TY189_*、CLOUD189_*。
@@ -255,7 +262,7 @@ class Client:
     def check_business_codes(data):
         # 兼容参考中的显式拒绝码，仍要求每个动作自己的完成字段。
         for key in ('res_code', 'result', 'code'):
-            if key in data and str(data[key]) not in {'0', '', 'None'}:
+            if key in data and (isinstance(data[key], bool) or data[key] not in (0, '0')):
                 raise TaskError('接口业务码拒绝操作，响应内容已隐藏')
 
     def sign(self):
@@ -276,11 +283,16 @@ class Client:
         data = self.json('GET', DRAW, params={'taskId': task, 'activityId': 'ACT_SIGNIN'},
                          headers={'Referer': 'https://m.cloud.189.cn/zhuanti/2016/sign/index.jsp?albumBackupOpened=1'})
         self.check_business_codes(data)
-        # 来源只提供 prizeName 成功契约；未知错误不假定为“已抽奖”。
-        if 'errorCode' in data or not isinstance(data.get('prizeName'), str) or not data['prizeName'].strip():
+        # 规范来源使用 prizeName，jemii/tyy 使用 description，先检查失败码。
+        if 'errorCode' in data:
+            raise TaskError('抽奖接口返回错误，未确认中奖')
+        prize = data.get('prizeName')
+        if not isinstance(prize, str) or not prize.strip():
+            prize = data.get('description')
+        if not isinstance(prize, str) or not prize.strip():
             raise TaskError('抽奖未取得明确奖品结果，可能已抽取、资格不足或接口变化')
         self.identity(data)
-        return 'success', '抽奖成功，已确认奖品结果：' + self.public_prize(data['prizeName'])
+        return 'success', '抽奖成功，已确认奖品结果：' + self.public_prize(prize)
 
 
 def send_python_notification(module_path, title, body):
@@ -300,7 +312,9 @@ def notify(summary, dry):
     selected = value in TRUE
     if value == 'auto' and 'QINGLONG_NOTIFY_SCRIPTS' in os.environ:
         patterns = re.split(r'[,;\s]+', os.environ['QINGLONG_NOTIFY_SCRIPTS'].strip())
-        names = [CATALOG, '9973f7e502796463', Path(__file__).name,
+        names = [CATALOG, '9973f7e502796463', 'ae1f0152f66bcc03',
+                 'a239bc381f7989b5', '6fe18a28ecf03c21',
+                 'task_ae1f0152.py', 'scripts/task_ae1f0152.py', Path(__file__).name,
                  'scripts/' + Path(__file__).name, '189.py', 'scripts/189.py',
                  'task_9973f7e5.py', 'scripts/task_9973f7e5.py']
         # 允许匹配安装后的 scripts 相对路径。
@@ -376,10 +390,16 @@ def main():
             lines = [line for line in setting('189_ACCOUNTS').splitlines() if line.strip()]
             for line in lines:
                 user, sep, password = line.partition('|')
-                accounts.append((user, password) if sep and user and password else None)
+                accounts.append((user, password) if sep and user.strip() and password else None)
             if not accounts:
                 raise TaskError('缺少 189_ACCOUNTS：每个非空行填写 账号|密码')
         sign_draw, photos_draw = switch('189_DRAW_SIGNIN', True), switch('189_DRAW_PHOTOS', True)
+        tasks = {value.strip() for value in os.environ.get('TY189_TASKS', 'sign,draw,photos').split(',')}
+        if not tasks or not tasks <= {'sign', 'draw', 'photos'}:
+            raise TaskError('TY189_TASKS 仅接受 sign,draw,photos 的非空逗号分隔子集')
+        sign_enabled = 'sign' in tasks
+        sign_draw = sign_draw and 'draw' in tasks
+        photos_draw = photos_draw and 'photos' in tasks
     except TaskError as exc:
         config_errors += 1
         log(f'❌ 配置错误：{exc}')
@@ -391,7 +411,7 @@ def main():
             counts = dict(success=0, already=0, skipped=0, failure=0)
             client = None
             logged_in = False
-            steps = [('登录', True), ('每日签到', True), ('签到抽奖', sign_draw), ('相册签到抽奖', photos_draw)]
+            steps = [('登录', True), ('每日签到', sign_enabled), ('签到抽奖', sign_draw), ('相册签到抽奖', photos_draw)]
             for stage, (label, enabled) in enumerate(steps, 1):
                 step_start = time.monotonic()
                 log(f'账号 {number} / 阶段 {stage}/4：{label}')
@@ -423,7 +443,10 @@ def main():
                 icon = {'success': '✅', 'already': '☑️', 'skipped': '⏭️', 'failure': '❌'}[status]
                 log(f'账号 {number} / 阶段 {stage}：{icon} {detail}；耗时 {time.monotonic()-step_start:.2f} 秒')
             if client:
-                client.close()
+                try:
+                    client.close()
+                except Exception:
+                    log('⚠️ 会话关闭异常，保留已核验的业务结果')
             record = {'account': number, 'total': 4, **counts, 'seconds': round(time.monotonic()-began, 2)}
             records.append(record)
             log(f'账号 {number} 统计：总任务 4，成功 {counts["success"]}，已完成 {counts["already"]}，'
