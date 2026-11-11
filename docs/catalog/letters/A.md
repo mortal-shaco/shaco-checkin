@@ -1,6 +1,6 @@
 # 字母索引 · A
 
-共 **37** 个脚本。返回 [`目录首页`](../README.md)。
+共 **38** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -11,6 +11,7 @@
 | NewAPI 活动中心签到 | `scripts/activity_checkin.py` | `python3 scripts/activity_checkin.py` | `22 8 * * *` | 待检查 | [activity_checkin.py.md](../../scripts/activity_checkin.py.md)（`docs/scripts/activity_checkin.py.md`） |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `17 1 * * *` | 待检查 | [agentrouter.py.md](../../scripts/agentrouter.py.md)（`docs/scripts/agentrouter.py.md`） |
 | 安徽工业大学晚寝签到 | `scripts/ahut.py` | `python3 scripts/ahut.py` | `20 21 * * *` | 待检查 | [ahut.py.md](../../scripts/ahut.py.md)（`docs/scripts/ahut.py.md`） |
+| AI IDE 每日签到 | `scripts/ai_ide.py` | `python3 scripts/ai_ide.py` | `0 11 * * *` | 待检查 | [ai_ide.py.md](../../scripts/ai_ide.py.md)（`docs/scripts/ai_ide.py.md`） |
 | 机场签到（速鹰666） | `scripts/airport.py` | `python3 scripts/airport.py` | `27 1 * * *` | 待检查 | [airport.py.md](../../scripts/airport.py.md)（`docs/scripts/airport.py.md`） |
 | 机场签到（HTM面板） | `scripts/airport_8a735e8a8b20.py` | `python3 scripts/airport_8a735e8a8b20.py` | `22 2 * * *` | 待检查 | [airport_8a735e8a8b20.py.md](../../scripts/airport_8a735e8a8b20.py.md)（`docs/scripts/airport_8a735e8a8b20.py.md`） |
 | 机场自动登录签到 | `scripts/aitport.js` | `node scripts/aitport.js` | `1 8 * * *` | 待检查 | [aitport.js.md](../../scripts/aitport.js.md)（`docs/scripts/aitport.js.md`） |

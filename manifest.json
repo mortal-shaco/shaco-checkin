@@ -3356,6 +3356,272 @@
       }
     },
     {
+      "catalogId": "81e41cede93b9ced",
+      "applicationKey": "ai-ide",
+      "checkProfile": {
+        "requiredEnv": [
+          "AI_IDE_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WORKBUDDY_ACCESS_TOKEN",
+          "WORKBUDDY_UID",
+          "TRAE_TOKEN",
+          "TRAE_USER_ID",
+          "TRAE_REGION",
+          "WORKBUDDY_DOMAIN",
+          "CHECKIN_REFRESH",
+          "CHECKIN_STATE_FILE",
+          "CHECKIN_HTTP_TIMEOUT",
+          "CHECKIN_MAX_RETRY",
+          "CHECKIN_TRAE_MAX_RETRY",
+          "CHECKIN_RETRY_WAIT_MIN",
+          "CHECKIN_RETRY_WAIT_MAX",
+          "CHECKIN_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CHECKIN_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CHECKIN_REFRESH": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "✅ 账号执行完成",
+          "☑️ 今日已签到"
+        ],
+        "features": [
+          "WorkBuddy 状态预检、每日幂等签到及令牌有效期提示",
+          "Trae CN 稳定设备请求头、状态预检、限流重试、幂等签到、积分余额及最早到期查询",
+          "Qoder 国内版积分领取类活动筛选、逐活动领取及幂等确认",
+          "显式启用的 Trae 和 Qoder 令牌续期与私有缓存保存",
+          "逐行多账号、旧环境变量兼容、产品选择及账号停领",
+          "官方公开身份展示、脱敏阶段日志和结构化统计",
+          "完全断网预演及青龙脱敏摘要通知"
+        ],
+        "sideEffects": [
+          "领取 WorkBuddy 每日签到积分",
+          "领取 Trae CN 每日签到积分",
+          "领取 Qoder 可领取积分活动权益，不领取订阅优惠",
+          "显式开启续期时轮换会话并更新指定凭据缓存",
+          "启用通知时通过青龙发送脱敏摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AI IDE 每日签到",
+      "path": "scripts/ai_ide.py",
+      "sha256": "c703759749345c45bc0820cf978ffa813e8c3d19d9fec763465c8113a913c8f6",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "LiSeafood/ai-ide-checkin",
+        "branch": "main",
+        "commit": "2c7c9eaff484c45e539dd15288551b4166604032",
+        "originalPath": "checkin.py",
+        "related": [
+          {
+            "catalogId": "de7c0f276adf19b4",
+            "sha256": "445dd7dfaaab0351d54de178544f505d24200204381f9cd06ee759a4897da813",
+            "repository": "LiSeafood/ai-ide-checkin",
+            "url": "https://github.com/LiSeafood/ai-ide-checkin",
+            "branch": "main",
+            "commit": "2c7c9eaff484c45e539dd15288551b4166604032",
+            "originalPath": "set_token.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "0 11 * * *",
+      "command": "python3 scripts/ai_ide.py",
+      "environment": [
+        {
+          "name": "AI_IDE_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录相应官方客户端，在开发者工具网络面板检查本人签到请求。WorkBuddy 复制 Authorization 的 Bearer 后值；Trae 复制 Cloud-IDE-JWT 后值和本人 userId；Qoder 复制 Bearer 后值及 Cosy-MachineId、Cosy-MachineToken、Cosy-MachineCode、Cosy-MachineType。只配置需要运行的产品。",
+          "format": "每个非空行一个 JSON 对象。service 为 workbuddy、trae 或 qoder，token 必填。trae 需 uid，可选 region 默认 CN；qoder 需 machine_id 和 device 对象，内含 machineToken、machineCode、machineType 字符串。可选 refresh_token、expires_at、excluded 布尔值和 channel 标签。同一账号字段置于一个对象，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "WORKBUDDY_ACCESS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 WorkBuddy 官方签到请求头取得访问令牌，兼容旧配置；优先使用 AI_IDE_ACCOUNTS。",
+          "format": "每个非空行一个令牌，不含 Bearer 前缀；规范账号变量为空时才读取。"
+        },
+        {
+          "name": "WORKBUDDY_UID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从同账号官方资料获得，仅兼容旧配置，不作为日志身份。",
+          "format": "可选，逐行对应 WorkBuddy 令牌，行数须一致。"
+        },
+        {
+          "name": "TRAE_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从 Trae CN 官方请求头取得 Cloud-IDE-JWT 后值，兼容旧配置。",
+          "format": "每个非空行一个令牌；规范账号变量为空时才读取。"
+        },
+        {
+          "name": "TRAE_USER_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人 Trae 登录资料取得 userId；未提供时尝试解析令牌用户声明用于请求头，不视为已认证身份。",
+          "format": "逐行对应 Trae 令牌，行数须一致；无法解析时必须提供。"
+        },
+        {
+          "name": "TRAE_REGION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按本人 Trae 服务区域设置。",
+          "format": "默认 CN。"
+        },
+        {
+          "name": "WORKBUDDY_DOMAIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容旧变量；为防止认证信息外发仅接受官方域名。",
+          "format": "仅允许 www.codebuddy.cn。"
+        },
+        {
+          "name": "CHECKIN_REFRESH",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要续期时手动启用并在账号提供 refresh_token。避免与运行中的客户端共用刷新会话，以免轮换影响客户端登录。",
+          "format": "默认关闭；1、true、yes、on 启用。Trae 剩余不足 24 小时、Qoder 不足 72 小时或未知时尝试续期。"
+        },
+        {
+          "name": "CHECKIN_STATE_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "指定自行管理的专用凭据缓存，父目录应私有，不得指向客户端登录态或共享文件。",
+          "format": "仅显式配置时读取；续期必须配置。原子写入并限制为 0600，已有文件也须为私有权限；预演不读写。"
+        },
+        {
+          "name": "CHECKIN_HTTP_TIMEOUT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，按网络状况手动设置。",
+          "format": "整数 1 至 120，默认 30；超时及等待单位为秒，等待下限不得超过上限。"
+        },
+        {
+          "name": "CHECKIN_MAX_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，按网络状况手动设置。",
+          "format": "整数 1 至 20，默认 14；超时及等待单位为秒，等待下限不得超过上限。"
+        },
+        {
+          "name": "CHECKIN_TRAE_MAX_RETRY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，按网络状况手动设置。",
+          "format": "整数 1 至 20，默认 4；超时及等待单位为秒，等待下限不得超过上限。"
+        },
+        {
+          "name": "CHECKIN_RETRY_WAIT_MIN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，按网络状况手动设置。",
+          "format": "整数 1 至 300，默认 15；超时及等待单位为秒，等待下限不得超过上限。"
+        },
+        {
+          "name": "CHECKIN_RETRY_WAIT_MAX",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，按网络状况手动设置。",
+          "format": "整数 1 至 300，默认 30；超时及等待单位为秒，等待下限不得超过上限。"
+        },
+        {
+          "name": "CHECKIN_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "本地检查参数和执行计划时设置。",
+          "format": "1、true、yes、on 启用；默认正式运行。预演不调用网络、通知通道，也不读写缓存。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，在青龙设置通知脚本选择列表，替换默认空列表。",
+          "format": "逗号、分号或空白分隔；支持目录编号、文件名、scripts/相对路径和文件名通配符；* 为全部，空值关闭自动选择。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定青龙 notify.py 所在目录；默认尝试导入 notify.send 和青龙标准路径。",
+          "format": "通知模块目录；模块不可用或发送失败不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON，同账号令牌、用户编号及设备字段置于同一对象。逐个校验和执行，任一失败则整体非零退出。规范账号变量优先于旧变量；仅执行已配置产品，可用 --services=workbuddy,trae,qoder 或 --no-trae、--no-qoder 选择。"
+      },
+      "dependencies": [],
+      "features": [
+        "WorkBuddy 状态预检、每日幂等签到及令牌有效期提示",
+        "Trae CN 稳定设备请求头、状态预检、限流重试、幂等签到、积分余额及最早到期查询",
+        "Qoder 国内版积分领取类活动筛选、逐活动领取及幂等确认",
+        "显式启用的 Trae 和 Qoder 令牌续期与私有缓存保存",
+        "逐行多账号、旧环境变量兼容、产品选择及账号停领",
+        "官方公开身份展示、脱敏阶段日志和结构化统计",
+        "完全断网预演及青龙脱敏摘要通知"
+      ],
+      "sideEffects": [
+        "领取 WorkBuddy 每日签到积分",
+        "领取 Trae CN 每日签到积分",
+        "领取 Qoder 可领取积分活动权益，不领取订阅优惠",
+        "显式开启续期时轮换会话并更新指定凭据缓存",
+        "启用通知时通过青龙发送脱敏摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/81e41cede93b9ced",
+        "candidateSha256": "60d84c90e3fb64e47c4855cdf00b57b61e002b21040ff4f0f5eab7ff44f30ea3"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "60d84c90e3fb64e47c4855cdf00b57b61e002b21040ff4f0f5eab7ff44f30ea3",
+        "releaseSha256": "c703759749345c45bc0820cf978ffa813e8c3d19d9fec763465c8113a913c8f6",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T11:11:59.488810+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "60d84c90e3fb64e47c4855cdf00b57b61e002b21040ff4f0f5eab7ff44f30ea3",
+          "toCandidateSha256": "c703759749345c45bc0820cf978ffa813e8c3d19d9fec763465c8113a913c8f6",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "8cd72e9849a3c893",
       "applicationKey": "cn-grace/qinglongscripts::airport",
       "checkProfile": {
@@ -11705,150 +11971,6 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "f14682bc133ad7a48af01b2c30783b54b4664ea0b4265dc72d82c46408beffa8",
           "toCandidateSha256": "3d68117e56cb18b063d0dbee18fda4a709ec951d244a7531aa601572f019bd03",
-          "businessInterfaceUnchanged": true,
-          "parameterParsingUnchanged": true,
-          "successCriteriaUnchanged": true,
-          "sideEffectsUnchanged": true
-        }
-      }
-    },
-    {
-      "catalogId": "f02d352e0599ff52",
-      "applicationKey": "buddy",
-      "checkProfile": {
-        "requiredEnv": [
-          "BUDDY_COOKIE"
-        ],
-        "optionalEnv": [
-          "BUDDY_DRY_RUN",
-          "QINGLONG_NOTIFY",
-          "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
-        ],
-        "dryRunEnv": {
-          "BUDDY_DRY_RUN": "1"
-        },
-        "liveEnv": {
-          "BUDDY_DRY_RUN": "0"
-        },
-        "successPatterns": [
-          "[DONE] 签到成功",
-          "[OK] 今日已签到",
-          "\"status\":\"success\""
-        ],
-        "features": [
-          "查询加油站今日签到状态、主题、连续签到天数和累计积分",
-          "自动领取每日签到奖励，领取后复查官方签到状态",
-          "识别已签到账号并跳过重复领取",
-          "支持 --check 仅查询状态",
-          "支持每行一个账号、账号隔离与失败汇总",
-          "支持完全离线预演、时间轴日志、逐账号统计和单行结构化汇总",
-          "按全局开关和脚本选择发送青龙脱敏通知，通知失败保留业务退出码",
-          "官方返回昵称、用户名、显示名称或公开 UID 时显示该身份"
-        ],
-        "sideEffects": [
-          "正式模式下为尚未签到的账号执行每日签到并领取奖励"
-        ]
-      },
-      "postReview": {
-        "decision": "pending",
-        "businessResult": "not-verified"
-      },
-      "displayName": "WorkBuddy 加油站每日签到",
-      "path": "scripts/buddy.py",
-      "sha256": "11d2fea35aa78079a1e0ce6002001e6c9c6b05519628c4c2509fc7afc434d5de",
-      "stage": "released",
-      "license": "MIT",
-      "licenseGate": "allowed-permissive",
-      "source": {
-        "repository": "Xriou/buddy-checkin",
-        "branch": "main",
-        "commit": "86fec15268382debdc578c33d4e0630d3ca48904",
-        "originalPath": "checkin.py"
-      },
-      "cron": "54 10 * * *",
-      "command": "python3 scripts/buddy.py",
-      "environment": [
-        {
-          "name": "BUDDY_COOKIE",
-          "required": true,
-          "sensitive": true,
-          "howToGet": "浏览器登录 https://www.workbuddy.cn，在开发者工具的网络面板找到 /billing/meter/checkin-status 的 POST 请求，复制请求头 Cookie 的完整值。失效后重新登录获取。仅用于本人账号。",
-          "format": "每个非空行一个账号，填写完整 Cookie 值（名称=值；多项使用英文分号），不包含 Cookie: 前缀，不以 &、@ 或分号分隔账号。等号后的凭据文本保持完整。"
-        },
-        {
-          "name": "BUDDY_DRY_RUN",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "自行设置为 1 可进行完全断网预演，默认 0。预演仅检查配置并模拟阶段与通知。",
-          "format": "1/0、true/false、yes/no 或 on/off"
-        },
-        {
-          "name": "QINGLONG_NOTIFY",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
-          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_SCRIPTS",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "auto 模式的脚本选择列表，未设置时默认包含本脚本。设置后替换默认列表，空值关闭全部。支持目录标识、脚本相对路径、文件名及文件名通配符。",
-          "format": "逗号、分号或空白分隔，支持 f02d352e0599ff52、checkin.py、candidate.py 和 *"
-        },
-        {
-          "name": "QINGLONG_NOTIFY_DIR",
-          "required": false,
-          "sensitive": false,
-          "howToGet": "可选，填写青龙 notify.py 或 sendNotify.js 所在目录。优先尝试导入 notify.send，其次此目录与 /ql/data/scripts、/ql/scripts。通知不可用时记录原因并保留业务退出码。",
-          "format": "本机通知模块目录路径"
-        }
-      ],
-      "multiAccount": {
-        "supported": true,
-        "separator": "newline",
-        "rule": "BUDDY_COOKIE 每个非空行一个账号，整行作为 Cookie 请求头值。各账号独立处理和隔离会话，任一账号失败则整体非零退出。"
-      },
-      "dependencies": [],
-      "features": [
-        "查询加油站今日签到状态、主题、连续签到天数和累计积分",
-        "自动领取每日签到奖励，领取后复查官方签到状态",
-        "识别已签到账号并跳过重复领取",
-        "支持 --check 仅查询状态",
-        "支持每行一个账号、账号隔离与失败汇总",
-        "支持完全离线预演、时间轴日志、逐账号统计和单行结构化汇总",
-        "按全局开关和脚本选择发送青龙脱敏通知，通知失败保留业务退出码",
-        "官方返回昵称、用户名、显示名称或公开 UID 时显示该身份"
-      ],
-      "sideEffects": [
-        "正式模式下为尚未签到的账号执行每日签到并领取奖励"
-      ],
-      "review": {
-        "staticPassed": true,
-        "sandboxPassed": false,
-        "humanAccepted": false,
-        "sideEffectsReviewed": true
-      },
-      "validation": {
-        "status": "basic-passed",
-        "businessResult": "not-verified",
-        "mode": "basic",
-        "evidence": "projects/checkin/validation/f02d352e0599ff52",
-        "candidateSha256": "24e5557bd4af6edd11e8bcbe092ec6393559d38cbdbc3a57a2b866b5a56a8555"
-      },
-      "packaging": {
-        "type": "qinglong-release-normalization",
-        "validatedSha256": "24e5557bd4af6edd11e8bcbe092ec6393559d38cbdbc3a57a2b866b5a56a8555",
-        "releaseSha256": "11d2fea35aa78079a1e0ce6002001e6c9c6b05519628c4c2509fc7afc434d5de",
-        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
-        "reuseAttestation": {
-          "component": "qinglong-notification",
-          "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T10:50:50.654254+00:00",
-          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "24e5557bd4af6edd11e8bcbe092ec6393559d38cbdbc3a57a2b866b5a56a8555",
-          "toCandidateSha256": "11d2fea35aa78079a1e0ce6002001e6c9c6b05519628c4c2509fc7afc434d5de",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
@@ -46380,6 +46502,305 @@
       }
     },
     {
+      "catalogId": "9cceef808f4e3500",
+      "applicationKey": "ide-daily",
+      "checkProfile": {
+        "requiredEnv": [
+          "QODER_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "QODER_CONFIG_FILE",
+          "QODER_ACCOUNTS_FILE",
+          "QODER_BASE_URL",
+          "QODER_CACHE_FILE",
+          "QODER_LOG_FILE",
+          "QODER_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR",
+          "QYWX_TOKEN",
+          "PLUSPLUS_TOKEN",
+          "QODER_WEBHOOK",
+          "QODER_COSY_CLIENT_TYPE",
+          "QODER_COSY_MACHINE_OS",
+          "QODER_COSY_MACHINE_HOSTNAME",
+          "QODER_COSY_MACHINE_ID",
+          "QODER_COSY_MACHINE_TOKEN",
+          "QODER_COSY_MACHINE_CODE",
+          "QODER_COSY_MACHINE_TYPE",
+          "QODER_COSY_VERSION"
+        ],
+        "dryRunEnv": {
+          "QODER_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "签到成功",
+          "今日已领取"
+        ],
+        "features": [
+          "查询 Qoder 活动并领取全部可领取的 CLAIM_BENEFIT 奖励，以 CLAIMED 明确确认成功",
+          "临期刷新令牌、刷新失败沿用未过期令牌、查询返回 401 后强制刷新重试",
+          "兼容令牌字段别名、ISO 时间与秒或毫秒过期时间",
+          "多个 HTTPS 端点在网络错误或 HTTP 404 时回退",
+          "逐行多账号、逐账号设备配置、旧版环境参数和配置文件兼容",
+          "可选安全令牌缓存、脱敏 JSON 行日志并保留原机器记录字段",
+          "兼容 silent、poll、silent-poll 调用，支持每日主跑与兜底任务",
+          "完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总"
+        ],
+        "sideEffects": [
+          "领取活动 Credits 奖励",
+          "刷新登录令牌，可能轮换刷新令牌",
+          "显式启用缓存时创建文件锁并以私有文件保存轮换令牌",
+          "实际运行时追加脱敏 JSON 行日志",
+          "实际运行且通知启用时向青龙及显式配置的兼容通知渠道发送脱敏统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "Qoder 每日签到",
+      "path": "scripts/qoder_checkin.py",
+      "sha256": "b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "spirodelazz/ide-daily-checkin",
+        "branch": "main",
+        "commit": "feb59d8e62b5fff07cb9d33e1f64171eb7e78d1d",
+        "originalPath": "scripts/qoder_checkin.py",
+        "related": [
+          {
+            "catalogId": "1fbe07bb4d5e9acc",
+            "sha256": "27ff1ebf64b6ba03ce955d433caad1be81c4dd500a369a37adf366ae469185e8",
+            "repository": "spirodelazz/ide-daily-checkin",
+            "url": "https://github.com/spirodelazz/ide-daily-checkin",
+            "branch": "main",
+            "commit": "feb59d8e62b5fff07cb9d33e1f64171eb7e78d1d",
+            "originalPath": "scripts/run_all_checkin.py",
+            "license": "MIT"
+          },
+          {
+            "catalogId": "dcbfc9a56cdee613",
+            "sha256": "0f433d2de652b21ebeb377f0646b721f6318b60e91d88825c400b464290d6f54",
+            "repository": "spirodelazz/ide-daily-checkin",
+            "url": "https://github.com/spirodelazz/ide-daily-checkin",
+            "branch": "main",
+            "commit": "feb59d8e62b5fff07cb9d33e1f64171eb7e78d1d",
+            "originalPath": "scripts/qoder_extract.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "6 11 * * *",
+      "command": "python3 scripts/qoder_checkin.py",
+      "environment": [
+        {
+          "name": "QODER_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "从本人已授权的 Qoder 请求取得 Authorization 中 Bearer 后的访问令牌，从本人登录会话取得刷新令牌，同账号 Cosy-* 请求头填写 device；无需运行提取器或安装客户端。",
+          "format": "每个非空行一个 JSON 对象，accessToken 或 refreshToken 至少一个；可选 expiresAt（秒、毫秒或 ISO 时间）、device 对象。兼容 token、access_token、refresh_token、expires_at 别名及旧 JSON 数组或 accounts 包装对象。环境输入优先于文件。"
+        },
+        {
+          "name": "QODER_CONFIG_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行提供已有配置 JSON，也可仅使用环境变量。",
+          "format": "默认脚本目录 qoder_config.json，支持 device、baseUrls、refreshMarginH（非负整数，默认 72 小时）、notify。文件缺失可正常使用环境输入。"
+        },
+        {
+          "name": "QODER_ACCOUNTS_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行提供本人旧版账号 JSON，无需运行提取器。",
+          "format": "默认脚本目录 qoder_accounts.json；仅未配置 QODER_ACCOUNTS 时读取；内容为账号数组或 accounts 包装对象。"
+        },
+        {
+          "name": "QODER_BASE_URL",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认使用上游接口，仅在确认服务官方 HTTPS 地址后覆盖。",
+          "format": "逗号分隔 HTTPS 基址，默认 https://openapi.qoder.com.cn；网络失败或 HTTP 404 回退；禁止用户信息、查询参数、片段及重定向。"
+        },
+        {
+          "name": "QODER_CACHE_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定青龙可写的私有文件路径，目录应仅自己可访问。",
+          "format": "默认关闭持久化；启用后以 0600 权限原子保存轮换令牌，并创建文件锁避免并发刷新；需要支持 fcntl 的系统，账号源文件保持只读。"
+        },
+        {
+          "name": "QODER_LOG_FILE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，指定脱敏 JSON 行日志位置。",
+          "format": "默认脚本目录 qoder_checkin.log；预演不写文件。"
+        },
+        {
+          "name": "QODER_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "验证时设置为 1。",
+          "format": "1、true、yes、on 开启完全断网预演，其他值实际运行。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "按需要选择通知任务，未设置时本任务默认入选。",
+          "format": "逗号、分号或空白分隔，支持目录标识 9cceef808f4e3500、scripts/qoder_checkin.py、文件名和文件名通配符；* 全选，空值全关。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "指定青龙 notify.py 或 sendNotify.js 所在目录，也自动查找标准目录。",
+          "format": "目录路径；通知失败或缺失时保留业务退出码。"
+        },
+        {
+          "name": "QYWX_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人企业微信机器人设置取得 webhook 的 key，兼容配置 notify.qywxToken。",
+          "format": "机器人 key 或含 key= 的完整地址；受全局通知开关控制。"
+        },
+        {
+          "name": "PLUSPLUS_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "从本人 PushPlus 取得推送令牌，兼容配置 notify.plusplusToken。",
+          "format": "推送令牌；受全局通知开关控制。"
+        },
+        {
+          "name": "QODER_WEBHOOK",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "指定本人信任的 HTTPS 通知接收端，兼容配置 notify.webhook。",
+          "format": "HTTPS 地址，仅发送中文标题和脱敏统计；受全局通知开关控制。"
+        },
+        {
+          "name": "QODER_COSY_CLIENT_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
+          "format": "字符串，对应 device.clientType；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        },
+        {
+          "name": "QODER_COSY_MACHINE_OS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
+          "format": "字符串，对应 device.machineOS；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        },
+        {
+          "name": "QODER_COSY_MACHINE_HOSTNAME",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
+          "format": "字符串，对应 device.machineHostname；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        },
+        {
+          "name": "QODER_COSY_MACHINE_ID",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
+          "format": "字符串，对应 device.machineId；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        },
+        {
+          "name": "QODER_COSY_MACHINE_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
+          "format": "字符串，对应 device.machineToken；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        },
+        {
+          "name": "QODER_COSY_MACHINE_CODE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
+          "format": "字符串，对应 device.machineCode；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        },
+        {
+          "name": "QODER_COSY_MACHINE_TYPE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
+          "format": "字符串，对应 device.machineType；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        },
+        {
+          "name": "QODER_COSY_VERSION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "取自本人授权 Qoder 请求中的对应 Cosy-* 头；同账号字段建议放入 QODER_ACCOUNTS 的 device 对象。",
+          "format": "字符串，对应 device.version；逐账号 device 优先，其次环境变量，其次配置 device；clientType 默认 10，其余默认不发送。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号 JSON 对象，同账号令牌、刷新令牌、过期时间与设备字段合并；按顺序独立执行，任一账号失败或活动待下发时整体非零退出。兼容旧 JSON 数组与 accounts 包装对象。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询 Qoder 活动并领取全部可领取的 CLAIM_BENEFIT 奖励，以 CLAIMED 明确确认成功",
+        "临期刷新令牌、刷新失败沿用未过期令牌、查询返回 401 后强制刷新重试",
+        "兼容令牌字段别名、ISO 时间与秒或毫秒过期时间",
+        "多个 HTTPS 端点在网络错误或 HTTP 404 时回退",
+        "逐行多账号、逐账号设备配置、旧版环境参数和配置文件兼容",
+        "可选安全令牌缓存、脱敏 JSON 行日志并保留原机器记录字段",
+        "兼容 silent、poll、silent-poll 调用，支持每日主跑与兜底任务",
+        "完全断网预演、青龙通知及可选兼容推送渠道、时间轴日志和结构化任务汇总"
+      ],
+      "sideEffects": [
+        "领取活动 Credits 奖励",
+        "刷新登录令牌，可能轮换刷新令牌",
+        "显式启用缓存时创建文件锁并以私有文件保存轮换令牌",
+        "实际运行时追加脱敏 JSON 行日志",
+        "实际运行且通知启用时向青龙及显式配置的兼容通知渠道发送脱敏统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/9cceef808f4e3500",
+        "candidateSha256": "4b7cb6d601faec2bf893fc55789962d57effd4acf398c2faf2534b9415c1ac2d"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "4b7cb6d601faec2bf893fc55789962d57effd4acf398c2faf2534b9415c1ac2d",
+        "releaseSha256": "b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T11:13:23.671595+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "4b7cb6d601faec2bf893fc55789962d57effd4acf398c2faf2534b9415c1ac2d",
+          "toCandidateSha256": "b3c94968b3d52d23a716f0008ac95671619877156fb14f492812ab166f5428a0",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "1560f1e922d139e6",
       "applicationKey": "ha-qqmusic",
       "checkProfile": {
@@ -78489,7 +78910,8 @@
       "checkProfile": {
         "requiredEnv": [
           "WORKBUDDY_REFRESH_TOKEN",
-          "WORKBUDDY_INTL_TOKENS"
+          "WORKBUDDY_INTL_TOKENS",
+          "BUDDY_COOKIE"
         ],
         "optionalEnv": [
           "WB_ACCESS_TOKEN",
@@ -78515,16 +78937,17 @@
           "WORKBUDDY_SCHOOL_MAX_DRAWS",
           "QINGLONG_NOTIFY",
           "QINGLONG_NOTIFY_SCRIPTS",
-          "QINGLONG_NOTIFY_DIR"
+          "QINGLONG_NOTIFY_DIR",
+          "BUDDY_DRY_RUN"
         ],
         "dryRunEnv": {
-          "WORKBUDDY_DRY_RUN": "1"
+          "WORKBUDDY_DRY_RUN": "1",
+          "BUDDY_DRY_RUN": "1"
         },
         "liveEnv": {},
         "successPatterns": [
           "TASK_SUMMARY=",
-          "\"status\":\"success\"",
-          "\"exitCode\":0"
+          "\"status\":\"success\""
         ],
         "features": [
           "国内默认任务保持每日签到、已达标成长奖励领取、猫猫旅行、Buddy信息和徽章查询；积分、用量、成长等级、能量、任务状态及两类连签保持可查询。",
@@ -78550,7 +78973,11 @@
           "开学季显式选择 --school-tasks query,share,report,claim,lottery；已知分享、三次小程序对话事件、桌面对话事件和开学季专家事件保留上游字段，以官方任务终态回读确认；report 另需事件授权，不声称真实桌面操作。",
           "开学季奖励仅对已完成任务领取并回读 claimed；抽奖先查余额、使用独立请求标识并核验奖品回执，每轮有次数上限且不重试写请求。学生认证、未知任务和协议由本人处理。",
           "开学季专家从官方 BackToSchool 分类查询，缺失时失败闭合，不伪造专家标识；HTTP、业务码、活动期或字段不明确均非成功。",
-          "开学季显式选择 growth 且授权时处理已知 school_season 小程序成长任务，复用维护版小程序接受、间隔与上报流程，以 claimed 终态核验；未下发或未解锁则跳过，不适配未知任务。"
+          "开学季显式选择 growth 且授权时处理已知 school_season 小程序成长任务，复用维护版小程序接受、间隔与上报流程，以 claimed 终态核验；未下发或未解锁则跳过，不适配未知任务。",
+          "合并 Cookie 认证的加油站每日签到；--buddy-cookie 为独立入口，--check 仅查询，保留主题、今日状态、连续天数与累计积分；领取后回读核验，已签跳过。",
+          "仅配置 BUDDY_COOKIE 且无参数、无原令牌变量时兼容直接运行；同时配置凭据时默认维持原日常任务，Cookie 入口拒绝混入国际、成长或续期参数。",
+          "Cookie 逐行独立账号，内存会话支持服务端轮换、删除和过期；有限超时与响应大小限制、禁重定向、断网预演、脱敏日志及通知；无需浏览器或私有模块。",
+          "日常保持 0 7,12 * * *；Cookie 入口可独立以 54 10 * * * 运行；夜猫子及开学季调度保持既有约定。"
         ],
         "sideEffects": [
           "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
@@ -78563,7 +78990,8 @@
           "仅显式选择开学季 share 时激活已知分享任务并提交微信分享完成状态，不向外发布文本。",
           "仅显式选择开学季 report 且事件授权开启时激活已知任务并发送小程序、桌面或专家遥测，改变活动任务进度。",
           "仅显式选择开学季 claim 时领取已完成活动奖励；选择 lottery 时消耗至多指定次数的开学季抽奖机会。",
-          "仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。"
+          "仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。",
+          "Cookie 加油站入口为尚未签到的账号领取每日奖励；--check 只查询。服务端轮换 Cookie 仅存于本轮账号内存。"
         ]
       },
       "postReview": {
@@ -78572,7 +79000,7 @@
       },
       "displayName": "WorkBuddy 国内版日常维护",
       "path": "scripts/workbuddy_daily.py",
-      "sha256": "07e41b86b9afa9172c7218e158344316a9e77b85b0bc6c73f775f9828d937d2c",
+      "sha256": "7e7460878a273affffbedaa60672d7ec9128ef462b9df78b888d95e4ceeaaf33",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -78621,6 +79049,16 @@
             "catalogId": "cdf18dad86c644b6",
             "sha256": "901106de0a025089825bb0b000d123a803b0ff21535d93090d3c9ced6b801190",
             "license": "MIT"
+          },
+          {
+            "repository": "Xriou/buddy-checkin",
+            "url": "https://github.com/Xriou/buddy-checkin",
+            "branch": "main",
+            "commit": "86fec15268382debdc578c33d4e0630d3ca48904",
+            "originalPath": "checkin.py",
+            "catalogId": "f02d352e0599ff52",
+            "sha256": "1ec81bb806c43262fdf6671b482784c3a6965de870fc3bc22b3154eafcbed5bd",
+            "license": "MIT"
           }
         ]
       },
@@ -78632,7 +79070,7 @@
           "required": true,
           "sensitive": true,
           "howToGet": "从本人已登录的官方网页开发者工具网络面板取得请求 Authorization 的 Bearer 值，或本人官方授权登录响应取得明文 accessToken、refreshToken；不复制加密信封，不依赖程序解密，不在日志中公开。",
-          "format": "国内版必填的规范变量。每个非空行一个账号：AT:RT、手机号:AT:RT、手机号:RT 或单个 JWT；仅在首字段与配套字段处各切分一次，后续令牌文本完整保留。国际版 --intl 时改用 WORKBUDDY_INTL_TOKENS。"
+          "format": "国内版必填的规范变量。每个非空行一个账号：AT:RT、手机号:AT:RT、手机号:RT 或单个 JWT；仅在首字段与配套字段处各切分一次，后续令牌文本完整保留。国际版 --intl 时改用 WORKBUDDY_INTL_TOKENS。；Cookie 加油站独立入口无需配置，改用 BUDDY_COOKIE。"
         },
         {
           "name": "WORKBUDDY_INTL_TOKENS",
@@ -78800,7 +79238,7 @@
           "required": false,
           "sensitive": false,
           "howToGet": "在青龙环境变量中自行设置需要通知的脚本选择清单。",
-          "format": "逗号、分号、空白或换行分隔标识、路径、文件名或通配符；*全选，空值禁用所有；设置后替换默认清单。"
+          "format": "逗号、分号、空白或换行分隔标识、路径、文件名或通配符；*全选，空值禁用所有；设置后替换默认清单。；Cookie 入口兼容 f02d352e0599ff52、checkin.py 与 scripts/workbuddy_daily.py。"
         },
         {
           "name": "QINGLONG_NOTIFY_DIR",
@@ -78808,12 +79246,26 @@
           "sensitive": false,
           "howToGet": "本人已有青龙通知模块所在目录；也会自动发现标准目录或 import notify.send。",
           "format": "可选目录路径，包含 notify.py 或 sendNotify.js；通知模块缺失或失败不改变业务退出码。"
+        },
+        {
+          "name": "BUDDY_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://www.workbuddy.cn，在开发者工具的网络面板找到 /billing/meter/checkin-status 的 POST 请求，复制请求头 Cookie 的完整值。失效后重新登录获取。仅用于本人账号。",
+          "format": "每个非空行一个账号，填写完整 Cookie 值（名称=值；多项使用英文分号），不包含 Cookie: 前缀，不以 &、@ 或分号分隔账号。等号后的凭据文本保持完整。；仅加油站入口必填，同时配置令牌时使用 --buddy-cookie 显式运行。"
+        },
+        {
+          "name": "BUDDY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 可进行完全断网预演，默认 0。预演仅检查配置并模拟阶段与通知。",
+          "format": "1/0、true/false、yes/no 或 on/off；仅作用于 Cookie 加油站入口，该入口也支持 WORKBUDDY_DRY_RUN。"
         }
       ],
       "multiAccount": {
         "supported": true,
         "separator": "newline",
-        "rule": "每个非空行一个账号；国内配套 AT/RT 放入 WORKBUDDY_REFRESH_TOKEN 同一行，按首字段分隔保留后续令牌；国际凭据独立逐行配置。账号依次独立处理，任一账号或阶段失败整体非零退出；禁止用 &、@ 或逗号分隔账号。"
+        "rule": "每个非空行一个账号；国内配套 AT/RT 放入 WORKBUDDY_REFRESH_TOKEN 同一行，按首字段分隔保留后续令牌；国际凭据独立逐行配置。账号依次独立处理，任一账号或阶段失败整体非零退出；禁止用 &、@ 或逗号分隔账号。；Cookie 入口 BUDDY_COOKIE 每个非空行一个账号，整行请求头值保留，分号及等号属于同一账号的 Cookie 字段。"
       },
       "dependencies": [],
       "features": [
@@ -78840,7 +79292,11 @@
         "开学季显式选择 --school-tasks query,share,report,claim,lottery；已知分享、三次小程序对话事件、桌面对话事件和开学季专家事件保留上游字段，以官方任务终态回读确认；report 另需事件授权，不声称真实桌面操作。",
         "开学季奖励仅对已完成任务领取并回读 claimed；抽奖先查余额、使用独立请求标识并核验奖品回执，每轮有次数上限且不重试写请求。学生认证、未知任务和协议由本人处理。",
         "开学季专家从官方 BackToSchool 分类查询，缺失时失败闭合，不伪造专家标识；HTTP、业务码、活动期或字段不明确均非成功。",
-        "开学季显式选择 growth 且授权时处理已知 school_season 小程序成长任务，复用维护版小程序接受、间隔与上报流程，以 claimed 终态核验；未下发或未解锁则跳过，不适配未知任务。"
+        "开学季显式选择 growth 且授权时处理已知 school_season 小程序成长任务，复用维护版小程序接受、间隔与上报流程，以 claimed 终态核验；未下发或未解锁则跳过，不适配未知任务。",
+        "合并 Cookie 认证的加油站每日签到；--buddy-cookie 为独立入口，--check 仅查询，保留主题、今日状态、连续天数与累计积分；领取后回读核验，已签跳过。",
+        "仅配置 BUDDY_COOKIE 且无参数、无原令牌变量时兼容直接运行；同时配置凭据时默认维持原日常任务，Cookie 入口拒绝混入国际、成长或续期参数。",
+        "Cookie 逐行独立账号，内存会话支持服务端轮换、删除和过期；有限超时与响应大小限制、禁重定向、断网预演、脱敏日志及通知；无需浏览器或私有模块。",
+        "日常保持 0 7,12 * * *；Cookie 入口可独立以 54 10 * * * 运行；夜猫子及开学季调度保持既有约定。"
       ],
       "sideEffects": [
         "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
@@ -78853,7 +79309,8 @@
         "仅显式选择开学季 share 时激活已知分享任务并提交微信分享完成状态，不向外发布文本。",
         "仅显式选择开学季 report 且事件授权开启时激活已知任务并发送小程序、桌面或专家遥测，改变活动任务进度。",
         "仅显式选择开学季 claim 时领取已完成活动奖励；选择 lottery 时消耗至多指定次数的开学季抽奖机会。",
-        "仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。"
+        "仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。",
+        "Cookie 加油站入口为尚未签到的账号领取每日奖励；--check 只查询。服务端轮换 Cookie 仅存于本轮账号内存。"
       ],
       "review": {
         "staticPassed": true,
@@ -78866,20 +79323,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/132c582ed57df40f",
-        "candidateSha256": "588a4ab1d4ac90117a58568de041fb5e89185307ff0785d63403ea97f5c018c7"
+        "candidateSha256": "952753ea9f39ca73dbcdc9f1206fe4373579be2672bc96faffa9f536b99da4cb"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "588a4ab1d4ac90117a58568de041fb5e89185307ff0785d63403ea97f5c018c7",
-        "releaseSha256": "07e41b86b9afa9172c7218e158344316a9e77b85b0bc6c73f775f9828d937d2c",
+        "validatedSha256": "952753ea9f39ca73dbcdc9f1206fe4373579be2672bc96faffa9f536b99da4cb",
+        "releaseSha256": "7e7460878a273affffbedaa60672d7ec9128ef462b9df78b888d95e4ceeaaf33",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-06T12:01:22.646788+00:00",
+          "approvedAt": "2026-11-11T11:13:25.698255+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "588a4ab1d4ac90117a58568de041fb5e89185307ff0785d63403ea97f5c018c7",
-          "toCandidateSha256": "07e41b86b9afa9172c7218e158344316a9e77b85b0bc6c73f775f9828d937d2c",
+          "fromCandidateSha256": "952753ea9f39ca73dbcdc9f1206fe4373579be2672bc96faffa9f536b99da4cb",
+          "toCandidateSha256": "7e7460878a273affffbedaa60672d7ec9128ef462b9df78b888d95e4ceeaaf33",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

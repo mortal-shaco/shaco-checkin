@@ -27,6 +27,7 @@
 | NewAPI 活动中心签到 | `scripts/activity_checkin.py` | `python3 scripts/activity_checkin.py` | `22 8 * * *` | 待检查 | [activity_checkin.py.md](../scripts/activity_checkin.py.md)（`docs/scripts/activity_checkin.py.md`） |
 | AgentRouter签到 | `scripts/agentrouter.py` | `python3 scripts/agentrouter.py` | `17 1 * * *` | 待检查 | [agentrouter.py.md](../scripts/agentrouter.py.md)（`docs/scripts/agentrouter.py.md`） |
 | 安徽工业大学晚寝签到 | `scripts/ahut.py` | `python3 scripts/ahut.py` | `20 21 * * *` | 待检查 | [ahut.py.md](../scripts/ahut.py.md)（`docs/scripts/ahut.py.md`） |
+| AI IDE 每日签到 | `scripts/ai_ide.py` | `python3 scripts/ai_ide.py` | `0 11 * * *` | 待检查 | [ai_ide.py.md](../scripts/ai_ide.py.md)（`docs/scripts/ai_ide.py.md`） |
 | 机场签到（速鹰666） | `scripts/airport.py` | `python3 scripts/airport.py` | `27 1 * * *` | 待检查 | [airport.py.md](../scripts/airport.py.md)（`docs/scripts/airport.py.md`） |
 | 机场签到（HTM面板） | `scripts/airport_8a735e8a8b20.py` | `python3 scripts/airport_8a735e8a8b20.py` | `22 2 * * *` | 待检查 | [airport_8a735e8a8b20.py.md](../scripts/airport_8a735e8a8b20.py.md)（`docs/scripts/airport_8a735e8a8b20.py.md`） |
 | 机场自动登录签到 | `scripts/aitport.js` | `node scripts/aitport.js` | `1 8 * * *` | 待检查 | [aitport.js.md](../scripts/aitport.js.md)（`docs/scripts/aitport.js.md`） |
@@ -68,7 +69,6 @@
 | Holmes AI 每日签到 | `scripts/bot.py` | `python3 scripts/bot.py` | `14 8 * * *` | 待检查 | [bot.py.md](../scripts/bot.py.md)（`docs/scripts/bot.py.md`） |
 | 百事乐元抽奖 | `scripts/bsly_draw.py` | `python3 scripts/bsly_draw.py` | `23 0 * * *` | 待检查 | [bsly_draw.py.md](../scripts/bsly_draw.py.md)（`docs/scripts/bsly_draw.py.md`） |
 | BT吧签到 | `scripts/btbar.py` | `python3 scripts/btbar.py` | `46 8 * * *` | 待检查 | [btbar.py.md](../scripts/btbar.py.md)（`docs/scripts/btbar.py.md`） |
-| WorkBuddy 加油站每日签到 | `scripts/buddy.py` | `python3 scripts/buddy.py` | `54 10 * * *` | 待检查 | [buddy.py.md](../scripts/buddy.py.md)（`docs/scripts/buddy.py.md`） |
 | 布谷TV每日签到 | `scripts/bugutv.py` | `python3 scripts/bugutv.py` | `12 1 * * *` | 待检查 | [bugutv.py.md](../scripts/bugutv.py.md)（`docs/scripts/bugutv.py.md`） |
 | 霸王茶姬签到 | `scripts/bwcj.py` | `python3 scripts/bwcj.py` | `31 9,18 * * *` | 待检查 | [bwcj.py.md](../scripts/bwcj.py.md)（`docs/scripts/bwcj.py.md`） |
 | 菜玩社区每日签到 | `scripts/caigamer.js` | `node scripts/caigamer.js` | `0 20 11 * * *` | 待检查 | [caigamer.js.md](../scripts/caigamer.js.md)（`docs/scripts/caigamer.js.md`） |
@@ -250,6 +250,7 @@
 | 微微免费电话签到 | `scripts/qiandao.py` | `python3 scripts/qiandao.py` | `33 10 * * *` | 待检查 | [qiandao.py.md](../scripts/qiandao.py.md)（`docs/scripts/qiandao.py.md`） |
 | 领克签到与账户任务 | `scripts/ql_lynk.py` | `python3 scripts/ql_lynk.py` | `56 10 * * *` | 待检查 | [ql_lynk.py.md](../scripts/ql_lynk.py.md)（`docs/scripts/ql_lynk.py.md`） |
 | Qoder每日签到 | `scripts/qoder_airscript.js` | `node scripts/qoder_airscript.js` | `17 8 * * *` | 待检查 | [qoder_airscript.js.md](../scripts/qoder_airscript.js.md)（`docs/scripts/qoder_airscript.js.md`） |
+| Qoder 每日签到 | `scripts/qoder_checkin.py` | `python3 scripts/qoder_checkin.py` | `6 11 * * *` | 待检查 | [qoder_checkin.py.md](../scripts/qoder_checkin.py.md)（`docs/scripts/qoder_checkin.py.md`） |
 | QQ音乐超级会员福利站签到 | `scripts/qqmusic_checkin.py` | `python3 scripts/qqmusic_checkin.py` | `22 9 * * *` | 待检查 | [qqmusic_checkin.py.md](../scripts/qqmusic_checkin.py.md)（`docs/scripts/qqmusic_checkin.py.md`） |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` | 待检查 | [quark_signin.py.md](../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
 | 小浣熊每日积分 | `scripts/raccoon_daily.py` | `python3 scripts/raccoon_daily.py` | `2 9 * * *` | 待检查 | [raccoon_daily.py.md](../scripts/raccoon_daily.py.md)（`docs/scripts/raccoon_daily.py.md`） |
