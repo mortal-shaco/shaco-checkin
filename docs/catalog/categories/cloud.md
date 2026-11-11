@@ -1,6 +1,6 @@
 # 分类索引 · 云盘
 
-共 **13** 个脚本。返回 [`目录首页`](../README.md)。
+共 **14** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -15,5 +15,6 @@
 | 每日任务聚合 | `scripts/polymerization.js` | `node scripts/polymerization.js` | `41 9 * * *` | 待检查 | [polymerization.js.md](../../scripts/polymerization.js.md)（`docs/scripts/polymerization.js.md`） |
 | 夸克网盘每日签到 | `scripts/quark_signin.py` | `python3 scripts/quark_signin.py` | `13 18 * * *` | 待检查 | [quark_signin.py.md](../../scripts/quark_signin.py.md)（`docs/scripts/quark_signin.py.md`） |
 | 百度知道签到 | `scripts/task_51f65d9b.py` | `python3 scripts/task_51f65d9b.py` | `30 10 * * *` | 待检查 | [task_51f65d9b.py.md](../../scripts/task_51f65d9b.py.md)（`docs/scripts/task_51f65d9b.py.md`） |
+| 天翼云盘签到与抽奖 | `scripts/task_9973f7e5.py` | `python3 scripts/task_9973f7e5.py` | `43 10 * * *` | 待检查 | [task_9973f7e5.py.md](../../scripts/task_9973f7e5.py.md)（`docs/scripts/task_9973f7e5.py.md`） |
 | 天翼云盘签到与抽奖 | `scripts/task_ae1f0152.py` | `python3 scripts/task_ae1f0152.py` | `45 10 * * *` | 待检查 | [task_ae1f0152.py.md](../../scripts/task_ae1f0152.py.md)（`docs/scripts/task_ae1f0152.py.md`） |
 | 天翼云盘签到 | `scripts/ty_netdisk_checkin.py` | `python3 scripts/ty_netdisk_checkin.py` | `6 1 * * *` | 待检查 | [ty_netdisk_checkin.py.md](../../scripts/ty_netdisk_checkin.py.md)（`docs/scripts/ty_netdisk_checkin.py.md`） |
