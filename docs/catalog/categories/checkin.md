@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **362** 个脚本。返回 [`目录首页`](../README.md)。
+共 **364** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -282,6 +282,7 @@
 | HayFrp每日签到 | `scripts/task_2c89474a.js` | `node scripts/task_2c89474a.js` | `35 1 * * *` | 待检查 | [task_2c89474a.js.md](../../scripts/task_2c89474a.js.md)（`docs/scripts/task_2c89474a.js.md`） |
 | 蘑菇钉工学云打卡 | `scripts/task_3827d2e0.js` | `node scripts/task_3827d2e0.js` | `3 8,18 * * *` | 待检查 | [task_3827d2e0.js.md](../../scripts/task_3827d2e0.js.md)（`docs/scripts/task_3827d2e0.js.md`） |
 | 雨云签到与安全续费 | `scripts/task_3aae8a25.py` | `python3 scripts/task_3aae8a25.py` | `47 0 * * *` | 待检查 | [task_3aae8a25.py.md](../../scripts/task_3aae8a25.py.md)（`docs/scripts/task_3aae8a25.py.md`） |
+| 掘金沾喜气与签到 | `scripts/task_428b6cfe.js` | `node scripts/task_428b6cfe.js` | `43 10 * * *` | 待检查 | [task_428b6cfe.js.md](../../scripts/task_428b6cfe.js.md)（`docs/scripts/task_428b6cfe.js.md`） |
 | 三国杀社区签到 | `scripts/task_4c362933.js` | `node scripts/task_4c362933.js` | `4 * * * *` | 待检查 | [task_4c362933.js.md](../../scripts/task_4c362933.js.md)（`docs/scripts/task_4c362933.js.md`） |
 | 阅次元论坛签到 | `scripts/task_5254d901.py` | `python3 scripts/task_5254d901.py` | `44 8 * * *` | 待检查 | [task_5254d901.py.md](../../scripts/task_5254d901.py.md)（`docs/scripts/task_5254d901.py.md`） |
 | HoYoLAB 多游戏签到 | `scripts/task_54f1f871.py` | `python3 scripts/task_54f1f871.py` | `35 10 * * *` | 待检查 | [task_54f1f871.py.md](../../scripts/task_54f1f871.py.md)（`docs/scripts/task_54f1f871.py.md`） |
@@ -298,6 +299,7 @@
 | MT论坛签到 | `scripts/task_9a14e9eb.py` | `python3 scripts/task_9a14e9eb.py` | `39 0 * * *` | 待检查 | [task_9a14e9eb.py.md](../../scripts/task_9a14e9eb.py.md)（`docs/scripts/task_9a14e9eb.py.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
 | AbyssWorld每日签到 | `scripts/task_ad4c4f3a.js` | `node scripts/task_ad4c4f3a.js` | `39 8 * * *` | 待检查 | [task_ad4c4f3a.js.md](../../scripts/task_ad4c4f3a.js.md)（`docs/scripts/task_ad4c4f3a.js.md`） |
+| 米游社原神自动签到 | `scripts/task_b59e3196.py` | `python3 scripts/task_b59e3196.py` | `56 1 * * *` | 待检查 | [task_b59e3196.py.md](../../scripts/task_b59e3196.py.md)（`docs/scripts/task_b59e3196.py.md`） |
 | TJUPT每日签到 | `scripts/task_b80894cb.py` | `python3 scripts/task_b80894cb.py` | `13 9 * * *` | 待检查 | [task_b80894cb.py.md](../../scripts/task_b80894cb.py.md)（`docs/scripts/task_b80894cb.py.md`） |
 | 今日校园辅导员签到 | `scripts/task_c04cea4d.py` | `python3 scripts/task_c04cea4d.py` | `0 21 * * *` | 待检查 | [task_c04cea4d.py.md](../../scripts/task_c04cea4d.py.md)（`docs/scripts/task_c04cea4d.py.md`） |
 | 掘金签到与可选抽奖 | `scripts/task_c2801fee.py` | `python3 scripts/task_c2801fee.py` | `40 10 * * *` | 待检查 | [task_c2801fee.py.md](../../scripts/task_c2801fee.py.md)（`docs/scripts/task_c2801fee.py.md`） |

@@ -1,10 +1,11 @@
 # 分类索引 · 云盘
 
-共 **11** 个脚本。返回 [`目录首页`](../README.md)。
+共 **12** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
 | 139云盘云朵任务 | `scripts/139_yunduo.py` | `python3 scripts/139_yunduo.py` | `11 0 * * *` | 待检查 | [139_yunduo.py.md](../../scripts/139_yunduo.py.md)（`docs/scripts/139_yunduo.py.md`） |
+| 天翼云盘每日签到及抽奖 | `scripts/189.py` | `python3 scripts/189.py` | `44 10 * * *` | 待检查 | [189.py.md](../../scripts/189.py.md)（`docs/scripts/189.py.md`） |
 | 阿里云盘签到 | `scripts/aliyunpan_checkin.py` | `python3 scripts/aliyunpan_checkin.py` | `47 1 * * *` | 待检查 | [aliyunpan_checkin.py.md](../../scripts/aliyunpan_checkin.py.md)（`docs/scripts/aliyunpan_checkin.py.md`） |
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `36 2 * * *` | 待检查 | [baidu.py.md](../../scripts/baidu.py.md)（`docs/scripts/baidu.py.md`） |
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `27 2 * * *` | 待检查 | [baiduwangpan_checkin.py.md](../../scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |

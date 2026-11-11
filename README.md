@@ -2,7 +2,7 @@
 
 通用签到类青龙脚本发布仓库。脚本经来源、许可证和基础检查后自动发布；真实账号人工核验后标记为已检查或上架。公开说明与本地「脚本管理」使用同一套状态：`上架` / `已检查` / `待检查`。
 
-当前公开脚本 **418** 个：上架 **3** · 已检查 **0** · 待检查 **415**。  
+当前公开脚本 **421** 个：上架 **3** · 已检查 **0** · 待检查 **418**。  
 本页保留上架/已检查全表与待检查预览；全部脚本请用 [脚本目录索引](docs/catalog/README.md)（字母 / 分类）浏览，详单在 [`docs/scripts/`](docs/scripts/)。
 待检查脚本尚未验证真实账号业务，基础核验通过不代表业务成功。
 
@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | 上架 | 3 | 维护者确认保留的当前版本 |
 | 已检查 | 0 | 必填参数齐备且已有当前版本本地运行记录，尚未点击上架 |
-| 待检查 | 415 | 已发布，但尚未完成当前版本的参数配置与本地运行核验 |
+| 待检查 | 418 | 已发布，但尚未完成当前版本的参数配置与本地运行核验 |
 
 ### 上架脚本
 
@@ -34,14 +34,14 @@ _当前无此类脚本。_
 | --- | --- | --- | --- | --- | --- |
 | 中国电信签到与金币查询 | `scripts/10000.js` | `node scripts/10000.js` | `10 10 * * *` | 待检查 | [10000.js.md](docs/scripts/10000.js.md)（`docs/scripts/10000.js.md`） |
 | 139云盘云朵任务 | `scripts/139_yunduo.py` | `python3 scripts/139_yunduo.py` | `11 0 * * *` | 待检查 | [139_yunduo.py.md](docs/scripts/139_yunduo.py.md)（`docs/scripts/139_yunduo.py.md`） |
+| 天翼云盘每日签到及抽奖 | `scripts/189.py` | `python3 scripts/189.py` | `44 10 * * *` | 待检查 | [189.py.md](docs/scripts/189.py.md)（`docs/scripts/189.py.md`） |
 | 2cycd 论坛自动签到 | `scripts/2cycd.py` | `python3 scripts/2cycd.py` | `0 0 * * *` | 待检查 | [2cycd.py.md](docs/scripts/2cycd.py.md)（`docs/scripts/2cycd.py.md`） |
 | 2cycdx自动签到 | `scripts/2cycdx.py` | `python3 scripts/2cycdx.py` | `45 0 * * *` | 待检查 | [2cycdx.py.md](docs/scripts/2cycdx.py.md)（`docs/scripts/2cycdx.py.md`） |
 | 51CTO博客每日签到 | `scripts/51cto_sign.js` | `node scripts/51cto_sign.js` | `17 2 * * *` | 待检查 | [51cto_sign.js.md](docs/scripts/51cto_sign.js.md)（`docs/scripts/51cto_sign.js.md`） |
 | 吾爱破解每日签到 | `scripts/52pojie.js` | `node scripts/52pojie.js` | `8 0 * * *` | 待检查 | [52pojie.js.md](docs/scripts/52pojie.js.md)（`docs/scripts/52pojie.js.md`） |
 | 55188论坛签到 | `scripts/55188auto.py` | `python3 scripts/55188auto.py` | `27 8 * * *` | 待检查 | [55188auto.py.md](docs/scripts/55188auto.py.md)（`docs/scripts/55188auto.py.md`） |
-| 69云签到 | `scripts/69yun_checkin.py` | `python3 scripts/69yun_checkin.py` | `20 0 * * *` | 待检查 | [69yun_checkin.py.md](docs/scripts/69yun_checkin.py.md)（`docs/scripts/69yun_checkin.py.md`） |
 
-其余 **407** 个待检查脚本请打开 [脚本目录索引](docs/catalog/README.md)，按字母或分类查看全部。
+其余 **410** 个待检查脚本请打开 [脚本目录索引](docs/catalog/README.md)，按字母或分类查看全部。
 
 ## 青龙面板安装
 
