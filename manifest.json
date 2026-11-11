@@ -45276,6 +45276,211 @@
       }
     },
     {
+      "catalogId": "17218a3f4a2a30a6",
+      "applicationKey": "qc",
+      "checkProfile": {
+        "requiredEnv": [
+          "QC_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "QC_APP_ID",
+          "QC_PAGE_ID",
+          "QC_ARGUMENT",
+          "qc_ck",
+          "qc_app",
+          "QC_ALLOW_BIND",
+          "QC_STATE_FILE",
+          "QC_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "QC_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "QC_APP_ID": "39",
+          "QC_PAGE_ID": "1",
+          "QC_ALLOW_BIND": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\",\"notification\":",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "按小时刷新微信活动会话，合并官方 Set-Cookie 并以仅本人可读写的权限保存续期 Cookie",
+          "支持多个账号及多款青瓷游戏，兼容原游戏默认值和参数覆盖方式",
+          "查询今日签到及累计签到天数，已签到时不重复提交，未签到时提交并复查官方状态",
+          "仅显式开启后按官方当前角色资料绑定并重试签到",
+          "独立账号错误隔离、超时及响应大小限制，任一失败整体非零退出",
+          "完全离线预演、时间轴分阶段日志、账号及任务统计、单行结构化汇总",
+          "按青龙全局开关和任务选择清单发送脱敏结果通知，通知不可用时保留业务退出码"
+        ],
+        "sideEffects": [
+          "刷新并安全缓存微信活动会话",
+          "未签到时执行活动签到及领取对应签到奖励",
+          "仅 QC_ALLOW_BIND=1 且官方提示需要绑定时修改角色绑定",
+          "启用通知时通过青龙通知渠道发送脱敏任务结果"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "青瓷签到与会话保活",
+      "path": "scripts/qc_sign.js",
+      "sha256": "16825012341ba009defae42c736f7f7e796ff8ba8aa6a5d1bf1d06c2b2a17263",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "justin0406/qc-checkin",
+        "branch": "main",
+        "commit": "3ebc1cc03e91f21fcf526f31e43bd587b8dcdb67",
+        "originalPath": "scripts/qc_sign.js"
+      },
+      "cron": "25 * * * *",
+      "command": "node scripts/qc_sign.js",
+      "environment": [
+        {
+          "name": "QC_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在微信打开青瓷官方游戏活动页并完成角色绑定，抓取 api.qingcigame.com 请求头的完整 Cookie（含 PHPSESSID），同时记录活动 URL 中的 app_id、page_id。通行证账号密码不能替代微信活动会话；超过约两小时未保活或会话失效时需重新抓取。",
+          "format": "每个非空行一个账号；完整 Cookie，或 游戏编号,页面编号|完整Cookie；只拆第一个竖线，后续内容原样保留。默认游戏 39、页面 1。"
+        },
+        {
+          "name": "QC_APP_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从微信官方活动页面 URL 的 app_id 获取；默认 39（最强蜗牛）。",
+          "format": "数字；优先级：QC_ARGUMENT、账号行前缀、旧 qc_app、本项、默认值。"
+        },
+        {
+          "name": "QC_PAGE_ID",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从同一官方活动页面 URL 的 page_id 获取；默认 1。",
+          "format": "数字；优先级与 QC_APP_ID 相同。"
+        },
+        {
+          "name": "QC_ARGUMENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容原 Surge argument 的游戏覆盖方式，填写官方活动页参数。",
+          "format": "app_id=数字&page_id=数字；覆盖所有账号的目标游戏，仅填写确需覆盖的字段。"
+        },
+        {
+          "name": "qc_ck",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "旧 qc_ck 会话可作为兼容输入；建议迁移到 QC_ACCOUNTS。优先使用非空 QC_ACCOUNTS。",
+          "format": "含 PHPSESSID 的完整 Cookie，每个非空行一个账号。"
+        },
+        {
+          "name": "qc_app",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可手工迁移原捕获存档中的游戏编号和页面编号。",
+          "format": "游戏编号|页面编号；默认由 QC_APP_ID、QC_PAGE_ID 提供；可被账号前缀和 QC_ARGUMENT 覆盖。"
+        },
+        {
+          "name": "QC_ALLOW_BIND",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认不自动修改绑定；优先在官方页面手动绑定。仅在明确需要按官方当前角色资料绑定时开启。",
+          "format": "1 开启；其余值关闭。仅在签到接口明确提示绑定角色且官方资料完整时调用绑定接口。"
+        },
+        {
+          "name": "QC_STATE_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选设置本机会话缓存绝对路径；默认脚本同目录 .qc-session-state.json。缓存包含会话，勿上传或分享；目录须可写且受保护。",
+          "format": "绝对文件路径；自动写入权限 0600，不接受权限宽松的已有缓存；更新原始 Cookie 后使用新会话。"
+        },
+        {
+          "name": "QC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验证时设置为 1，不发送业务请求、不读写缓存、不加载通知模块。",
+          "format": "1 离线预演，其余值执行真实任务；预演成功不代表真实签到成功。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选设置通知任务选择清单，替换本任务默认选择；显式开启全局开关时强制发送。",
+          "format": "逗号、分号或空白分隔；支持目录编号 17218a3f4a2a30a6、scripts/qc_sign.js、文件名及含 * 的文件名模式；* 全部，空值全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知文件不在默认 /ql/data/scripts 或 /ql/scripts 时，指定可信通知模块所在目录；另支持 Python 的 notify.send。",
+          "format": "本机目录路径，包含 sendNotify.js 或 notify.py；不是业务依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；可用 游戏编号,页面编号|完整Cookie 将游戏信息与同账号会话合并，只拆分第一个竖线，不用 &、@ 或其他符号分隔账号。逐账号独立执行，任一账号失败则整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "按小时刷新微信活动会话，合并官方 Set-Cookie 并以仅本人可读写的权限保存续期 Cookie",
+        "支持多个账号及多款青瓷游戏，兼容原游戏默认值和参数覆盖方式",
+        "查询今日签到及累计签到天数，已签到时不重复提交，未签到时提交并复查官方状态",
+        "仅显式开启后按官方当前角色资料绑定并重试签到",
+        "独立账号错误隔离、超时及响应大小限制，任一失败整体非零退出",
+        "完全离线预演、时间轴分阶段日志、账号及任务统计、单行结构化汇总",
+        "按青龙全局开关和任务选择清单发送脱敏结果通知，通知不可用时保留业务退出码"
+      ],
+      "sideEffects": [
+        "刷新并安全缓存微信活动会话",
+        "未签到时执行活动签到及领取对应签到奖励",
+        "仅 QC_ALLOW_BIND=1 且官方提示需要绑定时修改角色绑定",
+        "启用通知时通过青龙通知渠道发送脱敏任务结果"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/17218a3f4a2a30a6",
+        "candidateSha256": "f71cff13121593d31a501333aad956e66526869d489114791efb8b45a5205065"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "f71cff13121593d31a501333aad956e66526869d489114791efb8b45a5205065",
+        "releaseSha256": "16825012341ba009defae42c736f7f7e796ff8ba8aa6a5d1bf1d06c2b2a17263",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T11:06:57.035744+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "f71cff13121593d31a501333aad956e66526869d489114791efb8b45a5205065",
+          "toCandidateSha256": "16825012341ba009defae42c736f7f7e796ff8ba8aa6a5d1bf1d06c2b2a17263",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "fa764c990d2fb7f6",
       "applicationKey": "jim6699/python_scripts::微微免费电话",
       "checkProfile": {
