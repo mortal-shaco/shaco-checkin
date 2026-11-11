@@ -1234,6 +1234,153 @@
       }
     },
     {
+      "catalogId": "11b4c2ed42746ce1",
+      "applicationKey": "heidaotu/wfrobertql::52pojie",
+      "checkProfile": {
+        "requiredEnv": [
+          "PJ52_COOKIE"
+        ],
+        "optionalEnv": [
+          "PJ52_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "PJ52_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "PJ52_DRY_RUN": "0",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "签到成功",
+          "今日已签到",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "每天 06:25 自动申请并领取吾爱破解每日签到任务（任务编号 2），保留原有会话准备流程。",
+          "PJ52_COOKIE 按行多账号、兼容整段 URL 编码，保留凭据值中的等号，隔离各账号会话。",
+          "标准库独立 HTTP 客户端、会话 Cookie 管理、HTTPS 同站跳转限制、超时和响应大小限制。",
+          "仅以官方明确成功或已完成文案确认结果，登录失效、未知响应和模糊任务状态失败退出。",
+          "官方页面提供公开账号昵称时展示原值；敏感字段、手机号和原始响应不输出。",
+          "完全断网预演、中文时间轴日志、逐账号及总任务统计、单行 TASK_SUMMARY JSON 汇总。",
+          "正式运行在成功、部分失败、失败和配置错误后按通知开关尝试青龙脱敏通知；离线预演只显示通知预览。通知失败保留业务退出码。"
+        ],
+        "sideEffects": [
+          "正式运行建立站点会话并申请每日任务 2。",
+          "正式运行领取签到任务奖励并更新站点签到完成状态。",
+          "正式运行在通知启用时通过青龙配置的通知渠道发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "吾爱破解每日签到",
+      "path": "scripts/52pojie.py",
+      "sha256": "9d3766fa6d591d751146a68d816901e5e269196fd2de68bdb43f9bd457ba382c",
+      "stage": "released",
+      "license": "Apache-2.0",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "HeiDaotu/WFRobertQL",
+        "branch": "main",
+        "commit": "ea26c01212613710e7bfd92ca3cf0b6ee13695c7",
+        "originalPath": "52pojie.py"
+      },
+      "cron": "25 6 * * *",
+      "command": "python3 scripts/52pojie.py",
+      "environment": [
+        {
+          "name": "PJ52_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录吾爱破解 https://www.52pojie.cn，打开开发者工具的网络面板，复制已登录请求的 Cookie 请求头；须同时包含 htVC_2132_saltkey 和 htVC_2132_auth。过期后重新登录获取，不要分享凭据。",
+          "format": "每个非空行一个账号：htVC_2132_saltkey=<该账号值>; htVC_2132_auth=<该账号值>。同账号字段合并在一行，仅在首个等号切分字段，保留值中的等号；支持整段经过 URL 编码的 Cookie；不再用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "PJ52_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 开启离线预演，默认 0。",
+          "format": "0/1、true/false、yes/no 或 on/off。预演只校验配置，不校验真实登录状态，不发送网络通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，auto 模式下设置以替换默认通知选择，空值禁用全部；强制开启或关闭时优先使用全局开关。",
+          "format": "逗号、分号或空白分隔的目录标识、脚本相对路径、文件名或文件名通配符；支持 *；本脚本可选 11b4c2ed42746ce1、52pojie.py、candidate.py。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填入已有青龙 notify.py 或 sendNotify.js 所在目录；自动兼容 notify.send、/ql/data/scripts 和 /ql/scripts。",
+          "format": "本机已有通知模块目录；不下载或安装程序，不作为签到依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "PJ52_COOKIE 中每个非空行一个账号；同一账号的两个 Cookie 字段写在同一行。独立会话、逐个执行；任一账号配置或签到失败，整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每天 06:25 自动申请并领取吾爱破解每日签到任务（任务编号 2），保留原有会话准备流程。",
+        "PJ52_COOKIE 按行多账号、兼容整段 URL 编码，保留凭据值中的等号，隔离各账号会话。",
+        "标准库独立 HTTP 客户端、会话 Cookie 管理、HTTPS 同站跳转限制、超时和响应大小限制。",
+        "仅以官方明确成功或已完成文案确认结果，登录失效、未知响应和模糊任务状态失败退出。",
+        "官方页面提供公开账号昵称时展示原值；敏感字段、手机号和原始响应不输出。",
+        "完全断网预演、中文时间轴日志、逐账号及总任务统计、单行 TASK_SUMMARY JSON 汇总。",
+        "正式运行在成功、部分失败、失败和配置错误后按通知开关尝试青龙脱敏通知；离线预演只显示通知预览。通知失败保留业务退出码。"
+      ],
+      "sideEffects": [
+        "正式运行建立站点会话并申请每日任务 2。",
+        "正式运行领取签到任务奖励并更新站点签到完成状态。",
+        "正式运行在通知启用时通过青龙配置的通知渠道发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/11b4c2ed42746ce1",
+        "candidateSha256": "68771117db01a5934439c6c87bb85395fe24f6a0a68bb826d99e82adea14181d"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "68771117db01a5934439c6c87bb85395fe24f6a0a68bb826d99e82adea14181d",
+        "releaseSha256": "9d3766fa6d591d751146a68d816901e5e269196fd2de68bdb43f9bd457ba382c",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:23:46.818734+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "68771117db01a5934439c6c87bb85395fe24f6a0a68bb826d99e82adea14181d",
+          "toCandidateSha256": "9d3766fa6d591d751146a68d816901e5e269196fd2de68bdb43f9bd457ba382c",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "3c4dc751670d036f",
       "applicationKey": "lonerfyr/55188autosgin::55188auto",
       "checkProfile": {
@@ -73879,6 +74026,149 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "60e4bb230e1cd25d3c5cdbe334e66ac6b7716639bba759dc8ccc862fe0bdd42a",
           "toCandidateSha256": "9459b31730d9632df56af0eee2f2aca657af3c4c00004b081d508db024bfad66",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "4e0d6792d68f2033",
+      "applicationKey": "feeeenng/weibo_auto_sign::weibo",
+      "checkProfile": {
+        "requiredEnv": [
+          "WEIBO_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "WEIBO_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "WEIBO_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "签到成功",
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "使用账号密码登录微博并维护按域隔离的会话 Cookie",
+          "展示官方返回的非敏感昵称、用户名或公开 UID，凭据和手机号除外",
+          "读取关注超话列表、遍历卡组及官方返回的分页游标，按超话编号去重",
+          "逐个超话签到并展示超话名称和等级，仅将业务码 100000 判为成功",
+          "每行一个账号、账号独立运行、任一失败整体非零退出",
+          "完全断网预演、逐阶段时间日志、逐账号及最终统计和唯一 TASK_SUMMARY 记录",
+          "根据青龙总开关和选择列表发送脱敏汇总，通知失败不改变业务退出码"
+        ],
+        "sideEffects": [
+          "实运行时创建微博登录会话",
+          "对已关注的超话执行签到",
+          "通知启用时通过青龙配置的渠道发送任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "微博超话签到",
+      "path": "scripts/weibo_sign.py",
+      "sha256": "ba8f1e70e0a88c42a330fec71b6658ee9ccc4f5b716c2a7f024ac4659816be30",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "Feeeenng/weibo_auto_sign",
+        "branch": "master",
+        "commit": "ab80aefbb5db436a7fb19586360226cb23ac777f",
+        "originalPath": "weibo_sign.py"
+      },
+      "cron": "51 10 * * *",
+      "command": "python3 scripts/weibo_sign.py",
+      "environment": [
+        {
+          "name": "WEIBO_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人微博登录账号及密码；可先在微博官方客户端确认可正常登录。如触发验证码或风控，请在官方客户端处理后重试，不支持绕过验证。取代原私有 Config.USERNAME 与 Config.PASSWORD。",
+          "format": "每个非空行填写 登录账号|登录密码；仅在首个 | 分割，密码后续的 | 保留；账号行首尾空白会去除，不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "WEIBO_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "需要完全断网检查参数和日志时设置为 1；不登录、不签到、不调用外部通知。",
+          "format": "1、true、yes、on 启用；默认关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中填写需要发送通知的任务标识；设置后替换默认选择；空值禁用全部。",
+          "format": "用逗号、分号、空白或换行分隔目录编号、脚本相对路径、文件名或通配符；支持 *、4e0d6792d68f2033、weibo_sign.py。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙已有 notify.py 或 sendNotify.js 所在目录；默认尝试导入 notify，并搜索 /ql/data/scripts 和 /ql/scripts。",
+          "format": "本机通知模块目录路径；仅通知使用，缺失不影响业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，使用 登录账号|登录密码 配对凭据，仅在首个 | 分割；会话按账号隔离，单账号失败继续处理其余账号，任一失败整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用账号密码登录微博并维护按域隔离的会话 Cookie",
+        "展示官方返回的非敏感昵称、用户名或公开 UID，凭据和手机号除外",
+        "读取关注超话列表、遍历卡组及官方返回的分页游标，按超话编号去重",
+        "逐个超话签到并展示超话名称和等级，仅将业务码 100000 判为成功",
+        "每行一个账号、账号独立运行、任一失败整体非零退出",
+        "完全断网预演、逐阶段时间日志、逐账号及最终统计和唯一 TASK_SUMMARY 记录",
+        "根据青龙总开关和选择列表发送脱敏汇总，通知失败不改变业务退出码"
+      ],
+      "sideEffects": [
+        "实运行时创建微博登录会话",
+        "对已关注的超话执行签到",
+        "通知启用时通过青龙配置的渠道发送任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/4e0d6792d68f2033",
+        "candidateSha256": "4250e71d90dff76a57412a60180071e74faa2393bc84e18faf419133f65890e6"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "4250e71d90dff76a57412a60180071e74faa2393bc84e18faf419133f65890e6",
+        "releaseSha256": "ba8f1e70e0a88c42a330fec71b6658ee9ccc4f5b716c2a7f024ac4659816be30",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:25:05.827499+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "4250e71d90dff76a57412a60180071e74faa2393bc84e18faf419133f65890e6",
+          "toCandidateSha256": "ba8f1e70e0a88c42a330fec71b6658ee9ccc4f5b716c2a7f024ac4659816be30",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

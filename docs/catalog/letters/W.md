@@ -1,6 +1,6 @@
 # 字母索引 · W
 
-共 **17** 个脚本。返回 [`目录首页`](../README.md)。
+共 **18** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -11,6 +11,7 @@
 | Web3Go每日签到 | `scripts/web3go.js` | `node scripts/web3go.js` | `48 8 * * *` | 待检查 | [web3go.js.md](../../scripts/web3go.js.md)（`docs/scripts/web3go.js.md`） |
 | CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |
+| 微博超话签到 | `scripts/weibo_sign.py` | `python3 scripts/weibo_sign.py` | `51 10 * * *` | 待检查 | [weibo_sign.py.md](../../scripts/weibo_sign.py.md)（`docs/scripts/weibo_sign.py.md`） |
 | 蔚来APP每日签到 | `scripts/weilai_auto_checkin.js` | `node scripts/weilai_auto_checkin.js` | `8 9 * * *` | 待检查 | [weilai_auto_checkin.js.md](../../scripts/weilai_auto_checkin.js.md)（`docs/scripts/weilai_auto_checkin.js.md`） |
 | 华润通文体未来荟签到 | `scripts/wentiweilaihui.py` | `python3 scripts/wentiweilaihui.py` | `31 1 1 1 1` | 待检查 | [wentiweilaihui.py.md](../../scripts/wentiweilaihui.py.md)（`docs/scripts/wentiweilaihui.py.md`） |
 | 网际快车每日签到 | `scripts/wjkc.js` | `node scripts/wjkc.js` | `4 9 * * *` | 待检查 | [wjkc.js.md](../../scripts/wjkc.js.md)（`docs/scripts/wjkc.js.md`） |
