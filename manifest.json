@@ -6819,6 +6819,237 @@
       }
     },
     {
+      "catalogId": "e10a36a978f215b9",
+      "applicationKey": "atomcode",
+      "checkProfile": {
+        "requiredEnv": [
+          "ATOMCODE_TOKENS"
+        ],
+        "optionalEnv": [
+          "ATOMCODE_TOKEN",
+          "ATOMCODE_REFRESH_TOKEN",
+          "ATOMCODE_EXPIRES_AT",
+          "ATOMCODE_AUTH_FILE",
+          "ATOMCODE_STATE_FILE",
+          "ATOMCODE_PROXY",
+          "ATOMCODE_BROKER_BASE",
+          "ATOMCODE_CODINGPLAN_API_BASE",
+          "ATOMCODE_DRY_RUN",
+          "ATOMCODE_NO_NOTIFY",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "ATOMCODE_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "查询当前免费套餐有效期和额度使用情况；以可解析到期时间优先判断有效性",
+          "无有效套餐时按 Max、Pro、Lite 顺序尝试领取，已有套餐跳过；领取后再次查询核验有效套餐",
+          "访问令牌即将到期或遇到 HTTP 401/403 时续期并重试一次，兼容轮换续期令牌",
+          "逐行多账号、--only N 筛选与 --query 仅查询模式",
+          "兼容单账号环境变量及显式 JSON/TOML 凭据文件；可选安全保存令牌状态",
+          "官方返回非敏感用户名、昵称或公开标识时原样展示；输出额度数字与脱敏步骤统计",
+          "青龙通知选择开关、配置错误通知、逐账号及任务汇总与单行 TASK_SUMMARY",
+          "完全断网预演，无第三方依赖的独立 HTTP 实现、超时、TLS 校验及禁止重定向"
+        ],
+        "sideEffects": [
+          "领取免费 CodingPlan 套餐",
+          "需要时刷新或轮换账号令牌",
+          "显式设置 ATOMCODE_STATE_FILE 后保存续期凭据",
+          "通知启用且非预演时通过青龙模块发送脱敏摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "AtomCode 免费套餐领取",
+      "path": "scripts/atomcode_daily.py",
+      "sha256": "a54121d11f3a5f9477e52db329ace0e27735923cf7990b499b0349b248fd7f26",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "L0NE-6/AtomCode-Daily",
+        "branch": "main",
+        "commit": "1438690c164f367e693391bbb61b1b7362b2390a",
+        "originalPath": "atomcode_daily.py",
+        "related": [
+          {
+            "catalogId": "886e10a60a21210f",
+            "sha256": "cf6fc9ad83f53ad9bff24e88f12c3127a5ed289439539975eaf403422727883d",
+            "repository": "L0NE-6/AtomCode-Daily",
+            "url": "https://github.com/L0NE-6/AtomCode-Daily.git",
+            "branch": "main",
+            "commit": "1438690c164f367e693391bbb61b1b7362b2390a",
+            "originalPath": "atomcode_auth.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "3 11 * * *",
+      "command": "python3 scripts/atomcode_daily.py",
+      "environment": [
+        {
+          "name": "ATOMCODE_TOKENS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "登录本人官方 AtomCode/AtomGit 客户端，在本地 auth.json 或 auth.toml 中查看 tokens 下的 access_token、refresh_token 及到期字段，直接填入青龙环境变量；不要打印或分享凭据。",
+          "format": "每个非空行一个账号；推荐 备注|{\"access_token\":\"访问令牌\",\"refresh_token\":\"续期令牌\",\"expires_at\":\"到期时间\"}；兼容 备注|access_token[|refresh_token[|expires_at[|created_at|expires_in]]]。首个竖线后为完整 JSON 或旧格式字段；不使用 & 或 @ 分隔账号。到期时间支持秒、毫秒或日期时间；created_at 与 expires_in 用于推算到期时间。允许仅提供续期令牌。"
+        },
+        {
+          "name": "ATOMCODE_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "同 ATOMCODE_TOKENS；仅无多账号输入时使用的旧单账号别名。",
+          "format": "单个访问令牌，可带 Bearer 前缀"
+        },
+        {
+          "name": "ATOMCODE_REFRESH_TOKEN",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "同 ATOMCODE_TOKENS；配套旧单账号变量。",
+          "format": "单个续期令牌"
+        },
+        {
+          "name": "ATOMCODE_EXPIRES_AT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "从本人官方登录令牌数据获取，配套旧单账号变量。",
+          "format": "秒、毫秒时间戳或日期时间"
+        },
+        {
+          "name": "ATOMCODE_AUTH_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：将本人导出的官方 JSON/TOML 凭据文件放入受保护目录并指定路径；无需安装官方客户端或其他仓库。TOML 读取需要 Python 3.11+。",
+          "format": "显式本地文件路径；支持单对象、对象数组或 accounts 数组，与逐行账号输入合并；预演不读取"
+        },
+        {
+          "name": "ATOMCODE_STATE_FILE",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选：指定受保护且可写的状态文件，用于跨次保存续期令牌。默认不写文件；目录需已存在，禁止提交或公开该文件。",
+          "format": "可选 JSON 路径；原子写入，权限 0600；预演不读写"
+        },
+        {
+          "name": "ATOMCODE_PROXY",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "需要代理时由本人配置可信代理；日志不会输出地址。",
+          "format": "代理 URL，默认使用系统代理设置"
+        },
+        {
+          "name": "ATOMCODE_BROKER_BASE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认使用上游 https://acs.atomgit.com；仅在确认官方迁移后修改，令牌会发往此地址。",
+          "format": "不含用户名密码的 HTTPS 基址"
+        },
+        {
+          "name": "ATOMCODE_CODINGPLAN_API_BASE",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认使用上游 https://api.gitcode.com/api/v5；仅在确认官方迁移后修改，令牌会发往此地址。",
+          "format": "不含用户名密码的 HTTPS 基址"
+        },
+        {
+          "name": "ATOMCODE_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置；禁止全部网络、通知外发和文件读写。",
+          "format": "1 启用，默认关闭"
+        },
+        {
+          "name": "ATOMCODE_NO_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "兼容原脚本的关闭通知开关，也可使用 --no-notify。",
+          "format": "1 关闭通知"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中选择允许通知的脚本。",
+          "format": "逗号、分号、空白或换行分隔；支持目录相对路径、文件名及通配符、目录编号 e10a36a978f215b9；* 全部，空值关闭列表选择"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "仅在青龙通知模块不在默认目录时指定可信本地目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的目录"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号；首个竖线分开备注与凭据，推荐 JSON 保留后续凭据文本。兼容旧字段及单账号别名；账号独立执行，格式错误不跳过，任一失败整体非零。--only N 只运行指定账号。"
+      },
+      "dependencies": [],
+      "features": [
+        "查询当前免费套餐有效期和额度使用情况；以可解析到期时间优先判断有效性",
+        "无有效套餐时按 Max、Pro、Lite 顺序尝试领取，已有套餐跳过；领取后再次查询核验有效套餐",
+        "访问令牌即将到期或遇到 HTTP 401/403 时续期并重试一次，兼容轮换续期令牌",
+        "逐行多账号、--only N 筛选与 --query 仅查询模式",
+        "兼容单账号环境变量及显式 JSON/TOML 凭据文件；可选安全保存令牌状态",
+        "官方返回非敏感用户名、昵称或公开标识时原样展示；输出额度数字与脱敏步骤统计",
+        "青龙通知选择开关、配置错误通知、逐账号及任务汇总与单行 TASK_SUMMARY",
+        "完全断网预演，无第三方依赖的独立 HTTP 实现、超时、TLS 校验及禁止重定向"
+      ],
+      "sideEffects": [
+        "领取免费 CodingPlan 套餐",
+        "需要时刷新或轮换账号令牌",
+        "显式设置 ATOMCODE_STATE_FILE 后保存续期凭据",
+        "通知启用且非预演时通过青龙模块发送脱敏摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/e10a36a978f215b9",
+        "candidateSha256": "3ddceeae304a7a90c4e8227a1eb8f483b8f671de6e8fdb94319fac9cd488725e"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "3ddceeae304a7a90c4e8227a1eb8f483b8f671de6e8fdb94319fac9cd488725e",
+        "releaseSha256": "a54121d11f3a5f9477e52db329ace0e27735923cf7990b499b0349b248fd7f26",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T11:00:40.882389+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "3ddceeae304a7a90c4e8227a1eb8f483b8f671de6e8fdb94319fac9cd488725e",
+          "toCandidateSha256": "a54121d11f3a5f9477e52db329ace0e27735923cf7990b499b0349b248fd7f26",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "6b6ae91490051bce",
       "applicationKey": "atxyq",
       "checkProfile": {
@@ -10149,6 +10380,181 @@
       }
     },
     {
+      "catalogId": "42f0a79c5da31311",
+      "applicationKey": "meowandy/auto-breezeblue::bb",
+      "checkProfile": {
+        "requiredEnv": [
+          "BB_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "BB_CONFIG",
+          "BB_ACTION",
+          "BB_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BB_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "BB_ACTION": "run"
+        },
+        "successPatterns": [
+          "✅ 签到成功",
+          "☑️ 今天已签到，无需重复"
+        ],
+        "features": [
+          "每日领取服务端自动定档积分，兼容显式积分档位参数",
+          "支持 Cookie 请求头及单行 cURL 导入，支持已有邮箱账号密码登录；会话失效时至多重登一次",
+          "识别今日已签到，明确验证领取结果，拒绝仅凭 HTTP 200 判定成功",
+          "查询官方显示名称、登录态、积分余额、签到状态、档位及下次重置时间",
+          "支持多账号、独立失败处理及停用开关",
+          "提供 run、test、list、status 动作及旧配置只读兼容",
+          "完全断网预演、脱敏时间轴日志、账号与子任务统计及单行 TASK_SUMMARY 汇总",
+          "按青龙全局开关及脚本名单发送脱敏通知，通知故障保留业务退出码"
+        ],
+        "sideEffects": [
+          "正式运行 run 动作会为启用的账号领取每日积分",
+          "邮箱密码登录或重登会创建服务端登录会话，仅在内存保留",
+          "入选通知名单或强制开启通知时通过青龙通知器发送脱敏统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "BreezeBlue 每日积分签到",
+      "path": "scripts/bb_checkin.py",
+      "sha256": "8c9994476dc2aac695767379baf2d70251ade55d806949e97d5762621ea08f61",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "MeowAndy/auto-breezeblue",
+        "branch": "main",
+        "commit": "adbd08d10a4ba30114b13571eb715d0024fa92d1",
+        "originalPath": "bb_checkin.py",
+        "related": [
+          {
+            "catalogId": "fcdf36a7475913e5",
+            "sha256": "a7527464fe5aab7c64f6c7a439e64249fddfe2d5e7e0a1001af5d3c862e8a558",
+            "repository": "MeowAndy/auto-breezeblue",
+            "url": "https://github.com/MeowAndy/auto-breezeblue",
+            "branch": "main",
+            "commit": "adbd08d10a4ba30114b13571eb715d0024fa92d1",
+            "originalPath": "bb_web.py",
+            "license": "MIT"
+          }
+        ]
+      },
+      "cron": "2 11 * * *",
+      "command": "python3 scripts/bb_checkin.py",
+      "environment": [
+        {
+          "name": "BB_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "浏览器登录 https://breezeblue.ai，打开开发者工具的网络面板，刷新后选择本站 /api/me 请求，复制请求标头 Cookie 的完整值。也可填写已注册邮箱账号的邮箱和密码；Google 登录账号请使用 Cookie。",
+          "format": "每个非空行一个账号。支持原始 Cookie、Cookie: 请求头、单行 Copy as cURL、邮箱|密码（仅按首个 | 分割），或单行 JSON 对象。JSON 字段为 cookie、email、password、enabled（布尔值，默认启用）、reward_tier（留空由服务端定档，或 standard、discord）。同一对象可同时配置 Cookie 与邮箱密码供失效后重登。账号之间只能换行，不使用 & 或 @ 分隔。"
+        },
+        {
+          "name": "BB_CONFIG",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "可选旧版 config.json 的显式路径；仅兼容已有配置，推荐迁移至 BB_ACCOUNTS。不会写入或迁移文件。",
+          "format": "仅在 BB_ACCOUNTS 未设置时读取。支持旧版单账号对象或含 accounts 数组的对象；支持 cookie、email、password、enabled、reward_tier，忽略历史结果。"
+        },
+        {
+          "name": "BB_ACTION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中按需要配置；命令行参数优先。",
+          "format": "run（默认签到），test（只查询登录态与余额），list 或 status（只读脱敏配置）；不安装系统任务、不启动守护进程。"
+        },
+        {
+          "name": "BB_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线演练时设为 1。",
+          "format": "1、true、yes、on 开启；不发送业务 HTTP、不执行通知器，不修改状态。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙中填写需要发送通知的脚本选择名单；设置后替换默认名单，本脚本无默认入选项。",
+          "format": "逗号、分号或空白分隔目录标识、脚本相对路径、文件名或文件名通配符；* 表示全部，空值禁用全部。识别本任务 catalogId、来源 catalogId 和实际文件名。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，青龙 notify.py 所在目录；也会尝试 import notify、/ql/data/scripts、/ql/scripts。",
+          "format": "目录路径；通知失败或不可用不改变业务退出码。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，配套凭据置于同一行；邮箱密码按第一个 | 分割以保留密码中的后续分隔符。账号独立处理，任一账号失败则整体非零退出；停用账号跳过，全部停用视为配置错误。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日领取服务端自动定档积分，兼容显式积分档位参数",
+        "支持 Cookie 请求头及单行 cURL 导入，支持已有邮箱账号密码登录；会话失效时至多重登一次",
+        "识别今日已签到，明确验证领取结果，拒绝仅凭 HTTP 200 判定成功",
+        "查询官方显示名称、登录态、积分余额、签到状态、档位及下次重置时间",
+        "支持多账号、独立失败处理及停用开关",
+        "提供 run、test、list、status 动作及旧配置只读兼容",
+        "完全断网预演、脱敏时间轴日志、账号与子任务统计及单行 TASK_SUMMARY 汇总",
+        "按青龙全局开关及脚本名单发送脱敏通知，通知故障保留业务退出码"
+      ],
+      "sideEffects": [
+        "正式运行 run 动作会为启用的账号领取每日积分",
+        "邮箱密码登录或重登会创建服务端登录会话，仅在内存保留",
+        "入选通知名单或强制开启通知时通过青龙通知器发送脱敏统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/42f0a79c5da31311",
+        "candidateSha256": "3af295b04906bfee0875a4a0b6eb54933f4bf94c422737a844613a2097590b07"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "3af295b04906bfee0875a4a0b6eb54933f4bf94c422737a844613a2097590b07",
+        "releaseSha256": "8c9994476dc2aac695767379baf2d70251ade55d806949e97d5762621ea08f61",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T11:00:31.642553+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "3af295b04906bfee0875a4a0b6eb54933f4bf94c422737a844613a2097590b07",
+          "toCandidateSha256": "8c9994476dc2aac695767379baf2d70251ade55d806949e97d5762621ea08f61",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "2ecd586638b72a85",
       "applicationKey": "acfun",
       "checkProfile": {
@@ -12955,6 +13361,155 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "924f4eb1be574d8228ba7d32eb81e42b41ad39cb4b9b7fe973aceb0f2cc5884a",
           "toCandidateSha256": "2e5f12c38e494c8353a715ff3079a0c4df988f0f170a99881ac88d4dcfb416ac",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "39580db6919e11a5",
+      "applicationKey": "f1shqaq/ql-scripts::baiduwp",
+      "checkProfile": {
+        "requiredEnv": [
+          "BAIDUWP_COOKIE"
+        ],
+        "optionalEnv": [
+          "BAIDUWP_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "BAIDUWP_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "签到成功，成长值 +",
+          "今日已签到",
+          "答题成功，成长值 +",
+          "今日已答题",
+          "会员等级",
+          "TASK_SUMMARY="
+        ],
+        "features": [
+          "每日会员成长值签到",
+          "每日获取题目并提交接口提供的答案",
+          "查询会员等级与当前成长值",
+          "保留完整 Cookie 与单个 BDUSS 两种凭据输入，支持逐行多账号",
+          "离线配置检查和任务预演",
+          "逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 结构化汇总",
+          "按全局开关及脚本名单调用青龙通知，通知故障保留业务退出码",
+          "接口提供非敏感昵称、用户名或公开 UID 时显示账号身份"
+        ],
+        "sideEffects": [
+          "提交每日签到，可能增加会员成长值",
+          "提交每日题目答案，可能增加会员成长值",
+          "通知开启且处于正式运行时，通过青龙通知模块发送脱敏任务摘要"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "百度网盘签到",
+      "path": "scripts/checkin_baiduwp.py",
+      "sha256": "1b98956a8c0df10fc162ddf1d7e3fc8f19a85dee214e44117468f626065aeac6",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "f1shQAQ/ql-scripts",
+        "branch": "main",
+        "commit": "f3095ecc711f8e35e2576885c371d8ddd0184b3f",
+        "originalPath": "checkin_baiduwp.py"
+      },
+      "cron": "1 11 * * *",
+      "command": "python3 scripts/checkin_baiduwp.py",
+      "environment": [
+        {
+          "name": "BAIDUWP_COOKIE",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录 https://pan.baidu.com，在开发者工具的网络面板选中本人已登录请求，复制完整 Cookie 请求头值，建议保留 BDUSS 和 STOKEN。也兼容仅填 BDUSS 的值，服务端要求额外凭据时需重新获取完整 Cookie。请勿分享凭据。",
+          "format": "每个非空行一个账号，填写完整 Cookie 或单个 BDUSS 值。Cookie 的每项仅在第一个等号处分割，后续等号保留。不使用 &&、&、@ 分隔账号，旧 && 配置需迁移为换行。"
+        },
+        {
+          "name": "BAIDUWP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线校验时手动设置为 1，正式运行时删除或设置为 0。",
+          "format": "1、true、yes、on 开启完全断网预演，其余值为正式执行。预演仍检查必填凭据格式。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "填写需要通知的脚本选择器，设置后替换默认空名单。",
+          "format": "用逗号、分号、空白或换行分隔目录编号、脚本相对路径、文件名或文件名通配符。可填 39580db6919e11a5 或 checkin_baiduwp.py，* 选择全部，空值禁用名单通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "使用青龙自带通知模块时无需设置，自定义通知模块位置时填写其目录。",
+          "format": "包含 notify.py 或 sendNotify.js 的目录。依次尝试导入 notify.send、自定义目录及 /ql/data/scripts、/ql/scripts。JavaScript 通知需要青龙已安装 Node.js，业务请求仅依赖 Python 标准库。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "BAIDUWP_COOKIE 每个非空行一个账号，同一账号的 Cookie 字段保留在同一行，逐账号独立处理。任一账号的配置、签到、答题或信息查询失败时整体非零退出。"
+      },
+      "dependencies": [],
+      "features": [
+        "每日会员成长值签到",
+        "每日获取题目并提交接口提供的答案",
+        "查询会员等级与当前成长值",
+        "保留完整 Cookie 与单个 BDUSS 两种凭据输入，支持逐行多账号",
+        "离线配置检查和任务预演",
+        "逐阶段脱敏日志、账号统计和单行 TASK_SUMMARY 结构化汇总",
+        "按全局开关及脚本名单调用青龙通知，通知故障保留业务退出码",
+        "接口提供非敏感昵称、用户名或公开 UID 时显示账号身份"
+      ],
+      "sideEffects": [
+        "提交每日签到，可能增加会员成长值",
+        "提交每日题目答案，可能增加会员成长值",
+        "通知开启且处于正式运行时，通过青龙通知模块发送脱敏任务摘要"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/39580db6919e11a5",
+        "candidateSha256": "70938de5661ee8003128d029f865966e4586c969fdcf537791ea4f0ad19a0196"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "70938de5661ee8003128d029f865966e4586c969fdcf537791ea4f0ad19a0196",
+        "releaseSha256": "1b98956a8c0df10fc162ddf1d7e3fc8f19a85dee214e44117468f626065aeac6",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T11:00:05.718231+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "70938de5661ee8003128d029f865966e4586c969fdcf537791ea4f0ad19a0196",
+          "toCandidateSha256": "1b98956a8c0df10fc162ddf1d7e3fc8f19a85dee214e44117468f626065aeac6",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

@@ -1,9 +1,10 @@
 # 分类索引 · AI服务
 
-共 **13** 个脚本。返回 [`目录首页`](../README.md)。
+共 **14** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
+| AtomCode 免费套餐领取 | `scripts/atomcode_daily.py` | `python3 scripts/atomcode_daily.py` | `3 11 * * *` | 待检查 | [atomcode_daily.py.md](../../scripts/atomcode_daily.py.md)（`docs/scripts/atomcode_daily.py.md`） |
 | EUserv 自动续期 | `scripts/ck_euserv.py` | `python3 scripts/ck_euserv.py` | `56 10 */7 * *` | 待检查 | [ck_euserv.py.md](../../scripts/ck_euserv.py.md)（`docs/scripts/ck_euserv.py.md`） |
 | Qoder CN 每日 Credits 领取 | `scripts/claim.js` | `node scripts/claim.js` | `53 10 * * *` | 待检查 | [claim.js.md](../../scripts/claim.js.md)（`docs/scripts/claim.js.md`） |
 | CodeArts 每日福利领取 | `scripts/codearts_daily.py` | `python3 scripts/codearts_daily.py` | `16 8 * * *` | 待检查 | [codearts_daily.py.md](../../scripts/codearts_daily.py.md)（`docs/scripts/codearts_daily.py.md`） |

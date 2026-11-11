@@ -45,6 +45,7 @@
 | 中转站每日签到 | `scripts/astrbot_plugin_relay.py` | `python3 scripts/astrbot_plugin_relay.py` | `39 9 * * *` | 待检查 | [astrbot_plugin_relay.py.md](../scripts/astrbot_plugin_relay.py.md)（`docs/scripts/astrbot_plugin_relay.py.md`） |
 | AStudio 每日登录积分观测 | `scripts/astudio_daily.py` | `python3 scripts/astudio_daily.py` | `17 9 * * *` | 待检查 | [astudio_daily.py.md](../scripts/astudio_daily.py.md)（`docs/scripts/astudio_daily.py.md`） |
 | 微助教课堂签到 | `scripts/asynccheckin.py` | `python3 scripts/asynccheckin.py` | `*/3 7-22 * * 1-5` | 待检查 | [asynccheckin.py.md](../scripts/asynccheckin.py.md)（`docs/scripts/asynccheckin.py.md`） |
+| AtomCode 免费套餐领取 | `scripts/atomcode_daily.py` | `python3 scripts/atomcode_daily.py` | `3 11 * * *` | 待检查 | [atomcode_daily.py.md](../scripts/atomcode_daily.py.md)（`docs/scripts/atomcode_daily.py.md`） |
 | 艾特校园圈 | `scripts/atxyq.py` | `python3 scripts/atxyq.py` | `21 10,23 * * *` | 待检查 | [atxyq.py.md](../scripts/atxyq.py.md)（`docs/scripts/atxyq.py.md`） |
 | 上海杨浦商城定时抢购 | `scripts/auto_buy.py` | `python3 scripts/auto_buy.py` | `0 0 10 * * *` | 待检查 | [auto_buy.py.md](../scripts/auto_buy.py.md)（`docs/scripts/auto_buy.py.md`） |
 | 厦门大学畅课自动签到 | `scripts/auto_checkin.py` | `python3 scripts/auto_checkin.py` | `*/2 8-18 * * 1-5` | 待检查 | [auto_checkin.py.md](../scripts/auto_checkin.py.md)（`docs/scripts/auto_checkin.py.md`） |
@@ -60,6 +61,7 @@
 | 百度站点提交 | `scripts/baidu.py` | `python3 scripts/baidu.py` | `36 2 * * *` | 待检查 | [baidu.py.md](../scripts/baidu.py.md)（`docs/scripts/baidu.py.md`） |
 | 百度网盘签到 | `scripts/baiduwangpan_checkin.py` | `python3 scripts/baiduwangpan_checkin.py` | `27 2 * * *` | 待检查 | [baiduwangpan_checkin.py.md](../scripts/baiduwangpan_checkin.py.md)（`docs/scripts/baiduwangpan_checkin.py.md`） |
 | Bailanjo 自动签到 | `scripts/bailanjo_checkin.py` | `python3 scripts/bailanjo_checkin.py` | `31 2 * * *` | 待检查 | [bailanjo_checkin.py.md](../scripts/bailanjo_checkin.py.md)（`docs/scripts/bailanjo_checkin.py.md`） |
+| BreezeBlue 每日积分签到 | `scripts/bb_checkin.py` | `python3 scripts/bb_checkin.py` | `2 11 * * *` | 待检查 | [bb_checkin.py.md](../scripts/bb_checkin.py.md)（`docs/scripts/bb_checkin.py.md`） |
 | AcFun Cookie每日任务 | `scripts/beacherz_dailycheckin_plus_acfun.py` | `python3 scripts/beacherz_dailycheckin_plus_acfun.py` | `21 0 * * *` | 待检查 | [beacherz_dailycheckin_plus_acfun.py.md](../scripts/beacherz_dailycheckin_plus_acfun.py.md)（`docs/scripts/beacherz_dailycheckin_plus_acfun.py.md`） |
 | B站每日任务 | `scripts/bilibili.py` | `python3 scripts/bilibili.py` | `6 2 * * *` | 待检查 | [bilibili.py.md](../scripts/bilibili.py.md)（`docs/scripts/bilibili.py.md`） |
 | Holmes AI 每日签到 | `scripts/bot.py` | `python3 scripts/bot.py` | `14 8 * * *` | 待检查 | [bot.py.md](../scripts/bot.py.md)（`docs/scripts/bot.py.md`） |
@@ -75,6 +77,7 @@
 | 超星学习通巡课签到 | `scripts/chaoxing_assistant.js` | `node scripts/chaoxing_assistant.js` | `*/10 7-22 * * *` | 待检查 | [chaoxing_assistant.js.md](../scripts/chaoxing_assistant.js.md)（`docs/scripts/chaoxing_assistant.js.md`） |
 | 智谱清言每日签到 | `scripts/chatglm_daily.py` | `python3 scripts/chatglm_daily.py` | `23 1 * * *` | 待检查 | [chatglm_daily.py.md](../scripts/chatglm_daily.py.md)（`docs/scripts/chatglm_daily.py.md`） |
 | VManAPI 每日签到 | `scripts/check_in.py` | `python3 scripts/check_in.py` | `23 8 * * *` | 待检查 | [check_in.py.md](../scripts/check_in.py.md)（`docs/scripts/check_in.py.md`） |
+| 百度网盘签到 | `scripts/checkin_baiduwp.py` | `python3 scripts/checkin_baiduwp.py` | `1 11 * * *` | 待检查 | [checkin_baiduwp.py.md](../scripts/checkin_baiduwp.py.md)（`docs/scripts/checkin_baiduwp.py.md`） |
 | LaTeX工作室签到 | `scripts/checkin_latex.py` | `python3 scripts/checkin_latex.py` | `10 1 * * *` | 待检查 | [checkin_latex.py.md](../scripts/checkin_latex.py.md)（`docs/scripts/checkin_latex.py.md`） |
 | 人人视频日常 | `scripts/checkin_rrshipin.py` | `python3 scripts/checkin_rrshipin.py` | `14 10 * * *` | 待检查 | [checkin_rrshipin.py.md](../scripts/checkin_rrshipin.py.md)（`docs/scripts/checkin_rrshipin.py.md`） |
 | 雪佛兰APP签到 | `scripts/chevrolet.js` | `node scripts/chevrolet.js` | `55 0 * * *` | 待检查 | [chevrolet.js.md](../scripts/chevrolet.js.md)（`docs/scripts/chevrolet.js.md`） |

@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **378** 个脚本。返回 [`目录首页`](../README.md)。
+共 **379** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -48,6 +48,7 @@
 | 薄荷公益站每日签到 | `scripts/background.js` | `node scripts/background.js` | `4 8 * * *` | 待检查 | [background.js.md](../../scripts/background.js.md)（`docs/scripts/background.js.md`） |
 | 巴哈姆特每日签到 | `scripts/bahamutdailybonus.js` | `node scripts/bahamutdailybonus.js` | `15 10 * * *` | 待检查 | [bahamutdailybonus.js.md](../../scripts/bahamutdailybonus.js.md)（`docs/scripts/bahamutdailybonus.js.md`） |
 | Bailanjo 自动签到 | `scripts/bailanjo_checkin.py` | `python3 scripts/bailanjo_checkin.py` | `31 2 * * *` | 待检查 | [bailanjo_checkin.py.md](../../scripts/bailanjo_checkin.py.md)（`docs/scripts/bailanjo_checkin.py.md`） |
+| BreezeBlue 每日积分签到 | `scripts/bb_checkin.py` | `python3 scripts/bb_checkin.py` | `2 11 * * *` | 待检查 | [bb_checkin.py.md](../../scripts/bb_checkin.py.md)（`docs/scripts/bb_checkin.py.md`） |
 | AcFun Cookie每日任务 | `scripts/beacherz_dailycheckin_plus_acfun.py` | `python3 scripts/beacherz_dailycheckin_plus_acfun.py` | `21 0 * * *` | 待检查 | [beacherz_dailycheckin_plus_acfun.py.md](../../scripts/beacherz_dailycheckin_plus_acfun.py.md)（`docs/scripts/beacherz_dailycheckin_plus_acfun.py.md`） |
 | B站每日任务 | `scripts/bilibili.py` | `python3 scripts/bilibili.py` | `6 2 * * *` | 待检查 | [bilibili.py.md](../../scripts/bilibili.py.md)（`docs/scripts/bilibili.py.md`） |
 | Holmes AI 每日签到 | `scripts/bot.py` | `python3 scripts/bot.py` | `14 8 * * *` | 待检查 | [bot.py.md](../../scripts/bot.py.md)（`docs/scripts/bot.py.md`） |
