@@ -79477,7 +79477,8 @@
         "liveEnv": {},
         "successPatterns": [
           "TASK_SUMMARY=",
-          "\"status\":\"success\""
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
         ],
         "features": [
           "国内默认任务保持每日签到、已达标成长奖励领取、猫猫旅行、Buddy信息和徽章查询；积分、用量、成长等级、能量、任务状态及两类连签保持可查询。",
@@ -79511,7 +79512,8 @@
           "合并每日积分独立入口 --daily-checkin，兼容 --token 与 WB_DAILY_CHECKIN_TOKEN；仅配置此变量时支持无参数执行，与其他凭据同时配置时显式选择。",
           "保留用户、组织、租户请求头与可选本人本机登录文件；无需安装客户端，环境凭据即可独立执行。",
           "国内签到及新入口按原顺序回退两个官方状态接口；状态未知时停止领取，写请求仅一次并回读今日已签。",
-          "独立入口保留本次积分、累计积分、余额、连签与活动名称的逐账号 JSON，正确保留数值零；38 9 * * * 可单独调度。"
+          "独立入口保留本次积分、累计积分、余额、连签与活动名称的逐账号 JSON，正确保留数值零；38 9 * * * 可单独调度。",
+          "新增独立旅行只读详情和到达倒计时、官方目的地选择，以及显式授权的领奖后连续派遣；兼容 travel、--travel-status、--travel-auto、--location、--no-travel、--check-only、--no-notify。"
         ],
         "sideEffects": [
           "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
@@ -79526,7 +79528,8 @@
           "仅显式选择开学季 claim 时领取已完成活动奖励；选择 lottery 时消耗至多指定次数的开学季抽奖机会。",
           "仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。",
           "Cookie 加油站入口为尚未签到的账号领取每日奖励；--check 只查询。服务端轮换 Cookie 仅存于本轮账号内存。",
-          "仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。"
+          "仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。",
+          "仅显式 --travel-auto 时，已到达旅行领奖后回读空闲和当日上限，再派遣下一次旅行。"
         ]
       },
       "postReview": {
@@ -79535,7 +79538,7 @@
       },
       "displayName": "WorkBuddy 国内版日常维护",
       "path": "scripts/workbuddy_daily.py",
-      "sha256": "3a0d57881bfd55d39496f0f96ac17bfed93d26ea46b60f759327f4f3257fada6",
+      "sha256": "def84da0042e0598500cad72f84da1596fabea25f9845e97706ab2dc717dd219",
       "stage": "released",
       "license": "MIT",
       "licenseGate": "allowed-permissive",
@@ -79604,10 +79607,20 @@
             "catalogId": "437220302cb75855",
             "sha256": "99781fff3d7b2e892d211afb8e873916369e2907d7dbe58c35122494e033aa39",
             "license": "MIT"
+          },
+          {
+            "repository": "yellowcat-ai/ai-daily-checkin",
+            "url": "https://github.com/yellowcat-ai/ai-daily-checkin",
+            "branch": "main",
+            "commit": "27bc114156d0fcd5c34c68e993b96dc3dd9ad2d6",
+            "originalPath": "workbuddy/scripts/workbuddy_checkin.py",
+            "catalogId": "0edbb71270182081",
+            "sha256": "440498e52ab6b67626b89cc9891dd65f935536102c7d543c10cc6d55f3131caa",
+            "license": "MIT"
           }
         ]
       },
-      "cron": "15 7,12 * * *",
+      "cron": "27 7,12 * * *",
       "command": "python3 scripts/workbuddy_daily.py",
       "environment": [
         {
@@ -79859,7 +79872,8 @@
         "合并每日积分独立入口 --daily-checkin，兼容 --token 与 WB_DAILY_CHECKIN_TOKEN；仅配置此变量时支持无参数执行，与其他凭据同时配置时显式选择。",
         "保留用户、组织、租户请求头与可选本人本机登录文件；无需安装客户端，环境凭据即可独立执行。",
         "国内签到及新入口按原顺序回退两个官方状态接口；状态未知时停止领取，写请求仅一次并回读今日已签。",
-        "独立入口保留本次积分、累计积分、余额、连签与活动名称的逐账号 JSON，正确保留数值零；38 9 * * * 可单独调度。"
+        "独立入口保留本次积分、累计积分、余额、连签与活动名称的逐账号 JSON，正确保留数值零；38 9 * * * 可单独调度。",
+        "新增独立旅行只读详情和到达倒计时、官方目的地选择，以及显式授权的领奖后连续派遣；兼容 travel、--travel-status、--travel-auto、--location、--no-travel、--check-only、--no-notify。"
       ],
       "sideEffects": [
         "默认执行可能每日签到、领取已完成成长任务奖励、领取已到达旅行奖励或派遣空闲Buddy旅行。",
@@ -79874,7 +79888,8 @@
         "仅显式选择开学季 claim 时领取已完成活动奖励；选择 lottery 时消耗至多指定次数的开学季抽奖机会。",
         "仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。",
         "Cookie 加油站入口为尚未签到的账号领取每日奖励；--check 只查询。服务端轮换 Cookie 仅存于本轮账号内存。",
-        "仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。"
+        "仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。",
+        "仅显式 --travel-auto 时，已到达旅行领奖后回读空闲和当日上限，再派遣下一次旅行。"
       ],
       "review": {
         "staticPassed": true,
@@ -79887,20 +79902,20 @@
         "businessResult": "not-verified",
         "mode": "basic",
         "evidence": "projects/checkin/validation/132c582ed57df40f",
-        "candidateSha256": "db6c07bbefe54ac8dc4a960fd37acda64992fd5dda9b30a44a2785a7a55533b4"
+        "candidateSha256": "27a71cbb5c43fa31d0978f6e696fc2d6075b4915b2bd13aee460c4b288a9e52b"
       },
       "packaging": {
         "type": "qinglong-release-normalization",
-        "validatedSha256": "db6c07bbefe54ac8dc4a960fd37acda64992fd5dda9b30a44a2785a7a55533b4",
-        "releaseSha256": "3a0d57881bfd55d39496f0f96ac17bfed93d26ea46b60f759327f4f3257fada6",
+        "validatedSha256": "27a71cbb5c43fa31d0978f6e696fc2d6075b4915b2bd13aee460c4b288a9e52b",
+        "releaseSha256": "def84da0042e0598500cad72f84da1596fabea25f9845e97706ab2dc717dd219",
         "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
         "reuseAttestation": {
           "component": "qinglong-notification",
           "approvedBy": "mortal-shaco",
-          "approvedAt": "2026-11-11T11:21:46.048154+00:00",
+          "approvedAt": "2026-11-11T11:48:58.407864+00:00",
           "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
-          "fromCandidateSha256": "db6c07bbefe54ac8dc4a960fd37acda64992fd5dda9b30a44a2785a7a55533b4",
-          "toCandidateSha256": "3a0d57881bfd55d39496f0f96ac17bfed93d26ea46b60f759327f4f3257fada6",
+          "fromCandidateSha256": "27a71cbb5c43fa31d0978f6e696fc2d6075b4915b2bd13aee460c4b288a9e52b",
+          "toCandidateSha256": "def84da0042e0598500cad72f84da1596fabea25f9845e97706ab2dc717dd219",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,

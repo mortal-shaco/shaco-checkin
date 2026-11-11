@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # name: WorkBuddy 国内版日常维护
-# cron: 15 7,12 * * *
+# cron: 27 7,12 * * *
 # =================================================================================
 #  WorkBuddy 积分自动化引擎 (wb_engine.py)  ——  第三方逆向脚本（派生作品 / Derivative Work）
 #
@@ -23,7 +23,13 @@
 # 合并参考：xmgzxmgz/workbuddy-checkin-qinglong，workbuddy_checkin.py（MIT）。
 # 合并参考：Maquer/workbuddy-checkin，workbuddy_checkin.py，MIT
 # 同应用参考：scripts/workbuddy_checkin.py、signin.py（MIT）；不合并 Qoder 或日志转发基础设施
-"""独立维护版。凭据：WORKBUDDY_REFRESH_TOKEN，每行 手机号:AT:RT、AT:RT、手机号:RT 或单个 JWT。
+"""合并参考：yellowcat-ai/ai-daily-checkin，workbuddy/scripts/workbuddy_checkin.py（MIT）。
+新增 travel 独立入口默认只读；travel --travel-auto 才领取并派遣。
+--travel-status 只读旅行详情；--location N 仅选择服务端提供的地点；--travel-auto 显式允许领奖后继续派遣。
+不传新参数时保留维护版默认任务和先领奖、下轮再派遣的边界。
+--check-only 兼容只读成长查询；--no-travel 跳过旅行；--no-notify 关闭青龙通知。
+上游客户端内存扫描、DPAPI、DLL和私有推送模块不作为运行依赖；凭据获取沿用以下官方明文方式。
+独立维护版。凭据：WORKBUDDY_REFRESH_TOKEN，每行 手机号:AT:RT、AT:RT、手机号:RT 或单个 JWT。
 明文凭据可在本人已登录客户端认证信息中读取；加密信封不可使用，改从官方登录请求响应获取。
 默认只执行签到、查询、已完成任务领奖及旅行；消耗资源、同意协议与模拟成长事件均需显式选择。
 WORKBUDDY_TASKS / --tasks：逗号或空格分隔任务名；WORKBUDDY_SKIP_TASKS / --skip-tasks：排除。
@@ -3076,16 +3082,46 @@ def t_badges(s, uid, nick, log):
     timeline('已获得徽章%d个' % sum(1 for b in items if isinstance(b,dict) and b.get('earned')))
     return 'success'
 
+TRAVEL_LOCATION = None
+TRAVEL_REDEPART = False
+
+def travel_details(status, config=None):
+    state = status.get('state')
+    labels = {'idle':'空闲','traveling':'旅行中','arrived':'已到达待领奖'}
+    if state not in labels:
+        raise SafeError('旅行状态未知，未发送写请求')
+    timeline('旅行状态：' + labels[state])
+    loc = status.get('location')
+    if isinstance(loc,dict) and isinstance(loc.get('name'),str):
+        timeline('目的地：' + panel_text(loc['name']))
+    arrive, now = status.get('arrive_at'), status.get('server_now')
+    if state == 'traveling' and all(isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v) for v in (arrive,now)):
+        timeline('距离到达：%d秒' % max(0,arrive-now))
+    if isinstance(config,dict) and isinstance(config.get('locations'),list):
+        for row in config['locations']:
+            if isinstance(row,dict):
+                timeline('可选目的地：%s；%s' % (safe_number(row.get('id')),panel_text(row.get('name','未命名地点'))))
+    if isinstance(status.get('daily_limit_reached'),bool):
+        timeline('今日旅行上限：' + ('已达上限' if status['daily_limit_reached'] else '尚未达到'))
+
+def travel_readonly(s):
+    status = read_data(s, '/v2/activity/growth/buddy/travel/status')
+    config = read_data(s, '/v2/activity/growth/buddy/travel/config')
+    travel_details(status,config)
+    return 'success'
+
 def t_travel(s, uid, nick, log):
     visible = read_data(s, '/v2/activity/growth/buddy/visible')
     if visible.get('buddy_visible') is False or visible.get('has_buddy') is False:
         timeline('⏭️ 无可旅行 Buddy')
         return 'skipped'
     status = read_data(s, '/v2/activity/growth/buddy/travel/status')
+    travel_details(status)
     state = status.get('state')
     if state == 'traveling':
         timeline('☑️ 正在旅行')
         return 'alreadyComplete'
+    claimed = False
     if state == 'arrived':
         record = status.get('record_id')
         if not isinstance(record,(str,int)) or isinstance(record,bool) or record in ('',0):
@@ -3095,21 +3131,39 @@ def t_travel(s, uid, nick, log):
         if not isinstance(credit,(int,float)) or isinstance(credit,bool) or not math.isfinite(credit) or credit < 0:
             raise SafeError('旅行领奖缺少有效积分回执，不能确认到账')
         timeline('旅行奖励已确认，积分%s' % safe_number(credit))
-        return 'success'
+        if not TRAVEL_REDEPART:
+            return 'success'
+        claimed = True
+        status = read_data(s, '/v2/activity/growth/buddy/travel/status')
+        travel_details(status)
+        state = status.get('state')
+        if state == 'traveling':
+            return 'success'
+        if state != 'idle':
+            raise SafeError('领奖后未确认空闲，停止派遣且不重复领奖')
     if status.get('daily_limit_reached') is True:
         timeline('☑️ 今日旅行次数已用尽')
-        return 'alreadyComplete'
+        return 'success' if claimed else 'alreadyComplete'
     if state != 'idle':
         raise SafeError('旅行状态未知，未派遣')
+    if status.get('daily_limit_reached') is not False:
+        raise SafeError('每日旅行上限状态未知，未派遣')
     cfg = read_data(s, '/v2/activity/growth/buddy/travel/config')
     locations = cfg.get('locations')
     if not isinstance(locations,list) or not locations or not isinstance(locations[0],dict) or not locations[0].get('id'):
         raise SafeError('旅行目的地缺失')
-    read_data(s, '/v2/activity/growth/buddy/travel/depart','POST',{'location_id':locations[0]['id']})
+    chosen = locations[0]['id']
+    if TRAVEL_LOCATION is not None:
+        matches = [row for row in locations if isinstance(row,dict) and str(row.get('id')) == str(TRAVEL_LOCATION)]
+        if not matches:
+            raise SafeError('指定目的地不在官方可选列表，未派遣')
+        chosen = matches[0]['id']
+    read_data(s, '/v2/activity/growth/buddy/travel/depart','POST',{'location_id':chosen})
     if read_data(s, '/v2/activity/growth/buddy/travel/status').get('state') != 'traveling':
         raise SafeError('旅行出发未落账')
     timeline('✅ 已回读确认出发')
     return 'success'
+
 
 def t_lottery(s, uid, nick, log):
     d = read_data(s, '/v2/activity/growth/lottery/chances')
@@ -3513,7 +3567,7 @@ def school_action(client, action, uid, nick, draw_limit):
 
 
 def main():
-    global DRY, TASK_ONLY, TASK_SKIP, WRITE_GAP, MP_CHAT_GAP, ACTIVE_TAG
+    global DRY, TASK_ONLY, TASK_SKIP, WRITE_GAP, MP_CHAT_GAP, ACTIVE_TAG, TRAVEL_LOCATION, TRAVEL_REDEPART
     DRY = os.getenv('WORKBUDDY_DRY_RUN','0').lower() in ('1','true','yes','on')
     started = time.monotonic()
     stats = {'accounts':0, 'success':0, 'failed':0, 'steps':{'success':0,'alreadyComplete':0,'skipped':0,'failed':0}, 'dryRun':DRY}
@@ -3526,6 +3580,13 @@ def main():
         parser.add_argument('--json', action='store_true', help='配合 --credit-report 输出脱敏数值数组')
         parser.add_argument('--school', action='store_true', help='独立开学季入口，默认只读查询')
         parser.add_argument('--school-tasks', default='', help='独立开学季动作：query,share,report,growth,claim,lottery')
+        parser.add_argument('action', nargs='?', choices=['travel'], help='独立旅行入口，默认只读')
+        parser.add_argument('--travel-status', action='store_true', help='独立只读旅行详情')
+        parser.add_argument('--travel-auto', action='store_true', help='允许旅行领奖后继续派遣')
+        parser.add_argument('--location', type=int, help='旅行目的地，必须在服务端可选列表')
+        parser.add_argument('--no-travel', action='store_true', help='跳过旅行')
+        parser.add_argument('--check-only', action='store_true', help='兼容只读查询')
+        parser.add_argument('--no-notify', action='store_true', help='关闭青龙通知')
         parser.add_argument('--query', action='store_true')
         parser.add_argument('--status', '-s', action='store_true', help='独立只读签到状态面板')
         parser.add_argument('--refresh', action='store_true')
@@ -3536,6 +3597,24 @@ def main():
         parser.add_argument('--tasks', default=os.getenv('WORKBUDDY_TASKS',os.getenv('WORKBUDDY_ONLY_TASKS','')))
         parser.add_argument('--skip-tasks', default=os.getenv('WORKBUDDY_SKIP_TASKS',''))
         args = parser.parse_args()
+        if args.no_notify:
+            os.environ['QINGLONG_NOTIFY'] = '0'
+        travel_entry = bool(args.action == 'travel' or args.travel_status)
+        travel_read = bool(args.travel_status or (args.action == 'travel' and not args.travel_auto) or (travel_entry and args.check_only))
+        if travel_entry and (args.school or args.status or args.credit_report or args.refresh or args.query or args.tasks or args.skip_tasks or args.no_travel):
+            raise SafeError('独立旅行入口不能混用其他任务或查询参数')
+        if args.travel_status and args.travel_auto:
+            raise SafeError('只读旅行入口不能允许派遣')
+        if args.check_only and not travel_entry:
+            args.query = True
+        if (args.query or args.status or args.school or args.credit_report or args.refresh or args.no_travel or travel_read) and (args.travel_auto or args.location is not None):
+            raise SafeError('只读、跳过旅行或其他独立入口不能指定派遣选项')
+        TRAVEL_LOCATION = args.location
+        TRAVEL_REDEPART = args.travel_auto
+        if travel_entry:
+            args.tasks = 'travel'
+        if args.no_travel:
+            args.skip_tasks = (args.skip_tasks + ',travel').strip(',')
         if args.school_tasks and not args.school:
             raise SafeError('--school-tasks 只能配合 --school')
         if args.school and (args.query or args.status or args.credit_report or args.refresh or args.json or args.tasks or args.skip_tasks):
@@ -3628,9 +3707,9 @@ def main():
                     SECRETS.extend([at,rt])
                 exp = _jwt_claims(at).get('exp',0)
                 due = bool(rt and store and (time.time()-cached.get('updated',0)>10*86400 or (exp and exp-time.time()<7*86400)))
-                if (args.credit_report or args.status or args.school) and not at:
+                if (args.credit_report or args.status or args.school or travel_read) and not at:
                     raise SafeError('只读查询需要有效 AT；请先单独 --refresh')
-                if args.refresh or (not (args.credit_report or args.status or args.school) and (not at or due)):
+                if args.refresh or (not (args.credit_report or args.status or args.school or travel_read) and (not at or due)):
                     at, rt = rotate(idx, at, rt, store, cache)
                 elif exp and exp <= time.time():
                     raise SafeError('AT 已过期；配置私有缓存和 RT 后续期')
@@ -3640,7 +3719,11 @@ def main():
                 uid,nick = uid_of(at),nickname_of(at)
                 if legacy and note:
                     s.headers['X-User-Id'] = note
-                if args.school:
+                if travel_read:
+                    stage(2,'只读旅行状态与目的地',lambda:travel_readonly(s))
+                elif args.action == 'travel':
+                    stage(2,'独立猫猫旅行',lambda:t_travel(s,uid,nick,recipe_log))
+                elif args.school:
                     if legacy and note:
                         uid = note
                     client = SchoolClient(s,school_budget)
