@@ -414,7 +414,6 @@
 | 万达电影签到与能量查询 | `scripts/wanda.js` | `node scripts/wanda.js` | `52 1 * * *` | 待检查 | [wanda.js.md](../scripts/wanda.js.md)（`docs/scripts/wanda.js.md`） |
 | 望潮阅读有礼 | `scripts/wangchao.py` | `python3 scripts/wangchao.py` | `11 2 * * *` | 待检查 | [wangchao.py.md](../scripts/wangchao.py.md)（`docs/scripts/wangchao.py.md`） |
 | 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
-| WorkBuddy 每日积分签到 | `scripts/wb_daily_checkin.py` | `python3 scripts/wb_daily_checkin.py` | `38 9 * * *` | 待检查 | [wb_daily_checkin.py.md](../scripts/wb_daily_checkin.py.md)（`docs/scripts/wb_daily_checkin.py.md`） |
 | Web3Go每日签到 | `scripts/web3go.js` | `node scripts/web3go.js` | `48 8 * * *` | 待检查 | [web3go.js.md](../scripts/web3go.js.md)（`docs/scripts/web3go.js.md`） |
 | CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |

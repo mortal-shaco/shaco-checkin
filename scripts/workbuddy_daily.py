@@ -2826,7 +2826,7 @@ def status_panel(s, index, reports, retries):
         data = None
         for attempt in range(retries + 1):
             try:
-                data = read_data(s, '/v2/billing/meter/checkin-activity-status', 'POST', {})
+                data = read_checkin_status(s)
                 break
             except SafeError as exc:
                 # 仅网络异常及5xx重试只读查询，认证及业务错误立即失败。
@@ -2865,7 +2865,7 @@ def query_all(s):
     timeline('用量：资源种类%s，本月使用%s次' % (safe_number(u.get('TotalCount')), safe_number(u.get('TotalDosage'))))
     energy = read_data(s, '/v2/activity/growth/energy')
     streak = read_data(s, '/v2/activity/growth/streak')
-    ck = read_data(s, '/v2/billing/meter/checkin-activity-status', 'POST', {})
+    ck = read_checkin_status(s)
     timeline('成长：等级%s，能量%s，签到连签%s天，活跃连签%s天' %
              (safe_number(p.get('level')), safe_number(energy.get('balance')),
               safe_number(ck.get('streak_days')), safe_number(streak.get('streak', {}).get('days'))))
@@ -2891,8 +2891,24 @@ def query_all(s):
             timeline('公众号关注需本人扫码满24小时，脚本不代为确认')
     return 'success'
 
+def read_checkin_status(s):
+    paths = ('/v2/billing/meter/checkin-activity-status', '/v2/billing/meter/checkin-status')
+    for path in paths:
+        try:
+            data = read_data(s, path, 'POST', {})
+            flag = daily_checked(data)
+            if flag is None:
+                continue
+            # Normalize only the supported legacy flag alias for existing callers.
+            data = dict(data, today_checked_in=flag)
+            ERRORS[:] = [entry for entry in ERRORS if entry[0][1] not in {BASE + p for p in paths}]
+            return data
+        except SafeError:
+            continue
+    raise SafeError('两个官方签到状态接口均未通过核验，停止领取')
+
 def checkin(s):
-    before = read_data(s, '/v2/billing/meter/checkin-activity-status', 'POST', {})
+    before = read_checkin_status(s)
     if before.get('today_checked_in') is True:
         return 'alreadyComplete'
     if before.get('active') is False:
@@ -2900,7 +2916,7 @@ def checkin(s):
     if before.get('active') is not True or before.get('today_checked_in') is not False:
         raise SafeError('签到状态字段缺失')
     read_data(s, '/v2/billing/meter/daily-checkin', 'POST', {})
-    after = read_data(s, '/v2/billing/meter/checkin-activity-status', 'POST', {})
+    after = read_checkin_status(s)
     if after.get('today_checked_in') is not True:
         raise SafeError('签到未通过回读核验')
     show_checkin_panel(after)
@@ -2998,7 +3014,8 @@ def notify_summary(body):
     selectors = os.getenv('QINGLONG_NOTIFY_SCRIPTS')
     if selectors is not None:
         patterns = [v for v in re.split(r'[,;\s]+',selectors) if v]
-        names = ('cdf18dad86c644b6','132c582ed57df40f','workbuddy_daily.py','candidate.py',
+        names = ('cdf18dad86c644b6','132c582ed57df40f','437220302cb75855','workbuddy_daily.py','candidate.py',
+                 'scripts/workbuddy_daily.py','scripts/wb_daily_checkin.py','wb_daily_checkin.py',
                  'checkin/workbuddy_daily.py','scripts/checkin/workbuddy_daily.py',
                  pathlib.Path(__file__).name)
         selected = any(fnmatch.fnmatchcase(name,pattern) for name in names for pattern in patterns)
@@ -4478,8 +4495,457 @@ def buddy_cookie_main():
 
 
 
+# 合并来源：Keefe-Hu/WB-daily-checkin，scripts/wb_daily_checkin.py（MIT）。
+# --daily-checkin 为独立积分入口，兼容 --token 与 WB_DAILY_CHECKIN_TOKEN。
+# 每行原始令牌、uid+token（仅首个+分割）或含 token/uid/org/domain 的单行 JSON。
+# 令牌从本人官方请求 Authorization Bearer 或客户端 auth.accessToken/access_token 获取。
+# 可选本机登录文件位于各系统应用数据目录 CodeBuddyExtension/Data/Public/auth/。
+# macOS 为 ~/Library/Application Support；Windows 为 LOCALAPPDATA/APPDATA；
+# Linux 为 XDG_DATA_HOME 或 ~/.local/share；文件名 workbuddy-desktop.info。
+# 环境变量凭据足以独立执行，无需本机客户端。断网预演仍需占位凭据。
+# 此入口可沿用 incoming 发布计划 38 9 * * *；日常仍为 0 7,12 * * *。
+# WB_DAILY_CHECKIN_DRY_RUN=1 或 WORKBUDDY_DRY_RUN=1 完全断网。
+"""独立标准库任务。优先设置 WB_DAILY_CHECKIN_TOKEN，每行一个账号。
+每行可为原始 token、uid+token，或 JSON 对象：
+{"token":"占位令牌","uid":"公开用户标识","org":"组织标识","domain":"租户域"}。
+配套身份字段请从本人客户端登录信息的 account/auth 字段获取，禁止分享凭据。
+--token 保持兼容；未设置凭据时兼容读取本人 WorkBuddy 登录文件。
+WB_DAILY_CHECKIN_DRY_RUN=1 完全断网；QINGLONG_NOTIFY 控制青龙通知。
+
+MIT License
+Copyright (c) Keefe-Hu
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+"""
+import argparse as daily_argparse
+import fnmatch as daily_fnmatch
+import json as daily_json
+import math as daily_math
+import os as daily_os
+import re as daily_re
+import stat as daily_stat
+import subprocess as daily_subprocess
+import sys as daily_sys
+import time as daily_time
+from datetime import datetime as daily_datetime
+from pathlib import Path as daily_Path
+from urllib.error import HTTPError as daily_HTTPError, URLError as daily_URLError
+from urllib.request import Request as daily_Request, build_opener as daily_build_opener, HTTPRedirectHandler as daily_HTTPRedirectHandler, ProxyHandler as daily_ProxyHandler
+daily_HOST = 'https://www.codebuddy.cn'
+daily_SIGN_URL = daily_HOST + '/v2/billing/meter/daily-checkin'
+daily_STATUS_URLS = (daily_HOST + '/v2/billing/meter/checkin-activity-status', daily_HOST + '/v2/billing/meter/checkin-status')
+daily_BALANCE_URL = daily_HOST + '/v2/billing/meter/get-user-resource'
+daily_TITLE = 'WorkBuddy 每日积分签到'
+daily_TRUE = {'1', 'true', 'yes', 'on'}
+daily_FALSE = {'0', 'false', 'no', 'off'}
+daily_SECRETS = []
+
+class daily_NoRedirect(daily_HTTPRedirectHandler):
+
+    def redirect_request(self, *args, **kwargs):
+        return None
+daily__NO_REDIRECT = daily_NoRedirect()
+
+def daily__login_path(home=None, platform=daily_sys.platform):
+    home = daily_Path.home() if home is None else daily_Path(home)
+    if platform == 'darwin':
+        bases = [home / 'Library/Application Support']
+    elif platform == 'win32':
+        local = daily_os.environ.get('LOCALAPPDATA')
+        roaming = daily_os.environ.get('APPDATA')
+        bases = [daily_Path(p) for p in (local, roaming) if p]
+        bases += [home / 'AppData' / 'Local', home / 'AppData' / 'Roaming']
+    else:
+        xdg = daily_os.environ.get('XDG_DATA_HOME')
+        bases = [daily_Path(xdg)] if xdg else [home / '.local' / 'share']
+    return [b / 'CodeBuddyExtension/Data/Public/auth/workbuddy-desktop.info' for b in bases]
+
+def daily__read_token(path):
+    if path.is_symlink():
+        raise ValueError('登录文件不能是符号链接')
+    try:
+        info = path.stat()
+    except FileNotFoundError:
+        raise ValueError(f'未找到登录文件：{path}')
+    if not daily_stat.S_ISREG(info.st_mode):
+        raise ValueError('登录路径不是普通文件')
+    if hasattr(daily_os, 'getuid') and info.st_uid != daily_os.getuid():
+        raise ValueError('登录文件属于其他用户')
+    if daily_os.name != 'nt' and info.st_mode & 18:
+        raise ValueError('登录文件权限过于开放')
+    try:
+        if info.st_size > 1048576:
+            raise ValueError('登录文件超过大小限制')
+        data = daily_json.loads(path.read_text(encoding='utf-8'))
+    except daily_json.JSONDecodeError as exc:
+        raise ValueError('登录文件不是有效 JSON') from exc
+    if not isinstance(data, dict) or not isinstance(data.get('auth'), dict):
+        raise ValueError('登录文件缺少 auth 字段')
+    return data
+
+def daily__credentials(token=None):
+    if token:
+        return {'token': token.strip(), 'uid': '', 'org': '', 'domain': ''}
+    data = None
+    for path in daily__login_path():
+        if path.is_symlink():
+            continue
+        if daily_Path(f'{path}.logged-out').exists():
+            raise ValueError('已退出登录，请先在客户端登录')
+        if not path.exists():
+            continue
+        try:
+            data = daily__read_token(path)
+        except ValueError:
+            continue
+        break
+    if data is None:
+        tried = ' | '.join((str(p) for p in daily__login_path()))
+        raise ValueError(f'未找到登录文件，已尝试：{tried}')
+    auth = data.get('auth') if isinstance(data.get('auth'), dict) else {}
+    raw = auth.get('accessToken') or auth.get('access_token') or ''
+    if not isinstance(raw, str):
+        raise ValueError('登录文件令牌必须为字符串')
+    raw = raw.strip()
+    if '+' in raw:
+        (uid_part, raw) = (p.strip() for p in raw.split('+', 1))
+    else:
+        uid_part = ''
+    if not raw:
+        raise ValueError('登录文件缺少 access token')
+    account = data.get('account') if isinstance(data.get('account'), dict) else {}
+    return {'token': raw, 'uid': str(account.get('uid') or account.get('id') or uid_part).strip(), 'org': str(account.get('enterpriseId') or account.get('enterprise_id') or '').strip(), 'domain': str(auth.get('domain') or data.get('domain') or '').strip()}
+
+def daily__headers(cred):
+    head = {'Authorization': f"Bearer {cred['token']}", 'Accept': 'application/json', 'Content-Type': 'application/json'}
+    for (key, names) in (('uid', ('X-User-Id',)), ('org', ('X-Enterprise-Id', 'X-Tenant-Id')), ('domain', ('X-Domain',))):
+        if cred[key]:
+            for name in names:
+                head[name] = cred[key]
+    return head
+
+def daily_log(text):
+    print(f'[{daily_datetime.now():%H:%M:%S}] {text}', flush=True)
+
+def daily_safe_text(value):
+    text = daily_re.sub('\\s+', ' ', str(value)).strip()
+    for secret in sorted(daily_SECRETS, key=len, reverse=True):
+        if secret:
+            text = text.replace(secret, '[已隐藏]')
+    text = daily_re.sub('(?i)(?:bearer\\s+\\S+|(?:token|cookie|session|authorization|device[_-]?id)\\s*[:=]\\s*\\S+)', '[已隐藏]', text)
+    return daily_re.sub('(?<!\\d)(?:\\+?86[- ]?)?1[3-9]\\d{9}(?!\\d)', '[手机号已隐藏]', text)
+
+def daily_credentials(line):
+    if line.lstrip().startswith('{'):
+        try:
+            value = daily_json.loads(line)
+        except ValueError:
+            raise ValueError('账号 JSON 格式错误') from None
+        if not isinstance(value, dict):
+            raise ValueError('账号必须为 JSON 对象')
+        cred = {key: value.get(key, '') for key in ('token', 'uid', 'org', 'domain')}
+        if not all((isinstance(v, str) for v in cred.values())):
+            raise ValueError('账号字段必须是字符串')
+        cred = {key: v.strip() for (key, v) in cred.items()}
+    else:
+        cred = {'token': line.strip(), 'uid': '', 'org': '', 'domain': ''}
+        if '+' in cred['token']:
+            (cred['uid'], cred['token']) = (v.strip() for v in cred['token'].split('+', 1))
+    if not cred['token'] or any((any((ord(c) < 32 or ord(c) == 127 for c in v)) for v in cred.values())):
+        raise ValueError('令牌为空或账号字段含控制字符')
+    if cred['token'].lower().startswith('bearer '):
+        cred['token'] = cred['token'][7:].strip()
+    if not cred['token']:
+        raise ValueError('令牌为空')
+    daily_SECRETS.extend((cred[k] for k in ('token', 'org', 'domain') if cred[k]))
+    return cred
+
+def daily_post(url, headers, readonly=False):
+    if any((daily_os.getenv(key, '').strip().lower() in daily_TRUE for key in ('WB_DAILY_CHECKIN_DRY_RUN', 'WORKBUDDY_DRY_RUN'))):
+        raise ValueError('断网预演禁止 HTTP 请求')
+    for attempt in range(3 if readonly else 1):
+        try:
+            request = daily_Request(url, data=b'{}', headers=headers, method='POST')
+            with daily_build_opener(daily_ProxyHandler({}), daily__NO_REDIRECT).open(request, timeout=30) as response:
+                raw = response.read(1048577)
+            if len(raw) > 1048576:
+                raise ValueError('响应超过大小限制')
+            body = daily_json.loads(raw)
+            if not isinstance(body, dict):
+                raise ValueError('响应必须是 JSON 对象')
+            return body
+        except daily_HTTPError as exc:
+            raise ValueError(f'HTTP {exc.code}，未输出响应正文') from None
+        except (daily_URLError, TimeoutError, OSError):
+            if readonly and attempt < 2:
+                daily_time.sleep(1 + attempt)
+                continue
+            raise ValueError('网络连接失败或超时；写请求结果不确定时请稍后查询状态') from None
+        except (UnicodeError, daily_json.JSONDecodeError):
+            raise ValueError('响应不是有效 JSON') from None
+
+def daily_code_ok(body):
+    return type(body.get('code')) is int and body['code'] == 0
+
+def daily_checked(data):
+    value = data.get('today_checked_in', data.get('todayCheckedIn'))
+    if value is True or (type(value) is int and value == 1) or (isinstance(value, str) and value.strip().lower() in {'true', '1'}):
+        return True
+    if value is False or (type(value) is int and value == 0) or (isinstance(value, str) and value.strip().lower() in {'false', '0'}):
+        return False
+    return None
+
+def daily_identity(payload):
+    if not isinstance(payload, dict):
+        return
+    for key in ('nickname', 'username', 'displayName', 'display_name', 'uid'):
+        value = payload.get(key)
+        if isinstance(value, (str, int)) and (not isinstance(value, bool)) and str(value):
+            daily_log(f'账号身份 {key}：{daily_safe_text(value)}')
+    for key in ('user', 'account', 'userInfo', 'Response', 'Data'):
+        if isinstance(payload.get(key), dict):
+            daily_identity(payload[key])
+
+def daily_probe(headers):
+    for (index, url) in enumerate(daily_STATUS_URLS, 1):
+        try:
+            body = daily_post(url, headers, readonly=True)
+            data = body.get('data')
+            if daily_code_ok(body) and isinstance(data, dict) and (daily_checked(data) is not None):
+                daily_identity(data)
+                daily_log(f'状态接口 {index}：查询成功')
+                return data
+            daily_log(f'状态接口 {index}：业务码或签到状态字段无效，继续兜底')
+        except ValueError as exc:
+            daily_log(f'状态接口 {index}：{exc}，继续兜底')
+    return None
+
+def daily_number(*values):
+    for value in values:
+        if isinstance(value, (int, float)) and (not isinstance(value, bool)) and daily_math.isfinite(value):
+            return value
+        if isinstance(value, str) and daily_re.fullmatch('-?\\d+(?:\\.\\d+)?', value):
+            return value
+    return '-'
+
+def daily_selected_notification():
+    switch = daily_os.getenv('QINGLONG_NOTIFY', 'auto').strip().lower()
+    if switch in daily_FALSE:
+        return False
+    selection = daily_os.getenv('QINGLONG_NOTIFY_SCRIPTS')
+    if selection is None:
+        return switch in daily_TRUE
+    selectors = daily_re.split(r'[,;\s]+', selection.strip())
+    names = ('437220302cb75855', 'scripts/wb_daily_checkin.py', 'wb_daily_checkin.py', '132c582ed57df40f', 'workbuddy_daily.py', 'scripts/workbuddy_daily.py', daily_Path(__file__).name, 'scripts/' + daily_Path(__file__).name)
+    return any((pattern and daily_fnmatch.fnmatchcase(name, pattern) for pattern in selectors for name in names))
+
+def daily_notify(summary, dry):
+    if not daily_selected_notification():
+        daily_log('通知：未启用（默认仅推送显式选中的脚本）')
+        return 'disabled'
+    if dry:
+        daily_log('通知：断网预演，仅展示脱敏总结，不调用推送模块')
+        return 'dry-run'
+    body = f"账号总数 {summary['accounts']}，成功 {summary['success']}，失败 {summary['failed']}；状态 {summary['status']}"
+    runner = 'import importlib.util,sys\npath,title,body=sys.argv[1:]\nif path:\n    spec=importlib.util.spec_from_file_location("ql_notify",path)\n    module=importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\nelse:\n    import notify as module\nmodule.send(title,body)\n'
+    paths = [None]
+    root = daily_os.getenv('QINGLONG_NOTIFY_DIR')
+    roots = ([daily_Path(root)] if root else []) + [daily_Path('/ql/data/scripts'), daily_Path('/ql/scripts')]
+    paths += [p / 'notify.py' for p in roots if (p / 'notify.py').is_file()]
+    for path in paths:
+        try:
+            result = daily_subprocess.run([daily_sys.executable, '-c', runner, str(path) if path else '', daily_TITLE, body], stdout=daily_subprocess.DEVNULL, stderr=daily_subprocess.DEVNULL, timeout=20, check=False)
+            if result.returncode == 0:
+                daily_log('通知：发送完成')
+                return 'sent'
+        except (OSError, daily_subprocess.TimeoutExpired):
+            pass
+    for root in roots:
+        path = root / 'sendNotify.js'
+        if not path.is_file():
+            continue
+        try:
+            runner_js = 'Promise.resolve(require(process.argv[1]).sendNotify(process.argv[2],process.argv[3])).catch(()=>process.exit(1))'
+            result = daily_subprocess.run(['node', '-e', runner_js, str(path), daily_TITLE, body], stdout=daily_subprocess.DEVNULL, stderr=daily_subprocess.DEVNULL, timeout=20, check=False)
+            if result.returncode == 0:
+                daily_log('通知：发送完成')
+                return 'sent'
+        except (OSError, daily_subprocess.TimeoutExpired):
+            pass
+    daily_log('通知：模块不可用或发送失败，保留业务退出码')
+    return 'unavailable'
+
+def daily_account_run(cred, index, dry):
+    started = daily_time.monotonic()
+    counts = dict(total=4, success=0, already=0, skipped=0, failed=0)
+    result = {}
+    status = None
+    sign_data = {}
+    activity = {}
+    balance = None
+    failed = False
+    headers = daily__headers(cred)
+    for (stage, name) in enumerate(('查询签到状态（双接口兜底）', '领取每日积分', '刷新活动及积分', '查询账户余额'), 1):
+        tick = daily_time.monotonic()
+        daily_log(f'账号 {index} 阶段 {stage}/4：{name}')
+        outcome = 'success'
+        try:
+            if dry:
+                outcome = 'skipped'
+                daily_log('⏭️ 断网预演：检查参数和执行计划，不发起 HTTP，不领取积分')
+            elif stage == 1:
+                status = daily_probe(headers)
+                if status is None:
+                    raise ValueError('状态不可用，停止领取')
+            elif stage == 2:
+                if status is not None and daily_checked(status) is True:
+                    sign_data = status
+                    activity = status
+                    outcome = 'already'
+                    daily_log('☑️ 今天已签到过（官方状态已核验）')
+                elif status is None:
+                    raise ValueError('缺少已核验的签到状态，停止领取')
+                elif status.get('active') is False:
+                    outcome = 'skipped'
+                    daily_log('⏭️ 官方活动已关闭，停止领取')
+                else:
+                    body = daily_post(daily_SIGN_URL, headers)
+                    data = body.get('data')
+                    if not daily_code_ok(body) or not isinstance(data, dict):
+                        raise ValueError('签到业务码非零或缺少 data')
+                    daily_identity(data)
+                    explicit = data.get('success')
+                    if explicit is False or (explicit is not None and explicit is not True):
+                        raise ValueError('签到未返回明确成功状态')
+                    verification = daily_probe(headers)
+                    if verification is None or daily_checked(verification) is not True:
+                        raise ValueError('签到无法通过今日状态回读核验')
+                    activity = verification
+                    sign_data = data
+                    daily_log('✅ 签到完成（业务成功已核验）')
+            elif stage == 3:
+                if not activity:
+                    activity = daily_probe(headers) or {}
+                if not activity:
+                    outcome = 'skipped'
+                    daily_log('⚠️ 活动信息暂不可用')
+                else:
+                    daily_log('✅ 活动与积分字段已读取')
+            else:
+                body = daily_post(daily_BALANCE_URL, headers, readonly=True)
+                data = body.get('data')
+                if not daily_code_ok(body) or not isinstance(data, dict):
+                    raise ValueError('余额业务码非零或缺少 data')
+                response = data.get('Response')
+                if not isinstance(response, dict) or response.get('Error'):
+                    raise ValueError('余额响应结构异常或包含错误')
+                detail = response.get('Data')
+                if not isinstance(detail, dict):
+                    raise ValueError('余额响应缺少 Data')
+                daily_identity(data)
+                balance = daily_number(detail.get('TotalDosage'))
+                if balance == '-':
+                    raise ValueError('余额缺少有效数值')
+                daily_log(f'✅ 当前余额：{balance} 积分')
+        except (ValueError, OSError, TypeError):
+            if stage in (1, 2):
+                outcome = 'failed'
+                failed = True
+                daily_log('❌ 签到失败或结果无法核验；未输出服务端消息与凭据')
+            else:
+                outcome = 'skipped'
+                daily_log('⚠️ 辅助查询失败，结果标为不可用')
+        counts[outcome] += 1
+        daily_log(f'阶段 {stage} 结果：{outcome}，耗时 {daily_time.monotonic() - tick:.2f} 秒')
+    today = daily_number(activity.get('today_credit'), activity.get('todayCredit'), activity.get('daily_credit'), sign_data.get('credit'), sign_data.get('today_credit'))
+    total = daily_number(activity.get('total_credits'), activity.get('totalCredits'))
+    streak = daily_number(sign_data.get('streak_days'), sign_data.get('streakDays'), activity.get('streak_days'), activity.get('streakDays'))
+    act = daily_safe_text(activity.get('activity_name') or '-')
+    result = dict(status='dry-run' if dry else 'failed' if failed else 'already' if counts['already'] else 'success', success=not failed and (not dry), today_credit=today, total_credits=total, balance=daily_number(balance), streak_days=streak, activity_name=act)
+    daily_log(f'本次获得：{today} 积分；累计获得：{total} 积分；连续天数：{streak} 天；当前活动：{act}')
+    print('---')
+    print(daily_json.dumps(result, ensure_ascii=False))
+    daily_log(f"账号 {index} 统计：总任务 4，成功 {counts['success']}，已完成 {counts['already']}，跳过 {counts['skipped']}，失败 {counts['failed']}，耗时 {daily_time.monotonic() - started:.2f} 秒")
+    return (not failed, counts)
+
+def daily_run():
+    started = daily_time.monotonic()
+    dry = any((daily_os.getenv(key, '').strip().lower() in daily_TRUE for key in ('WB_DAILY_CHECKIN_DRY_RUN', 'WORKBUDDY_DRY_RUN')))
+    daily_log(f'========== {daily_TITLE} ==========')
+    daily_log(f"开始时间：{daily_datetime.now():%Y-%m-%d %H:%M:%S}；模式：{('断网预演' if dry else '正式运行')}")
+    parser = daily_argparse.ArgumentParser(description=daily_TITLE)
+    parser.add_argument('--daily-checkin', action='store_true', help='独立每日积分入口')
+    parser.add_argument('--token', help='兼容令牌输入；多账号推荐环境变量每行一个账号')
+    parser.exit = lambda status=0, message=None: (_ for _ in ()).throw(ValueError('命令行参数错误'))
+    parser.error = lambda message: (_ for _ in ()).throw(ValueError('命令行参数错误'))
+    rows = []
+    config_error = False
+    try:
+        args = parser.parse_args()
+        raw = args.token or daily_os.getenv('WB_DAILY_CHECKIN_TOKEN', '')
+        rows = [line.strip() for line in raw.splitlines() if line.strip()]
+        if not rows and (not dry):
+            try:
+                local = daily__credentials()
+                rows = [daily_json.dumps(local)]
+            except (ValueError, OSError):
+                raise ValueError('请设置 WB_DAILY_CHECKIN_TOKEN；本机兼容登录文件不可用') from None
+        if not rows:
+            raise ValueError('请设置 WB_DAILY_CHECKIN_TOKEN，每行一个账号')
+    except (ValueError, OSError):
+        daily_log('❌ 配置错误：检查令牌环境变量或命令行参数（不展示输入）')
+        config_error = True
+    daily_log(f'账号数量：{len(rows)}')
+    good = bad = 0
+    totals = dict(total=0, success=0, already=0, skipped=0, failed=0)
+    for (index, line) in enumerate(rows, 1):
+        try:
+            cred = daily_credentials(line)
+            (ok, counts) = daily_account_run(cred, index, dry)
+            good += int(ok)
+            bad += int(not ok)
+            for key in totals:
+                totals[key] += counts[key]
+        except Exception:
+            bad += 1
+            totals['total'] += 1
+            totals['failed'] += 1
+            daily_log(f'❌ 账号 {index} 失败：配置无效或执行异常，详细输入已隐藏')
+            daily_log(f'账号 {index} 统计：总任务 1，成功 0，已完成 0，跳过 0，失败 1')
+    code = 1 if config_error or bad else 0
+    state = 'configuration-error' if config_error else 'partial-failure' if bad and good else 'failure' if bad else 'dry-run' if dry else 'success'
+    summary = dict(status=state, accounts=len(rows), success=good, failed=bad, subtasks=totals, mode='dry-run' if dry else 'live', exitCode=code)
+    daily_log('----------------------------------------')
+    daily_log(f'任务统计：账号 {len(rows)}，成功 {good}，失败 {bad}；子任务 {daily_json.dumps(totals, ensure_ascii=False)}')
+    summary['notification'] = daily_notify(summary, dry)
+    summary['elapsedSeconds'] = round(daily_time.monotonic() - started, 2)
+    daily_log(f"完成时间：{daily_datetime.now():%Y-%m-%d %H:%M:%S}；总耗时 {summary['elapsedSeconds']} 秒；最终状态：{state}")
+    print('TASK_SUMMARY=' + daily_json.dumps(summary, ensure_ascii=False, separators=(',', ':')))
+    return code
+
+
 def selected_main():
     args = sys.argv[1:]
+    original_credentials = any(os.getenv(name, '').strip() for name in
+        ('WORKBUDDY_REFRESH_TOKEN', 'WB_ACCESS_TOKEN', 'WB_ACCESS_TOKENS',
+         'WORKBUDDY_INTL_TOKENS', 'WORKBUDDY_TOKEN', 'BUDDY_COOKIE'))
+    daily_only = (not args and bool(os.getenv('WB_DAILY_CHECKIN_TOKEN', '').strip())
+                  and not original_credentials)
+    if '--daily-checkin' in args or '--token' in args or any(arg.startswith('--token=') for arg in args) or daily_only:
+        return daily_run()
     cookie_only = (not args and bool(os.getenv('BUDDY_COOKIE', '').strip()) and
                    not any(os.getenv(name, '').strip() for name in
                            ('WORKBUDDY_REFRESH_TOKEN', 'WB_ACCESS_TOKEN', 'WB_ACCESS_TOKENS',

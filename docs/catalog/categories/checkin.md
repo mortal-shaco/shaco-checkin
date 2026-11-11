@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **384** 个脚本。返回 [`目录首页`](../README.md)。
+共 **383** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -350,7 +350,6 @@
 | 维咔VikACG签到 | `scripts/vikacg_checkin.py` | `python3 scripts/vikacg_checkin.py` | `59 9 * * *` | 待检查 | [vikacg_checkin.py.md](../../scripts/vikacg_checkin.py.md)（`docs/scripts/vikacg_checkin.py.md`） |
 | 万达电影签到与能量查询 | `scripts/wanda.js` | `node scripts/wanda.js` | `52 1 * * *` | 待检查 | [wanda.js.md](../../scripts/wanda.js.md)（`docs/scripts/wanda.js.md`） |
 | 微博超话关注批量签到 | `scripts/wb.py` | `python3 scripts/wb.py` | `20 8 * * *` | 待检查 | [wb.py.md](../../scripts/wb.py.md)（`docs/scripts/wb.py.md`） |
-| WorkBuddy 每日积分签到 | `scripts/wb_daily_checkin.py` | `python3 scripts/wb_daily_checkin.py` | `38 9 * * *` | 待检查 | [wb_daily_checkin.py.md](../../scripts/wb_daily_checkin.py.md)（`docs/scripts/wb_daily_checkin.py.md`） |
 | Web3Go每日签到 | `scripts/web3go.js` | `node scripts/web3go.js` | `48 8 * * *` | 待检查 | [web3go.js.md](../../scripts/web3go.js.md)（`docs/scripts/web3go.js.md`） |
 | CC98 WebVPN 每日签到 | `scripts/webvpn_fixed_api.py` | `python3 scripts/webvpn_fixed_api.py` | `12 8 * * *` | 待检查 | [webvpn_fixed_api.py.md](../../scripts/webvpn_fixed_api.py.md)（`docs/scripts/webvpn_fixed_api.py.md`） |
 | 微博超话网页签到评论 | `scripts/weibo_checkin.py` | `python3 scripts/weibo_checkin.py` | `28 8 * * *` | 待检查 | [weibo_checkin.py.md](../../scripts/weibo_checkin.py.md)（`docs/scripts/weibo_checkin.py.md`） |

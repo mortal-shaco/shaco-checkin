@@ -4,7 +4,7 @@
 - 脚本路径：`scripts/workbuddy_daily.py`
 - 青龙命令：`python3 scripts/workbuddy_daily.py`
 - 建议 Cron：`15 7,12 * * *`
-- 发布哈希：`7e7460878a273affffbedaa60672d7ec9128ef462b9df78b888d95e4ceeaaf33`
+- 发布哈希：`3a0d57881bfd55d39496f0f96ac17bfed93d26ea46b60f759327f4f3257fada6`
 - 许可证：`MIT`
 
 ## 脚本功能
@@ -37,6 +37,10 @@
 - 仅配置 BUDDY_COOKIE 且无参数、无原令牌变量时兼容直接运行；同时配置凭据时默认维持原日常任务，Cookie 入口拒绝混入国际、成长或续期参数。
 - Cookie 逐行独立账号，内存会话支持服务端轮换、删除和过期；有限超时与响应大小限制、禁重定向、断网预演、脱敏日志及通知；无需浏览器或私有模块。
 - 日常保持 0 7,12 * * *；Cookie 入口可独立以 54 10 * * * 运行；夜猫子及开学季调度保持既有约定。
+- 合并每日积分独立入口 --daily-checkin，兼容 --token 与 WB_DAILY_CHECKIN_TOKEN；仅配置此变量时支持无参数执行，与其他凭据同时配置时显式选择。
+- 保留用户、组织、租户请求头与可选本人本机登录文件；无需安装客户端，环境凭据即可独立执行。
+- 国内签到及新入口按原顺序回退两个官方状态接口；状态未知时停止领取，写请求仅一次并回读今日已签。
+- 独立入口保留本次积分、累计积分、余额、连签与活动名称的逐账号 JSON，正确保留数值零；38 9 * * * 可单独调度。
 
 ## 环境变量与参数
 
@@ -64,6 +68,13 @@
 - 敏感：是
 - 获取或设置：浏览器登录 https://www.workbuddy.cn，在开发者工具的网络面板找到 /billing/meter/checkin-status 的 POST 请求，复制请求头 Cookie 的完整值。失效后重新登录获取。仅用于本人账号。
 - 填写格式：每个非空行一个账号，填写完整 Cookie 值（名称=值；多项使用英文分号），不包含 Cookie: 前缀，不以 &、@ 或分号分隔账号。等号后的凭据文本保持完整。；仅加油站入口必填，同时配置令牌时使用 --buddy-cookie 显式运行。
+
+### `WB_DAILY_CHECKIN_TOKEN`
+
+- 必填：是
+- 敏感：是
+- 获取或设置：在本人已登录的 WorkBuddy 客户端登录信息中读取 auth.accessToken 或 auth.access_token；也可从本人向 https://www.codebuddy.cn 发起的已认证请求中获取 Authorization 的 Bearer 令牌部分。不要分享或公开这些值。macOS 文件位于 ~/Library/Application Support/CodeBuddyExtension/Data/Public/auth/workbuddy-desktop.info；Windows 位于 LOCALAPPDATA 或 APPDATA 下相同相对路径；Linux 位于 XDG_DATA_HOME 或 ~/.local/share 下相同相对路径。可在无客户端的青龙环境直接填写令牌，无需复制客户端或安装额外程序。
+- 填写格式：每个非空行一个账号；每行为原始令牌、uid+token（只在第一个 + 处分割），或单行 JSON 对象，字段 token 必填，uid、org、domain 可选。uid 对应 account.uid/id，org 对应 account.enterpriseId/enterprise_id，domain 对应 auth.domain 或根级 domain。不同账号只能换行分隔。兼容 --token 参数优先输入；未配置环境变量时可选读取本人本机登录文件。；仅独立 --daily-checkin 入口必填；与原凭据同时配置时须显式选择该入口。
 
 ### 可选参数
 
@@ -242,17 +253,24 @@
 - 获取或设置：自行设置为 1 可进行完全断网预演，默认 0。预演仅检查配置并模拟阶段与通知。
 - 填写格式：1/0、true/false、yes/no 或 on/off；仅作用于 Cookie 加油站入口，该入口也支持 WORKBUDDY_DRY_RUN。
 
+### `WB_DAILY_CHECKIN_DRY_RUN`
+
+- 必填：否
+- 敏感：否
+- 获取或设置：设置为 1 开启完全断网预演；正式运行取消设置。
+- 填写格式：1、true、yes、on 表示启用，默认关闭；预演仍需占位账号参数。
+
 ## 参数获取方法
 
 完整获取说明已写在上方各变量条目中。禁止使用来源不明的第三方提取页，或把凭据粘贴到聊天、Issue 与公开日志。
 
 ## 多账号
 
-每个非空行一个账号；国内配套 AT/RT 放入 WORKBUDDY_REFRESH_TOKEN 同一行，按首字段分隔保留后续令牌；国际凭据独立逐行配置。账号依次独立处理，任一账号或阶段失败整体非零退出；禁止用 &、@ 或逗号分隔账号。；Cookie 入口 BUDDY_COOKIE 每个非空行一个账号，整行请求头值保留，分号及等号属于同一账号的 Cookie 字段。
+每个非空行一个账号；国内配套 AT/RT 放入 WORKBUDDY_REFRESH_TOKEN 同一行，按首字段分隔保留后续令牌；国际凭据独立逐行配置。账号依次独立处理，任一账号或阶段失败整体非零退出；禁止用 &、@ 或逗号分隔账号。；Cookie 入口 BUDDY_COOKIE 每个非空行一个账号，整行请求头值保留，分号及等号属于同一账号的 Cookie 字段。；每日积分入口每行原始令牌、uid+token 或同一账号的单行 JSON，仅首个+分割，保留后续令牌文本。
 
 ## 验证与兼容性
 
-SHA-256 `7e7460878a273affffbedaa60672d7ec9128ef462b9df78b888d95e4ceeaaf33`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
+SHA-256 `3a0d57881bfd55d39496f0f96ac17bfed93d26ea46b60f759327f4f3257fada6`；基础核验通过，尚未验证真实账号业务；基础证据位于 `projects/checkin/validation/132c582ed57df40f`。
 
 ## 副作用与风险
 
@@ -268,6 +286,7 @@ SHA-256 `7e7460878a273affffbedaa60672d7ec9128ef462b9df78b888d95e4ceeaaf33`；基
 - 仅显式选择开学季 claim 时领取已完成活动奖励；选择 lottery 时消耗至多指定次数的开学季抽奖机会。
 - 仅显式选择开学季 growth 且授权时，接受已知 school_season 成长任务、发送带活动标记的小程序事件并领取达标奖励。
 - Cookie 加油站入口为尚未签到的账号领取每日奖励；--check 只查询。服务端轮换 Cookie 仅存于本轮账号内存。
+- 仅选择每日积分独立入口时，为官方状态确认未签且未明确关闭活动的账号领取每日积分，并回读今日已签。
 
 ## 许可证与来源
 
