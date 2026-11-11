@@ -58585,6 +58585,168 @@
       }
     },
     {
+      "catalogId": "0b0caa60f0060df6",
+      "applicationKey": "tangli159/heytaptask::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "HEYTAP_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "HEYTAP_TASKS",
+          "HEYTAP_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "HEYTAP_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "HEYTAP_TASKS": "sign,browse",
+          "QINGLONG_NOTIFY": "auto"
+        },
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "使用独立 HTTPS 客户端核验登录并显示官方返回的非敏感账号身份",
+          "读取签到日历并按当日参数签到",
+          "浏览服务端商品列表，保留每个商品 5 秒等待并领取奖励",
+          "显式启用分享商品任务进度上报及奖励领取",
+          "显式启用推送消息任务进度上报及奖励领取",
+          "保留旧版 config.json 账号字段兼容，支持规范换行多账号配置",
+          "完全断网预演、超时与响应大小限制、业务码核验及失败非零退出",
+          "逐账号时间轴、阶段耗时、分类统计和唯一 TASK_SUMMARY 机器汇总",
+          "按全局开关和列表选择发送脱敏青龙通知，通知异常保留业务退出码"
+        ],
+        "sideEffects": [
+          "签到并获得商城积分或签到礼品",
+          "浏览商品并可能记录浏览历史、累计任务进度及领取积分",
+          "显式启用 share 后上报分享任务进度并领取积分，不向微信实际发送消息",
+          "显式启用 push 后上报推送消息任务进度并领取积分",
+          "通知启用时通过现有青龙通知渠道发送脱敏任务汇总"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "欢太商城每日任务",
+      "path": "scripts/task_0b0caa60.py",
+      "sha256": "c423487fdf90a123d86508af5e0978429c0b4b17f7c54b0f04028da0ea8c6fad",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "tangli159/HeytapTask",
+        "branch": "main",
+        "commit": "70b8ce28fbf2379b103c1bd369b8d27ebc024f15",
+        "originalPath": "main.py"
+      },
+      "cron": "46 10 * * *",
+      "command": "python3 scripts/task_0b0caa60.py",
+      "environment": [
+        {
+          "name": "HEYTAP_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在自己的欢太商城 APP 登录后，使用 HTTPS 调试工具查看 www.heytap.com/cn/oapi/users/web/member/info 或 store.oppo.com/cn/oapi/credits/web/credits/show 请求，复制该账号的完整 Cookie 与 User-Agent；不要分享抓包。规范配置使用本变量；未设置时兼容当前目录旧版 config.json 数组的 cookies 和 User-Agent 字段。",
+          "format": "每个非空行一个账号：完整 Cookie、一个实际制表符、完整 User-Agent；只在第一个制表符处分割，保留后续内容。账号之间仅使用换行，不使用 & 或 @。"
+        },
+        {
+          "name": "HEYTAP_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行选择要执行的每日任务；默认 sign,browse。share 与 push 仅在明确接受任务进度上报副作用后加入，不会实际分享到微信。",
+          "format": "逗号分隔的非空任务集合：sign（签到）、browse（浏览及领奖）、share（分享进度上报及领奖）、push（推送进度上报及领奖）。"
+        },
+        {
+          "name": "HEYTAP_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线检查时设置为 1；正式运行时移除或设为 0。",
+          "format": "1/true/yes/on 启用完全断网预演；不会核验账号有效性，也不会发送网络通知。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在 auto 模式中填写本脚本目录编号 0b0caa60f0060df6、实际文件名、scripts 相对路径或文件名通配符；未设置且默认列表未收录时不通知。",
+          "format": "使用逗号、分号、空白或换行分隔；* 选择全部，显式空值关闭全部；设置后替换默认列表。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "如青龙通知模块未安装在标准目录，填写现有 notify.py 或 sendNotify.js 的所在目录；不需要额外下载。",
+          "format": "可选本地目录；先尝试导入 notify.send，再检查此目录、/ql/data/scripts 和 /ql/scripts；JavaScript 通知需要青龙现有 Node.js。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，Cookie 与 User-Agent 用第一个实际制表符分隔；逐账号独立会话和统计，单个账号失败继续其他账号，任一账号失败整体非零退出。兼容当前目录 config.json 账号数组；HEYTAP_ACCOUNTS 优先。"
+      },
+      "dependencies": [],
+      "features": [
+        "使用独立 HTTPS 客户端核验登录并显示官方返回的非敏感账号身份",
+        "读取签到日历并按当日参数签到",
+        "浏览服务端商品列表，保留每个商品 5 秒等待并领取奖励",
+        "显式启用分享商品任务进度上报及奖励领取",
+        "显式启用推送消息任务进度上报及奖励领取",
+        "保留旧版 config.json 账号字段兼容，支持规范换行多账号配置",
+        "完全断网预演、超时与响应大小限制、业务码核验及失败非零退出",
+        "逐账号时间轴、阶段耗时、分类统计和唯一 TASK_SUMMARY 机器汇总",
+        "按全局开关和列表选择发送脱敏青龙通知，通知异常保留业务退出码"
+      ],
+      "sideEffects": [
+        "签到并获得商城积分或签到礼品",
+        "浏览商品并可能记录浏览历史、累计任务进度及领取积分",
+        "显式启用 share 后上报分享任务进度并领取积分，不向微信实际发送消息",
+        "显式启用 push 后上报推送消息任务进度并领取积分",
+        "通知启用时通过现有青龙通知渠道发送脱敏任务汇总"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/0b0caa60f0060df6",
+        "candidateSha256": "4d61dc89e863b4f2dd278558ba11e910c0186bc0ac359b74c37bafbeb4ce83f1"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "4d61dc89e863b4f2dd278558ba11e910c0186bc0ac359b74c37bafbeb4ce83f1",
+        "releaseSha256": "c423487fdf90a123d86508af5e0978429c0b4b17f7c54b0f04028da0ea8c6fad",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:18:55.794882+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "4d61dc89e863b4f2dd278558ba11e910c0186bc0ac359b74c37bafbeb4ce83f1",
+          "toCandidateSha256": "c423487fdf90a123d86508af5e0978429c0b4b17f7c54b0f04028da0ea8c6fad",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "0c4949f3b1b01793",
       "applicationKey": "maratrain/dailycheckin::checkin",
       "checkProfile": {
@@ -64196,6 +64358,169 @@
       }
     },
     {
+      "catalogId": "ae1f0152f66bcc03",
+      "applicationKey": "jemii/tyy::checkin",
+      "checkProfile": {
+        "requiredEnv": [
+          "TY189_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "TY189_TASKS",
+          "TY189_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TY189_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "TY189_TASKS": "sign,draw,photos"
+        },
+        "successPatterns": [
+          "TY189_TASK_OK"
+        ],
+        "features": [
+          "使用天翼云盘账号密码及官方登录页公钥完成加密登录",
+          "每日签到并检查空间奖励及是否已签到",
+          "签到抽奖并核验奖励说明",
+          "相册任务抽奖并核验奖励说明",
+          "可独立选择签到及两类抽奖任务，默认保留上游全部任务",
+          "每行一个账号，独立会话，单账号失败不阻塞其他账号",
+          "完全断网预演与失败闭合的业务判定",
+          "展示官方返回的非敏感账号身份，提供分阶段日志、账号统计和唯一结构化任务汇总",
+          "实际运行通过青龙通知模块发送脱敏结果，通知异常保留业务退出码"
+        ],
+        "sideEffects": [
+          "使用密码登录并建立账号会话",
+          "执行每日签到并领取空间奖励",
+          "消耗签到抽奖机会并领取对应奖励",
+          "消耗相册任务抽奖机会并领取对应奖励",
+          "实际运行按通知开关发送青龙任务统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "天翼云盘签到与抽奖",
+      "path": "scripts/task_ae1f0152.py",
+      "sha256": "90116619e0f4ef4ffaac154ca0551eb985963fc47d208847113b227d585bf0d0",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "jemii/tyy",
+        "branch": "main",
+        "commit": "70ef55dee1fb8dfbfeace0c529dd4b8fb3844403",
+        "originalPath": "checkin.py"
+      },
+      "cron": "45 10 * * *",
+      "command": "python3 scripts/task_ae1f0152.py",
+      "environment": [
+        {
+          "name": "TY189_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人天翼云盘登录账号与密码；先在天翼云盘官方客户端或官网确认密码登录正常。账号登录遇到验证码或风控时先在官方端处理，不绕过校验。配置到青龙环境变量，不写入脚本或日志。",
+          "format": "每个非空行一个账号：登录账号|密码；仅按首个 | 分隔，后续 | 属于密码；保留密码空格。不可用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "TY189_TASKS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选任务开关，默认执行上游全部三项；相册抽奖不修改备份设置，也不上传相片。",
+          "format": "逗号分隔 sign,draw,photos，可选择子集；分别代表每日签到、签到抽奖、相册任务抽奖，按此顺序执行。"
+        },
+        {
+          "name": "TY189_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验收时设为 1；实际运行时设为 0 或不设置。",
+          "format": "1 为完全断网预演（通知也只模拟），0 为实际执行；默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选通知选择列表；设置后替换默认列表，空值关闭全部通知。",
+          "format": "用逗号、分号或空白分隔目录编号、脚本相对路径、文件名或文件名通配符；* 选择全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 所在目录；也会查找可导入的 notify 模块及青龙标准脚本目录。通知失败不改变业务退出码。",
+          "format": "本机通知模块目录路径，不是外部仓库依赖。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，账号与密码在同一行以首个 | 分隔；各账号会话隔离并独立处理，任一账号失败则进程非零退出。"
+      },
+      "dependencies": [
+        "requests",
+        "rsa"
+      ],
+      "features": [
+        "使用天翼云盘账号密码及官方登录页公钥完成加密登录",
+        "每日签到并检查空间奖励及是否已签到",
+        "签到抽奖并核验奖励说明",
+        "相册任务抽奖并核验奖励说明",
+        "可独立选择签到及两类抽奖任务，默认保留上游全部任务",
+        "每行一个账号，独立会话，单账号失败不阻塞其他账号",
+        "完全断网预演与失败闭合的业务判定",
+        "展示官方返回的非敏感账号身份，提供分阶段日志、账号统计和唯一结构化任务汇总",
+        "实际运行通过青龙通知模块发送脱敏结果，通知异常保留业务退出码"
+      ],
+      "sideEffects": [
+        "使用密码登录并建立账号会话",
+        "执行每日签到并领取空间奖励",
+        "消耗签到抽奖机会并领取对应奖励",
+        "消耗相册任务抽奖机会并领取对应奖励",
+        "实际运行按通知开关发送青龙任务统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/ae1f0152f66bcc03",
+        "candidateSha256": "16d1c026215927e5b99cc311f6fd949b2bfa31bac698df683f110f6971d32101"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "16d1c026215927e5b99cc311f6fd949b2bfa31bac698df683f110f6971d32101",
+        "releaseSha256": "90116619e0f4ef4ffaac154ca0551eb985963fc47d208847113b227d585bf0d0",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:18:21.958432+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "16d1c026215927e5b99cc311f6fd949b2bfa31bac698df683f110f6971d32101",
+          "toCandidateSha256": "90116619e0f4ef4ffaac154ca0551eb985963fc47d208847113b227d585bf0d0",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "b59e31965541a4fa",
       "applicationKey": "brsblackshoot/mihoyo_autosign::米游社自动签到",
       "checkProfile": {
@@ -65284,6 +65609,160 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "9640c39dfaaccb99286e49e3f268fdf389ea8e280cb3271f3c543fac285a75d3",
           "toCandidateSha256": "77ba9991baebb73a322e7722b0dab365099b23a5c9bc84ee91ac56bc8c5c8084",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "d941771d29760d88",
+      "applicationKey": "imyhui/cpdaily-auto::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "CPDAILY_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "CPDAILY_SUBMIT",
+          "CPDAILY_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "CPDAILY_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "CPDAILY_SUBMIT": "0"
+        },
+        "successPatterns": [
+          "\"status\":\"success\""
+        ],
+        "features": [
+          "通过学校 HTTPS 统一认证表单登录，支持本人官方 Cookie 认证；认证页面变化、加密或验证码不受支持时失败闭合",
+          "查询今日待签到任务；默认仅查询，空列表只报告无待签到任务，不伪称已经签到",
+          "显式开启后按本人真实位置提交首个待签到任务，要求本人设备扩展值；通过业务成功标志、业务码及待签到列表复查核验",
+          "按换行 JSON 配置独立处理多个账号，任一失败非零退出",
+          "完全断网预演、带时间戳的阶段日志、账号与子任务统计及唯一 TASK_SUMMARY 记录",
+          "显示官方返回的非敏感账号身份；不输出凭据、原始响应或设备值",
+          "正式模式支持青龙通知与全局开关，通知失败保持原业务退出码；断网预演生成摘要"
+        ],
+        "sideEffects": [
+          "登录时建立本人学校认证会话",
+          "仅 CPDAILY_SUBMIT=1 时向学校提交首个待签到任务及配置的实际位置、异常原因",
+          "正式模式启用通知时通过青龙发送脱敏统计"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "今日校园东北大学秦皇岛分校签到",
+      "path": "scripts/task_d941771d.py",
+      "sha256": "cfd2ebab781e227cf8819634b1b563c3833dd0d931878691d0352f21f2688349",
+      "stage": "released",
+      "license": "GPL-3.0",
+      "licenseGate": "allowed-copyleft",
+      "source": {
+        "repository": "imyhui/cpdaily-auto",
+        "branch": "master",
+        "commit": "621efa5e212e3b1978cb5ad03dcf9b2ff3bc93ea",
+        "originalPath": "main.py"
+      },
+      "cron": "47 10 * * *",
+      "command": "python3 scripts/task_d941771d.py",
+      "environment": [
+        {
+          "name": "CPDAILY_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在本人学校官方今日校园客户端进入签到页面，使用本人授权的网络调试工具获取请求。推荐从发往 neuq.cpdaily.com 的请求取得完整 Cookie；也可填写本校统一认证 username/password（仅支持原上游表单流程，遇加密或验证码必须改用本人 Cookie，绝不降级明文 HTTP）。提交时另从本人 submitSign 请求取得 Cpdaily-Extension 填入 extension，longitude/latitude/position 必须填写实际位置。不得复用上游固定设备值。账号信息只保存在青龙环境变量，不上传或公开。",
+          "format": "每个非空行一个 JSON 对象，账号之间仅换行。认证字段二选一：cookie 字符串，或 username/password 字符串对。CPDAILY_SUBMIT=1 时还需 longitude（-180 到 180 的数字）、latitude（-90 到 90 的数字）、position（位置文字）、extension（本人官方请求头 ASCII 字符串）。可选 isMalposition 为整数 0 或 1，默认 0；为 1 时必须填写真实 abnormalReason。不支持照片上传。JSON 可安全容纳密码及 Cookie 中的等号、&、@，无需拆分。"
+        },
+        {
+          "name": "CPDAILY_SUBMIT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行决定是否允许签到写入；默认仅查询。先在学校官方客户端核验任务和实际位置。",
+          "format": "0 或 1，默认 0；1 时每轮只提交第一个待签到任务，保留上游任务选择范围"
+        },
+        {
+          "name": "CPDAILY_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "自行设置为 1 进行完全断网预演。",
+          "format": "0 或 1，默认 0；预演只检查账号参数，生成通知摘要但不发送网络通知，不代表真实签到成功"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "设置需要自动通知的脚本名单；默认未列入通知名单。",
+          "format": "逗号、分号或空白分隔的目录编号、脚本文件名或通配符；本脚本编号 d941771d29760d88，文件名 candidate.py；* 为全部，空值禁用全部"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选填写本机青龙 notify.py 或 sendNotify.js 所在目录；也会查找青龙标准目录及可导入的 notify.send。业务本身不依赖通知模块。",
+          "format": "本机目录路径，不填写时使用标准发现方式"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个 JSON 对象，将本账号认证及位置字段放在同一对象。独立处理账号，任一失败整体非零退出，配置无效也不进入网络。"
+      },
+      "dependencies": [
+        "requests"
+      ],
+      "features": [
+        "通过学校 HTTPS 统一认证表单登录，支持本人官方 Cookie 认证；认证页面变化、加密或验证码不受支持时失败闭合",
+        "查询今日待签到任务；默认仅查询，空列表只报告无待签到任务，不伪称已经签到",
+        "显式开启后按本人真实位置提交首个待签到任务，要求本人设备扩展值；通过业务成功标志、业务码及待签到列表复查核验",
+        "按换行 JSON 配置独立处理多个账号，任一失败非零退出",
+        "完全断网预演、带时间戳的阶段日志、账号与子任务统计及唯一 TASK_SUMMARY 记录",
+        "显示官方返回的非敏感账号身份；不输出凭据、原始响应或设备值",
+        "正式模式支持青龙通知与全局开关，通知失败保持原业务退出码；断网预演生成摘要"
+      ],
+      "sideEffects": [
+        "登录时建立本人学校认证会话",
+        "仅 CPDAILY_SUBMIT=1 时向学校提交首个待签到任务及配置的实际位置、异常原因",
+        "正式模式启用通知时通过青龙发送脱敏统计"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/d941771d29760d88",
+        "candidateSha256": "dc74dbb9aa56ad00afe28fad83558b82f2a5e1fcca3346b920357ea11fe2ee8f"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "dc74dbb9aa56ad00afe28fad83558b82f2a5e1fcca3346b920357ea11fe2ee8f",
+        "releaseSha256": "cfd2ebab781e227cf8819634b1b563c3833dd0d931878691d0352f21f2688349",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:19:12.787986+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "dc74dbb9aa56ad00afe28fad83558b82f2a5e1fcca3346b920357ea11fe2ee8f",
+          "toCandidateSha256": "cfd2ebab781e227cf8819634b1b563c3833dd0d931878691d0352f21f2688349",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
