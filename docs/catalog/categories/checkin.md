@@ -1,6 +1,6 @@
 # 分类索引 · 签到
 
-共 **381** 个脚本。返回 [`目录首页`](../README.md)。
+共 **382** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -143,6 +143,7 @@
 | iamtxt 每日签到 | `scripts/iamtxtsignin.py` | `python3 scripts/iamtxtsignin.py` | `21 10 * * *` | 待检查 | [iamtxtsignin.py.md](../../scripts/iamtxtsignin.py.md)（`docs/scripts/iamtxtsignin.py.md`） |
 | ikuuu 签到 | `scripts/ikuuu_checkin.py` | `python3 scripts/ikuuu_checkin.py` | `1 21 * * *` | 待检查 | [ikuuu_checkin.py.md](../../scripts/ikuuu_checkin.py.md)（`docs/scripts/ikuuu_checkin.py.md`） |
 | SF轻小说签到 | `scripts/illustar0_sf_autocheckin.py` | `python3 scripts/illustar0_sf_autocheckin.py` | `16 9 * * *` | 待检查 | [illustar0_sf_autocheckin.py.md](../../scripts/illustar0_sf_autocheckin.py.md)（`docs/scripts/illustar0_sf_autocheckin.py.md`） |
+| 微博超话自动签到 | `scripts/index_user.js` | `node scripts/index_user.js` | `5 11 * * *` | 待检查 | [index_user.js.md](../../scripts/index_user.js.md)（`docs/scripts/index_user.js.md`） |
 | 爱奇艺签到 | `scripts/iqiyi_checkin.py` | `python3 scripts/iqiyi_checkin.py` | `8 1 * * *` | 待检查 | [iqiyi_checkin.py.md](../../scripts/iqiyi_checkin.py.md)（`docs/scripts/iqiyi_checkin.py.md`） |
 | ISVORO 每日签到 | `scripts/isvoro_checkin.py` | `python3 scripts/isvoro_checkin.py` | `6 10 * * *` | 待检查 | [isvoro_checkin.py.md](../../scripts/isvoro_checkin.py.md)（`docs/scripts/isvoro_checkin.py.md`） |
 | IT之家签到 | `scripts/ithome.js` | `node scripts/ithome.js` | `36 1 * * *` | 待检查 | [ithome.js.md](../../scripts/ithome.js.md)（`docs/scripts/ithome.js.md`） |
