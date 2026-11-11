@@ -346,6 +346,7 @@
 | 棕色尘埃2网页商店签到 | `scripts/task_8591af9a.py` | `python3 scripts/task_8591af9a.py` | `29 9 * * *` | 待检查 | [task_8591af9a.py.md](../scripts/task_8591af9a.py.md)（`docs/scripts/task_8591af9a.py.md`） |
 | PT站点每日签到 | `scripts/task_874a3b5f.py` | `python3 scripts/task_874a3b5f.py` | `35 9 * * *` | 待检查 | [task_874a3b5f.py.md](../scripts/task_874a3b5f.py.md)（`docs/scripts/task_874a3b5f.py.md`） |
 | 昆医大疫情防控填报 | `scripts/task_8f8ad2c5.py` | `python3 scripts/task_8f8ad2c5.py` | `53 7,15 * * *` | 待检查 | [task_8f8ad2c5.py.md](../scripts/task_8f8ad2c5.py.md)（`docs/scripts/task_8f8ad2c5.py.md`） |
+| 百度贴吧关注吧签到 | `scripts/task_98d86c7c.js` | `node scripts/task_98d86c7c.js` | `48 10 * * *` | 待检查 | [task_98d86c7c.js.md](../scripts/task_98d86c7c.js.md)（`docs/scripts/task_98d86c7c.js.md`） |
 | MT论坛签到 | `scripts/task_9a14e9eb.py` | `python3 scripts/task_9a14e9eb.py` | `39 0 * * *` | 待检查 | [task_9a14e9eb.py.md](../scripts/task_9a14e9eb.py.md)（`docs/scripts/task_9a14e9eb.py.md`） |
 | 今日校园问卷 | `scripts/task_9de2360b.py` | `python3 scripts/task_9de2360b.py` | `36 9 * * *` | 待检查 | [task_9de2360b.py.md](../scripts/task_9de2360b.py.md)（`docs/scripts/task_9de2360b.py.md`） |
 | FF14石之家签到 | `scripts/task_a4b5c493.py` | `python3 scripts/task_a4b5c493.py` | `47 2 * * *` | 待检查 | [task_a4b5c493.py.md](../scripts/task_a4b5c493.py.md)（`docs/scripts/task_a4b5c493.py.md`） |
@@ -363,6 +364,7 @@
 | hao4k每日签到 | `scripts/task_e5c5d07b.py` | `python3 scripts/task_e5c5d07b.py` | `55 8 * * *` | 待检查 | [task_e5c5d07b.py.md](../scripts/task_e5c5d07b.py.md)（`docs/scripts/task_e5c5d07b.py.md`） |
 | 王者营地每日签到 | `scripts/task_e7937ed1.js` | `node scripts/task_e7937ed1.js` | `59 15 8 * * *` | 待检查 | [task_e7937ed1.js.md](../scripts/task_e7937ed1.js.md)（`docs/scripts/task_e7937ed1.js.md`） |
 | FZQOJ每日签到 | `scripts/task_ed4d6d4d.py` | `python3 scripts/task_ed4d6d4d.py` | `53 8 * * *` | 待检查 | [task_ed4d6d4d.py.md](../scripts/task_ed4d6d4d.py.md)（`docs/scripts/task_ed4d6d4d.py.md`） |
+| 昆明医科大学健康登记 | `scripts/task_eddc6997.py` | `python3 scripts/task_eddc6997.py` | `49 10 * * *` | 待检查 | [task_eddc6997.py.md](../scripts/task_eddc6997.py.md)（`docs/scripts/task_eddc6997.py.md`） |
 | M-SEC 每日签到 | `scripts/task_f37fb5e9.py` | `python3 scripts/task_f37fb5e9.py` | `6 8 * * *` | 待检查 | [task_f37fb5e9.py.md](../scripts/task_f37fb5e9.py.md)（`docs/scripts/task_f37fb5e9.py.md`） |
 | 网易云音乐人签到 | `scripts/task_f7e4fa18.py` | `python3 scripts/task_f7e4fa18.py` | `21 9 * * *` | 待检查 | [task_f7e4fa18.py.md](../scripts/task_f7e4fa18.py.md)（`docs/scripts/task_f7e4fa18.py.md`） |
 | 重庆工程职院顶岗实习 | `scripts/task_f8f6237c.py` | `python3 scripts/task_f8f6237c.py` | `49 8 * * *` | 待检查 | [task_f8f6237c.py.md](../scripts/task_f8f6237c.py.md)（`docs/scripts/task_f8f6237c.py.md`） |

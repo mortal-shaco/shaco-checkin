@@ -63615,6 +63615,145 @@
       }
     },
     {
+      "catalogId": "98d86c7c8da22e52",
+      "applicationKey": "xdmjun/tbautosign::index",
+      "checkProfile": {
+        "requiredEnv": [
+          "BDUSS"
+        ],
+        "optionalEnv": [
+          "TIEBA_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "TIEBA_DRY_RUN": "1"
+        },
+        "liveEnv": {},
+        "successPatterns": [
+          "\"status\":\"success\"",
+          "\"exitCode\":0"
+        ],
+        "features": [
+          "验证 BDUSS 登录状态并通过 HTTPS 获取 tbs 校验值",
+          "读取官方接口返回的关注贴吧列表并逐吧签到，保留每次签到前五秒间隔",
+          "识别业务码 0 的签到成功和 1101 的重复签到，业务码 2150040 触发验证码停止当前账号后续签到",
+          "打印官方响应提供的非敏感账号名称或公开 UID，隐藏登录凭据、校验值及手机号",
+          "支持每行一个账号、账号隔离和任一账号失败时非零退出",
+          "支持完全断网演练、阶段耗时、账号与子任务统计及单行 TASK_SUMMARY 汇总",
+          "正式执行通过青龙通知模块发送脱敏结果，配置错误和部分失败也通知，支持全局开关与脚本选择器"
+        ],
+        "sideEffects": [
+          "对当前账号关注的贴吧执行每日签到，可能获得服务端签到奖励并更新签到记录"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "百度贴吧关注吧签到",
+      "path": "scripts/task_98d86c7c.js",
+      "sha256": "ddb2d49ddd40bbfabd4d8631fed887fc85631d44cbd9a3deb3fc37b06ac00631",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "xdmjun/tbautosign",
+        "branch": "main",
+        "commit": "fec5a92235b2e12799ea539808851c83cfce634f",
+        "originalPath": "index.js"
+      },
+      "cron": "48 10 * * *",
+      "command": "node scripts/task_98d86c7c.js",
+      "environment": [
+        {
+          "name": "BDUSS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "在浏览器登录百度贴吧，打开开发者工具，在应用或存储面板的 tieba.baidu.com Cookie 中复制 BDUSS 字段的值，保存到青龙环境变量。失效时重新登录获取。仅填写自己的登录凭据，勿公开或写入日志。",
+          "format": "每个非空行填写一个账号的 BDUSS 原始字段值，不包含 BDUSS= 前缀、分号或其他 Cookie 字段。多个账号用换行分隔，原脚本的 && 分隔需改为换行。"
+        },
+        {
+          "name": "TIEBA_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量或运行环境中设置。",
+          "format": "1、true、yes 或 on 启用完全断网演练，默认正式执行。演练验证配置并模拟流程，不读取真实关注吧或执行签到，通知摘要仅本地输出。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "在青龙环境变量中配置需要通知的脚本选择器。",
+          "format": "auto 模式下，未设置时本脚本默认通知；设置后替换默认列表。支持目录内相对脚本路径、实际文件名、文件名 * 通配符和目录编号 98d86c7c8da22e52，以逗号、分号、空白或换行分隔，* 匹配全部，空值关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选，填写青龙 notify.py 或 sendNotify.js 所在目录。默认也检查脚本目录、/ql/data/scripts、/ql/scripts 及 Python 可导入的 notify.send。",
+          "format": "本地通知模块目录路径，仅用于可选通知集成。脚本的签到 HTTP 行为由 Node.js 标准库独立实现。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "每个非空行一个账号，只需 BDUSS 一个凭据字段。依次独立处理账号和贴吧，单账号失败继续其他账号，任一账号失败整体退出码为非零。验证码仅停止当前账号后续签到。"
+      },
+      "dependencies": [],
+      "features": [
+        "验证 BDUSS 登录状态并通过 HTTPS 获取 tbs 校验值",
+        "读取官方接口返回的关注贴吧列表并逐吧签到，保留每次签到前五秒间隔",
+        "识别业务码 0 的签到成功和 1101 的重复签到，业务码 2150040 触发验证码停止当前账号后续签到",
+        "打印官方响应提供的非敏感账号名称或公开 UID，隐藏登录凭据、校验值及手机号",
+        "支持每行一个账号、账号隔离和任一账号失败时非零退出",
+        "支持完全断网演练、阶段耗时、账号与子任务统计及单行 TASK_SUMMARY 汇总",
+        "正式执行通过青龙通知模块发送脱敏结果，配置错误和部分失败也通知，支持全局开关与脚本选择器"
+      ],
+      "sideEffects": [
+        "对当前账号关注的贴吧执行每日签到，可能获得服务端签到奖励并更新签到记录"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/98d86c7c8da22e52",
+        "candidateSha256": "67c0b048b336af5cb35ff74e9271111ebac178e742e5a5d5deeb881d7b57c6d0"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "67c0b048b336af5cb35ff74e9271111ebac178e742e5a5d5deeb881d7b57c6d0",
+        "releaseSha256": "ddb2d49ddd40bbfabd4d8631fed887fc85631d44cbd9a3deb3fc37b06ac00631",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:19:53.579604+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "67c0b048b336af5cb35ff74e9271111ebac178e742e5a5d5deeb881d7b57c6d0",
+          "toCandidateSha256": "ddb2d49ddd40bbfabd4d8631fed887fc85631d44cbd9a3deb3fc37b06ac00631",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
       "catalogId": "9a14e9eb7997f1a3",
       "applicationKey": "gaohan-cmd/mt::main",
       "checkProfile": {
@@ -66563,6 +66702,175 @@
           "reason": "按所有者要求统一通知选择策略；仅改变是否调用通知渠道，不改变业务接口、参数解析、成功条件、业务副作用或退出码。",
           "fromCandidateSha256": "56c090e804d68808a55dec5e02586182ce4a62816d83701c8c92b169b2a9ce1c",
           "toCandidateSha256": "0a0c1dab4b69c147619fadae6e8db1c53ba8ed3114042265b87666dbd91be087",
+          "businessInterfaceUnchanged": true,
+          "parameterParsingUnchanged": true,
+          "successCriteriaUnchanged": true,
+          "sideEffectsUnchanged": true
+        }
+      }
+    },
+    {
+      "catalogId": "eddc6997bb5dba67",
+      "applicationKey": "2657753129/epidemic::main",
+      "checkProfile": {
+        "requiredEnv": [
+          "EPIDEMIC_ACCOUNTS"
+        ],
+        "optionalEnv": [
+          "EPIDEMIC_ACTION",
+          "EPIDEMIC_REPORTS",
+          "EPIDEMIC_USER_AGENT",
+          "EPIDEMIC_DRY_RUN",
+          "QINGLONG_NOTIFY",
+          "QINGLONG_NOTIFY_SCRIPTS",
+          "QINGLONG_NOTIFY_DIR"
+        ],
+        "dryRunEnv": {
+          "EPIDEMIC_DRY_RUN": "1"
+        },
+        "liveEnv": {
+          "EPIDEMIC_ACTION": "check"
+        },
+        "successPatterns": [
+          "☑️ 当前采集日期已登记",
+          "✅ 提交后已核实当日登记"
+        ],
+        "features": [
+          "独立实现学校网页登录、会话管理与防重复提交字段读取，无需上游仓库、用户文件或预装应用。",
+          "默认检查当天健康登记状态，待登记、登录失败、窗口限制和接口变化均非零退出。",
+          "显式启用后使用本人当天完整真实表单申报，核验身份及六项答案一致性，提交后再次读取并确认当日已登记。",
+          "每行一个账号，独立执行并汇总失败，密码中的后续分隔符保留。",
+          "显示学校返回的非敏感姓名，屏蔽凭据、手机号、地址、证件和原始响应。",
+          "完整断网预演、分阶段计时日志、逐账号统计及单行 TASK_SUMMARY JSON。",
+          "实际执行各类结果均按全局开关和脚本选择器尝试青龙脱敏通知。"
+        ],
+        "sideEffects": [
+          "登录时在学校服务建立本人会话。",
+          "仅显式设置 submit 且提供当天真实完整表单时，提交健康登记。",
+          "实际运行通知启用时，通过青龙通知模块向配置渠道发送脱敏任务摘要。"
+        ]
+      },
+      "postReview": {
+        "decision": "pending",
+        "businessResult": "not-verified"
+      },
+      "displayName": "昆明医科大学健康登记",
+      "path": "scripts/task_eddc6997.py",
+      "sha256": "7ece42c030dae0eaff34f5e7245c0a653990aa9fd7e4e85e120c33ad9fb13884",
+      "stage": "released",
+      "license": "MIT",
+      "licenseGate": "allowed-permissive",
+      "source": {
+        "repository": "2657753129/Epidemic",
+        "branch": "main",
+        "commit": "17829c1563f57560b16ef79a7e683e7ded14e513",
+        "originalPath": "main.py"
+      },
+      "cron": "49 10 * * *",
+      "command": "python3 scripts/task_eddc6997.py",
+      "environment": [
+        {
+          "name": "EPIDEMIC_ACCOUNTS",
+          "required": true,
+          "sensitive": true,
+          "howToGet": "使用本人昆明医科大学学生疫情防控平台学号与密码，先在学校平台人工确认可以登录。切勿将凭据放入日志或通知。",
+          "format": "每个非空行一个账号，格式为学号|密码，仅在第一个 | 处分割，密码中的后续 | 保持原样。不使用 & 或 @ 分隔账号。"
+        },
+        {
+          "name": "EPIDEMIC_ACTION",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "默认 check 登录并检查当天登记状态。确需提交本人真实健康申报时设置 submit，并填写 EPIDEMIC_REPORTS。",
+          "format": "check 或 submit，默认 check。当天待登记返回非零。"
+        },
+        {
+          "name": "EPIDEMIC_REPORTS",
+          "required": false,
+          "sensitive": true,
+          "howToGet": "仅 submit 模式需要。当天登录学校平台，在浏览器开发者工具网络面板取得本人核实后的 Report/Index 完整表单，将键和值转换为字符串。包含身份、地址、六项真实健康答案、PZData 及计数字段，应保密保存。不得采用上游硬编码健康答案。按账号非空行顺序构造数组，每项有 date 和 form。脚本核验日期、身份和答案一致性，并使用当前页面 ReSubmiteFlag。",
+          "format": "JSON 数组，每账号一项。date 为当天北京时间 YYYY-MM-DD，form 为完整字符串键值对象。必需字段为 City、CityName、ClassName、CollegeNo、ComeWhere、County、CountyName、FaCity、FaCityName、FaComeWhere、FaCounty、FaCountyName、FaProvince、FaProvinceName、GetAreaUrl、IdCard、MoveTel、Name、Other、PZData、Province、ProvinceName、ReSubmiteFlag、Sex、SpeGrade、SpeType、SpecialtyName、StudentId、blackCount、checkboxCount、radioCount、radio_1、radio_2、radio_3、radio_4、radio_5、radio_6、text_1。"
+        },
+        {
+          "name": "EPIDEMIC_USER_AGENT",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可从本人浏览器请求头获取 User-Agent，无需原仓库 User-Agent 文件。",
+          "format": "单行浏览器标识，默认 Mozilla/5.0。"
+        },
+        {
+          "name": "EPIDEMIC_DRY_RUN",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "离线验收时设为 1，只校验参数并生成模拟摘要，学校请求、申报与通知外发全部跳过。",
+          "format": "1、true、yes、on 启用，0、false、no、off 关闭，默认 0。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知总开关；未设置时仅上架脚本默认推送。显式设置后覆盖脚本选择策略。",
+          "format": "留空按上架状态；1、true、yes、on 全部开启；0、false、no、off 全部关闭。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_SCRIPTS",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "可选通知选择器，设置后替换默认选中行为。支持目录 ID、脚本路径、文件名和文件名通配符。",
+          "format": "逗号、分号或空白分隔，* 选择全部，空字符串关闭全部。"
+        },
+        {
+          "name": "QINGLONG_NOTIFY_DIR",
+          "required": false,
+          "sensitive": false,
+          "howToGet": "青龙通知模块位于自定义目录时，填写含 notify.py 的目录。也支持 import notify.send 和标准青龙脚本目录。",
+          "format": "本机目录路径，可不填。"
+        }
+      ],
+      "multiAccount": {
+        "supported": true,
+        "separator": "newline",
+        "rule": "EPIDEMIC_ACCOUNTS 每个非空行一个账号，仅在第一个 | 处分割学号和密码。各账号独立会话与执行，任一失败则进程非零退出。EPIDEMIC_REPORTS 数组顺序与账号非空行对应。"
+      },
+      "dependencies": [],
+      "features": [
+        "独立实现学校网页登录、会话管理与防重复提交字段读取，无需上游仓库、用户文件或预装应用。",
+        "默认检查当天健康登记状态，待登记、登录失败、窗口限制和接口变化均非零退出。",
+        "显式启用后使用本人当天完整真实表单申报，核验身份及六项答案一致性，提交后再次读取并确认当日已登记。",
+        "每行一个账号，独立执行并汇总失败，密码中的后续分隔符保留。",
+        "显示学校返回的非敏感姓名，屏蔽凭据、手机号、地址、证件和原始响应。",
+        "完整断网预演、分阶段计时日志、逐账号统计及单行 TASK_SUMMARY JSON。",
+        "实际执行各类结果均按全局开关和脚本选择器尝试青龙脱敏通知。"
+      ],
+      "sideEffects": [
+        "登录时在学校服务建立本人会话。",
+        "仅显式设置 submit 且提供当天真实完整表单时，提交健康登记。",
+        "实际运行通知启用时，通过青龙通知模块向配置渠道发送脱敏任务摘要。"
+      ],
+      "review": {
+        "staticPassed": true,
+        "sandboxPassed": false,
+        "humanAccepted": false,
+        "sideEffectsReviewed": true
+      },
+      "validation": {
+        "status": "basic-passed",
+        "businessResult": "not-verified",
+        "mode": "basic",
+        "evidence": "projects/checkin/validation/eddc6997bb5dba67",
+        "candidateSha256": "0676728e99e03c8c82e9abb4d7ca5aef7319986531d543b2ea8ea2c5b58adfa7"
+      },
+      "packaging": {
+        "type": "qinglong-release-normalization",
+        "validatedSha256": "0676728e99e03c8c82e9abb4d7ca5aef7319986531d543b2ea8ea2c5b58adfa7",
+        "releaseSha256": "7ece42c030dae0eaff34f5e7245c0a653990aa9fd7e4e85e120c33ad9fb13884",
+        "statement": "Only Qinglong task metadata and the shared notification-selection gate were normalized during release staging.",
+        "reuseAttestation": {
+          "component": "qinglong-notification",
+          "approvedBy": "mortal-shaco",
+          "approvedAt": "2026-11-11T10:20:18.622252+00:00",
+          "reason": "The release gate changes notification selection only; business requests, parameters, success criteria, side effects, and exit codes are unchanged.",
+          "fromCandidateSha256": "0676728e99e03c8c82e9abb4d7ca5aef7319986531d543b2ea8ea2c5b58adfa7",
+          "toCandidateSha256": "7ece42c030dae0eaff34f5e7245c0a653990aa9fd7e4e85e120c33ad9fb13884",
           "businessInterfaceUnchanged": true,
           "parameterParsingUnchanged": true,
           "successCriteriaUnchanged": true,
