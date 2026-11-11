@@ -1,6 +1,6 @@
 # 字母索引 · T
 
-共 **59** 个脚本。返回 [`目录首页`](../README.md)。
+共 **61** 个脚本。返回 [`目录首页`](../README.md)。
 
 | 任务名称 | 脚本 | 青龙命令 | 建议 Cron | 管理状态 | 详单 |
 | --- | --- | --- | --- | --- | --- |
@@ -19,6 +19,7 @@
 | 昆明医科大疫情健康填报 | `scripts/task_4f815667.py` | `python3 scripts/task_4f815667.py` | `43 8 * * *` | 待检查 | [task_4f815667.py.md](../../scripts/task_4f815667.py.md)（`docs/scripts/task_4f815667.py.md`） |
 | 百度知道签到 | `scripts/task_51f65d9b.py` | `python3 scripts/task_51f65d9b.py` | `30 10 * * *` | 待检查 | [task_51f65d9b.py.md](../../scripts/task_51f65d9b.py.md)（`docs/scripts/task_51f65d9b.py.md`） |
 | 阅次元论坛签到 | `scripts/task_5254d901.py` | `python3 scripts/task_5254d901.py` | `44 8 * * *` | 待检查 | [task_5254d901.py.md](../../scripts/task_5254d901.py.md)（`docs/scripts/task_5254d901.py.md`） |
+| HoYoLAB 多游戏签到 | `scripts/task_54f1f871.py` | `python3 scripts/task_54f1f871.py` | `35 10 * * *` | 待检查 | [task_54f1f871.py.md](../../scripts/task_54f1f871.py.md)（`docs/scripts/task_54f1f871.py.md`） |
 | OA实习签到 | `scripts/task_62e6cbbd.py` | `python3 scripts/task_62e6cbbd.py` | `34 8 * * *` | 待检查 | [task_62e6cbbd.py.md](../../scripts/task_62e6cbbd.py.md)（`docs/scripts/task_62e6cbbd.py.md`） |
 | 工软校园健康填报 | `scripts/task_64f5e3fd.py` | `python3 scripts/task_64f5e3fd.py` | `47 8 * * *` | 待检查 | [task_64f5e3fd.py.md](../../scripts/task_64f5e3fd.py.md)（`docs/scripts/task_64f5e3fd.py.md`） |
 | 奥波莱大学Moodle作业监控 | `scripts/task_6bed5fef.py` | `python3 scripts/task_6bed5fef.py` | `*/5 * * * *` | 待检查 | [task_6bed5fef.py.md](../../scripts/task_6bed5fef.py.md)（`docs/scripts/task_6bed5fef.py.md`） |
@@ -40,6 +41,7 @@
 | 今日校园辅导员签到 | `scripts/task_c04cea4d.py` | `python3 scripts/task_c04cea4d.py` | `0 21 * * *` | 待检查 | [task_c04cea4d.py.md](../../scripts/task_c04cea4d.py.md)（`docs/scripts/task_c04cea4d.py.md`） |
 | 又拍云签到与每日任务 | `scripts/task_d09de588.py` | `python3 scripts/task_d09de588.py` | `45 8 * * *` | 待检查 | [task_d09de588.py.md](../../scripts/task_d09de588.py.md)（`docs/scripts/task_d09de588.py.md`） |
 | 爱桌游每日签到 | `scripts/task_d530fa58.py` | `python3 scripts/task_d530fa58.py` | `0 5 * * *` | 待检查 | [task_d530fa58.py.md](../../scripts/task_d530fa58.py.md)（`docs/scripts/task_d530fa58.py.md`） |
+| Cafe123 每日签到 | `scripts/task_dd37430b.js` | `node scripts/task_dd37430b.js` | `30 11 14 * * *` | 待检查 | [task_dd37430b.js.md](../../scripts/task_dd37430b.js.md)（`docs/scripts/task_dd37430b.js.md`） |
 | 93海山云论坛签到 | `scripts/task_df720629.py` | `python3 scripts/task_df720629.py` | `34 9 * * *` | 待检查 | [task_df720629.py.md](../../scripts/task_df720629.py.md)（`docs/scripts/task_df720629.py.md`） |
 | hao4k每日签到 | `scripts/task_e5c5d07b.py` | `python3 scripts/task_e5c5d07b.py` | `55 8 * * *` | 待检查 | [task_e5c5d07b.py.md](../../scripts/task_e5c5d07b.py.md)（`docs/scripts/task_e5c5d07b.py.md`） |
 | 王者营地每日签到 | `scripts/task_e7937ed1.js` | `node scripts/task_e7937ed1.js` | `59 15 8 * * *` | 待检查 | [task_e7937ed1.js.md](../../scripts/task_e7937ed1.js.md)（`docs/scripts/task_e7937ed1.js.md`） |
